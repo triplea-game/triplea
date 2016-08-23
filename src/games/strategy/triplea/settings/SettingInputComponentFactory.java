@@ -86,7 +86,7 @@ public final class SettingInputComponentFactory {
         new SettingsModelReaderWriter(settingsObjectReader, settingsObjectWriter));
   }
 
-  public static JPanel createRadioButtonPanel(
+  private static JPanel createRadioButtonPanel(
       final JRadioButton buttonYes,
       final JRadioButton buttonNo,
       final boolean yesOptionIsSelected) {
@@ -101,7 +101,7 @@ public final class SettingInputComponentFactory {
     return panel;
   }
 
-  static class LabelDescription {
+  private static class LabelDescription {
     private String label;
     private String description;
 
@@ -112,7 +112,7 @@ public final class SettingInputComponentFactory {
   }
 
 
-  static class SwingComponentReaderWriter{
+  private static class SwingComponentReaderWriter{
     private Supplier<String> reader;
     private Consumer<String> writer;
     SwingComponentReaderWriter(Supplier<String> reader, Consumer<String> writer) {
@@ -121,7 +121,7 @@ public final class SettingInputComponentFactory {
     }
   }
 
-  static class SettingsModelReaderWriter<Type extends HasDefaults> {
+  private static class SettingsModelReaderWriter<Type extends HasDefaults> {
     private final Function<Type, String> settingsReader;
     private final BiConsumer<Type, String> settingsWriter;
 
@@ -204,7 +204,7 @@ public final class SettingInputComponentFactory {
         final String input = getInputElement().getText();
 
         final Optional<InputValidator> failedValidator =
-            Arrays.asList(validators).stream().filter(validator -> !validator.apply(input)).findFirst();
+            Arrays.stream(validators).filter(validator -> !validator.apply(input)).findFirst();
         if (!failedValidator.isPresent()) {
           return "";
         }

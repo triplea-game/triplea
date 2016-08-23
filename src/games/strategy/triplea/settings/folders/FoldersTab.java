@@ -3,7 +3,6 @@ package games.strategy.triplea.settings.folders;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import games.strategy.engine.ClientContext;
@@ -16,15 +15,11 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
   private final List<SettingInputComponent<FolderSettings>> inputs;
 
   public FoldersTab(final FolderSettings settings) {
-    JTextField saveGamePathField = new JTextField(settings.getSaveGamePath());
-    JPanel holderPanel = new JPanel();
-    holderPanel.add(saveGamePathField);
-
     inputs = Arrays.asList(
         SettingInputComponentFactory.buildTextComponent(
             "Save game path",
             "Default save game folder",
-            saveGamePathField,
+            new JTextField(settings.getSaveGamePath()),
             FolderSettings::getSaveGamePath,
             FolderSettings::setSaveGamePath,
             InputValidator.IS_DIRECTORY),
