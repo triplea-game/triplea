@@ -44,7 +44,6 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton m_connectToLobby;
   private JButton m_enginePreferences;
   private JButton m_ruleBook;
-  private JButton m_donate;
   private JButton m_helpButton;
 
   private final SetupPanelModel m_model;
@@ -83,8 +82,6 @@ public class MetaSetupPanel extends SetupPanel {
     m_helpButton = new JButton("Help");
     m_ruleBook.setToolTipText(
         "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
-    m_donate = new JButton("Donate");
-    m_donate.setToolTipText("Help Support TripleA's development.");
   }
 
   private void layoutComponents() {
@@ -108,8 +105,6 @@ public class MetaSetupPanel extends SetupPanel {
         new Insets(10, 0, 0, 0), 0, 0));
     add(m_helpButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(m_donate, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(10, 0, 0, 0), 0, 0));
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
@@ -124,8 +119,6 @@ public class MetaSetupPanel extends SetupPanel {
     m_enginePreferences.addActionListener(e -> enginePreferences());
     m_ruleBook.addActionListener(e -> ruleBook());
     m_helpButton.addActionListener(e -> helpPage());
-
-    m_donate.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
   }
 
   private static void ruleBook() {
