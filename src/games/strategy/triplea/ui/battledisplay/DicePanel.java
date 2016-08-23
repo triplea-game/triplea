@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.battledisplay;
 
 import java.awt.Dimension;
 import java.util.List;
@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.ui.IUIContext;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
