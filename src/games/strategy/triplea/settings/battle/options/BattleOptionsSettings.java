@@ -3,7 +3,7 @@ package games.strategy.triplea.settings.battle.options;
 import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
-import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.battledisplay.BattleDisplay;
 
 public class BattleOptionsSettings implements HasDefaults {
 

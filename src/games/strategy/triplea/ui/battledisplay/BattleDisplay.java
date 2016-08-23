@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.battledisplay;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -73,6 +73,11 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.BattleStepsPanel;
+import games.strategy.triplea.ui.DicePanel;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
@@ -159,7 +164,7 @@ public class BattleDisplay extends JPanel {
     m_steps = null;
   }
 
-  void takeFocus() {
+  public void takeFocus() {
     // we want a component on this frame to take focus
     // so that pressing space will work (since it requires in focused
     // window). Only seems to be an issue on windows
@@ -291,7 +296,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  protected void waitForConfirmation(final String message) {
+  public void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This cannot be in dispatch thread");
     }
