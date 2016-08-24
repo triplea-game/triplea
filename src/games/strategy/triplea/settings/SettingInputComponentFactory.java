@@ -1,11 +1,5 @@
 package games.strategy.triplea.settings;
 
-import games.strategy.ui.SwingComponents;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.text.JTextComponent;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -13,13 +7,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.text.JTextComponent;
+
+import games.strategy.ui.SwingComponents;
+
 public final class SettingInputComponentFactory {
 
   private SettingInputComponentFactory() {
 
   }
 
-  public static <Z extends HasDefaults> SettingInputComponent buildIntegerText(
+  public static <Z extends HasDefaults> SettingInputComponent<Z> buildIntegerText(
       final IntegerValueRange valueRange,
       final String label,
       final String description,
@@ -37,7 +38,7 @@ public final class SettingInputComponentFactory {
   /**
    * Factory method to create instances of this interface, backed by TextField component types
    */
-  public static <Z extends HasDefaults> SettingInputComponent buildTextComponent(
+  public static <Z extends HasDefaults> SettingInputComponent<Z> buildTextComponent(
       final String label,
       final String description,
       final JTextComponent component,
@@ -52,7 +53,7 @@ public final class SettingInputComponentFactory {
         panel,
         new LabelDescription(label, description),
         new SwingComponentReaderWriter(component::getText, component::setText),
-        new SettingsModelReaderWriter(settingsModelReader, settingsModelWriter),
+        new SettingsModelReaderWriter<>(settingsModelReader, settingsModelWriter),
         validators);
 
   }
@@ -72,7 +73,7 @@ public final class SettingInputComponentFactory {
     Supplier<String> reader = () -> String.valueOf(radioButtonYes.isSelected());
 
     Consumer<String> writer = (input) -> {
-      if( Boolean.valueOf(input)) {
+      if (Boolean.valueOf(input)) {
         radioButtonYes.setSelected(true);
       } else {
         radioButtonNo.setSelected(true);
@@ -83,7 +84,7 @@ public final class SettingInputComponentFactory {
         createRadioButtonPanel(radioButtonYes, radioButtonNo, initialValue),
         new LabelDescription(label, description),
         new SwingComponentReaderWriter(reader, writer),
-        new SettingsModelReaderWriter(settingsObjectReader, settingsObjectWriter));
+        new SettingsModelReaderWriter<>(settingsObjectReader, settingsObjectWriter));
   }
 
   private static JPanel createRadioButtonPanel(
@@ -112,9 +113,10 @@ public final class SettingInputComponentFactory {
   }
 
 
-  private static class SwingComponentReaderWriter{
+  private static class SwingComponentReaderWriter {
     private Supplier<String> reader;
     private Consumer<String> writer;
+
     SwingComponentReaderWriter(Supplier<String> reader, Consumer<String> writer) {
       this.reader = reader;
       this.writer = writer;
@@ -134,14 +136,14 @@ public final class SettingInputComponentFactory {
 
   }
 
-  private static <Type extends HasDefaults> SettingInputComponent build(
+  private static <T extends HasDefaults> SettingInputComponent<T> build(
       JPanel componentPanel,
       LabelDescription labelDescription,
       SwingComponentReaderWriter swingReaderWriter,
-      SettingsModelReaderWriter modelReaderWriter,
+      SettingsModelReaderWriter<T> modelReaderWriter,
       final InputValidator... validators) {
 
-    return new SettingInputComponent<Type>() {
+    return new SettingInputComponent<T>() {
       @Override
       public String getLabel() {
         return labelDescription.label;
@@ -174,7 +176,7 @@ public final class SettingInputComponentFactory {
       }
 
       @Override
-      public boolean updateSettings(Type toUpdate) {
+      public boolean updateSettings(T toUpdate) {
         final String input = getInputElement().getText();
 
         for (final InputValidator validator : Arrays.asList(validators)) {
@@ -190,8 +192,8 @@ public final class SettingInputComponentFactory {
 
 
       @Override
-      public String getValue(HasDefaults settingsType) {
-        return (String) modelReaderWriter.settingsReader.apply(settingsType);
+      public String getValue(T settingsType) {
+        return modelReaderWriter.settingsReader.apply(settingsType);
       }
 
       @Override
