@@ -7,6 +7,7 @@ import games.strategy.triplea.ui.battledisplay.BattleDisplay;
 
 public class BattleOptionsSettings implements HasDefaults {
 
+  static final int DEFAULT_BATTLE_DICE_PER_ROW = 18;
   private static final boolean DEFAULT_CONFIRM_ENEMY_CASUALTIES = false;
   private static final boolean DEFAULT_CONFIRM_DEFENSIVE_ROLLS = false;
   private static final boolean DEFAULT_FOCUS_ON_OWN_CASUALTIES = true;
@@ -38,9 +39,18 @@ public class BattleOptionsSettings implements HasDefaults {
     SystemPreferences.put(SystemPreferenceKey.FOCUS_ON_OWN_CASUALTIES, value);
   }
 
+  public int maxBattleDicePerRow() {
+    return SystemPreferences.get(SystemPreferenceKey.BATTLE_DICE_PER_ROW, DEFAULT_BATTLE_DICE_PER_ROW);
+  }
+
+  public void setMaxBattleDicePerRow(String value) {
+    SystemPreferences.put(SystemPreferenceKey.BATTLE_DICE_PER_ROW, value);
+  }
 
   @Override
   public void setToDefault() {
     setConfirmEnemyCasualties(DEFAULT_CONFIRM_ENEMY_CASUALTIES);
+    setMaxBattleDicePerRow(String.valueOf(DEFAULT_BATTLE_DICE_PER_ROW));
   }
+
 }
