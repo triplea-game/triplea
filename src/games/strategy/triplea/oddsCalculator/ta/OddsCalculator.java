@@ -75,7 +75,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private int m_retreatAfterRound = -1;
   private int m_retreatAfterXUnitsLeft = -1;
   private boolean m_retreatWhenOnlyAirLeft = false;
-  private boolean m_retreatWhenMetaPowerIsLower = false;
   private String m_attackerOrderOfLosses = null;
   private String m_defenderOrderOfLosses = null;
   private int m_runCount = 0;
@@ -209,11 +208,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   }
 
   @Override
-  public void setRetreatWhenMetaPowerIsLower(final boolean value) {
-    m_retreatWhenMetaPowerIsLower = value;
-  }
-
-  @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
     m_attackerOrderOfLosses = attackerOrderOfLosses;
   }
@@ -260,7 +254,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses,
           defenderOrderOfLosses, m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft,
-          m_retreatWhenOnlyAirLeft, m_retreatWhenMetaPowerIsLower);
+          m_retreatWhenOnlyAirLeft);
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
       final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
       battle.setHeadless(true);
@@ -401,12 +395,12 @@ class DummyDelegateBridge implements IDelegateBridge {
   public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges,
       final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
       final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
-      final boolean retreatWhenOnlyAirLeft, final boolean retreatWhenMetaPowerIsLower) {
+      final boolean retreatWhenOnlyAirLeft) {
     m_attackingPlayer =
         new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses, attackerKeepOneLandUnit,
-            retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft, retreatWhenMetaPowerIsLower);
+            retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
     m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
-        retreatAfterRound, -1, false, false);
+        retreatAfterRound, -1, false);
     m_data = data;
     m_attacker = attacker;
     m_allChanges = allChanges;
@@ -530,21 +524,18 @@ class DummyPlayer extends AbstractAI {
   // negative = do not retreat
   private final int m_retreatAfterXUnitsLeft;
   private final boolean m_retreatWhenOnlyAirLeft;
-  private final boolean m_retreatWhenMetaPowerIsLower;
   private final DummyDelegateBridge m_bridge;
   private final boolean m_isAttacker;
   private final List<Unit> m_orderOfLosses;
 
   public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
       final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand, final int retreatAfterRound,
-      final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft,
-      final boolean retreatWhenMetaPowerIsLower) {
+      final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
     super(name, type);
     m_keepAtLeastOneLand = keepAtLeastOneLand;
     m_retreatAfterRound = retreatAfterRound;
     m_retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
     m_retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
-    m_retreatWhenMetaPowerIsLower = retreatWhenMetaPowerIsLower;
     m_bridge = dummyDelegateBridge;
     m_isAttacker = attacker;
     m_orderOfLosses = orderOfLosses;
@@ -630,7 +621,7 @@ class DummyPlayer extends AbstractAI {
       if (m_retreatAfterRound > -1 && battle.getBattleRound() >= m_retreatAfterRound) {
         return possibleTerritories.iterator().next();
       }
-      if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1 && m_retreatWhenMetaPowerIsLower == false) {
+      if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1) {
         return null;
       }
       final Collection<Unit> unitsLeft = m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
@@ -650,31 +641,6 @@ class DummyPlayer extends AbstractAI {
       }
       if (m_retreatAfterXUnitsLeft > -1 && m_retreatAfterXUnitsLeft >= unitsLeft.size()) {
         return possibleTerritories.iterator().next();
-      }
-      if (m_retreatWhenMetaPowerIsLower) {
-        final List<Unit> ourUnits = getOurUnits();
-        final List<Unit> enemyUnits = getEnemyUnits();
-        if (ourUnits != null && enemyUnits != null) {
-          // assume we are attacker
-          final int ourHP = BattleCalculator.getTotalHitpointsLeft(ourUnits);
-          final int enemyHP = BattleCalculator.getTotalHitpointsLeft(enemyUnits);
-          final int ourPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits,
-              enemyUnits, !m_isAttacker, false, m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(),
-              battle.isAmphibious(), (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<>())),
-              m_bridge.getData());
-          final int enemyPower =
-              DiceRoll.getTotalPower(
-                  DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, ourUnits, m_isAttacker, false,
-                      m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
-                      (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<>())),
-                  m_bridge.getData());
-          final int diceSides = m_bridge.getData().getDiceSides();
-          final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
-          final int enemyMetaPower = BattleCalculator.getNormalizedMetaPower(enemyPower, enemyHP, diceSides);
-          if (ourMetaPower < enemyMetaPower) {
-            return possibleTerritories.iterator().next();
-          }
-        }
       }
       return null;
     }
