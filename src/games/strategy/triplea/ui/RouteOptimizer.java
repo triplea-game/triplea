@@ -33,7 +33,7 @@ public class RouteOptimizer {
     if (route == null) {
       return route;
     }
-    if (!isInfiniteX && !isInfiniteY || route.length == 0) {
+    if ((!isInfiniteX && !isInfiniteY )|| route.length == 0) {
       // If the Map is not infinite scrolling, we can safely return the given Points
       // Or the array is too small
       return route;
