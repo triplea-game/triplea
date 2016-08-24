@@ -181,6 +181,12 @@ public class GameRunner {
    * Move command line arguments to System.properties
    */
   private static void handleCommandLineArgs(final String[] args) {
+    // TODO: Setting System values to handle command line args is not good. Command line args should only
+    // live for the span of the application, and not between restarts. Using System args, the value would
+    // be persistent through to the next invocation of the program, and thus would need to be cleared
+    // out if not present. Simply finding a different way to do inter-app communication other than system args
+    // is the ideal way to go.
+
     final String[] properties = getProperties();
     // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
     // optionally, it may not start with the property name

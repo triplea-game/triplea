@@ -7,6 +7,7 @@ import javax.swing.JRadioButton;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingInputComponentFactory;
 import games.strategy.triplea.settings.SettingsTab;
 import games.strategy.ui.SwingComponents;
 
@@ -23,17 +24,17 @@ public class BattleOptionsTab implements SettingsTab<BattleOptionsSettings> {
     SwingComponents.createButtonGroup(confirmDefensiveRollsYes, confirmDefensiveRollsNo);
 
     inputs = Arrays.asList(
-        SettingInputComponent.buildYesOrNoRadioButtons("Confirm Enemy Casualties",
+        SettingInputComponentFactory.buildYesOrNoRadioButtons("Confirm Enemy Casualties",
             "When set to yes, enemy casualty selections will always require confirmation.",
             battleOptionSettings.confirmEnemyCasualties(),
             ((settings, s) -> settings.setConfirmEnemyCasualties(Boolean.valueOf(s))),
             (settings -> String.valueOf(settings.confirmEnemyCasualties()))),
-        SettingInputComponent.buildYesOrNoRadioButtons("Confirm Defensive Rolls",
+        SettingInputComponentFactory.buildYesOrNoRadioButtons("Confirm Defensive Rolls",
             "When set to yes, defender dice rolls will always require confirmation.",
             battleOptionSettings.confirmDefensiveRolls(),
             ((settings, s) -> settings.setConfirmDefensiveRolls(Boolean.valueOf(s))),
             (settings -> String.valueOf(settings.confirmDefensiveRolls()))),
-        SettingInputComponent.buildYesOrNoRadioButtons("Focus on own casualties",
+        SettingInputComponentFactory.buildYesOrNoRadioButtons("Focus on own casualties",
             "When set to yes, the default casualty selection can be accepted by pressing space bar. When set to 'no', "
                 + "you will always have to click a button to confirm casualty selections.",
             battleOptionSettings.focusOnOwnCasualties(),
