@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.battledisplay;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,21 +8,17 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.ui.SwingComponents;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
-  private static final int MAX_DICE_PER_ROW = 4;
   private final IUIContext m_uiContext;
   private final GameData m_data;
 
