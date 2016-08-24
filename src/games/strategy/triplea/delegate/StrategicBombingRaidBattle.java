@@ -361,7 +361,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     	validAttackingUnitsForThisRoll = Collections.emptyList();
     	determineAttackers = true;
     }
-
+    	
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
