@@ -203,19 +203,17 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-    	boolean foundGenericAA = false;
+    	boolean foundSpecificAA = false;
       for (final Unit target : m_targets.keySet()) {
     		if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
     			final Collection<Unit> currentAttackers = m_targets.get(target);
     			if( currentAttackers != null ) {
     				steps.add(new FireAA(currentAttackers));
     			}
-    		}
-    		else {
-    			foundGenericAA = true;
+    			foundSpecificAA = true;
     		}
     	}
-      if( foundGenericAA ) {
+      if( !foundSpecificAA ) {
       	steps.add(new FireAA());
       }
     }
