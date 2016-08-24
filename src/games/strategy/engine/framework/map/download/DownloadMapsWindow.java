@@ -32,6 +32,7 @@ import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
@@ -87,7 +88,6 @@ public class DownloadMapsWindow extends JFrame {
     };
     final String popupWindowTitle = "Downloading list of availabe maps....";
     BackgroundTaskRunner.runInBackground(popupWindowTitle, downloadAndShowWindow);
-    SwingUtilities.invokeLater(() -> dia.requestFocus());  
   }
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
