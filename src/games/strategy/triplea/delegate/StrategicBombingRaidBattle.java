@@ -203,18 +203,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-    	boolean foundSpecificAA = false;
+      boolean foundSpecificAA = false;
       for (final Unit target : m_targets.keySet()) {
-    		if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
-    			final Collection<Unit> currentAttackers = m_targets.get(target);
-    			if( currentAttackers != null ) {
-    				steps.add(new FireAA(currentAttackers));
-    			}
-    			foundSpecificAA = true;
-    		}
-    	}
+        if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
+          final Collection<Unit> currentAttackers = m_targets.get(target);
+          if( currentAttackers != null ) {
+            steps.add(new FireAA(currentAttackers));
+          }
+          foundSpecificAA = true;
+        }
+      }
       if( !foundSpecificAA ) {
-      	steps.add(new FireAA());
+        steps.add(new FireAA());
       }
     }
     steps.add(new ConductBombing());
@@ -343,25 +343,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     boolean determineAttackers;
 
     public FireAA( Collection<Unit> attackers ) {
-    	validAttackingUnitsForThisRoll = attackers;
-    	determineAttackers = false;
+      validAttackingUnitsForThisRoll = attackers;
+      determineAttackers = false;
     }
     
     public FireAA() {
-    	validAttackingUnitsForThisRoll = Collections.emptyList();
-    	determineAttackers = true;
+      validAttackingUnitsForThisRoll = Collections.emptyList();
+      determineAttackers = true;
     }
-    	
-    public FireAA( Collection<Unit> attackers ) {
-    	validAttackingUnitsForThisRoll = attackers;
-    	determineAttackers = false;
-    }
-    
-    public FireAA() {
-    	validAttackingUnitsForThisRoll = Collections.emptyList();
-    	determineAttackers = true;
-    }
-    	
+      
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
@@ -370,7 +360,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
         if( determineAttackers ) {
-        	validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
                     new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
