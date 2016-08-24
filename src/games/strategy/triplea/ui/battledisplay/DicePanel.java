@@ -62,7 +62,7 @@ public class DicePanel extends JPanel {
 
       List<Die> allDice = diceRoll.getRolls(i);
       for(int j = 0; j < allDice.size(); j += MAX_DICE_PER_ROW ) {
-        contents.add(create(createSubList(allDice, j)));
+        contents.add(create(createSubList(allDice, MAX_DICE_PER_ROW, j)));
         contents.add(Box.createVerticalStrut(5));
       }
     }
@@ -74,9 +74,9 @@ public class DicePanel extends JPanel {
     repaint();
   }
 
-  private static List<Die> createSubList(List<Die> allDice, int startIndex) {
+  private static List<Die> createSubList(List<Die> allDice, int dicePerRow, int startIndex) {
     List<Die> subList = new ArrayList<>();
-    for(int i = 0; i < MAX_DICE_PER_ROW && i+startIndex < allDice.size(); i ++ ) {
+    for(int i = 0; i < dicePerRow && i+startIndex < allDice.size(); i ++ ) {
       subList.add(allDice.get(startIndex+i));
     }
     return subList;
