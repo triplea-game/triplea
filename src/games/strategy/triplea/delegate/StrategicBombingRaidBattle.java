@@ -203,7 +203,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-      boolean foundSpecificAA = false;
+    	boolean foundSpecificAA = false;
       for (final Unit target : m_targets.keySet()) {
     		if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
     			final Collection<Unit> currentAttackers = m_targets.get(target);
