@@ -31,7 +31,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.SwingAction;
@@ -188,7 +188,7 @@ public class MapCreator extends JFrame {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openFile(
+          OpenFileUtility.openFile(
               new File(ClientFileSystemHelper.getRootFolder(),
                   "doc" + File.separator + "map_and_map_skin_making_overview.html"));
           // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"

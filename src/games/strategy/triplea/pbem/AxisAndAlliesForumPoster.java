@@ -21,7 +21,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.ThreadUtil;
 
@@ -284,7 +284,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-    DesktopUtilityBrowserLauncher.openURL(url);
+    OpenFileUtility.openURL(url);
   }
 
   @Override
