@@ -210,6 +210,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     			if( currentAttackers != null ) {
     				steps.add(new FireAA(currentAttackers));
     			}
+    			foundSpecificAA = true;
     		}
     	}
       if( !foundSpecificAA ) {
