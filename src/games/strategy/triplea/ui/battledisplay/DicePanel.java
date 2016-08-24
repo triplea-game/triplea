@@ -13,9 +13,11 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.ui.SwingComponents;
 
@@ -61,8 +63,9 @@ public class DicePanel extends JPanel {
       contents.add(new JLabel("Rolled at " + (i) + ":"));
 
       List<Die> allDice = diceRoll.getRolls(i);
-      for(int j = 0; j < allDice.size(); j += MAX_DICE_PER_ROW ) {
-        contents.add(create(createSubList(allDice, MAX_DICE_PER_ROW, j)));
+      final int maxDicePerRow = ClientContext.battleOptionsSettings().maxBattleDicePerRow();
+      for(int j = 0; j < allDice.size(); j += maxDicePerRow ) {
+        contents.add(create(createSubList(allDice, maxDicePerRow, j)));
         contents.add(Box.createVerticalStrut(5));
       }
     }
