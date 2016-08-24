@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.battledisplay;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -19,6 +20,7 @@ import games.strategy.triplea.ui.IUIContext;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
+  private static final int MAX_DICE_PER_ROW = 4;
   private final IUIContext m_uiContext;
   private final GameData m_data;
 
@@ -52,7 +54,15 @@ public class DicePanel extends JPanel {
         continue;
       }
       add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i)));
+
+      List<Die> allDice = diceRoll.getRolls(i);
+      for(int j = 0; j < allDice.size(); j += MAX_DICE_PER_ROW ) {
+        List<Die> subList = new ArrayList<>();
+        for(int k = 0; k < MAX_DICE_PER_ROW && k+j < allDice.size(); k ++ ) {
+          subList.add(allDice.get(j+k));
+        }
+        add(create(subList));
+      }
     }
     add(Box.createVerticalGlue());
     add(new JLabel("Total hits:" + diceRoll.getHits()));
