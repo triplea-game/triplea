@@ -23,7 +23,6 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.mapdata.RouteOptimizer;
 
 /**
  * Draws a route on a map.

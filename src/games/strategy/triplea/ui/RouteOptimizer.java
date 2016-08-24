@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui.mapdata;
+package games.strategy.triplea.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 public class RouteOptimizer {
 
@@ -48,7 +48,7 @@ public class RouteOptimizer {
         result.add(point);
         continue;
       }
-      previousPoint = normalizePoint(previousPoint);// TODO
+      previousPoint = normalizePoint(previousPoint);
       double closestDistance = Double.MAX_VALUE;
       Point closestPoint = null;
       for (Point2D possibleClosestPoint : getPossiblePoints(point)) {
