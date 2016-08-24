@@ -45,7 +45,7 @@ public class StratBombTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("ww2global40_2nd_edition_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.Global1940);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -96,7 +96,7 @@ public class StratBombTest {
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
     battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     // aa guns rolls 1,3, first one hits, remaining bomber rolls 1 dice at 2
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 3, 2, 5, 4}));
     // if we try to move aa, then the game will ask us if we want to move
