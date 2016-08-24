@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.ui.SwingComponents;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
@@ -48,19 +49,24 @@ public class DicePanel extends JPanel {
       return;
     }
     removeAll();
+    JPanel contents = new JPanel();
+    contents.setLayout(new BoxLayout(contents, BoxLayout.Y_AXIS));
+
+
     for (int i = 1; i <= m_data.getDiceSides(); i++) {
       final List<Die> dice = diceRoll.getRolls(i);
       if (dice.isEmpty()) {
         continue;
       }
-      add(new JLabel("Rolled at " + (i) + ":"));
+      contents.add(new JLabel("Rolled at " + (i) + ":"));
 
       List<Die> allDice = diceRoll.getRolls(i);
       for(int j = 0; j < allDice.size(); j += MAX_DICE_PER_ROW ) {
-        add(create(createSubList(allDice, j)));
+        contents.add(create(createSubList(allDice, j)));
       }
     }
-    add(Box.createVerticalGlue());
+    contents.add(Box.createVerticalGlue());
+    add(SwingComponents.newJScrollPane(contents));
     add(new JLabel("Total hits:" + diceRoll.getHits()));
     validate();
     invalidate();
@@ -84,18 +90,7 @@ public class DicePanel extends JPanel {
       dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
-    final JScrollPane scroll = new JScrollPane(dicePanel);
-    scroll.setBorder(null);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from
-    // grabbing extra space, set the max height.
-    // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(
-        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(
-        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(
-        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    return scroll;
+    dicePanel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+    return dicePanel;
   }
 }
