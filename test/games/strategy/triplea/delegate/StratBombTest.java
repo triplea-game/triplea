@@ -9,9 +9,12 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
@@ -51,8 +54,8 @@ public class StratBombTest {
 
 
   @Test
-  public void testBombingRaid2targets() {
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+  public void TestBombingRaid2targets() {
+    final Territory germany = m_data.getMap().getTerritory("Western Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -64,26 +67,29 @@ public class StratBombTest {
     m_data.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber1)));
     m_data.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber2)));
     final BattleTracker tracker = new BattleTracker();
-    List<Unit> attackers = Collections.emptyList();
+    List<Unit> attackers = new ArrayList<>();
     attackers.add(stratBomber);
     attackers.add(tacBomber1);
     attackers.add(tacBomber2);
-    HashMap<Unit, HashSet<Unit>> targets = null;
-   
+    HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
+    TripleAUnit airfield = null;
+    TripleAUnit harbour = null;
+    TripleAUnit factory = null;
 
-//    final Collection<Unit> enemyTargets = Match.getMatches(uk.getUnits().getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(germans, m_data),              Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(uk).invert(), Matches.unitIsBeingTransported().invert())), Matches.UnitIsLegalBombingTargetBy(stratBomber));
-
+    // Find facilities in territory
     for( final Unit target : germany.getUnits().getUnits() ) {
-    	System.out.println(target.getType().getName());
     	switch( target.getType().getName() ) {
-				case "airfield"      : targets.put(target, new HashSet<>(Collections.singleton(tacBomber1)));
+				case "airfield"      : airfield = (TripleAUnit) target; 
 					break;
-				case "harbour"       : targets.put(target, new HashSet<>(Collections.singleton(tacBomber2)));
+				case "harbour"       : harbour = (TripleAUnit) target;
 					break;
-				case "factory_major" : targets.put(target, new HashSet<>(Collections.singleton(stratBomber)));
+				case "factory_major" : factory = (TripleAUnit) target;
 					break;
 		  }
 		}
+		targets.put(airfield, new HashSet<>(Collections.singleton(tacBomber1)));
+		targets.put(harbour, new HashSet<>(Collections.singleton(tacBomber2)));
+		targets.put(factory, new HashSet<>(Collections.singleton(stratBomber)));
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     tracker.addBattle(new RouteScripted(germany), attackers, true, british, bridge, null, null, targets, true);
                 
@@ -92,7 +98,7 @@ public class StratBombTest {
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     // aa guns rolls 1,3, first one hits, remaining bomber rolls 1 dice at 2
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 3, 2}));
+    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 3, 2, 5, 4}));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
     final InvocationHandler handler = new InvocationHandler() {
@@ -105,12 +111,16 @@ public class StratBombTest {
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
-    final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    final int airfieldDmg = airfield.getUnitDamage();
+    final int harbourDmg = harbour.getUnitDamage();
+    final int factoryDmg = factory.getUnitDamage();
+    System.out.format("airf: %d harb: %d fact: %d\n", airfieldDmg, harbourDmg, factoryDmg );
     // targets dice is 4, so damage is 1 + 4 = 5
     // bomber 2 hits at 2, so damage is 3, for a total of 8
     // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
+    assertEquals(0, airfieldDmg);
+    assertEquals(5, harbourDmg);
+    assertEquals(6, factoryDmg);
   }
 }

@@ -93,11 +93,11 @@ public class GameDataTestUtil {
     return unitType("harbour", data);			
   }
 
-  public static UnitType factory_major(final GameData data) {
+  public static UnitType factoryMajor(final GameData data) {
     return unitType("factory_major", data);			
   }
 
-  public static UnitType factory_minor(final GameData data) {
+  public static UnitType factoryMinor(final GameData data) {
     return unitType("factory_minor", data);			
   }
 
