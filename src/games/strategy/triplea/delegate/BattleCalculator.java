@@ -99,14 +99,6 @@ public class BattleCalculator {
   }
 
   /**
-   * Useful for fast approximations of strength.
-   * Returns a number equal to: (2 * Hitpoints) + (Power * 6 / DiceSides)
-   */
-  public static int getNormalizedMetaPower(final int power, final int hitpoints, final int diceSides) {
-    return (2 * hitpoints) + (power * 6 / diceSides);
-  }
-
-  /**
    * Choose plane casualties according to specified rules
    */
   public static CasualtyDetails getAACasualties(final boolean defending, final Collection<Unit> planes,

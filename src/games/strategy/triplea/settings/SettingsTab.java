@@ -5,29 +5,29 @@ import java.util.List;
 
 import games.strategy.ui.SwingComponents;
 
-public interface SettingsTab<T extends HasDefaults> {
+public interface SettingsTab<SettingsModelType extends HasDefaults> {
   String getTabTitle();
 
-  List<SettingInputComponent<T>> getInputs();
+  List<SettingInputComponent<SettingsModelType>> getInputs();
 
-  T getSettingsObject();
+  SettingsModelType getSettingsObject();
 
-  default void updateSettings(final List<SettingInputComponent<T>> inputs) {
+  default void updateSettings(final List<SettingInputComponent<SettingsModelType>> inputs) {
     final StringBuilder msg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
-
 
     // keep track explicitly of the status..
     boolean somethingSaved = false;
     boolean somethingInvalid = false;
 
     final List<String> invalidValues = new ArrayList<>();
-    for (final SettingInputComponent<T> input : inputs) {
-      final T settingsObject = getSettingsObject();
+    for (final SettingInputComponent<SettingsModelType> input : inputs) {
+      final SettingsModelType settingsObject = getSettingsObject();
 
       final String oldValue = input.getValue(settingsObject);
+
       if (input.updateSettings(settingsObject)) {
-        final String newValue = input.getValue(settingsObject);
+        final String newValue = input.getInputElement().getText();
 
         if (!newValue.equals(oldValue)) {
           if (!msg.toString().isEmpty()) {
@@ -53,10 +53,10 @@ public interface SettingsTab<T extends HasDefaults> {
     final String message;
     if (!somethingSaved && !somethingInvalid) {
       // TODO: Save button should not be enabled unless something is updated, so we would never fall into this case.
-      title = "Nothing changed";
-      message = "No values updated";
+      title = "No Values Updated";
+      message = "No values were updated, new settings are same as current";
     } else if (somethingSaved && !somethingInvalid) {
-      title = "Settings Saved";
+      title = "Settings Updated";
       message = msg.toString();
     } else if (!somethingSaved && somethingInvalid) {
       title = "Failed to Save Settings";

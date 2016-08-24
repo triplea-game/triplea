@@ -107,7 +107,6 @@ public class OddsCalculatorPanel extends JPanel {
   private final JCheckBox m_amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
   private final JCheckBox m_landBattleCheckBox = new JCheckBox("Land Battle");
   private final JCheckBox m_retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
-  private final JCheckBox m_retreatWhenMetaPowerIsLower = new JCheckBox("Retreat when meta-power is lower");
   private final IUIContext m_context;
   private final GameData m_data;
   private final IOddsCalculator m_calculator;
@@ -414,11 +413,6 @@ public class OddsCalculatorPanel extends JPanel {
         } else {
           m_calculator.setAmphibious(false);
         }
-        if (m_retreatWhenMetaPowerIsLower.isSelected()) {
-          m_calculator.setRetreatWhenMetaPowerIsLower(true);
-        } else {
-          m_calculator.setRetreatWhenMetaPowerIsLower(false);
-        }
         m_calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
         m_calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
         final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
@@ -644,8 +638,6 @@ public class OddsCalculatorPanel extends JPanel {
     }
     resultsText.add(m_retreatWhenOnlyAirLeftCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 5), 0, 0));
-    resultsText.add(m_retreatWhenMetaPowerIsLower, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
     resultsText.add(m_keepOneAttackingLandUnitCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
     resultsText.add(m_amphibiousCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -745,8 +737,6 @@ public class OddsCalculatorPanel extends JPanel {
         "TUV Swing does not include captured AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
     m_retreatWhenOnlyAirLeftCheckBox.setToolTipText(
         "We retreat if only air is left, and if 'retreat when x units left' is positive we will retreat when x of non-air is left too.");
-    m_retreatWhenMetaPowerIsLower.setToolTipText(
-        "We retreat if our 'meta power' is lower than the opponent. Meta Power is equal to:  Power  +  (2 * HitPoints * DiceSides / 6)");
     m_attackerUnitsTotalNumber.setToolTipText(
         "Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
     m_defenderUnitsTotalNumber.setToolTipText(
@@ -806,12 +796,6 @@ public class OddsCalculatorPanel extends JPanel {
                   m_data);
       m_attackerUnitsTotalPower.setText("Power: " + attackPower);
       m_defenderUnitsTotalPower.setText("Power: " + defensePower);
-      m_attackerUnitsTotalPower.setToolTipText(
-          "<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
-              + "<br /> (is equal to  (2 * Hitpoints) + (Power * 6 / DiceSides))</html>");
-      m_defenderUnitsTotalPower.setToolTipText(
-          "<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
-              + "<br /> (is equal to  (2 * Hitpoints) + (Power * 6 / DiceSides))</html>");
     } finally {
       m_data.releaseReadLock();
     }

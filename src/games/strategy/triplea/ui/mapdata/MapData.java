@@ -47,12 +47,6 @@ public class MapData implements Closeable {
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
   public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
   public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
-  public static final String PROPERTY_SCREENSHOT_STATS_ENABLED = "screenshot.stats.enabled";
-  public static final String PROPERTY_SCREENSHOT_STATS_X = "screenshot.stats.x";
-  public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
-  public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
-  public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
-
   private static final String PROPERTY_COLOR_PREFIX = "color.";
   private static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
   private static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";

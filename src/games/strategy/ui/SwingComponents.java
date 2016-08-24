@@ -41,7 +41,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
@@ -276,7 +276,7 @@ public class SwingComponents {
 
   public static void newOpenUrlConfirmationDialog(final String url) {
     final String msg = "Okay to open URL in a web browser?\n" + url;
-    SwingComponents.promptUser("Open external URL?", msg, () -> DesktopUtilityBrowserLauncher.openURL(url));
+    SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openURL(url));
   }
 
   public static void showDialog(final String title, final String message) {

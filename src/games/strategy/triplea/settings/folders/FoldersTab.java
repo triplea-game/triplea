@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.InputValidator;
 import games.strategy.triplea.settings.SettingInputComponent;
+import games.strategy.triplea.settings.SettingInputComponentFactory;
 import games.strategy.triplea.settings.SettingsTab;
 
 public class FoldersTab implements SettingsTab<FolderSettings> {
@@ -15,17 +16,19 @@ public class FoldersTab implements SettingsTab<FolderSettings> {
 
   public FoldersTab(final FolderSettings settings) {
     inputs = Arrays.asList(
-        SettingInputComponent.build("Save game path",
+        SettingInputComponentFactory.buildTextComponent(
+            "Save game path",
             "Default save game folder",
             new JTextField(settings.getSaveGamePath()),
-            (((folderSettings, s) -> folderSettings.setSaveGamePath(s))),
-            (folderSettings -> folderSettings.getSaveGamePath()),
+            FolderSettings::getSaveGamePath,
+            FolderSettings::setSaveGamePath,
             InputValidator.IS_DIRECTORY),
-        SettingInputComponent.build("Map Download Path",
+        SettingInputComponentFactory.buildTextComponent(
+            "Map Download Path",
             "Location where maps are downloaded and found",
             new JTextField(settings.getDownloadedMapPath()),
-            (((folderSettings, s) -> folderSettings.setDownloadedMapPath(s))),
-            (folderSettings -> folderSettings.getDownloadedMapPath()),
+            FolderSettings::getDownloadedMapPath,
+            FolderSettings::setDownloadedMapPath,
             InputValidator.IS_DIRECTORY));
   }
 

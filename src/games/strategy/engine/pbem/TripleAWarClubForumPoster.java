@@ -19,7 +19,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
@@ -214,6 +214,6 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = WAR_CLUB_FORUM_URL + "/viewtopic.php?topic_id=" + m_topicId;
-    DesktopUtilityBrowserLauncher.openURL(url);
+    OpenFileUtility.openURL(url);
   }
 }
