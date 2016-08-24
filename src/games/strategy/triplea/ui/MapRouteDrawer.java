@@ -101,9 +101,11 @@ public class MapRouteDrawer {
     final int jointsize = 10;
     // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
     final Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
-    for (final Point p : newPoints) {
-      graphics.fillOval((int) (((p.x - xOffset) - (jointsize / 2) / scale) * scale),
-          (int) (((p.y - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
+    for (Point[] joints : routeOptimizer.getAllPoints(newPoints)) {
+      for (final Point p : joints) {
+        graphics.fillOval((int) (((p.x - xOffset) - (jointsize / 2) / scale) * scale),
+            (int) (((p.y - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
+      }
     }
   }
 
@@ -120,10 +122,11 @@ public class MapRouteDrawer {
       final int yOffset, final double scale) {
     final Image cursorImage = routeDescription.getCursorImage();
     if (cursorImage != null) {
-      final Point endPoint = routeOptimizer.getLastEndPoint();
-      graphics.drawImage(cursorImage,
-          (int) (((endPoint.x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
-          (int) (((endPoint.y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
+      for (Point[] endPoint : routeOptimizer.getAllPoints(routeOptimizer.getLastEndPoint())) {
+        graphics.drawImage(cursorImage,
+            (int) (((endPoint[0].x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
+            (int) (((endPoint[0].y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
+      }
     }
 
   }
@@ -143,10 +146,12 @@ public class MapRouteDrawer {
   private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int xOffset,
       final int yOffset, final double scale) {
     final Point[] points = routeOptimizer.getTranslatedRoute(start, end);
-    drawLineWithTranslate(graphics, new Line2D.Float(points[0], points[1]), xOffset,
-        yOffset, scale);
-    if (start.distance(end) > arrowLength) {
-      drawArrow(graphics, start, end, xOffset, yOffset, scale);
+    for (Point[] newPoints : routeOptimizer.getAllPoints(points)) {
+      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0], newPoints[1]), xOffset,
+          yOffset, scale);
+      if (newPoints[0].distance(newPoints[1]) > arrowLength) {
+        drawArrow(graphics, newPoints[0], newPoints[1], xOffset, yOffset, scale);
+      }
     }
   }
 
@@ -276,9 +281,11 @@ public class MapRouteDrawer {
     final int textXOffset = -movementImage.getWidth() / 2;
     final int yDir = cursorPos.y - points[numTerritories - 2].y;
     final int textYOffset = yDir > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
-    graphics.drawImage(movementImage,
-        (int) ((cursorPos.x + textXOffset - xOffset) * scale),
-        (int) ((cursorPos.y + textYOffset - yOffset) * scale), null);
+    for (Point[] cursorPositions : routeOptimizer.getAllPoints(cursorPos)) {
+      graphics.drawImage(movementImage,
+          (int) ((cursorPositions[0].x + textXOffset - xOffset) * scale),
+          (int) ((cursorPositions[0].y + textYOffset - yOffset) * scale), null);
+    }
   }
 
   /**
@@ -306,19 +313,19 @@ public class MapRouteDrawer {
     final PolynomialSplineFunction ycurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
-
-    for (int i = 1; i < xcoords.length; i++) {
-      drawLineWithTranslate(graphics, new Line2D.Double(xcoords[i - 1], ycoords[i - 1], xcoords[i], ycoords[i]),
-          xOffset, yOffset, scale);
+    List<Line2D> lines = routeOptimizer.getAllTrimmedLines(xcoords, ycoords);
+    for (Line2D line : lines) {
+      drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
     }
     // draws the Line to the Cursor, so that the line ends at the cursor no matter what...
+    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(RouteOptimizer.getPoint(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1])), points[points.length - 1]);
+    for(Point[] finishingPointArray : finishingPoints){
     drawLineWithTranslate(graphics,
-        new Line2D.Double(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
-            points[points.length - 1]),
+        new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
         xOffset, yOffset, scale);
-    if (points[points.length - 2].distance(points[points.length - 1]) > arrowLength) {
-      drawArrow(graphics, new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
-          points[points.length - 1], xOffset, yOffset, scale);
+      if (points[points.length - 2].distance(points[points.length - 1]) > arrowLength) {
+        drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
+      }
     }
   }
 
