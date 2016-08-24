@@ -63,6 +63,7 @@ public class DicePanel extends JPanel {
       List<Die> allDice = diceRoll.getRolls(i);
       for(int j = 0; j < allDice.size(); j += MAX_DICE_PER_ROW ) {
         contents.add(create(createSubList(allDice, j)));
+        contents.add(Box.createVerticalStrut(5));
       }
     }
     contents.add(Box.createVerticalGlue());
