@@ -68,7 +68,6 @@ public class EnginePreferences extends JDialog {
   private JButton m_mapXmlCreator;
   private JButton m_userFolder;
   private JButton m_programFolder;
-  private JButton m_readme;
 
   private EnginePreferences(final Frame parentFrame) {
     super(parentFrame, "Edit TripleA Engine Preferences", true);
@@ -94,13 +93,11 @@ public class EnginePreferences extends JDialog {
     m_setupProxies = new JButton("Setup Network and Proxy Settings");
     m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
     m_setMaxMemory = new JButton("Set Max Memory Usage");
-    // m_runAutoHost = new JButton("Run an Automated Game Host Bot");
     m_mapCreator = new JButton("Run the Map Creator");
     m_mapXmlCreator = new JButton("[Beta] Run the Map Creator");
     m_console = new JButton("Show Console");
     m_userFolder = new JButton("Open User Maps and Savegames Folder");
     m_programFolder = new JButton("Open Installed Program Folder");
-    m_readme = new JButton("Open Readme / User Manual");
   }
 
   private void layoutCoponents() {
@@ -109,9 +106,6 @@ public class EnginePreferences extends JDialog {
     add(buttonsPanel, BorderLayout.CENTER);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
     buttonsPanel.add(Box.createGlue());
-
-    buttonsPanel.add(new JLabel("Change Engine Properties: "));
-    buttonsPanel.add(new JLabel(" "));
 
     // add buttons here:
     SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
@@ -142,8 +136,6 @@ public class EnginePreferences extends JDialog {
     buttonsPanel.add(m_userFolder);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_programFolder);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_readme);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(Box.createGlue());
     buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -392,13 +384,6 @@ public class EnginePreferences extends JDialog {
     m_programFolder.addActionListener(SwingAction.of("Open Installed Program Folder", e -> {
       try {
         OpenFileUtility.openFile(ClientFileSystemHelper.getRootFolder());
-      } catch (final Exception e1) {
-        e1.printStackTrace();
-      }
-    }));
-    m_readme.addActionListener(SwingAction.of("Open Readme / User Manual", e -> {
-      try {
-        OpenFileUtility.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
       } catch (final Exception e1) {
         e1.printStackTrace();
       }
