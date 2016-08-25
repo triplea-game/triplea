@@ -15,7 +15,7 @@ public class BackgroundTaskRunner {
     }
     final WaitDialog window = new WaitDialog(parent, waitMessage);
     final AtomicBoolean doneWait = new AtomicBoolean(false);
-    final Thread t = new Thread(() -> {
+    new Thread(() -> {
       try {
         r.run();
       } finally {
@@ -25,8 +25,7 @@ public class BackgroundTaskRunner {
           window.dispose();
         });
       }
-    });
-    t.start();
+    }).start();
     if (!doneWait.get()) {
       window.pack();
       window.setLocationRelativeTo(parent);

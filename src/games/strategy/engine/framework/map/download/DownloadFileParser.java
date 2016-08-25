@@ -27,24 +27,23 @@ public final class DownloadFileParser {
 
   public static List<DownloadFileDescription> parse(final InputStream is) {
     @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> yamlData = (List<Map<String, Object>>) (new Yaml()).load(is);
+    final List<Map<String, String>> yamlData = new Yaml().loadAs(is, List.class);
 
     final List<DownloadFileDescription> rVal = new ArrayList<>();
-    for (final Map<String, Object> yaml : yamlData) {
-      final String url = (String) yaml.get(Tags.url.toString());
-      final String description = (String) yaml.get(Tags.description.toString());
-      final String mapName = (String) yaml.get(Tags.mapName.toString());
+    for (final Map<String, String> yaml : yamlData) {
+      final String url = yaml.get(Tags.url.toString());
+      final String description = yaml.get(Tags.description.toString());
+      final String mapName = yaml.get(Tags.mapName.toString());
 
       Version version = null;
-      final Object versionObj = yaml.get(Tags.version.toString());
-      if (versionObj != null) {
-        final String versionString = String.valueOf(versionObj);
+      final String versionString = yaml.get(Tags.version.toString());
+      if (versionString != null) {
         version = new Version(versionString);
       }
 
       DownloadFileDescription.DownloadType downloadType = DownloadFileDescription.DownloadType.MAP;
 
-      final String mapTypeString = (String) yaml.get(Tags.mapType.toString());
+      final String mapTypeString = yaml.get(Tags.mapType.toString());
       if (mapTypeString != null) {
         downloadType = DownloadFileDescription.DownloadType.valueOf(mapTypeString);
       }
