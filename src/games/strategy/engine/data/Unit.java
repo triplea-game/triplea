@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.net.GUID;
 
 public class Unit extends GameDataComponent {
@@ -36,6 +37,10 @@ public class Unit extends GameDataComponent {
 
   public PlayerID getOwner() {
     return m_owner;
+  }
+  
+  public UnitAttachment getUnitAttachment() {
+  	return (UnitAttachment) m_type.getAttachment("unitAttachment");
   }
 
   /**
