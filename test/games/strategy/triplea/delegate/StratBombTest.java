@@ -45,7 +45,7 @@ public class StratBombTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.Global1940);
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.GLOBAL1940);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
