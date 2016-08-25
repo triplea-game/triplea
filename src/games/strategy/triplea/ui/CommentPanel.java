@@ -262,8 +262,4 @@ public class CommentPanel extends JPanel {
     addMessage(m_nextMessage.getText());
     m_nextMessage.setText("");
   });
-
-  public void cleanUp() {
-    cleanupKeyMap();
-  }
 }
