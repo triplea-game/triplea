@@ -84,6 +84,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
+  public void clearPlayers() {
+    m_players.clear();
+  }
+
+  public void resetPlayers() {
+    m_players = new ArrayList<>();
+  }
+
   @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChance(final String chance) throws GameParseException {
@@ -97,8 +105,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_objectiveValue = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setObjectiveValue(final Integer value) {
+    m_objectiveValue = value;
+  }
+
   public int getObjectiveValue() {
     return m_objectiveValue;
+  }
+
+  public void resetObjectiveValue() {
+    m_objectiveValue = 0;
   }
 
   /**
@@ -143,6 +160,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_uses = getInt(s);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setUses(final Integer u) {
+    m_uses = u;
+  }
+
   /**
    * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and
    * therefore should not
@@ -152,14 +174,26 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return m_uses;
   }
 
+  public void resetUses() {
+    m_uses = -1;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setSwitch(final String value) {
     m_switch = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setSwitch(final Boolean value) {
+    m_switch = value;
+  }
+
   public boolean getSwitch() {
     return m_switch;
+  }
+
+  public void resetSwitch() {
+    m_switch = true;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -176,6 +210,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       return false;
     }
     return data.getProperties().get(m_gameProperty, false);
+  }
+
+  public void resetGameProperty() {
+    m_gameProperty = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -213,6 +251,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTurns(final HashMap<Integer, Integer> value) {
     m_turns = value;
+  }
+
+  public HashMap<Integer, Integer> getTurns() {
+    return m_turns;
+  }
+
+  public void resetTurns() {
+    m_turns = null;
   }
 
   protected boolean checkTurns(final GameData data) {

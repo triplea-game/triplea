@@ -130,6 +130,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
+  public String getFaction() {
+    return m_faction;
+  }
+
   public void resetFaction() {
     m_allied = false;
     m_enemy = false;
@@ -203,8 +207,26 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setBonus(final Integer bonus) {
+    m_bonus = bonus;
+  }
+
+  public void resetBonus() {
+    m_bonus = 0;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setNumber(final String number) {
     m_number = getInt(number);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setNumber(final Integer number) {
+    m_number = number;
+  }
+
+  public void resetNumber() {
+    m_number = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -214,6 +236,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
       return;
     }
     m_bonusType = type;
+  }
+
+  public void resetBonusType() {
+    m_bonusType = null;
   }
 
   /**
@@ -244,9 +270,26 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return m_players;
   }
 
+  public void clearPlayers() {
+    m_players.clear();
+  }
+
+  public void resetPlayers() {
+    m_players = new ArrayList<>();
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setImpArtTech(final String tech) {
     m_impArtTech = getBool(tech);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setImpArtTech(final Boolean tech) {
+    m_impArtTech = tech;
+  }
+
+  public void resetImpArtTech() {
+    m_impArtTech = false;
   }
 
   public HashSet<UnitType> getUnitType() {

@@ -123,6 +123,14 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_placementLimit;
   }
 
+  public void clearPlacementLimit() {
+    m_placementLimit.clear();
+  }
+
+  public void resetPlacementLimit() {
+    m_placementLimit = new HashSet<>();
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -167,6 +175,13 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_movementLimit;
   }
 
+  public void clearMovementLimit() {
+    m_movementLimit.clear();
+  }
+
+  public void resetMovementLimit() {
+    m_movementLimit = new HashSet<>();
+  }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -212,6 +227,13 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_attackingLimit;
   }
 
+  public void clearAttackingLimit() {
+    m_attackingLimit.clear();
+  }
+
+  public void resetAttackingLimit() {
+    m_attackingLimit = new HashSet<>();
+  }
 
   public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
       final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner, final GameData data) {
@@ -347,8 +369,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_vps = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setVps(final Integer value) {
+    m_vps = value;
+  }
+
   public int getVps() {
     return m_vps;
+  }
+
+  public void resetVps() {
+    m_vps = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -356,8 +387,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_captureVps = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setCaptureVps(final Integer value) {
+    m_captureVps = value;
+  }
+
   public int getCaptureVps() {
     return m_captureVps;
+  }
+
+  public void resetCaptureVps() {
+    m_captureVps = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -365,8 +405,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_retainCapitalNumber = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setRetainCapitalNumber(final Integer value) {
+    m_retainCapitalNumber = value;
+  }
+
   public int getRetainCapitalNumber() {
     return m_retainCapitalNumber;
+  }
+
+  public void resetRetainCapitalNumber() {
+    m_retainCapitalNumber = 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -374,8 +423,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_retainCapitalProduceNumber = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setRetainCapitalProduceNumber(final Integer value) {
+    m_retainCapitalProduceNumber = value;
+  }
+
   public int getRetainCapitalProduceNumber() {
     return m_retainCapitalProduceNumber;
+  }
+
+  public void resetRetainCapitalProduceNumber() {
+    m_retainCapitalProduceNumber = 1;
   }
 
   /**
@@ -406,6 +464,13 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_giveUnitControl;
   }
 
+  public void clearGiveUnitControl() {
+    m_giveUnitControl.clear();
+  }
+
+  public void resetGiveUnitControl() {
+    m_giveUnitControl = new ArrayList<>();
+  }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -435,6 +500,13 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_captureUnitOnEnteringBy;
   }
 
+  public void clearCaptureUnitOnEnteringBy() {
+    m_captureUnitOnEnteringBy.clear();
+  }
+
+  public void resetCaptureUnitOnEnteringBy() {
+    m_captureUnitOnEnteringBy = new ArrayList<>();
+  }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -462,6 +534,14 @@ public class PlayerAttachment extends DefaultAttachment {
 
   public ArrayList<PlayerID> getShareTechnology() {
     return m_shareTechnology;
+  }
+
+  public void clearShareTechnology() {
+    m_shareTechnology.clear();
+  }
+
+  public void resetShareTechnology() {
+    m_shareTechnology = new ArrayList<>();
   }
 
   /**
@@ -492,13 +572,30 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_helpPayTechCost;
   }
 
+  public void clearHelpPayTechCost() {
+    m_helpPayTechCost.clear();
+  }
+
+  public void resetHelpPayTechCost() {
+    m_helpPayTechCost = new ArrayList<>();
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDestroysPUs(final String value) {
     m_destroysPUs = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setDestroysPUs(final Boolean value) {
+    m_destroysPUs = value;
+  }
+
   public boolean getDestroysPUs() {
     return m_destroysPUs;
+  }
+
+  public void resetDestroysPUs() {
+    m_destroysPUs = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -506,8 +603,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_immuneToBlockade = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setImmuneToBlockade(final Boolean value) {
+    m_immuneToBlockade = value;
+  }
+
   public boolean getImmuneToBlockade() {
     return m_immuneToBlockade;
+  }
+
+  public void resetImmuneToBlockade() {
+    m_immuneToBlockade = false;
   }
 
   @Override
