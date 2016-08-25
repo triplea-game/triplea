@@ -49,6 +49,10 @@ public abstract class DynamicRow {
     }));
   }
 
+  public void addToParentComponent(final JComponent parent, final int rowIndex) {
+    addToParentComponentWithGbc(parent, rowIndex, MapXmlUIHelper.getGbcDefaultTemplateWith(0, rowIndex));
+  }
+
   public void addToParentComponentWithGbc(final JComponent parent, final int rowIndex,
       final GridBagConstraints gbcTemplate) {
     gbcTemplate.gridy = rowIndex;
