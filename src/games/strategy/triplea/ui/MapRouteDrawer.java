@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
@@ -46,9 +45,6 @@ public class MapRouteDrawer {
    */
   public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel mapPanel,
       final MapData mapData, final String maxMovement) {
-    if (routeDescription == null || mapData == null || mapPanel == null) {
-      return;
-    }
     if (routeOptimizer == null) {
       routeOptimizer = new RouteOptimizer(mapData, mapPanel);
     }
@@ -119,12 +115,12 @@ public class MapRouteDrawer {
    */
   private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription, final int xOffset,
       final int yOffset, final double scale) {
-    final Image cursorImage = routeDescription.getCursorImage();
+    final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
       for (Point[] endPoint : routeOptimizer.getAllPoints(routeOptimizer.getLastEndPoint())) {
         graphics.drawImage(cursorImage,
-            (int) (((endPoint[0].x - xOffset) - (cursorImage.getWidth(null) / 2)) * scale),
-            (int) (((endPoint[0].y - yOffset) - (cursorImage.getHeight(null) / 2)) * scale), null);
+            (int) (((endPoint[0].x - xOffset) - (cursorImage.getWidth() / 2)) * scale),
+            (int) (((endPoint[0].y - yOffset) - (cursorImage.getHeight() / 2)) * scale), null);
       }
     }
 
@@ -312,17 +308,18 @@ public class MapRouteDrawer {
     final PolynomialSplineFunction ycurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
-    List<Line2D> lines = routeOptimizer.getAllTrimmedLines(xcoords, ycoords);
+    List<Line2D> lines = routeOptimizer.getAllNormalizedLines(xcoords, ycoords);
     for (Line2D line : lines) {
       drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
     }
-    // draws the Line to the Cursor, so that the line ends at the cursor no matter what...
+    // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
     List<Point[]> finishingPoints = routeOptimizer.getAllPoints(RouteOptimizer.getPoint(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1])), points[points.length - 1]);
+    boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
     for(Point[] finishingPointArray : finishingPoints){
     drawLineWithTranslate(graphics,
         new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
         xOffset, yOffset, scale);
-      if (points[points.length - 2].distance(points[points.length - 1]) > arrowLength) {
+      if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
       }
     }

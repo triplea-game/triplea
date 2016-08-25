@@ -103,12 +103,12 @@ public class TestRoute {
 
   @Test
   public void testCorrectParameterHandling() {
-    // Should not throw any exception - should do nothing
-    spyRouteDrawer.drawRoute(null, null, null, null, null);
     final MapPanel mockedMapPanel = mock(MapPanel.class);
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);
+    when(mockedMapPanel.getImageWidth()).thenReturn(1);
+    when(mockedMapPanel.getImageHeight()).thenReturn(1);
     final Shape mockShape = mock(Shape.class);
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
