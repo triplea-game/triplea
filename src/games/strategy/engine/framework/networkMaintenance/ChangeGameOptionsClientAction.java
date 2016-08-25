@@ -44,7 +44,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final String ok = "OK";
       final String cancel = "Cancel";
       pane.setOptions(new Object[] {ok, cancel});
-      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Game Options");
+      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
       if (buttonPressed == null || buttonPressed.equals(cancel)) {
