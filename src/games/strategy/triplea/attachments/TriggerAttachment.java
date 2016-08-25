@@ -351,6 +351,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_activateTrigger;
   }
 
+  public void clearActivateTrigger() {
+    m_activateTrigger.clear();
+  }
+
+  public void resetActivateTrigger() {
+    m_activateTrigger = new ArrayList<>();
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setFrontier(final String s) throws GameParseException {
     if (s == null) {
@@ -418,13 +426,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_productionRule;
   }
 
+  public void clearProductionRule() {
+    m_productionRule.clear();
+  }
+
+  public void resetProductionRule() {
+    m_productionRule = null;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setResourceCount(final String s) {
     m_resourceCount = getInt(s);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setResourceCount(final Integer s) {
+    m_resourceCount = s;
+  }
+
   public int getResourceCount() {
     return m_resourceCount;
+  }
+
+  public void resetResourceCount() {
+    m_resourceCount = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -438,6 +463,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public String getVictory() {
     return m_victory;
+  }
+
+  public void resetVictory() {
+    m_victory = null;
   }
 
   /**
@@ -467,6 +496,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<TechAdvance> getTech() {
     return m_tech;
+  }
+
+  public void clearTech() {
+    m_tech.clear();
+  }
+
+  public void resetTech() {
+    m_tech = new ArrayList<>();
   }
 
   /**
@@ -521,6 +558,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_availableTech;
   }
 
+  public void clearAvailableTech() {
+    m_availableTech.clear();
+  }
+
+  public void resetAvailableTech() {
+    m_availableTech = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -564,6 +609,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public LinkedHashMap<String, Boolean> getSupport() {
     return m_support;
+  }
+
+  public void clearSupport() {
+    m_support.clear();
+  }
+
+  public void resetSupport() {
+    m_support = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -632,6 +685,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_relationshipChange;
   }
 
+  public void clearRelationshipChange() {
+    m_relationshipChange.clear();
+  }
+
+  public void resetRelationshipChange() {
+    m_relationshipChange = new ArrayList<>();
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -657,6 +718,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<UnitType> getUnitType() {
     return m_unitType;
+  }
+
+  public void clearUnitType() {
+    m_unitType.clear();
+  }
+
+  public void resetUnitType() {
+    m_unitType = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -701,6 +770,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_unitAttachmentName;
   }
 
+  public void resetUnitAttachmentName() {
+    m_unitAttachmentName = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -732,6 +805,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_unitProperty;
   }
 
+  public void clearUnitProperty() {
+    m_unitProperty.clear();
+  }
+
+  public void resetUnitProperty() {
+    m_unitProperty = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -757,6 +838,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<Territory> getTerritories() {
     return m_territories;
+  }
+
+  public void clearTerritories() {
+    m_territories.clear();
+  }
+
+  public void resetTerritories() {
+    m_territories = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -801,6 +890,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_territoryAttachmentName;
   }
 
+  public void resetTerritoryAttachmentName() {
+    m_territoryAttachmentName = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -832,6 +925,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_territoryProperty;
   }
 
+  public void clearTerritoryProperty() {
+    m_territoryProperty.clear();
+  }
+
+  public void resetTerritoryProperty() {
+    m_territoryProperty = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -861,6 +962,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } else {
       return m_players;
     }
+  }
+
+  public void clearPlayers() {
+    m_players.clear();
+  }
+
+  public void resetPlayers() {
+    m_players = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -921,6 +1030,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_playerAttachmentName;
   }
 
+  public void resetPlayerAttachmentName() {
+    m_playerAttachmentName = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -952,6 +1065,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_playerProperty;
   }
 
+  public void clearPlayerProperty() {
+    m_playerProperty.clear();
+  }
+
+  public void resetPlayerProperty() {
+    m_playerProperty = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -977,6 +1098,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<RelationshipType> getRelationshipTypes() {
     return m_relationshipTypes;
+  }
+
+  public void clearRelationshipTypes() {
+    m_relationshipTypes.clear();
+  }
+
+  public void resetRelationshipTypes() {
+    m_relationshipTypes = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1019,6 +1148,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_relationshipTypeAttachmentName;
   }
 
+  public void resetRelationshipTypeAttachmentName() {
+    m_relationshipTypeAttachmentName = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -1051,6 +1184,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_relationshipTypeProperty;
   }
 
+  public void clearRelationshipTypeProperty() {
+    m_relationshipTypeProperty.clear();
+  }
+
+  public void resetRelationshipTypeProperty() {
+    m_relationshipTypeProperty = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -1076,6 +1217,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<TerritoryEffect> getTerritoryEffects() {
     return m_territoryEffects;
+  }
+
+  public void clearTerritoryEffects() {
+    m_territoryEffects.clear();
+  }
+
+  public void resetTerritoryEffects() {
+    m_territoryEffects = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1118,6 +1267,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_territoryEffectAttachmentName;
   }
 
+  public void resetTerritoryEffectAttachmentName() {
+    m_territoryEffectAttachmentName = null;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
@@ -1148,6 +1301,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<Tuple<String, String>> getTerritoryEffectProperty() {
     return m_territoryEffectProperty;
+  }
+
+  public void clearTerritoryEffectProperty() {
+    m_territoryEffectProperty.clear();
+  }
+
+  public void resetTerritoryEffectProperty() {
+    m_territoryEffectProperty = null;
   }
 
   /**
@@ -1208,6 +1369,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public HashMap<Territory, IntegerMap<UnitType>> getPlacement() {
     return m_placement;
+  }
+
+  public void clearPlacement() {
+    m_placement.clear();
+  }
+
+  public void resetPlacement() {
+    m_placement = null;
   }
 
   /**
@@ -1283,6 +1452,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public HashMap<Territory, IntegerMap<UnitType>> getRemoveUnits() {
     return m_removeUnits;
+  }
+
+  public void clearRemoveUnits() {
+    m_removeUnits.clear();
+  }
+
+  public void resetRemoveUnits() {
+    m_removeUnits = null;
   }
 
   /**
@@ -1384,6 +1561,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public ArrayList<String> getChangeOwnership() {
     return m_changeOwnership;
+  }
+
+  public void clearChangeOwnership() {
+    m_changeOwnership.clear();
+  }
+
+  public void resetChangeOwnership() {
+    m_changeOwnership = new ArrayList<>();
   }
 
   private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap,
@@ -1920,6 +2105,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                   + triggerNewRelation.getName());
           AbstractMoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(player1, player2, currentRelation,
               triggerNewRelation);
+          /*
+           * creation of new battles is handled at the beginning of the battle delegate, in
+           * "setupUnitsInSameTerritoryBattles", not here.
+           * if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
+           * triggerMustFightBattle(player1, player2, aBridge);
+           */
         }
       }
     }
@@ -1972,6 +2163,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
+    // final GameData data = aBridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));

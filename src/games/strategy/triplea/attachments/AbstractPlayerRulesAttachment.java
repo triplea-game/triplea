@@ -157,47 +157,84 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     return m_productionPerXTerritories;
   }
 
+  public void clearProductionPerXTerritories() {
+    m_productionPerXTerritories.clear();
+  }
+
+  public void resetProductionPerXTerritories() {
+    m_productionPerXTerritories = new IntegerMap<>();
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setPlacementPerTerritory(final String value) {
     m_placementPerTerritory = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setPlacementPerTerritory(final Integer value) {
+    m_placementPerTerritory = value;
+  }
 
   public int getPlacementPerTerritory() {
     return m_placementPerTerritory;
   }
 
+  public void resetPlacementPerTerritory() {
+    m_placementPerTerritory = -1;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMaxPlacePerTerritory(final String value) {
     m_maxPlacePerTerritory = getInt(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setMaxPlacePerTerritory(final Integer value) {
+    m_maxPlacePerTerritory = value;
+  }
 
   public int getMaxPlacePerTerritory() {
     return m_maxPlacePerTerritory;
   }
 
+  public void resetMaxPlacePerTerritory() {
+    m_maxPlacePerTerritory = -1;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setPlacementAnyTerritory(final String value) {
     m_placementAnyTerritory = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setPlacementAnyTerritory(final Boolean value) {
+    m_placementAnyTerritory = value;
+  }
 
   public boolean getPlacementAnyTerritory() {
     return m_placementAnyTerritory;
   }
 
+  public void resetPlacementAnyTerritory() {
+    m_placementAnyTerritory = false;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setPlacementAnySeaZone(final String value) {
     m_placementAnySeaZone = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setPlacementAnySeaZone(final Boolean value) {
+    m_placementAnySeaZone = value;
+  }
+
   public boolean getPlacementAnySeaZone() {
     return m_placementAnySeaZone;
+  }
+
+  public void resetPlacementAnySeaZone() {
+    m_placementAnySeaZone = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -205,6 +242,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementCapturedTerritory = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setPlacementCapturedTerritory(final Boolean value) {
+    m_placementCapturedTerritory = value;
+  }
 
   public boolean getPlacementCapturedTerritory() {
     return m_placementCapturedTerritory;
@@ -219,30 +260,53 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementInCapitalRestricted = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setPlacementInCapitalRestricted(final Boolean value) {
+    m_placementInCapitalRestricted = value;
+  }
+
   public boolean getPlacementInCapitalRestricted() {
     return m_placementInCapitalRestricted;
   }
 
+  public void resetPlacementInCapitalRestricted() {
+    m_placementInCapitalRestricted = false;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnlimitedProduction(final String value) {
     m_unlimitedProduction = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setUnlimitedProduction(final Boolean value) {
+    m_unlimitedProduction = value;
+  }
 
   public boolean getUnlimitedProduction() {
     return m_unlimitedProduction;
   }
 
+  public void resetUnlimitedProduction() {
+    m_unlimitedProduction = false;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDominatingFirstRoundAttack(final String value) {
     m_dominatingFirstRoundAttack = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setDominatingFirstRoundAttack(final Boolean value) {
+    m_dominatingFirstRoundAttack = value;
+  }
 
   public boolean getDominatingFirstRoundAttack() {
     return m_dominatingFirstRoundAttack;
+  }
+
+  public void resetDominatingFirstRoundAttack() {
+    m_dominatingFirstRoundAttack = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -250,9 +314,17 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_negateDominatingFirstRoundAttack = getBool(value);
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setNegateDominatingFirstRoundAttack(final Boolean value) {
+    m_negateDominatingFirstRoundAttack = value;
+  }
 
   public boolean getNegateDominatingFirstRoundAttack() {
     return m_negateDominatingFirstRoundAttack;
+  }
+
+  public void resetNegateDominatingFirstRoundAttack() {
+    m_negateDominatingFirstRoundAttack = false;
   }
 
   @Override
