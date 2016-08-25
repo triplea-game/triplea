@@ -44,9 +44,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private boolean m_impArtTech = false;
   // strings
   // roll or strength
-  private String m_dice = null;
+  private String m_dice;
   // offence or defence
-  private String m_side = null;
+  private String m_side;
+  private String m_faction;
 
   public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -112,6 +113,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setFaction(final String faction) throws GameParseException {
+    m_faction = faction;
     if (faction == null) {
       resetFaction();
       return;
