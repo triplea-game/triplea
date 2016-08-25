@@ -91,6 +91,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_costPU;
   }
 
+  public void resetCostPU() {
+    m_costPU = 0;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *

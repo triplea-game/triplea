@@ -22,6 +22,21 @@ public class CountUpAndDownLatch implements Serializable {
     sync = new Sync();
   }
 
+  /**
+   * Constructs a {@link CountUpAndDownLatch} initialized with the given count.
+   *
+   * @param initialCount
+   *        the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
+   * @throws IllegalArgumentException
+   *         if {@code count} is negative
+   */
+  public CountUpAndDownLatch(final int initialCount) {
+    if (initialCount < 0) {
+      throw new IllegalArgumentException("count < 0");
+    }
+    sync = new Sync(initialCount);
+    originalCount = initialCount;
+  }
 
   /**
    * Increment the count by one.
@@ -54,10 +69,29 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
+   * Reset the latch to its original count.
+   */
+  public void resetCount() {
+    if (originalCount == 0) {
+      releaseAll();
+    } else {
+      final int diff = originalCount - sync.getCount();
+      applyDelta(diff);
+    }
+  }
+
+  /**
    * @see CountDownLatch#getCount()
    */
   public int getCount() {
     return sync.getCount();
+  }
+
+  /**
+   * @return the original count this latch was created with
+   */
+  public int getOriginalCount() {
+    return originalCount;
   }
 
   /**

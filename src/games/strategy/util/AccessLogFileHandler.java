@@ -3,6 +3,8 @@ package games.strategy.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
@@ -28,3 +30,10 @@ public class AccessLogFileHandler extends FileHandler {
   }
 }
 
+
+class AccessLogFormat extends Formatter {
+  @Override
+  public String format(final LogRecord record) {
+    return record.getMessage() + "\n";
+  }
+}
