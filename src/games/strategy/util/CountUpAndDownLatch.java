@@ -14,6 +14,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 public class CountUpAndDownLatch implements Serializable {
   private static final long serialVersionUID = -1656388212821764097L;
   private final Sync sync;
+  private int originalCount;
 
   /**
    * Constructs a {@link CountUpAndDownLatch} initialized with zero.
