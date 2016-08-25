@@ -76,6 +76,7 @@ public class DownloadRunnable implements Runnable {
         }
       } catch (final Exception e) {
         error = e.getMessage();
+        ClientLogger.logError("Error while Parsing:", e);
       }
     }
   }
