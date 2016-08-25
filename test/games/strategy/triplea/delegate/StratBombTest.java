@@ -40,6 +40,8 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 
+// Test Global 1940 feature of having AA for each individual facility firing at bombers which are attacking it
+
 public class StratBombTest {
   private GameData m_data;
 
@@ -54,8 +56,8 @@ public class StratBombTest {
 
 
   @Test
-  public void TestBombingRaid2targets() {
-    final Territory germany = m_data.getMap().getTerritory("Western Germany");
+  public void TestBombingRaidInvidualAA() {
+    final Territory wgermany = m_data.getMap().getTerritory("Western Germany");
     final Territory uk = m_data.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(m_data);
     final PlayerID british = GameDataTestUtil.british(m_data);
@@ -77,7 +79,7 @@ public class StratBombTest {
     TripleAUnit factory = null;
 
     // Find facilities in territory
-    for( final Unit target : germany.getUnits().getUnits() ) {
+    for( final Unit target : wgermany.getUnits().getUnits() ) {
       switch( target.getType().getName() ) {
         case "airfield"      : airfield = (TripleAUnit) target; 
           break;
@@ -91,16 +93,14 @@ public class StratBombTest {
     targets.put(harbour, new HashSet<>(Collections.singleton(tacBomber2)));
     targets.put(factory, new HashSet<>(Collections.singleton(stratBomber)));
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    tracker.addBattle(new RouteScripted(germany), attackers, true, british, bridge, null, null, targets, true);
+    tracker.addBattle(new RouteScripted(wgermany), attackers, true, british, bridge, null, null, targets, true);
                 
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
-    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
+    final StrategicBombingRaidBattle battle = (StrategicBombingRaidBattle) tracker.getPendingBattle(wgermany, true, null);
+    battle.addAttackChange(m_data.getMap().getRoute(uk, wgermany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
+    //addTo(wgermany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), wgermany, battle.getBattleType());
     // aa guns rolls 1,3,2 first one hits, remaining bombers roll 1 dice each
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 3, 2, 5, 4}));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
     final InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {

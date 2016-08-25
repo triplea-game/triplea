@@ -50,7 +50,7 @@ import games.strategy.util.Tuple;
 @MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
-  private BattleTracker m_battleTracker = new BattleTracker();
+  protected BattleTracker m_battleTracker = new BattleTracker();
   // private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
   private boolean m_needToInitialize = true;
   private boolean m_needToScramble = true;
@@ -60,7 +60,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToRecordBattleStatistics = true;
   private boolean m_needToCheckDefendingPlanesCanLand = true;
   private boolean m_needToCleanup = true;
-  private IBattle m_currentBattle = null;
+  protected IBattle m_currentBattle = null;
 
   /**
    * Called before the delegate will run, AND before "start" is called.

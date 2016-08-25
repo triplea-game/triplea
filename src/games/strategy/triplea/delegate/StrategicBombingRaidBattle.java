@@ -203,17 +203,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-      boolean foundSpecificAA = false;
-      for (final Unit target : m_targets.keySet()) {
-        if( target.getUnitAttachment().getIsAAforBombingThisUnitOnly() ) {
-          final Collection<Unit> currentAttackers = m_targets.get(target);
-          if( currentAttackers != null ) {
-            steps.add(new FireAA(currentAttackers));
-          }
-          foundSpecificAA = true;
-        }
-      }
-      if( !foundSpecificAA ) {
+      // global1940 rules - each target type fires an AA shot against the planes bombing it
+      m_targets.entrySet().stream()
+          .filter(entry -> entry.getKey().getUnitAttachment().getIsAAforBombingThisUnitOnly())
+          .forEach(entry -> steps.add(new FireAA(entry.getValue())));
+
+      // otherwise fire an AA shot at all the planes
+      if(steps.isEmpty()) {
         steps.add(new FireAA());
       }
     }
