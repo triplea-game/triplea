@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -73,42 +72,15 @@ public class TestRoute {
     assertArrayEquals(yCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
   }
 
-  @Test
-  public void testPointAcquisition() {
-    assertArrayEquals(dummyPoints,
-        spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0, new Dimension(), new Dimension()));
-    for (int i = 0; i < 10; i++) {
-      assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, randomInt(),
-          randomInt(), new Dimension(), new Dimension()));
-      assertArrayEquals(dummyPoints, spyRouteDrawer.getRoutePoints(dummyRouteDescription, dummyMapData, 0, 0,
-          new Dimension(randomInt(1000, 100), randomInt(1000, 100)), new Dimension()));
-      final int randX = randomInt(1000, 0);
-      assertEquals(new Point(randX, 0),
-          MapRouteDrawer.getPointOnMap(new Point(randX, 0), randX, 0, new Dimension(randX, 0), new Dimension()));
-    }
-  }
-
-  private static int randomInt(int max, int min) {
-    if (max - min < 0) {
-      final int oldMax = max;
-      max = min;
-      min = oldMax;
-    }
-    return (int) ((Math.random() * (max - min)) + min);
-  }
-
-  private static int randomInt() {
-    return randomInt(1000, -1000);
-  }
 
   @Test
   public void testCorrectParameterHandling() {
-    // Should not throw any exception - should do nothing
-    spyRouteDrawer.drawRoute(null, null, null, null, null);
     final MapPanel mockedMapPanel = mock(MapPanel.class);
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);
+    when(mockedMapPanel.getImageWidth()).thenReturn(1);
+    when(mockedMapPanel.getImageHeight()).thenReturn(1);
     final Shape mockShape = mock(Shape.class);
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
