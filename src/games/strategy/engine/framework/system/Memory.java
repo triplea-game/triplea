@@ -1,10 +1,9 @@
 package games.strategy.engine.framework.system;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.GameRunner;
-
 import java.util.Properties;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 
 public class Memory {
   public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";

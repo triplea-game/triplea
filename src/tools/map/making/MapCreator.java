@@ -27,13 +27,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;

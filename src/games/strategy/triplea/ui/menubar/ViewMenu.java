@@ -43,7 +43,6 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;

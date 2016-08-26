@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;

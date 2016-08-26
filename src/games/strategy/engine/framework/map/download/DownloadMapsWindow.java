@@ -3,9 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
