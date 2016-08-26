@@ -32,6 +32,7 @@ import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
@@ -61,33 +62,32 @@ public class DownloadMapsWindow extends JFrame {
    * If the map cannot be downloaded a message prompt is shown to the user.
    */
   public static void showDownloadMapsWindow(final String mapName) {
-    showDownloadMapsWindow(null, Optional.of(mapName));
-  }
-
-  public static void showDownloadMapsWindow(final Component parent) {
-    showDownloadMapsWindow(parent, Optional.empty());
+    showDownloadMapsWindow(Optional.of(mapName));
   }
 
   public static void showDownloadMapsWindow() {
-    showDownloadMapsWindow(null, Optional.empty());
+    showDownloadMapsWindow(Optional.empty());
   }
 
 
-  private static void showDownloadMapsWindow(final Component parent, final Optional<String> mapName) {
-    final DownloadRunnable download = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite());
-    final String popupWindowTitle = "Downloading list of availabe maps....";
-    BackgroundTaskRunner.runInBackground(null, popupWindowTitle, download);
-    final List<DownloadFileDescription> games = download.getDownloads();
-    checkNotNull(games,
-        "Failed to download map listing from: " + ClientContext.mapListingSource().getMapListDownloadSite());
+  private static void showDownloadMapsWindow(Optional<String> mapName) {
+    Runnable downloadAndShowWindow = () -> {
+      final List<DownloadFileDescription> games = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite()).getDownloads();
+      checkNotNull(games);
 
-    final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-    final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
-    dia.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    dia.setLocationRelativeTo(parentFrame);
-    dia.setMinimumSize(new Dimension(200, 200));
-    dia.setVisible(true);
-    SwingUtilities.invokeLater(() -> dia.requestFocus());
+      SwingUtilities.invokeLater(() -> {
+        final DownloadMapsWindow dia = new DownloadMapsWindow(mapName, games);
+        dia.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        dia.setLocationRelativeTo(null);
+        dia.setMinimumSize(new Dimension(200, 200));
+        dia.setVisible(true);
+        dia.requestFocus();
+        dia.toFront();
+        MainFrame.getInstance().toBack();
+      });
+    };
+    final String popupWindowTitle = "Downloading list of availabe maps....";
+    BackgroundTaskRunner.runInBackground(popupWindowTitle, downloadAndShowWindow);
   }
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {

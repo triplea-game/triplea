@@ -1,6 +1,7 @@
 package games.strategy.engine.framework;
 
 import java.awt.AWTEvent;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.MediaTracker;
@@ -10,38 +11,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-
-import org.apache.commons.httpclient.HostConfiguration;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.system.Memory;
+import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
-import games.strategy.ui.SwingAction;
+import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
@@ -50,14 +52,18 @@ import games.strategy.util.Version;
  */
 public class GameRunner {
 
+  public enum GameMode { SWING_CLIENT, HEADLESS_BOT }
+
+  public static final String TRIPLEA_HEADLESS = "triplea.headless";
+  public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
+  public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
+  public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
+  public static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
+
   // not arguments:
   public static final int PORT = 3300;
-  public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
-  public static final String DELAYED_PARSING = "DelayedParsing";
-  public static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
-  public static final String PROXY_CHOICE = "proxy.choice";
-  public static final String HTTP_PROXYHOST = "http.proxyHost";
-  public static final String HTTP_PROXYPORT = "http.proxyPort";
+  private static final String DELAYED_PARSING = "DelayedParsing";
+  private static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -76,96 +82,103 @@ public class GameRunner {
   public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
-  public static final String PROXY_HOST = "proxy.host";
-  public static final String PROXY_PORT = "proxy.port";
-  public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-  // has the memory been manually set or not?
-  public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
+  private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
-  private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
-      "triplea.firstTimeThisVersion" + ClientContext.engineVersion();
-  private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
-  // only for Online?
-  public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
-  // what should our xmx be approximately?
-  public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
-  public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
-  public static final String SYSTEM_INI = "system.ini";
+  private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
-  public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
+  private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
   // need time for network transmission of a large game data
   public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10;
-  public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
+  private static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
       Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
   public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
   public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME =
       MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110;
-  public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
+  private static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
   public static final String MAP_FOLDER = "mapFolder";
 
+  private static String[] COMMAND_LINE_ARGS =
+      {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
+          TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
+          LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+          LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
+          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
 
-  public static boolean isWindows() {
-    return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
-  }
 
-  public static boolean isMac() {
-    return System.getProperties().getProperty("os.name").toLowerCase().contains("mac");
-  }
+  private static void usage(GameMode gameMode) {
+    if(gameMode == GameMode.HEADLESS_BOT) {
+      System.out.println("\nUsage and Valid Arguments:\n"
+          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+          + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
+          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
+          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+          + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+          + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+          + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
+          + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
+          + "   " + MAP_FOLDER + "=mapFolder"
+          + "\n"
+          + "   You must start the Name and HostedBy with \"Bot\".\n"
+          + "   Game Comments must have this string in it: \"automated_host\".\n"
+          + "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error."
+          + " (For example they may email you when your host is down and needs to be restarted.)\n"
+          + "   Support password is a remote access password that will allow lobby admins to remotely take the following actions: ban player, stop game, shutdown server."
+          + " (Please email this password to one of the lobby moderators, or private message an admin on the TripleaWarClub.org website forum.)\n");
 
-  public static enum ProxyChoice {
-    NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
-  }
-
-  private static void usage() {
-    System.out.println("Arguments\n" + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n" + "   "
-        + TRIPLEA_SERVER_PROPERTY + "=true\n" + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n" + "   "
-        + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n" + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   "
-        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY
-        + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
-        + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
-        + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT + "=<Proxy_Port>\n"
-        + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + MAP_FOLDER + "=mapFolder" +
-
-        "\n"
-        + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
-        + "taken as the name of the file to load.\n" + "\n" + "Example\n" + "   to start a game using the given file:\n"
-        + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n" + "   or\n" + "\n"
-        + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n" + "   to connect to a remote host:\n" + "\n"
-        + "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
-        + "   to start a server with the given game\n" + "\n"
-        + "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan"
-        + "\n"
-        + "   to start a server, you can optionally password protect the game using triplea.server.password=foo");
+    } else {
+      System.out.println("Arguments\n"
+          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n"
+          + "   " + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n"
+          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
+          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+          + "   " + HttpProxy.PROXY_HOST + "=<Proxy_Host>\n"
+          + "   " + HttpProxy.PROXY_PORT + "=<Proxy_Port>\n"
+          + "   " + Memory.TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
+          + "\n"
+          + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
+          + "taken as the name of the file to load.\n" + "\n" + "Example\n"
+          + "   to start a game using the given file:\n"
+          + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n" + "   or\n" + "\n"
+          + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n" + "   to connect to a remote host:\n" + "\n"
+          + "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
+          + "   to start a server with the given game\n" + "\n"
+          + "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan"
+          + "\n"
+          + "   to start a server, you can optionally password protect the game using triplea.server.password=foo");
+    }
   }
 
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
     // do after we handle command line args
-    checkForMemoryXMX();
-    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
-      @Override
-      protected void dispatchEvent(final AWTEvent newEvent) {
-        try {
-          super.dispatchEvent(newEvent);
-          // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (final Throwable t) {
-          ClientLogger.logError(t);
-        }
-      }
-    });
-    SwingUtilities.invokeLater(() -> setupLookAndFeel());
+    Memory.checkForMemoryXMX();
+
+    SwingUtilities.invokeLater(() -> LookAndFeel.setupLookAndFeel());
     showMainFrame();
-    new Thread(() -> setupLogging()).start();
-    setupProxies();
+    new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
+    HttpProxy.setupProxies();
     new Thread(() -> checkForUpdates()).start();
-    handleCommandLineArgs(args);
+    handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
 
   private static void showMainFrame() {
@@ -177,32 +190,16 @@ public class GameRunner {
     });
   }
 
+
   /**
    * Move command line arguments to System.properties
    */
-  private static void handleCommandLineArgs(final String[] args) {
-    // TODO: Setting System values to handle command line args is not good. Command line args should only
-    // live for the span of the application, and not between restarts. Using System args, the value would
-    // be persistent through to the next invocation of the program, and thus would need to be cleared
-    // out if not present. Simply finding a different way to do inter-app communication other than system args
-    // is the ideal way to go.
-
-    final String[] properties = getProperties();
-    // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
-    // optionally, it may not start with the property name
-    if (args.length == 1) {
-      boolean startsWithPropertyKey = false;
-      for (final String prop : properties) {
-        if (args[0].startsWith(prop)) {
-          startsWithPropertyKey = true;
-          break;
-        }
-      }
-      if (!startsWithPropertyKey) {
-        // change it to start with the key
-        args[0] = TRIPLEA_GAME_PROPERTY + "=" + args[0];
-      }
+  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
+    if (args.length == 1 && !args[0].contains("=")) {
+      // assume a default single arg, convert the format so we can process as normally.
+      args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
     }
+
     boolean usagePrinted = false;
     for (final String arg1 : args) {
       boolean found = false;
@@ -210,10 +207,10 @@ public class GameRunner {
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
         arg = arg.substring(0, indexOf);
-        for (final String property : properties) {
-          if (arg.equalsIgnoreCase(property)) {
+        for (final String property : availableProperties) {
+          if (arg.equals(property)) {
             final String value = getValue(arg1);
-            if (property.equalsIgnoreCase(MAP_FOLDER)) {
+            if (property.equals(MAP_FOLDER)) {
               SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
             } else {
               System.getProperties().setProperty(property, value);
@@ -228,36 +225,109 @@ public class GameRunner {
         System.out.println("Unrecogized:" + arg1);
         if (!usagePrinted) {
           usagePrinted = true;
-          usage();
+          usage(gameMode);
         }
       }
     }
-    final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
-    if (version != null && version.length() > 0) {
-      final Version testVersion;
+
+    if (gameMode == GameMode.HEADLESS_BOT) {
+      System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
+
+      boolean printUsage = false;
+      final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
+      final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
+      if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
+          || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.TRIPLEA_NAME_PROPERTY + " and " + GameRunner.LOBBY_GAME_HOSTED_BY
+                + " must start with \"Bot\" and be at least 7 characters long and be the same.");
+        printUsage = true;
+      }
+
+      final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
+      if (!comments.contains("automated_host")) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
+        printUsage = true;
+      }
+
+      final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
+      if (email.length() < 3 || !Util.isMailValid(email)) {
+        System.out.println(
+            "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+        printUsage = true;
+      }
+
+      final String reconnection =
+          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
       try {
-        testVersion = new Version(version);
-        // if successful we don't do anything
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
+        final int reconnect = Integer.parseInt(reconnection);
+        if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
+          System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
+              + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
+              + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
+              + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+          printUsage = true;
         }
-      } catch (final Exception e) {
+      } catch (final NumberFormatException e) {
+        System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
+            + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
+            + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
+            + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+        printUsage = true;
+      }
+      // no passwords allowed for bots
+      // take any actions or commit to preferences
+      final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
+      final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
+      if (clientWait.length() > 0) {
+        try {
+          final int wait = Integer.parseInt(clientWait);
+          GameRunner.setServerStartGameSyncWaitTime(wait);
+        } catch (final NumberFormatException e) {
+          System.out.println(
+              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+          printUsage = true;
+        }
+      }
+      if (observerWait.length() > 0) {
+        try {
+          final int wait = Integer.parseInt(observerWait);
+          GameRunner.setServerObserverJoinWaitTime(wait);
+        } catch (final NumberFormatException e) {
+          System.out.println(
+              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+          printUsage = true;
+        }
+      }
+
+      if (printUsage || usagePrinted) {
+        usage(gameMode);
+        System.exit(-1);
+      }
+
+    } else {
+
+
+      final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
+      if (version != null && version.length() > 0) {
+        final Version testVersion;
+        try {
+          testVersion = new Version(version);
+          // if successful we don't do anything
+          System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
+          if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
+            System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
+          }
+        } catch (final Exception e) {
+          System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
+          System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+        }
+      } else {
         System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
       }
-    } else {
-      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
     }
-  }
-
-  public static String[] getProperties() {
-    return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
-        LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
-        LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
-        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET, MAP_FOLDER};
   }
 
   private static String getValue(final String arg) {
@@ -268,172 +338,44 @@ public class GameRunner {
     return arg.substring(index + 1);
   }
 
-  public static void setupLookAndFeel() {
-    SwingAction.invokeAndWait(() -> {
+  public static void setupLogging(GameMode gameMode) {
+    if(gameMode == GameMode.SWING_CLIENT) {
+      // setup logging to read our logging.properties
       try {
-        UIManager.setLookAndFeel(getDefaultLookAndFeel());
-        // FYI if you are getting a null pointer exception in Substance, like this:
-        // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-        // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-        // Then it is because you included the swingx substance library without including swingx.
-        // You can solve by including both swingx libraries or removing both,
-        // or by setting the look and feel twice in a row.
-      } catch (final Throwable t) {
-        if (!isMac()) {
+        LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
+      } catch (final Exception e) {
+        ClientLogger.logQuietly(e);
+      }
+      Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
+        @Override
+        protected void dispatchEvent(AWTEvent newEvent) {
           try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          } catch (final Exception e) {
+            super.dispatchEvent(newEvent);
+            // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
+          } catch (Throwable t) {
+            ClientLogger.logError(t);
           }
         }
-      }
-    });
-  }
-
-  public static void setupLogging() {
-    // setup logging to read our logging.properties
-    try {
-      LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
-  private static String getDefaultLookAndFeel() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    // substance 7.x
-    String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
-    // macs are already beautiful
-    if (isMac()) {
-      defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-    }
-    final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
-    final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
-    if (!availableSkins.contains(userDefault)) {
-      if (!availableSkins.contains(defaultLookAndFeel)) {
-        return UIManager.getSystemLookAndFeelClassName();
-      }
-      setDefaultLookAndFeel(defaultLookAndFeel);
-      return defaultLookAndFeel;
-    }
-    return userDefault;
-  }
-
-  public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.put(LOOK_AND_FEEL_PREF, lookAndFeelClassName);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
-  private static void checkForMemoryXMX() {
-    final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
-    final boolean memSet = Boolean.parseBoolean(memSetString);
-    // if we have already set the memory, then return.
-    // (example: we used process runner to create a new triplea with a specific memory)
-    if (memSet) {
-      return;
-    }
-    final Properties systemIni = getSystemIni();
-    if (useDefaultMaxMemory(systemIni)) {
-      return;
-    }
-    if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni)) {
-      return;
-    }
-    long xmx = getMaxMemoryFromSystemIniFileInMB(systemIni);
-    // if xmx less than zero, return (because it means we do not want to change it)
-    if (xmx <= 0) {
-      return;
-    }
-    final int mb = 1024 * 1024;
-    xmx = xmx * mb;
-    final long currentMaxMemory = Runtime.getRuntime().maxMemory();
-    System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
-    final long diff = Math.abs(currentMaxMemory - xmx);
-    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%,
-    // so if our difference is less than 22% we should just ignore the difference
-    if (diff <= xmx * 0.22) {
-      return;
-    }
-    // the difference is significant enough that we should re-run triplea with a larger number
-    TripleAProcessRunner.startNewTripleA(xmx);
-    // must exit now
-    System.exit(0);
-  }
-
-  public static boolean useDefaultMaxMemory(final Properties systemIni) {
-    final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
-    return useDefaultMaxMemory;
-  }
-
-  public static long getMaxMemoryInBytes() {
-    final Properties systemIni = getSystemIni();
-    final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
-    final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value.
-    // Just something to be aware of.
-    long max = Runtime.getRuntime().maxMemory();
-    if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
+      });
+    } else {
+      // setup logging to read our logging.properties
       try {
-        final int maxMemorySet = Integer.parseInt(maxMemoryString);
-        // it is in MB
-        max = 1024 * 1024 * ((long) maxMemorySet);
-      } catch (final NumberFormatException e) {
+        LogManager.getLogManager()
+            .readConfiguration(ClassLoader.getSystemResourceAsStream("headless-game-server-logging.properties"));
+        Logger.getAnonymousLogger().info("Redirecting std out");
+        System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
+        System.setOut(new LoggingPrintStream("OUT", Level.INFO));
+      } catch (final Exception e) {
         ClientLogger.logQuietly(e);
       }
     }
-    return max;
   }
 
-  public static int getMaxMemoryFromSystemIniFileInMB(final Properties systemIni) {
-    final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    int maxMemorySet = -1;
-    if (maxMemoryString.length() > 0) {
-      try {
-        maxMemorySet = Integer.parseInt(maxMemoryString);
-      } catch (final NumberFormatException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    return maxMemorySet;
-  }
-
-  public static Properties setMaxMemoryInMB(final int maxMemoryInMB) {
-    System.out.println("Setting max memory for TripleA to: " + maxMemoryInMB + "m");
-    final Properties prop = new Properties();
-    prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "false");
-    prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMB);
-    return prop;
-  }
-
-  public static void clearMaxMemory() {
-    final Properties prop = new Properties();
-    prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    prop.put(TRIPLEA_MEMORY_XMX, "");
-    writeSystemIni(prop, false);
-  }
-
-  public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly,
-      final Properties prop) {
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "" + useForOnlineOnly);
-  }
-
-  public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost(final Properties systemIni) {
-    final String forOnlineOnlyString = systemIni.getProperty(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    final boolean forOnlineOnly = Boolean.parseBoolean(forOnlineOnlyString);
-    return forOnlineOnly;
-  }
 
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
     final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-    if (systemIni != null && systemIni.exists()) {
+    if (systemIni.exists()) {
       try (FileInputStream fis = new FileInputStream(systemIni)) {
         rVal.load(fis);
       } catch (final IOException e) {
@@ -443,15 +385,12 @@ public class GameRunner {
     return rVal;
   }
 
-  public static void writeSystemIni(final Properties properties, final boolean clearOldAndOverwrite) {
+  public static void writeSystemIni(final Properties properties) {
     final Properties toWrite;
-    if (clearOldAndOverwrite) {
-      toWrite = properties;
-    } else {
-      toWrite = getSystemIni();
-      for (final Entry<Object, Object> entry : properties.entrySet()) {
-        toWrite.put(entry.getKey(), entry.getValue());
-      }
+
+    toWrite = getSystemIni();
+    for (final Entry<Object, Object> entry : properties.entrySet()) {
+      toWrite.put(entry.getKey(), entry.getValue());
     }
 
     final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
@@ -463,153 +402,6 @@ public class GameRunner {
     }
   }
 
-  private static void setupProxies() {
-    // System properties, not user pref
-    String proxyHostArgument = System.getProperty(PROXY_HOST);
-    String proxyPortArgument = System.getProperty(PROXY_PORT);
-    if (proxyHostArgument == null) {
-      // in case it was set by -D we also check this
-      proxyHostArgument = System.getProperty(HTTP_PROXYHOST);
-    }
-    if (proxyPortArgument == null) {
-      proxyPortArgument = System.getProperty(HTTP_PROXYPORT);
-    }
-    // arguments should override and set user preferences
-    String proxyHost = null;
-    if (proxyHostArgument != null && proxyHostArgument.trim().length() > 0) {
-      proxyHost = proxyHostArgument;
-    }
-    String proxyPort = null;
-    if (proxyPortArgument != null && proxyPortArgument.trim().length() > 0) {
-      try {
-        Integer.parseInt(proxyPortArgument);
-        proxyPort = proxyPortArgument;
-      } catch (final NumberFormatException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    if (proxyHost != null || proxyPort != null) {
-      setProxy(proxyHost, proxyPort, ProxyChoice.USE_USER_PREFERENCES);
-    }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    final ProxyChoice choice = ProxyChoice.valueOf(pref.get(PROXY_CHOICE, ProxyChoice.NONE.toString()));
-    if (choice == ProxyChoice.USE_SYSTEM_SETTINGS) {
-      setToUseSystemProxies();
-    } else if (choice == ProxyChoice.USE_USER_PREFERENCES) {
-      final String host = pref.get(PROXY_HOST, "");
-      final String port = pref.get(PROXY_PORT, "");
-      if (host.trim().length() > 0) {
-        System.setProperty(HTTP_PROXYHOST, host);
-      }
-      if (port.trim().length() > 0) {
-        System.setProperty(HTTP_PROXYPORT, port);
-      }
-    }
-  }
-
-  public static void setProxy(final String proxyHost, final String proxyPort, final ProxyChoice proxyChoice) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    final ProxyChoice choice;
-    if (proxyChoice != null) {
-      choice = proxyChoice;
-      pref.put(PROXY_CHOICE, proxyChoice.toString());
-    } else {
-      choice = ProxyChoice.valueOf(pref.get(PROXY_CHOICE, ProxyChoice.NONE.toString()));
-    }
-    if (proxyHost != null && proxyHost.trim().length() > 0) {
-      // user pref, not system properties
-      pref.put(PROXY_HOST, proxyHost);
-      if (choice == ProxyChoice.USE_USER_PREFERENCES) {
-        System.setProperty(HTTP_PROXYHOST, proxyHost);
-      }
-    }
-    if (proxyPort != null && proxyPort.trim().length() > 0) {
-      try {
-        Integer.parseInt(proxyPort);
-        // user pref, not system properties
-        pref.put(PROXY_PORT, proxyPort);
-        if (choice == ProxyChoice.USE_USER_PREFERENCES) {
-          System.setProperty(HTTP_PROXYPORT, proxyPort);
-        }
-      } catch (final NumberFormatException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    if (choice == ProxyChoice.NONE) {
-      System.clearProperty(HTTP_PROXYHOST);
-      System.clearProperty(HTTP_PROXYPORT);
-    } else if (choice == ProxyChoice.USE_SYSTEM_SETTINGS) {
-      setToUseSystemProxies();
-    }
-    if (proxyHost != null || proxyPort != null || proxyChoice != null) {
-      try {
-        pref.flush();
-        pref.sync();
-      } catch (final BackingStoreException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-  }
-
-  private static void setToUseSystemProxies() {
-    final String JAVA_NET_USESYSTEMPROXIES = "java.net.useSystemProxies";
-    System.setProperty(JAVA_NET_USESYSTEMPROXIES, "true");
-    List<Proxy> proxyList = null;
-    try {
-      final ProxySelector def = ProxySelector.getDefault();
-      if (def != null) {
-        proxyList = def.select(new URI("http://sourceforge.net/"));
-        ProxySelector.setDefault(null);
-        if (proxyList != null && !proxyList.isEmpty()) {
-          final Proxy proxy = proxyList.get(0);
-          final InetSocketAddress address = (InetSocketAddress) proxy.address();
-          if (address != null) {
-            final String host = address.getHostName();
-            final int port = address.getPort();
-            System.setProperty(HTTP_PROXYHOST, host);
-            System.setProperty(HTTP_PROXYPORT, Integer.toString(port));
-            System.setProperty(PROXY_HOST, host);
-            System.setProperty(PROXY_PORT, Integer.toString(port));
-          } else {
-            System.clearProperty(HTTP_PROXYHOST);
-            System.clearProperty(HTTP_PROXYPORT);
-            System.clearProperty(PROXY_HOST);
-            System.clearProperty(PROXY_PORT);
-          }
-        }
-      } else {
-        final String host = System.getProperty(PROXY_HOST);
-        final String port = System.getProperty(PROXY_PORT);
-        if (host == null) {
-          System.clearProperty(HTTP_PROXYHOST);
-        } else {
-          System.setProperty(HTTP_PROXYHOST, host);
-        }
-        if (port == null) {
-          System.clearProperty(HTTP_PROXYPORT);
-        } else {
-          try {
-            Integer.parseInt(port);
-            System.setProperty(HTTP_PROXYPORT, port);
-          } catch (final NumberFormatException nfe) {
-            // nothing
-          }
-        }
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    } finally {
-      System.setProperty(JAVA_NET_USESYSTEMPROXIES, "false");
-    }
-  }
-
-  public static void addProxy(final HostConfiguration config) {
-    final String host = System.getProperty(HTTP_PROXYHOST);
-    final String port = System.getProperty(HTTP_PROXYPORT, "-1");
-    if (host != null && host.trim().length() > 0) {
-      config.setProxy(host, Integer.valueOf(port));
-    }
-  }
 
   public static boolean getDelayedParsing() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
@@ -641,13 +433,7 @@ public class GameRunner {
   private static boolean s_checkedCasualtySelectionSlowPreference = false;
 
   public static void setCasualtySelectionSlow(final boolean casualtySelectionBeta) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putBoolean(CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
   }
 
   public static int getServerStartGameSyncWaitTime() {
@@ -664,13 +450,7 @@ public class GameRunner {
     if (wait == getServerStartGameSyncWaitTime()) {
       return;
     }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
   }
 
   public static int getServerObserverJoinWaitTime() {
@@ -687,13 +467,7 @@ public class GameRunner {
     if (wait == getServerObserverJoinWaitTime()) {
       return;
     }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putInt(TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
+    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
   }
 
   private static void checkForUpdates() {
@@ -731,25 +505,22 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final boolean firstTimeThisVersion = pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
       final int day = calendar.get(Calendar.DAY_OF_YEAR);
       // format year:day
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
+      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
           return false;
         }
       }
-      pref.put(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
-      try {
-        pref.sync();
-      } catch (final BackingStoreException e) {
-      }
+
+      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
+
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
         return false;
@@ -770,7 +541,7 @@ public class GameRunner {
    * @return true if we have any out of date maps
    */
   private static boolean checkForUpdatedMaps() {
-    final MapDownloadController downloadController = ClientContext.mapDownloadController();
+    MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -791,4 +562,217 @@ public class GameRunner {
     }
     return img;
   }
+
+  public static void startNewTripleA(final Long maxMemory) {
+    startGame(System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), null, maxMemory);
+  }
+
+  public static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
+    final List<String> commands = new ArrayList<>();
+    if (maxMemory != null && maxMemory > (32 * 1024 * 1024)) {
+      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
+    } else {
+      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
+    }
+    if (savegamePath != null && savegamePath.length() > 0) {
+      commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
+    }
+    // add in any existing command line items
+    for (final String property : GameRunner.COMMAND_LINE_ARGS) {
+      // we add game property above, and we add version bin in the populateBasicJavaArgs
+      if (GameRunner.TRIPLEA_GAME_PROPERTY.equals(property)
+          || GameRunner.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
+        continue;
+      }
+      final String value = System.getProperty(property);
+      if (value != null) {
+        commands.add("-D" + property + "=" + value);
+      } else if (GameRunner.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+          || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
+        // for these 3 properties, we clear them after hosting, but back them up.
+        final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
+        if (oldValue != null) {
+          commands.add("-D" + property + "=" + oldValue);
+        }
+      }
+    }
+    // classpath for main
+    commands.add(GameRunner.class.getName());
+    ProcessRunnerUtil.exec(commands);
+  }
+
+  public static void hostGame(final int port, final String playerName, final String comments, final String password,
+      final Messengers messengers) {
+    final List<String> commands = new ArrayList<>();
+    ProcessRunnerUtil.populateBasicJavaArgs(commands);
+    commands.add("-D" + TRIPLEA_SERVER_PROPERTY + "=true");
+    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + playerName);
+    commands.add("-D" + LOBBY_HOST + "="
+        + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
+    commands
+        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+    commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
+    commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
+    if (password != null && password.length() > 0) {
+      commands.add("-D" + TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
+    }
+    final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
+    if (fileName.length() > 0) {
+      commands.add("-D" + TRIPLEA_GAME_PROPERTY + "=" + fileName);
+    }
+    final String javaClass = GameRunner.class.getName();
+    commands.add(javaClass);
+    ProcessRunnerUtil.exec(commands);
+  }
+
+  public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
+    final GameDescription.GameStatus status = description.getStatus();
+    if (GameDescription.GameStatus.LAUNCHING.equals(status)) {
+      return;
+    }
+    final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
+    String newClassPath = null;
+    if (!ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin)) {
+      try {
+        newClassPath = findOldJar(engineVersionOfGameToJoin, false);
+      } catch (final Exception e) {
+        if (ClientFileSystemHelper.areWeOldExtraJar()) {
+          JOptionPane.showMessageDialog(parent,
+              "<html>Please run the default TripleA and try joining the online lobby for it instead. "
+                  + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
+                  + "<br><br>Host is using a different engine than you, and cannot find correct engine: "
+                  + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
+              "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+        } else {
+          JOptionPane.showMessageDialog(parent,
+              "Host is using a different engine than you, and cannot find correct engine: "
+                  + engineVersionOfGameToJoin.toStringFull("_"),
+              "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+        }
+        return;
+      }
+      // ask user if we really want to do this?
+      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
+          + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
+          + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
+          + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
+          + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will join the host's game."
+          + "<br>Your current instance will not be closed. Please report any bugs or issues."
+          + "<br><br>Do you wish to continue?</html>";
+      final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?",
+          JOptionPane.YES_NO_OPTION);
+      if (answer != JOptionPane.YES_OPTION) {
+        return;
+      }
+    }
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
+  }
+
+  // newClassPath can be null
+  private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
+      final Messengers messengers) {
+    final List<String> commands = new ArrayList<>();
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
+    commands.add("-D" + TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add("-D" + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    final String javaClass = "games.strategy.engine.framework.GameRunner";
+    commands.add(javaClass);
+    ProcessRunnerUtil.exec(commands);
+  }
+
+  public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
+    if (ClientContext.engineVersion().getVersion().equals(oldVersionNeeded, ignoreMicro)) {
+      return System.getProperty("java.class.path");
+    }
+    // first, see if the default/main triplea can run it
+    if (ClientFileSystemHelper.areWeOldExtraJar()) {
+      final String version = System.getProperty(GameRunner.TRIPLEA_ENGINE_VERSION_BIN);
+      if (version != null && version.length() > 0) {
+        Version defaultVersion = null;
+        try {
+          defaultVersion = new Version(version);
+        } catch (final Exception e) {
+          // nothing, just continue
+        }
+        if (defaultVersion != null) {
+          if (defaultVersion.equals(oldVersionNeeded, ignoreMicro)) {
+            final String jarName = "triplea.jar";
+            // windows is in 'bin' folder, mac is in 'Java' folder.
+            File binFolder = new File(ClientFileSystemHelper.getRootFolder(), "bin/");
+            if (!binFolder.exists()) {
+              binFolder = new File(ClientFileSystemHelper.getRootFolder(), "Java/");
+            }
+            if (binFolder.exists()) {
+              final File[] files = binFolder.listFiles();
+              if (files == null) {
+                throw new IOException("Cannot find 'bin' engine jars folder");
+              }
+              File ourBinJar = null;
+              for (final File f : Arrays.asList(files)) {
+                if (!f.exists()) {
+                  continue;
+                }
+                final String jarPath = f.getCanonicalPath();
+                if (jarPath.contains(jarName)) {
+                  ourBinJar = f;
+                  break;
+                }
+              }
+              if (ourBinJar == null) {
+                throw new IOException(
+                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+              }
+              final String newClassPath = ourBinJar.getCanonicalPath();
+              if (newClassPath.length() <= 0) {
+                throw new IOException(
+                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+              }
+              return newClassPath;
+            } else {
+              System.err.println("Cannot find 'bin' or 'Java' folder, where main triplea.jar should be.");
+            }
+          }
+        }
+      }
+    }
+    // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same
+    // engine as was used
+    // for this savegame, and if so try to run it
+    // System.out.println("System classpath: " + System.getProperty("java.class.path"));
+    // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
+    // savegames.
+    final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
+    final File oldJarsFolder = new File(ClientFileSystemHelper.getRootFolder(), "old/");
+    if (!oldJarsFolder.exists()) {
+      throw new IOException("Cannot find 'old' engine jars folder");
+    }
+    final File[] files = oldJarsFolder.listFiles();
+    if (files == null) {
+      throw new IOException("Cannot find 'old' engine jars folder");
+    }
+    File ourOldJar = null;
+    for (final File f : Arrays.asList(files)) {
+      if (!f.exists()) {
+        continue;
+      }
+      // final String jarPath = f.getCanonicalPath();
+      final String name = f.getName();
+      if (name.contains(jarName) && name.contains(".jar")) {
+        ourOldJar = f;
+        break;
+      }
+    }
+    if (ourOldJar == null) {
+      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+    }
+    final String newClassPath = ourOldJar.getCanonicalPath();
+    if (newClassPath.length() <= 0) {
+      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+    }
+    return newClassPath;
+  }
+
 }

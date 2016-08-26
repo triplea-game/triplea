@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.lobby.server.headless.HeadlessLobbyConsole;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -140,7 +141,7 @@ public class LobbyServer {
    * Move command line arguments to System.properties
    */
   private static void handleCommandLineArgs(final String[] args) {
-    System.getProperties().setProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "true");
+    System.getProperties().setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     final String[] properties = getProperties();
     boolean usagePrinted = false;
     for (final String arg2 : args) {

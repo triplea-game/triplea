@@ -18,7 +18,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 
@@ -48,8 +48,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
     m_httpState = new HttpState();
     m_hostConfiguration = new HostConfiguration();
-    // add the proxy
-    GameRunner.addProxy(m_hostConfiguration);
+    HttpProxy.addProxy(m_hostConfiguration);
     m_hostConfiguration.setHost("www.tripleawarclub.org");
     final PostMethod post = new PostMethod("http://www.tripleawarclub.org/user.php");
     final List<NameValuePair> parameters = new ArrayList<>();

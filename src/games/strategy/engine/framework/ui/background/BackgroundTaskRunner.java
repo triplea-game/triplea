@@ -1,65 +1,33 @@
 package games.strategy.engine.framework.ui.background;
 
-import java.awt.Component;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.SwingUtilities;
 
-import games.strategy.util.CountDownLatchHandler;
-
 public class BackgroundTaskRunner {
-  public static void runInBackground(final Component parent, final String waitMessage, final Runnable r) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
-    }
-    final WaitDialog window = new WaitDialog(parent, waitMessage);
-    final AtomicBoolean doneWait = new AtomicBoolean(false);
-    new Thread(() -> {
-      try {
-        r.run();
-      } finally {
-        SwingUtilities.invokeLater(() -> {
-          doneWait.set(true);
-          window.setVisible(false);
-          window.dispose();
-        });
-      }
-    }).start();
-    if (!doneWait.get()) {
-      window.pack();
-      window.setLocationRelativeTo(parent);
-      window.setVisible(true);
-    }
-  }
-
-  public static void runInBackground(final Component parent, final String waitMessage, final Runnable r,
-      final CountDownLatchHandler latchHandler) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      runInBackground(parent, waitMessage, r);
-      return;
-    }
-    final CountDownLatch latch = new CountDownLatch(1);
+  /** Non-blocking */
+  public static void runInBackground(final String waitMessage, final Runnable r) {
     SwingUtilities.invokeLater(() -> {
-      runInBackground(parent, waitMessage, r);
-      latch.countDown();
-    });
-    if (latchHandler != null) {
-      latchHandler.addShutdownLatch(latch);
-    }
-    boolean done = false;
-    while (!done) {
-      try {
-        latch.await();
-        done = true;
-      } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
+      final WaitDialog window = new WaitDialog(null, waitMessage);
+      // this will center the window
+      window.setLocationRelativeTo(null);
+      final AtomicBoolean doneWait = new AtomicBoolean(false);
+      new Thread(() -> {
+        try {
+          r.run();
+        } finally {
+          // clean up the window
+          SwingUtilities.invokeLater(() -> {
+            doneWait.set(true);
+            window.setVisible(false);
+            window.dispose();
+          });
         }
+      }).start();
+      if (!doneWait.get()) {
+        window.pack();
+        window.setVisible(true);
       }
-    }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+    });
   }
 }
