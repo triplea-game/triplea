@@ -36,7 +36,6 @@ import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.ai.AbstractAI;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameDelegateBridge;

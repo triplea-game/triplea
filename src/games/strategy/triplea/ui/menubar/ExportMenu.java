@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -30,10 +29,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import games.strategy.debug.ClientLogger;
@@ -55,7 +52,6 @@ import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapPanel;
-import games.strategy.triplea.ui.StatPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.mapdata.MapData;

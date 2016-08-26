@@ -1,19 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.text.JTextComponent;
-
-import games.strategy.ui.SwingComponents;
-
 /**
  * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
  * each setting in the object, and to update the value.
@@ -28,7 +14,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   /**
    * @return Detailed (but concise) text description of what the setting represents. This is a message to the user
-   * describing a specific setting, what it does, and which values they should change it to.
+   *         describing a specific setting, what it does, and which values they should change it to.
    */
   String getDescription();
 
