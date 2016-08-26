@@ -23,16 +23,18 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.UrlStreams;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -144,7 +146,7 @@ public class ClipPlayer {
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
+    beSilent = Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
         || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
     final Set<String> choices = SoundPath.getAllSoundOptions();
 
@@ -255,7 +257,7 @@ public class ClipPlayer {
    *        random.
    * @param playerId - the name of the player, or null
    */
-  public static void play(final String clipPath, final PlayerID playerId) {
+  public static void play(String clipPath, PlayerID playerId) {
     getInstance().playClip(clipPath, playerId);
   }
 
@@ -276,12 +278,12 @@ public class ClipPlayer {
     if (clip != null) {
       (new Thread(() -> {
         try {
-          final Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
+          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
           if (inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
-        } catch (final Exception e) {
+        } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
       })).start();
@@ -309,7 +311,7 @@ public class ClipPlayer {
     Collections.shuffle(availableSounds);
     try {
       return availableSounds.get(0).toURI();
-    } catch (final URISyntaxException e) {
+    } catch (URISyntaxException e) {
       throw Throwables.propagate(e);
     }
   }
@@ -458,7 +460,7 @@ public class ClipPlayer {
             final URL individualSoundURL = soundFile.toURI().toURL();
             availableSounds.add(individualSoundURL);
           } catch (final MalformedURLException e) {
-            final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
+            String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
           }
         }
@@ -472,7 +474,7 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-  private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathURL) {
+  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
     return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathURL)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }

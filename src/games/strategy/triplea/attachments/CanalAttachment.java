@@ -85,6 +85,10 @@ public class CanalAttachment extends DefaultAttachment {
     return m_canalName;
   }
 
+  public void resetCanalName() {
+    m_canalName = null;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setLandTerritories(final String landTerritories) {
     if (landTerritories == null) {

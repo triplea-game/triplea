@@ -1,6 +1,7 @@
 package games.strategy.triplea.attachments;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -61,7 +62,7 @@ public class TechAttachment extends DefaultAttachment {
   // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
-  private final HashMap<String, Boolean> genericTech = new HashMap<>();
+  private Map<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -93,8 +94,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setTechCost(final Integer s) {
+    techCost = s;
+  }
+
+  public void resetTechCost() {
+    techCost = 5;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final String s) {
     heavyBomber = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setHeavyBomber(final Boolean s) {
+    heavyBomber = s;
+  }
+
+  public void resetHeavyBomber() {
+    heavyBomber = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -103,8 +122,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setDestroyerBombard(final Boolean s) {
+    destroyerBombard = s;
+  }
+
+  public void resetDestroyerBombard() {
+    destroyerBombard = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setLongRangeAir(final String s) {
     longRangeAir = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setLongRangeAir(final Boolean s) {
+    longRangeAir = s;
+  }
+
+  public void resetLongRangeAir() {
+    longRangeAir = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -113,8 +150,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setJetPower(final Boolean s) {
+    jetPower = s;
+  }
+
+  public void resetJetPower() {
+    jetPower = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocket(final String s) {
     rocket = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setRocket(final Boolean s) {
+    rocket = s;
+  }
+
+  public void resetRocket() {
+    rocket = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -123,8 +178,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIndustrialTechnology(final Boolean s) {
+    industrialTechnology = s;
+  }
+
+  public void resetIndustrialTechnology() {
+    industrialTechnology = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setSuperSub(final String s) {
     superSub = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setSuperSub(final Boolean s) {
+    superSub = s;
+  }
+
+  public void resetSuperSub() {
+    superSub = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -133,8 +206,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setImprovedArtillerySupport(final Boolean s) {
+    improvedArtillerySupport = s;
+  }
+
+  public void resetImprovedArtillerySupport() {
+    improvedArtillerySupport = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setParatroopers(final String s) {
     paratroopers = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setParatroopers(final Boolean s) {
+    paratroopers = s;
+  }
+
+  public void resetParatroopers() {
+    paratroopers = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -143,8 +234,26 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIncreasedFactoryProduction(final Boolean s) {
+    increasedFactoryProduction = s;
+  }
+
+  public void resetIncreasedFactoryProduction() {
+    increasedFactoryProduction = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBonds(final String s) {
     warBonds = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setWarBonds(final Boolean s) {
+    warBonds = s;
+  }
+
+  public void resetWarBonds() {
+    warBonds = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -153,13 +262,40 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setMechanizedInfantry(final Boolean s) {
+    mechanizedInfantry = s;
+  }
+
+  public void resetMechanizedInfantry() {
+    mechanizedInfantry = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final String s) {
     aARadar = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setAARadar(final Boolean s) {
+    aARadar = s;
+  }
+
+  public void resetAARadar() {
+    aARadar = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setShipyards(final String s) {
     shipyards = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setShipyards(final Boolean s) {
+    shipyards = s;
+  }
+
+  public void resetShipyards() {
+    shipyards = false;
   }
 
   // getters
@@ -254,8 +390,17 @@ public class TechAttachment extends DefaultAttachment {
     genericTech.put(name, value);
   }
 
-  public HashMap<String, Boolean> getGenericTech() {
+  @InternalDoNotExport
+  public void setGenericTech(final HashMap<String, Boolean> value) {
+    genericTech = value;
+  }
+
+  public Map<String, Boolean> getGenericTech() {
     return genericTech;
+  }
+
+  public void clearGenericTech() {
+    genericTech.clear();
   }
 
   @Override

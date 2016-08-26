@@ -203,7 +203,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-      steps.add(new FireAA());
+      // global1940 rules - each target type fires an AA shot against the planes bombing it
+      m_targets.entrySet().stream()
+          .filter(entry -> entry.getKey().getUnitAttachment().getIsAAforBombingThisUnitOnly())
+          .forEach(entry -> steps.add(new FireAA(entry.getValue())));
+
+      // otherwise fire an AA shot at all the planes
+      if(steps.isEmpty()) {
+        steps.add(new FireAA());
+      }
     }
     steps.add(new ConductBombing());
     steps.add(new IExecutable() {
@@ -327,23 +335,31 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     DiceRoll m_dice;
     CasualtyDetails m_casualties;
     Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
+    Collection<Unit> validAttackingUnitsForThisRoll;
+    boolean determineAttackers;
 
+    public FireAA( Collection<Unit> attackers ) {
+      validAttackingUnitsForThisRoll = attackers;
+      determineAttackers = false;
+    }
+    
+    public FireAA() {
+      validAttackingUnitsForThisRoll = Collections.emptyList();
+      determineAttackers = true;
+    }
+      
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
       for (final String currentTypeAA : m_AAtypes) {
-        final Collection<Unit> currentPossibleAA =
-            Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
-        final Set<UnitType> targetUnitTypesForThisTypeAA =
-            UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
-        final Set<UnitType> airborneTypesTargettedToo =
-            TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-        final Collection<Unit> validAttackingUnitsForThisRoll =
-            Match.getMatches(m_attackingUnits,
-                new CompositeMatchOr<>(Matches
-                    .unitIsOfTypes(targetUnitTypesForThisTypeAA),
-                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne,
-                        Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+        final Collection<Unit> currentPossibleAA                = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+        final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+        final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
+        if( determineAttackers ) {
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+        }
+
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
 

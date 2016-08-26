@@ -33,9 +33,10 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.engine.framework.TripleAProcessRunner;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.system.Memory;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
@@ -68,7 +69,6 @@ public class EnginePreferences extends JDialog {
   private JButton m_mapXmlCreator;
   private JButton m_userFolder;
   private JButton m_programFolder;
-  private JButton m_readme;
 
   private EnginePreferences(final Frame parentFrame) {
     super(parentFrame, "Edit TripleA Engine Preferences", true);
@@ -94,13 +94,11 @@ public class EnginePreferences extends JDialog {
     m_setupProxies = new JButton("Setup Network and Proxy Settings");
     m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
     m_setMaxMemory = new JButton("Set Max Memory Usage");
-    // m_runAutoHost = new JButton("Run an Automated Game Host Bot");
     m_mapCreator = new JButton("Run the Map Creator");
     m_mapXmlCreator = new JButton("[Beta] Run the Map Creator");
     m_console = new JButton("Show Console");
     m_userFolder = new JButton("Open User Maps and Savegames Folder");
     m_programFolder = new JButton("Open Installed Program Folder");
-    m_readme = new JButton("Open Readme / User Manual");
   }
 
   private void layoutCoponents() {
@@ -109,9 +107,6 @@ public class EnginePreferences extends JDialog {
     add(buttonsPanel, BorderLayout.CENTER);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
     buttonsPanel.add(Box.createGlue());
-
-    buttonsPanel.add(new JLabel("Change Engine Properties: "));
-    buttonsPanel.add(new JLabel(" "));
 
     // add buttons here:
     SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
@@ -143,8 +138,6 @@ public class EnginePreferences extends JDialog {
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_programFolder);
     buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_readme);
-    buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(Box.createGlue());
     buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
     final JPanel main = new JPanel();
@@ -169,7 +162,7 @@ public class EnginePreferences extends JDialog {
         if (selectedValue.equals(currentKey)) {
           return;
         }
-        GameRunner.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(m_parentFrame,
             "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
       }
@@ -221,18 +214,19 @@ public class EnginePreferences extends JDialog {
           new CountDownLatchHandler(true));
     }));
     m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
+      // TODO: this action listener should probably come from the HttpProxy class
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final ProxyChoice proxyChoice =
-          ProxyChoice.valueOf(pref.get(GameRunner.PROXY_CHOICE, ProxyChoice.NONE.toString()));
-      final String proxyHost = pref.get(GameRunner.PROXY_HOST, "");
+      final HttpProxy.ProxyChoice proxyChoice =
+          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+      final String proxyHost = pref.get(HttpProxy.PROXY_HOST, "");
       final JTextField hostText = new JTextField(proxyHost);
-      final String proxyPort = pref.get(GameRunner.PROXY_PORT, "");
+      final String proxyPort = pref.get(HttpProxy.PROXY_PORT, "");
       final JTextField portText = new JTextField(proxyPort);
-      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == ProxyChoice.NONE);
+      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
-          new JRadioButton("Use System Settings", proxyChoice == ProxyChoice.USE_SYSTEM_SETTINGS);
+          new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       final JRadioButton userButton =
-          new JRadioButton("Use These User Settings:", proxyChoice == ProxyChoice.USE_USER_PREFERENCES);
+          new JRadioButton("Use These User Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(systemButton);
@@ -254,15 +248,15 @@ public class EnginePreferences extends JDialog {
       if (answer != JOptionPane.YES_OPTION) {
         return;
       }
-      final ProxyChoice newChoice;
+      final HttpProxy.ProxyChoice newChoice;
       if (systemButton.isSelected()) {
-        newChoice = ProxyChoice.USE_SYSTEM_SETTINGS;
+        newChoice = HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS;
       } else if (userButton.isSelected()) {
-        newChoice = ProxyChoice.USE_USER_PREFERENCES;
+        newChoice = HttpProxy.ProxyChoice.USE_USER_PREFERENCES;
       } else {
-        newChoice = ProxyChoice.NONE;
+        newChoice = HttpProxy.ProxyChoice.NONE;
       }
-      GameRunner.setProxy(hostText.getText(), portText.getText(), newChoice);
+      HttpProxy.setProxy(hostText.getText(), portText.getText(), newChoice);
     }));
     m_hostWaitTime.addActionListener(SwingAction.of("Set Max Host Wait Time for Clients and Observers", e -> {
       final NumberProperty clientWait =
@@ -289,19 +283,20 @@ public class EnginePreferences extends JDialog {
       }
     }));
     m_setMaxMemory.addActionListener(SwingAction.of("Set Max Memory Usage", e -> {
+      // TODO: this action should all be coming from Memory.java
       final AtomicBoolean tested = new AtomicBoolean();
       tested.set(false);
       final Properties systemIni = GameRunner.getSystemIni();
-      final int currentSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(systemIni);
-      final boolean useDefault = GameRunner.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
-      final int currentMaxMemoryInMB = (int) (GameRunner.getMaxMemoryInBytes() / (1024 * 1024));
+      final int currentSetting = Memory.getMaxMemoryFromSystemIniFileInMB(systemIni);
+      final boolean useDefault = Memory.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
+      final int currentMaxMemoryInMB = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
       final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
       final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
       final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(userButton);
-      final boolean onlineOnlyOriginalSetting = GameRunner.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
+      final boolean onlineOnlyOriginalSetting = Memory.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
       final JCheckBox onlyOnlineCheckBox =
           new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
       onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
@@ -313,7 +308,7 @@ public class EnginePreferences extends JDialog {
         tested.set(true);
         System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
         // it is in MB
-        TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
+        GameRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864);
       }));
       final JPanel radioPanel = new JPanel();
       radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
@@ -356,19 +351,19 @@ public class EnginePreferences extends JDialog {
         return;
       }
       if (noneButton.isSelected()) {
-        GameRunner.clearMaxMemory();
+        Memory.clearMaxMemory();
       } else if (userButton.isSelected()) {
         final boolean setOnlineOnly = onlineOnlyOriginalSetting != onlyOnlineCheckBox.isSelected();
         final boolean setMaxMemory = newMaxMemory.getValue() > 64 && tested.get();
         if (setOnlineOnly || setMaxMemory) {
           Properties prop;
           if (setMaxMemory) {
-            prop = GameRunner.setMaxMemoryInMB(newMaxMemory.getValue());
+            prop = Memory.setMaxMemoryInMB(newMaxMemory.getValue());
           } else {
             prop = new Properties();
           }
-          GameRunner.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
-          GameRunner.writeSystemIni(prop, false);
+          Memory.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
+          GameRunner.writeSystemIni(prop);
         }
       }
 
@@ -396,13 +391,6 @@ public class EnginePreferences extends JDialog {
         e1.printStackTrace();
       }
     }));
-    m_readme.addActionListener(SwingAction.of("Open Readme / User Manual", e -> {
-      try {
-        OpenFileUtility.openFile(new File(ClientFileSystemHelper.getRootFolder(), "readme.html"));
-      } catch (final Exception e1) {
-        e1.printStackTrace();
-      }
-    }));
   }
 
   private static void reportMemoryUsageToConsole() {
@@ -418,7 +406,7 @@ public class EnginePreferences extends JDialog {
     System.out.println("Total Memory: " + runtime.totalMemory() / mb);
     // Print Maximum available memory
     System.out.println("Max Memory: " + runtime.maxMemory() / mb);
-    final int currentMaxSetting = GameRunner.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
+    final int currentMaxSetting = Memory.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
     if (currentMaxSetting > 0) {
       System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
     }

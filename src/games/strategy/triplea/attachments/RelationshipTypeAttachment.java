@@ -21,7 +21,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
   private String m_archeType = ARCHETYPE_WAR;
-
+  // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
   private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
   private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
@@ -103,6 +103,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_archeType;
   }
 
+  public void resetArcheType() {
+    m_archeType = ARCHETYPE_WAR;
+  }
 
   /**
    * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
@@ -131,6 +134,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
   }
 
+  public void resetCanMoveAirUnitsOverOwnedLand() {
+    m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
+  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver) {
@@ -142,6 +148,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       return isWar() || isAllied();
     }
     return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+  }
+
+  public void resetCanMoveLandUnitsOverOwnedLand() {
+    m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -157,6 +167,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
   }
 
+  public void resetCanLandAirUnitsOnOwnedLand() {
+    m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanTakeOverOwnedTerritory(final String canTakeOver) {
     m_canTakeOverOwnedTerritory = canTakeOver;
@@ -168,6 +182,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       return isWar();
     }
     return m_canTakeOverOwnedTerritory.equals(PROPERTY_TRUE);
+  }
+
+  public void resetCanTakeOverOwnedTerritory() {
+    m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -200,6 +218,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       return String.valueOf(0);
     }
     return m_upkeepCost;
+  }
+
+  public void resetUpkeepCost() {
+    m_upkeepCost = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -258,6 +280,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
   }
 
+  public void resetGivesBackOriginalTerritories() {
+    m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
@@ -273,6 +299,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       return true;
     }
     return m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
+  }
+
+  public void resetCanMoveIntoDuringCombatMove() {
+    m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

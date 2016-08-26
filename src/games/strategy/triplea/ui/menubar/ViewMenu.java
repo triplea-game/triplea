@@ -44,6 +44,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
@@ -144,7 +145,7 @@ public class ViewMenu {
         if (selectedValue.equals(currentKey)) {
           return;
         }
-        GameRunner.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
             new CountDownLatchHandler(true));
       }
