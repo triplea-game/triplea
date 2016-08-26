@@ -1,6 +1,6 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.battledisplay;
 
-import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -8,13 +8,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.ui.SwingComponents;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
@@ -45,19 +46,38 @@ public class DicePanel extends JPanel {
       return;
     }
     removeAll();
+    JPanel contents = new JPanel();
+    contents.setLayout(new BoxLayout(contents, BoxLayout.Y_AXIS));
+
+
     for (int i = 1; i <= m_data.getDiceSides(); i++) {
       final List<Die> dice = diceRoll.getRolls(i);
       if (dice.isEmpty()) {
         continue;
       }
-      add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i)));
+      contents.add(new JLabel("Rolled at " + (i) + ":"));
+
+      List<Die> allDice = diceRoll.getRolls(i);
+      final int maxDicePerRow = ClientContext.battleOptionsSettings().maxBattleDicePerRow();
+      for(int j = 0; j < allDice.size(); j += maxDicePerRow ) {
+        contents.add(create(createSubList(allDice, maxDicePerRow, j)));
+        contents.add(Box.createVerticalStrut(5));
+      }
     }
-    add(Box.createVerticalGlue());
+    contents.add(Box.createVerticalGlue());
+    add(SwingComponents.newJScrollPane(contents));
     add(new JLabel("Total hits:" + diceRoll.getHits()));
     validate();
     invalidate();
     repaint();
+  }
+
+  private static List<Die> createSubList(List<Die> allDice, int dicePerRow, int startIndex) {
+    List<Die> subList = new ArrayList<>();
+    for(int i = 0; i < dicePerRow && i+startIndex < allDice.size(); i ++ ) {
+      subList.add(allDice.get(startIndex+i));
+    }
+    return subList;
   }
 
   private JComponent create(final List<Die> dice) {
@@ -69,18 +89,7 @@ public class DicePanel extends JPanel {
       dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
-    final JScrollPane scroll = new JScrollPane(dicePanel);
-    scroll.setBorder(null);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from
-    // grabbing extra space, set the max height.
-    // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(
-        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(
-        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(
-        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    return scroll;
+    dicePanel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+    return dicePanel;
   }
 }

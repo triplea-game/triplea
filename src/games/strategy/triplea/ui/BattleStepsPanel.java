@@ -22,7 +22,7 @@ import games.strategy.util.ThreadUtil;
  * there is a delay while we walk so that the user can see the steps progression.
  * Users of this class should deactive it after they are done.
  */
-class BattleStepsPanel extends JPanel implements Active {
+public class BattleStepsPanel extends JPanel implements Active {
   private static final long serialVersionUID = 911638924664810435L;
   private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
   // if this is the target step, we want to walk to the last step
@@ -39,7 +39,7 @@ class BattleStepsPanel extends JPanel implements Active {
   private final List<CountDownLatch> m_waiters = new ArrayList<>();
   private boolean m_hasWalkThread = false;
 
-  BattleStepsPanel() {
+  public BattleStepsPanel() {
     setLayout(new BorderLayout());
     add(m_list, BorderLayout.CENTER);
     m_list.setBackground(this.getBackground());

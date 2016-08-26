@@ -19,7 +19,7 @@ import games.strategy.engine.history.Renderable;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.PlacementDescription;
-import games.strategy.triplea.ui.DicePanel;
+import games.strategy.triplea.ui.battledisplay.DicePanel;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;

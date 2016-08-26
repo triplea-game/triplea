@@ -1,9 +1,8 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.battledisplay;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -19,10 +18,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -50,8 +47,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -59,11 +54,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -72,14 +65,16 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.BattleStepsPanel;
+import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
-import games.strategy.util.Tuple;
 
 /**
  * Displays a running battle
@@ -159,7 +154,7 @@ public class BattleDisplay extends JPanel {
     m_steps = null;
   }
 
-  void takeFocus() {
+  public void takeFocus() {
     // we want a component on this frame to take focus
     // so that pressing space will work (since it requires in focused
     // window). Only seems to be an issue on windows
@@ -182,11 +177,6 @@ public class BattleDisplay extends JPanel {
   public static boolean getShowEnemyCasualtyNotification() {
     final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
     return prefs.getBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, true);
-  }
-
-  public static void setShowEnemyCasualtyNotification(final boolean aVal) {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, aVal);
   }
 
   public static boolean getFocusOnOwnCasualtiesNotification() {
@@ -233,9 +223,7 @@ public class BattleDisplay extends JPanel {
       m_data.releaseReadLock();
     }
     final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
-    final Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
-    while (dependentUnitsCollections.hasNext()) {
-      final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
+    for (Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
@@ -298,7 +286,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  protected void waitForConfirmation(final String message) {
+  public void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This cannot be in dispatch thread");
     }
@@ -709,280 +697,3 @@ public class BattleDisplay extends JPanel {
 }
 
 
-class BattleTable extends JTable {
-  private static final long serialVersionUID = 6737857639382012817L;
-
-  BattleTable(final BattleModel model) {
-    super(model);
-    setDefaultRenderer(Object.class, new Renderer());
-    setRowHeight(UnitImageFactory.DEFAULT_UNIT_ICON_SIZE + 5);
-    setBackground(new JButton().getBackground());
-    setShowHorizontalLines(false);
-    getTableHeader().setReorderingAllowed(false);
-    // getTableHeader().setResizingAllowed(false);
-  }
-}
-
-
-class BattleModel extends DefaultTableModel {
-  private static final long serialVersionUID = 6913324191512043963L;
-  private final IUIContext m_uiContext;
-  private final GameData m_data;
-  // is the player the aggressor?
-  private final boolean m_attack;
-  private final Collection<Unit> m_units;
-  private final Territory m_location;
-  private final BattleType m_battleType;
-  private final Collection<TerritoryEffect> m_territoryEffects;
-  private final boolean m_isAmphibious;
-  private final Collection<Unit> m_amphibiousLandAttackers;
-  private BattleModel m_enemyBattleModel = null;
-
-  private static String[] varDiceArray(final GameData data) {
-    // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
-    final String[] diceColumns = new String[data.getDiceSides() + 1];
-    {
-      for (int i = 0; i < diceColumns.length; i++) {
-        if (i == 0) {
-          diceColumns[i] = " ";
-        } else {
-          diceColumns[i] = Integer.toString(i);
-        }
-      }
-    }
-    return diceColumns;
-  }
-
-  BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType, final PlayerID player,
-      final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
-      final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext) {
-    super(new Object[0][0], varDiceArray(data));
-    m_uiContext = uiContext;
-    m_data = data;
-    m_attack = attack;
-    // were going to modify the units
-    m_units = new ArrayList<>(units);
-    m_location = battleLocation;
-    m_battleType = battleType;
-    m_territoryEffects = territoryEffects;
-    m_isAmphibious = isAmphibious;
-    m_amphibiousLandAttackers = amphibiousLandAttackers;
-  }
-
-  public void setEnemyBattleModel(final BattleModel enemyBattleModel) {
-    m_enemyBattleModel = enemyBattleModel;
-  }
-
-  public void notifyRetreat(final Collection<Unit> retreating) {
-    m_units.removeAll(retreating);
-    refresh();
-  }
-
-  public void removeCasualties(final Collection<Unit> killed) {
-    m_units.removeAll(killed);
-    refresh();
-  }
-
-  public void addUnits(final Collection<Unit> units) {
-    m_units.addAll(units);
-    refresh();
-  }
-
-  Collection<Unit> getUnits() {
-    return m_units;
-  }
-
-  /**
-   * refresh the model from m_units
-   */
-  public void refresh() {
-    // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
-    // Soft code the # of columns
-
-    final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
-    for (int i = 0; i <= m_data.getDiceSides(); i++) {
-      columns.add(i, new ArrayList<>());
-    }
-    final List<Unit> units = new ArrayList<>(m_units);
-    DiceRoll.sortByStrength(units, !m_attack);
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
-    m_data.acquireReadLock();
-    try {
-      if (m_battleType.isAirPreBattleOrPreRaid()) {
-        unitPowerAndRollsMap = null;
-      } else {
-        unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
-            new ArrayList<>(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
-            m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
-      }
-    } finally {
-      m_data.releaseReadLock();
-    }
-    final int diceSides = m_data.getDiceSides();
-    final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
-    for (final UnitCategory category : unitCategories) {
-      int strength;
-      final UnitAttachment attachment = UnitAttachment.get(category.getType());
-      final int[] shift = new int[m_data.getDiceSides() + 1];
-      for (final Unit current : category.getUnits()) {
-        if (m_battleType.isAirPreBattleOrPreRaid()) {
-          if (m_attack) {
-            strength = attachment.getAirAttack(category.getOwner());
-          } else {
-            strength = attachment.getAirDefense(category.getOwner());
-          }
-        } else {
-          // normal battle
-          strength = unitPowerAndRollsMap.get(current).getFirst();
-        }
-        strength = Math.min(Math.max(strength, 0), diceSides);
-        shift[strength]++;
-      }
-      for (int i = 0; i <= m_data.getDiceSides(); i++) {
-        if (shift[i] > 0) {
-          columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(), m_data,
-              category.hasDamageOrBombingUnitDamage(), category.getDisabled(), m_uiContext));
-        }
-      }
-      // TODO Kev determine if we need to identify if the unit is hit/disabled
-    }
-    // find the number of rows
-    // this will be the size of the largest column
-    int rowCount = 1;
-    for (final List<TableData> column : columns) {
-      rowCount = Math.max(rowCount, column.size());
-    }
-    setNumRows(rowCount);
-    for (int row = 0; row < rowCount; row++) {
-      for (int column = 0; column < columns.size(); column++) {
-        // if the column has that many items, add to the table, else add null
-        if (columns.get(column).size() > row) {
-          setValueAt(columns.get(column).get(row), row, column);
-        } else {
-          setValueAt(TableData.NULL, row, column);
-        }
-      }
-    }
-  }
-
-  @Override
-  public boolean isCellEditable(final int row, final int column) {
-    return false;
-  }
-}
-
-
-class Renderer implements TableCellRenderer {
-  JLabel m_stamp = new JLabel();
-
-  @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-      final boolean hasFocus, final int row, final int column) {
-    ((TableData) value).updateStamp(m_stamp);
-    return m_stamp;
-  }
-}
-
-
-class TableData {
-  static final TableData NULL = new TableData();
-  private int m_count;
-  private Optional<ImageIcon> m_icon;
-
-  private TableData() {}
-
-  TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged,
-      final boolean disabled, final IUIContext uiContext) {
-    m_count = count;
-    m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
-  }
-
-  public void updateStamp(final JLabel stamp) {
-    if (m_count == 0) {
-      stamp.setText("");
-      stamp.setIcon(null);
-    } else {
-      stamp.setText("x" + m_count);
-      if (m_icon.isPresent()) {
-        stamp.setIcon(m_icon.get());
-      }
-    }
-  }
-}
-
-
-class CasualtyNotificationPanel extends JPanel {
-  private static final long serialVersionUID = -8254027929090027450L;
-  private final DicePanel m_dice;
-  private final JPanel m_killed = new JPanel();
-  private final JPanel m_damaged = new JPanel();
-  private final GameData m_data;
-  private final IUIContext m_uiContext;
-
-  public CasualtyNotificationPanel(final GameData data, final IUIContext uiContext) {
-    m_data = data;
-    m_uiContext = uiContext;
-    m_dice = new DicePanel(uiContext, data);
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    add(m_dice);
-    add(m_killed);
-    add(m_damaged);
-  }
-
-  protected void setNotification(final DiceRoll dice, final Collection<Unit> killed,
-      final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
-    final boolean isEditMode = (dice == null);
-    if (!isEditMode) {
-      m_dice.setDiceRoll(dice);
-    }
-    m_killed.removeAll();
-    m_damaged.removeAll();
-    if (!killed.isEmpty()) {
-      m_killed.add(new JLabel("Killed"));
-    }
-    final Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
-    categorizeUnits(killedIter, false, false);
-    damaged.removeAll(killed);
-    if (!damaged.isEmpty()) {
-      m_damaged.add(new JLabel("Damaged"));
-    }
-    final Iterator<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
-    categorizeUnits(damagedIter, true, true);
-    invalidate();
-    validate();
-  }
-
-  protected void setNotificationShort(final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents) {
-    m_killed.removeAll();
-    if (!killed.isEmpty()) {
-      m_killed.add(new JLabel("Killed"));
-    }
-    final Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
-    categorizeUnits(killedIter, false, false);
-    invalidate();
-    validate();
-  }
-
-  private void categorizeUnits(final Iterator<UnitCategory> categoryIter, final boolean damaged,
-      final boolean disabled) {
-    while (categoryIter.hasNext()) {
-      final UnitCategory category = categoryIter.next();
-      final JPanel panel = new JPanel();
-      // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final Optional<ImageIcon> unitImage =
-          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-              damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
-      final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
-      panel.add(unit);
-      for (final UnitOwner owner : category.getDependents()) {
-        unit.add(m_uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), m_data));
-      }
-      panel.add(new JLabel("x " + category.getUnits().size()));
-      if (damaged) {
-        m_damaged.add(panel);
-      } else {
-        m_killed.add(panel);
-      }
-    }
-  }
-}

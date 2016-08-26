@@ -51,7 +51,7 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.battledisplay.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
