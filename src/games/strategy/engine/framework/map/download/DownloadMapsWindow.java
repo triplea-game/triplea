@@ -90,6 +90,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
     super("Download Maps");
+    setAlwaysOnTop(true);
     setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
