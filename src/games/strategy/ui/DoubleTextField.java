@@ -24,6 +24,10 @@ public class DoubleTextField extends JTextField {
     initTextField();
   }
 
+  public DoubleTextField(final double min) {
+    this();
+    setMin(min);
+  }
 
   public DoubleTextField(final double min, final double max) {
     this();
@@ -151,6 +155,10 @@ public class DoubleTextField extends JTextField {
 
   public void addChangeListener(final DoubleTextFieldChangeListener listener) {
     m_listeners.add(listener);
+  }
+
+  public void removeChangeListener(final DoubleTextFieldChangeListener listener) {
+    m_listeners.remove(listener);
   }
 
   private void notifyListeners() {

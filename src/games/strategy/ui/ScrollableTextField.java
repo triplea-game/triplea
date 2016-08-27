@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.ListenerList;
 
 public class ScrollableTextField extends JPanel {
@@ -40,7 +41,7 @@ public class ScrollableTextField extends JPanel {
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     add(m_text);
     Insets inset = new Insets(0, 0, 0, 0);
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       inset = new Insets(2, 0, 2, 0);
     }
     m_up = new JButton(s_up);

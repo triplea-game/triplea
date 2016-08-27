@@ -98,9 +98,9 @@ public class GameMenu {
 
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = SwingAction.of("Game Options", e -> {
+      final AbstractAction optionsAction = SwingAction.of("Map Options", e -> {
         final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
-        JOptionPane.showMessageDialog(frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
       });
       menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
     }

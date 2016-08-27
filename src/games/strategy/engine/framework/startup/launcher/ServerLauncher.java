@@ -166,20 +166,11 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet, m_headless);
       } catch (final Exception e) {
+        ClientLogger.logError("Failed to launch", e);
         m_abortLaunch = true;
-        Throwable error = e;
-        while (error.getMessage() == null) {
-          error = error.getCause();
-        }
-        final String message = error.getMessage();
+
         if (m_gameLoadingWindow != null) {
           m_gameLoadingWindow.doneWait();
-        }
-        if (!m_headless) {
-          SwingUtilities.invokeLater(
-              () -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE));
-        } else {
-          System.out.println(message);
         }
       }
       if (m_headless) {

@@ -17,6 +17,12 @@ import games.strategy.util.Tuple;
 public class BannedUsernameController {
   private static final Logger s_logger = Logger.getLogger(BannedUsernameController.class.getName());
 
+  /**
+   * Ban the username permanently
+   */
+  public void addBannedUsername(final String username) {
+    addBannedUsername(username, null);
+  }
 
   /**
    * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.

@@ -38,6 +38,10 @@ class AttachmentPropertyReset extends Change {
     return m_attachedTo;
   }
 
+  public String getAttachmentName() {
+    return m_attachmentName;
+  }
+
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);

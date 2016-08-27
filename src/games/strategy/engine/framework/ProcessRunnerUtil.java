@@ -8,6 +8,8 @@ import java.util.List;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.system.Memory;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.Version;
 
 /**
@@ -35,7 +37,7 @@ public class ProcessRunnerUtil {
     // add 64m to that to
     // compensate
     // final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-    final long maxMemory = GameRunner.getMaxMemoryInBytes();
+    final long maxMemory = Memory.getMaxMemoryInBytes();
     System.out.println("Setting memory for new triplea process to: " + (maxMemory / (1024 * 1024)) + "m");
     populateBasicJavaArgs(commands, newClasspath, maxMemory);
   }
@@ -63,7 +65,7 @@ public class ProcessRunnerUtil {
         }
       }
     }
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
@@ -85,7 +87,7 @@ public class ProcessRunnerUtil {
     // since we are setting the xmx already, we need to
     // make sure this property is set so that triplea
     // doesn't restart
-    commands.add("-D" + GameRunner.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
+    commands.add("-D" + Memory.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
   }
 
   public static void exec(final List<String> commands) {

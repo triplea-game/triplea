@@ -535,7 +535,9 @@ public class MapPanel extends ImageScrollerLargeView {
       t.scale(m_scale, m_scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }
-    routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+    if (routeDescription != null) {
+      routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+    }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
     this.images.clear();

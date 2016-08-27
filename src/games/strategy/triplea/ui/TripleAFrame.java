@@ -103,6 +103,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
@@ -566,7 +567,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     this.setVisible(false);
     TripleAFrame.this.dispose();
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       // this frame should not handle shutdowns anymore
       MacQuitMenuWrapper.unregisterShutdownHandler();
     }

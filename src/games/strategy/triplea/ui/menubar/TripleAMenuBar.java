@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
@@ -98,7 +99,7 @@ public class TripleAMenuBar extends JMenuBar {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
 
@@ -132,7 +133,7 @@ public class TripleAMenuBar extends JMenuBar {
       }
       File f = fileChooser.getSelectedFile();
       // disallow sub directories to be entered (in the form directory/name) for Windows boxes
-      if (GameRunner.isWindows()) {
+      if (SystemProperties.isWindows()) {
         final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
         final String filePath = f.getPath().substring(0, slashIndex);
         if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
