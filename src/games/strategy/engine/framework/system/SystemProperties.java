@@ -11,9 +11,6 @@ package games.strategy.engine.framework.system;
 // final + private constructor to disallow inheritance, all access to the system is static
 public final class SystemProperties {
 
-  private enum SystemPropertyKey {
-  }
-
   private SystemProperties() {
 
   }

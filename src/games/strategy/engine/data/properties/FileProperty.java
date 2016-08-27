@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.system.SystemProperties;
 
