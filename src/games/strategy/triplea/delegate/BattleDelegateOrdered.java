@@ -1,16 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -59,18 +50,13 @@ public class BattleDelegateOrdered extends BattleDelegate {
     // only initialize once
 
     
-    Territory lastAmphib = null;
-    Territory lastNonAmphib = null;
-    Territory t;
     IBattle battle;
-    Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(true).iterator(); // get bombing/air raids
-    while( battleTerritories.hasNext() ) {
-      t = battleTerritories.next();
+    for( final Territory t : m_battleTracker.getPendingBattleSites(true) ) {   // loop throught bombing/air raids
       battle = m_battleTracker.getPendingBattle(t, true, null);
       if( battle == null ) {
         try {
           throw new Exception("Air/Bombing Raid gone missing in BattleDelegate");
-        } catch( Exception e ) {
+        } catch( Exception e ) {  // Will crash below
         }
       }
       battle.fight(m_bridge);
@@ -80,65 +66,57 @@ public class BattleDelegateOrdered extends BattleDelegate {
       }
     }
 
-    battleTerritories = m_battleTracker.getPendingBattleSites(false).iterator();      // Get normal combats
-    int landBattleCount = 0;
+    int otherBattleCount = 0;
     int amphibCount = 0;
-    while (battleTerritories.hasNext()) {
-      t = battleTerritories.next();
+    IBattle lastAmphib = null;
+    for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
       battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
       // we only care about battles where we must fight
       // this check is really to avoid implementing getAttackingFrom() in other battle subclasses
-      if (!(battle instanceof MustFightBattle) || t.isWater() ) {
+      if (!(battle instanceof MustFightBattle) ) {
         continue;
       }
-      landBattleCount++;
-      final Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
-      final Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
-      while (bombardingTerritories.hasNext()) {
-        final Territory neighbor = bombardingTerritories.next();
-        if (!neighbor.isWater() || Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir) ) continue;
-        amphibCount++;
-        lastAmphib = t;
+      if( !t.isWater() ) {
+        final Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
+        for( final Territory neighbor : ((MustFightBattle) battle).getAttackingFrom() ) {
+          if (!neighbor.isWater() || Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir) ) {
+            continue;
+          }
+          amphibCount++;
+          lastAmphib = battle;
+          break;
+        }
       }
-      if( lastAmphib != t ) {
-        lastNonAmphib = t;  // If we didn't find amphibious then it was the last non-amphib, obviously. Did this need a comment?
+      if( lastAmphib != battle ) {
+        otherBattleCount++;
       }
     }
 
-    if( amphibCount > 1 ) return;
+    if( amphibCount > 1 ) {
+      return;
+    }
 
     // Fight amphibious assault if there is one. Fight naval battles in random order if prerequisites first.
-    while( amphibCount > 0
-        && (battle = m_battleTracker.getPendingBattle( lastAmphib, false, BattleType.NORMAL )) != null
-        && battle instanceof MustFightBattle ) {
-      if( m_currentBattle != null && m_currentBattle != battle ) {
-        m_currentBattle.fight(m_bridge);
-        continue;
+    if( amphibCount > 0 ) {
+      if( m_currentBattle != null && m_currentBattle != lastAmphib ) {      // Not completely sure if this is needed but was in other code and does no harm
+        m_currentBattle.fight( m_bridge );
       }
       
       // are there battles that must occur first
-      final Collection<IBattle> allMustPrecede = m_battleTracker.getDependentOn(battle);
-      if (!allMustPrecede.isEmpty()) {
-        final Iterator<IBattle> seaBattles = allMustPrecede.iterator();
-        do {
-          battle = seaBattles.next();
-        } while( ! (battle instanceof MustFightBattle ) && seaBattles.hasNext() );
+      for( final IBattle seaBattle : m_battleTracker.getDependentOn(lastAmphib) ) {
+        if( seaBattle instanceof MustFightBattle && seaBattle != null ) {
+          seaBattle.fight( m_bridge );
+          otherBattleCount--;
+        }
       }
-      if( battle != null ) {
-        battle.fight(m_bridge);
-        if( battle.getTerritory() == lastAmphib ) landBattleCount--;            // Reduce count of battles only if we've found the actual amphibious assault, not a dependent sea battle
-      }
+      lastAmphib.fight( m_bridge );
     }
 
-    if( landBattleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
-      battle = m_battleTracker.getPendingBattle( lastNonAmphib, false, BattleType.NORMAL );
-      if( battle != null ) {
-        battle.fight(m_bridge);
-      }
-      else {
-        try {
-          throw new Exception( "Non amphib battle not found" );
-        } catch( Exception e ) {
+    if( otherBattleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
+      for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Will only find one
+        battle = m_battleTracker.getPendingBattle( t, false, BattleType.NORMAL );
+        if( battle instanceof MustFightBattle ) {
+          battle.fight( m_bridge );
         }
       }
     }
