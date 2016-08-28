@@ -2,11 +2,9 @@ package games.strategy.triplea.delegate;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.List;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.AbstractBattle;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -43,7 +41,6 @@ public class BattleDelegateOrdered extends BattleDelegate {
     for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
       final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
       boolean amphib = false;
-      System.out.println(t.getName());
       if( battle instanceof NonFightingBattle        // Remove non fighting battles by fighting them automatically
        || Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport) ) { // Also fight all battles with only TTs defending 
         battle.fight( m_bridge );
@@ -61,9 +58,6 @@ public class BattleDelegateOrdered extends BattleDelegate {
           amphib = true;
           break;
         }
-        if( amphib ) {
-          System.out.format("amphib in %s\n", t.getName());
-        }
         // If there is no dependent sea battle and no retreat, fight it now 
         if( amphib && m_battleTracker.getDependentOn(fightingBattle).isEmpty() && !fightingBattle.canAttackerRetreatSome() ) {
           fightingBattle.fight( m_bridge );
@@ -80,6 +74,7 @@ public class BattleDelegateOrdered extends BattleDelegate {
       }
     }
 
+    // If there is more than one amphibious assault with a possibility of a real attacker decision, then don't do anything more.
     if( amphibCount > 1 ) {
       return;
     }
