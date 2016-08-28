@@ -61,10 +61,7 @@ public class BattleDelegateOrdered extends BattleDelegate {
         // If there is no dependent sea battle and no retreat, fight it now 
         if( amphib && m_battleTracker.getDependentOn(fightingBattle).isEmpty() && !fightingBattle.canAttackerRetreatSome() ) {
           fightingBattle.fight( m_bridge );
-          lastAmphib = null;
-          continue;
         } else if( amphib ) {
-          System.out.println("Stored");
           amphibCount++;
           lastAmphib = battle;
         }
