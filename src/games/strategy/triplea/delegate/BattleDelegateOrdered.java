@@ -2,41 +2,15 @@ package games.strategy.triplea.delegate;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.List;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.AutoSave;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.message.IRemote;
-import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.MapSupport;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AbstractBattle;
+import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.IBattle.WhoWon;
-import games.strategy.triplea.delegate.dataObjects.BattleListing;
-import games.strategy.triplea.delegate.dataObjects.BattleRecord;
-import games.strategy.triplea.delegate.remote.IBattleDelegate;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-import games.strategy.util.Tuple;
 
 public class BattleDelegateOrdered extends BattleDelegate {
 
@@ -46,48 +20,62 @@ public class BattleDelegateOrdered extends BattleDelegate {
   @Override
   public void start() {
     super.start();
-    // we may start multiple times due to loading after saving
-    // only initialize once
-
-    
-    IBattle battle;
-    for( final Territory t : m_battleTracker.getPendingBattleSites(true) ) {   // loop throught bombing/air raids
-      battle = m_battleTracker.getPendingBattle(t, true, null);
-      if( battle == null ) {
+    // Fight all air and bombing raids
+    for( final Territory t : m_battleTracker.getPendingBattleSites(true) ) {   // loop through bombing/air raids
+      final IBattle raid = m_battleTracker.getPendingBattle(t, true, null);             // Get air/bombing raid for current territory
+      if( raid == null ) {
         try {
           throw new Exception("Air/Bombing Raid gone missing in BattleDelegate");
         } catch( Exception e ) {  // Will crash below
         }
       }
-      battle.fight(m_bridge);
-      battle = m_battleTracker.getPendingBattle(t, true, BattleType.BOMBING_RAID );  // check to see if there's still a bombing raid for the territory - i.e. previous battle was an air raid
-      if( battle != null ) {
-        battle.fight(m_bridge);
+      raid.fight(m_bridge);
+      final IBattle bombingRaid = m_battleTracker.getPendingBattle(t, true, BattleType.BOMBING_RAID );  // check to see if there's still a bombing raid for the territory - i.e. previous battle was an air raid
+      if( bombingRaid != null ) {
+        bombingRaid.fight(m_bridge);
       }
     }
 
+    // Fight all amphibious assaults with no retreat option for the attacker and no sea combat
     int otherBattleCount = 0;
     int amphibCount = 0;
     IBattle lastAmphib = null;
     for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
-      battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
-      // we only care about battles where we must fight
-      // this check is really to avoid implementing getAttackingFrom() in other battle subclasses
-      if (!(battle instanceof MustFightBattle) ) {
+      final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+      boolean amphib = false;
+      System.out.println(t.getName());
+      if( battle instanceof NonFightingBattle        // Remove non fighting battles by fighting them automatically
+       || Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport) ) { // Also fight all battles with only TTs defending 
+        battle.fight( m_bridge );
+        continue;
+      } else if (!(battle instanceof MustFightBattle) ) {
         continue;
       }
+      final MustFightBattle fightingBattle = (MustFightBattle) battle;
       if( !t.isWater() ) {
-        final Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
-        for( final Territory neighbor : ((MustFightBattle) battle).getAttackingFrom() ) {
+        final Map<Territory, Collection<Unit>> attackingFromMap = fightingBattle.getAttackingFromMap();
+        for( final Territory neighbor : fightingBattle.getAttackingFrom() ) {
           if (!neighbor.isWater() || Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir) ) {
             continue;
           }
-          amphibCount++;
-          lastAmphib = battle;
+          amphib = true;
           break;
         }
+        if( amphib ) {
+          System.out.format("amphib in %s\n", t.getName());
+        }
+        // If there is no dependent sea battle and no retreat, fight it now 
+        if( amphib && m_battleTracker.getDependentOn(fightingBattle).isEmpty() && !fightingBattle.canAttackerRetreatSome() ) {
+          fightingBattle.fight( m_bridge );
+          lastAmphib = null;
+          continue;
+        } else if( amphib ) {
+          System.out.println("Stored");
+          amphibCount++;
+          lastAmphib = battle;
+        }
       }
-      if( lastAmphib != battle ) {
+      if( !amphib ) {
         otherBattleCount++;
       }
     }
@@ -96,7 +84,7 @@ public class BattleDelegateOrdered extends BattleDelegate {
       return;
     }
 
-    // Fight amphibious assault if there is one. Fight naval battles in random order if prerequisites first.
+    // Fight amphibious assault if there is one remaining. Fight naval battles in random order if prerequisites first.
     if( amphibCount > 0 ) {
       if( m_currentBattle != null && m_currentBattle != lastAmphib ) {      // Not completely sure if this is needed but was in other code and does no harm
         m_currentBattle.fight( m_bridge );
@@ -114,9 +102,9 @@ public class BattleDelegateOrdered extends BattleDelegate {
 
     if( otherBattleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
       for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Will only find one
-        battle = m_battleTracker.getPendingBattle( t, false, BattleType.NORMAL );
-        if( battle instanceof MustFightBattle ) {
-          battle.fight( m_bridge );
+        final IBattle lastBattle = m_battleTracker.getPendingBattle( t, false, BattleType.NORMAL );
+        if( lastBattle instanceof MustFightBattle ) {
+          lastBattle.fight( m_bridge );
         }
       }
     }
