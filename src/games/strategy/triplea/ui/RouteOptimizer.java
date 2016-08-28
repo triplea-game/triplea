@@ -42,9 +42,14 @@ public class RouteOptimizer {
   public Point[] getTranslatedRoute(Point... route) {
     mapWidth = mapPanel.getImageWidth();
     mapHeight = mapPanel.getImageHeight();
-    if ((!isInfiniteX && !isInfiniteY) || route == null || route.length == 0) {
-      // If the Map is not infinite scrolling, we can safely return the given Points
+    if (route == null || route.length == 0) {
       // Or the array is too small
+
+      return route;
+    }
+    if (!isInfiniteX && !isInfiniteY) {
+      // If the Map is not infinite scrolling, we can safely return the given Points
+      endPoint = route[route.length - 1];
       return route;
     }
     List<Point> result = new ArrayList<>();
