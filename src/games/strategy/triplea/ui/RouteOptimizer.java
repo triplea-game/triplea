@@ -43,12 +43,12 @@ public class RouteOptimizer {
     mapWidth = mapPanel.getImageWidth();
     mapHeight = mapPanel.getImageHeight();
     if (route == null || route.length == 0) {
-      // If the Map is not infinite scrolling, we can safely return the given Points
       // Or the array is too small
 
       return route;
     }
     if (!isInfiniteX && !isInfiniteY) {
+      // If the Map is not infinite scrolling, we can safely return the given Points
       endPoint = route[route.length - 1];
       return route;
     }
