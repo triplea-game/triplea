@@ -45,6 +45,9 @@ public class RouteOptimizer {
     if ((!isInfiniteX && !isInfiniteY) || route == null || route.length == 0) {
       // If the Map is not infinite scrolling, we can safely return the given Points
       // Or the array is too small
+      if (!isInfiniteX && !isInfiniteY) {
+        endPoint = route[route.length - 1];
+      }
       return route;
     }
     List<Point> result = new ArrayList<>();
