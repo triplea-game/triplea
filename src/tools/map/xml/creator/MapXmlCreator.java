@@ -60,12 +60,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import org.xml.sax.SAXException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.ui.SwingAction;
 import tools.image.FileSave;

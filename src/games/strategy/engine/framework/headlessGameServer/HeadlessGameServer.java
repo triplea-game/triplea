@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
@@ -688,13 +686,5 @@ public class HeadlessGameServer {
    */
   private static void handleCommandLineArgs(final String[] args) {
     GameRunner.handleCommandLineArgs(args, getProperties(), GameRunner.GameMode.HEADLESS_BOT);
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
   }
 }

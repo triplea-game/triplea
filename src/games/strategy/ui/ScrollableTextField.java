@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.ListenerList;
 
