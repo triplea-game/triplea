@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import java.util.Collection;
-import java.util.Map;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -40,7 +39,6 @@ public class BattleDelegateOrdered extends BattleDelegate {
     IBattle lastAmphib = null;
     for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
       final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
-      boolean amphib = false;
       if( battle instanceof NonFightingBattle        // Remove non fighting battles by fighting them automatically
        || Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport) ) { // Also fight all battles with only TTs defending 
         battle.fight( m_bridge );
@@ -48,25 +46,15 @@ public class BattleDelegateOrdered extends BattleDelegate {
       } else if (!(battle instanceof MustFightBattle) ) {
         continue;
       }
-      final MustFightBattle fightingBattle = (MustFightBattle) battle;
-      if( !t.isWater() ) {
-        final Map<Territory, Collection<Unit>> attackingFromMap = fightingBattle.getAttackingFromMap();
-        for( final Territory neighbor : fightingBattle.getAttackingFrom() ) {
-          if (!neighbor.isWater() || Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir) ) {
-            continue;
-          }
-          amphib = true;
-          break;
-        }
+      if( battle.isAmphibious() ) {
         // If there is no dependent sea battle and no retreat, fight it now 
-        if( amphib && m_battleTracker.getDependentOn(fightingBattle).isEmpty() && !fightingBattle.canAttackerRetreatSome() ) {
-          fightingBattle.fight( m_bridge );
-        } else if( amphib ) {
+        if( m_battleTracker.getDependentOn(battle).isEmpty() && !( (MustFightBattle) battle).canAttackerRetreatSome() ) {
+          battle.fight( m_bridge );
+        } else {
           amphibCount++;
           lastAmphib = battle;
         }
-      }
-      if( !amphib ) {
+      } else {
         otherBattleCount++;
       }
     }
