@@ -8,6 +8,11 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.util.Match;
 
+/**
+ * This is to support the new maps added to world_war_ii_global which enforce strategic bombing first in the combat order @MapSupport
+ * @author simon
+ *
+ */
 public class BattleDelegateOrdered extends BattleDelegate {
   // Fight all air and bombing raids which are supposed to be fought first. Order shouldn't matter because there won't normally be an attacker decision
   private void stratBombing() {
