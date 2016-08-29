@@ -11,7 +11,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.lobby.server.headless.HeadlessLobbyConsole;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;

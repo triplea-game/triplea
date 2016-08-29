@@ -105,7 +105,7 @@ Task and Issue Tracking
 ========================
 
 * Discussion - technical discussions, anything non-technical should be pushed to forum
-* Feature Backlog (prefer feature over wishlist) - prioritized list of potential features
+* Feature Backlog - prioritized list of potential features
 * Bug Backlog - prioritized list of bugs to fix
 * Infra/Code Backlog - prioritized list of build, infra, code improvement, process, misc issues
 * Next Release - what we are currently targeting for the next release (anything in progress should have an assignee)
