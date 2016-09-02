@@ -23,6 +23,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
@@ -71,7 +72,7 @@ public class GameDataManager {
         }
         final String error = "<html>Incompatible engine versions, and no old engine found. We are: "
             + ClientContext.engineVersion().getVersion() + " . Trying to load game created with: " + readVersion
-            + "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
+            + "<br>To download the latest version of TripleA, Please visit " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE + "</html>";
         if (savegamePath == null) {
           throw new IOException(error);
         }
@@ -125,7 +126,7 @@ public class GameDataManager {
                 + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
                 + "<br><br>This TripleA engine is version " + ClientContext.engineVersion().getVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
-                + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
+                + "<br><br>To download the latest version of TripleA, Please visit " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
                 + "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
         final int answer =

@@ -274,7 +274,7 @@ public class HelpMenu {
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='" + UrlConstants.SOURCE_FORGE + "'>" + UrlConstants.SOURCE_FORGE + "</a></b><br><br>";
+        + "<b><a hlink='" + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setBorder(null);
     editorPane.setBackground(backgroundColor);
