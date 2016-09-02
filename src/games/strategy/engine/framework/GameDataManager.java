@@ -55,11 +55,8 @@ public class GameDataManager {
     }
   }
 
-  public GameData loadGame(final InputStream input, final String path) throws IOException {
-    return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
-  }
-
-  public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException {
+  public GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
+    ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
