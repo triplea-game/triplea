@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ import games.strategy.util.UrlStreams;
  * Utility for managing where images and property files for maps and units should be loaded from.
  * Based on java Classloaders.
  */
-public class ResourceLoader {
+public class ResourceLoader implements Closeable {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
 
@@ -159,6 +160,7 @@ public class ResourceLoader {
     m_loader = new URLClassLoader(urls);
   }
 
+  @Override
   public void close() {
     try {
       m_loader.close();
