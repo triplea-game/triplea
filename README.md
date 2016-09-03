@@ -66,8 +66,8 @@ Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore w
 Development 
 ====================================
 - [Initiatives and Projects](https://github.com/triplea-game/triplea/issues/1073)
-- [Code format](https://github.com/triplea-game/triplea/wiki/Code-Format) and conventions
 - [Bug backlog](https://github.com/triplea-game/triplea/issues?q=is%3Aissue+is%3Aopen+label%3A%22Bug+Backlog%22)
+- [Developer and Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs)
 
  
 Build system
