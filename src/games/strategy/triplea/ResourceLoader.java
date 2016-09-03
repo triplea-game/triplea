@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +24,12 @@ import games.strategy.util.UrlStreams;
  * Utility for managing where images and property files for maps and units should be loaded from.
  * Based on java Classloaders.
  */
-public class ResourceLoader {
+public class ResourceLoader implements Closeable {
   private final URLClassLoader m_loader;
   public static String RESOURCE_FOLDER = "assets";
+
+  private final ResourceLocationTracker resourceLocationTracker;
+
 
   public static ResourceLoader getGameEngineAssetLoader() {
     return getMapResourceLoader("");
@@ -55,7 +59,7 @@ public class ResourceLoader {
 
     dirs.add(resourceFolder.getAbsolutePath());
 
-    return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
+    return new ResourceLoader(mapName, dirs.toArray(new String[dirs.size()]));
   }
 
   protected static String normalizeMapZipName(final String zipName) {
@@ -91,6 +95,9 @@ public class ResourceLoader {
     candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
 
     final String normalizedZipName = normalizeMapZipName(zipName);
+
+    // clicking github 'clone or download' and downloading the zip gives a zip that ends with "-master.zip"
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizeMapZipName(mapName) + "-master.zip"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
     final Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
@@ -128,15 +135,8 @@ public class ResourceLoader {
     return rVal;
   }
 
-  public void close() {
-    try {
-      m_loader.close();
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
 
-  private ResourceLoader(final String[] paths) {
+  private ResourceLoader(final String mapName, final String[] paths) {
     final URL[] urls = new URL[paths.length];
     for (int i = 0; i < paths.length; i++) {
       final File f = new File(paths[i]);
@@ -153,10 +153,20 @@ public class ResourceLoader {
         throw new IllegalStateException(e.getMessage());
       }
     }
+    resourceLocationTracker = new ResourceLocationTracker(mapName, urls);
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     m_loader = new URLClassLoader(urls);
+  }
+
+  @Override
+  public void close() {
+    try {
+      m_loader.close();
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
+    }
   }
 
   public boolean hasPath(final String path) {
@@ -165,11 +175,12 @@ public class ResourceLoader {
   }
 
   /**
-   * @param path
+   * @param inputPath
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
    */
-  public URL getResource(final String path) {
+  public URL getResource(final String inputPath) {
+    String path = resourceLocationTracker.getMapPrefix() + inputPath;
     URL defaultUrl = null;
     // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
     // map.zip))
