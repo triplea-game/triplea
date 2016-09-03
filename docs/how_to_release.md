@@ -124,6 +124,20 @@ The forum post will be similar to past forum posts (example: http://tripleadev.1
 
 Also go create the forum thread on the following 3 websites: http://tripleadev.1671093.n2.nabble.com/Announcements-f1671668.html (pin it, and make sure only the latest stable (and unstable if applicable) are pinned), http://www.axisandallies.org/forums/index.php?board=53.0, and http://www.tripleawarclub.org/modules/newbb/viewforum.php?forum=1.  
 
+## Update the website main page and news page
+
+We need to update the website’s main page, and also the news page.  These two files are under source control of the TripleAMaps svn, under `developer resources/triplea web/`.  The two files are `TripleA` and `News`.  Follow the format provided and change the links and text to point to new version you are releasing.  If you are releasing an unstable version, please do not delete the links and text to the stable version, as we want to provide both, so just make a copy under the stable version and change that.  You will then need to upload these to the sourceforge web server for our main site.  To do so, use SFTP to upload to `web.sourceforge.net` with your username and password, and then our project’s files will be in location `/home/project-web/t/tr/triplea/htdocs/`.  Remember to commit changes back to the repo.  
+
+## Point new versions to the lobby using the server_x.x.x.x.properties file:  
+
+We control which versions access which online lobbies, using a server_x.x.x.x.properties file (example: `server_1.8.0.7.properties`).  These files are under source control of the TripleAMaps svn, under `developer resources/triplea web/lobby/`.  We generally only allow access to the lobby to the latest stable, unstable, and development versions.  In the past, we actually had different lobbies for each of these, however they were unified into a single lobby in late 2013, and games just show which version they are.  (If we ever break any of the API’s for the lobby, then we will need to have separate lobbies again, but hopefully we never have to do that.)  The fields for the server properties file are:  
+1.	`HOST=<ip or domain>` -> This is the server that hosts our lobby.  
+2.	`PORT=3303` -> This is the port which our lobby server is using.  If we have separate lobbies, they will be on different ports, but otherwise this number should always be 3303.  
+3.	`MESSAGE=\nVeqryn welcomes you to the new …….` -> This is the message that will appear to users in the chat panel when they first join the lobby.  You will need to update this to reflect any changed version number and links.  
+4.	`ERROR_MESSAGE=Please update by downloading newest version of TripleA: http://sourceforge.net/projects/triplea/files/` -> This is the error message that will be shown to users when they try to join the lobby with this version of triplea (based on the name of the file).  IF this is not empty, then the message will be shown.  IF it is empty, they will be allowed to join.  This is how we control access to the lobby, and keep everyone in the lobby using the same version (or couple versions) of triplea.  
+Once the new server property file is ready, you will need to upload it to both web servers.  The files are actually located on 2 different web servers, that way if one goes down we have a backup.  You will upload it to both the `triplea.sourceforge.net` web server, and also so `tripleawarclub.org` web server.`  Do this by scp’ing, or using win-scp, to upload it to `/srv/www/ tripleawarclub.org/public_html/lobby/` on the `tripleawarclub.org` web server, and by using SFTP to upload to `web.sourceforge.net` with your username and password, and then our project’s files will be in location `/home/project-web/t/tr/triplea/htdocs/`.  
+We generally give 2-3 weeks for people on an old stable, or old unstable, to migrate to the new version, before we turn off access to the old version.    
+
 
 
 
