@@ -38,6 +38,11 @@ Map Maker Setup
 ================
 See: https://github.com/triplea-maps/Project
 
+Development 
+===========
+- [Initiatives and Projects](https://github.com/triplea-game/triplea/issues/1073)
+- [Bug backlog](https://github.com/triplea-game/triplea/issues?q=is%3Aissue+is%3Aopen+label%3A%22Bug+Backlog%22)
+- [Developer and Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs)
 
 Developer Setup
 =================
@@ -63,13 +68,6 @@ Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore w
   - *Troubleshooting*
     - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
 
-Development 
-====================================
-- [Initiatives and Projects](https://github.com/triplea-game/triplea/issues/1073)
-- [Bug backlog](https://github.com/triplea-game/triplea/issues?q=is%3Aissue+is%3Aopen+label%3A%22Bug+Backlog%22)
-- [Developer and Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs)
-
- 
 Build system
 ============
 
