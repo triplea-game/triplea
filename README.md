@@ -68,8 +68,8 @@ Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore w
   - *Troubleshooting*
     - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
 
-Build system
-============
+Development - Building
+======================
 
 [Gradle](http://gradle.org) is used. The gradlew (on Windows gradlew.bat) file is a proxy to execute build commands. 
 On first call these files will install the correct version of Gradle on your system. Most commonly used commands:
@@ -101,8 +101,9 @@ Building Game Installers and Travis Deployment
 
 On each and every merge to master, travis picks up, runs gradle, which then invokes builds, tests, and invokes install4j to create game installers. Travis then is configured to push the installer files to [github releases ](https://github.com/triplea-game/triplea/releases)
 
-More documentation on how build system is configured can be found on the [triplea github wiki]
-(https://github.com/triplea-game/triplea/wiki/Continuous-Build-Process-Configs)
+More documentation on how build system is configured can be found in  the [/docs]
+(https://github.com/triplea-game/triplea/blob/master/docs/build_process.md)
+
 
 
 Task and Issue Tracking
