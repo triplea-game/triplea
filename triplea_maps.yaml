@@ -1,54 +1,54 @@
 - mapName: MiniMap
   mapCategory: BEST
-  url: https://github.com/triplea-maps/minimap/releases/download/0.17/minimap.zip
+  url: https://github.com/triplea-maps/minimap/archive/master.zip
   version: 1
   description: |
-    <br>Mini
+    <br>
 - mapName: Big World
   mapCategory: BEST
-  url: https://github.com/triplea-maps/big_world/releases/download/0.10/big_world.zip
+  url: https://github.com/triplea-maps/big_world/archive/master.zip
   version: 1
   description: |
     <br>WWII style map
 - mapName: Great War
   mapCategory: BEST
-  url: https://github.com/triplea-maps/great_war/releases/download/0.13/great_war.zip
+  url: https://github.com/triplea-maps/great_war/archive/master.zip
   version: 1
   description: |
     <br>WWI map
 - mapName: Capture the Flag
   mapCategory: BEST
-  url: https://github.com/triplea-maps/capture_the_flag/releases/download/0.11/capture_the_flag.zip
+  url: https://github.com/triplea-maps/capture_the_flag/archive/master.zip
   version: 1
   description: |
     <br>Small even balanced map
 - mapName: Middle Earth
   mapCategory: BEST
-  url: https://github.com/triplea-maps/middle_earth/releases/download/0.13/middle_earth.zip
+  url: https://github.com/triplea-maps/middle_earth/archive/master.zip
   version: 1
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empire
   mapCategory: BEST
-  url: https://github.com/triplea-maps/napoleonic_empire/releases/download/0.13/napoleonic_empire.zip
+  url: https://github.com/triplea-maps/napoleonic_empire/archive/master.zip
   version: 1
   description: |
     <br>Preindustrial Napoleonic era European conquest
 - mapName: New World Order
-  url: https://github.com/triplea-maps/new_world_order/releases/download/0.21/new_world_order.zip
+  url: https://github.com/triplea-maps/new_world_order/archive/master.zip
   mapCategory: BEST
   version: 1
   description: |
     <br>Classic european theatre World War II Map
 - mapName: The Pact of Steel
   mapCategory: BEST
-  url: https://github.com/triplea-maps/the_pact_of_steel/releases/download/0.28/the_pact_of_steel.zip
+  url: https://github.com/triplea-maps/the_pact_of_steel/archive/master.zip
   version: 1
   description: |
     <br>Revised World War II map with Italian Axis Power
 - mapName: Total_World_War
   mapCategory: BEST
-  url: https://github.com/triplea-maps/total_world_war/releases/download/0.18/total_world_war.zip
+  url: https://github.com/triplea-maps/total_world_war/archive/master.zip
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
@@ -112,7 +112,7 @@
     <br>
 - mapName: 270BC
   mapCategory: BEST
-  url: https://github.com/triplea-maps/270bc/releases/download/0.13/270bc.zip
+  url: https://github.com/triplea-maps/270bc/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_270BC_mini.png
   description: |
     <br> by Dr.Che
@@ -120,7 +120,7 @@
   version: 1
 - mapName: Civil_War
   mapCategory: BEST
-  url: https://github.com/triplea-maps/civil_war/releases/download/0.19/civil_war.zip
+  url: https://github.com/triplea-maps/civil_war/archive/master.zip
   img: https://cloud.githubusercontent.com/assets/12397753/18229195/05ef3d68-7224-11e6-9698-f21923d51858.png
   description: |
     <br>Civil_War
@@ -162,7 +162,7 @@
   version: 1
 - mapName: World_At_War
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_at_war/releases/download/0.23/world_at_war.zip
+  url: https://github.com/triplea-maps/world_at_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png" />
     <br>
@@ -177,7 +177,7 @@
   version: 1
 - mapName: The_Rising_Sun
   mapCategory: BEST
-  url: https://github.com/triplea-maps/the_rising_sun/releases/download/0.9/the_rising_sun.zip
+  url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_the_rising_sun_mini.png" />
     <br>
@@ -193,7 +193,7 @@
   version: 1
 - mapName: Diplomacy
   mapCategory: BEST
-  url: https://github.com/triplea-maps/diplomacy/releases/download/0.18/diplomacy.zip
+  url: https://github.com/triplea-maps/diplomacy/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mini.png" />
     <br>An adaptation of the game "Diplomacy" for TripleA.
@@ -220,7 +220,7 @@
   version: 1
 - mapName: World War II Classic
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_classic/releases/download/0.9/world_war_ii_classic.zip
+  url: https://github.com/triplea-maps/world_war_ii_classic/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
     <br>
@@ -233,7 +233,7 @@
   version: 1
 - mapName: World War II Revised
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_revised/releases/download/0.11/world_war_ii_revised.zip
+  url: https://github.com/triplea-maps/world_war_ii_revised/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_revised_mini.png" />
     <br>
@@ -246,7 +246,7 @@
   version: 1
 - mapName: World War II v3
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_v3/releases/download/0.13/world_war_ii_v3.zip
+  url: https://github.com/triplea-maps/world_war_ii_v3/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1941_mini.png" />
     <br>
@@ -256,7 +256,7 @@
   version: 1
 - mapName: World War II v4
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_v4/releases/download/0.13/world_war_ii_v4.zip
+  url: https://github.com/triplea-maps/world_war_ii_v4/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_1942_mini.png" />
     <br>
@@ -267,7 +267,7 @@
   version: 1
 - mapName: World War II Pacific
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_pacific/releases/download/0.24/world_war_ii_pacific.zip
+  url: https://github.com/triplea-maps/world_war_ii_pacific/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_pacific_1940_mini.png" />
     <br>
@@ -287,7 +287,7 @@
   version: 1
 - mapName: World War II Europe
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_europe/releases/download/0.13/world_war_ii_europe.zip
+  url: https://github.com/triplea-maps/world_war_ii_europe/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_europe_1940_mini.png" />
     <br>
@@ -305,7 +305,7 @@
   version: 1
 - mapName: World War II Global
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_global/releases/download/0.27/world_war_ii_global.zip
+  url: https://github.com/triplea-maps/world_war_ii_global/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png" />
     <br>
@@ -326,7 +326,7 @@
   version: 1
 - mapName: World War II v5 1942
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_v5_1942/releases/download/0.13/world_war_ii_v5_1942.zip
+  url: https://github.com/triplea-maps/world_war_ii_v5_1942/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v5_1942_mini.png" />
     <br>
@@ -345,7 +345,7 @@
   version: 1
 - mapName: World War II v6 1941
   mapCategory: BEST
-  url: https://github.com/triplea-maps/world_war_ii_v6_1941/releases/download/0.13/world_war_ii_v6_1941.zip
+  url: https://github.com/triplea-maps/world_war_ii_v6_1941/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v6_1941_mini.png" />
     <br><b>World War II v6 1941</b>
@@ -364,7 +364,7 @@
   version: 1
 - mapName: Age of Tribes
   mapCategory: DEVELOPMENT
-  url: https://github.com/triplea-maps/age_of_tribes/releases/download/0.206/age_of_tribes.zip
+  url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
   description: |  
     <img src="https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/AoT_mini.png" />
     <br>
@@ -383,7 +383,7 @@
   version: 1
 - mapName: big_world_1939
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/big_world_1939/releases/download/0.15/big_world_1939.zip
+  url: https://github.com/triplea-maps/big_world_1939/archive/master.zip
   description: |
     <img src="https://github.com/KaiMAD/big_world_1939/blob/master/screenshot.png" />
     <br>
@@ -409,7 +409,7 @@
     <br> France (12 players total). 
     <br> Note: This map is set in late 1939; America was not yet part of the war. 
     <br> However, it was entirely an option for them to begin fighting, so they are included as a player.
-- url: https://github.com/triplea-maps/big_world_2/releases/download/0.17/big_world_2.zip
+- url: https://github.com/triplea-maps/big_world_2/archive/master.zip
   mapCategory: GOOD
   mapName: big_world_2
   description: |
@@ -448,7 +448,7 @@
   version: 1
 - mapName: Ultimate_World
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/ultimate_world/releases/download/0.13/ultimate_world.zip
+  url: https://github.com/triplea-maps/ultimate_world/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ultimate_world_mini.png" />
     <br>
@@ -461,7 +461,7 @@
   version: 1
 - mapName: Battle_of_Jutland
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/battle_of_jutland/releases/download/0.13/battle_of_jutland.zip
+  url: https://github.com/triplea-maps/battle_of_jutland/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_battle_of_jutland_mini.png" />
     <br><b><em>The Battle of Jutland
@@ -552,7 +552,7 @@
   version: 1
 - mapName: Red_Sun_Over_China
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/red_sun_over_china/releases/download/0.8/red_sun_over_china.zip
+  url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_red_sun_over_china_mini.png" />
     <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938. 
@@ -565,7 +565,7 @@
   version: 1
 - mapName: FeudalJapan
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/feudal_japan/releases/download/0.11/feudal_japan.zip
+  url: https://github.com/triplea-maps/feudal_japan/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_mini.png" />
     <br>
@@ -590,7 +590,7 @@
   version: 1
 - mapName: Battle of Aventurica
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/battle_of_aventurica/releases/download/0.11/battle_of_aventurica.zip
+  url: https://github.com/triplea-maps/battle_of_aventurica/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_battle_of_aventurica_mini2.png" />
     <br>
@@ -602,7 +602,7 @@
   version: 1
 - mapName: Greyhawk_Wars
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/greyhawk_wars/releases/download/0.9/greyhawk_wars.zip
+  url: https://github.com/triplea-maps/greyhawk_wars/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_wars_mini.png" />
     <br>
@@ -623,7 +623,7 @@
   version: 1
 - mapName: Greyhawk
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/greyhawk/releases/download/0.13/greyhawk.zip
+  url: https://github.com/triplea-maps/greyhawk/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_mini.png" />
     <br>
@@ -637,7 +637,7 @@
   version: 1
 - mapName: Caribbean Trade War
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/caribbean_trade_war/releases/download/0.30/caribbean_trade_war.zip
+  url: https://github.com/triplea-maps/caribbean_trade_war/archive/master.zip
   description: |  
     <img src="https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/CaribbeanTradeWar_mini.png" />
     <br>
@@ -657,7 +657,7 @@
   version: 1
 - mapName: domination
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/domination/releases/download/0.9/domination.zip
+  url: https://github.com/triplea-maps/domination/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_mini.png" />
     <br>
@@ -672,7 +672,7 @@
   version: 1
 - mapName: Dragon War
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/dragon_war/releases/download/0.48/dragon_war.zip
+  url: https://github.com/triplea-maps/dragon_war/archive/master.zip
   description: |  
     <img src="https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png" />
     <br>
@@ -694,7 +694,7 @@
   version: 1
 - mapName: twilight_imperium
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/twilight_imperium/releases/download/0.9/twilight_imperium.zip
+  url: https://github.com/triplea-maps/twilight_imperium/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_twilight_imperium_mini2.png" />
     <br>
@@ -712,7 +712,7 @@
   version: 1
 - mapName: Star Trek Dilithium War
   mapCategory: DEVELOPMENT
-  url: https://github.com/triplea-maps/star_trek_dilithium_war/releases/download/0.85/star_trek_dilithium_war.zip
+  url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
   description: |
     <img src="https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/StarTrek_mini.png" />
     <br>
@@ -732,7 +732,7 @@
   version: 1
 - mapName: Star Wars Galactic War
   mapCategory: DEVELOPMENT
-  url: https://github.com/triplea-maps/star_wars_galactic_war/releases/download/0.72/star_wars_galactic_war.zip
+  url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
   description: |
     <img src="https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/StarWarsGalacticWar_mini.png" />
     <br>
@@ -752,7 +752,7 @@
   version: 1
 - mapName: Star Wars Tatooine War
   mapCategory: DEVELOPMENT
-  url: https://github.com/triplea-maps/star_wars_tatooine_war/releases/download/0.68/star_wars_tatooine_war.zip
+  url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
   description: |
     <img src="https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/StarWarsTatooineWar_mini.png" />
     <br>
@@ -772,7 +772,7 @@
   version: 1
 - mapName: Pacific_Challenge
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/pacific_challenge/releases/download/0.17/pacific_challenge.zip
+  url: https://github.com/triplea-maps/pacific_challenge/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_challenge_mini.png" />
     <br>
@@ -784,7 +784,7 @@
 
 - mapName: big_world_variations
   mapType: MAP_MOD
-  url: https://github.com/triplea-maps/big_world_variations/releases/download/0.13/big_world_variations.zip
+  url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_big_world_mini.png" />
     <br>Variations of BigWorld. 
@@ -799,7 +799,7 @@
   version: 1
 - mapName: NWO_Variants
   mapType: MAP_MOD
-  url: https://github.com/triplea-maps/nwo_variants/releases/download/0.11/nwo_variants.zip
+  url: https://github.com/triplea-maps/nwo_variants/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_mini.png" />
     <br>
@@ -820,7 +820,7 @@
   version: 1
 - mapName: pact_of_steel_variations
   mapType: MAP_MOD
-  url: https://github.com/triplea-maps/pact_of_steel_variations/releases/download/0.13/pact_of_steel_variations.zip
+  url: https://github.com/triplea-maps/pact_of_steel_variations/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pact_of_steel_china_added_mini.png" />
     <br>
@@ -835,7 +835,7 @@
   version: 1
 - mapName: World War II Revised Variations
   mapType: MAP_MOD
-  url: https://github.com/triplea-maps/world_war_ii_revised_variations/releases/download/0.13/world_war_ii_revised_variations.zip
+  url: https://github.com/triplea-maps/world_war_ii_revised_variations/archive/master.zip
   description: |
     <br>6 army ffa
     <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_ffa_mini.png" />
@@ -869,7 +869,7 @@
   version: 1
 - mapName: Classic_variations
   mapType: MAP_MOD
-  url: https://github.com/triplea-maps/classic_variations/releases/download/0.9/classic_variations.zip
+  url: https://github.com/triplea-maps/classic_variations/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png" />
     <br>
@@ -896,18 +896,18 @@
   version: 1
 - mapName: Napoleonic Empire Map Skin
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/releases/download/0.8/napoleonic_empire-political_map_skin.zip
+  url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
   version: 1
   description: |
      <br>Napoleonic Empire Map Skin
 - mapName: Middle Earth Map Skin
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/middle_earth-map_skin2/releases/download/0.11/middle_earth-map_skin2.zip
+  url: https://github.com/triplea-maps/middle_earth-map_skin2/archive/master.zip
   description: |
     <br>Lord of the Rings Map Skin
 - mapName: World War II Global-battlemap_skin
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/releases/download/0.3/world_war_ii_global-battlemap_skin.zip
+  url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_battlemap_skin_mini.png" />
     <br>
@@ -919,7 +919,7 @@
   version: 1
 - mapName: new_world_order-skin_sieg_2
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/new_world_order-skin_sieg_2/releases/download/0.5/new_world_order-skin_sieg_2.zip
+  url: https://github.com/triplea-maps/new_world_order-skin_sieg_2/archive/master.zip
   description: |
     <div style="text-align: left;">     
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_siegSkin2_mini.png" />
@@ -933,7 +933,7 @@
   version: 1
 - mapName: new_world_order-skin_pulicat_1
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/releases/download/0.5/new_world_order-skin_pulicat_1.zip
+  url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/archive/master.zip
   description: |
     <div style="text-align: left;">
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_pulicatSkin_mini.png" />
@@ -947,7 +947,7 @@
   version: 1
 - mapName: Diplomacy-MapSkin1
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/diplomacy-map_skin1/releases/download/0.3/diplomacy-map_skin1.zip
+  url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin1_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -955,7 +955,7 @@
   version: 1
 - mapName: Diplomacy-MapSkin2
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/diplomacy-map_skin2/releases/download/0.3/diplomacy-map_skin2.zip
+  url: https://github.com/triplea-maps/diplomacy-map_skin2/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin2_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -963,7 +963,7 @@
   version: 1
 - mapName: Diplomacy-MapSkin3
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/diplomacy-map_skin3/releases/download/0.3/diplomacy-map_skin3.zip
+  url: https://github.com/triplea-maps/diplomacy-map_skin3/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mapskin3_mini.png" />
     <br>This is a MAP SKIN for "Diplomacy"
@@ -972,7 +972,7 @@
 
 - mapName: World_At_War_Variants
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/world_at_war_variants/releases/download/0.13/world_at_war_variants.zip
+  url: https://github.com/triplea-maps/world_at_war_variants/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png" />
     <br>
@@ -1019,7 +1019,7 @@
   version: 1
 - mapName: WorldWar2010
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/world_war2010/releases/download/0.9/world_war2010.zip
+  url: https://github.com/triplea-maps/world_war2010/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_world_war_2010_mini.png" />
     <br>The year is 2010.
@@ -1042,7 +1042,7 @@
   version: 1
 - mapName: Global_War
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/global_war/releases/download/0.13/global_war.zip
+  url: https://github.com/triplea-maps/global_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_global_war_mini.png" />
     <br>Global War
@@ -1058,7 +1058,7 @@
   version: 1
 - mapName: Global_War2
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/global_war2/releases/download/0.13/global_war2.zip
+  url: https://github.com/triplea-maps/global_war2/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_global_war_2_mini.png" />
     <br>Global War 2
@@ -1070,7 +1070,7 @@
   version: 1
 - mapName: New World Order LebowskiEdition
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/new_world_order_lebowski_edition/releases/download/0.11/new_world_order_lebowski_edition.zip
+  url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1939_lebowski_mini.png" />
     <br>
@@ -1079,7 +1079,7 @@
   version: 1
 - mapName: WW2v3_11N
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/ww2v3_11n/releases/download/0.13/ww2v3_11n.zip
+  url: https://github.com/triplea-maps/ww2v3_11n/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png" />
     <br>World War II v3 11 Nation Mod
@@ -1092,7 +1092,7 @@
   version: 1
 - mapName: WW2v3_Variants
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/ww2v3_variants/releases/download/0.11/ww2v3_variants.zip
+  url: https://github.com/triplea-maps/ww2v3_variants/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png" />
     <br>7 Variants of World War II v3
@@ -1122,7 +1122,7 @@
   version: 1
 - mapName: Atari
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/atari/releases/download/0.9/atari.zip
+  url: https://github.com/triplea-maps/atari/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_atari_mini2.png" />
     <br>
@@ -1132,7 +1132,7 @@
     <br>Beautiful large pacific map. According to the creator, the game would need some balancing and polishing, as well as better adaption to the new TripleA, but it runs as it is.
     <br>
   version: 1
-- url: https://github.com/triplea-maps/ww2_phillipines/releases/download/0.9/ww2_phillipines.zip
+- url: https://github.com/triplea-maps/ww2_phillipines/archive/master.zip
   mapCategory: EXPERIMENTAL
   mapName: WW2 Phillipines
   description: |
@@ -1145,7 +1145,7 @@
   version: 1
 - mapName: Eastern_Front
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/eastern_front/releases/download/0.11/eastern_front.zip
+  url: https://github.com/triplea-maps/eastern_front/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_eastern_front_mini.png" />
     <br>Eastern Front by RODTHEGOD
@@ -1154,7 +1154,7 @@
   version: 1
 - mapName: D-Day
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/d-day/releases/download/0.11/d-day.zip
+  url: https://github.com/triplea-maps/d-day/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_d-day_mini.png" />
     <br>A map of Normandy on D-Day.
@@ -1168,7 +1168,7 @@
   version: 1
 - mapName: D-Day2
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/d-day2/releases/download/0.11/d-day2.zip
+  url: https://github.com/triplea-maps/d-day2/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_d-day_mini.png" />
     <br>A map of Normandy on D-Day.
@@ -1179,7 +1179,7 @@
   version: 1
 - mapName: Arnhem
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/arnhem/releases/download/0.9/arnhem.zip
+  url: https://github.com/triplea-maps/arnhem/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_arnhem_mini2.png" />
     <br>A map of Arnhem
@@ -1189,7 +1189,7 @@
   version: 1
 - mapName: Tactics_Campaign
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/tactics_campaign/releases/download/0.11/tactics_campaign.zip
+  url: https://github.com/triplea-maps/tactics_campaign/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_mini2.png" />
     <br>
@@ -1204,7 +1204,7 @@
   version: 1
 - mapName: Neuschwabenland
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/neuschwabenland/releases/download/0.11/neuschwabenland.zip
+  url: https://github.com/triplea-maps/neuschwabenland/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_neuschwabenland_mini.png" />
     <br>A simple map created by Sieg.
@@ -1215,7 +1215,7 @@
   version: 1
 - mapName: ColdWarAsia1948
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/cold_war_asia1948/releases/download/0.9/cold_war_asia1948.zip
+  url: https://github.com/triplea-maps/cold_war_asia1948/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_cold_war_asia_1948_mini.png" />
     <br>created by demagogue
@@ -1226,7 +1226,7 @@
   version: 1
 - mapName: CampDavid
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/camp_david/releases/download/0.9/camp_david.zip
+  url: https://github.com/triplea-maps/camp_david/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_camp_david_mini2.png" />
     <br>By Bas71
@@ -1246,7 +1246,7 @@
   version: 1
 - mapName: cold_war
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/cold_war/releases/download/0.11/cold_war.zip
+  url: https://github.com/triplea-maps/cold_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_cold_war_mini.png" />
     <br>October 1962: Cuban Missle Crisis
@@ -1260,7 +1260,7 @@
   version: 1
 - mapName: TheGreatNorthernWar
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/the_great_northern_war/releases/download/0.9/the_great_northern_war.zip
+  url: https://github.com/triplea-maps/the_great_northern_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_the_great_northern_war_mini.png" />
     <br>Created by Doctor Che
@@ -1275,7 +1275,7 @@
   version: 1
 - mapName: Age_Of_The_Sturlungs
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/age_of_the_sturlungs/releases/download/0.11/age_of_the_sturlungs.zip
+  url: https://github.com/triplea-maps/age_of_the_sturlungs/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_age_of_the_sturlungs_mini.png" />
     <br>
@@ -1286,7 +1286,7 @@
   version: 1
 - mapName: FirstPunicWar
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/first_punic_war/releases/download/0.11/first_punic_war.zip
+  url: https://github.com/triplea-maps/first_punic_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_first_punic_war_mini.png" />
     <br>
@@ -1294,7 +1294,7 @@
   version: 1
 - mapName: Ancient Times
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/ancient_times/releases/download/0.13/ancient_times.zip
+  url: https://github.com/triplea-maps/ancient_times/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ancient_times_mini.png" />
     <br>
@@ -1302,7 +1302,7 @@
   version: 1
 - mapName: War of the Lance
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/war_of_the_lance/releases/download/0.11/war_of_the_lance.zip
+  url: https://github.com/triplea-maps/war_of_the_lance/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_war_of_the_lance_mini.png" />
     <br>
@@ -1314,7 +1314,7 @@
   version: 1
 - mapName: Rome_Total_War
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/rome_total_war/releases/download/0.11/rome_total_war.zip
+  url: https://github.com/triplea-maps/rome_total_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_rome_total_war_mini.png" />
     <br>
@@ -1326,7 +1326,7 @@
   version: 1
 - mapName: Large_Middle_Earth
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/large_middle_earth/releases/download/0.19/large_middle_earth.zip
+  url: https://github.com/triplea-maps/large_middle_earth/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_large_middle_earth_mini.png" />
     <br>
@@ -1353,7 +1353,7 @@
   version: 1
 - mapName: 1914-COW-Empires
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/1914-cow-empires/releases/download/0.12/1914-cow-empires.zip
+  url: https://github.com/triplea-maps/1914-cow-empires/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_1914_cow_empires_mini.png" />
     <br>
@@ -1375,7 +1375,7 @@
   version: 1
 - mapName: blue_vs_gray
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/blue_vs_gray/releases/download/0.9/blue_vs_gray.zip
+  url: https://github.com/triplea-maps/blue_vs_gray/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_blue_vs_gray_mini.png" />
     <br>
@@ -1411,7 +1411,7 @@
   version: 1
 - mapName: UrQuanWarMastersEdition
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/ur_quan_war_masters_edition/releases/download/0.9/ur_quan_war_masters_edition.zip
+  url: https://github.com/triplea-maps/ur_quan_war_masters_edition/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ur-quan_slave_war_masters_edition_mini.png" /> 
     <br>
@@ -1438,7 +1438,7 @@
   version: 1
 - mapName: Steampunk
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/steampunk/releases/download/0.9/steampunk.zip
+  url: https://github.com/triplea-maps/steampunk/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_Steampunk_mini.png" /> 
     <br>
@@ -1463,7 +1463,7 @@
   version: 1
 - mapName: Domination_1914_Blood_And_Steel
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/domination_1914_blood_and_steel/releases/download/0.13/domination_1914_blood_and_steel.zip
+  url: https://github.com/triplea-maps/domination_1914_blood_and_steel/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_blood_and_steel_mini.png" /> 
     <br>
@@ -1481,7 +1481,7 @@
   version: 1
 - mapName: Invasion_USA
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/invasion_usa/releases/download/0.54/invasion_usa.zip
+  url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
   description: |
     UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
     <br />Objective:
@@ -1499,7 +1499,7 @@
   version: 1
 - mapName: FeudalJapanWarlords
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/feudal_japan_warlords/releases/download/0.15/feudal_japan_warlords.zip
+  url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_warlords_mini.png" />
     <br>
@@ -1526,7 +1526,7 @@
   version: 1
 - mapName: war_of_the_relics
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/war_of_the_relics/releases/download/0.11/war_of_the_relics.zip
+  url: https://github.com/triplea-maps/war_of_the_relics/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_war_of_the_relics_mini.png" />
     <br>
@@ -1542,7 +1542,7 @@
   version: 1
 - mapName: Empire
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/empire/releases/download/0.5/empire.zip
+  url: https://github.com/triplea-maps/empire/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_empire_mini.png" />
     <br>
@@ -1558,7 +1558,7 @@
   version: 1
 - mapName: Total_Ancient_War
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/total_ancient_war/releases/download/0.13/total_ancient_war.zip
+  url: https://github.com/triplea-maps/total_ancient_war/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_total_ancient_war_mini.png" />
     <br>
@@ -1582,7 +1582,7 @@
   version: 1
 - mapName: Elemental_Forces
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/elemental_forces/releases/download/0.11/elemental_forces.zip
+  url: https://github.com/triplea-maps/elemental_forces/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_elemental_forces_mini.png" />
     <br>
@@ -1601,7 +1601,7 @@
   version: 1
 - mapName: Game_of_Thrones
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/game_of_thrones/releases/download/0.9/game_of_thrones.zip
+  url: https://github.com/triplea-maps/game_of_thrones/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_game_of_thrones_mini.png" />
     <br>
@@ -1614,7 +1614,7 @@
   version: 1
 - mapName: NewWorldOrder1915Lebowski
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/new_world_order1915lebowski/releases/download/0.11/new_world_order1915lebowski.zip
+  url: https://github.com/triplea-maps/new_world_order1915lebowski/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_nwo_1915_lebowski_mini.png" />
     <br>
@@ -1625,7 +1625,7 @@
   version: 1
 - mapName: Stellar_Forces
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/stellar_forces/releases/download/0.15/stellar_forces.zip
+  url: https://github.com/triplea-maps/stellar_forces/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_stellar_forces_mini.png" />
     <br>
@@ -1637,7 +1637,7 @@
   version: 1
 - mapName: pacific
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/pacific/releases/download/0.9/pacific.zip
+  url: https://github.com/triplea-maps/pacific/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_mini.png" />
     <br>
@@ -1651,7 +1651,7 @@
   version: 1
 - mapName: europe
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/europe/releases/download/0.11/europe.zip
+  url: https://github.com/triplea-maps/europe/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_europe_mini.png" />
     <br>
@@ -1664,7 +1664,7 @@
   version: 1
 - mapName: pacific_1942
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/pacific_1942/releases/download/0.9/pacific_1942.zip
+  url: https://github.com/triplea-maps/pacific_1942/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_pacific_1942_mini.png" />
     <br>Mod by Pulicat
@@ -1676,7 +1676,7 @@
   version: 1
 - mapName: Zombieland
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/zombieland/releases/download/0.9/zombieland.zip
+  url: https://github.com/triplea-maps/zombieland/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_zombieland_mini.png" />
     <br>Created by Pulicat
@@ -1689,7 +1689,7 @@
   version: 1
 - mapName: Caravan
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/caravan/releases/download/0.13/caravan.zip
+  url: https://github.com/triplea-maps/caravan/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_caravan_mini2.png" />
     <br>Caravan
@@ -1702,7 +1702,7 @@
   version: 1
 - mapName: HexGlobe10
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/hex_globe10/releases/download/0.9/hex_globe10.zip
+  url: https://github.com/triplea-maps/hex_globe10/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_hexglobe_mini2.png" />
     <br>HexGlobe10 is a 4 player game with no alliances.
@@ -1710,7 +1710,7 @@
   version: 1
 - mapName: Domination_1914_No_Mans_Land
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/domination_1914_no_mans_land/releases/download/0.9/domination_1914_no_mans_land.zip
+  url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png" />
     <br>Domination_1914_No_Mans_Land
@@ -1722,7 +1722,7 @@
   version: 1
 - mapName: Jurassic
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/jurassic/releases/download/0.11/jurassic.zip
+  url: https://github.com/triplea-maps/jurassic/archive/master.zip
   description: |
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_jurassic_mini.png" />
     <br>
