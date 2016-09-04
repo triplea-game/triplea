@@ -255,7 +255,7 @@ public class DownloadMapsWindow extends JFrame {
     final int selectedIndex = maps.indexOf(selectedMap);
     gamesList.setSelectedIndex(selectedIndex);
 
-    final String text = createEditorPaneText(maps.get(selectedIndex));
+    final String text = maps.get(selectedIndex).toHtmlString();
     descriptionPanel.setText(text);
     descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     return gamesList;
@@ -276,7 +276,7 @@ public class DownloadMapsWindow extends JFrame {
         final Optional<DownloadFileDescription> map =
             maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
         if (map.isPresent()) {
-          final String text = createEditorPaneText(map.get());
+          final String text = map.get().toHtmlString();
           descriptionPanel.setText(text);
           descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
           updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
@@ -300,7 +300,11 @@ public class DownloadMapsWindow extends JFrame {
     final long mapSize;
     String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion() + DOUBLE_SPACE + " (";
     if (action == MapAction.INSTALL) {
-      mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
+      if(map.newURL() == null ) {
+       mapSize = 0L;
+      } else {
+        mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
+      }
     } else {
       mapSize = map.getInstallLocation().length();
     }
@@ -321,12 +325,6 @@ public class DownloadMapsWindow extends JFrame {
     final long megaBytes = kiloBytes / 1024;
     final long kbDigits = ((kiloBytes % 1000) / 100);
     return megaBytes + "." + kbDigits + " MB";
-  }
-
-  private static String createEditorPaneText(final DownloadFileDescription map) {
-    String text = "<h2>" + map.getMapName() + "</h2>";
-    text += map.getDescription();
-    return text;
   }
 
   private JPanel createButtonsPanel(final MapAction action, final JList<String> gamesList,

@@ -21,6 +21,7 @@ public class DownloadFileDescription {
   private final Version version;
   private final DownloadType downloadType;
   private final MapCategory mapCategory;
+  private final String img;
 
 
   public enum DownloadType {
@@ -48,16 +49,20 @@ public class DownloadFileDescription {
 
   }
 
-
   public DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, final DownloadType downloadType, final MapCategory mapCategory) {
+    this(url,description, mapName, version, downloadType, mapCategory, "");
+  }
+
+  public DownloadFileDescription(final String url, final String description, final String mapName,
+      final Version version, final DownloadType downloadType, final MapCategory mapCategory, final String img) {
     this.url = url;
     this.description = description;
     this.mapName = mapName;
     this.version = version;
     this.downloadType = downloadType;
     this.mapCategory = mapCategory;
-
+    this.img = img;
   }
 
   public String getUrl() {
@@ -81,6 +86,9 @@ public class DownloadFileDescription {
   }
 
   public URL newURL() {
+    if (url == null) {
+      return null;
+    }
     return DownloadUtils.toURL(url);
   }
 
@@ -102,7 +110,7 @@ public class DownloadFileDescription {
 
   /** @return Name of the zip file */
   public String getMapZipFileName() {
-    if (url.contains("/")) {
+    if (url != null && url.contains("/")) {
       return url.substring(url.lastIndexOf('/') + 1, url.length());
     } else {
       return "";
@@ -127,6 +135,16 @@ public class DownloadFileDescription {
   public String toString() {
     return MoreObjects.toStringHelper(this).addValue(url).addValue(mapName).addValue(version).toString();
   }
+
+  public String toHtmlString() {
+    String text = "<h1>" + getMapName() + "</h1>\n";
+    if(!img.isEmpty()) {
+      text += "<img src='" + img + "' />\n";
+    }
+    text += getDescription();
+    return text;
+  }
+
 
   @Override
   public boolean equals(final Object rhs) {
