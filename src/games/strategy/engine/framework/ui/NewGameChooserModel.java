@@ -99,7 +99,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
       final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
         final ZipEntry entry = zipEntryEnumeration.nextElement();
-        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+        if (entry.getName().contains("games/") &&  entry.getName().toLowerCase().endsWith(".xml")) {
           final ZipProcessingResult result = processZipEntry(loader, entry, entries);
           if (result == ZipProcessingResult.ERROR) {
             badMapZip = true;

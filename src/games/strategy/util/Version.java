@@ -14,10 +14,10 @@ import java.util.StringTokenizer;
 public class Version implements Serializable, Comparable<Object> {
   // maintain compatability with old versions
   static final long serialVersionUID = -4770210855326775333L;
-  private final int major;
-  private final int minor;
-  private final int point;
-  private final int micro;
+  private final int m_major;
+  private final int m_minor;
+  private final int m_point;
+  private final int m_micro;
 
   public Version(final int major, final int minor) {
     this(major, minor, 0);
@@ -28,10 +28,10 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   public Version(final int major, final int minor, final int point, final int micro) {
-    this.major = major;
-    this.minor = minor;
-    this.point = point;
-    this.micro = micro;
+    this.m_major = major;
+    this.m_minor = minor;
+    this.m_point = point;
+    this.m_micro = micro;
   }
 
   /**
@@ -44,21 +44,21 @@ public class Version implements Serializable, Comparable<Object> {
       throw new IllegalArgumentException("invalid version string:" + version);
     }
     try {
-      major = Integer.parseInt(tokens.nextToken());
+      m_major = Integer.parseInt(tokens.nextToken());
       if (tokens.hasMoreTokens()) {
-        minor = Integer.parseInt(tokens.nextToken());
+        m_minor = Integer.parseInt(tokens.nextToken());
       } else {
-        minor = 0;
+        m_minor = 0;
       }
       if (tokens.hasMoreTokens()) {
-        point = Integer.parseInt(tokens.nextToken());
+        m_point = Integer.parseInt(tokens.nextToken());
       } else {
-        point = 0;
+        m_point = 0;
       }
       if (tokens.hasMoreTokens()) {
-        micro = Integer.parseInt(tokens.nextToken());
+        m_micro = Integer.parseInt(tokens.nextToken());
       } else {
-        micro = 0;
+        m_micro = 0;
       }
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -103,27 +103,27 @@ public class Version implements Serializable, Comparable<Object> {
     if (other == null) {
       return -1;
     }
-    if (other.major > major) {
+    if (other.m_major > m_major) {
       return 1;
     }
-    if (other.major < major) {
+    if (other.m_major < m_major) {
       return -1;
-    } else if (other.minor > minor) {
+    } else if (other.m_minor > m_minor) {
       return 1;
-    } else if (other.minor < minor) {
+    } else if (other.m_minor < m_minor) {
       return -1;
-    } else if (other.point > point) {
+    } else if (other.m_point > m_point) {
       return 1;
-    } else if (other.point < point) {
+    } else if (other.m_point < m_point) {
       return -1;
     } else if (!ignoreMicro) {
-      if (other.micro > micro) {
+      if (other.m_micro > m_micro) {
         return 1;
-      } else if (other.micro < micro) {
+      } else if (other.m_micro < m_micro) {
         return -1;
       }
     }
-    // if the only difference is micro, then ignore
+    // if the only difference is m_micro, then ignore
     return 0;
   }
 
@@ -163,12 +163,12 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   public String toStringFull(final String separator, final boolean noMicro) {
-    return major + separator + minor + separator + point + (noMicro ? "" : (separator + micro));
+    return m_major + separator + m_minor + separator + m_point + (noMicro ? "" : (separator + m_micro));
   }
 
   @Override
   public String toString() {
-    return major + "." + minor + ((point != 0 || micro != 0) ? "." + point : "")
-        + (micro != 0 ? "." + micro : "");
+    return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "")
+        + (m_micro != 0 ? "." + m_micro : "");
   }
 }

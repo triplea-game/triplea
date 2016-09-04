@@ -32,10 +32,8 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
-import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
@@ -432,13 +430,6 @@ public class MapCreator extends JFrame {
     m_panel3.add(Box.createVerticalStrut(30));
     m_panel3.add(new JLabel("Game XML Utilities:"));
     m_panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
-    m_panel3
-        .add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
-    m_panel3.add(Box.createVerticalStrut(30));
-    final JButton goToWebButton = new JButton("Go To Dev Forum");
-    goToWebButton.addActionListener(
-        SwingAction.of("Go To Dev Forum", e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_FORUM)));
-    m_panel3.add(goToWebButton);
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
     connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", e -> {
