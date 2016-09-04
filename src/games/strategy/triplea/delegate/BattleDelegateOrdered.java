@@ -25,6 +25,42 @@ public class BattleDelegateOrdered extends BattleDelegate {
       bombingRaid.fight(m_bridge);
     }
   }
+  
+  private void killUndefendedTransports() {
+    // Remove all undefended transport battles. Doing so here means that such a fight will not prevent an amphibious assault from being auto-resolved
+    for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
+      final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+      if( m_battleTracker.getDependentOn(battle).isEmpty() 
+          && Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport) ) {
+        battle.fight( m_bridge );
+      }
+    }
+  }
+
+  private void fightRemainingBattle() {
+		// This needs another loop just in case the last otherBattleCount was triggered by a sea combat already fought
+		for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Will only find one
+			final IBattle lastBattle = m_battleTracker.getPendingBattle( t, false, BattleType.NORMAL );
+			if( lastBattle instanceof MustFightBattle ) {
+				lastBattle.fight( m_bridge );
+			}
+		}
+	}
+
+	private int fightAmphib( IBattle amphib ) {
+		// are there battles that must occur first
+		int seaBattlesFought = 0;
+		for( final IBattle seaBattle : m_battleTracker.getDependentOn( amphib ) ) {
+			if( seaBattle instanceof MustFightBattle && seaBattle != null ) {
+				seaBattle.fight( m_bridge );
+				seaBattlesFought++;
+			}
+		}
+		amphib.fight( m_bridge );
+		
+		return seaBattlesFought;
+	}
+	
   /**
    * After the super class .start() method runs, this is called to fight all battles not requiring significant attacker input,
    * in the order required for Global 1940. Other maps with the same required order can also use it or add it anyway
@@ -34,15 +70,7 @@ public class BattleDelegateOrdered extends BattleDelegate {
     super.start();
 
     stratBombing();
-
-    // Remove all undefended transport battles. Doing so here means that such a fight will not prevent an amphibious assault from being auto-resolved
-    for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
-      final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
-      if( m_battleTracker.getDependentOn(battle).isEmpty() 
-          && Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport) ) {
-        battle.fight( m_bridge );
-      }
-    }
+    killUndefendedTransports();
 
     // Fight all amphibious assaults with no retreat option for the attacker and no sea combat - these have no real attacker decisions
     // Also remove all remaining defenseless fights by fighting them
@@ -78,28 +106,11 @@ public class BattleDelegateOrdered extends BattleDelegate {
 
     // Fight amphibious assault if there is one remaining. Fight naval battles in random order if prerequisites first.
     if( amphibCount > 0 ) {
-      if( m_currentBattle != null && m_currentBattle != lastAmphib ) {      // Not completely sure if this is needed but was in other code and does no harm
-        m_currentBattle.fight( m_bridge );
-      }
-      
-      // are there battles that must occur first
-      for( final IBattle seaBattle : m_battleTracker.getDependentOn(lastAmphib) ) {
-        if( seaBattle instanceof MustFightBattle && seaBattle != null ) {
-          seaBattle.fight( m_bridge );
-          otherBattleCount--;
-        }
-      }
-      lastAmphib.fight( m_bridge );
+      otherBattleCount -= fightAmphib( lastAmphib ); // Decrement otherBattles by the number of sea battles fought
     }
 
     if( otherBattleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
-      // This needs another loop just in case the last otherBattleCount was triggered by a sea combat already fought
-      for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Will only find one
-        final IBattle lastBattle = m_battleTracker.getPendingBattle( t, false, BattleType.NORMAL );
-        if( lastBattle instanceof MustFightBattle ) {
-          lastBattle.fight( m_bridge );
-        }
-      }
+    	fightRemainingBattle();
     }
   }
 }
