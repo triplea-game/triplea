@@ -14,20 +14,15 @@ public class MapDownloadList {
 
   public MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
-      if (download.isDummyUrl()) {
-        available.add(download);
-        installed.add(download);
-      } else {
-        final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
+      final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
 
-        if (mapVersion.isPresent()) {
-          installed.add(download);
-          if (download.getVersion().isGreaterThan(mapVersion.get())) {
-            outOfDate.add(download);
-          }
-        } else {
-          available.add(download);
+      if (mapVersion.isPresent()) {
+        installed.add(download);
+        if (download.getVersion().isGreaterThan(mapVersion.get())) {
+          outOfDate.add(download);
         }
+      } else {
+        available.add(download);
       }
     }
   }

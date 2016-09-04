@@ -13,15 +13,15 @@ import games.strategy.util.Version;
  * Utility class to parse an available map list file config file - used to determine which maps are available for
  * download
  */
-public final class DownloadFileParser {
+final class DownloadFileParser {
 
   private DownloadFileParser() {}
 
-  public static enum Tags {
-    url, mapType, version, mapName, description
+  enum Tags {
+    url, mapType, version, mapName, description, mapCategory, img
   }
 
-  public static enum ValueType {
+  enum ValueType {
     MAP, MAP_TOOL, MAP_SKIN, MAP_MOD
   }
 
@@ -48,7 +48,18 @@ public final class DownloadFileParser {
         downloadType = DownloadFileDescription.DownloadType.valueOf(mapTypeString);
       }
 
-      final DownloadFileDescription dl = new DownloadFileDescription(url, description, mapName, version, downloadType);
+      DownloadFileDescription.MapCategory mapCategory = DownloadFileDescription.MapCategory.EXPERIMENTAL;
+        String mapCategoryString = yaml.get(Tags.mapCategory.toString());
+      if (mapCategoryString != null) {
+        mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
+      }
+
+      String img = yaml.get(Tags.img.toString());
+      if(img == null ) {
+        img = "";
+      }
+      final DownloadFileDescription dl =
+          new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
       rVal.add(dl);
     }
     return rVal;
