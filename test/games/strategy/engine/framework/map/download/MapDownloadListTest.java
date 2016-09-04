@@ -27,7 +27,7 @@ public class MapDownloadListTest {
   private final static Version lowVersion = new Version(0, 0);
 
   private final static DownloadFileDescription TEST_MAP =
-      new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.DownloadType.MAP);
+      new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
   @Mock
   private FileSystemAccessStrategy strategy;

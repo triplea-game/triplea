@@ -20,21 +20,44 @@ public class DownloadFileDescription {
   private final String mapName;
   private final Version version;
   private final DownloadType downloadType;
+  private final MapCategory mapCategory;
+
 
   public enum DownloadType {
-    DISPLAY_HEADER, MAP, MAP_MOD, MAP_SKIN, MAP_TOOL
+    MAP, MAP_MOD, MAP_SKIN, MAP_TOOL
   }
 
-  public static final DownloadFileDescription PLACE_HOLDER =
-      new DownloadFileDescription(null, " ", " ", new Version("0"), DownloadType.DISPLAY_HEADER);
+
+  public enum MapCategory {
+    BEST("Best"),
+    GOOD("Good"),
+    DEVELOPMENT("In Development"),
+    EXPERIMENTAL("Experimental");
+
+    String outputLabel;
+
+
+    MapCategory(String label) {
+      outputLabel = label;
+    }
+
+    @Override
+    public String toString() {
+      return outputLabel;
+    }
+
+  }
+
 
   public DownloadFileDescription(final String url, final String description, final String mapName,
-      final Version version, final DownloadType downloadType) {
+      final Version version, final DownloadType downloadType, final MapCategory mapCategory) {
     this.url = url;
     this.description = description;
     this.mapName = mapName;
     this.version = version;
     this.downloadType = downloadType;
+    this.mapCategory = mapCategory;
+
   }
 
   public String getUrl() {
@@ -49,12 +72,12 @@ public class DownloadFileDescription {
     return mapName;
   }
 
-  public boolean isDummyUrl() {
-    return url == null;
-  }
-
   public Version getVersion() {
     return version;
+  }
+
+  public MapCategory getMapCategory() {
+    return mapCategory;
   }
 
   public URL newURL() {

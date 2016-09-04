@@ -1,8 +1,10 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
@@ -106,7 +108,7 @@ public class DownloadMapsWindow extends JFrame {
     final JTabbedPane outerTabs = new JTabbedPane();
 
     final List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
-    outerTabs.add("Maps", createAvailableInstalledTabbedPanel(mapName, maps));
+    outerTabs.add("Maps", createdTabbedPanelForMaps(maps));
 
     final List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
     outerTabs.add("Mods", createAvailableInstalledTabbedPanel(mapName, mods));
@@ -121,6 +123,20 @@ public class DownloadMapsWindow extends JFrame {
         SwingComponents.newJScrollPane(progressPanel));
     splitPane.setDividerLocation(DIVIDER_POSITION);
     add(splitPane);
+  }
+
+  private Component createdTabbedPanelForMaps(List<DownloadFileDescription> maps) {
+
+    JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
+
+    for(DownloadFileDescription.MapCategory mapCategory : Arrays.asList(DownloadFileDescription.MapCategory.values()) ) {
+
+      List<DownloadFileDescription> mapsByCategory =
+          maps.stream().filter(map -> map.getMapCategory() == mapCategory).collect(Collectors.toList());
+      JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
+      mapTabs.add(mapCategory.toString(), subTab);
+    }
+    return mapTabs;
   }
 
   private static Optional<DownloadFileDescription> findMap(final String mapName,
@@ -156,7 +172,7 @@ public class DownloadMapsWindow extends JFrame {
 
 
     JPanel outOfDate = null;
-    if (containsNonDummyMaps(mapList.getOutOfDate())) {
+    if (!mapList.getOutOfDate().isEmpty()) {
       outOfDate = createMapSelectionPanel(mapName, mapList.getOutOfDate(), MapAction.UPDATE);
     }
     // For the UX, always show an available maps tab, even if it is empty
@@ -179,16 +195,11 @@ public class DownloadMapsWindow extends JFrame {
       tabbedPane.addTab("Available", available);
     }
 
-    if (containsNonDummyMaps(mapList.getInstalled())) {
+    if (!mapList.getInstalled().isEmpty()) {
       final JPanel installed = createMapSelectionPanel(mapName, mapList.getInstalled(), MapAction.REMOVE);
       tabbedPane.addTab("Installed", installed);
     }
     return tabbedPane;
-  }
-
-
-  private static boolean containsNonDummyMaps(final List<DownloadFileDescription> maps) {
-    return maps.stream().anyMatch(e -> !e.isDummyUrl());
   }
 
   private JPanel createMapSelectionPanel(final Optional<String> selectedMap,
@@ -210,9 +221,7 @@ public class DownloadMapsWindow extends JFrame {
       gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
-      if (!mapToSelect.isDummyUrl()) {
-        DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
-      }
+      DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
       final JPanel southPanel = SwingComponents.gridPanel(2, 1);
@@ -226,6 +235,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps,
       final Optional<String> mapToSelect) {
+    checkArgument(maps.size() > 0);
     if (mapToSelect.isPresent()) {
       final Optional<DownloadFileDescription> potentialMap =
           maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();
@@ -234,11 +244,8 @@ public class DownloadMapsWindow extends JFrame {
       }
     }
 
-    final Optional<DownloadFileDescription> map = maps.stream().filter(m -> !m.isDummyUrl()).findFirst();
-    if (map.isPresent()) {
-      return map.get();
-    }
-    return maps.stream().findFirst().get();
+    // just return the first map if nothing selected or could not find one
+    return maps.get(0);
   }
 
   private static JList<String> createGameSelectionList(final DownloadFileDescription selectedMap,
@@ -282,13 +289,10 @@ public class DownloadMapsWindow extends JFrame {
   private static void updateMapUrlAndSizeLabel(final DownloadFileDescription map, final MapAction action,
       final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
-    if (!map.isDummyUrl()) {
-      (new Thread(() -> {
-        final String labelText = createLabelText(action, map);
-        SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-      })).start();
-    }
-
+    (new Thread(() -> {
+      final String labelText = createLabelText(action, map);
+      SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
+    })).start();
   }
 
   private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
@@ -322,11 +326,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static String createEditorPaneText(final DownloadFileDescription map) {
     String text = "<h2>" + map.getMapName() + "</h2>";
-    if (map.isDummyUrl()) {
-      text += map.getDescription();
-    } else {
-      text += map.getDescription();
-    }
+    text += map.getDescription();
     return text;
   }
 
@@ -394,7 +394,7 @@ public class DownloadMapsWindow extends JFrame {
     return (e) -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
-          maps.stream().filter(map -> !map.isDummyUrl() && selectedValues.contains(map.getMapName()))
+          maps.stream().filter(map -> selectedValues.contains(map.getMapName()))
               .collect(Collectors.toList());
       if (!selectedMaps.isEmpty()) {
         FileSystemAccessStrategy.remove(selectedMaps, listModel);
@@ -416,11 +416,7 @@ public class DownloadMapsWindow extends JFrame {
         progressPanel.download(downloadList);
       }
 
-      downloadList.forEach(m -> {
-        if (!m.isDummyUrl()) {
-          listModel.removeElement(m.getMapName());
-        }
-      });
+      downloadList.forEach(m -> listModel.removeElement(m.getMapName()));
     };
   }
 }

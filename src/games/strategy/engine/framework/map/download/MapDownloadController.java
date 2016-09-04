@@ -72,7 +72,7 @@ public class MapDownloadController {
     final Collection<String> listingToBeAddedTo = new ArrayList<>();
 
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
-      if (d != null && !d.isDummyUrl()) {
+      if (d != null) {
         File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
         if (!installed.exists()) {
           installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
