@@ -19,9 +19,6 @@
 The version number exists in 1 place:
 * https://github.com/triplea-game/triplea/blob/master/game_engine.properties
 
-## Bump download version on the website
-Update here: https://github.com/triplea-game/triplea-game.github.io/blob/master/_config.yml
-
 
 ## About the TripleA Version Number:  
 The last step before tagging is to bump the version number.  
@@ -82,9 +79,19 @@ To start up new bots, change directory into the new bot server directory, then t
 Once this is done, you have officially released TripleA!  
 
 
+
+## Bump download version on the website
+Update here: https://github.com/triplea-game/triplea-game.github.io/blob/master/_config.yml
+
+
+
 ### Install of v1.9.0.0 lobby
+There is a script that does this now. https://github.com/triplea-game/lobby
+* It does everything except for the DB part. To get a latest derby, copy a backup snapshot to the latest lobby, then fire it up.
+
 
 ```
+## YMMV - outdated instructions
  wget https://github.com/triplea-game/triplea/releases/download/1.9.0.0.2375/triplea-1.9.0.0.2375-server.zip
  unzip -d triplea_1_9_0_0_2375_lobby triplea-1.9.0.0.2375-server.zip
  cp triplea_1_8_0_5_lobby/run-server.sh triplea_1_9_0_0_2375_lobby/
