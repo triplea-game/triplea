@@ -1,3 +1,4 @@
+INVALID SHOULD FAIL THE BUILD!
 - version: 1.9.0.0
   host: 45.79.144.53
   port: 3304
