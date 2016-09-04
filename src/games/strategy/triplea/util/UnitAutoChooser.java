@@ -138,8 +138,6 @@ class UnitAutoChooser {
     } else {
       m_chosenUnits = chosenUnits;
     }
-    // System.out.println("allUnits: "+m_allUnits);
-    // System.out.println("chosenUnits: "+m_chosenUnits);
     m_bCategorizeMovement = bCategorizeMovement;
     m_bCategorizeTrnMovement = bCategorizeTrnMovement;
     m_bAllowImplicitDependents = bAllowImplicitDependents;
@@ -293,10 +291,7 @@ class UnitAutoChooser {
   }
 
   private void chooseUnits() {
-    // System.out.println("chosenCounts: "+m_chosenCategoryCounts);
-    // System.out.println("candidateCompositeCategories: "+m_candidateCompositeCategories);
     for (final List<UnitCategory> compositeCategory : m_candidateCompositeCategories) {
-      // System.out.println("converting composite category: " + compositeCategory);
       final Set<Unit> compositeCategoryUnits = new LinkedHashSet<>(compositeCategory.size() + 1, 1);
       final IntegerMap<UnitCategory> usedCategoryCounts =
           new IntegerMap<>(m_chosenCategoryCounts.size() + 1, 1);
@@ -308,7 +303,6 @@ class UnitAutoChooser {
           if (!compositeCategoryUnits.contains(unit) && !bDoneCategory) {
             // create the mapping and add it to defaultSelections
             if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0) {
-              // System.out.println("converting category to units: " + category);
               usedCategoryCounts.add(chosenCategory, 1);
               compositeCategoryUnits.add(unit);
               Collection<Unit> dependents = m_dependentsMap.get(unit);
@@ -321,16 +315,13 @@ class UnitAutoChooser {
               }
               bDoneCategory = true;
             } else {
-              // System.out.println("couldn't convert category to units: " + category);
               bUnitsCanAllBeMapped = false;
               break;
             }
           }
           m_candidateUnits.add(unit);
         }
-        // System.out.println("usedCounts: "+usedCategoryCounts);
       }
-      // System.out.println("\t\tfound composite units "+compositeCategoryUnits);
       // Add independent units to solution.
       // This may also add unsatisfied units for any incomplete solutions.
       if (bUnitsCanAllBeMapped) {
@@ -345,7 +336,6 @@ class UnitAutoChooser {
             m_candidateUnits.add(unit);
             if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0) {
               usedCategoryCounts.add(chosenCategory, 1);
-              // System.out.println("adding unit "+unit);
               compositeCategoryUnits.add(unit);
               Collection<Unit> dependents = m_dependentsMap.get(unit);
               if (dependents == null) {
@@ -358,7 +348,6 @@ class UnitAutoChooser {
             }
           }
         }
-        // System.out.println("\t\tsaving units "+compositeCategoryUnits);
         m_selectedUnitSolutions.add(compositeCategoryUnits);
         if (usedCategoryCounts.equals(m_chosenCategoryCounts)) {
           m_exactSolutionCount++;
@@ -367,7 +356,6 @@ class UnitAutoChooser {
           m_bFoundCompleteSolution = true;
         }
       }
-      // System.out.println("usedCounts: "+usedCategoryCounts);
     }
     if (m_candidateCompositeCategories.isEmpty() && !m_candidateCategoriesWithoutDependents.isEmpty()) {
       // no composite categories, just add independent units
@@ -386,7 +374,6 @@ class UnitAutoChooser {
           }
         }
       }
-      // System.out.println("\t\tsaving independent units "+independentCategoryUnits);
       m_selectedUnitSolutions.add(independentCategoryUnits);
       if (m_chosenCategoryCounts.equals(usedCategoryCounts)) {
         m_exactSolutionCount++;
@@ -416,13 +403,11 @@ class UnitAutoChooser {
           }
         }
       }
-      // System.out.println("\t\tsaving simple greedy solution "+simpleSolutionUnits);
       m_selectedUnitSolutions.add(simpleSolutionUnits);
       if (m_chosenCategoryCounts.equals(usedCategoryCounts)) {
         m_bFoundCompleteSolution = true;
       }
     }
-    // System.out.println("candidateUnits: "+m_candidateUnits);
   }
 
   // solveCandidateCompositeCategories()
@@ -447,9 +432,7 @@ class UnitAutoChooser {
     final Set<UnitCategory> chosenDependentCategories = new HashSet<>(allCategories.size() + 1, 1);
     final Map<UnitCategory, UnitCategory> allCategoriesToCategoriesWithoutMovement =
         new HashMap<>(allCategories.size() + 1, 1);
-    // System.out.println("allCategoriesNoMovement: "+allCategoriesNoMovement);
-    // System.out.println("allCategories: "+allCategories);
-    // System.out.println("chosenCategories: "+chosenCategories);
+
     // Build a map of allCategoriesWithMovementCategorized -> allCategoriesWithoutMovementCategorized
     // We do this because if m_bCategorizeMovement is true, then we can't compare chosen and candidate
     // categories effectively since candidate categories include movement and chosen categories don't.
@@ -578,11 +561,7 @@ class UnitAutoChooser {
         }
       }
     }
-    // System.out.println("candidateToChosenCategories: "+m_candidateToChosenCategories);
-    // System.out.println("candidateCategoriesWithDependents: "+candidateCategoriesWithDependents);
-    // System.out.println("candidateCategoriesWithoutDependents: "+m_candidateCategoriesWithoutDependents);
-    // System.out.println("chosenCategories: "+chosenCategories);
-    // System.out.println("chosenCounts: "+m_chosenCategoryCounts);
+
     // create and populate an IntegerMap for chosen categories with dependents
     final IntegerMap<UnitCategory> chosenCategoryCountsWithDependents =
         new IntegerMap<>(m_chosenCategoryCounts.size() + 1, 1);
@@ -599,9 +578,7 @@ class UnitAutoChooser {
         }
       }
     }
-    // System.out.println("candidateCategoriesWithDependentsList: "+candidateCategoriesWithDependentsList);
-    // System.out.println("chosenCountsWithDependents: "+chosenCategoryCountsWithDependents);
-    // System.out.println("chosenCountsNoDependents: "+chosenCategoryCountsNoDependents);
+
     // The remainder of this method implements a recursive algorithm (without recursion)
     // to group individual categories into composite category solutions.
     // A composite category solution is just a List<UnitCategory>, where every category in the list
@@ -638,22 +615,20 @@ class UnitAutoChooser {
     int bestUnitCount = 0;
     // setup a simple stack of List indexes to avoid the overhead of actual recursion
     final Stack<Integer> indexStack = new Stack<>();
-    Integer curIndex = Integer.valueOf(0);
+    int curIndex = 0;
     // do it
     while (true) {
-      // System.out.println("curIndex: "+curIndex);
       // handle stopping condition
       if (curIndex == candidateCategoriesWithDependentsList.size()) {
         if (indexStack.empty()) {
           // finished!
           break;
         }
-        // System.out.println("Reached end of iteration; popping stack.");
         curIndex = indexStack.pop();
       } else {
         // push our state on the stack
         indexStack.push(curIndex);
-        // System.out.println("stack: "+indexStack);
+
         // clear current state ready for processing
         currentCandidateCategories.clear();
         currentCandidateCategoryCounts.clear();
@@ -662,7 +637,7 @@ class UnitAutoChooser {
         currentChosenCategoryCountsNoDependents.clear();
         int currentUnitCount = 0;
         // Populate all structures from our stack of list indexes
-        for (final Integer i : indexStack) {
+        for (final int i : indexStack) {
           final UnitCategory category = candidateCategoriesWithDependentsList.get(i);
           final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
           currentCandidateCategories.add(category);
@@ -689,10 +664,7 @@ class UnitAutoChooser {
             }
           }
         }
-        // System.out.println("currentCandidateCounts: "+currentCandidateCategoryCounts);
-        // System.out.println("currentChosenCounts: "+currentChosenCategoryCounts);
-        // System.out.println("currentChosenCountsWithDependents: "+currentChosenCategoryCountsWithDependents);
-        // System.out.println("currentChosenCountsNoDependents: "+currentChosenCategoryCountsNoDependents);
+
         // Determine whether chosen category counts with dependents match the current chosen category counts
         // and proceed appropriately.
         // Implicit dependents are not included in either of these counts, thus they are ignored here.
@@ -704,7 +676,6 @@ class UnitAutoChooser {
             || (!m_bAllowImplicitDependents
                 && chosenCategoryCountsWithDependents.equals(currentChosenCategoryCounts))) {
           // Found match.
-          // System.out.println("Found match for all categories! Saving and popping stack.");
           // Decide whether to save this solution as an exact solution or as a greedy solution.
           // Explanation:
           // If solver is not allowing implicit dependents, then all solutions are exact
@@ -718,21 +689,17 @@ class UnitAutoChooser {
           // later.
           if (!m_bAllowImplicitDependents
               || (chosenCategoryCountsWithDependents.equals(currentChosenCategoryCountsWithDependents))) {
-            // System.out.println("->Found exact solution");
             // save the current candidate categories but don't save the dependent units
             final List<UnitCategory> newCandidateCompositeCategory =
                 new ArrayList<>(currentCandidateCategories);
             if (!m_candidateCompositeCategories.contains(newCandidateCompositeCategory)) {
               m_candidateCompositeCategories.add(newCandidateCompositeCategory);
-              // System.out.println("candidateCompositeCategories: "+m_candidateCompositeCategories);
             }
           }
           // This must be a greedy solution.
           else {
             // only applicable if bAllowImplicitDependents is true
-            // System.out.println("->Found greedy solution");
             greedyCandidateCompositeCategories.add(new ArrayList<>(currentCandidateCategories));
-            // System.out.println("greedyCandidateCompositeCategories: "+greedyCandidateCompositeCategories);
           }
           // pop the stack, we've gone as far as we can go
           curIndex = indexStack.pop();
@@ -742,12 +709,10 @@ class UnitAutoChooser {
             || (!m_bAllowImplicitDependents
                 && !chosenCategoryCountsWithDependents.greaterThanOrEqualTo(currentChosenCategoryCounts))) {
           // Too many categories.
-          // System.out.println("Too many categories selected. Discarding and popping stack.");
           // pop the stack, we've gone as far as we can go
           curIndex = indexStack.pop();
         } else {
           // Found room but not exact yet
-          // System.out.println("Found room... keeping currentCounts in stack.");
           // Save this as the best incomplete solution if it has the highest unit count
           if (currentUnitCount > bestUnitCount) {
             bestUnitCount = currentUnitCount;
@@ -758,8 +723,8 @@ class UnitAutoChooser {
       }
       // increment index and continue
       curIndex = Integer.valueOf(curIndex + 1);
-    } // while(true)
-      // append greedy solutions if we have any
+    }
+    // append greedy solutions if we have any
     m_candidateCompositeCategories.addAll(greedyCandidateCompositeCategories);
     // if no exact or greedy solutions, use best incomplete solution
     if (m_candidateCompositeCategories.isEmpty() && bestCandidateSolution != null) {

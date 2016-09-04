@@ -18,8 +18,8 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
@@ -48,8 +48,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
     m_httpState = new HttpState();
     m_hostConfiguration = new HostConfiguration();
-    // add the proxy
-    GameRunner2.addProxy(m_hostConfiguration);
+    HttpProxy.addProxy(m_hostConfiguration);
     m_hostConfiguration.setHost("www.tripleawarclub.org");
     final PostMethod post = new PostMethod("http://www.tripleawarclub.org/user.php");
     final List<NameValuePair> parameters = new ArrayList<>();
@@ -91,7 +90,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     try {
       login();
       // load the reply page
-      String s_forumId = "20";
+      final String s_forumId = "20";
       final String url =
           WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
       GetMethod get = new GetMethod(url);
@@ -214,6 +213,6 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = WAR_CLUB_FORUM_URL + "/viewtopic.php?topic_id=" + m_topicId;
-    DesktopUtilityBrowserLauncher.openURL(url);
+    OpenFileUtility.openURL(url);
   }
 }

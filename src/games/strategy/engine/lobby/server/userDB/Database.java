@@ -174,32 +174,16 @@ public class Database {
       }
       // setup the derby location
       System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
-      // load the driver
-      try {
-        final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-        Class.forName(driver).newInstance();
-      } catch (final Exception e) {
-        s_logger.log(Level.SEVERE, e.getMessage(), e);
-        throw new Error("Could not load db driver");
-      }
       // shut the database down on finish
-      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-        @Override
-        public void run() {
-          shutDownDB();
-        }
-      }));
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> shutDownDB()));
       s_isDbSetup = true;
     }
     // we want to backup the database on occassion
-    final Thread backupThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        while (true) {
-          // wait 7 days
-          ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000);
-          backup();
-        }
+    final Thread backupThread = new Thread(() -> {
+      while (true) {
+        // wait 7 days
+        ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000);
+        backup();
       }
     }, "TripleA Database Backup Thread");
     backupThread.setDaemon(true);

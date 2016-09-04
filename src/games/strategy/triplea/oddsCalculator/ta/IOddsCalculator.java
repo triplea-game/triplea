@@ -38,8 +38,6 @@ public interface IOddsCalculator {
 
   void setRetreatWhenOnlyAirLeft(final boolean value);
 
-  void setRetreatWhenMetaPowerIsLower(final boolean value);
-
   void setAttackerOrderOfLosses(final String attackerOrderOfLosses);
 
   void setDefenderOrderOfLosses(final String defenderOrderOfLosses);
@@ -52,5 +50,6 @@ public interface IOddsCalculator {
 
   void addOddsCalculatorListener(final OddsCalculatorListener listener);
 
+  // TODO: this method appears to never used.
   void removeOddsCalculatorListener(final OddsCalculatorListener listener);
 }

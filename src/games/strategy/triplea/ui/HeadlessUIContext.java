@@ -16,7 +16,8 @@ import games.strategy.triplea.image.PUImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 
 /**
@@ -56,8 +57,9 @@ public class HeadlessUIContext extends AbstractUIContext {
     return null;
   }
 
-  @Override public JLabel createUnitImageJLabel(UnitType type, PlayerID player, GameData data,
-      UnitDamage damaged, UnitEnable disabled) {
+  @Override
+  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+      final UnitDamage damaged, final UnitEnable disabled) {
     return null;
   }
 

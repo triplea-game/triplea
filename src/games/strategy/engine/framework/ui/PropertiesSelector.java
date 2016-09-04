@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.ui;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JComponent;
@@ -9,9 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.ui.SwingAction;
 
 /**
  * Wrapper for properties selection window.
@@ -27,7 +27,7 @@ public class PropertiesSelector {
    * @return pressed button
    */
   static public Object getButton(final JComponent parent, final String title,
-      final ArrayList<IEditableProperty> properties, final Object... buttonOptions) {
+      final List<IEditableProperty> properties, final Object... buttonOptions) {
     if (!SwingUtilities.isEventDispatchThread()) {
       // throw new IllegalStateException("Must run from EventDispatchThread");
       final AtomicReference<Object> rVal = new AtomicReference<>();
@@ -39,7 +39,7 @@ public class PropertiesSelector {
   }
 
   private static Object showDialog(final JComponent parent, final String title,
-      final ArrayList<IEditableProperty> properties, final Object... buttonOptions) {
+      final List<IEditableProperty> properties, final Object... buttonOptions) {
     final PropertiesUI panel = new PropertiesUI(properties, true);
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(null);

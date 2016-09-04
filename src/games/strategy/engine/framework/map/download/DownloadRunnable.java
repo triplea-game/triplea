@@ -6,89 +6,58 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
-/** Used to download triplea_maps.xml */
-public class DownloadRunnable implements Runnable {
-  private static Map<String,File> downloadCache = Maps.newHashMap();
+/**
+ * Downlaods a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>
+ */
+class DownloadRunnable {
   private final String urlString;
-  private final boolean parse;
-  private volatile byte[] contents;
-  private volatile String error;
-  private volatile List<DownloadFileDescription> downloads;
 
-  public DownloadRunnable(final String urlString) {
+  DownloadRunnable(final String urlString) {
     super();
     this.urlString = urlString;
-    parse = true;
   }
 
-  public byte[] getContents() {
-    return contents;
-  }
 
-  public List<DownloadFileDescription> getDownloads() {
-    return downloads;
-  }
-
-  public String getError() {
-    return error;
-  }
-
-  @Override
-  public void run() {
+  List<DownloadFileDescription> getDownloads() {
     if (beginsWithHttpProtocol(urlString)) {
-      downloadFile();
+      return downloadFile();
     } else {
-      readLocalFile();
+      return readLocalFile();
     }
   }
 
-  public static boolean beginsWithHttpProtocol(String urlString) {
+  private static boolean beginsWithHttpProtocol(String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
-  private void downloadFile() {
+  private List<DownloadFileDescription> downloadFile() {
     try {
-      if( !downloadCache.containsKey(urlString)) {
-        File tempFile = ClientFileSystemHelper.createTempFile();
-        DownloadUtils.downloadFile(urlString, tempFile);
-        downloadCache.put(urlString, tempFile);
-      }
-      File f = downloadCache.get(urlString);
-      contents = Files.readAllBytes(f.toPath());
+      File tempFile = ClientFileSystemHelper.createTempFile();
+      DownloadUtils.downloadFile(urlString, tempFile);
+      byte[] contents = Files.readAllBytes(tempFile.toPath());
+      return DownloadFileParser.parse(new ByteArrayInputStream(contents));
     } catch (IOException e) {
-      error = e.getMessage();
-      return;
-    }
-
-    if (parse) {
-      try {
-        downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
-        if (downloads == null || downloads.isEmpty()) {
-          error = "No games listed.";
-        }
-      } catch (final Exception e) {
-        error = e.getMessage();
-      }
+      ClientLogger.logError("Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
+      return new ArrayList<>();
     }
   }
 
-  private void readLocalFile() {
+  private List<DownloadFileDescription> readLocalFile() {
     File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
-      contents = Files.readAllBytes(targetFile.toPath());
-      downloads = DownloadFileParser.parse(new ByteArrayInputStream(getContents()));
+      byte[] contents = Files.readAllBytes(targetFile.toPath());
+      List<DownloadFileDescription> downloads = DownloadFileParser.parse(new ByteArrayInputStream(contents));
       checkNotNull(downloads);
+      return downloads;
     } catch (IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
+      return new ArrayList<>();
     }
   }
-
 }

@@ -1,11 +1,12 @@
 package games.strategy.triplea.delegate;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
 
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -14,11 +15,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil {
@@ -76,6 +78,27 @@ public class GameDataTestUtil {
 
   public static UnitType carrier(final GameData data) {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
+  }
+
+  // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request 1074
+  public static UnitType tacBomber(final GameData data) {
+    return unitType("tactical_bomber", data);			
+  }
+
+  public static UnitType airbase(final GameData data) {
+    return unitType("airbase", data);			
+  }
+
+  public static UnitType harbour(final GameData data) {
+    return unitType("harbour", data);			
+  }
+
+  public static UnitType factoryMajor(final GameData data) {
+    return unitType("factory_major", data);			
+  }
+
+  public static UnitType factoryMinor(final GameData data) {
+    return unitType("factory_minor", data);			
   }
 
   public static UnitType fighter(final GameData data) {
@@ -143,7 +166,7 @@ public class GameDataTestUtil {
   }
 
   public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return new TestDelegateBridge(data, player, new DummyTripleADisplay());
+    return new TestDelegateBridge(data, player, mock(ITripleADisplay.class));
   }
 
   public static void load(final Collection<Unit> units, final Route route) {

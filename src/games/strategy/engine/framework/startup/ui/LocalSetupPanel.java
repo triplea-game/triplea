@@ -100,6 +100,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
+  @Override
   public void setWidgetActivation() {}
 
   @Override
@@ -135,12 +140,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   @Override
   public void update(final Observable o, final Object arg) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          layoutComponents();
-        }
-      });
+      SwingUtilities.invokeLater(() -> layoutComponents());
       return;
     }
     layoutComponents();
@@ -192,7 +192,7 @@ class LocalPlayerComboBoxSelector {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
     m_enabledCheckBox = new JCheckBox();
-    ActionListener m_disablePlayerActionListener = new ActionListener() {
+    final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {

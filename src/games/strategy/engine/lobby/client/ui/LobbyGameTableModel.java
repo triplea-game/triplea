@@ -28,7 +28,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final IMessenger m_messenger;
 
   // these must only be accessed in the swing event thread
-  private final List<Tuple<GUID,GameDescription>> gameList;
+  private final List<Tuple<GUID, GameDescription>> gameList;
   private final ILobbyGameBroadcaster lobbyGameBroadcaster;
 
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
@@ -37,8 +37,8 @@ public class LobbyGameTableModel extends AbstractTableModel {
     gameList = new ArrayList<>();
 
     m_messenger = messenger;
-    IChannelMessenger m_channelMessenger = channelMessenger;
-    IRemoteMessenger m_remoteMessenger = remoteMessenger;
+    final IChannelMessenger m_channelMessenger = channelMessenger;
+    final IRemoteMessenger m_remoteMessenger = remoteMessenger;
     lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
       @Override
       public void gameUpdated(final GUID gameId, final GameDescription description) {
@@ -62,19 +62,16 @@ public class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (gameId == null) {
-          return;
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (gameId == null) {
+        return;
+      }
 
-        final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-        if (gameToRemove != null) {
-          final int index = gameList.indexOf(gameToRemove);
-          gameList.remove(gameToRemove);
-          fireTableRowsDeleted(index, index);
-        }
+      final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
+      if (gameToRemove != null) {
+        final int index = gameList.indexOf(gameToRemove);
+        gameList.remove(gameToRemove);
+        fireTableRowsDeleted(index, index);
       }
     });
   }
@@ -112,21 +109,18 @@ public class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (gameId == null) {
-          return;
-        }
+    SwingUtilities.invokeLater(() -> {
+      if (gameId == null) {
+        return;
+      }
 
-        final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-        if (toReplace == null) {
-          gameList.add(Tuple.of(gameId, description));
-        } else {
-          final int replaceIndex = gameList.indexOf(toReplace);
-          gameList.set(replaceIndex, Tuple.of(gameId, description));
-          fireTableRowsUpdated(replaceIndex, replaceIndex);
-        }
+      final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+      if (toReplace == null) {
+        gameList.add(Tuple.of(gameId, description));
+      } else {
+        final int replaceIndex = gameList.indexOf(toReplace);
+        gameList.set(replaceIndex, Tuple.of(gameId, description));
+        fireTableRowsUpdated(replaceIndex, replaceIndex);
       }
     });
   }

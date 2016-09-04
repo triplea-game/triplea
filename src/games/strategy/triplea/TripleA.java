@@ -5,24 +5,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.AbstractGameLoader;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
-import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.fastAI.FastAI;
@@ -34,12 +31,13 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.HeadlessUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.display.DummyTripleADisplay;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
+import games.strategy.ui.SwingAction;
 
 @MapSupport
-public class TripleA extends AbstractGameLoader {
+public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
   public static final String HUMAN_PLAYER_TYPE = "Human";
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
@@ -48,9 +46,8 @@ public class TripleA extends AbstractGameLoader {
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
   protected transient ITripleADisplay display;
 
-  public TripleA() {
-
-  }
+  protected transient ISound soundChannel;
+  protected transient IGame game;
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
@@ -77,7 +74,13 @@ public class TripleA extends AbstractGameLoader {
 
   @Override
   public void shutDown() {
-    super.shutDown();
+    if (game != null && soundChannel != null) {
+      game.removeSoundChannel(soundChannel);
+      // set sound channel to null to handle the case of shutdown being called multiple times.
+      // If/when shutdown is called exactly once, then the null assignment should be unnecessary.
+      soundChannel = null;
+    }
+
     if (display != null) {
       game.removeDisplay(display);
       display.shutDown();
@@ -88,12 +91,12 @@ public class TripleA extends AbstractGameLoader {
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
-    super.game = game;
+    this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
       final EditDelegate delegate = new EditDelegate();
       delegate.initialize("edit", "edit");
-      super.game.getData().getDelegateList().addDelegate(delegate);
+      game.getData().getDelegateList().addDelegate(delegate);
       if (game instanceof ServerGame) {
         ((ServerGame) game).addDelegateMessenger(delegate);
       }
@@ -103,26 +106,13 @@ public class TripleA extends AbstractGameLoader {
       final IUIContext uiContext = new HeadlessUIContext();
       uiContext.setDefaultMapDir(game.getData());
       uiContext.setLocalPlayers(localPlayers);
-      final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
-      final HeadlessGameServerUI headlessFrameUI;
-      if (useServerUI) {
-        headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
-      } else {
-        headlessFrameUI = null;
-      }
-      display = new DummyTripleADisplay(headlessFrameUI);
-      soundChannel = new DummySoundChannel();
+      display = new HeadlessDisplay();
+      soundChannel = new HeadlessSoundChannel();
       game.addDisplay(display);
       game.addSoundChannel(soundChannel);
 
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
-      if (headlessFrameUI != null) {
-        headlessFrameUI.setLocationRelativeTo(null);
-        headlessFrameUI.setSize(700, 400);
-        headlessFrameUI.setVisible(true);
-        headlessFrameUI.toFront();
-      }
     } else {
       SwingAction.invokeAndWait(() -> {
         final TripleAFrame frame;

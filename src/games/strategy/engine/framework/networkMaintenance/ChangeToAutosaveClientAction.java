@@ -18,7 +18,7 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
 
   public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger,
       final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
-    super("Change To " + typeOfAutosave.toString().toLowerCase() + "...");
+    super("Change To " + typeOfAutosave.toString().toLowerCase());
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_clientMessenger = clientMessenger;
     m_typeOfAutosave = typeOfAutosave;

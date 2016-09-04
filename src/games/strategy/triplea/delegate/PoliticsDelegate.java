@@ -10,13 +10,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
@@ -347,7 +347,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      this.getRemotePlayer().reportMessage(text, text); 
+      this.getRemotePlayer().reportMessage(text, text);
     }
   }
 

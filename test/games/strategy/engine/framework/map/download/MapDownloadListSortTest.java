@@ -21,21 +21,21 @@ public class MapDownloadListSortTest {
   private static final DownloadFileDescription HEADER = createDownload("header", null);
 
 
-  private static DownloadFileDescription createDownload(String mapName, String url) {
-    String description = "fake";
-    Version version = new Version("1");
+  private static DownloadFileDescription createDownload(final String mapName, final String url) {
+    final String description = "fake";
+    final Version version = new Version("1");
     return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP);
   }
 
   @Test
   public void testSortingSortedList() {
-    List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_A, MAP_B, MAP_C);
+    final List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_A, MAP_B, MAP_C);
 
-    List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
+    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
   }
 
-  private static void assertSorted(List<DownloadFileDescription> sorted) {
+  private static void assertSorted(final List<DownloadFileDescription> sorted) {
     assertThat(sorted.get(0).getMapName(), is(MAP_A.getMapName()));
     assertThat(sorted.get(1).getMapName(), is(MAP_B.getMapName()));
     assertThat(sorted.get(2).getMapName(), is(MAP_C.getMapName()));
@@ -43,16 +43,16 @@ public class MapDownloadListSortTest {
 
   @Test
   public void testSortingUnSortedList() {
-    List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_B, MAP_C, MAP_A);
-    List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
+    final List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_B, MAP_C, MAP_A);
+    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
   }
 
   @Test
   public void testInsertEmptyRowAboveHeaders() {
-    List<DownloadFileDescription> downloads =
+    final List<DownloadFileDescription> downloads =
         Lists.newArrayList(HEADER, HEADER);
-    List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
+    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertThat(sorted.size(), is(downloads.size() + 1));
     assertThat(sorted.get(0).isDummyUrl(), is(true));
     assertThat(sorted.get(1).isDummyUrl(), is(true));
@@ -61,9 +61,9 @@ public class MapDownloadListSortTest {
 
   @Test
   public void testSortingUnSortedListWithHeaders() {
-    List<DownloadFileDescription> downloads =
+    final List<DownloadFileDescription> downloads =
         Lists.newArrayList(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
-    List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
+    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertThat(sorted.get(0).isDummyUrl(), is(true));
     assertThat(sorted.get(1).getMapName(), is(MAP_A.getMapName()));
     assertThat(sorted.get(2).getMapName(), is(MAP_B.getMapName()));

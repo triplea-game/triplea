@@ -5,8 +5,6 @@ import java.awt.Font;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -23,13 +21,9 @@ public class LobbyGameTable extends JTable {
 
   public LobbyGameTable(final TableModel model) {
     super(model);
-    getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      // track the currently selected row
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        if (!inTableChange) {
-          markSelection();
-        }
+    getSelectionModel().addListSelectionListener(e -> {
+      if (!inTableChange) {
+        markSelection();
       }
     });
   }

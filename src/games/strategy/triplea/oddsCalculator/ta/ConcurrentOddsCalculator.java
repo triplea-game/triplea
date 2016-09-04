@@ -13,8 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,12 +87,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         ++m_cancelCurrentOperation;
         // increment our token, so that we can set the data in a different thread and return from this one
         m_latchWorkerThreadsCreation.increment();
-        m_executor.submit(new Runnable() {
-          @Override
-          public void run() {
-            createWorkers(data);
-          }
-        });
+        m_executor.submit(() -> createWorkers(data));
       }
     }
   }
@@ -164,14 +157,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           final CountDownLatch workerLatch = new CountDownLatch(m_currentThreads - 1);
           while (i < (m_currentThreads - 1)) {
             ++i;
-            m_executor.submit(new Runnable() {
-              @Override
-              public void run() {
-                if (m_cancelCurrentOperation >= 0) {
-                  m_workers.add(new OddsCalculator(newData, false));
-                }
-                workerLatch.countDown();
+            m_executor.submit(() -> {
+              if (m_cancelCurrentOperation >= 0) {
+                m_workers.add(new OddsCalculator(newData, false));
               }
+              workerLatch.countDown();
             });
           }
           // the last one will use our already copied data from above, without copying it again
@@ -397,15 +387,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     }
   }
 
-  @Override
-  public void setRetreatWhenMetaPowerIsLower(final boolean value) {
-    synchronized (m_mutexCalcIsRunning) {
-      awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
-        worker.setRetreatWhenMetaPowerIsLower(value);
-      }
-    }
-  }
 
   @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
@@ -459,30 +440,3 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 }
 
 
-/**
- * Borrowed from Executors$DefaultThreadFactory, but allows for custom name and daemon.
- */
-class DaemonThreadFactory implements ThreadFactory {
-  private static final AtomicInteger poolNumber = new AtomicInteger(1);
-  private final ThreadGroup group;
-  private final AtomicInteger threadNumber = new AtomicInteger(1);
-  private final String namePrefix;
-  private final boolean daemon;
-
-  DaemonThreadFactory(final boolean isDaemon, final String name) {
-    daemon = isDaemon;
-    final SecurityManager s = System.getSecurityManager();
-    group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-    namePrefix = name + ": pool-" + poolNumber.getAndIncrement() + "-thread-";
-  }
-
-  @Override
-  public Thread newThread(final Runnable r) {
-    final Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-    t.setDaemon(daemon);
-    if (t.getPriority() != Thread.NORM_PRIORITY) {
-      t.setPriority(Thread.NORM_PRIORITY);
-    }
-    return t;
-  }
-}

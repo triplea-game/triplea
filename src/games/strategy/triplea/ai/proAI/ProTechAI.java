@@ -104,19 +104,16 @@ public final class ProTechAI {
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
       float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
-          airStrength =
-              0.0F;
+          airStrength = 0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransport =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitIsTransport,
-              Matches.UnitCanMove);
+      final CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+          Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final CompositeMatch<Unit> enemyShip =
           new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransportable =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBeTransported,
-              Matches.UnitIsNotAA, Matches.UnitCanMove);
+      final CompositeMatch<Unit> enemyTransportable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+          Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
       final CompositeMatch<Unit> aTransport =
           new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, ePlayer, enemyPlane);
@@ -171,9 +168,8 @@ public final class ProTechAI {
         final HashSet<Integer> ignore = new HashSet<>();
         ignore.add(1);
         final List<Route> r = new ArrayList<>();
-        final List<Unit> ships =
-            findAttackers(location, 3, ignore, ePlayer, data, enemyShip, Matches.territoryIsBlockedSea(ePlayer, data),
-                ignoreTerr, r, true);
+        final List<Unit> ships = findAttackers(location, 3, ignore, ePlayer, data, enemyShip,
+            Matches.territoryIsBlockedSea(ePlayer, data), ignoreTerr, r, true);
         secondStrength = strength(ships, true, true, tFirst);
         enemyWaterUnits.addAll(ships);
       }
@@ -373,9 +369,8 @@ public final class ProTechAI {
     ignore.add(1);
     final CompositeMatch<Unit> blitzUnit =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
-    final CompositeMatch<Territory> validBlitzRoute =
-        new CompositeMatchAnd<>(Matches.territoryHasNoEnemyUnits(ePlayer, data),
-            Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
+    final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<>(
+        Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
@@ -425,7 +420,7 @@ public final class ProTechAI {
             continue;
           }
           q.add(neighbor);
-          final Integer dist = distance.getInt(neighbor);
+          final int dist = distance.getInt(neighbor);
           if (ignoreDistance.contains(dist)) {
             continue;
           }
@@ -553,8 +548,7 @@ public final class ProTechAI {
       unitCond.add(sub);
     }
     final CompositeMatch<Territory> routeCond =
-        new CompositeMatchAnd<>(Matches.territoryHasUnitsThatMatch(unitCond).invert(),
-            Matches.TerritoryIsWater);
+        new CompositeMatchAnd<>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
     CompositeMatch<Territory> routeCondition;
     if (attacking) {
       routeCondition = new CompositeMatchOr<>(Matches.territoryIs(destination), routeCond);
@@ -569,12 +563,8 @@ public final class ProTechAI {
     // shouldn't be a huge problem
     // if we fail due to canal, then don't go near any enemy canals
     if (MoveValidator.validateCanal(r, null, player, data) != null) {
-      r =
-          data.getMap().getRoute(
-              start,
-              destination,
-              new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data)
-                  .invert()));
+      r = data.getMap().getRoute(start, destination,
+          new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data).invert()));
     }
     if (r == null || r.getEnd() == null) {
       return null;
@@ -614,8 +604,8 @@ public final class ProTechAI {
    * Removes the inner circle neighbors
    * neutral - whether to include neutral countries
    */
-  private static List<Territory> getExactNeighbors(final Territory territory, final int distance,
-      final PlayerID player, final GameData data, final boolean neutral) {
+  private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final PlayerID player,
+      final GameData data, final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
     final CompositeMatch<Territory> endCond = new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert());
@@ -711,11 +701,9 @@ public final class ProTechAI {
     }
     int artilleryCount = artillery.size();
     int armorCount = armor.size();
-    final int infCount = infantry.size();
     int othersCount = others.size();
-    for (int j = 0; j < infCount; j++) // interleave the artillery and armor with inf
-    {
-      sorted.add(infantry.get(j));
+    for (final Unit anInfantry : infantry) {
+      sorted.add(anInfantry);
       // this should be based on combined attack and defense powers, not on attachments like blitz
       if (armorCount > 0) {
         sorted.add(armor.get(armorCount - 1));

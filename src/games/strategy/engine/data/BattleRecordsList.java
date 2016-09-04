@@ -13,13 +13,13 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
  */
 public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
-  private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<>();
+  private final Map<Integer, BattleRecords> battleRecords = new HashMap<>();
 
   public BattleRecordsList(final GameData data) {
     super(data);
   }
 
-  public static void addRecords(final Map<Integer, BattleRecords> recordList, final Integer currentRound,
+  public static void addRecords(final Map<Integer, BattleRecords> recordList, final int currentRound,
       final BattleRecords other) {
     final BattleRecords current = recordList.get(currentRound);
     if (current == null) {
@@ -30,7 +30,7 @@ public class BattleRecordsList extends GameDataComponent {
     recordList.put(currentRound, current);
   }
 
-  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round,
+  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final int round,
       final BattleRecords other) {
     final BattleRecords current = recordList.get(round);
     if (current == null) {
@@ -41,24 +41,24 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   public BattleRecords getCurrentRound() {
-    return m_battleRecords.get(getData().getSequence().getRound());
+    return battleRecords.get(getData().getSequence().getRound());
   }
 
   public BattleRecords getCurrentRoundCopy() {
-    final BattleRecords current = m_battleRecords.get(getData().getSequence().getRound());
+    final BattleRecords current = battleRecords.get(getData().getSequence().getRound());
     if (current == null) {
-      return new BattleRecords(getData());
+      return new BattleRecords();
     } else {
       return new BattleRecords(current);
     }
   }
 
   public Map<Integer, BattleRecords> getBattleRecordsMap() {
-    return m_battleRecords;
+    return battleRecords;
   }
 
   public Map<Integer, BattleRecords> getBattleRecordsMapCopy() {
-    return copyList(m_battleRecords);
+    return copyList(battleRecords);
   }
 
   private static Map<Integer, BattleRecords> copyList(final Map<Integer, BattleRecords> records) {
@@ -72,7 +72,7 @@ public class BattleRecordsList extends GameDataComponent {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("BattleRecordsList:");
-    for (final Entry<Integer, BattleRecords> entry : m_battleRecords.entrySet()) {
+    for (final Entry<Integer, BattleRecords> entry : battleRecords.entrySet()) {
       sb.append("\n");
       sb.append(entry.getKey().toString());
       sb.append(" -> ");

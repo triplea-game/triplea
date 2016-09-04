@@ -2,28 +2,18 @@ package games.strategy.triplea.image;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
-import java.awt.CompositeContext;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -347,7 +337,7 @@ public final class TileImageFactory {
       fromFile.flush();
       copyingImage.done();
     } catch (final IOException e) {
-      ClientLogger.logError("Could not load image, url: "+ imageLocation.toString(), e);
+      ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
     final ImageRef ref = new ImageRef(image);
@@ -389,220 +379,3 @@ public final class TileImageFactory {
 }
 
 
-/**
- * We keep a soft reference to the image to allow it to be garbage collected.
- * Also, the image may not have finished watching when we are created, but the
- * getImage method ensures that the image will be loaded before returning.
- */
-class ImageRef {
-  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<>();
-  public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
-  private static final AtomicInteger s_imageCount = new AtomicInteger();
-
-  static {
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        while (true) {
-          try {
-            s_referenceQueue.remove();
-            s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
-          } catch (final InterruptedException e) {
-            ClientLogger.logQuietly(e);
-          }
-        }
-      }
-    };
-    final Thread t = new Thread(r, "Tile Image Factory Soft Reference Reclaimer");
-    t.setDaemon(true);
-    t.start();
-  }
-
-  private final Reference<Image> m_image;
-
-  // private final Object m_hardRef;
-  public ImageRef(final Image image) {
-    m_image = new SoftReference<>(image, s_referenceQueue);
-    // m_hardRef = image;
-    s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet());
-  }
-
-  public Image getImage() {
-    return m_image.get();
-  }
-
-  public void clear() {
-    m_image.enqueue();
-    m_image.clear();
-  }
-}
-
-
-/**
- * This class handles the various types of blends for base/relief tiles
- */
-class BlendComposite implements java.awt.Composite {
-  public enum BlendingMode {
-    NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
-  }
-
-  public static final BlendComposite Normal = new BlendComposite(BlendingMode.NORMAL);
-  public static final BlendComposite Overlay = new BlendComposite(BlendingMode.OVERLAY);
-  public static final BlendComposite Multiply = new BlendComposite(BlendingMode.MULTIPLY);
-  public static final BlendComposite Difference = new BlendComposite(BlendingMode.DIFFERENCE);
-  public static final BlendComposite Linear_Light = new BlendComposite(BlendingMode.LINEAR_LIGHT);
-  private float alpha;
-  private final BlendingMode mode;
-
-  BlendComposite(final BlendingMode mode) {
-    this(mode, 1.0f);
-  }
-
-  private BlendComposite(final BlendingMode mode, final float alpha) {
-    this.mode = mode;
-    setAlpha(alpha);
-  }
-
-  public static BlendComposite getInstance(final BlendingMode mode) {
-    return new BlendComposite(mode);
-  }
-
-  public static BlendComposite getInstance(final BlendingMode mode, final float alpha) {
-    return new BlendComposite(mode, alpha);
-  }
-
-  public BlendComposite derive(final BlendingMode mode) {
-    return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
-  }
-
-  public BlendComposite derive(final float alpha) {
-    return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
-  }
-
-  public float getAlpha() {
-    return alpha;
-  }
-
-  public BlendingMode getMode() {
-    return mode;
-  }
-
-  private void setAlpha(final float alpha) {
-    if (alpha < 0.0f || alpha > 1.0f) {
-      throw new IllegalArgumentException("alpha must be comprised between 0.0f and 1.0f");
-    }
-    this.alpha = alpha;
-  }
-
-  @Override
-  public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel,
-      final RenderingHints hints) {
-    return new BlendingContext(this);
-  }
-
-  private static final class BlendingContext implements CompositeContext {
-    private final Blender blender;
-    private final BlendComposite composite;
-
-    private BlendingContext(final BlendComposite composite) {
-      this.composite = composite;
-      this.blender = Blender.getBlenderFor(composite);
-    }
-
-    @Override
-    public void dispose() {}
-
-    @Override
-    public void compose(final Raster src, final Raster dstIn, final WritableRaster dstOut) {
-      if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT
-          || dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT
-          || dstOut.getSampleModel().getDataType() != DataBuffer.TYPE_INT) {
-        throw new IllegalStateException("Source and destination must store pixels as INT.");
-      }
-      final int width = Math.min(src.getWidth(), dstIn.getWidth());
-      final int height = Math.min(src.getHeight(), dstIn.getHeight());
-      final float alpha = composite.getAlpha();
-      final int[] srcPixel = new int[4];
-      final int[] dstPixel = new int[4];
-      final int[] srcPixels = new int[width];
-      final int[] dstPixels = new int[width];
-      for (int y = 0; y < height; y++) {
-        src.getDataElements(0, y, width, 1, srcPixels);
-        dstIn.getDataElements(0, y, width, 1, dstPixels);
-        for (int x = 0; x < width; x++) {
-          // pixels are stored as INT_ARGB
-          // our arrays are [R, G, B, A]
-          int pixel = srcPixels[x];
-          srcPixel[0] = (pixel >> 16) & 0xFF;
-          srcPixel[1] = (pixel >> 8) & 0xFF;
-          srcPixel[2] = (pixel) & 0xFF;
-          srcPixel[3] = (pixel >> 24) & 0xFF;
-          pixel = dstPixels[x];
-          dstPixel[0] = (pixel >> 16) & 0xFF;
-          dstPixel[1] = (pixel >> 8) & 0xFF;
-          dstPixel[2] = (pixel) & 0xFF;
-          dstPixel[3] = (pixel >> 24) & 0xFF;
-          final int[] result = blender.blend(srcPixel, dstPixel);
-          // mixes the result with the opacity
-          dstPixels[x] = ((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24
-              | ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16
-              | ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) << 8
-              | (int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF;
-        }
-        dstOut.setDataElements(0, y, width, 1, dstPixels);
-      }
-    }
-  }
-  static abstract class Blender {
-    public abstract int[] blend(int[] src, int[] dst);
-
-    private static Blender getBlenderFor(final BlendComposite composite) {
-      switch (composite.getMode()) {
-        case NORMAL:
-          return new Blender() {
-            @Override
-            public int[] blend(final int[] src, final int[] dst) {
-              return src;
-            }
-          };
-        case OVERLAY:
-          return new Blender() {
-            @Override
-            public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? dst[0] * src[0] >> 7 : 255 - ((255 - dst[0]) * (255 - src[0]) >> 7),
-                  dst[1] < 128 ? dst[1] * src[1] >> 7 : 255 - ((255 - dst[1]) * (255 - src[1]) >> 7),
-                  dst[2] < 128 ? dst[2] * src[2] >> 7 : 255 - ((255 - dst[2]) * (255 - src[2]) >> 7),
-                  Math.min(255, src[3] + dst[3])};
-            }
-          };
-        case LINEAR_LIGHT:
-          return new Blender() {
-            @Override
-            public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? dst[0] + src[0] >> 7 - 255 : dst[0] + (src[0] - 128) >> 7,
-                  dst[1] < 128 ? dst[1] + src[1] >> 7 - 255 : dst[1] + (src[1] - 128) >> 7,
-                  dst[2] < 128 ? dst[2] + src[2] >> 7 - 255 : dst[2] + (src[2] - 128) >> 7,
-                  Math.min(255, src[3] + dst[3])};
-            }
-          };
-        case MULTIPLY:
-          return new Blender() {
-            @Override
-            public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {(src[0] * dst[0]) >> 8, (src[1] * dst[1]) >> 8, (src[2] * dst[2]) >> 8,
-                  Math.min(255, src[3] + dst[3])};
-            }
-          };
-        case DIFFERENCE:
-          return new Blender() {
-            @Override
-            public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {Math.abs(dst[0] - src[0]), Math.abs(dst[1] - src[1]), Math.abs(dst[2] - src[2]),
-                  Math.min(255, src[3] + dst[3])};
-            }
-          };
-      }
-      throw new IllegalArgumentException("Blender not implement for " + composite.getMode().name());
-    }
-  }
-}

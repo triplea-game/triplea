@@ -9,8 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -161,7 +159,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     private Map<String, Integer> playerPlacements = null;
 
     public boolean placementsExist() {
-      for (final Integer value : playerPlacements.values()) {
+      for (final int value : playerPlacements.values()) {
         if (value > 0) {
           return true;
         }
@@ -192,18 +190,15 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       final Dimension buttonDim = new Dimension(75, 20);
       final JButton buttonPlaceNone = new JButton("Place None");
       buttonPlaceNone.setPreferredSize(buttonDim);
-      buttonPlaceNone.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          for (final JTextField countField : countFields) {
-            if (!countField.getText().equals("0")) {
-              countField.setText("0");
-              countField.requestFocus();
-            }
+      buttonPlaceNone.addActionListener(e -> {
+        for (final JTextField countField : countFields) {
+          if (!countField.getText().equals("0")) {
+            countField.setText("0");
+            countField.requestFocus();
           }
-          me.requestFocus();
-          me.updateUI();
         }
+        me.requestFocus();
+        me.updateUI();
       });
 
       final LinkedHashMap<String, Integer> allPlayerPlacements = new LinkedHashMap<>(playerPlacements);
@@ -215,19 +210,16 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
       final JButton buttonReset = new JButton("Reset");
       buttonReset.setPreferredSize(buttonDim);
-      buttonReset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          int fieldIndex = 0;
-          for (final Entry<String, Integer> placement : allPlayerPlacements.entrySet()) {
-            countFields[fieldIndex].setText(placement.getValue().toString());
-            countFields[fieldIndex].requestFocus();
-            ++fieldIndex;
-          }
-          me.playerPlacements.putAll(playerPlacements);
-          me.requestFocus();
-          me.updateUI();
+      buttonReset.addActionListener(e -> {
+        int fieldIndex = 0;
+        for (final Entry<String, Integer> placement : allPlayerPlacements.entrySet()) {
+          countFields[fieldIndex].setText(placement.getValue().toString());
+          countFields[fieldIndex].requestFocus();
+          ++fieldIndex;
         }
+        me.playerPlacements.putAll(playerPlacements);
+        me.requestFocus();
+        me.updateUI();
       });
 
       // Input lines
@@ -250,9 +242,9 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             if (newValue.equals(prevValue)) {
               return;
             }
-            final Integer newValueInteger;
+            final int newValueInteger;
             try {
-              newValueInteger = Integer.valueOf(newValue);
+              newValueInteger = Integer.parseInt(newValue);
               if (newValueInteger < 0) {
                 throw new NumberFormatException();
               }
@@ -260,13 +252,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
               JOptionPane.showMessageDialog(me, "'" + newValue + "' is no valid integer value.", "Input error",
                   JOptionPane.ERROR_MESSAGE);
               textFieldCount.setText(prevValue);
-              SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                  textFieldCount.requestFocus();
-                }
-              });
+              SwingUtilities.invokeLater(() -> textFieldCount.requestFocus());
               return;
             }
             // LinkedHashMap<String, Integer> playerPlacements =

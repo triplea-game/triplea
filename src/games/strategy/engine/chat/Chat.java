@@ -27,28 +27,28 @@ import games.strategy.util.Tuple;
  * <p>
  */
 public class Chat {
-  private final List<IChatListener> m_listeners = new CopyOnWriteArrayList<>();
-  private final Messengers m_messengers;
-  private final String m_chatChannelName;
-  private final String m_chatName;
-  private final SentMessagesHistory m_sentMessages;
-  private volatile long m_chatInitVersion = -1;
+  private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
+  private final Messengers messengers;
+  private final String chatChannelName;
+  private final String chatName;
+  private final SentMessagesHistory sentMessages;
+  private volatile long chatInitVersion = -1;
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
-  private final Object m_mutexNodes = new Object();
-  private List<INode> m_nodes;
-  // this queue is filled ONLY in init phase when m_chatInitVersion is default (-1) and nodes should not be changed
+  private final Object mutexNodes = new Object();
+  private List<INode> nodes;
+  // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
   // until end of
   // initialization
   // synchronizes access to queue
-  private final Object m_mutexQueue = new Object();
-  private List<Runnable> m_queuedInitMessages = new ArrayList<>();
-  private final List<ChatMessage> m_chatHistory = new ArrayList<>();
-  private final StatusManager m_statusManager;
-  private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
-  private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<>();
+  private final Object mutexQueue = new Object();
+  private List<Runnable> queuedInitMessages = new ArrayList<>();
+  private final List<ChatMessage> chatHistory = new ArrayList<>();
+  private final StatusManager statusManager;
+  private final ChatIgnoreList ignoreList = new ChatIgnoreList();
+  private final HashMap<INode, LinkedHashSet<String>> notesMap = new HashMap<>();
   private static final String TAG_MODERATOR = "[Mod]";
-  private final CHAT_SOUND_PROFILE m_chatSoundProfile;
+  private final CHAT_SOUND_PROFILE chatSoundProfile;
 
   public enum CHAT_SOUND_PROFILE {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
@@ -59,7 +59,7 @@ public class Chat {
       return;
     }
     final LinkedHashSet<String> current = getTagText(tag);
-    m_notesMap.put(node, current);
+    notesMap.put(node, current);
   }
 
   private static LinkedHashSet<String> getTagText(final Tag tag) {
@@ -75,7 +75,7 @@ public class Chat {
   }
 
   public String getNotesForNode(final INode node) {
-    final LinkedHashSet<String> notes = m_notesMap.get(node);
+    final LinkedHashSet<String> notes = notesMap.get(node);
     if (notes == null) {
       return null;
     }
@@ -89,12 +89,12 @@ public class Chat {
 
   /** Creates a new instance of Chat */
   public Chat(final String chatName, final Messengers messengers, final CHAT_SOUND_PROFILE chatSoundProfile) {
-    m_chatSoundProfile = chatSoundProfile;
-    m_messengers = messengers;
-    m_statusManager = new StatusManager(messengers);
-    m_chatChannelName = ChatController.getChatChannelName(chatName);
-    m_chatName = chatName;
-    m_sentMessages = new SentMessagesHistory();
+    this.chatSoundProfile = chatSoundProfile;
+    this.messengers = messengers;
+    statusManager = new StatusManager(messengers);
+    chatChannelName = ChatController.getChatChannelName(chatName);
+    this.chatName = chatName;
+    sentMessages = new SentMessagesHistory();
     init();
   }
 
@@ -104,24 +104,24 @@ public class Chat {
   }
 
   public SentMessagesHistory getSentMessagesHistory() {
-    return m_sentMessages;
+    return sentMessages;
   }
 
   public void addChatListener(final IChatListener listener) {
-    m_listeners.add(listener);
+    listeners.add(listener);
     updateConnections();
   }
 
   public StatusManager getStatusManager() {
-    return m_statusManager;
+    return statusManager;
   }
 
   public void removeChatListener(final IChatListener listener) {
-    m_listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   public Object getMutex() {
-    return m_mutexNodes;
+    return mutexNodes;
   }
 
   private void init() {
@@ -136,27 +136,22 @@ public class Chat {
     // and run any queued messages. Queued messages may be ignored if the
     // server version is incorrect.
     // this all seems a lot more involved than it needs to be.
-    final IChatController controller = (IChatController) m_messengers.getRemoteMessenger()
-        .getRemote(ChatController.getChatControlerRemoteName(m_chatName));
-    m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
-        new RemoteName(m_chatChannelName, IChatChannel.class));
+    final IChatController controller = (IChatController) messengers.getRemoteMessenger()
+        .getRemote(ChatController.getChatControlerRemoteName(chatName));
+    messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
+        new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
-    synchronized (m_mutexNodes) {
-      m_nodes = new ArrayList<>(chatters.keySet());
+    synchronized (mutexNodes) {
+      nodes = new ArrayList<>(chatters.keySet());
     }
-    m_chatInitVersion = init.getSecond().longValue();
-    synchronized (m_mutexQueue) {
-      m_queuedInitMessages.add(0, new Runnable() {
-        @Override
-        public void run() {
-          assignNodeTags(chatters);
-        }
-      });
-      for (final Runnable job : m_queuedInitMessages) {
+    chatInitVersion = init.getSecond().longValue();
+    synchronized (mutexQueue) {
+      queuedInitMessages.add(0, () -> assignNodeTags(chatters));
+      for (final Runnable job : queuedInitMessages) {
         job.run();
       }
-      m_queuedInitMessages = null;
+      queuedInitMessages = null;
     }
     updateConnections();
   }
@@ -178,41 +173,41 @@ public class Chat {
    * Stop receiving events from the messenger.
    */
   public void shutdown() {
-    m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor,
-        new RemoteName(m_chatChannelName, IChatChannel.class));
-    if (m_messengers.getMessenger().isConnected()) {
-      final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
+    messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor,
+        new RemoteName(chatChannelName, IChatChannel.class));
+    if (messengers.getMessenger().isConnected()) {
+      final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
       final IChatController controller =
-          (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
+          (IChatController) messengers.getRemoteMessenger().getRemote(chatControllerName);
       controller.leaveChat();
     }
   }
 
   public void sendSlap(final String playerName) {
-    final IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
+        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
-    final IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
+        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {
       remote.chatOccured(message);
     }
-    m_sentMessages.append(message);
+    sentMessages.append(message);
   }
 
   private void updateConnections() {
-    synchronized (m_mutexNodes) {
-      if (m_nodes == null) {
+    synchronized (mutexNodes) {
+      if (nodes == null) {
         return;
       }
-      final List<INode> playerNames = new ArrayList<>(m_nodes);
+      final List<INode> playerNames = new ArrayList<>(nodes);
       Collections.sort(playerNames);
-      for (final IChatListener listener : m_listeners) {
+      for (final IChatListener listener : listeners) {
         listener.updatePlayerList(playerNames);
       }
     }
@@ -220,22 +215,22 @@ public class Chat {
 
   public void setIgnored(final INode node, final boolean isIgnored) {
     if (isIgnored) {
-      m_ignoreList.add(node.getName());
+      ignoreList.add(node.getName());
     } else {
-      m_ignoreList.remove(node.getName());
+      ignoreList.remove(node.getName());
     }
   }
 
   public boolean isIgnored(final INode node) {
-    return m_ignoreList.shouldIgnore(node.getName());
+    return ignoreList.shouldIgnore(node.getName());
   }
 
   public INode getLocalNode() {
-    return m_messengers.getMessenger().getLocalNode();
+    return messengers.getMessenger().getLocalNode();
   }
 
   public INode getServerNode() {
-    return m_messengers.getMessenger().getServerNode();
+    return messengers.getMessenger().getServerNode();
   }
 
   private final List<INode> m_playersThatLeft_Last10 = new ArrayList<>();
@@ -245,13 +240,13 @@ public class Chat {
   }
 
   public List<INode> getOnlinePlayers() {
-    return new ArrayList<>(m_nodes);
+    return new ArrayList<>(nodes);
   }
 
   private final IChatChannel m_chatChannelSubscribor = new IChatChannel() {
     private void assertMessageFromServer() {
       final INode senderNode = MessageContext.getSender();
-      final INode serverNode = m_messengers.getMessenger().getServerNode();
+      final INode serverNode = messengers.getMessenger().getServerNode();
       // this will happen if the message is queued
       // but to queue a message, we must first test where it came from
       // so it is safe in this case to return ok
@@ -269,14 +264,14 @@ public class Chat {
       if (isIgnored(from)) {
         return;
       }
-      synchronized (m_mutexNodes) {
-        m_chatHistory.add(new ChatMessage(message, from.getName(), false));
-        for (final IChatListener listener : m_listeners) {
+      synchronized (mutexNodes) {
+        chatHistory.add(new ChatMessage(message, from.getName(), false));
+        for (final IChatListener listener : listeners) {
           listener.addMessage(message, from.getName(), false);
         }
         // limit the number of messages in our history.
-        while (m_chatHistory.size() > 1000) {
-          m_chatHistory.remove(0);
+        while (chatHistory.size() > 1000) {
+          chatHistory.remove(0);
         }
       }
     }
@@ -287,9 +282,9 @@ public class Chat {
       if (isIgnored(from)) {
         return;
       }
-      synchronized (m_mutexNodes) {
-        m_chatHistory.add(new ChatMessage(message, from.getName(), true));
-        for (final IChatListener listener : m_listeners) {
+      synchronized (mutexNodes) {
+        chatHistory.add(new ChatMessage(message, from.getName(), true));
+        for (final IChatListener listener : listeners) {
           listener.addMessage(message, from.getName(), true);
         }
       }
@@ -298,30 +293,25 @@ public class Chat {
     @Override
     public void speakerAdded(final INode node, final Tag tag, final long version) {
       assertMessageFromServer();
-      if (m_chatInitVersion == -1) {
-        synchronized (m_mutexQueue) {
-          if (m_queuedInitMessages == null) {
+      if (chatInitVersion == -1) {
+        synchronized (mutexQueue) {
+          if (queuedInitMessages == null) {
             speakerAdded(node, tag, version);
           } else {
-            m_queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerAdded(node, tag, version);
-              }
-            });
+            queuedInitMessages.add(() -> speakerAdded(node, tag, version));
           }
         }
         return;
       }
-      if (version > m_chatInitVersion) {
-        synchronized (m_mutexNodes) {
-          m_nodes.add(node);
+      if (version > chatInitVersion) {
+        synchronized (mutexNodes) {
+          nodes.add(node);
           addToNotesMap(node, tag);
           updateConnections();
         }
-        for (final IChatListener listener : m_listeners) {
+        for (final IChatListener listener : listeners) {
           listener.addStatusMessage(node.getName() + " has joined");
-          if (m_chatSoundProfile == CHAT_SOUND_PROFILE.GAME_CHATROOM) {
+          if (chatSoundProfile == CHAT_SOUND_PROFILE.GAME_CHATROOM) {
             ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
           }
         }
@@ -331,28 +321,23 @@ public class Chat {
     @Override
     public void speakerRemoved(final INode node, final long version) {
       assertMessageFromServer();
-      if (m_chatInitVersion == -1) {
-        synchronized (m_mutexQueue) {
-          if (m_queuedInitMessages == null) {
+      if (chatInitVersion == -1) {
+        synchronized (mutexQueue) {
+          if (queuedInitMessages == null) {
             speakerRemoved(node, version);
           } else {
-            m_queuedInitMessages.add(new Runnable() {
-              @Override
-              public void run() {
-                speakerRemoved(node, version);
-              }
-            });
+            queuedInitMessages.add(() -> speakerRemoved(node, version));
           }
         }
         return;
       }
-      if (version > m_chatInitVersion) {
-        synchronized (m_mutexNodes) {
-          m_nodes.remove(node);
-          m_notesMap.remove(node);
+      if (version > chatInitVersion) {
+        synchronized (mutexNodes) {
+          nodes.remove(node);
+          notesMap.remove(node);
           updateConnections();
         }
-        for (final IChatListener listener : m_listeners) {
+        for (final IChatListener listener : listeners) {
           listener.addStatusMessage(node.getName() + " has left");
         }
         m_playersThatLeft_Last10.add(node);
@@ -364,8 +349,8 @@ public class Chat {
 
     @Override
     public void speakerTagUpdated(final INode node, final Tag tag) {
-      synchronized (m_mutexNodes) {
-        m_notesMap.remove(node);
+      synchronized (mutexNodes) {
+        notesMap.remove(node);
         addToNotesMap(node, tag);
         updateConnections();
       }
@@ -377,17 +362,17 @@ public class Chat {
       if (isIgnored(from)) {
         return;
       }
-      synchronized (m_mutexNodes) {
-        if (to.equals(m_messengers.getChannelMessenger().getLocalNode().getName())) {
-          for (final IChatListener listener : m_listeners) {
+      synchronized (mutexNodes) {
+        if (to.equals(messengers.getChannelMessenger().getLocalNode().getName())) {
+          for (final IChatListener listener : listeners) {
             final String message = "You were slapped by " + from.getName();
-            m_chatHistory.add(new ChatMessage(message, from.getName(), false));
+            chatHistory.add(new ChatMessage(message, from.getName(), false));
             listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
           }
-        } else if (from.equals(m_messengers.getChannelMessenger().getLocalNode())) {
-          for (final IChatListener listener : m_listeners) {
+        } else if (from.equals(messengers.getChannelMessenger().getLocalNode())) {
+          for (final IChatListener listener : listeners) {
             final String message = "You just slapped " + to;
-            m_chatHistory.add(new ChatMessage(message, from.getName(), false));
+            chatHistory.add(new ChatMessage(message, from.getName(), false));
             listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
           }
         }
@@ -406,31 +391,8 @@ public class Chat {
    * @return the messages that have occured so far.
    */
   public List<ChatMessage> getChatHistory() {
-    return m_chatHistory;
+    return chatHistory;
   }
 }
 
 
-class ChatMessage {
-  private final String m_message;
-  private final String m_from;
-  private final boolean m_isMeMessage;
-
-  public ChatMessage(final String message, final String from, final boolean isMeMessage) {
-    m_message = message;
-    m_from = from;
-    m_isMeMessage = isMeMessage;
-  }
-
-  public String getFrom() {
-    return m_from;
-  }
-
-  public boolean isMeMessage() {
-    return m_isMeMessage;
-  }
-
-  public String getMessage() {
-    return m_message;
-  }
-}

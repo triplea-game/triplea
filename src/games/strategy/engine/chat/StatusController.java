@@ -10,13 +10,13 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
 public class StatusController implements IStatusController {
-  private final Object m_mutex = new Object();
-  private final Map<INode, String> m_status = new HashMap<>();
-  private final Messengers m_messengers;
+  private final Object mutex = new Object();
+  private final Map<INode, String> status = new HashMap<>();
+  private final Messengers messengers;
 
   public StatusController(final Messengers messengers) {
-    m_messengers = messengers;
-    ((IServerMessenger) m_messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener() {
+    this.messengers = messengers;
+    ((IServerMessenger) this.messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         StatusController.this.connectionRemoved(to);
@@ -28,29 +28,29 @@ public class StatusController implements IStatusController {
   }
 
   protected void connectionRemoved(final INode to) {
-    synchronized (m_mutex) {
-      m_status.remove(to);
+    synchronized (mutex) {
+      status.remove(to);
     }
     final IStatusChannel channel =
-        (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(to, null);
   }
 
   @Override
   public Map<INode, String> getAllStatus() {
-    synchronized (m_mutex) {
-      return new HashMap<>(m_status);
+    synchronized (mutex) {
+      return new HashMap<>(status);
     }
   }
 
   @Override
   public void setStatus(final String newStatus) {
     final INode node = MessageContext.getSender();
-    synchronized (m_mutex) {
-      m_status.put(node, newStatus);
+    synchronized (mutex) {
+      status.put(node, newStatus);
     }
     final IStatusChannel channel =
-        (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(node, newStatus);
   }
 }

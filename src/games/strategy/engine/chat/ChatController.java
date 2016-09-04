@@ -22,27 +22,27 @@ import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 
 public class ChatController implements IChatController {
-  private final static Logger s_logger = Logger.getLogger(ChatController.class.getName());
+  private final static Logger logger = Logger.getLogger(ChatController.class.getName());
   private static final String CHAT_REMOTE = "_ChatRmt";
   private static final String CHAT_CHANNEL = "_ChatCtrl";
-  private final IMessenger m_messenger;
-  private final IRemoteMessenger m_remoteMessenger;
-  private final IModeratorController m_moderatorController;
-  private final IChannelMessenger m_channelMessenger;
-  private final String m_chatName;
-  private final Map<INode, Tag> m_chatters = new HashMap<>();
-  protected final Object m_mutex = new Object();
-  private final String m_chatChannel;
-  private long m_version;
-  private final ScheduledExecutorService m_pingThread = Executors.newScheduledThreadPool(1);
-  private final IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener() {
+  private final IMessenger messenger;
+  private final IRemoteMessenger remoteMessenger;
+  private final IModeratorController moderatorController;
+  private final IChannelMessenger channelMessenger;
+  private final String chatName;
+  private final Map<INode, Tag> chatters = new HashMap<>();
+  protected final Object mutex = new Object();
+  private final String chatChannel;
+  private long version;
+  private final ScheduledExecutorService pingThread = Executors.newScheduledThreadPool(1);
+  private final IConnectionChangeListener connectionChangeListener = new IConnectionChangeListener() {
     @Override
     public void connectionAdded(final INode to) {}
 
     @Override
     public void connectionRemoved(final INode to) {
-      synchronized (m_mutex) {
-        if (m_chatters.keySet().contains(to)) {
+      synchronized (mutex) {
+        if (chatters.keySet().contains(to)) {
           leaveChatInternal(to);
         }
       }
@@ -59,23 +59,20 @@ public class ChatController implements IChatController {
 
   public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
       final IChannelMessenger channelMessenger, final IModeratorController moderatorController) {
-    m_chatName = name;
-    m_messenger = messenger;
-    m_remoteMessenger = remoteMessenger;
-    m_moderatorController = moderatorController;
-    m_channelMessenger = channelMessenger;
-    m_chatChannel = getChatChannelName(name);
-    m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
-    ((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
-    m_pingThread.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          // System.out.println("Pinging");
-          getChatBroadcaster().ping();
-        } catch (final Exception e) {
-          s_logger.log(Level.SEVERE, "Error pinging", e);
-        }
+    chatName = name;
+    this.messenger = messenger;
+    this.remoteMessenger = remoteMessenger;
+    this.moderatorController = moderatorController;
+    this.channelMessenger = channelMessenger;
+    chatChannel = getChatChannelName(name);
+    this.remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
+    ((IServerMessenger) this.messenger).addConnectionChangeListener(connectionChangeListener);
+    pingThread.scheduleAtFixedRate(() -> {
+      try {
+        // System.out.println("Pinging");
+        getChatBroadcaster().ping();
+      } catch (final Exception e) {
+        logger.log(Level.SEVERE, "Error pinging", e);
       }
     }, 180, 60, TimeUnit.SECONDS);
   }
@@ -87,21 +84,21 @@ public class ChatController implements IChatController {
 
   // clean up
   public void deactivate() {
-    m_pingThread.shutdown();
-    synchronized (m_mutex) {
+    pingThread.shutdown();
+    synchronized (mutex) {
       final IChatChannel chatter = getChatBroadcaster();
-      for (final INode node : m_chatters.keySet()) {
-        m_version++;
-        chatter.speakerRemoved(node, m_version);
+      for (final INode node : chatters.keySet()) {
+        version++;
+        chatter.speakerRemoved(node, version);
       }
-      m_remoteMessenger.unregisterRemote(getChatControlerRemoteName(m_chatName));
+      remoteMessenger.unregisterRemote(getChatControlerRemoteName(chatName));
     }
-    ((IServerMessenger) m_messenger).removeConnectionChangeListener(m_connectionChangeListener);
+    ((IServerMessenger) messenger).removeConnectionChangeListener(connectionChangeListener);
   }
 
   private IChatChannel getChatBroadcaster() {
     final IChatChannel chatter =
-        (IChatChannel) m_channelMessenger.getChannelBroadcastor(new RemoteName(m_chatChannel, IChatChannel.class));
+        (IChatChannel) channelMessenger.getChannelBroadcastor(new RemoteName(chatChannel, IChatChannel.class));
     return chatter;
   }
 
@@ -109,19 +106,19 @@ public class ChatController implements IChatController {
   @Override
   public Tuple<Map<INode, Tag>, Long> joinChat() {
     final INode node = MessageContext.getSender();
-    s_logger.info("Chatter:" + node + " is joining chat:" + m_chatName);
+    logger.info("Chatter:" + node + " is joining chat:" + chatName);
     final Tag tag;
-    if (m_moderatorController.isPlayerAdmin(node)) {
+    if (moderatorController.isPlayerAdmin(node)) {
       tag = Tag.MODERATOR;
     } else {
       tag = Tag.NONE;
     }
-    synchronized (m_mutex) {
-      m_chatters.put(node, tag);
-      m_version++;
-      getChatBroadcaster().speakerAdded(node, tag, m_version);
-      final Map<INode, Tag> copy = new HashMap<>(m_chatters);
-      return Tuple.of(copy, m_version);
+    synchronized (mutex) {
+      chatters.put(node, tag);
+      version++;
+      getChatBroadcaster().speakerAdded(node, tag, version);
+      final Map<INode, Tag> copy = new HashMap<>(chatters);
+      return Tuple.of(copy, version);
     }
   }
 
@@ -133,12 +130,12 @@ public class ChatController implements IChatController {
 
   protected void leaveChatInternal(final INode node) {
     long version;
-    synchronized (m_mutex) {
-      m_chatters.remove(node);
-      m_version++;
-      version = m_version;
+    synchronized (mutex) {
+      chatters.remove(node);
+      this.version++;
+      version = this.version;
     }
     getChatBroadcaster().speakerRemoved(node, version);
-    s_logger.info("Chatter:" + node + " has left chat:" + m_chatName);
+    logger.info("Chatter:" + node + " has left chat:" + chatName);
   }
 }

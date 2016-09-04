@@ -32,7 +32,7 @@ public class MapDownloadListTest {
   @Mock
   private FileSystemAccessStrategy strategy;
 
-  private List<DownloadFileDescription> descriptions = new ArrayList<>();
+  private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
   @Before
   public void setUp() throws Exception {
@@ -42,45 +42,45 @@ public class MapDownloadListTest {
   @Test
   public void testAvailable() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.empty());
-    MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
+    final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
-    List<DownloadFileDescription> available = testObj.getAvailable();
+    final List<DownloadFileDescription> available = testObj.getAvailable();
     assertThat(available.size(), is(1));
 
-    List<DownloadFileDescription> installed = testObj.getInstalled();
+    final List<DownloadFileDescription> installed = testObj.getInstalled();
     assertThat(installed.size(), is(0));
 
-    List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
+    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
     assertThat(outOfDate.size(), is(0));
   }
 
   @Test
   public void testInstalled() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
-    MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
+    final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
-    List<DownloadFileDescription> available = testObj.getAvailable();
+    final List<DownloadFileDescription> available = testObj.getAvailable();
     assertThat(available.size(), is(0));
 
-    List<DownloadFileDescription> installed = testObj.getInstalled();
+    final List<DownloadFileDescription> installed = testObj.getInstalled();
     assertThat(installed.size(), is(1));
 
-    List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
+    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
     assertThat(outOfDate.size(), is(0));
   }
 
   @Test
   public void testOutOfDate() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
-    MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
+    final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
-    List<DownloadFileDescription> available = testObj.getAvailable();
+    final List<DownloadFileDescription> available = testObj.getAvailable();
     assertThat(available.size(), is(0));
 
-    List<DownloadFileDescription> installed = testObj.getInstalled();
+    final List<DownloadFileDescription> installed = testObj.getInstalled();
     assertThat(installed.size(), is(1));
 
-    List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
+    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
     assertThat(outOfDate.size(), is(1));
   }
 }

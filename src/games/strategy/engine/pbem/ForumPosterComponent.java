@@ -10,15 +10,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.ui.SwingAction;
-import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
+import games.strategy.ui.SwingAction;
 
 public class ForumPosterComponent extends JPanel {
   private static final long serialVersionUID = 4754052934098190357L;
@@ -65,10 +65,10 @@ public class ForumPosterComponent extends JPanel {
     m_includeTerritoryAction = SwingAction.of("Include territory summary", e ->
 
     updateHistoryLog());
-    m_includeTerritoryAllPlayersAction = SwingAction.of("Include full territory summary", e -> updateHistoryLog());
-    m_includeProductionAction = SwingAction.of("Include production summary", e -> updateHistoryLog());
+    m_includeTerritoryAllPlayersAction = SwingAction.of("Include Full Territory Summary", e -> updateHistoryLog());
+    m_includeProductionAction = SwingAction.of("Include Production Summary", e -> updateHistoryLog());
     m_showDetailsAction = SwingAction.of("Show dice/battle details", e -> updateHistoryLog());
-    m_showDiceStatisticsAction = SwingAction.of("Include overall dice statistics", e -> updateHistoryLog());
+    m_showDiceStatisticsAction = SwingAction.of("Include Overall Dice Statistics", e -> updateHistoryLog());
     m_repostAction = SwingAction.of("Repost " + m_title, e -> {
       if (m_repostTurnSummaryCheckBox.isSelected()) {
         m_postButton.setEnabled(true);

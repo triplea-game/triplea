@@ -26,12 +26,12 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.ui.SwingAction;
 
 /**
  * A Chat window.
@@ -115,7 +115,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
               continue;
             }
           }
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
+          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
         }
       }
     } else {
@@ -209,35 +209,29 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
-    final Runnable runner = new Runnable() {
-      @Override
-      public void run() {
-        if (from.equals(chat.getServerNode().getName())) {
-          if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                "ADMIN_CHAT_CONTROL", false);
-            return;
-          } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
-            addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-            return;
-          }
-        }
-        if (!floodControl.allow(from, System.currentTimeMillis())) {
-          if (from.equals(chat.getLocalNode().getName())) {
-            addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
-          }
+    final Runnable runner = () -> {
+      if (from.equals(chat.getServerNode().getName())) {
+        if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+          addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+              "ADMIN_CHAT_CONTROL", false);
+          return;
+        } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+          addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
           return;
         }
-        addChatMessage(message, from, thirdperson);
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
-            scrollModel.setValue(scrollModel.getMaximum());
-          }
-        });
-        ClipPlayer.play(sound);
       }
+      if (!floodControl.allow(from, System.currentTimeMillis())) {
+        if (from.equals(chat.getLocalNode().getName())) {
+          addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+        }
+        return;
+      }
+      addChatMessage(message, from, thirdperson);
+      SwingUtilities.invokeLater(() -> {
+        final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
+        scrollModel.setValue(scrollModel.getMaximum());
+      });
+      ClipPlayer.play(sound);
     };
     if (SwingUtilities.isEventDispatchThread()) {
       runner.run();
@@ -260,7 +254,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
     } catch (final BadLocationException e) {
-      ClientLogger.logError("There was an Error whilst trying to add the Chat Message \"" + message +"\" sent by " + from + " at " + time, e);
+      ClientLogger.logError("There was an Error whilst trying to add the Chat Message \"" + message + "\" sent by "
+          + from + " at " + time, e);
     }
   }
 
@@ -275,17 +270,14 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   @Override
   public void addStatusMessage(final String message) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          final Document doc = text.getDocument();
-          doc.insertString(doc.getLength(), message + "\n", italic);
-          // don't let the chat get too big
-          trimLines(doc, MAX_LINES);
-        } catch (final BadLocationException e) {
-          ClientLogger.logError("There was an Error whilst trying to add the Status Message \"" + message + "\"", e);
-        }
+    SwingUtilities.invokeLater(() -> {
+      try {
+        final Document doc = text.getDocument();
+        doc.insertString(doc.getLength(), message + "\n", italic);
+        // don't let the chat get too big
+        trimLines(doc, MAX_LINES);
+      } catch (final BadLocationException e) {
+        ClientLogger.logError("There was an Error whilst trying to add the Status Message \"" + message + "\"", e);
       }
     });
   }

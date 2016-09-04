@@ -1,5 +1,14 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -15,16 +24,6 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.util.Tuple;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro scramble AI.
@@ -52,8 +51,8 @@ public class ProScrambleAI {
     final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
     final ProBattleResult minResult =
         calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    ProLogger.debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%="
-        + minResult.getWinPercentage());
+    ProLogger
+        .debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
     if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
       return null;
     }
@@ -65,15 +64,12 @@ public class ProScrambleAI {
       final int maxCanScramble = BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
       List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
-        Collections.sort(canScrambleAir, new Comparator<Unit>() {
-          @Override
-          public int compare(final Unit o1, final Unit o2) {
-            final double strength1 =
-                ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o1), new ArrayList<>(), false);
-            final double strength2 =
-                ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o2), new ArrayList<>(), false);
-            return Double.compare(strength2, strength1);
-          }
+        Collections.sort(canScrambleAir, (o1, o2) -> {
+          final double strength1 =
+              ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o1), new ArrayList<>(), false);
+          final double strength2 =
+              ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o2), new ArrayList<>(), false);
+          return Double.compare(strength2, strength1);
         });
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }
@@ -83,8 +79,8 @@ public class ProScrambleAI {
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult =
         calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    ProLogger.debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%="
-        + maxResult.getWinPercentage());
+    ProLogger
+        .debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
       return null;
     }

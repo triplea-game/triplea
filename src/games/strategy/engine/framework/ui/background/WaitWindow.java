@@ -29,8 +29,8 @@ public class WaitWindow extends JWindow {
       @Override
       public void run() {
         SwingUtilities.invokeLater(() -> toFront());
-        }
-      };
+      }
+    };
 
     synchronized (m_mutex) {
       if (m_timer != null) {
@@ -46,13 +46,10 @@ public class WaitWindow extends JWindow {
         m_timer = null;
       }
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        setVisible(false);
-        removeAll();
-        dispose();
-      }
+    SwingUtilities.invokeLater(() -> {
+      setVisible(false);
+      removeAll();
+      dispose();
     });
     m_finished = true;
   }

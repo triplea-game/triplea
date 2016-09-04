@@ -15,13 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CompositeMatchAnd;
@@ -32,6 +32,7 @@ public class MoveDelegateTest extends DelegateTest {
   MoveDelegate m_delegate;
   ITestDelegateBridge m_bridge;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
@@ -969,11 +970,11 @@ public class MoveDelegateTest extends DelegateTest {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
-    final Integer retreatingLandSizeInt = retreatingLandUnits.size();
+    final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits = new ArrayList<>();
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
-    final Integer defendingLandSizeInt = defendingLandUnits.size();
+    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
         DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
@@ -995,11 +996,11 @@ public class MoveDelegateTest extends DelegateTest {
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
-    final Integer preCountInt = finlandNorway.getUnits().size();
+    final int preCountInt = finlandNorway.getUnits().size();
     // Retreat from the Baltic
     ((MustFightBattle) inBalticSeaZone).externalRetreat(retreatingSeaUnits, northSea, false, m_bridge);
     // Get the total number of units that should be left
-    final Integer postCountInt = preCountInt - retreatingLandSizeInt;
+    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
     assertEquals(defendingLandSizeInt, postCountInt);
   }
@@ -1031,11 +1032,11 @@ public class MoveDelegateTest extends DelegateTest {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
-    final Integer retreatingLandSizeInt = retreatingLandUnits.size();
+    final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits = new ArrayList<>();
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
-    final Integer defendingLandSizeInt = defendingLandUnits.size();
+    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
         DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
@@ -1057,11 +1058,11 @@ public class MoveDelegateTest extends DelegateTest {
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
-    final Integer preCountInt = finlandNorway.getUnits().size();
+    final int preCountInt = finlandNorway.getUnits().size();
     // Retreat from the Baltic
     ((MustFightBattle) inBalticSeaZone).externalRetreat(retreatingSeaUnits, northSea, false, m_bridge);
     // Get the total number of units that should be left
-    final Integer postCountInt = preCountInt - retreatingLandSizeInt;
+    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
     assertEquals(defendingLandSizeInt, postCountInt);
   }
@@ -1093,11 +1094,11 @@ public class MoveDelegateTest extends DelegateTest {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
-    final Integer retreatingLandSizeInt = retreatingLandUnits.size();
+    final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
     final List<Unit> defendingLandUnits = new ArrayList<>();
-    final Integer defendingLandSizeInt = defendingLandUnits.size();
+    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
         DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
@@ -1113,11 +1114,11 @@ public class MoveDelegateTest extends DelegateTest {
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
-    final Integer preCountInt = karelia.getUnits().size();
+    final int preCountInt = karelia.getUnits().size();
     // Retreat from the Baltic
     ((MustFightBattle) inBalticSeaZone).externalRetreat(retreatingSeaUnits, northSea, false, m_bridge);
     // Get the total number of units that should be left
-    final Integer postCountInt = preCountInt - retreatingLandSizeInt;
+    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
     assertEquals(defendingLandSizeInt, postCountInt);
   }
@@ -1149,11 +1150,11 @@ public class MoveDelegateTest extends DelegateTest {
     // Get the attacking land units that will retreat and their number
     final List<Unit> retreatingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
-    final Integer retreatingLandSizeInt = retreatingLandUnits.size();
+    final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
-    final Integer defendingLandSizeInt = defendingLandUnits.size();
+    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
         DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
@@ -1169,11 +1170,11 @@ public class MoveDelegateTest extends DelegateTest {
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
-    final Integer preCountInt = karelia.getUnits().size();
+    final int preCountInt = karelia.getUnits().size();
     // Retreat from the Baltic
     ((MustFightBattle) inBalticSeaZone).externalRetreat(retreatingSeaUnits, northSea, false, m_bridge);
     // Get the total number of units that should be left
-    final Integer postCountInt = preCountInt - retreatingLandSizeInt;
+    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
     assertEquals(defendingLandSizeInt, postCountInt);
   }

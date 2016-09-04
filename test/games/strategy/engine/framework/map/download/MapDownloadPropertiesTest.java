@@ -29,7 +29,7 @@ public class MapDownloadPropertiesTest {
   @Test
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
     when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
-    MapListingSource testObj = new MapListingSource(mockReader);
+    final MapListingSource testObj = new MapListingSource(mockReader);
     assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
   }
 }

@@ -11,16 +11,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import games.strategy.engine.ClientContext;
+import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 /**
  * A large image that can be scrolled according to a ImageScrollModel.
@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
  * our location and size. Subclasses must take care of rendering
  */
 public class ImageScrollerLargeView extends JComponent {
+
   private static final long serialVersionUID = -7212817233833868483L;
 
   // bit flags for determining which way we are scrolling
@@ -37,24 +38,14 @@ public class ImageScrollerLargeView extends JComponent {
   final static int RIGHT = 2;
   final static int TOP = 4;
   final static int BOTTOM = 8;
-  final static int WHEEL_SCROLL_AMOUNT = 60;
 
-  // how close to an edge we have to be before we scroll
-  private final static int TOLERANCE = 30;
-  // how close to an edge we have to be before we scroll faster
-  private final static int FASTER_TOLERANCE =  10;
-
-  // how much we scroll
-  private final static int SCROLL_DISTANCE = 30;
-  private final static float FASTER_SCROLL_MULTIPLIER = 1.5f;
+  private final ScrollSettings scrollSettings;
 
   protected final ImageScrollModel m_model;
   protected double m_scale = 1;
 
   private int m_drag_scrolling_lastx;
   private int m_drag_scrolling_lasty;
-
-
 
   private final ActionListener m_timerAction = new ActionListener() {
     @Override
@@ -82,77 +73,75 @@ public class ImageScrollerLargeView extends JComponent {
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
+    scrollSettings = ClientContext.scrollSettings();
     m_model = model;
     m_model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
-    MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
-      @Override
-      public void mouseWheelMoved(final MouseWheelEvent e) {
-        if (!e.isAltDown()) {
-          if (m_edge == NONE) {
-            m_insideCount = 0;
-          }
-          // compute the amount to move
-          int dx = 0;
-          int dy = 0;
-          if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-            dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-          } else {
-            dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-          }
-          // move left and right and test for wrap
-          int newX = (m_model.getX() + dx);
-          if (newX > m_model.getMaxWidth() - getWidth()) {
-            newX -= m_model.getMaxWidth();
-          }
-          if (newX < -getWidth()) {
-            newX += m_model.getMaxWidth();
-          }
-          // move up and down and test for edges
-          final int newY = m_model.getY() + dy;
-          // update the map
-          m_model.set(newX, newY);
-        } else {
-          double value = m_scale;
-          int positive = 1;
-          if (e.getUnitsToScroll() > 0) {
-            positive = -1;
-          }
-          if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
-            return;
-          }
-          if (positive > 0) {
-            if (value >= .79) {
-              value = 1.0;
-            } else if (value >= .59) {
-              value = .8;
-            } else if (value >= .39) {
-              value = .6;
-            } else if (value >= .19) {
-              value = .4;
-            } else {
-              value = .2;
-            }
-          } else {
-            if (value <= .41) {
-              value = .2;
-            } else if (value <= .61) {
-              value = .4;
-            } else if (value <= .81) {
-              value = .6;
-            } else if (value <= 1.0) {
-              value = .8;
-            } else {
-              value = 1.0;
-            }
-          }
-          setScale(value);
+    final MouseWheelListener MOUSE_WHEEL_LISTENER = e -> {
+      if (!e.isAltDown()) {
+        if (m_edge == NONE) {
+          m_insideCount = 0;
         }
+        // compute the amount to move
+        int dx = 0;
+        int dy = 0;
+        if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
+          dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+        } else {
+          dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+        }
+        // move left and right and test for wrap
+        int newX = (m_model.getX() + dx);
+        if (newX > m_model.getMaxWidth() - getWidth()) {
+          newX -= m_model.getMaxWidth();
+        }
+        if (newX < -getWidth()) {
+          newX += m_model.getMaxWidth();
+        }
+        // move up and down and test for edges
+        final int newY = m_model.getY() + dy;
+        // update the map
+        m_model.set(newX, newY);
+      } else {
+        double value = m_scale;
+        int positive = 1;
+        if (e.getUnitsToScroll() > 0) {
+          positive = -1;
+        }
+        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
+          return;
+        }
+        if (positive > 0) {
+          if (value >= .79) {
+            value = 1.0;
+          } else if (value >= .59) {
+            value = .8;
+          } else if (value >= .39) {
+            value = .6;
+          } else if (value >= .19) {
+            value = .4;
+          } else {
+            value = .2;
+          }
+        } else {
+          if (value <= .41) {
+            value = .2;
+          } else if (value <= .61) {
+            value = .4;
+          } else if (value <= .81) {
+            value = .6;
+          } else if (value <= 1.0) {
+            value = .8;
+          } else {
+            value = 1.0;
+          }
+        }
+        setScale(value);
       }
     };
     addMouseWheelListener(MOUSE_WHEEL_LISTENER);
-    MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+    final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
       @Override
       public void mouseEntered(final MouseEvent e) {
         m_timer.start();
@@ -175,7 +164,7 @@ public class ImageScrollerLargeView extends JComponent {
       }
     };
     addMouseListener(MOUSE_LISTENER);
-    MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
+    final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
       @Override
       public void mousePressed(final MouseEvent e) {
         // try to center around the click
@@ -184,7 +173,7 @@ public class ImageScrollerLargeView extends JComponent {
       }
     };
     addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
-    MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
         m_inside = true;
@@ -200,9 +189,9 @@ public class ImageScrollerLargeView extends JComponent {
     };
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
     /*
-    this is used to detect drag scrolling
-   */
-    MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
+     * this is used to detect drag scrolling
+     */
+    final MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
       @Override
       public void mouseDragged(final MouseEvent e) {
         requestFocusInWindow();
@@ -231,7 +220,7 @@ public class ImageScrollerLargeView extends JComponent {
       }
     };
     addMouseMotionListener(MOUSE_DRAG_LISTENER);
-    ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
+    final ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
       @Override
       public void componentResized(final ComponentEvent e) {
         refreshBoxSize();
@@ -239,12 +228,9 @@ public class ImageScrollerLargeView extends JComponent {
     };
     addComponentListener(COMPONENT_LISTENER);
     m_timer.start();
-    m_model.addObserver(new Observer() {
-      @Override
-      public void update(final Observable o, final Object arg) {
-        repaint();
-        notifyScollListeners();
-      }
+    m_model.addObserver((o, arg) -> {
+      repaint();
+      notifyScollListeners();
     });
   }
 
@@ -290,19 +276,19 @@ public class ImageScrollerLargeView extends JComponent {
   private void scroll() {
     int dy = 0;
     if ((m_edge & TOP) != 0) {
-      dy = -SCROLL_DISTANCE;
+      dy = -scrollSettings.getMapEdgeScrollSpeed();
     } else if ((m_edge & BOTTOM) != 0) {
-      dy = SCROLL_DISTANCE;
+      dy = scrollSettings.getMapEdgeScrollSpeed();
     }
     int dx = 0;
     if ((m_edge & LEFT) != 0) {
-      dx = -SCROLL_DISTANCE;
+      dx = -scrollSettings.getMapEdgeScrollSpeed();
     } else if ((m_edge & RIGHT) != 0) {
-      dx = SCROLL_DISTANCE;
+      dx = scrollSettings.getMapEdgeScrollSpeed();
     }
     if (this.m_insideFasterPosition) {
-      dx *= FASTER_SCROLL_MULTIPLIER;
-      dy *= FASTER_SCROLL_MULTIPLIER;
+      dx *= scrollSettings.getMapEdgeFasterScrollMultiplier();
+      dy *= scrollSettings.getMapEdgeFasterScrollMultiplier();
     }
 
     dx = (int) (dx / m_scale);
@@ -319,26 +305,25 @@ public class ImageScrollerLargeView extends JComponent {
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
     this.m_insideFasterPosition = false;
-
-    if (x < TOLERANCE) {
+    if (x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += LEFT;
-      if (x < FASTER_TOLERANCE) {
+      if (x < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
-    } else if (width - x < TOLERANCE) {
+    } else if (width - x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += RIGHT;
-      if ((width - x) < FASTER_TOLERANCE) {
+      if ((width - x) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
     }
-    if (y < TOLERANCE) {
+    if (y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += TOP;
-      if (y < FASTER_TOLERANCE) {
+      if (y < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
-    } else if (height - y < TOLERANCE) {
+    } else if (height - y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += BOTTOM;
-      if ((height - y) < FASTER_TOLERANCE) {
+      if ((height - y) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
         this.m_insideFasterPosition = true;
       }
     }

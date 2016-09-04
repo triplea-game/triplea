@@ -12,17 +12,17 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerManager;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.DefaultDelegateBridge;
 import games.strategy.engine.delegate.DelegateExecutionManager;
@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -57,6 +58,10 @@ import games.strategy.triplea.TripleAPlayer;
 public class ServerGame extends AbstractGame {
   public static final RemoteName SERVER_REMOTE =
       new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
+
+  public final static String GAME_HAS_BEEN_SAVED_PROPERTY =
+      "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+
   // maps PlayerID->GamePlayer
   private final RandomStats m_randomStats;
   private IRandomSource m_randomSource = new PlainRandomSource();
@@ -65,7 +70,8 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
   private boolean m_needToInitialize = true;
   /**
-   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
+   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
+   * returning.
    * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
@@ -143,18 +149,15 @@ public class ServerGame extends AbstractGame {
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
-    IServerRemote m_serverRemote = new IServerRemote() {
-      @Override
-      public byte[] getSavedGame() {
-        final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
-        try {
-          saveGame(sink);
-        } catch (final IOException e) {
-          ClientLogger.logQuietly(e);
-          throw new IllegalStateException(e);
-        }
-        return sink.toByteArray();
+    final IServerRemote m_serverRemote = () -> {
+      final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+      try {
+        saveGame(sink);
+      } catch (final IOException e) {
+        ClientLogger.logQuietly(e);
+        throw new IllegalStateException(e);
       }
+      return sink.toByteArray();
     };
     m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
   }
@@ -174,21 +177,18 @@ public class ServerGame extends AbstractGame {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
       saveGame(sink);
-      (new Thread(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
-            waitOnObserver.countDown();
-          } catch (final ConnectionLostException cle) {
-            System.out.println("Connection lost to observer while joining: " + newNode.getName());
-          } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
-          }
+      (new Thread(() -> {
+        try {
+          blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+          waitOnObserver.countDown();
+        } catch (final ConnectionLostException cle) {
+          System.out.println("Connection lost to observer while joining: " + newNode.getName());
+        } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {
-        if (!waitOnObserver.await(GameRunner2.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
+        if (!waitOnObserver.await(GameRunner.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {
@@ -216,7 +216,7 @@ public class ServerGame extends AbstractGame {
       return;
     }
     final Object wrappedDelegate =
-        m_delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[]{delegate.getRemoteType()});
+        m_delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     m_remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
@@ -241,8 +241,6 @@ public class ServerGame extends AbstractGame {
     // m_data.getSequence().getStep(m_currentStepIndex);
   }
 
-  private final static String GAME_HAS_BEEN_SAVED_PROPERTY =
-      "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
 
   /**
    * And here we go.
@@ -350,9 +348,11 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave() {
-    SaveGameFileChooser.ensureDefaultDirExists();
-    final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-    final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+    SaveGameFileChooser.ensureMapsFolderExists();
+    final File f1 =
+        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+    final File f2 =
+        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
     final File f;
     if (f1.lastModified() > f2.lastModified()) {
       f = f2;
@@ -368,12 +368,14 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveRound() {
-    SaveGameFileChooser.ensureDefaultDirExists();
+    SaveGameFileChooser.ensureMapsFolderExists();
     final File autosaveFile;
     if (m_data.getSequence().getRound() % 2 == 0) {
-      autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
+      autosaveFile =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
     } else {
-      autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
+      autosaveFile =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
     }
 
     try (FileOutputStream out = new FileOutputStream(autosaveFile)) {
@@ -468,7 +470,7 @@ public class ServerGame extends AbstractGame {
           new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
       if (m_delegateRandomSource == null) {
         m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
-            new Class<?>[]{IRandomSource.class});
+            new Class<?>[] {IRandomSource.class});
       }
       bridge.setRandomSource(m_delegateRandomSource);
       m_delegateExecutionManager.enterDelegateExecution();
@@ -494,11 +496,12 @@ public class ServerGame extends AbstractGame {
         new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     if (m_delegateRandomSource == null) {
       m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
-          new Class<?>[]{IRandomSource.class});
+          new Class<?>[] {IRandomSource.class});
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we cannot do this the very first run through, because there are no history nodes yet. We should do after first node is created.
+    // we cannot do this the very first run through, because there are no history nodes yet. We should do after first
+    // node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }
@@ -642,9 +645,4 @@ public class ServerGame extends AbstractGame {
   public boolean isGameSequenceRunning() {
     return !m_delegateExecutionStopped;
   }
-}
-
-
-interface IServerRemote extends IRemote {
-  byte[] getSavedGame();
 }

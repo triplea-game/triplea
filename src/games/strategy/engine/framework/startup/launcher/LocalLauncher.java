@@ -13,10 +13,9 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.net.IServerMessenger;
+import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 
@@ -38,8 +37,7 @@ public class LocalLauncher extends AbstractLauncher {
     ServerGame game = null;
     try {
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      final IServerMessenger messenger = new DummyMessenger();
-      final Messengers messengers = new Messengers(messenger);
+      final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
           m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
       game = new ServerGame(m_gameData, gamePlayers, new HashMap<>(), messengers);
@@ -49,7 +47,7 @@ public class LocalLauncher extends AbstractLauncher {
         game.setRandomSource(new ScriptedRandomSource());
       }
       m_gameData.getGameLoader().startGame(game, gamePlayers, m_headless);
-    } catch( MapNotFoundException e ) {
+    } catch (final MapNotFoundException e) {
       exceptionLoadingGame = e;
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
@@ -65,16 +63,11 @@ public class LocalLauncher extends AbstractLauncher {
       }
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
-        // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
-        // by closing of stream while unloading map resources.
-        ThreadUtil.sleep(100);
+      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
+      // by closing of stream while unloading map resources.
+      ThreadUtil.sleep(100);
       m_gameSelectorModel.loadDefaultGame(parent);
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          JOptionPane.getFrameForComponent(parent).setVisible(true);
-        }
-      });
+      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }
 }

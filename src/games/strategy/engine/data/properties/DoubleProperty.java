@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.DoubleTextField;
-import games.strategy.ui.DoubleTextFieldChangeListener;
 
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
@@ -59,12 +58,7 @@ public class DoubleProperty extends AEditableProperty {
   public JComponent getEditorComponent() {
     final DoubleTextField field = new DoubleTextField(m_min, m_max);
     field.setValue(m_value);
-    field.addChangeListener(new DoubleTextFieldChangeListener() {
-      @Override
-      public void changedValue(final DoubleTextField aField) {
-        m_value = aField.getValue();
-      }
-    });
+    field.addChangeListener(aField -> m_value = aField.getValue());
     return field;
   }
 

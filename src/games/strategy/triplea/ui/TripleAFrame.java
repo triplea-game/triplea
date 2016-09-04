@@ -21,8 +21,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
@@ -70,8 +69,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.base.Joiner;
@@ -83,7 +80,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -94,17 +90,19 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
@@ -141,6 +139,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.settings.scrolling.ScrollSettings;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
@@ -148,7 +147,6 @@ import games.strategy.triplea.ui.menubar.ExportMenu;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingAction;
@@ -169,21 +167,21 @@ public class TripleAFrame extends MainGameFrame {
   private IGame game;
   private MapPanel mapPanel;
   private MapPanelSmallView smallView;
-  private JLabel message = new JLabel("No selection");
-  private JLabel status = new JLabel("");
-  private JLabel step = new JLabel("xxxxxx");
-  private JLabel round = new JLabel("xxxxxx");
-  private JLabel player = new JLabel("xxxxxx");
+  private final JLabel message = new JLabel("No selection");
+  private final JLabel status = new JLabel("");
+  private final JLabel step = new JLabel("xxxxxx");
+  private final JLabel round = new JLabel("xxxxxx");
+  private final JLabel player = new JLabel("xxxxxx");
   private ActionButtons actionButtons;
-  private JPanel gameMainPanel = new JPanel();
-  private JPanel rightHandSidePanel = new JPanel();
-  private JTabbedPane tabsPanel = new JTabbedPane();
+  private final JPanel gameMainPanel = new JPanel();
+  private final JPanel rightHandSidePanel = new JPanel();
+  private final JTabbedPane tabsPanel = new JTabbedPane();
   private StatPanel statsPanel;
   private EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
   private NotesPanel notesPanel;
   private TerritoryDetailPanel details;
-  private JPanel historyComponent = new JPanel();
+  private final JPanel historyComponent = new JPanel();
   private JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
   private boolean inHistory = false;
@@ -204,7 +202,7 @@ public class TripleAFrame extends MainGameFrame {
   private List<Unit> unitsBeingMousedOver;
   private PlayerID lastStepPlayer;
   private PlayerID currentStepPlayer;
-  private Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
+  private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenuBar menu;
   private final ScrollSettings scrollSettings;
@@ -218,7 +216,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    WindowListener WINDOW_LISTENER = new WindowAdapter() {
+    final WindowListener WINDOW_LISTENER = new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
         leaveGame();
@@ -234,7 +232,7 @@ public class TripleAFrame extends MainGameFrame {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    AbstractAction m_showCommentLogAction = new AbstractAction() {
+    final AbstractAction m_showCommentLogAction = new AbstractAction() {
       private static final long serialVersionUID = 3964381772343872268L;
 
       @Override
@@ -287,12 +285,7 @@ public class TripleAFrame extends MainGameFrame {
     smallView = new MapPanelSmallView(small, model);
     mapPanel = new MapPanel(data, smallView, uiContext, model);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
-    MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
-      @Override
-      public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
-        unitsBeingMousedOver = units;
-      }
-    };
+    final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     // link the small and large images
     mapPanel.initSmallMap();
@@ -375,12 +368,12 @@ public class TripleAFrame extends MainGameFrame {
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
 
-    MovePanel movePanel = new MovePanel(data, mapPanel, this);
+    final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    List<KeyListener> keyListeners =
+    final List<KeyListener> keyListeners =
         ImmutableList.of(getArrowKeyListener(), movePanel.getCustomKeyListeners(), getFlagToggleKeyListener(this));
-    for (KeyListener keyListener : keyListeners) {
+    for (final KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
     }
 
@@ -403,37 +396,33 @@ public class TripleAFrame extends MainGameFrame {
     tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
-    tabsPanel.addChangeListener(new ChangeListener() {
-      // This method is called whenever the selected tab changes
-      @Override
-      public void stateChanged(final ChangeEvent evt) {
-        final JTabbedPane pane = (JTabbedPane) evt.getSource();
-        // Get current tab
-        final int sel = pane.getSelectedIndex();
-        if (sel == -1) {
-          return;
+    tabsPanel.addChangeListener(evt -> {
+      final JTabbedPane pane = (JTabbedPane) evt.getSource();
+      // Get current tab
+      final int sel = pane.getSelectedIndex();
+      if (sel == -1) {
+        return;
+      }
+      if (pane.getComponentAt(sel).equals(notesPanel)) {
+        notesPanel.layoutNotes();
+      } else {
+        // for memory management reasons the notes are in a SoftReference,
+        // so we must remove our hard reference link to them so it can be reclaimed if needed
+        notesPanel.removeNotes();
+      }
+      if (pane.getComponentAt(sel).equals(editPanel)) {
+        PlayerID player1 = null;
+        data.acquireReadLock();
+        try {
+          player1 = data.getSequence().getStep().getPlayerID();
+        } finally {
+          data.releaseReadLock();
         }
-        if (pane.getComponentAt(sel).equals(notesPanel)) {
-          notesPanel.layoutNotes();
-        } else {
-          // for memory management reasons the notes are in a SoftReference,
-          // so we must remove our hard reference link to them so it can be reclaimed if needed
-          notesPanel.removeNotes();
-        }
-        if (pane.getComponentAt(sel).equals(editPanel)) {
-          PlayerID player = null;
-          data.acquireReadLock();
-          try {
-            player = data.getSequence().getStep().getPlayerID();
-          } finally {
-            data.releaseReadLock();
-          }
-          actionButtons.getCurrent().setActive(false);
-          editPanel.display(player);
-        } else {
-          actionButtons.getCurrent().setActive(true);
-          editPanel.setActive(false);
-        }
+        actionButtons.getCurrent().setActive(false);
+        editPanel.display(player1);
+      } else {
+        actionButtons.getCurrent().setActive(true);
+        editPanel.setActive(false);
       }
     });
     rightHandSidePanel.setPreferredSize(new Dimension((int) smallView.getPreferredSize().getWidth(),
@@ -465,7 +454,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
 
-  public static KeyListener getFlagToggleKeyListener(TripleAFrame frame) {
+  public static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
     return new KeyListener() {
       private boolean blockInputs = false;
       private long timeSinceLastPressEvent = 0;
@@ -484,7 +473,7 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
 
-      private void resetFlagsOnTimeOut(int keyCode) {
+      private void resetFlagsOnTimeOut(final int keyCode) {
         new Thread(() -> {
           running = true;
           while (running) {
@@ -506,7 +495,7 @@ public class TripleAFrame extends MainGameFrame {
         running = false;
       }
 
-      private void toggleFlags(int keyCode) {
+      private void toggleFlags(final int keyCode) {
         if (keyCode == KeyEvent.VK_L) {
           UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
           frame.getMapPanel().resetMap();
@@ -577,7 +566,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     this.setVisible(false);
     TripleAFrame.this.dispose();
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       // this frame should not handle shutdowns anymore
       MacQuitMenuWrapper.unregisterShutdownHandler();
     }
@@ -597,7 +586,8 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void shutdown() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
+        "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
+        JOptionPane.YES_NO_OPTION,
         getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
@@ -609,7 +599,8 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void leaveGame() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
+        "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
+        JOptionPane.YES_NO_OPTION,
         getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
@@ -683,39 +674,24 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void setStatusErrorMessage(final String msg) {
+    setStatus(msg, mapPanel.getErrorImage());
+  }
+
+  private void setStatus(final String msg, final Optional<Image> image) {
     if (status == null) {
       return;
     }
     status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getErrorImage()));
+
+    if (!msg.equals("") && image.isPresent()) {
+      status.setIcon(new ImageIcon(image.get()));
     } else {
       status.setIcon(null);
     }
   }
 
   public void setStatusWarningMessage(final String msg) {
-    if (status == null) {
-      return;
-    }
-    status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getWarningImage()));
-    } else {
-      status.setIcon(null);
-    }
-  }
-
-  public void setStatusInfoMessage(final String msg) {
-    if (status == null) {
-      return;
-    }
-    status.setText(msg);
-    if (!msg.equals("")) {
-      status.setIcon(new ImageIcon(mapPanel.getInfoImage()));
-    } else {
-      status.setIcon(null);
-    }
+    setStatus(msg, mapPanel.getWarningImage());
   }
 
   public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid) {
@@ -803,13 +779,10 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(new Runnable() {
-      @Override
-      public void run() {
-        EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE,
-            true, getUIContext().getCountDownLatchHandler());
-      }
-    });
+    messageAndDialogThreadPool.runTask(
+        () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error",
+            JOptionPane.ERROR_MESSAGE,
+            true, getUIContext().getCountDownLatchHandler()));
   }
 
   /**
@@ -842,13 +815,9 @@ public class TripleAFrame extends MainGameFrame {
     }
     final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
     if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.runTask(new Runnable() {
-        @Override
-        public void run() {
-          EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title,
-              JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
-        }
-      });
+      messageAndDialogThreadPool.runTask(
+          () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title,
+              JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
     }
   }
 
@@ -930,17 +899,14 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(new Runnable() {
-      @Override
-      public void run() {
-        final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<>();
-        SwingAction.invokeAndWait(() -> {
-          final TechResultsDisplay display = new TechResultsDisplay(msg, uiContext, data);
-          displayRef.set(display);
-        });
-        EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUIContext().getCountDownLatchHandler());
-      }
+    messageAndDialogThreadPool.runTask(() -> {
+      final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<>();
+      SwingAction.invokeAndWait(() -> {
+        final TechResultsDisplay display = new TechResultsDisplay(msg, uiContext, data);
+        displayRef.set(display);
+      });
+      EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
+          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUIContext().getCountDownLatchHandler());
     });
   }
 
@@ -975,21 +941,18 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
-    final Tuple<JPanel, JList<Unit>> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Unit>>>() {
-      @Override
-      public Tuple<JPanel, JList<Unit>> run() {
-        final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        if (bombers != null) {
-          panel.add(new JLabel("For Units: " + MyFormatter.unitsToTextNoOwner(bombers)), BorderLayout.NORTH);
-        }
-        final JScrollPane scroll = new JScrollPane(list);
-        panel.add(scroll, BorderLayout.CENTER);
-        return Tuple.of(panel, list);
+    final Tuple<JPanel, JList<Unit>> comps = Util.runInSwingEventThread(() -> {
+      final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      list.setSelectedIndex(0);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      if (bombers != null) {
+        panel.add(new JLabel("For Units: " + MyFormatter.unitsToTextNoOwner(bombers)), BorderLayout.NORTH);
       }
+      final JScrollPane scroll = new JScrollPane(list);
+      panel.add(scroll, BorderLayout.CENTER);
+      return Tuple.of(panel, list);
     });
     final JPanel panel = comps.getFirst();
     final JList<?> list = comps.getSecond();
@@ -1009,12 +972,8 @@ public class TripleAFrame extends MainGameFrame {
       return new int[numDice];
     }
     messageAndDialogThreadPool.waitForAll();
-    final DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>() {
-      @Override
-      public DiceChooser run() {
-        return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
-      }
-    });
+    final DiceChooser chooser = Util.runInSwingEventThread(
+        () -> new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
     do {
       EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
           getUIContext().getCountDownLatchHandler());
@@ -1032,24 +991,21 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final Tuple<JPanel, JList<Territory>> comps =
-        Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList<Territory>>>() {
-          @Override
-          public Tuple<JPanel, JList<Territory>> run() {
-            mapPanel.centerOn(currentTerritory);
-            final JList<Territory> list = new JList<>(new Vector<>(candidates));
-            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            list.setSelectedIndex(0);
-            final JPanel panel = new JPanel();
-            panel.setLayout(new BorderLayout());
-            final JScrollPane scroll = new JScrollPane(list);
-            final JTextArea text = new JTextArea(unitMessage, 8, 30);
-            text.setLineWrap(true);
-            text.setEditable(false);
-            text.setWrapStyleWord(true);
-            panel.add(text, BorderLayout.NORTH);
-            panel.add(scroll, BorderLayout.CENTER);
-            return Tuple.of(panel, list);
-          }
+        Util.runInSwingEventThread(() -> {
+          mapPanel.centerOn(currentTerritory);
+          final JList<Territory> list = new JList<>(new Vector<>(candidates));
+          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+          list.setSelectedIndex(0);
+          final JPanel panel = new JPanel();
+          panel.setLayout(new BorderLayout());
+          final JScrollPane scroll = new JScrollPane(list);
+          final JTextArea text = new JTextArea(unitMessage, 8, 30);
+          text.setLineWrap(true);
+          text.setEditable(false);
+          text.setWrapStyleWord(true);
+          panel.add(text, BorderLayout.NORTH);
+          panel.add(scroll, BorderLayout.CENTER);
+          return Tuple.of(panel, list);
         });
     final JPanel panel = comps.getFirst();
     final JList<?> list = comps.getSecond();
@@ -1071,19 +1027,16 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     {
       final CountDownLatch latch1 = new CountDownLatch(1);
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          if (!inGame) {
-            showGame();
-          }
-          if (tabsPanel.indexOfTab("Actions") == -1) {
-            // add actions tab
-            tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
-          }
-          tabsPanel.setSelectedIndex(0);
-          latch1.countDown();
+      SwingUtilities.invokeLater(() -> {
+        if (!inGame) {
+          showGame();
         }
+        if (tabsPanel.indexOfTab("Actions") == -1) {
+          // add actions tab
+          tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
+        }
+        tabsPanel.setSelectedIndex(0);
+        latch1.countDown();
       });
       try {
         latch1.await();
@@ -1097,15 +1050,12 @@ public class TripleAFrame extends MainGameFrame {
     final int index = tabsPanel == null ? -1 : tabsPanel.indexOfTab("Actions");
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          if (tabsPanel != null) {
-            // remove actions tab
-            tabsPanel.remove(index);
-          }
-          latch2.countDown();
+      SwingUtilities.invokeLater(() -> {
+        if (tabsPanel != null) {
+          // remove actions tab
+          tabsPanel.remove(index);
         }
+        latch2.countDown();
       });
       try {
         latch2.await();
@@ -1166,42 +1116,39 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        optionPane.addPropertyChangeListener(new PropertyChangeListener() {
-          @Override
-          public void propertyChange(final PropertyChangeEvent e) {
-            if (!dialog.isVisible()) {
-              return;
+        optionPane.addPropertyChangeListener(e -> {
+          if (!dialog.isVisible()) {
+            return;
+          }
+          final String option = ((String) optionPane.getValue());
+          if (option.equals(optionNone)) {
+            unitPanels.clear();
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else if (option.equals(optionAttack)) {
+            if (unitPanels.size() != 1) {
+              throw new IllegalStateException("unitPanels should only contain 1 entry");
             }
-            final String option = ((String) optionPane.getValue());
-            if (option.equals(optionNone)) {
-              unitPanels.clear();
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else if (option.equals(optionAttack)) {
-              if (unitPanels.size() != 1) {
-                throw new IllegalStateException("unitPanels should only contain 1 entry");
+            for (final IndividualUnitPanelGrouped terrChooser : unitPanels) {
+              for (final Entry<String, IntegerMap<Unit>> entry : terrChooser.getSelected().entrySet()) {
+                selection.put(data.getMap().getTerritory(entry.getKey()), entry.getValue());
               }
-              for (final IndividualUnitPanelGrouped terrChooser : unitPanels) {
-                for (final Entry<String, IntegerMap<Unit>> entry : terrChooser.getSelected().entrySet()) {
-                  selection.put(data.getMap().getTerritory(entry.getKey()), entry.getValue());
-                }
-              }
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else {
-              unitPanels.clear();
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              ThreadUtil.sleep(500);
-              run();
             }
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else {
+            unitPanels.clear();
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            ThreadUtil.sleep(500);
+            run();
           }
         });
       }
@@ -1277,37 +1224,34 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        optionPane.addPropertyChangeListener(new PropertyChangeListener() {
-          @Override
-          public void propertyChange(final PropertyChangeEvent e) {
-            if (!dialog.isVisible()) {
-              return;
+        optionPane.addPropertyChangeListener(e -> {
+          if (!dialog.isVisible()) {
+            return;
+          }
+          final String option = ((String) optionPane.getValue());
+          if (option.equals(optionNone)) {
+            choosers.clear();
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else if (option.equals(optionScramble)) {
+            for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
+              selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
             }
-            final String option = ((String) optionPane.getValue());
-            if (option.equals(optionNone)) {
-              choosers.clear();
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else if (option.equals(optionScramble)) {
-              for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
-                selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
-              }
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else {
-              choosers.clear();
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              ThreadUtil.sleep(500);
-              run();
-            }
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else {
+            choosers.clear();
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            ThreadUtil.sleep(500);
+            run();
           }
         });
       }
@@ -1373,33 +1317,30 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        optionPane.addPropertyChangeListener(new PropertyChangeListener() {
-          @Override
-          public void propertyChange(final PropertyChangeEvent e) {
-            if (!dialog.isVisible()) {
-              return;
-            }
-            final String option = ((String) optionPane.getValue());
-            if (option.equals(optionNone)) {
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else if (option.equals(optionSelect)) {
-              selection.addAll(chooser.getSelected());
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              continueLatch.countDown();
-            } else {
-              selection.clear();
-              dialog.setVisible(false);
-              dialog.removeAll();
-              dialog.dispose();
-              ThreadUtil.sleep(500);
-              run();
-            }
+        optionPane.addPropertyChangeListener(e -> {
+          if (!dialog.isVisible()) {
+            return;
+          }
+          final String option = ((String) optionPane.getValue());
+          if (option.equals(optionNone)) {
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else if (option.equals(optionSelect)) {
+            selection.addAll(chooser.getSelected());
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            continueLatch.countDown();
+          } else {
+            selection.clear();
+            dialog.setVisible(false);
+            dialog.removeAll();
+            dialog.dispose();
+            ThreadUtil.sleep(500);
+            run();
           }
         });
       }
@@ -1488,13 +1429,7 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-  GameStepListener m_stepListener = new GameStepListener() {
-    @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
-        final int round, final String stepDisplayName) {
-      updateStep();
-    }
-  };
+  GameStepListener m_stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
     final IUIContext context = uiContext;
@@ -1568,7 +1503,7 @@ public class TripleAFrame extends MainGameFrame {
     ThreadUtil.sleep(300);
     SwingAction.invokeAndWait(() -> {
       final Boolean play = requiredTurnSeries.get(player);
-      if (play != null && play.booleanValue()) {
+      if (play != null && play) {
         ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
         requiredTurnSeries.put(player, false);
       }
@@ -1589,41 +1524,38 @@ public class TripleAFrame extends MainGameFrame {
     @Override
     public void gameDataChanged(final Change change) {
       try {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            if (uiContext == null) {
-              return;
+        SwingUtilities.invokeLater(() -> {
+          if (uiContext == null) {
+            return;
+          }
+          if (getEditMode()) {
+            if (tabsPanel.indexOfComponent(editPanel) == -1) {
+              showEditMode();
             }
-            if (getEditMode()) {
-              if (tabsPanel.indexOfComponent(editPanel) == -1) {
-                showEditMode();
-              }
-            } else {
-              if (tabsPanel.indexOfComponent(editPanel) != -1) {
-                hideEditMode();
-              }
+          } else {
+            if (tabsPanel.indexOfComponent(editPanel) != -1) {
+              hideEditMode();
             }
-            if (uiContext.getShowMapOnly()) {
-              hideRightHandSidePanel();
-              // display troop movement
-              final HistoryNode node = data.getHistory().getLastNode();
-              if (node instanceof Renderable) {
-                final Object details = ((Renderable) node).getRenderingData();
-                if (details instanceof MoveDescription) {
-                  final MoveDescription moveMessage = (MoveDescription) details;
-                  final Route route = moveMessage.getRoute();
-                  mapPanel.setRoute(null);
-                  mapPanel.setRoute(route);
-                  final Territory terr = route.getEnd();
-                  if (!mapPanel.isShowing(terr)) {
-                    mapPanel.centerOn(terr);
-                  }
+          }
+          if (uiContext.getShowMapOnly()) {
+            hideRightHandSidePanel();
+            // display troop movement
+            final HistoryNode node = data.getHistory().getLastNode();
+            if (node instanceof Renderable) {
+              final Object details1 = ((Renderable) node).getRenderingData();
+              if (details1 instanceof MoveDescription) {
+                final MoveDescription moveMessage = (MoveDescription) details1;
+                final Route route = moveMessage.getRoute();
+                mapPanel.setRoute(null);
+                mapPanel.setRoute(route);
+                final Territory terr = route.getEnd();
+                if (!mapPanel.isShowing(terr)) {
+                  mapPanel.centerOn(terr);
                 }
               }
-            } else {
-              showRightHandSidePanel();
             }
+          } else {
+            showRightHandSidePanel();
           }
         });
       } catch (final Exception e) {
@@ -1684,12 +1616,9 @@ public class TripleAFrame extends MainGameFrame {
             info.setTipText("<html>" + tipText + "</html>");
             final Popup popup = popupFactory.getPopup(mapPanel, info, currentPoint.x, currentPoint.y);
             popup.show();
-            final Runnable disposePopup = new Runnable() {
-              @Override
-              public void run() {
-                ThreadUtil.sleep(5000);
-                popup.hide();
-              }
+            final Runnable disposePopup = () -> {
+              ThreadUtil.sleep(5000);
+              popup.hide();
             };
             new Thread(disposePopup, "popup waiter").start();
           }
@@ -1708,7 +1637,7 @@ public class TripleAFrame extends MainGameFrame {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = scrollSettings.getFasterArrowKeyScrollMultipler();
+      multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
     }
 
 
@@ -1992,12 +1921,7 @@ public class TripleAFrame extends MainGameFrame {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     if (m_showHistoryAction != null) {
@@ -2061,7 +1985,7 @@ public class TripleAFrame extends MainGameFrame {
     return isEditMode;
   }
 
-  private AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
+  private final AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
     private static final long serialVersionUID = -3960551522512897374L;
 
     @Override
@@ -2070,7 +1994,7 @@ public class TripleAFrame extends MainGameFrame {
       m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private AbstractAction m_showGameAction = new AbstractAction("Show current game") {
+  private final AbstractAction m_showGameAction = new AbstractAction("Show current game") {
     private static final long serialVersionUID = -7551760679570164254L;
 
     {
@@ -2083,7 +2007,7 @@ public class TripleAFrame extends MainGameFrame {
       m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only") {
+  private final AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only") {
     private static final long serialVersionUID = -6621157075878333141L;
 
     @Override
@@ -2182,5 +2106,14 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void setShowChatTime(final boolean showTime) {
     chatPanel.setShowChatTime(showTime);
+  }
+
+  public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
+    if (ServerGame.class.isAssignableFrom(getGame().getClass())) {
+      final ServerGame serverGame = (ServerGame) getGame();
+      return Optional.ofNullable(serverGame.getInGameLobbyWatcher());
+    } else {
+      return Optional.empty();
+    }
   }
 }

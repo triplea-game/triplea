@@ -13,8 +13,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.triplea.player.AbstractHumanPlayer;
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -51,10 +49,12 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -86,7 +86,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
   @Override
   public void reportMessage(final String message, final String title) {
-    ui.notifyMessage(message, title);
+    if (ui != null) {
+      ui.notifyMessage(message, title);
+    }
   }
 
   @Override
@@ -97,8 +99,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return;
     }
     if (ui == null) {
-      System.out.println("Game frame is null, but entered player step: " + name + " for player: " + this.toString());
-      // headless games shouldn't get here, but lets try returning anyway
+      // We will get here if we are loading a save game of a map that we do not have. Caller code should be doing
+      // the error handling, so just return..
       return;
     }
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate
@@ -158,23 +160,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-        ui.getEditModeButtonModel().setEnabled(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+      ui.getEditModeButtonModel().setEnabled(true);
     });
   }
 
   private void disableEditModeMenu() {
     ui.setEditDelegate(null);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        ui.getEditModeButtonModel().setEnabled(false);
-        ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-      }
+    SwingUtilities.invokeLater(() -> {
+      ui.getEditModeButtonModel().setEnabled(false);
+      ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
     });
   }
 
@@ -316,7 +312,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
         if (!canAirLand(true, id)) {
-           // continue with the move loop
+          // continue with the move loop
           move(nonCombat, stepName);
         }
       }

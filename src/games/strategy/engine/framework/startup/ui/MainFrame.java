@@ -6,11 +6,11 @@ import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
     }
     s_instance = this;
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setIconImage(GameRunner2.getGameIcon(this));
+    setIconImage(GameRunner.getGameIcon(this));
     m_gameSelectorModel = new GameSelectorModel();
     m_gameSelectorModel.loadDefaultGame(this);
     m_setupPanelModel = new SetupPanelModel(m_gameSelectorModel);
@@ -67,14 +67,14 @@ public class MainFrame extends JFrame {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
           loadGameFile(fileName);
         }
         setVisible(true);
-        if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+        if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
           m_setupPanelModel.showServer(MainFrame.this);
-        } else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+        } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
           m_setupPanelModel.showClient(MainFrame.this);
         }
       }
@@ -105,8 +105,8 @@ public class MainFrame extends JFrame {
       SwingAction.invokeAndWait(() -> clientLeftGame());
       return;
     }
-      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-      // closing of stream while unloading map resources.
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
     ThreadUtil.sleep(100);
     m_gameSelectorModel.loadDefaultGame(this);
     m_setupPanelModel.showSelectType();

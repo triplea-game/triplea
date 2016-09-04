@@ -11,7 +11,7 @@ import games.strategy.engine.framework.LocalPlayers;
  * on clients.
  */
 public class DefaultSoundChannel implements ISound {
-  private LocalPlayers localPlayers;
+  private final LocalPlayers localPlayers;
 
   public DefaultSoundChannel(final LocalPlayers localPlayers) {
     this.localPlayers = localPlayers;

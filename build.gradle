@@ -10,6 +10,7 @@ buildscript {
 plugins {
 	id 'java'
 	id 'application'
+	id 'checkstyle'
 	id 'com.github.ben-manes.versions' version '0.12.0'
 	id 'com.github.johnrengelman.shadow' version '1.2.3'
 	id "de.qaware.seu.as.code.git" version "2.2.0"
@@ -24,9 +25,16 @@ compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:all"
 }
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
+}
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-tasks.withType(JavaCompile) { options.incremental = true }
+
+tasks.withType(JavaCompile) {
+	options.incremental = true
+}
 
 sourceSets {
 	main {
@@ -36,6 +44,12 @@ sourceSets {
 	test {
 		java { srcDirs 'test' }
 	}
+}
+
+checkstyle{
+	configFile = rootProject.file('google_checks.xml')
+	toolVersion = "7.1"
+	showViolations = false
 }
 
 jar {
@@ -62,10 +76,12 @@ dependencies {
 	compile files('lib/AppleJavaExtensions-1.6.jar')
 	compile files('lib/upnp.jar')
 
-	testCompile 'junit:junit:4.12'
-	testCompile 'org.apache.derby:derby:10.12.1.1'
-	testCompile 'org.hamcrest:hamcrest-all:1.3'
-	testCompile 'org.mockito:mockito-all:2.0.2-beta'
+	testCompile 'org.apache.derby:derby:10.10.1.1'
+	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+	testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-M1'
+	testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M1'
+	testCompile 'org.junit.vintage:junit-vintage-engine:4.12.0-M1'//JUnit Backwards compatibility
+	testCompile 'org.mockito:mockito-core:2.0.82-beta'
 }
 
 test {

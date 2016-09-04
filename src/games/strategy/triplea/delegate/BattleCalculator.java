@@ -26,7 +26,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -68,14 +68,11 @@ public class BattleCalculator {
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
   public static void sortPreBattle(final List<Unit> units) {
-    final Comparator<Unit> comparator = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        if (u1.getUnitType().equals(u2.getUnitType())) {
-          return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
-        }
-        return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+    final Comparator<Unit> comparator = (u1, u2) -> {
+      if (u1.getUnitType().equals(u2.getUnitType())) {
+        return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
       }
+      return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
     };
     Collections.sort(units, comparator);
   }
@@ -99,14 +96,6 @@ public class BattleCalculator {
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     return ua.getHitPoints() - unit.getHits();
-  }
-
-  /**
-   * Useful for fast approximations of strength.
-   * Returns a number equal to: (2 * Hitpoints) + (Power * 6 / DiceSides)
-   */
-  public static int getNormalizedMetaPower(final int power, final int hitpoints, final int diceSides) {
-    return (2 * hitpoints) + (power * 6 / diceSides);
   }
 
   /**
@@ -705,7 +694,7 @@ public class BattleCalculator {
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
       final boolean bonus) {
-    if (!GameRunner2.getCasualtySelectionSlow()) {
+    if (!GameRunner.getCasualtySelectionSlow()) {
       return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
           enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
           bonus);

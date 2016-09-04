@@ -1,18 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import games.strategy.ui.SwingAction;
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.framework.startup.ui.MainFrame;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +17,21 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.google.common.collect.Sets;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.EngineVersionException;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.ui.SwingAction;
+
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
@@ -39,7 +41,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
 
   public NewGameChooserModel() {
-    populate();
+    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+
+    final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+    Collections.sort(entries, NewGameChooserEntry.getComparator());
+
+    for (final NewGameChooserEntry entry : entries) {
+      addElement(entry);
+    }
   }
 
   @Override
@@ -49,18 +58,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   public static File getDefaultMapsDir() {
     return new File(ClientFileSystemHelper.getRootFolder(), "maps");
-  }
-
-
-  private void populate() {
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
-
-    final List<NewGameChooserEntry> entries = Lists.newArrayList(parsedMapSet);
-    Collections.sort(entries, NewGameChooserEntry.getComparator());
-
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
-    }
   }
 
   private static List<File> allMapFiles() {
@@ -95,15 +92,15 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   private static List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
-      Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
+      final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
-        ZipEntry entry = zipEntryEnumeration.nextElement();
-        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-          ZipProcessingResult result = processZipEntry(loader, entry, entries);
+        final ZipEntry entry = zipEntryEnumeration.nextElement();
+        if (entry.getName().contains("games/") &&  entry.getName().toLowerCase().endsWith(".xml")) {
+          final ZipProcessingResult result = processZipEntry(loader, entry, entries);
           if (result == ZipProcessingResult.ERROR) {
             badMapZip = true;
             break;
@@ -139,8 +136,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, Optional<String> errorDetails) {
-    Runnable deleteMapRunnable = () -> {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
+    final Runnable deleteMapRunnable = () -> {
       final Component parentComponent = MainFrame.getInstance();
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
@@ -183,7 +180,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
     } catch (final SAXParseException e) {
-      String msg = "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
+      final String msg =
+          "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
       System.err.println(msg);
       ClientLogger.logQuietly(e);
     } catch (final Exception e) {
@@ -207,9 +205,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
-    final List<NewGameChooserEntry> entries = Lists.newArrayList();
+    final List<NewGameChooserEntry> entries = new ArrayList<>();
 
-    final File games = new File(mapDir, "games");
+    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
+    final File mapFolder = new File(mapDir, "map");
+
+    final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
+    final File games = new File(parentFolder, "games");
+
     if (!games.exists()) {
       // no games in this map dir
       return entries;

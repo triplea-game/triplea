@@ -34,7 +34,7 @@ public class ParserTest {
     final URL url = this.getClass().getResource("GameExample.xml");
     // System.out.println(url);
     final InputStream input = url.openStream();
-    gameData = (new GameParser()).parse(input, new AtomicReference<>(), false);
+    gameData = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
   }
 
   @Test

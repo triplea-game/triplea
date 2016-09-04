@@ -2,9 +2,8 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 /**
  * Utility class to sort a list of map downloads.
@@ -17,20 +16,20 @@ public final class MapDownloadListSort {
    * Sorts a list of map downloads alphabetically case insensitive by group where dummy URL headers delimit the map
    * groups.
    */
-  public static List<DownloadFileDescription> sortByMapName(List<DownloadFileDescription> downloads) {
+  public static List<DownloadFileDescription> sortByMapName(final List<DownloadFileDescription> downloads) {
     checkNotNull(downloads);
 
-    List<DownloadFileDescription> returnList = Lists.newArrayList();
+    final List<DownloadFileDescription> returnList = new ArrayList<>();
 
     // Until we see a header, save each map to this List.
     // When we see a header, we'll sort this list, add it
     // to the return values, and then clear it.
-    List<DownloadFileDescription> maps = Lists.newArrayList();
+    List<DownloadFileDescription> maps = new ArrayList<>();
 
-    for (DownloadFileDescription download : downloads) {
+    for (final DownloadFileDescription download : downloads) {
       if (download.isDummyUrl()) {
         returnList.addAll(sort(maps));
-        maps = Lists.newArrayList();
+        maps = new ArrayList<>();
 
         if (!returnList.isEmpty()) {
           // Add an empty row before any new headers (with exception to the first row)
@@ -50,7 +49,7 @@ public final class MapDownloadListSort {
   }
 
 
-  private static List<DownloadFileDescription> sort(List<DownloadFileDescription> maps) {
+  private static List<DownloadFileDescription> sort(final List<DownloadFileDescription> maps) {
     maps.sort((lhs, rhs) -> lhs.getMapName().toUpperCase().compareTo(rhs.getMapName().toUpperCase()));
     return maps;
   }

@@ -4,31 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SentMessagesHistory {
-  private final List<String> m_history = new ArrayList<>();
-  private int m_HistoryPosition;
+  private final List<String> history = new ArrayList<>();
+  private int historyPosition;
 
   SentMessagesHistory() {}
 
   public void next() {
-    m_HistoryPosition = Math.min(m_HistoryPosition + 1, m_history.size());
+    historyPosition = Math.min(historyPosition + 1, history.size());
   }
 
   public void prev() {
-    m_HistoryPosition = Math.max(m_HistoryPosition - 1, 0);
+    historyPosition = Math.max(historyPosition - 1, 0);
   }
 
   public String current() {
-    if (m_HistoryPosition == m_history.size()) {
+    if (historyPosition == history.size()) {
       return "";
     }
-    return m_history.get(m_HistoryPosition);
+    return history.get(historyPosition);
   }
 
   public void append(final String s) {
-    m_history.add(s);
-    m_HistoryPosition = m_history.size();
-    if (m_history.size() > 100) {
-      m_history.subList(0, 50).clear();
+    history.add(s);
+    historyPosition = history.size();
+    if (history.size() > 100) {
+      history.subList(0, 50).clear();
     }
   }
 }

@@ -1,11 +1,9 @@
 package games.strategy.engine.framework;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -25,6 +23,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
@@ -57,11 +56,8 @@ public class GameDataManager {
     }
   }
 
-  public GameData loadGame(final InputStream input, final String path) throws IOException {
-    return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
-  }
-
-  public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException {
+  public GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
+    ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
@@ -76,7 +72,7 @@ public class GameDataManager {
         }
         final String error = "<html>Incompatible engine versions, and no old engine found. We are: "
             + ClientContext.engineVersion().getVersion() + " . Trying to load game created with: " + readVersion
-            + "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
+            + "<br>To download the latest version of TripleA, Please visit " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE + "</html>";
         if (savegamePath == null) {
           throw new IOException(error);
         }
@@ -84,7 +80,7 @@ public class GameDataManager {
         // same engine as was
         // used for this savegame, and if so try to run it
         try {
-          final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
+          final String newClassPath = GameRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
           final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
@@ -106,7 +102,7 @@ public class GameDataManager {
             return null;
           }
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
-          TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
+          GameRunner.startGame(savegamePath, newClassPath, null);
           if (closeCurrentInstance) {
             ThreadUtil.sleep(1000);
             System.exit(0);
@@ -130,7 +126,7 @@ public class GameDataManager {
                 + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
                 + "<br><br>This TripleA engine is version " + ClientContext.engineVersion().getVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
-                + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
+                + "<br><br>To download the latest version of TripleA, Please visit " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
                 + "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
         final int answer =
@@ -206,14 +202,6 @@ public class GameDataManager {
       if (next.equals(DELEGATE_DATA_NEXT)) {
         instance.loadState((Serializable) input.readObject());
       }
-    }
-  }
-
-  public void saveGame(final File destination, final GameData data) throws IOException {
-    try (final OutputStream fileStream = new FileOutputStream(destination);
-        BufferedOutputStream out = new BufferedOutputStream(fileStream);) {
-
-      saveGame(fileStream, data);
     }
   }
 

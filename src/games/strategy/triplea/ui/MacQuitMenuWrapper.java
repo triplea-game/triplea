@@ -16,10 +16,10 @@ public class MacQuitMenuWrapper {
   private static MainGameFrame shutdownFrame;
 
   static {
-    Application.getApplication().setQuitHandler(new QuitHandler(){
+    Application.getApplication().setQuitHandler(new QuitHandler() {
 
       @Override
-      public void handleQuitRequestWith(QuitEvent arg0, QuitResponse arg1) {
+      public void handleQuitRequestWith(final QuitEvent arg0, final QuitResponse arg1) {
         if (shutdownFrame != null) {
           shutdownFrame.shutdown();
         } else {

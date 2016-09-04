@@ -4,9 +4,11 @@ import java.awt.Cursor;
 import java.awt.Window;
 import java.util.concurrent.CountDownLatch;
 
+import javax.swing.JLabel;
+
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -15,11 +17,9 @@ import games.strategy.triplea.image.PUImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
-
-
-import javax.swing.JLabel;
 
 public interface IUIContext {
   Cursor getCursor();
@@ -38,14 +38,19 @@ public interface IUIContext {
 
   UnitImageFactory getUnitImageFactory();
 
-  enum UnitDamage { DAMAGED, NOT_DAMAGED }
-  enum UnitEnable { DISABLED, ENABLED }
+  enum UnitDamage {
+    DAMAGED, NOT_DAMAGED
+  }
+  enum UnitEnable {
+    DISABLED, ENABLED
+  }
 
   default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data) {
     return createUnitImageJLabel(type, player, data, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data, final UnitDamage damaged,
+  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+      final UnitDamage damaged,
       final UnitEnable disabled);
 
   ResourceImageFactory getResourceImageFactory();

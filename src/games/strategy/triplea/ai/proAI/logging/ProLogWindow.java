@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingAction;
 
 /**
  * GUI class used to display logging window and logging settings.
@@ -37,26 +37,26 @@ public class ProLogWindow extends javax.swing.JDialog {
   private void initComponents() {
     final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     java.awt.GridBagConstraints gridBagConstraints;
-    JPanel jPanel7 = new JPanel();
-    JButton v_restoreDefaultsButton = new JButton();
-    JButton v_settingsDetailsButton = new JButton();
-    JPanel jPanel14 = new JPanel();
-    JPanel jPanel13 = new JPanel();
-    JButton v_cancelButton = new JButton();
-    JButton v_okButton = new JButton();
+    final JPanel jPanel7 = new JPanel();
+    final JButton v_restoreDefaultsButton = new JButton();
+    final JButton v_settingsDetailsButton = new JButton();
+    final JPanel jPanel14 = new JPanel();
+    final JPanel jPanel13 = new JPanel();
+    final JButton v_cancelButton = new JButton();
+    final JButton v_okButton = new JButton();
     v_tabPaneMain = new javax.swing.JTabbedPane();
-    JPanel jPanel8 = new JPanel();
+    final JPanel jPanel8 = new JPanel();
     v_logHolderTabbedPane = new javax.swing.JTabbedPane();
-    JPanel jPanel9 = new JPanel();
-    JScrollPane v_aiOutputLogAreaScrollPane = new JScrollPane();
+    final JPanel jPanel9 = new JPanel();
+    final JScrollPane v_aiOutputLogAreaScrollPane = new JScrollPane();
     v_aiOutputLogArea = new javax.swing.JTextArea();
     v_enableAILogging = new javax.swing.JCheckBox();
-    javax.swing.JLabel jLabel15 = new javax.swing.JLabel();
+    final javax.swing.JLabel jLabel15 = new javax.swing.JLabel();
     v_logDepth = new javax.swing.JComboBox<>();
     v_limitLogHistoryToSpinner = new javax.swing.JSpinner();
     v_limitLogHistoryCB = new javax.swing.JCheckBox();
-    javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
-    JPanel v_pauseAIs = new JPanel();
+    final javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
+    final JPanel v_pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
     setMinimumSize(new java.awt.Dimension(775, 400));
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -78,12 +78,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
     v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
     v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
-    v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_restoreDefaultsButtonActionPerformed(evt);
-      }
-    });
+    v_restoreDefaultsButton.addActionListener(evt -> v_restoreDefaultsButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -94,12 +89,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
     v_settingsDetailsButton.setName("v_settingsDetailsButton");
     v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
-    v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_settingsDetailsButtonActionPerformed(evt);
-      }
-    });
+    v_settingsDetailsButton.addActionListener(evt -> v_settingsDetailsButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
@@ -112,12 +102,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     jPanel13.setLayout(new java.awt.GridBagLayout());
     v_cancelButton.setText("Cancel");
     v_cancelButton.setName("v_cancelButton");
-    v_cancelButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_cancelButtonActionPerformed(evt);
-      }
-    });
+    v_cancelButton.addActionListener(evt -> v_cancelButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
@@ -125,12 +110,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     jPanel13.add(v_cancelButton, gridBagConstraints);
     v_okButton.setText("OK");
     v_okButton.setName("v_okButton");
-    v_okButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final java.awt.event.ActionEvent evt) {
-        v_okButtonActionPerformed(evt);
-      }
-    });
+    v_okButton.addActionListener(evt -> v_okButtonActionPerformed(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -186,12 +166,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_enableAILogging.setSelected(true);
     v_enableAILogging.setText("Enable AI Logging");
     v_enableAILogging.setName("v_enableAILogging");
-    v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener() {
-      @Override
-      public void stateChanged(final javax.swing.event.ChangeEvent evt) {
-        v_enableAILoggingStateChanged(evt);
-      }
-    });
+    v_enableAILogging.addChangeListener(evt -> v_enableAILoggingStateChanged(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -225,12 +200,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_limitLogHistoryCB.setSelected(true);
     v_limitLogHistoryCB.setText("Limit Log History To:");
     v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
-    v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener() {
-      @Override
-      public void stateChanged(final javax.swing.event.ChangeEvent evt) {
-        v_limitLogHistoryCBStateChanged(evt);
-      }
-    });
+    v_limitLogHistoryCB.addChangeListener(evt -> v_limitLogHistoryCBStateChanged(evt));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;
@@ -343,19 +313,17 @@ public class ProLogWindow extends javax.swing.JDialog {
     String message = "";
     if (v_tabPaneMain.getSelectedIndex() == 0) // Debugging
     {
-      message =
-          "Debugging\r\n"
-              + "\r\n"
-              + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
-              + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
-              + "\r\n"
-              + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
-              + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
-              + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
-              + "\r\n"
-              + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
-              + "\r\n"
-              + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
+      message = "Debugging\r\n" + "\r\n"
+          + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
+          + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
+          + "\r\n"
+          + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
+          + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
+          + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
+          + "\r\n"
+          + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
+          + "\r\n"
+          + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
     }
     final JTextArea label = new JTextArea(message);
     label.setFont(new Font("Segoe UI", Font.PLAIN, 12));

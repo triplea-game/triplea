@@ -54,10 +54,11 @@ public class PacificTest extends DelegateTest {
   ITestDelegateBridge bridge;
   MoveDelegate m_delegate;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    m_data = LoadGameUtil.loadTestGame("pacific_incomplete_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.PACIFIC_INCOMPLETE);
     // Define units
     infantry = GameDataTestUtil.infantry(m_data);
     armor = GameDataTestUtil.armour(m_data);

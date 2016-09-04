@@ -13,6 +13,7 @@ import java.util.Set;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
@@ -76,7 +77,6 @@ public class HeadlessConsoleController {
       showHelp();
     }
   }
-
 
 
 
@@ -330,8 +330,8 @@ public class HeadlessConsoleController {
         if (!saveName.endsWith(".tsvg")) {
           saveName += ".tsvg";
         }
-        SaveGameFileChooser.ensureDefaultDirExists();
-        final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, saveName);
+        SaveGameFileChooser.ensureMapsFolderExists();
+        final File f = new File(ClientContext.folderSettings().getSaveGamePath(), saveName);
         try {
           game.saveGame(f);
         } catch (final Exception e) {
@@ -357,9 +357,11 @@ public class HeadlessConsoleController {
       }
       final boolean stop = readin.toLowerCase().startsWith("y");
       if (stop) {
-        SaveGameFileChooser.ensureDefaultDirExists();
-        final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-        final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+        SaveGameFileChooser.ensureMapsFolderExists();
+        final File f1 =
+            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+        final File f2 =
+            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
         final File f;
         if (f1.lastModified() > f2.lastModified()) {
           f = f2;
@@ -388,7 +390,7 @@ public class HeadlessConsoleController {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
             setup.shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
-                                                  // it down here instead.
+                             // it down here instead.
           }
         }
         System.exit(0);

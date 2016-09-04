@@ -441,29 +441,26 @@ public class AirMovementValidator {
 
   private static Comparator<Territory> getLowestToHighestDistance(final Territory territoryWeMeasureDistanceFrom,
       final Match<Territory> condition) {
-    return new Comparator<Territory>() {
-      @Override
-      public int compare(final Territory t1, final Territory t2) {
-        if (t1.equals(t2)) {
-          return 0;
-        }
-        final GameMap map = t1.getData().getMap();
-        final int distance1 = map.getDistance(territoryWeMeasureDistanceFrom, t1, condition);
-        final int distance2 = map.getDistance(territoryWeMeasureDistanceFrom, t2, condition);
-        if (distance1 == distance2) {
-          return 0;
-        }
-        if (distance1 < 0) {
-          return 1;
-        }
-        if (distance2 < 0) {
-          return -1;
-        }
-        if (distance1 < distance2) {
-          return -1;
-        }
+    return (t1, t2) -> {
+      if (t1.equals(t2)) {
+        return 0;
+      }
+      final GameMap map = t1.getData().getMap();
+      final int distance1 = map.getDistance(territoryWeMeasureDistanceFrom, t1, condition);
+      final int distance2 = map.getDistance(territoryWeMeasureDistanceFrom, t2, condition);
+      if (distance1 == distance2) {
+        return 0;
+      }
+      if (distance1 < 0) {
         return 1;
       }
+      if (distance2 < 0) {
+        return -1;
+      }
+      if (distance1 < distance2) {
+        return -1;
+      }
+      return 1;
     };
   }
 
@@ -535,19 +532,16 @@ public class AirMovementValidator {
   }
 
   private static Comparator<Unit> getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(final Route route) {
-    return new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        final int left1 = getMovementLeftForAirUnitNotMovedYet(u1, route);
-        final int left2 = getMovementLeftForAirUnitNotMovedYet(u2, route);
-        if (left1 == left2) {
-          return 0;
-        }
-        if (left1 > left2) {
-          return 1;
-        }
-        return -1;
+    return (u1, u2) -> {
+      final int left1 = getMovementLeftForAirUnitNotMovedYet(u1, route);
+      final int left2 = getMovementLeftForAirUnitNotMovedYet(u2, route);
+      if (left1 == left2) {
+        return 0;
       }
+      if (left1 > left2) {
+        return 1;
+      }
+      return -1;
     };
   }
 

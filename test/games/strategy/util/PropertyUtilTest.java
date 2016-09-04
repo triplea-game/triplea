@@ -38,7 +38,7 @@ public class PropertyUtilTest {
 
   @Test
   public void testHappyCaseWithGetAndSetFields() {
-    PropertyClass testClass = new PropertyClass();
+    final PropertyClass testClass = new PropertyClass();
     PropertyUtil.set("bar", NEW_VALUE, testClass);
     assertThat(testClass.bar, is(NEW_VALUE));
 
@@ -52,7 +52,7 @@ public class PropertyUtilTest {
 
   @Test
   public void testGetFieldWithPrefixedPropertyNames() {
-    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass() ), is(DEFAULT));
+    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
   }
 
 
@@ -69,7 +69,7 @@ public class PropertyUtilTest {
 
   @Test
   public void testNoOpSetterMethod() {
-    NoOpSetterClass testClass = new NoOpSetterClass();
+    final NoOpSetterClass testClass = new NoOpSetterClass();
     PropertyUtil.set(BAR, NEW_VALUE, testClass);
     assertThat(
         "we are only really checking that the setter method was called, which did not do anything, thus we shoudl still have a default value.",
@@ -82,13 +82,13 @@ public class PropertyUtilTest {
 
 class NoSetterClass {
   @SuppressWarnings("unused")
-  private String bar = PropertyUtilTest.DEFAULT;
+  private final String bar = PropertyUtilTest.DEFAULT;
 }
 
 
 class InvalidSetterClass {
   @SuppressWarnings("unused")
-  private String bar = PropertyUtilTest.DEFAULT;
+  private final String bar = PropertyUtilTest.DEFAULT;
 
   public void setBar() {}
 }
@@ -97,14 +97,14 @@ class InvalidSetterClass {
 class NoOpSetterClass {
   protected String bar = PropertyUtilTest.DEFAULT;
 
-  public void setBar(String value) {}
+  public void setBar(final String value) {}
 }
 
 
 class PropertyClass {
   protected String bar = PropertyUtilTest.DEFAULT;
 
-  public void setBar(String newValue) {
+  public void setBar(final String newValue) {
     bar = newValue;
   }
 }
@@ -114,7 +114,7 @@ class mUnderBarClass {
   @SuppressWarnings("unused")
   private String m_bar = PropertyUtilTest.DEFAULT;
 
-  public void setBar(String newValue) {
+  public void setBar(final String newValue) {
     m_bar = newValue;
   }
 }

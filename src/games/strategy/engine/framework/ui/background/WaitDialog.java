@@ -17,8 +17,6 @@ public class WaitDialog extends JDialog {
 
   public WaitDialog(final Component parent, final String waitMessage, final Action cancelAction) {
     super(JOptionPane.getFrameForComponent(parent), "Please Wait", true);
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    setUndecorated(true);
     final WaitPanel panel = new WaitPanel(waitMessage);
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(panel, BorderLayout.CENTER);

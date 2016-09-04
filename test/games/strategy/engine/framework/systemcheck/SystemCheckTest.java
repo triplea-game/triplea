@@ -14,7 +14,8 @@ public class SystemCheckTest {
 
   @Test
   public void testPassingSystemCheck() {
-    SystemCheck check = new SystemCheck("msg", () -> {});
+    final SystemCheck check = new SystemCheck("msg", () -> {
+    });
 
     assertThat(check.wasSuccess(), is(true));
     assertThat(check.getResultMessage(), is("msg: true"));
@@ -23,7 +24,7 @@ public class SystemCheckTest {
 
   @Test
   public void testFailingSystemCheck() {
-    SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
 
     assertThat(check.wasSuccess(), is(false));
     assertThat(check.getResultMessage(), is("msg: false"));
@@ -31,7 +32,7 @@ public class SystemCheckTest {
 
   @Test
   public void remembersAndReturnsExceptions() {
-    SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
     assertThat(check.getException().isPresent(), is(true));
   }
 }

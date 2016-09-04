@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -19,6 +18,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -331,7 +331,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    * @param territories
    * @param data
    */
-  private static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data) {
+  private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
+      final GameData data) {
     final ResourceCollection rVal = new ResourceCollection(data);
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);

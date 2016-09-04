@@ -21,7 +21,7 @@ import games.strategy.ui.SwingAction;
 
 public class UnitAttachmentsPanel extends DynamicRowsPanel {
 
-  private String unitName;
+  private final String unitName;
 
   public UnitAttachmentsPanel(final JPanel stepActionPanel, final String unitName) {
     super(stepActionPanel);
@@ -30,15 +30,18 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
 
   public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String unitName) {
     if (!me.isPresent() || !(me.get() instanceof UnitAttachmentsPanel)
-        || ((UnitAttachmentsPanel) me.get()).unitName != unitName)
+        || ((UnitAttachmentsPanel) me.get()).unitName != unitName) {
       me = Optional.of(new UnitAttachmentsPanel(stepActionPanel, unitName));
+    }
     layout(mapXmlCreator);
   }
 
+  @Override
   protected ActionListener getAutoFillAction() {
     return null;
   }
 
+  @Override
   protected void layoutComponents() {
     final ArrayList<ArrayList<String>> unitAttachments = new ArrayList<>();
     for (final Entry<String, List<String>> unitAttachmentEntry : MapXmlHelper.getUnitAttachmentsMap().entrySet()) {
@@ -62,13 +65,13 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
     labelValue.setPreferredSize(dimension);
 
     // <1> Set panel layout
-    GridBagLayout gbl_stepActionPanel = new GridBagLayout();
+    final GridBagLayout gbl_stepActionPanel = new GridBagLayout();
     setColumns(gbl_stepActionPanel);
     setRows(gbl_stepActionPanel, unitAttachments.size());
     getOwnPanel().setLayout(gbl_stepActionPanel);
 
     // <2> Add Row Labels: Unit Name, Alliance Name, Buy Quantity
-    GridBagConstraints gridBadConstLabelAttachmentName = new GridBagConstraints();
+    final GridBagConstraints gridBadConstLabelAttachmentName = new GridBagConstraints();
     gridBadConstLabelAttachmentName.insets = new Insets(0, 0, 5, 5);
     gridBadConstLabelAttachmentName.gridy = 0;
     gridBadConstLabelAttachmentName.gridx = 0;
@@ -76,7 +79,7 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelAttachmentName, gridBadConstLabelAttachmentName);
 
 
-    GridBagConstraints gridBadConstLabelValue = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
+    final GridBagConstraints gridBadConstLabelValue = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
     gridBadConstLabelValue.gridx = 1;
     dimension = (Dimension) dimension.clone();
     dimension.width = DynamicRow.INPUT_FIELD_SIZE_SMALL;
@@ -85,7 +88,7 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
     // <3> Add Main Input Rows
     int yValue = 1;
     for (final ArrayList<String> unitAttachment : unitAttachments) {
-      GridBagConstraints gbc_tAttachmentName = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
+      final GridBagConstraints gbc_tAttachmentName = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
       gbc_tAttachmentName.gridx = 0;
       gridBadConstLabelAttachmentName.gridy = yValue;
       final UnitAttachmentsRow newRow =
@@ -102,8 +105,9 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
     buttonAddAttachment.addActionListener(SwingAction.of("Add Attachment", e -> {
       String newAttachmentName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new attachment name:",
           "Attachment" + (rows.size() + 1));
-      if (newAttachmentName == null || newAttachmentName.isEmpty())
+      if (newAttachmentName == null || newAttachmentName.isEmpty()) {
         return;
+      }
       newAttachmentName = newAttachmentName.trim();
       final String newUnitAttachmentKey = newAttachmentName + "_" + unitName;
       if (MapXmlHelper.getUnitAttachmentsMap().containsKey(newUnitAttachmentKey)) {
@@ -128,7 +132,7 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddAttachment);
 
-    GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
+    final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelAttachmentName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
     gridBadConstButtonAddUnit.gridy = yValue;
     addFinalButtonRow(gridBadConstButtonAddUnit);
@@ -141,9 +145,11 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
   }
 
 
+  @Override
   protected void initializeSpecifics() {}
 
-  protected void setColumns(GridBagLayout gbl_panel) {
+  @Override
+  protected void setColumns(final GridBagLayout gbl_panel) {
     gbl_panel.columnWidths = new int[] {50, 30, 30};
     gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0};
   }

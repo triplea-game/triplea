@@ -3,6 +3,7 @@ package games.strategy.engine.message;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.INode;
 
 /**
@@ -15,7 +16,7 @@ public class ChannelMessenger implements IChannelMessenger {
     m_unifiedMessenger = messenger;
   }
 
-  UnifiedMessenger getUnifiedMessenger() {
+  public UnifiedMessenger getUnifiedMessenger() {
     return m_unifiedMessenger;
   }
 
@@ -24,7 +25,7 @@ public class ChannelMessenger implements IChannelMessenger {
     final InvocationHandler ih =
         new UnifiedInvocationHandler(m_unifiedMessenger, channelName.getName(), true, channelName.getClazz());
     final IChannelSubscribor rVal = (IChannelSubscribor) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{channelName.getClazz()}, ih);
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[] {channelName.getClazz()}, ih);
     return rVal;
   }
 

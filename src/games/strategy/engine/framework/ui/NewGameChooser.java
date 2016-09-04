@@ -45,7 +45,6 @@ public class NewGameChooser extends JDialog {
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
-    refreshGameList();
   }
 
   private void createComponents() {
@@ -99,7 +98,7 @@ public class NewGameChooser extends JDialog {
   }
 
   public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    NewGameChooser chooser = new NewGameChooser(parent);
+    final NewGameChooser chooser = new NewGameChooser(parent);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);
@@ -147,7 +146,7 @@ public class NewGameChooser extends JDialog {
       }
     }
     // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(() ->{
+    SwingUtilities.invokeLater(() -> {
       if (notesPanel != null) {
         notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
       }
@@ -196,25 +195,7 @@ public class NewGameChooser extends JDialog {
 
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
-      return new NewGameChooserModel();
-  }
-
-
-  /**
-   * Refreshes the game list (from disk) then caches the new list
-   */
-  private void refreshGameList() {
-    gameList.setEnabled(false);
-    final NewGameChooserEntry selected = getSelected();
-        try {
-          gameListModel = getNewGameChooserModel();
-          gameList.setModel(gameListModel);
-          if(selected != null){
-            selectGame(selected.getGameData().getGameName());
-          }
-        } finally {
-          gameList.setEnabled(true);
-        }
+    return new NewGameChooserModel();
   }
 
   private void selectAndReturn() {

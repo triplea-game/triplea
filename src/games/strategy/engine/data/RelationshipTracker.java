@@ -25,7 +25,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * @param r
    *        the RelationshipType between those two players that will be set.
    */
-  protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r) {
+  public void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r) {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r));
   }
 

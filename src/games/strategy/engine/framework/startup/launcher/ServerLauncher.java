@@ -19,12 +19,12 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -33,6 +33,7 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -165,24 +166,11 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet, m_headless);
       } catch (final Exception e) {
+        ClientLogger.logError("Failed to launch", e);
         m_abortLaunch = true;
-        Throwable error = e;
-        while (error.getMessage() == null) {
-          error = error.getCause();
-        }
-        final String message = error.getMessage();
+
         if (m_gameLoadingWindow != null) {
           m_gameLoadingWindow.doneWait();
-        }
-        if (!m_headless) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-          });
-        } else {
-          System.out.println(message);
         }
       }
       if (m_headless) {
@@ -191,7 +179,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (m_abortLaunch) {
         m_serverReady.countDownAll();
       }
-      if (!m_serverReady.await(GameRunner2.getServerStartGameSyncWaitTime(), TimeUnit.SECONDS)) {
+      if (!m_serverReady.await(GameRunner.getServerStartGameSyncWaitTime(), TimeUnit.SECONDS)) {
         System.out.println("Waiting for clients to be ready timed out!");
         m_abortLaunch = true;
       }
@@ -216,12 +204,8 @@ public class ServerLauncher extends AbstractLauncher {
             } else {
               stopGame();
               if (!m_headless) {
-                SwingUtilities.invokeLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    JOptionPane.showMessageDialog(m_ui, "Problem during startup, game aborted.");
-                  }
-                });
+                SwingUtilities.invokeLater(
+                    () -> JOptionPane.showMessageDialog(m_ui, "Problem during startup, game aborted."));
               } else {
                 System.out.println("Problem during startup, game aborted.");
               }
@@ -238,8 +222,8 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               // we are already aborting the launch
               if (!m_abortLaunch) {
-                if (!m_errorLatch.await(GameRunner2.getServerObserverJoinWaitTime()
-                    + GameRunner2.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS)) {
+                if (!m_errorLatch.await(GameRunner.getServerObserverJoinWaitTime()
+                    + GameRunner.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS)) {
                   System.err.println("Waiting on error latch timed out!");
                 }
               }
@@ -269,9 +253,10 @@ public class ServerLauncher extends AbstractLauncher {
                 m_serverModel.setAllPlayersToNullNodes();
               }
               final File f1 =
-                  new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+                  new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
               final File f2 =
-                  new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+                  new File(ClientContext.folderSettings().getSaveGamePath(),
+                      SaveGameFileChooser.getAutoSave2FileName());
               final File f;
               if (!f1.exists() && !f2.exists()) {
                 m_gameSelectorModel.resetGameDataToNull();
@@ -291,12 +276,7 @@ public class ServerLauncher extends AbstractLauncher {
             m_gameSelectorModel.loadDefaultGame(parent);
           }
           if (parent != null) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                JOptionPane.getFrameForComponent(parent).setVisible(true);
-              }
-            });
+            SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
           }
           m_serverModel.setServerLauncher(null);
           m_serverModel.newGame();
@@ -400,19 +380,22 @@ public class ServerLauncher extends AbstractLauncher {
 
   private void saveAndEndGame(final INode node) {
     final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
-    SaveGameFileChooser.ensureDefaultDirExists();
+    SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f;
     if (m_headless) {
-      final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-      final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+      final File f1 =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+      final File f2 =
+          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
       if (f1.lastModified() > f2.lastModified()) {
         f = f2;
       } else {
         f = f1;
       }
     } else {
-      f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
+      f = new File(ClientContext.folderSettings().getSaveGamePath(),
+          "connection_lost_on_" + format.format(new Date()) + ".tsvg");
     }
     try {
       m_serverGame.saveGame(f);
@@ -427,13 +410,10 @@ public class ServerLauncher extends AbstractLauncher {
     }
     stopGame();
     if (!m_headless) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final String message =
-              "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-          JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final String message =
+            "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
       });
     } else {
       System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());

@@ -38,21 +38,18 @@ public class TimerClock<T> extends Observable {
     // we want to catch exceptions and propagate them back up
     final AtomicReference<RuntimeException> exception = new AtomicReference<>();
     // start the task
-    final Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          task.run();
-          runnableFinishedSuccessfully.set(true);
-          if (latch != null) {
-            latch.countDown();
-          }
-        } catch (final RuntimeException e) {
-          exception.set(e);
-          runnableHadRuntimeException.set(true);
-          if (latch != null) {
-            latch.countDown();
-          }
+    final Thread t = new Thread(() -> {
+      try {
+        task.run();
+        runnableFinishedSuccessfully.set(true);
+        if (latch != null) {
+          latch.countDown();
+        }
+      } catch (final RuntimeException e) {
+        exception.set(e);
+        runnableHadRuntimeException.set(true);
+        if (latch != null) {
+          latch.countDown();
         }
       }
     });

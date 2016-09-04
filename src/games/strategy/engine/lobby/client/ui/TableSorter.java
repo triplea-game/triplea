@@ -74,10 +74,12 @@ public class TableSorter extends AbstractTableModel {
   public static final int NOT_SORTED = 0;
   public static final int ASCENDING = 1;
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
-  //TODO needs to be rewritten in order to remove the warning
+  // TODO needs to be rewritten in order to remove the warning
   @SuppressWarnings("unchecked")
-  public static final Comparator<Object> COMPARABLE_COMAPRATOR = (Comparator<Object>)(o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);
-  public static final Comparator<Object> LEXICAL_COMPARATOR = (Comparator<Object>)(o1, o2) -> o1.toString().compareTo(o2.toString());
+  public static final Comparator<Object> COMPARABLE_COMAPRATOR =
+      (Comparator<Object>) (o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);
+  public static final Comparator<Object> LEXICAL_COMPARATOR =
+      (Comparator<Object>) (o1, o2) -> o1.toString().compareTo(o2.toString());
   private Row[] viewToModel;
   private int[] modelToView;
   private JTableHeader tableHeader;
@@ -147,8 +149,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   private Directive getDirective(final int column) {
-    for (int i = 0; i < sortingColumns.size(); i++) {
-      final Directive directive = sortingColumns.get(i);
+    for (final Directive directive : sortingColumns) {
       if (directive.column == column) {
         return directive;
       }

@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -265,7 +265,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let the player know he is being charged for money or that he hasn't got
    * enough money
-   *  @param uaa
+   * 
+   * @param uaa
    *        the UserActionAttachment the player is notified about
    *
    */

@@ -1,15 +1,19 @@
 package games.strategy.engine;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.util.Version;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this
@@ -17,13 +21,11 @@ import java.net.URLDecoder;
  * during construction, depending upon ordering this can cause an infinite call loop.
  */
 public final class ClientFileSystemHelper {
-  private ClientFileSystemHelper() {
 
-  }
+  private ClientFileSystemHelper() {}
 
-  /** This method is available via ClientContext */
   public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation("GameRunner2.class");
+    final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
 
     final String tripleaJarName = "triplea.jar!";
     if (fileName.contains(tripleaJarName)) {
@@ -40,7 +42,7 @@ public final class ClientFileSystemHelper {
 
 
   public static String getGameRunnerFileLocation(final String runnerClassName) {
-    final URL url = GameRunner2.class.getResource(runnerClassName);
+    final URL url = GameRunner.class.getResource(runnerClassName);
     String fileName = url.getFile();
 
     try {
@@ -65,7 +67,7 @@ public final class ClientFileSystemHelper {
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
     final String subString =
-        fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+        fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);
@@ -76,11 +78,17 @@ public final class ClientFileSystemHelper {
   private static File getRootRelativeToClassFile(final String fileName) {
     File f = new File(fileName);
 
-    // move up 1 directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+    // move up one directory for each package
+    final int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
     for (int i = 0; i < moveUpCount; i++) {
       f = f.getParentFile();
     }
+
+    // keep moving up one directory until we find the game_engine properties file that we expect to be at the root
+    while (!folderContainsGamePropsFile(f)) {
+      f = f.getParentFile();
+    }
+
     if (!f.exists()) {
       System.err.println("Could not find root folder, does  not exist:" + f);
       return new File(System.getProperties().getProperty("user.dir"));
@@ -88,8 +96,15 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
+  private static boolean folderContainsGamePropsFile(final File folder) {
+    final File[] files = folder.listFiles();
+    final List<String> fileNames =
+        Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
+    return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
+  }
+
   public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
+    final URL url = GameRunner.class.getResource(GameRunner.class.getSimpleName() + ".class");
     String fileName = url.getFile();
     try {
       fileName = URLDecoder.decode(fileName, "UTF-8");
@@ -98,7 +113,7 @@ public final class ClientFileSystemHelper {
     }
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
+      final String subString = fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
           fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
       final File f = new File(subString);
       if (!f.exists()) {
@@ -117,26 +132,26 @@ public final class ClientFileSystemHelper {
 
   public static File getUserRootFolder() {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
-    // the default
-    File rootDir;
-    if (GameRunner.isMac()) {
-      rootDir = new File(new File(userHome, "Documents"), "triplea");
-    } else {
-      rootDir = new File(userHome, "triplea");
-    }
-    return rootDir;
+    final File rootDir = new File(new File(userHome, "Documents"), "triplea");
+    return rootDir.exists() ? rootDir : new File(userHome, "triplea");
   }
 
   public static File getUserMapsFolder() {
-    final File f = new File(getUserRootFolder(), "downloadedMaps");
-    if (!f.exists()) {
+    final String path = ClientContext.folderSettings().getDownloadedMapPath();
+
+
+    final File mapsFolder = new File(path);
+    if (!mapsFolder.exists()) {
       try {
-        f.mkdirs();
+        mapsFolder.mkdirs();
       } catch (final SecurityException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logError(e);
       }
     }
-    return f;
+    if (!mapsFolder.exists()) {
+      ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
+    }
+    return mapsFolder;
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked */

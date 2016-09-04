@@ -3,8 +3,6 @@ package games.strategy.engine.random;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -20,8 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
+import games.strategy.ui.SwingAction;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able
@@ -145,25 +143,10 @@ class HttpDiceRollerDialog extends JDialog {
     m_diceServer = diceServer;
     m_gameUUID = gameUUID;
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    m_exitButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        System.exit(-1);
-      }
-    });
+    m_exitButton.addActionListener(e -> System.exit(-1));
     m_exitButton.setEnabled(false);
-    m_reRollButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        rollInternal();
-      }
-    });
-    m_okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        closeAndReturn();
-      }
-    });
+    m_reRollButton.addActionListener(e -> rollInternal());
+    m_okButton.addActionListener(e -> closeAndReturn());
     m_reRollButton.setEnabled(false);
     getContentPane().setLayout(new BorderLayout());
     m_buttons.add(m_exitButton);
@@ -192,12 +175,9 @@ class HttpDiceRollerDialog extends JDialog {
   }
 
   public void notifyError() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_exitButton.setEnabled(true);
-        m_reRollButton.setEnabled(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_exitButton.setEnabled(true);
+      m_reRollButton.setEnabled(true);
     });
   }
 
@@ -213,12 +193,7 @@ class HttpDiceRollerDialog extends JDialog {
     // pausing this thread until we are done
     if (!SwingUtilities.isEventDispatchThread()) {
       synchronized (m_lock) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            roll();
-          }
-        });
+        SwingUtilities.invokeLater(() -> roll());
         try {
           m_lock.wait();
         } catch (final InterruptedException e) {
@@ -254,14 +229,11 @@ class HttpDiceRollerDialog extends JDialog {
         m_lock.notifyAll();
       }
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        setVisible(false);
-        m_owner.toFront();
-        m_owner = null;
-        dispose();
-      }
+    SwingUtilities.invokeLater(() -> {
+      setVisible(false);
+      m_owner.toFront();
+      m_owner = null;
+      dispose();
     });
   }
 

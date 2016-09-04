@@ -1,8 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 
@@ -37,12 +34,7 @@ public class BooleanProperty extends AEditableProperty {
   public JComponent getEditorComponent() {
     final JCheckBox box = new JCheckBox("");
     box.setSelected(mValue);
-    box.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        mValue = box.isSelected();
-      }
-    });
+    box.addActionListener(e -> mValue = box.isSelected());
     return box;
   }
 

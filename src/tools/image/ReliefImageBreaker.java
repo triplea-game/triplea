@@ -23,9 +23,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.triplea.ui.MapData;
-import tools.map.making.ImageIoCompletionWatcher;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
+import tools.map.making.ImageIoCompletionWatcher;
 
 /**
  * Utility for breaking an image into seperate smaller images.

@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -25,7 +23,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
@@ -122,20 +119,10 @@ public class HistoryPanel extends JPanel {
     m_currentPopupNode = null;
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
-    previousButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        previous();
-      }
-    });
+    previousButton.addActionListener(e -> previous());
     final JButton nextButton = new JButton("Next->");
     nextButton.addMouseListener(mouseFocusListener);
-    nextButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        next();
-      }
-    });
+    nextButton.addActionListener(e -> next());
     final JPanel buttons = new JPanel();
     buttons.setLayout(new GridBagLayout());
     buttons.add(previousButton, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST,
@@ -183,12 +170,7 @@ public class HistoryPanel extends JPanel {
       @Override
       public void mouseReleased(final MouseEvent me) {}
     });
-    m_tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(final TreeSelectionEvent e) {
-        treeSelectionChanged(e);
-      }
-    });
+    m_tree.addTreeSelectionListener(e -> treeSelectionChanged(e));
   }
 
   private void previous() {

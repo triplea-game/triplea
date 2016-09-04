@@ -69,7 +69,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
       final IObjectStreamFactory streamFact, final IConnectionLogin login)
-          throws IOException {
+      throws IOException {
     m_socketChannel = SocketChannel.open();
     m_socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
@@ -111,7 +111,11 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
       // our socket channel should already be closed
       m_socket.shutDown();
       if (conversation.getErrorMessage() != null) {
-        login.notifyFailedLogin(conversation.getErrorMessage());
+        String msg = conversation.getErrorMessage();
+        if (m_connectionRefusedError != null) {
+          msg += ", " + m_connectionRefusedError;
+        }
+        login.notifyFailedLogin(msg);
         throw new CouldNotLogInException();
       } else if (m_connectionRefusedError instanceof CouldNotLogInException) {
         throw (CouldNotLogInException) m_connectionRefusedError;

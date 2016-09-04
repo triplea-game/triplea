@@ -20,20 +20,18 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
-import games.strategy.engine.chat.IPlayerActionFactory;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
-import games.strategy.net.IMessenger;
-import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.triplea.ui.menubar.LobbyMenu;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.MD5Crypt;
@@ -45,7 +43,7 @@ public class LobbyFrame extends JFrame {
 
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties props) {
     super("TripleA Lobby");
-    setIconImage(GameRunner2.getGameIcon(this));
+    setIconImage(GameRunner.getGameIcon(this));
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
@@ -57,12 +55,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(new IPlayerActionFactory() {
-      @Override
-      public List<Action> mouseOnPlayer(final INode clickedOn) {
-        return createAdminActions(clickedOn);
-      }
-    });
+    chatPlayers.addActionFactory(clickedOn -> createAdminActions(clickedOn));
     final LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -79,12 +72,7 @@ public class LobbyFrame extends JFrame {
     pack();
     m_chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    m_client.getMessenger().addErrorListener(new IMessengerErrorListener() {
-      @Override
-      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-        connectionToServerLost();
-      }
-    });
+    m_client.getMessenger().addErrorListener((messenger, reason) -> connectionToServerLost());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -352,13 +340,13 @@ public class LobbyFrame extends JFrame {
     return m_client;
   }
 
-  void setShowChatTime(final boolean showTime) {
+  public void setShowChatTime(final boolean showTime) {
     if (m_chatMessagePanel != null) {
       m_chatMessagePanel.setShowTime(showTime);
     }
   }
 
-  void shutdown() {
+  public void shutdown() {
     System.exit(0);
   }
 

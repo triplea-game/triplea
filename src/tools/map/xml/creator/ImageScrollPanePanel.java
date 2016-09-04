@@ -122,14 +122,7 @@ public abstract class ImageScrollPanePanel {
         final Point cp = e.getPoint();
         final Point vp = vport.getViewPosition();
         vp.translate(pp.x - cp.x, pp.y - cp.y);
-        SwingUtilities.invokeLater(new Runnable() {
-
-          @Override
-          public void run() {
-
-            imagePanel.scrollRectToVisible(new Rectangle(vp, vport.getSize()));
-          }
-        });
+        SwingUtilities.invokeLater(() -> imagePanel.scrollRectToVisible(new Rectangle(vp, vport.getSize())));
         pp.setLocation(cp);
       }
 
@@ -228,7 +221,7 @@ public abstract class ImageScrollPanePanel {
     }
     if (MapXmlCreator.mapPolygonsFile != null
         || file.exists()
-            && (MapXmlCreator.testMode || JOptionPane.showConfirmDialog(new JPanel(),
+            && (JOptionPane.showConfirmDialog(new JPanel(),
                 "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territory shapes?",
                 "File Suggestion",
                 1) == 0)) {
@@ -264,7 +257,7 @@ public abstract class ImageScrollPanePanel {
 
   private static Map<String, Point> loadCenters() {
     centers.clear();
-    String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
+    final String fileName = "Load Centers from " + MapXmlCreator.mapCentersFile.getAbsolutePath();
     try {
       final FileInputStream in = new FileInputStream(MapXmlCreator.mapCentersFile);
       centers = PointFileReaderWriter.readOneToOne(in);

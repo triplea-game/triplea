@@ -46,7 +46,7 @@ public class JTextAreaOptionPane {
     layout.setVgap(30);
     m_windowFrame.setLayout(layout);
     m_windowFrame.setTitle(title);
-    JLabel m_label = new JLabel();
+    final JLabel m_label = new JLabel();
     m_label.setText(labelText);
     m_okButton.setText("OK");
     m_okButton.setEnabled(false);

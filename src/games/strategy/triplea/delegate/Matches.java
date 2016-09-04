@@ -1,5 +1,14 @@
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -34,15 +43,6 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Useful match interfaces.
@@ -363,7 +363,7 @@ public class Matches {
         }
         final boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
         return (unitCanBeCapturedByPlayer && territoryCanHaveUnitsThatCanBeCapturedByPlayer
-        && unitOwnerCanLetUnitsBeCapturedByPlayer);
+            && unitOwnerCanLetUnitsBeCapturedByPlayer);
       }
     };
   }
@@ -1217,15 +1217,15 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        // This method will still return true if territory t is an impassible or restricted territory With enemy
+        // This method will still return true if territory t is an impassable or restricted territory With enemy
         // neighbors. Makes sure your
-        // AI does not include any impassible or restricted territories by using this:
-        // CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassibleOrRestricted = new
+        // AI does not include any impassable or restricted territories by using this:
+        // CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassableOrRestricted = new
         // CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player),
         // Matches.territoryHasEnemyLandNeighbor(data,
         // player));
         final CompositeMatch<Territory> condition = new CompositeMatchAnd<>(Matches.TerritoryIsLand,
-            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
         return data.getMap().getNeighbors(t, condition).size() > 0;
       }
     };
@@ -1489,7 +1489,7 @@ public class Matches {
         return false;
       }
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getIsImpassible();
+      return ta != null && ta.getIsImpassable();
     }
   };
   public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<>(TerritoryIsImpassable);
@@ -1573,7 +1573,7 @@ public class Matches {
    * Limits, Unit movement
    * left, Fuel available, etc.<br>
    * <br>
-   * Does check for: Impassible, ImpassibleNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving
+   * Does check for: Impassable, ImpassableNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving
    * on water, Sea units
    * moving on land,
    * and territories that are disallowed due to a relationship attachment (canMoveLandUnitsOverOwnedLand,
@@ -1919,7 +1919,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(final PlayerID player,
+  public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(final PlayerID player,
       final GameData data) {
     return new Match<Territory>() {
       @Override

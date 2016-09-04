@@ -64,8 +64,7 @@ public class Utils {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.match(t)) {
-        final CompositeMatchOr<Territory> routeOrEnd =
-            new CompositeMatchOr<>(routeCondition, Matches.territoryIs(t));
+        final CompositeMatchOr<Territory> routeOrEnd = new CompositeMatchOr<>(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
           if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {

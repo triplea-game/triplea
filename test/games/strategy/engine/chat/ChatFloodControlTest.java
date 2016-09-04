@@ -6,26 +6,29 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class ChatFloodControlTest {
-  private final ChatFloodControl fc = new ChatFloodControl();
+  private final static long INITIAL_CLEAR_TIME = 100;
+  private final ChatFloodControl testObj = new ChatFloodControl(INITIAL_CLEAR_TIME);
 
   @Test
   public void testSimple() {
-    assertTrue(fc.allow("", System.currentTimeMillis()));
+    assertTrue(testObj.allow("", System.currentTimeMillis()));
   }
 
   @Test
   public void testDeny() {
+    final long now = 123;
     for (int i = 0; i < ChatFloodControl.EVENTS_PER_WINDOW; i++) {
-      fc.allow("", System.currentTimeMillis());
+      assertTrue(testObj.allow("", now));
     }
-    assertFalse(fc.allow("", System.currentTimeMillis()));
+    assertFalse(testObj.allow("", now));
   }
 
   @Test
-  public void testReney() {
+  public void throttlingReleasedAfterTimePeriod() {
+    final long now = 100;
     for (int i = 0; i < 100; i++) {
-      fc.allow("", System.currentTimeMillis());
+      testObj.allow("", now);
     }
-    assertTrue(fc.allow("", System.currentTimeMillis() + 1000 * 60 * 60));
+    assertTrue(testObj.allow("", INITIAL_CLEAR_TIME + ChatFloodControl.WINDOW + 1));
   }
 }

@@ -4,12 +4,12 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
@@ -22,15 +22,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
-import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.util.Triple;
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
@@ -60,6 +51,16 @@ import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
+import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.util.Triple;
+
 public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final TripleAFrame frame;
@@ -71,10 +72,11 @@ public class TripleAMenuBar extends JMenuBar {
     new GameMenu(this, frame);
     new ExportMenu(this, frame);
 
-    final ServerGame serverGame = (ServerGame) frame.getGame();
-    final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
 
-    createLobbyMenu(this, watcher);
+    final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
+    if (watcher.isPresent() && watcher.get().isActive()) {
+      createLobbyMenu(this, watcher.get());
+    }
     new NetworkMenu(this, watcher, frame);
     new WebHelpMenu(this);
 
@@ -82,36 +84,29 @@ public class TripleAMenuBar extends JMenuBar {
     new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
 
-  private InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar, InGameLobbyWatcherWrapper watcher ) {
-    if (!(frame.getGame() instanceof ServerGame)) {
-      return null;
-    }
-    if( watcher != null && watcher.isActive()) {
-      final JMenu lobby = new JMenu("Lobby");
-      lobby.setMnemonic(KeyEvent.VK_L);
-      menuBar.add(lobby);
-      lobby.add(new EditGameCommentAction(watcher, frame));
-      lobby.add(new RemoveGameFromLobbyAction(watcher));
-    }
-    return watcher;
+  private void createLobbyMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
+    final JMenu lobby = new JMenu("Lobby");
+    lobby.setMnemonic(KeyEvent.VK_L);
+    menuBar.add(lobby);
+    lobby.add(new EditGameCommentAction(watcher, frame));
+    lobby.add(new RemoveGameFromLobbyAction(watcher));
   }
 
 
   public static File getSaveGameLocationDialog(final Frame frame) {
+
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-      SaveGameFileChooser.ensureDefaultDirExists();
-      fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-      fileDialog.setFilenameFilter(new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg
-                                                                   // extensions as well
-          return name.endsWith(".tsvg") || name.endsWith(".svg");
-        }
+
+
+      fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
+      fileDialog.setFilenameFilter((dir, name) -> { // the extension should be .tsvg, but find svg
+                                                    // extensions as well
+        return name.endsWith(".tsvg") || name.endsWith(".svg");
       });
       fileDialog.setVisible(true);
       String fileName = fileDialog.getFile();
@@ -137,7 +132,7 @@ public class TripleAMenuBar extends JMenuBar {
       }
       File f = fileChooser.getSelectedFile();
       // disallow sub directories to be entered (in the form directory/name) for Windows boxes
-      if (GameRunner.isWindows()) {
+      if (SystemProperties.isWindows()) {
         final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
         final String filePath = f.getPath().substring(0, slashIndex);
         if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
@@ -196,8 +191,7 @@ public class TripleAMenuBar extends JMenuBar {
             SubstanceOfficeSilver2007LookAndFeel.class.getName(),
             SubstanceRavenLookAndFeel.class.getName(),
             SubstanceSaharaLookAndFeel.class.getName(),
-            SubstanceTwilightLookAndFeel.class.getName()
-        ));
+            SubstanceTwilightLookAndFeel.class.getName()));
     return substanceLooks;
   }
 

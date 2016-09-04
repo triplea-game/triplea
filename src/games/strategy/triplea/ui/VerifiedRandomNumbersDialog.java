@@ -3,8 +3,6 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -46,12 +44,7 @@ public class VerifiedRandomNumbersDialog extends JDialog {
     buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
     getContentPane().add(buttons, BorderLayout.SOUTH);
     final JButton close = new JButton("Close");
-    close.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setVisible(false);
-      }
-    });
+    close.addActionListener(e -> setVisible(false));
     buttons.add(close);
   }
 

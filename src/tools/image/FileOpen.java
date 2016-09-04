@@ -78,7 +78,7 @@ public class FileOpen {
       // get the file
       file = chooser.getSelectedFile();
     } catch (final Exception ex) {
-      String ERR_MSG_1 = "Warning! Could not load the file!";
+      final String ERR_MSG_1 = "Warning! Could not load the file!";
       JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
     }

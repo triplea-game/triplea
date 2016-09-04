@@ -72,17 +72,12 @@ public class ColorProperty extends AEditableProperty {
       public void mouseClicked(final MouseEvent e) {
         try {
           final Color colorSelected =
-              JColorChooser.showDialog(label, "Choose color", (ColorProperty.this.color == null ? Color.black :
-                  ColorProperty.this.color));
+              JColorChooser.showDialog(label, "Choose color",
+                  (ColorProperty.this.color == null ? Color.black : ColorProperty.this.color));
           if (colorSelected != null) {
             color = colorSelected;
             // Ask Swing to repaint this label when it's convenient
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                label.repaint();
-              }
-            });
+            SwingUtilities.invokeLater(() -> label.repaint());
           }
         } catch (final Exception exception) {
           System.err.println(exception.getMessage());

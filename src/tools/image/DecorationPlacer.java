@@ -48,10 +48,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;
@@ -322,7 +322,7 @@ public class DecorationPlacer extends JFrame {
         DecorationPlacer.this.repaint();
       }
     });
-    final Action clearAction = SwingAction.of("Clear all current points.", e -> m_currentImagePoints.clear());
+    final Action clearAction = SwingAction.of("Clear All Current Points.", e -> m_currentImagePoints.clear());
     clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');
@@ -587,7 +587,7 @@ public class DecorationPlacer extends JFrame {
         m_currentPoints = new HashMap<>();
       }
     } catch (final HeadlessException | IOException ex) {
-       ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly(ex);
     }
   }
 

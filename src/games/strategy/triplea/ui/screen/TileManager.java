@@ -32,9 +32,26 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
+import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
+import games.strategy.triplea.ui.screen.drawable.BattleDrawable;
+import games.strategy.triplea.ui.screen.drawable.BlockadeZoneDrawable;
+import games.strategy.triplea.ui.screen.drawable.CapitolMarkerDrawable;
+import games.strategy.triplea.ui.screen.drawable.ConvoyZoneDrawable;
+import games.strategy.triplea.ui.screen.drawable.DecoratorDrawable;
+import games.strategy.triplea.ui.screen.drawable.DrawableComparator;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
+import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
+import games.strategy.triplea.ui.screen.drawable.MapTileDrawable;
+import games.strategy.triplea.ui.screen.drawable.OptionalExtraTerritoryBordersDrawable;
+import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
+import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
+import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
+import games.strategy.triplea.ui.screen.drawable.TerritoryNameDrawable;
+import games.strategy.triplea.ui.screen.drawable.VCDrawable;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
@@ -350,44 +367,6 @@ public class TileManager {
 
   public Image createTerritoryImage(final Territory t, final GameData data, final MapData mapData) {
     return createTerritoryImage(t, t, data, mapData, true);
-    // synchronized(m_mutex)
-    // {
-    // Rectangle bounds = mapData.getBoundingRect(t);
-    // Image rVal = Util.createImage( bounds.width, bounds.height, false);
-    // Graphics2D graphics = (Graphics2D) rVal.getGraphics();
-    // //start as a set to prevent duplicates
-    // Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
-    // Iterator<Tile> tiles = getTiles(bounds).iterator();
-    // while(tiles.hasNext())
-    // {
-    // Tile tile = tiles.next();
-    // drawablesSet.addAll(tile.getDrawables());
-    // }
-    // List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
-    // Collections.sort(orderedDrawables, new DrawableComparator());
-    // Iterator<IDrawable> drawers = orderedDrawables.iterator();
-    // while (drawers.hasNext())
-    // {
-    // IDrawable drawer = drawers.next();
-    // if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
-    // break;
-    // if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
-    // continue;
-    // drawer.draw(bounds, data, graphics, mapData);
-    // }
-    // Iterator iter = mapData.getPolygons(t).iterator();
-    // graphics.setStroke(new BasicStroke(5));
-    // graphics.setColor(Color.RED);
-    // while (iter.hasNext())
-    // {
-    // Polygon poly = (Polygon) iter.next();
-    // poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
-    // poly.translate(-bounds.x, -bounds.y);
-    // graphics.drawPolygon(poly);
-    // }
-    // graphics.dispose();
-    // return rVal;
-    // }
   }
 
   public Image createTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
@@ -517,8 +496,7 @@ public class TileManager {
       if (selected.isWater()) {
         c = Color.RED;
       } else {
-        c = mapData.getPlayerColor(selected.getOwner().getName());
-        c = new Color(c.getRed() ^ c.getRed(), c.getGreen() ^ c.getGreen(), c.getRed() ^ c.getRed());
+        c = new Color(0, 0, 0);
       }
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, OP.FILL);
       told.draw(bounds, data, graphics, mapData, null, null);

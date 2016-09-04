@@ -70,7 +70,7 @@ public class GameData implements java.io.Serializable {
   private transient ListenerList<GameDataChangeListener> dataChangeListeners =
       new ListenerList<>();
   private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<>();
-  private final AllianceTracker alliances = new AllianceTracker(this);
+  private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
   private final DelegateList delegateList;
@@ -179,7 +179,6 @@ public class GameData implements java.io.Serializable {
    * @return the Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
-    ensureLockHeld();
     return technologyFrontier;
   }
 

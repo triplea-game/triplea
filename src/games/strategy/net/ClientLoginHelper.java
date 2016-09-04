@@ -25,8 +25,8 @@ class ClientLoginHelper {
       // write the object output streams magic number
       out.flush();
       final ObjectInputStream in = new ObjectInputStream(streams.getBufferedIn());
-      //If casting fails, the Object is no Map<String, String>
-      Map<String, String> challenge = (Map<String, String>) in.readObject();
+      // If casting fails, the Object is no Map<String, String>
+      final Map<String, String> challenge = (Map<String, String>) in.readObject();
       // the degenerate case
       if (challenge == null) {
         out.writeObject(null);

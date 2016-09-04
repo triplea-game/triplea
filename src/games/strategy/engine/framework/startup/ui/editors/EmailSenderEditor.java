@@ -3,8 +3,6 @@ package games.strategy.engine.framework.startup.ui.editors;
 import java.awt.GridBagConstraints;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,13 +73,13 @@ public class EmailSenderEditor extends EditorPanel {
     add(m_toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    JLabel m_loginLabel = new JLabel("Login:");
+    final JLabel m_loginLabel = new JLabel("Login:");
     add(m_loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(m_login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    JLabel m_passwordLabel = new JLabel("Password:");
+    final JLabel m_passwordLabel = new JLabel("Password:");
     add(m_passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(m_password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
@@ -131,18 +129,8 @@ public class EmailSenderEditor extends EditorPanel {
     m_port.getDocument().addDocumentListener(listener);
     m_password.getDocument().addDocumentListener(listener);
     m_toAddress.getDocument().addDocumentListener(listener);
-    m_useTLS.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        fireEditorChanged();
-      }
-    });
-    m_testEmail.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        testEmail();
-      }
-    });
+    m_useTLS.addActionListener(e -> fireEditorChanged());
+    m_testEmail.addActionListener(e -> testEmail());
   }
 
   /**
@@ -151,41 +139,35 @@ public class EmailSenderEditor extends EditorPanel {
   private void testEmail() {
     final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), "Sending test email...");
     progressWindow.setVisible(true);
-    final Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        // initialize variables to error state, override if successful
-        String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
-        int messageType = JOptionPane.ERROR_MESSAGE;
-        try {
-          final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-          final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
-          dummy.deleteOnExit();
-          final FileOutputStream fout = new FileOutputStream(dummy);
-          fout.write("This file would normally be a save game".getBytes());
-          fout.close();
-          ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
-          // email was sent, or an exception would have been thrown
-          message = "Email sent, it should arrive shortly, otherwise check your spam folder";
-          messageType = JOptionPane.INFORMATION_MESSAGE;
-        } catch (final IOException ioe) {
-          message = "Unable to send email: " + ioe.getMessage();
-        } finally {
-          // now that we have a result, marshall it back unto the swing thread
-          final String finalMessage = message;
-          final int finalMessageType = messageType;
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              try {
-                JOptionPane.showMessageDialog(MainFrame.getInstance(), finalMessage, "Email Test", finalMessageType);
-              } catch (final HeadlessException e) {
-                // should never happen in a GUI app
-              }
-            }
-          });
-          progressWindow.setVisible(false);
-        }
+    final Runnable runnable = () -> {
+      // initialize variables to error state, override if successful
+      String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
+      int messageType = JOptionPane.ERROR_MESSAGE;
+      try {
+        final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
+        final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
+        dummy.deleteOnExit();
+        final FileOutputStream fout = new FileOutputStream(dummy);
+        fout.write("This file would normally be a save game".getBytes());
+        fout.close();
+        ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
+        // email was sent, or an exception would have been thrown
+        message = "Email sent, it should arrive shortly, otherwise check your spam folder";
+        messageType = JOptionPane.INFORMATION_MESSAGE;
+      } catch (final IOException ioe) {
+        message = "Unable to send email: " + ioe.getMessage();
+      } finally {
+        // now that we have a result, marshall it back unto the swing thread
+        final String finalMessage = message;
+        final int finalMessageType = messageType;
+        SwingUtilities.invokeLater(() -> {
+          try {
+            JOptionPane.showMessageDialog(MainFrame.getInstance(), finalMessage, "Email Test", finalMessageType);
+          } catch (final HeadlessException e) {
+            // should never happen in a GUI app
+          }
+        });
+        progressWindow.setVisible(false);
       }
     };
     // start a background thread

@@ -20,7 +20,9 @@ public class FileDownloadTest {
 
   @Test
   public void testBasicStartCancel() {
-    DownloadFile testObj = new DownloadFile(mockDownload, e -> {}, () -> {});
+    final DownloadFile testObj = new DownloadFile(mockDownload, e -> {
+    }, () -> {
+    });
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
     testObj.startAsyncDownload();

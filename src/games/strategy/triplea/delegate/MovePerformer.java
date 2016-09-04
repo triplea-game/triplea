@@ -1,7 +1,18 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -9,6 +20,7 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -23,18 +35,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
@@ -144,7 +144,7 @@ public class MovePerformer implements Serializable {
         final GameData data = bridge.getData();
         final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
         final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits.get()));
-        //Reset Optional
+        // Reset Optional
         arrivingUnits = Optional.empty();
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
         final Map<Unit, Unit> transporting = TransportUtils.mapTransports(route, arrived, transportsToLoad);
@@ -288,7 +288,7 @@ public class MovePerformer implements Serializable {
 
   private static CompositeMatch<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
     final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<>();
-    mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
+    mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data));
     mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
     mustFightThrough
         .add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));

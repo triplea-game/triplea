@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.ListenerList;
 
 public class ScrollableTextField extends JPanel {
@@ -40,11 +40,11 @@ public class ScrollableTextField extends JPanel {
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     add(m_text);
     Insets inset = new Insets(0, 0, 0, 0);
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       inset = new Insets(2, 0, 2, 0);
     }
     m_up = new JButton(s_up);
-    Action m_incrementAction = new AbstractAction("inc") {
+    final Action m_incrementAction = new AbstractAction("inc") {
       private static final long serialVersionUID = 2125871167112459475L;
 
       @Override
@@ -59,7 +59,7 @@ public class ScrollableTextField extends JPanel {
     m_up.setMargin(inset);
     m_down = new JButton(s_down);
     m_down.setMargin(inset);
-    Action m_decrementAction = new AbstractAction("dec") {
+    final Action m_decrementAction = new AbstractAction("dec") {
       private static final long serialVersionUID = 787758939168986726L;
 
       @Override
@@ -73,7 +73,7 @@ public class ScrollableTextField extends JPanel {
     m_down.addActionListener(m_decrementAction);
     m_max = new JButton(s_max);
     m_max.setMargin(inset);
-    Action m_maxAction = new AbstractAction("max") {
+    final Action m_maxAction = new AbstractAction("max") {
       private static final long serialVersionUID = -3899827439573519512L;
 
       @Override
@@ -87,7 +87,7 @@ public class ScrollableTextField extends JPanel {
     m_max.addActionListener(m_maxAction);
     m_min = new JButton(s_min);
     m_min.setMargin(inset);
-    Action m_minAction = new AbstractAction("min") {
+    final Action m_minAction = new AbstractAction("min") {
       private static final long serialVersionUID = 5785321239855254848L;
 
       @Override
@@ -109,12 +109,7 @@ public class ScrollableTextField extends JPanel {
     maxMin.add(m_min);
     add(upDown);
     add(maxMin);
-    IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener() {
-      @Override
-      public void changedValue(final IntTextField field) {
-        notifyListeners();
-      }
-    };
+    final IntTextFieldChangeListener m_textListener = field -> notifyListeners();
     m_text.addChangeListener(m_textListener);
     setWidgetActivation();
   }

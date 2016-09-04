@@ -95,61 +95,58 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
   }
 
-  private static Comparator<Territory> TERRITORY_GRID_ORDERING = new Comparator<Territory>() {
-    @Override
-    public int compare(final Territory t1, final Territory t2) {
-      if ((t1 == null && t2 == null) || t1 == t2) {
-        return 0;
-      }
-      if (t1 == null && t2 != null) {
-        return 1;
-      }
-      if (t1 != null && t2 == null) {
-        return -1;
-      }
-      if (t1.equals(t2)) {
-        return 0;
-      }
-      final int t1index = t1.getName().indexOf("_");
-      final int t2index = t2.getName().indexOf("_");
-      if (t1index == -1 && t2index == -1) {
-        return 0;
-      }
-      if (t1index == -1 && t2index != -1) {
-        return 1;
-      }
-      if (t1index != -1 && t2index == -1) {
-        return -1;
-      }
-      final String name1 = t1.getName().substring(0, t1index);
-      final String name2 = t1.getName().substring(0, t2index);
-      if (!name1.equals(name2)) {
-        return name1.compareTo(name2);
-      }
-      String tname1y = t1.getName().replaceFirst(name1 + "_", "");
-      tname1y = tname1y.substring(tname1y.indexOf("_") + 1, tname1y.length());
-      final int ty1 = Integer.parseInt(tname1y);
-      String tname2y = t2.getName().replaceFirst(name2 + "_", "");
-      tname2y = tname2y.substring(tname2y.indexOf("_") + 1, tname2y.length());
-      final int ty2 = Integer.parseInt(tname2y);
-      if (ty1 < ty2) {
-        return -1;
-      } else if (ty1 > ty2) {
-        return 1;
-      }
-      String tname1x = t1.getName().replaceFirst(name1 + "_", "");
-      tname1x = tname1x.substring(0, tname1x.indexOf("_"));
-      final int tx1 = Integer.parseInt(tname1x);
-      String tname2x = t2.getName().replaceFirst(name2 + "_", "");
-      tname2x = tname2x.substring(0, tname2x.indexOf("_"));
-      final int tx2 = Integer.parseInt(tname2x);
-      if (tx1 < tx2) {
-        return -1;
-      } else if (tx1 > tx2) {
-        return 1;
-      }
+  private static Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
+    if ((t1 == null && t2 == null) || t1 == t2) {
       return 0;
     }
+    if (t1 == null && t2 != null) {
+      return 1;
+    }
+    if (t1 != null && t2 == null) {
+      return -1;
+    }
+    if (t1.equals(t2)) {
+      return 0;
+    }
+    final int t1index = t1.getName().indexOf("_");
+    final int t2index = t2.getName().indexOf("_");
+    if (t1index == -1 && t2index == -1) {
+      return 0;
+    }
+    if (t1index == -1 && t2index != -1) {
+      return 1;
+    }
+    if (t1index != -1 && t2index == -1) {
+      return -1;
+    }
+    final String name1 = t1.getName().substring(0, t1index);
+    final String name2 = t1.getName().substring(0, t2index);
+    if (!name1.equals(name2)) {
+      return name1.compareTo(name2);
+    }
+    String tname1y = t1.getName().replaceFirst(name1 + "_", "");
+    tname1y = tname1y.substring(tname1y.indexOf("_") + 1, tname1y.length());
+    final int ty1 = Integer.parseInt(tname1y);
+    String tname2y = t2.getName().replaceFirst(name2 + "_", "");
+    tname2y = tname2y.substring(tname2y.indexOf("_") + 1, tname2y.length());
+    final int ty2 = Integer.parseInt(tname2y);
+    if (ty1 < ty2) {
+      return -1;
+    } else if (ty1 > ty2) {
+      return 1;
+    }
+    String tname1x = t1.getName().replaceFirst(name1 + "_", "");
+    tname1x = tname1x.substring(0, tname1x.indexOf("_"));
+    final int tx1 = Integer.parseInt(tname1x);
+    String tname2x = t2.getName().replaceFirst(name2 + "_", "");
+    tname2x = tname2x.substring(0, tname2x.indexOf("_"));
+    final int tx2 = Integer.parseInt(tname2x);
+    if (tx1 < tx2) {
+      return -1;
+    } else if (tx1 > tx2) {
+      return 1;
+    }
+    return 0;
   };
 
   public boolean isCoordinateValid(final int... coordinate) {
@@ -173,7 +170,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     m_territoryLookup.put(t1.getName(), t1);
   }
 
-  protected void removeTerritory(final Territory t1) {
+  public void removeTerritory(final Territory t1) {
     if (!m_territories.contains(t1)) {
       throw new IllegalArgumentException("Map does not contain " + t1.getName());
     }

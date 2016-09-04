@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -18,6 +17,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -203,7 +203,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     showBattle(bridge);
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAA) {
-      steps.add(new FireAA());
+      // global1940 rules - each target type fires an AA shot against the planes bombing it
+      m_targets.entrySet().stream()
+          .filter(entry -> entry.getKey().getUnitAttachment().getIsAAforBombingThisUnitOnly())
+          .forEach(entry -> steps.add(new FireAA(entry.getValue())));
+
+      // otherwise fire an AA shot at all the planes
+      if(steps.isEmpty()) {
+        steps.add(new FireAA());
+      }
     }
     steps.add(new ConductBombing());
     steps.add(new IExecutable() {
@@ -284,8 +292,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
     m_whoWon = WhoWon.DRAW;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }
@@ -308,8 +316,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       m_whoWon = WhoWon.DEFENDER;
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), m_bombingRaidTotal);
+    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     m_isOver = true;
     m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
   }
@@ -327,23 +335,31 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     DiceRoll m_dice;
     CasualtyDetails m_casualties;
     Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
+    Collection<Unit> validAttackingUnitsForThisRoll;
+    boolean determineAttackers;
 
+    public FireAA( Collection<Unit> attackers ) {
+      validAttackingUnitsForThisRoll = attackers;
+      determineAttackers = false;
+    }
+    
+    public FireAA() {
+      validAttackingUnitsForThisRoll = Collections.emptyList();
+      determineAttackers = true;
+    }
+      
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
       for (final String currentTypeAA : m_AAtypes) {
-        final Collection<Unit> currentPossibleAA =
-            Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
-        final Set<UnitType> targetUnitTypesForThisTypeAA =
-            UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
-        final Set<UnitType> airborneTypesTargettedToo =
-            TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-        final Collection<Unit> validAttackingUnitsForThisRoll =
-            Match.getMatches(m_attackingUnits,
-                new CompositeMatchOr<>(Matches
-                    .unitIsOfTypes(targetUnitTypesForThisTypeAA),
-                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne,
-                        Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+        final Collection<Unit> currentPossibleAA                = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+        final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+        final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
+        if( determineAttackers ) {
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+        }
+
         final IExecutable roll = new IExecutable() {
           private static final long serialVersionUID = 379538344036513009L;
 
@@ -477,19 +493,16 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
         Collections.emptyMap());
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
-          defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
-        } catch (final ConnectionLostException cle) {
-          // somone else will deal with this
-          // System.out.println(cle.getMessage());
-          // cle.printStackTrace(System.out);
-        } catch (final Exception e) {
-          // ignore
-        }
+    final Runnable r = () -> {
+      try {
+        final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
+        defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+      } catch (final ConnectionLostException cle) {
+        // somone else will deal with this
+        // System.out.println(cle.getMessage());
+        // cle.printStackTrace(System.out);
+      } catch (final Exception e) {
+        // ignore
       }
     };
     final Thread t = new Thread(r, "click to continue waiter");
@@ -684,7 +697,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       int cost = 0;
       final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
       int index = 0;
-      final Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
+      final boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
       final List<Die> dice = new ArrayList<>();
       final HashMap<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage

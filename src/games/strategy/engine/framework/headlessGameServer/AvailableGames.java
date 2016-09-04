@@ -153,10 +153,10 @@ public class AvailableGames {
     }
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = new GameParser().parse(input, gameName, s_delayedParsing);
+        final GameData data = new GameParser(uri.toString()).parse(input, gameName, s_delayedParsing);
         final String name = data.getGameName();
         final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
         if (!availableGames.containsKey(name)) {
@@ -195,10 +195,10 @@ public class AvailableGames {
     }
     final AtomicReference<String> gameName = new AtomicReference<>();
 
-    Optional<InputStream> inputStream = UrlStreams.openStream(uri);
+    final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        return new GameParser().parse(input, gameName, false);
+        return new GameParser(uri.toString()).parse(input, gameName, false);
       } catch (final Exception e) {
         ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
             + (gameName.get() != null ? gameName.get() + " : " : ""), e);

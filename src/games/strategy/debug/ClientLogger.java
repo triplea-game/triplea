@@ -12,7 +12,6 @@ public class ClientLogger {
   }
 
   private static void log(final PrintStream stream, final Throwable e) {
-    stream.println("Exception: " + e.getMessage());
     e.printStackTrace(stream);
   }
 
@@ -40,7 +39,7 @@ public class ClientLogger {
 
   public static void logError(final String msg, final Set<Exception> exceptions) {
     logError(msg);
-    for (Exception e : exceptions) {
+    for (final Exception e : exceptions) {
       logError(e);
     }
   }

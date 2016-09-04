@@ -3,7 +3,6 @@ package games.strategy.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -143,19 +142,16 @@ public class Util {
     for (final T o : order) {
       map.put(o, order.indexOf(o));
     }
-    Collections.sort(reorder, new Comparator<T>() {
-      @Override
-      public int compare(final T o1, final T o2) {
-        // get int returns 0 if no value
-        final int v1 = map.getInt(o1);
-        final int v2 = map.getInt(o2);
-        if (v1 > v2) {
-          return 1;
-        } else if (v1 == v2) {
-          return 0;
-        } else {
-          return -1;
-        }
+    Collections.sort(reorder, (o1, o2) -> {
+      // get int returns 0 if no value
+      final int v1 = map.getInt(o1);
+      final int v2 = map.getInt(o2);
+      if (v1 > v2) {
+        return 1;
+      } else if (v1 == v2) {
+        return 0;
+      } else {
+        return -1;
       }
     });
   }

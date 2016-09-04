@@ -10,8 +10,8 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
@@ -19,7 +19,7 @@ public class GetGameSaveClientAction extends AbstractAction {
   private final IServerStartupRemote m_serverRemote;
 
   public GetGameSaveClientAction(final Component parent, final IServerStartupRemote serverRemote) {
-    super("Download Gamesave (Save Game)...");
+    super("Download Gamesave (Save Game)");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_serverRemote = serverRemote;
   }

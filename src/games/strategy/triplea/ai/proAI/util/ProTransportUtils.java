@@ -1,5 +1,12 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -15,14 +22,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Pro AI transport utilities.
@@ -61,8 +60,8 @@ public class ProTransportUtils {
       // Get all units that can be transported
       final List<Unit> units = new ArrayList<>();
       for (final Territory loadFrom : territoriesToLoadFrom) {
-        units.addAll(loadFrom.getUnits()
-            .getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
+        units.addAll(
+            loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
       }
       units.removeAll(unitsToIgnore);
 
@@ -106,29 +105,26 @@ public class ProTransportUtils {
       units.removeAll(unitsToIgnore);
 
       // Sort units by attack
-      Collections.sort(units, new Comparator<Unit>() {
-        @Override
-        public int compare(final Unit o1, final Unit o2) {
+      Collections.sort(units, (o1, o2) -> {
 
-          // Very rough way to add support power
-          final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
-          int maxSupport1 = 0;
-          for (final UnitSupportAttachment usa : supportAttachments1) {
-            if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
-              maxSupport1 = usa.getBonus();
-            }
+        // Very rough way to add support power
+        final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
+        int maxSupport1 = 0;
+        for (final UnitSupportAttachment usa : supportAttachments1) {
+          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
+            maxSupport1 = usa.getBonus();
           }
-          final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
-          final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
-          int maxSupport2 = 0;
-          for (final UnitSupportAttachment usa : supportAttachments2) {
-            if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
-              maxSupport2 = usa.getBonus();
-            }
-          }
-          final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
-          return attack2 - attack1;
         }
+        final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
+        final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
+        int maxSupport2 = 0;
+        for (final UnitSupportAttachment usa : supportAttachments2) {
+          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
+            maxSupport2 = usa.getBonus();
+          }
+        }
+        final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
+        return attack2 - attack1;
       });
 
       // Get best units that can be loaded
@@ -162,7 +158,8 @@ public class ProTransportUtils {
     return transportCost;
   }
 
-  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t, final List<Unit> units) {
+  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t,
+      final List<Unit> units) {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
@@ -245,7 +242,8 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
+  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units,
+      final int planesThatDontNeedToLand) {
     if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier))) {
       return units;
     }
@@ -273,10 +271,8 @@ public class ProTransportUtils {
 
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
-          final int seekedCarrierIndex =
-              AdvancedUtils.getIndexOfLastUnitMatching(result,
-                  new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                  result.size() - 1);
+          final int seekedCarrierIndex = AdvancedUtils.getIndexOfLastUnitMatching(result,
+              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
           }
@@ -305,10 +301,8 @@ public class ProTransportUtils {
             filledCarriers.add(seekedCarrier);
 
             // Find the next carrier
-            seekedCarrier =
-                AdvancedUtils.getLastUnitMatching(result,
-                    new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                    result.size() - 1);
+            seekedCarrier = AdvancedUtils.getLastUnitMatching(result,
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }
@@ -350,10 +344,8 @@ public class ProTransportUtils {
             }
 
             // Find the next carrier
-            seekedCarrier =
-                AdvancedUtils.getLastUnitMatching(result,
-                    new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                    result.size() - 1);
+            seekedCarrier = AdvancedUtils.getLastUnitMatching(result,
+                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }

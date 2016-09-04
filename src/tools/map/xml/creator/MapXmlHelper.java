@@ -33,7 +33,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.util.Triple;
-import tools.map.xml.creator.MapXmlCreator.GAME_STEP;
+import tools.map.xml.creator.MapXmlCreator.GameStep;
 
 /**
  * This class reads, writes and keeps the Map XML properties.
@@ -158,7 +158,8 @@ public class MapXmlHelper {
     return mapXmlData.getTerritoryDefintionsMap();
   }
 
-  public static void setTerritoryDefintions(final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintions) {
+  public static void setTerritoryDefintions(
+      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintions) {
     mapXmlData.setTerritoryDefintionsMap(territoryDefintions);
   }
 
@@ -312,7 +313,8 @@ public class MapXmlHelper {
     getResourceList().add(index, value);
   }
 
-  static void putTerritoryDefintions(final String key, final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> value) {
+  static void putTerritoryDefintions(final String key,
+      final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> value) {
     getTerritoryDefintionsMap().put(key, value);
   }
 
@@ -328,7 +330,7 @@ public class MapXmlHelper {
     getPlayerAllianceMap().put(key, value);
   }
 
-  static void putPlayerInitResources(final String key, final Integer value) {
+  static void putPlayerInitResources(final String key, final int value) {
     getPlayerInitResourcesMap().put(key, value);
   }
 
@@ -356,7 +358,7 @@ public class MapXmlHelper {
     getUnitAttachmentsMap().put(key, value);
   }
 
-  static void putTerritoyProductions(final String key, final Integer value) {
+  static void putTerritoyProductions(final String key, final int value) {
     getTerritoyProductionsMap().put(key, value);
   }
 
@@ -451,7 +453,7 @@ public class MapXmlHelper {
   ///////////////////////////////////////////
   // Start of XML parsing methods
   ///////////////////////////////////////////
-  static public GAME_STEP parseValuesFromXML(final Document dom) {
+  static public GameStep parseValuesFromXML(final Document dom) {
     initializeAll();
 
     final Node mainlastChild = dom.getLastChild();
@@ -466,8 +468,8 @@ public class MapXmlHelper {
    * @param gameNode
    * @return step to go to
    */
-  public static GAME_STEP parseGameNode(final Node gameNode) {
-    GAME_STEP stepToGo = MapXmlCreator.GAME_STEP_FIRST;
+  public static GameStep parseGameNode(final Node gameNode) {
+    GameStep stepToGo = MapXmlCreator.GAME_STEP_FIRST;
     final NodeList children = gameNode.getChildNodes();
     for (int i = 0; i < children.getLength(); ++i) {
       final Node childNode = children.item(i);
@@ -489,19 +491,19 @@ public class MapXmlHelper {
       } else if (childNodeName.equals(XML_NODE_NAME_MAP)) {
         parseMapNode(childNode.getChildNodes());
         stepToGo = MapXmlCreator.getMaxGameStep(stepToGo, (getTerritoryConnectionsMap().isEmpty()
-            ? GAME_STEP.TERRITORY_DEFINITIONS : GAME_STEP.TERRITORY_CONNECTIONS));
+            ? GameStep.TERRITORY_DEFINITIONS : GameStep.TERRITORY_CONNECTIONS));
       } else if (childNodeName.equals(XML_NODE_NAME_PLAYER_LIST)) {
         parsePlayerListNode(childNode.getChildNodes());
         stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            GAME_STEP.PLAYERS_AND_ALLIANCES);
+            GameStep.PLAYERS_AND_ALLIANCES);
       } else if (childNodeName.equals(XML_NODE_NAME_PRODUCTION)) {
         putNodesToProductionFrontiers(childNode.getChildNodes());
         stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getProductionFrontiersMap().isEmpty() ? GAME_STEP.UNIT_DEFINITIONS : GAME_STEP.PRODUCTION_FRONTIERS));
+            (getProductionFrontiersMap().isEmpty() ? GameStep.UNIT_DEFINITIONS : GameStep.PRODUCTION_FRONTIERS));
       } else if (childNodeName.equals(XML_NODE_NAME_GAME_PLAY)) {
         putNodesToPlayerSequence(childNode.getChildNodes());
         stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getPlayerSequenceMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION));
+            (getPlayerSequenceMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION));
       } else if (childNodeName.equals(XML_NODE_NAME_ATTACHMENT_LIST)) {
         final NodeList attachmentListChildNodes = childNode.getChildNodes();
         for (int p_i = 0; p_i < attachmentListChildNodes.getLength(); ++p_i) {
@@ -511,8 +513,8 @@ public class MapXmlHelper {
           }
         }
         stepToGo = MapXmlCreator.getMaxGameStep(MapXmlCreator.getMaxGameStep(stepToGo,
-            getUnitAttachmentsMap().isEmpty() ? GAME_STEP.PRODUCTION_FRONTIERS : GAME_STEP.UNIT_ATTACHMENTS),
-            getTerritoyProductionsMap().isEmpty() ? GAME_STEP.UNIT_ATTACHMENTS : GAME_STEP.TERRITORY_PRODUCTION);
+            getUnitAttachmentsMap().isEmpty() ? GameStep.PRODUCTION_FRONTIERS : GameStep.UNIT_ATTACHMENTS),
+            getTerritoyProductionsMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION);
       } else if (childNodeName.equals(XML_NODE_NAME_INITIALIZE)) {
         final NodeList initializeChildNodes = childNode.getChildNodes();
         for (int init_i = 0; init_i < initializeChildNodes.getLength(); ++init_i) {
@@ -524,7 +526,7 @@ public class MapXmlHelper {
           }
         }
         stepToGo = MapXmlCreator.getMaxGameStep(stepToGo,
-            (getUnitPlacementsMap().isEmpty() ? GAME_STEP.TERRITORY_OWNERSHIP : GAME_STEP.UNIT_PLACEMENTS));
+            (getUnitPlacementsMap().isEmpty() ? GameStep.TERRITORY_OWNERSHIP : GameStep.UNIT_PLACEMENTS));
       } else if (childNodeName.equals(XML_NODE_NAME_PROPERTY_LIST)) {
         final NodeList propertyListChildNodes = childNode.getChildNodes();
         for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
@@ -534,7 +536,7 @@ public class MapXmlHelper {
           }
         }
         if (!getGameSettingsMap().isEmpty()) {
-          stepToGo = (getNotes().length() > 0 ? GAME_STEP.MAP_FINISHED : GAME_STEP.GAME_SETTINGS);
+          stepToGo = (getNotes().length() > 0 ? GameStep.MAP_FINISHED : GameStep.GAME_SETTINGS);
         }
       }
     }
@@ -698,7 +700,8 @@ public class MapXmlHelper {
           getTerritoyProductionsMap().put(attachmentAttachTo,
               Integer.parseInt(attachmentOptionAttr.get(XML_NODE_NAME_VALUE)));
         } else {
-          Map<TerritoryDefinitionDialog.DEFINITION, Boolean> terrDefinitions = getTerritoryDefintionsMap().get(attachmentAttachTo);
+          Map<TerritoryDefinitionDialog.DEFINITION, Boolean> terrDefinitions =
+              getTerritoryDefintionsMap().get(attachmentAttachTo);
           if (terrDefinitions == null) {
             terrDefinitions = Maps.newHashMap();
             getTerritoryDefintionsMap().put(attachmentAttachTo, terrDefinitions);
@@ -1144,12 +1147,12 @@ public class MapXmlHelper {
 
   private static void addAttachmentsFromTerritoryProductions(final Map<String, List<String>> territoryAttachments) {
     for (final Entry<String, Integer> productionEntry : getTerritoyProductionsMap().entrySet()) {
-      final Integer production = productionEntry.getValue();
+      final int production = productionEntry.getValue();
       if (production > 0) {
         final String territoryName = productionEntry.getKey();
         final ArrayList<String> attachmentOptions = new ArrayList<>();
         attachmentOptions.add(territoryName);
-        attachmentOptions.add(production.toString());
+        attachmentOptions.add(Integer.toString(production));
         territoryAttachments.put("production_" + territoryName, attachmentOptions);
       }
     }
@@ -1159,7 +1162,8 @@ public class MapXmlHelper {
     for (final Entry<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefinition : getTerritoryDefintionsMap()
         .entrySet()) {
       final String territoryName = territoryDefinition.getKey();
-      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definition : territoryDefinition.getValue().entrySet()) {
+      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definition : territoryDefinition.getValue()
+          .entrySet()) {
         if (definition.getValue() == Boolean.TRUE) {
           final ArrayList<String> attachmentOptions = new ArrayList<>();
           attachmentOptions.add(territoryName);
@@ -1181,11 +1185,13 @@ public class MapXmlHelper {
         .entrySet()) {
       final Element territory = doc.createElement(XML_NODE_NAME_TERRITORY);
       territory.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, entryTerritoryDefinition.getKey());
-      final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition = entryTerritoryDefinition.getValue();
+      final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition =
+          entryTerritoryDefinition.getValue();
       final int territoryDefinitionSize = territoryDefinition.size();
       final Boolean isWater = territoryDefinition.get(TerritoryDefinitionDialog.DEFINITION.IS_WATER);
       if (isWater != null && isWater) {
-        territory.setAttribute(TerritoryDefinitionDialog.getDefinitionString(TerritoryDefinitionDialog.DEFINITION.IS_WATER), "true");
+        territory.setAttribute(
+            TerritoryDefinitionDialog.getDefinitionString(TerritoryDefinitionDialog.DEFINITION.IS_WATER), "true");
         if (territoryDefinitionSize > 1) {
           territoryAttachmentNeeded = true;
         }
@@ -1254,9 +1260,9 @@ public class MapXmlHelper {
           if (sequenceProperties.getSecond().length() > 0) {
             step.setAttribute(XML_ATTR_ATTACHMENT_NAME_PLAYER, sequenceProperties.getSecond());
           }
-          final Integer maxRunCount = sequenceProperties.getThird();
+          final int maxRunCount = sequenceProperties.getThird();
           if (maxRunCount > 0) {
-            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, maxRunCount.toString());
+            step.setAttribute(XML_ATTR_STEP_NAME_MAX_RUN_COUNT, Integer.toString(maxRunCount));
           }
           if (stepNameIndicatesNonCombatMove(sequenceStepKey)) {
             step.setAttribute(XML_ATTR_STEP_NAME_DISPLAY, "Non Combat Move");

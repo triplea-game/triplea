@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -19,6 +18,7 @@ import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
@@ -490,95 +490,89 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
   private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
       final Collection<Territory> blockadeZones, final GameMap map) {
-    return new Comparator<Territory>() {
-      @Override
-      public int compare(final Territory t1, final Territory t2) {
-        if (t1 == t2 || (t1 == null && t2 == null)) {
-          return 0;
-        }
-        if (t1 == null) {
-          return 1;
-        }
-        if (t2 == null) {
-          return -1;
-        }
-        if (t1.equals(t2)) {
-          return 0;
-        }
-        // if a territory is only touching 1 blockadeZone, we must take it first
-        final Collection<Territory> neighborBlockades1 = new ArrayList<>(map.getNeighbors(t1));
-        neighborBlockades1.retainAll(blockadeZones);
-        final int n1 = neighborBlockades1.size();
-        final Collection<Territory> neighborBlockades2 = new ArrayList<>(map.getNeighbors(t2));
-        neighborBlockades2.retainAll(blockadeZones);
-        final int n2 = neighborBlockades2.size();
-        if (n1 == 1 && n2 != 1) {
-          return -1;
-        }
-        if (n2 == 1 && n1 != 1) {
-          return 1;
-        }
-        final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
-        final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
-        if (ta1 == null && ta2 == null) {
-          return 0;
-        }
-        if (ta1 == null) {
-          return 1;
-        }
-        if (ta2 == null) {
-          return -1;
-        }
-        final int p1 = ta1.getProduction();
-        final int p2 = ta2.getProduction();
-        if (p1 == p2) {
-          return 0;
-        }
-        if (p1 > p2) {
-          return -1;
-        }
+    return (t1, t2) -> {
+      if (t1 == t2 || (t1 == null && t2 == null)) {
+        return 0;
+      }
+      if (t1 == null) {
         return 1;
       }
+      if (t2 == null) {
+        return -1;
+      }
+      if (t1.equals(t2)) {
+        return 0;
+      }
+      // if a territory is only touching 1 blockadeZone, we must take it first
+      final Collection<Territory> neighborBlockades1 = new ArrayList<>(map.getNeighbors(t1));
+      neighborBlockades1.retainAll(blockadeZones);
+      final int n1 = neighborBlockades1.size();
+      final Collection<Territory> neighborBlockades2 = new ArrayList<>(map.getNeighbors(t2));
+      neighborBlockades2.retainAll(blockadeZones);
+      final int n2 = neighborBlockades2.size();
+      if (n1 == 1 && n2 != 1) {
+        return -1;
+      }
+      if (n2 == 1 && n1 != 1) {
+        return 1;
+      }
+      final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
+      final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
+      if (ta1 == null && ta2 == null) {
+        return 0;
+      }
+      if (ta1 == null) {
+        return 1;
+      }
+      if (ta2 == null) {
+        return -1;
+      }
+      final int p1 = ta1.getProduction();
+      final int p2 = ta2.getProduction();
+      if (p1 == p2) {
+        return 0;
+      }
+      if (p1 > p2) {
+        return -1;
+      }
+      return 1;
     };
   }
 
   private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
       final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
-    return new Comparator<Territory>() {
-      @Override
-      public int compare(final Territory t1, final Territory t2) {
-        if (t1 == t2 || (t1 == null && t2 == null)) {
-          return 0;
-        }
-        if (t1 == null) {
-          return 1;
-        }
-        if (t2 == null) {
-          return -1;
-        }
-        if (t1.equals(t2)) {
-          return 0;
-        }
-        final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
-        final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
-        final int num1 = tuple1.getSecond().size();
-        final int num2 = tuple2.getSecond().size();
-        if (num1 == 1 && num2 != 1) {
-          return -1;
-        }
-        if (num2 == 1 && num1 != 1) {
-          return 1;
-        }
-        final int d1 = tuple1.getFirst();
-        final int d2 = tuple2.getFirst();
-        if (d1 == d2) {
-          return 0;
-        }
-        if (d1 > d2) {
-          return -1;
-        }
+    return (t1, t2) -> {
+      if (t1 == t2 || (t1 == null && t2 == null)) {
+        return 0;
+      }
+      if (t1 == null) {
         return 1;
       }
+      if (t2 == null) {
+        return -1;
+      }
+      if (t1.equals(t2)) {
+        return 0;
+      }
+      final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
+      final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
+      final int num1 = tuple1.getSecond().size();
+      final int num2 = tuple2.getSecond().size();
+      if (num1 == 1 && num2 != 1) {
+        return -1;
+      }
+      if (num2 == 1 && num1 != 1) {
+        return 1;
+      }
+      final int d1 = tuple1.getFirst();
+      final int d2 = tuple2.getFirst();
+      if (d1 == d2) {
+        return 0;
+      }
+      if (d1 > d2) {
+        return -1;
+      }
+      return 1;
     };
   }
 }

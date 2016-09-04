@@ -21,7 +21,7 @@ public class SetMapClientAction extends AbstractAction {
 
   public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger,
       final List<String> availableGames) {
-    super("Change Game To...");
+    super("Change Game To");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_clientMessenger = clientMessenger;
     m_availableGames = availableGames;

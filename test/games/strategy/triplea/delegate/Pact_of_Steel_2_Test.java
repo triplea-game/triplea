@@ -29,7 +29,7 @@ public class Pact_of_Steel_2_Test {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame("pact_of_steel_2_test.xml");
+    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.PACT_OF_STEEL_2);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -145,7 +145,7 @@ public class Pact_of_Steel_2_Test {
   }
 
   public void testRepairsUnits() {
-    // TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Battleships repair at beginning of round"
+    // TODO repairsUnits, "Two HitPoint Units Require Repair Facilities", "Units Repair Hits Start Turn"
   }
 
   public void testProductionPerXTerritories() {

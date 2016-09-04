@@ -47,7 +47,7 @@ public class UrlStreamsTest {
   public void cacheIsOff() throws Exception {
     when(mockUrlConnection.getInputStream()).thenReturn(mockInputStream);
 
-    Optional<InputStream> connection = testObj.newStream(fakeUrl);
+    final Optional<InputStream> connection = testObj.newStream(fakeUrl);
 
     assertThat("expecting the same mocked http connection object back",
         connection.get(), sameInstance(mockInputStream));
@@ -57,20 +57,20 @@ public class UrlStreamsTest {
 
 
   @Test
-  public void testErrorSuppressionWhenThereIsNoError()  throws Exception  {
+  public void testErrorSuppressionWhenThereIsNoError() throws Exception {
     when(mockUrlConnection.getInputStream()).thenReturn(mockInputStream);
 
-    Optional<InputStream> stream = testObj.newStream(fakeUrl);
+    final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
     assertThat("No issues connecting, we should have an inpuct stream back.",
         stream.isPresent(), is(true));
   }
 
   @Test
-  public void testErrorSuppression()  throws Exception  {
+  public void testErrorSuppression() throws Exception {
     when(mockUrlConnection.getInputStream()).thenThrow(new IOException("simulating an IOException being thrown"));
 
-    Optional<InputStream> stream = testObj.newStream(fakeUrl);
+    final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
     assertThat("No exceptions expected, but a failure to connect should return an empty object.",
         stream.isPresent(), is(false));

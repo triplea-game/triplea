@@ -29,7 +29,7 @@ public class DownloadFileDescription {
       new DownloadFileDescription(null, " ", " ", new Version("0"), DownloadType.DISPLAY_HEADER);
 
   public DownloadFileDescription(final String url, final String description, final String mapName,
-      final Version version, DownloadType downloadType) {
+      final Version version, final DownloadType downloadType) {
     this.url = url;
     this.description = description;
     this.mapName = mapName;
@@ -106,7 +106,7 @@ public class DownloadFileDescription {
   }
 
   @Override
-  public boolean equals(Object rhs) {
+  public boolean equals(final Object rhs) {
     if (rhs == null || getClass() != rhs.getClass()) {
       return false;
     }

@@ -33,7 +33,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public static PlayerAttachment get(final PlayerID p, final String nameOfAttachment) {
-    final PlayerAttachment rVal = p.getPlayerAttachment(); //(PlayerAttachment) p.getAttachment(nameOfAttachment);
+    final PlayerAttachment rVal = p.getPlayerAttachment(); // (PlayerAttachment) p.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
     }
@@ -449,8 +449,6 @@ public class PlayerAttachment extends DefaultAttachment {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
       if (tempPlayer != null) {
         m_giveUnitControl.add(tempPlayer);
-      } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        m_giveUnitControl.clear();
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -620,13 +618,4 @@ public class PlayerAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) throws GameParseException {}
-
-  /**
-   * @deprecated setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise
-   * users get Java
-   * errors.
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setTakeUnitControl(final String value) {}
 }

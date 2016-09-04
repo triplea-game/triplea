@@ -10,6 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
+import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessageListener;
@@ -168,7 +171,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     }
   }
 
-  boolean hasImplementors(final String endPointName) {
+  public boolean hasImplementors(final String endPointName) {
     synchronized (m_endPointMutex) {
       return m_endPoints.containsKey(endPointName) && !m_endPoints.get(endPointName).isEmpty();
     }

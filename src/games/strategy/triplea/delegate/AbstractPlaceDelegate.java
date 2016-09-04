@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -1313,11 +1313,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       while (mapString.hasNext()) {
         final String constructionType = mapString.next();
         int unitMax = unitMapMaxType.getInt(constructionType);
-        if (wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
+        if (wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+            && !constructionType.endsWith("structure")) {
           unitMax =
               Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
         }
-        if (!wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY) && !constructionType.endsWith("structure")) {
+        if (!wasFactoryThereAtStart && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+            && !constructionType.endsWith("structure")) {
           unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
               (unlimitedConstructions ? 10000 : 0));
         }
@@ -1429,93 +1431,84 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units,
       final PlayerID player) {
-    return new Comparator<Territory>() {
-      @Override
-      public int compare(final Territory t1, final Territory t2) {
-        if (t1 == t2 || t1.equals(t2)) {
-          return 0;
-        }
-        // producing to territory comes first
-        if (to == t1 || to.equals(t1)) {
-          return -1;
-        } else if (to == t2 || to.equals(t2)) {
-          return 1;
-        }
-        final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player);
-        final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player);
-        if (left1 == left2) {
-          return 0;
-        }
-        // production of -1 == infinite
-        if (left1 == -1) {
-          return -1;
-        }
-        if (left2 == -1) {
-          return 1;
-        }
-        if (left1 > left2) {
-          return -1;
-        }
+    return (t1, t2) -> {
+      if (t1 == t2 || t1.equals(t2)) {
+        return 0;
+      }
+      // producing to territory comes first
+      if (to == t1 || to.equals(t1)) {
+        return -1;
+      } else if (to == t2 || to.equals(t2)) {
         return 1;
       }
+      final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player);
+      final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player);
+      if (left1 == left2) {
+        return 0;
+      }
+      // production of -1 == infinite
+      if (left1 == -1) {
+        return -1;
+      }
+      if (left2 == -1) {
+        return 1;
+      }
+      if (left1 > left2) {
+        return -1;
+      }
+      return 1;
     };
   }
 
   protected Comparator<Unit> getUnitConstructionComparator() {
-    return new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        final boolean construction1 = Matches.UnitIsConstruction.match(u1);
-        final boolean construction2 = Matches.UnitIsConstruction.match(u2);
-        if (construction1 == construction2) {
-          return 0;
-        } else if (construction1) {
-          return -1;
-        } else {
-          return 1;
-        }
+    return (u1, u2) -> {
+      final boolean construction1 = Matches.UnitIsConstruction.match(u1);
+      final boolean construction2 = Matches.UnitIsConstruction.match(u2);
+      if (construction1 == construction2) {
+        return 0;
+      } else if (construction1) {
+        return -1;
+      } else {
+        return 1;
       }
     };
   }
 
   protected Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront) {
-    return new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit u1, final Unit u2) {
-        if (u1 == u2 || u1.equals(u2)) {
-          return 0;
-        }
-        final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-        final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-        if (ua1 == null && ua2 == null) {
-          return 0;
-        }
-        if (ua1 != null && ua2 == null) {
-          return -1;
-        }
-        if (ua1 == null && ua2 != null) {
-          return 1;
-        }
-        // constructions go ahead first
-        if (sortConstructionsToFront) {
-          final int constructionSort = getUnitConstructionComparator().compare(u1, u2);
-          if (constructionSort != 0) {
-            return constructionSort;
-          }
-        }
-        final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
-        final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
-        final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
-        final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
-        if (rus1 == rus2) {
-          return 0;
-        }
-        // fewer means more difficult, and more difficult goes to front of list.
-        if (rus1 < rus2) {
-          return -1;
-        }
+    return (u1, u2) -> {
+      if (u1 == u2 || u1.equals(u2)) {
+        return 0;
+      }
+      final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+      final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+      if (ua1 == null && ua2 == null) {
+        return 0;
+      }
+      if (ua1 != null && ua2 == null) {
+        return -1;
+      }
+      if (ua1 == null && ua2 != null) {
         return 1;
       }
+      // constructions go ahead first
+      if (sortConstructionsToFront) {
+        final int constructionSort = getUnitConstructionComparator().compare(u1, u2);
+        if (constructionSort != 0) {
+          return constructionSort;
+        }
+      }
+      final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
+      final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
+      final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
+      final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
+      if (rus1 == rus2) {
+        return 0;
+      }
+      // fewer means more difficult, and more difficult goes to front of list.
+      if (rus1 < rus2) {
+        return -1;
+      }
+      return 1;
     };
   }
 
@@ -1714,10 +1707,3 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 }
 
 
-class PlaceExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -4926754941623641735L;
-  Serializable superState;
-  // add other variables here:
-  public Map<Territory, Collection<Unit>> m_produced;
-  public List<UndoablePlacement> m_placements;
-}

@@ -1,5 +1,12 @@
 package games.strategy.triplea.ai.proAI.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -8,13 +15,6 @@ import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ProOtherMoveOptions {
 
@@ -98,7 +98,8 @@ public class ProOtherMoveOptions {
     return result;
   }
 
-  private static Map<Territory, List<ProTerritory>> createMoveMaps(final List<Map<Territory, ProTerritory>> moveMapList) {
+  private static Map<Territory, List<ProTerritory>> createMoveMaps(
+      final List<Map<Territory, ProTerritory>> moveMapList) {
 
     final Map<Territory, List<ProTerritory>> result = new HashMap<>();
     for (final Map<Territory, ProTerritory> moveMap : moveMapList) {

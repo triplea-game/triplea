@@ -14,7 +14,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Sets;
 
@@ -31,7 +42,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
   protected final GameData m_data;
   protected final AbstractMovePanel m_movePanel;
   protected JScrollPane scroll;
-  protected Integer scrollBarPreviousValue = null;
+  protected Integer scrollBarPreviousValue = null;// TODO replace this Integer with a int primitive... Using null as
+                                                  // toggle switch is bad code
   protected Integer previousVisibleIndex = null;
 
   public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
@@ -42,18 +54,13 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
 
   public void setMoves(final List<AbstractUndoableMove> m_undoableMoves) {
     m_moves = m_undoableMoves;
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        initLayout();
-      }
-    });
+    SwingUtilities.invokeLater(() -> initLayout());
   }
 
-  public void undoMoves(Map<Territory, List<Unit>> highlightUnitByTerritory) {
-    Set<Unit> units = Sets.newHashSet();
-    for( List<Unit> highlightedUnits : highlightUnitByTerritory.values() ) {
-      units.addAll(highlightedUnits );
+  public void undoMoves(final Map<Territory, List<Unit>> highlightUnitByTerritory) {
+    final Set<Unit> units = Sets.newHashSet();
+    for (final List<Unit> highlightedUnits : highlightUnitByTerritory.values()) {
+      units.addAll(highlightedUnits);
     }
     m_movePanel.undoMoves(units);
   }
@@ -113,12 +120,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       scrollBarPreviousValue = null;
     }
     add(scroll, BorderLayout.CENTER);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        validate();
-      }
-    });
+    SwingUtilities.invokeLater(() -> validate());
   }
 
   private JComponent createComponentForMove(final AbstractUndoableMove move) {
@@ -129,9 +131,10 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
-      final Optional<ImageIcon> icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
-          category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-      if(icon.isPresent()) {
+      final Optional<ImageIcon> icon =
+          m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+              category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+      if (icon.isPresent()) {
         final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
       }

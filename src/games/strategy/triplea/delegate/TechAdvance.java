@@ -12,12 +12,12 @@ import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
@@ -230,8 +230,6 @@ public abstract class TechAdvance extends NamedAttachable {
 
   /**
    * Returns all tech advances possible in this game.
-   *
-   * @param data
    */
   public static List<TechAdvance> getTechAdvances(final GameData data) {
     return getTechAdvances(data, null);
@@ -240,18 +238,9 @@ public abstract class TechAdvance extends NamedAttachable {
   /**
    * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs
    * available in the game).
-   *
-   * @param data
-   * @param player
    */
   public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player) {
-    final TechnologyFrontier technologyFrontier;
-    data.acquireReadLock();
-    try {
-      technologyFrontier = data.getTechnologyFrontier();
-    } finally {
-      data.releaseReadLock();
-    }
+    final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
       if (player != null) {
         return player.getTechnologyFrontierList().getAdvances();
@@ -260,7 +249,6 @@ public abstract class TechAdvance extends NamedAttachable {
       }
     }
     // the game has no techs, just return empty list
-    // System.out.println("No Techs");
     return new ArrayList<>();
   }
 

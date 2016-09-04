@@ -75,7 +75,9 @@ public class GameSelectorModel extends Observable {
     m_fileName = entry.getLocation();
     setGameData(entry.getGameData());
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
+    if (entry.getGameData() != null) {
+      prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
+    }
     prefs.put(DEFAULT_GAME_URI_PREF, entry.getURI().toString());
     try {
       prefs.flush();
@@ -121,7 +123,7 @@ public class GameSelectorModel extends Observable {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
         try (FileInputStream fis = new FileInputStream(file)) {
-          newData = (new GameParser()).parse(fis, gameName, false);
+          newData = (new GameParser(file.getAbsolutePath())).parse(fis, gameName, false);
         }
       }
       // the extension should be tsvg, but

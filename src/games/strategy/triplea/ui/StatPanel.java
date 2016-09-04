@@ -87,7 +87,7 @@ public class StatPanel extends AbstractStatPanel {
     if (!hasTech) {
       return;
     }
-    JTable m_techTable = new JTable(m_techModel);
+    final JTable m_techTable = new JTable(m_techModel);
     m_techTable.getTableHeader().setReorderingAllowed(false);
     m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);
@@ -227,12 +227,7 @@ public class StatPanel extends AbstractStatPanel {
       synchronized (this) {
         m_isDirty = true;
       }
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     /*
@@ -378,8 +373,8 @@ public class StatPanel extends AbstractStatPanel {
           // boolean useTokens = false;
           if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
             // useTokens = true;
-            final Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
-            data[row][col] = tokens.toString();
+            final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
+            data[row][col] = Integer.toString(tokens);
           }
           final Iterator<TechAdvance> advancesAll = TechAdvance.getTechAdvances(m_data).iterator();
           final List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
@@ -441,12 +436,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change aChange) {
       isDirty = true;
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          repaint();
-        }
-      });
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     public void setGameData(final GameData data) {

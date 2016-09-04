@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -214,18 +212,8 @@ public class UnitChooser extends JPanel {
     m_autoSelectButton.setPreferredSize(buttonSize);
     add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selectNone();
-      }
-    });
-    m_autoSelectButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        autoSelect();
-      }
-    });
+    m_selectNoneButton.addActionListener(e -> selectNone());
+    m_autoSelectButton.addActionListener(e -> autoSelect());
     int yIndex = 1;
     for (final ChooserEntry entry : m_entries) {
       entry.createComponents(this, yIndex);
@@ -403,12 +391,7 @@ class ChooserEntry {
           GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
       panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-      scroll.addChangeListener(new ScrollableTextFieldListener() {
-        @Override
-        public void changedValue(final ScrollableTextField field) {
-          updateLeftToSelect();
-        }
-      });
+      scroll.addChangeListener(field -> updateLeftToSelect());
     }
     updateLeftToSelect();
   }
@@ -513,9 +496,10 @@ class ChooserEntry {
     @Override
     public void paint(final Graphics g) {
       super.paint(g);
-      Optional<Image> image = uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
-      if(image.isPresent()) {
+      final Optional<Image> image =
+          uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
+              m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+      if (image.isPresent()) {
         g.drawImage(image.get(), 0, 0, this);
       }
 
@@ -526,7 +510,7 @@ class ChooserEntry {
         final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
         final Optional<Image> unitImg =
             uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
-        if(unitImg.isPresent()) {
+        if (unitImg.isPresent()) {
           g.drawImage(unitImg.get(), x, 0, this);
         }
         index++;

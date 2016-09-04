@@ -9,10 +9,10 @@ import java.util.List;
 public class CompositeMatchOr<T> extends CompositeMatch<T> {
   /** Creates new CompositeMatchOr */
   @SuppressWarnings("unchecked")
-  public CompositeMatchOr(final Match<?>... matches) {//TODO rewrite in order to remove Suppressed Warning
+  public CompositeMatchOr(final Match<?>... matches) {// TODO rewrite in order to remove Suppressed Warning
     super();
     for (final Match<?> m : matches) {
-      add((Match<T>)m);
+      add((Match<T>) m);
     }
   }
 
@@ -26,8 +26,8 @@ public class CompositeMatchOr<T> extends CompositeMatch<T> {
   @Override
   public boolean match(final T o) {
     final List<Match<T>> matches = super.getMatches();
-    for (int i = 0; i < matches.size(); i++) {
-      if (matches.get(i).match(o)) {
+    for (final Match<T> matche : matches) {
+      if (matche.match(o)) {
         return true;
       }
     }

@@ -185,7 +185,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   // While "setProductionOnly" sets only m_production.
   private int m_production = 0;
   private int m_victoryCity = 0;
-  private boolean m_isImpassible = false;
+  private boolean m_isImpassable = false;
   private PlayerID m_originalOwner = null;
   private boolean m_convoyRoute = false;
   private HashSet<Territory> m_convoyAttached = new HashSet<>();
@@ -249,21 +249,12 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassible(final String value) {
-    m_isImpassible = getBool(value);
+  public void setIsImpassable(final String value) {
+    m_isImpassable = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassible(final Boolean value) {
-    m_isImpassible = value;
-  }
-
-  public boolean getIsImpassible() {
-    return m_isImpassible;
-  }
-
-  public void resetIsImpassible() {
-    m_isImpassible = false;
+  public boolean getIsImpassable() {
+    return m_isImpassable;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -293,18 +284,7 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setVictoryCity(final String value) {
-    if (value.equalsIgnoreCase("false")) {
-      m_victoryCity = 0;
-    } else if (value.equalsIgnoreCase("true")) {
-      m_victoryCity = 1;
-    } else {
-      m_victoryCity = getInt(value);
-    }
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVictoryCity(final Integer value) {
-    m_victoryCity = value;
+    m_victoryCity = getInt(value);
   }
 
   public int getVictoryCity() {
@@ -320,18 +300,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_originalFactory = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOriginalFactory(final Boolean value) {
-    m_originalFactory = value;
-  }
-
   public boolean getOriginalFactory() {
     return m_originalFactory;
   }
 
-  public void resetOriginalFactory() {
-    m_originalFactory = false;
-  }
 
   /**
    * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
@@ -347,18 +319,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_unitProduction = m_production;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProduction(final Integer value) {
-    m_production = value;
-    // do NOT remove. unitProduction should always default to production
-    m_unitProduction = m_production;
-  }
-
-  public void resetProduction() {
-    m_production = 0;
-    m_unitProduction = 0;
-  }
-
   /**
    * Sets only m_production
    *
@@ -369,36 +329,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_production = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionOnly(final int value) {
-    m_production = value;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionOnly(final Integer value) {
-    m_production = value;
-  }
-
   public int getProduction() {
     return m_production;
-  }
-
-  /**
-   * @deprecated Use getProduction() instead.
-   * DO NOT DELETE THIS!
-   */
-  @Deprecated
-  public int getProductionOnly() {
-    return getProduction();
-  }
-
-  public void resetProductionOnly() {
-    m_production = 0;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProduction(final Integer value) {
-    m_unitProduction = value;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -408,10 +340,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public int getUnitProduction() {
     return m_unitProduction;
-  }
-
-  public void resetUnitProduction() {
-    m_unitProduction = 0;
   }
 
   /**
@@ -765,7 +693,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-    if (m_isImpassible) {
+    if (m_isImpassable) {
       sb.append("Is Impassable");
       sb.append(br);
     }
@@ -850,27 +778,5 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {}
 
-  /**
-   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
-   *
-   * @param value
-   * @throws GameParseException
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setOccupiedTerrOf(final String value) throws GameParseException {
-    setOriginalOwner(value);
-  }
 
-  /**
-   * @deprecated Do NOT remove this. Removing it will break a lot of old game xmls.
-   *
-   * @param value
-   * @throws GameParseException
-   */
-  @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
-  public void setOccupiedTerrOf(final PlayerID value) {
-    setOriginalOwner(value);
-  }
 }

@@ -23,17 +23,16 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import games.strategy.util.UrlStreams;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-
 import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.util.UrlStreams;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 
 /**
  * Utility for loading and playing sound clips.
@@ -145,9 +144,9 @@ public class ClipPlayer {
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false"))
+    beSilent = Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
         || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
-    final HashSet<String> choices = SoundPath.getAllSoundOptions();
+    final Set<String> choices = SoundPath.getAllSoundOptions();
 
     for (final String sound : choices) {
       final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
@@ -252,7 +251,8 @@ public class ClipPlayer {
   }
 
   /**
-   * @param clipName - the file name of the clip
+   * @param clipPath - the folder containing sound clips to be played. One of the sound clip files will be chosen at
+   *        random.
    * @param playerId - the name of the player, or null
    */
   public static void play(String clipPath, PlayerID playerId) {
@@ -269,12 +269,15 @@ public class ClipPlayer {
       folder += "_" + playerId.getName();
     }
 
-    final URI clip = loadClip(folder);
+    final URI clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));
+    // clip may still be null, we try to load all phases/all sound, for example: clipName = "phase_technology", folder =
+    // "phase_technology_Japanese"
+
     if (clip != null) {
       (new Thread(() -> {
         try {
           Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
-          if(inputStream.isPresent()) {
+          if (inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
@@ -285,11 +288,11 @@ public class ClipPlayer {
     }
   }
 
-  private synchronized URI loadClip(final String clipName) {
+  private Optional<URI> loadClip(final String clipName) {
     if (beSilent || isMuted(clipName)) {
       return null;
     }
-    return loadClipPath(clipName);
+    return Optional.ofNullable(loadClipPath(clipName));
   }
 
   private URI loadClipPath(final String pathName) {

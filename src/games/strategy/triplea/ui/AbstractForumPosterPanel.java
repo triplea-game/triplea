@@ -4,7 +4,6 @@ import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -14,6 +13,7 @@ import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.ui.SwingAction;
 
 public abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
@@ -55,12 +55,9 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionLabel.setText(id.getName() + " " + getTitle());
-        // defer componenet layout until waitForEndTurn()
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_actionLabel.setText(id.getName() + " " + getTitle());
+      // defer componenet layout until waitForEndTurn()
     });
   }
 
@@ -101,16 +98,13 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
       return;
     }
     final boolean hasPosted = getHasPostedTurnSummary();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        add(m_actionLabel);
-        add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
-            allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
-            allowDiceBattleDetails(), allowDiceStatistics()));
-        validate();
-      }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      add(m_actionLabel);
+      add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
+          allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
+          allowDiceBattleDetails(), allowDiceStatistics()));
+      validate();
     });
     waitForRelease();
   }

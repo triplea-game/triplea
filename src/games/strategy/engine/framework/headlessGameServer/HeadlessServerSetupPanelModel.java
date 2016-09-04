@@ -20,7 +20,7 @@ public class HeadlessServerSetupPanelModel extends SetupPanelModel {
 
   @Override
   public void showSelectType() {
-    final ServerModel model = new ServerModel(m_gameSelectorModel, this, true);
+    final ServerModel model = new ServerModel(m_gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
     if (!model.createServerMessenger(m_ui)) {
       model.cancel();
       return;

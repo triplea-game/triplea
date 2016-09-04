@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server.ui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -93,35 +91,17 @@ public class LobbyAdminConsole extends JFrame {
 
   private void setupListeners() {
     m_bootPlayer.addActionListener(new BootPlayerAction(this, m_server.getMessenger()));
-    m_debugPlayer.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        debugPlayer();
+    m_debugPlayer.addActionListener(e -> debugPlayer());
+    m_remoteHostActions.addActionListener(e -> remoteHostActions());
+    m_exit.addActionListener(e -> {
+      final int option = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure",
+          JOptionPane.YES_NO_OPTION);
+      if (option != JOptionPane.YES_OPTION) {
+        return;
       }
+      System.exit(0);
     });
-    m_remoteHostActions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        remoteHostActions();
-      }
-    });
-    m_exit.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final int option = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure",
-            JOptionPane.YES_NO_OPTION);
-        if (option != JOptionPane.YES_OPTION) {
-          return;
-        }
-        System.exit(0);
-      }
-    });
-    m_backupNow.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        Database.backup();
-      }
-    });
+    m_backupNow.addActionListener(e -> Database.backup());
   }
 
   private void setWidgetActivation() {}
@@ -151,17 +131,14 @@ public class LobbyAdminConsole extends JFrame {
         // if it doesnt return because the
         // remote computer is blocked, we don't want to
         // kill the swing thread
-        final Runnable r = new Runnable() {
-          @Override
-          public void run() {
-            s_logger.info("Getting debug info for:" + node);
-            final RemoteName remoteName = HeartBeat.getHeartBeatName(node);
-            final IHeartBeat heartBeat =
-                (IHeartBeat) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
-            s_logger.info("Debug info for:" + node);
-            s_logger.info(heartBeat.getDebugInfo());
-            s_logger.info("Debug info finished");
-          }
+        final Runnable r = () -> {
+          s_logger.info("Getting debug info for:" + node);
+          final RemoteName remoteName = HeartBeat.getHeartBeatName(node);
+          final IHeartBeat heartBeat =
+              (IHeartBeat) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
+          s_logger.info("Debug info for:" + node);
+          s_logger.info(heartBeat.getDebugInfo());
+          s_logger.info("Debug info finished");
         };
         final Thread t = new Thread(r, "Debug player called at " + new Date());
         t.setDaemon(true);
@@ -199,20 +176,17 @@ public class LobbyAdminConsole extends JFrame {
         // if it doesnt return because the
         // remote computer is blocked, we don't want to
         // kill the swing thread
-        final Runnable r = new Runnable() {
-          @Override
-          public void run() {
-            s_logger.info("Starting Remote Host Action for: " + node);
-            final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-            final IRemoteHostUtils hostUtils =
-                (IRemoteHostUtils) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
-            s_logger.info("Remote Host Action for:" + node);
-            final String salt = hostUtils.getSalt();
-            final String hashedPassword = MD5Crypt.crypt(password, salt);
-            final String response = hostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
-            s_logger.info(response == null ? "Successfull Remote Action" : "Failed: " + response);
-            s_logger.info("Remote Host Action finished");
-          }
+        final Runnable r = () -> {
+          s_logger.info("Starting Remote Host Action for: " + node);
+          final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
+          final IRemoteHostUtils hostUtils =
+              (IRemoteHostUtils) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
+          s_logger.info("Remote Host Action for:" + node);
+          final String salt = hostUtils.getSalt();
+          final String hashedPassword = MD5Crypt.crypt(password, salt);
+          final String response = hostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
+          s_logger.info(response == null ? "Successfull Remote Action" : "Failed: " + response);
+          s_logger.info("Remote Host Action finished");
         };
         final Thread t = new Thread(r, "Debug player called at " + new Date());
         t.setDaemon(true);

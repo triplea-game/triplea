@@ -120,7 +120,7 @@ public class CompositeRouteFinder {
   /*
    * Returns the score of the best match that matches this territory
    */
-  private Integer getTerScore(final Territory ter) {
+  private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
     for (final Match<Territory> match : m_matches.keySet()) {
       final int score = m_matches.get(match);

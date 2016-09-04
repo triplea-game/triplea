@@ -217,13 +217,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTurns(final String turns) throws GameParseException {
-    if (turns == null) {
+  public void setRounds(final String rounds) throws GameParseException {
+    if (rounds == null) {
       m_turns = null;
       return;
     }
     m_turns = new HashMap<>();
-    final String[] s = turns.split(":");
+    final String[] s = rounds.split(":");
     if (s.length < 1) {
       throw new GameParseException("Empty turn list" + thisErrorMsg());
     }
@@ -244,9 +244,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           end = getInt(s2[1]);
         }
       }
-      final Integer t = start;
-      final Integer u = end;
-      m_turns.put(t, u);
+      m_turns.put(start, end);
     }
   }
 
@@ -265,7 +263,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   protected boolean checkTurns(final GameData data) {
     final int turn = data.getSequence().getRound();
-    for (final Integer t : m_turns.keySet()) {
+    for (final int t : m_turns.keySet()) {
       if (turn >= t && turn <= m_turns.get(t)) {
         return true;
       }
@@ -290,7 +288,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
-    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
+    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassables
     {
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {

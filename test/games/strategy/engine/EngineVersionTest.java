@@ -37,17 +37,17 @@ public class EngineVersionTest {
   @Mock
   private PropertyReader mockReader;
 
-  private EngineVersion createTestObj(String inputVersion) {
+  private EngineVersion createTestObj(final String inputVersion) {
     when(mockReader.readProperty(GameEngineProperty.ENGINE_VERSION)).thenReturn(inputVersion);
-    EngineVersion version = new EngineVersion(mockReader);
+    final EngineVersion version = new EngineVersion(mockReader);
     return version;
   }
 
 
   @Test
   public void testGetExactVersion() {
-    String input = "1.2.3.4.5";
-    EngineVersion testObj = createTestObj(input);
+    final String input = "1.2.3.4.5";
+    final EngineVersion testObj = createTestObj(input);
     assertThat(
         "getExactVersion should return exactly what was set in the property file, no chomping of the fifth number.",
         testObj.getFullVersion(), is(input));

@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
 public class SetPasswordAction extends AbstractAction {
   private static final long serialVersionUID = -7767288210554177480L;
@@ -21,7 +21,7 @@ public class SetPasswordAction extends AbstractAction {
 
   public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher,
       final ClientLoginValidator validator) {
-    super("Set Game Password...");
+    super("Set Game Password");
     m_validator = validator;
     m_parent = parent;
     m_lobbyWatcher = watcher;

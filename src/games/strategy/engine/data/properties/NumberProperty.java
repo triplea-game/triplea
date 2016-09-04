@@ -6,7 +6,6 @@ import javax.swing.JComponent;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.IntTextField;
-import games.strategy.ui.IntTextFieldChangeListener;
 
 public class NumberProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
@@ -50,12 +49,7 @@ public class NumberProperty extends AEditableProperty {
   public JComponent getEditorComponent() {
     final IntTextField field = new IntTextField(m_min, m_max);
     field.setValue(m_value);
-    field.addChangeListener(new IntTextFieldChangeListener() {
-      @Override
-      public void changedValue(final IntTextField aField) {
-        m_value = aField.getValue();
-      }
-    });
+    field.addChangeListener(aField -> m_value = aField.getValue());
     return field;
   }
 

@@ -121,7 +121,8 @@ public class MapXmlData {
     return territoryDefintionsMap;
   }
 
-  public void setTerritoryDefintionsMap(final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap) {
+  public void setTerritoryDefintionsMap(
+      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap) {
     this.territoryDefintionsMap = territoryDefintionsMap;
   }
 
@@ -283,7 +284,8 @@ public class MapXmlData {
       final Map<String, Set<String>> landWaterTerritoyConnections,
       final Map<String, Set<String>> waterLandTerritoyConnections) {
     for (final Entry<String, Set<String>> terrConn : MapXmlHelper.getTerritoryConnectionsMap().entrySet()) {
-      if (MapXmlHelper.getTerritoryDefintionsMap().get(terrConn.getKey()).get(TerritoryDefinitionDialog.DEFINITION.IS_WATER)) {
+      if (MapXmlHelper.getTerritoryDefintionsMap().get(terrConn.getKey())
+          .get(TerritoryDefinitionDialog.DEFINITION.IS_WATER)) {
         // terrConn.Key is water territory, get none-water entries in terrConn.Value
         @SuppressWarnings("unchecked")
         final Set<String> landTerrValue = (Set<String>) terrConn.getValue().stream()
@@ -296,7 +298,8 @@ public class MapXmlData {
         // terrConn.Key is land territory, get water entries in terrConn.Value
         @SuppressWarnings("unchecked")
         final Set<String> waterTerrValue = (Set<String>) terrConn.getValue().stream()
-            .filter(terr -> MapXmlHelper.getTerritoryDefintionsMap().get(terr).get(TerritoryDefinitionDialog.DEFINITION.IS_WATER));
+            .filter(terr -> MapXmlHelper.getTerritoryDefintionsMap().get(terr)
+                .get(TerritoryDefinitionDialog.DEFINITION.IS_WATER));
         landWaterTerritoyConnections.put(terrConn.getKey(), waterTerrValue);
       }
     }

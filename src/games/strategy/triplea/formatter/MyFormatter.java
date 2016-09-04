@@ -58,12 +58,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<UnitType> sortedList = new ArrayList<>(map.keySet());
-    final Comparator<UnitType> comp = new Comparator<UnitType>() {
-      @Override
-      public int compare(final UnitType u1, final UnitType u2) {
-        return u1.getName().compareTo(u2.getName());
-      }
-    };
+    final Comparator<UnitType> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
     Collections.sort(sortedList, comp);
     final Iterator<UnitType> typeIter = sortedList.iterator();
     int count = map.keySet().size();
@@ -251,12 +246,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<DefaultNamed> sortedList = new ArrayList<>(map.keySet());
-    final Comparator<DefaultNamed> comp = new Comparator<DefaultNamed>() {
-      @Override
-      public int compare(final DefaultNamed u1, final DefaultNamed u2) {
-        return u1.getName().compareTo(u2.getName());
-      }
-    };
+    final Comparator<DefaultNamed> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
     Collections.sort(sortedList, comp);
     final Iterator<? extends DefaultNamed> typeIter = sortedList.iterator();
     int count = map.keySet().size();
@@ -318,26 +308,3 @@ public class MyFormatter {
 }
 
 
-class UnitOwner {
-  public UnitType type;
-  public PlayerID owner;
-
-  UnitOwner(final UnitType type, final PlayerID id) {
-    this.type = type;
-    this.owner = id;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
-    }
-    final UnitOwner other = (UnitOwner) o;
-    return other.type.equals(this.type) && other.owner.equals(this.owner);
-  }
-
-  @Override
-  public int hashCode() {
-    return type.hashCode() ^ owner.hashCode();
-  }
-}

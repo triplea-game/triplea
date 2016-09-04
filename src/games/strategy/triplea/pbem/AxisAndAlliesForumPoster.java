@@ -18,10 +18,10 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.ThreadUtil;
 
@@ -70,7 +70,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     m_httpState = new HttpState();
     m_hostConfiguration = new HostConfiguration();
     // add the proxy
-    GameRunner2.addProxy(m_hostConfiguration);
+    HttpProxy.addProxy(m_hostConfiguration);
     m_hostConfiguration.setHost("www.axisandallies.org");
     final PostMethod post = new PostMethod("http://www.axisandallies.org/forums/index.php?action=login2");
     try {
@@ -181,7 +181,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
               + m_topicId + ".0;num_replies=" + numReplies);
           post.addRequestHeader("Accept", "*/*");
-            // the site has spam prevention which means you can't post until 15 seconds after login
+          // the site has spam prevention which means you can't post until 15 seconds after login
           ThreadUtil.sleep(15 * 1000);
           post.setFollowRedirects(false);
           status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
@@ -284,7 +284,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-    DesktopUtilityBrowserLauncher.openURL(url);
+    OpenFileUtility.openURL(url);
   }
 
   @Override

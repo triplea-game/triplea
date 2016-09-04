@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.net.GUID;
 
 public class Unit extends GameDataComponent {
@@ -37,15 +38,20 @@ public class Unit extends GameDataComponent {
   public PlayerID getOwner() {
     return m_owner;
   }
+  
+  public UnitAttachment getUnitAttachment() {
+  	return (UnitAttachment) m_type.getAttachment("unitAttachment");
+  }
 
   /**
    * @deprecated DO NOT USE THIS METHOD if at all possible. It is very slow.
-   * This can return null if the unit is not in any territories.
-   * A unit just created, or held by a player after purchasing may not be in a territory.
-   * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This
-   * method will just
-   * return the first territory found.
-   * A unit should never be in more than 2 territories.
+   *             This can return null if the unit is not in any territories.
+   *             A unit just created, or held by a player after purchasing may not be in a territory.
+   *             A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to
+   *             another. This
+   *             method will just
+   *             return the first territory found.
+   *             A unit should never be in more than 2 territories.
    */
   @Deprecated
   protected Territory getTerritoryUnitIsIn() {
@@ -77,7 +83,7 @@ public class Unit extends GameDataComponent {
    * can be null.
    */
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  void setOwner(PlayerID player) {
+  public void setOwner(PlayerID player) {
     if (player == null) {
       player = PlayerID.NULL_PLAYERID;
     }

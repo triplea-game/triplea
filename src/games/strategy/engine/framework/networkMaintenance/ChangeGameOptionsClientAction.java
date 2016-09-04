@@ -23,7 +23,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
   private final IServerStartupRemote m_serverRemote;
 
   public ChangeGameOptionsClientAction(final Component parent, final IServerStartupRemote serverRemote) {
-    super("Edit Game Options...");
+    super("Edit Game Options");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_serverRemote = serverRemote;
   }
@@ -44,7 +44,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final String ok = "OK";
       final String cancel = "Cancel";
       pane.setOptions(new Object[] {ok, cancel});
-      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Game Options");
+      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
       if (buttonPressed == null || buttonPressed.equals(cancel)) {

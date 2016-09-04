@@ -4,8 +4,6 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -93,18 +91,8 @@ public class ForumPosterEditor extends EditorPanel {
    * Configures the listeners for the gui components
    */
   private void setupListeners() {
-    m_viewPosts.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ((IForumPoster) getBean()).viewPosted();
-      }
-    });
-    m_testForum.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        testForum();
-      }
-    });
+    m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
+    m_testForum.addActionListener(e -> testForum());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     m_login.getDocument().addDocumentListener(docListener);
@@ -119,52 +107,46 @@ public class ForumPosterEditor extends EditorPanel {
     final IForumPoster poster = (IForumPoster) getBean();
     final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
     progressWindow.setVisible(true);
-    final Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        if (poster.getIncludeSaveGame()) {
+    final Runnable runnable = () -> {
+      if (poster.getIncludeSaveGame()) {
+        try {
+          final File f = File.createTempFile("123", "test");
+          f.deleteOnExit();
+          /*
+           * For .txt use this:
+           * final FileOutputStream fout = new FileOutputStream(f);
+           * fout.write("Test upload".getBytes());
+           * fout.close();
+           * poster.addSaveGame(f, "test.txt");
+           */
+          // For .jpg use this:
+          final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
+          final Graphics g = image.getGraphics();
+          g.drawString("Testing file upload", 10, 20);
           try {
-            final File f = File.createTempFile("123", "test");
-            f.deleteOnExit();
-            /*
-             * For .txt use this:
-             * final FileOutputStream fout = new FileOutputStream(f);
-             * fout.write("Test upload".getBytes());
-             * fout.close();
-             * poster.addSaveGame(f, "test.txt");
-             */
-            // For .jpg use this:
-            final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
-            final Graphics g = image.getGraphics();
-            g.drawString("Testing file upload", 10, 20);
-            try {
-              ImageIO.write(image, "jpg", f);
-            } catch (final IOException e) {
-              // ignore
-            }
-            poster.addSaveGame(f, "Test.jpg");
+            ImageIO.write(image, "jpg", f);
           } catch (final IOException e) {
             // ignore
           }
+          poster.addSaveGame(f, "Test.jpg");
+        } catch (final IOException e) {
+          // ignore
         }
-        poster.postTurnSummary(
-            "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getVersion()
-                + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
-            "Testing Forum poster");
-        progressWindow.setVisible(false);
-        // now that we have a result, marshall it back unto the swing thread
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            try {
-              JOptionPane.showMessageDialog(MainFrame.getInstance(), m_bean.getTurnSummaryRef(),
-                  "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE);
-            } catch (final HeadlessException e) {
-              // should never happen in a GUI app
-            }
-          }
-        });
       }
+      poster.postTurnSummary(
+          "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getVersion()
+              + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
+          "Testing Forum poster");
+      progressWindow.setVisible(false);
+      // now that we have a result, marshall it back unto the swing thread
+      SwingUtilities.invokeLater(() -> {
+        try {
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), m_bean.getTurnSummaryRef(),
+              "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE);
+        } catch (final HeadlessException e) {
+          // should never happen in a GUI app
+        }
+      });
     };
     // start a background thread
     final Thread t = new Thread(runnable);

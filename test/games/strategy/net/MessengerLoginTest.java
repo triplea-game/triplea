@@ -2,6 +2,7 @@ package games.strategy.net;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.net.SocketAddress;
 import java.util.HashMap;
@@ -13,7 +14,6 @@ import org.junit.Test;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
 
@@ -114,7 +114,7 @@ public class MessengerLoginTest {
 
   @Test
   public void testPassword() throws Exception {
-    final ClientLoginValidator validator = new ClientLoginValidator(new DummyMessenger());
+    final ClientLoginValidator validator = new ClientLoginValidator(mock(IServerMessenger.class));
     validator.setGamePassword("foo");
     final IConnectionLogin login = new IConnectionLogin() {
       @Override

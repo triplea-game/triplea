@@ -15,10 +15,10 @@ public class GameEnginePropertyFileReaderTest {
 
   @Test
   public void testPropertiesAreParsed() {
-    String input = " " + propKey + " = 1 ";
+    final String input = " " + propKey + " = 1 ";
 
-    File propFile = TestUtil.createTempFile(input);
-    PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
+    final File propFile = TestUtil.createTempFile(input);
+    final PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
 
     assertThat("Property key value pair 'x = 1 '  should be trimmed, no spaces in value or key.",
         testObj.readProperty(propKey), is("1"));
@@ -26,10 +26,10 @@ public class GameEnginePropertyFileReaderTest {
 
   @Test(expected = PropertyNotFoundException.class)
   public void testEmptyCase() {
-    String input = "";
+    final String input = "";
 
-    File propFile = TestUtil.createTempFile(input);
-    PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
+    final File propFile = TestUtil.createTempFile(input);
+    final PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
 
     assertThat("Simple empty input file, any key we read will return empty string",
         testObj.readProperty(propKey), is(""));

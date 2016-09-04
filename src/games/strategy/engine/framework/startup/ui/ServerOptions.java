@@ -7,8 +7,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -19,10 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import games.strategy.ui.SwingAction;
+
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingAction;
 
 /**
  * UI for choosing server options.
@@ -58,12 +57,7 @@ public class ServerOptions extends JDialog {
   }
 
   private void setupActions() {
-    m_requirePasswordCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setWidgetActivation();
-      }
-    });
+    m_requirePasswordCheckBox.addActionListener(e -> setWidgetActivation());
   }
 
   @Override
@@ -164,7 +158,7 @@ public class ServerOptions extends JDialog {
     final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
     m_passwordField.setBackground(backGround);
     if (ClientFileSystemHelper.areWeOldExtraJar()
-        && System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
+        && System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
       setNameEditable(false);
     }
   }

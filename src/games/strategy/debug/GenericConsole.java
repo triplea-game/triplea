@@ -3,8 +3,6 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import javax.swing.AbstractAction;
@@ -18,14 +16,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.ui.SwingAction;
-import games.strategy.util.ThreadUtil;
 
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
   private final JTextArea m_text = new JTextArea(20, 50);
 
-  public GenericConsole(String title) {
+  public GenericConsole(final String title) {
     super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
@@ -33,21 +30,21 @@ public abstract class GenericConsole extends JFrame {
     m_text.setWrapStyleWord(true);
     final JScrollPane scroll = new JScrollPane(m_text);
     getContentPane().add(scroll, BorderLayout.CENTER);
-    JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
+    final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
     getContentPane().add(m_actions, BorderLayout.SOUTH);
     m_actions.setFloatable(false);
     m_actions.add(m_threadDiagnoseAction);
-    AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
+    final AbstractAction m_memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
     m_actions.add(m_memoryAction);
-    AbstractAction m_propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
+    final AbstractAction m_propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
     m_actions.add(m_propertiesAction);
-    Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
+    final Action m_copyAction = SwingAction.of("Copy to clipboard", e -> {
       final String text = m_text.getText();
       final StringSelection select = new StringSelection(text);
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     });
     m_actions.add(m_copyAction);
-    AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
+    final AbstractAction m_clearAction = SwingAction.of("Clear", e -> clear());
     m_actions.add(m_clearAction);
     SwingUtilities.invokeLater(() -> pack());
   }
@@ -98,80 +95,3 @@ public abstract class GenericConsole extends JFrame {
 }
 
 
-class ThreadReader implements Runnable {
-  private static final int CONSOLE_UPDATE_INTERVAL_MS = 100;
-  private final JTextArea m_text;
-  private final SynchedByteArrayOutputStream m_in;
-  private final boolean m_displayConsoleOnWrite;
-  private final GenericConsole parentConsole;
-
-  ThreadReader(final SynchedByteArrayOutputStream in, final JTextArea text, final boolean displayConsoleOnWrite,
-      GenericConsole parentConsole) {
-    m_in = in;
-    m_text = text;
-    m_displayConsoleOnWrite = displayConsoleOnWrite;
-    this.parentConsole = parentConsole;
-  }
-
-  @Override
-  public void run() {
-    while (true) {
-      m_text.append(m_in.readFully());
-      if (m_displayConsoleOnWrite && !parentConsole.isVisible()) {
-        parentConsole.setVisible(true);
-      }
-      ThreadUtil.sleep(CONSOLE_UPDATE_INTERVAL_MS);
-    }
-  }
-}
-
-
-/**
- * Allows data written to a byte output stream to be read
- * safely friom a seperate thread.
- * Only readFully() is currently threadSafe for reading.
- */
-class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
-  private final Object lock = new Object();
-  private final PrintStream m_mirror;
-
-  SynchedByteArrayOutputStream(final PrintStream mirror) {
-    m_mirror = mirror;
-  }
-
-  public void write(final byte b) throws IOException {
-    synchronized (lock) {
-      m_mirror.write(b);
-      super.write(b);
-      lock.notifyAll();
-    }
-  }
-
-  @Override
-  public void write(final byte[] b, final int off, final int len) {
-    synchronized (lock) {
-      super.write(b, off, len);
-      m_mirror.write(b, off, len);
-      lock.notifyAll();
-    }
-  }
-
-  /**
-   * Read all data written to the stream.
-   * Blocks until data is available.
-   * This is currently the only threadsafe method for reading.
-   */
-  public String readFully() {
-    synchronized (lock) {
-      if (super.size() == 0) {
-        try {
-          lock.wait();
-        } catch (final InterruptedException ie) {
-        }
-      }
-      final String s = toString();
-      reset();
-      return s;
-    }
-  }
-}

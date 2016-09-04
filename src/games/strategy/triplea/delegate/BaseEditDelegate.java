@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.Event;

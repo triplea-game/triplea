@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import games.strategy.engine.message.unifiedmessenger.Invoke;
 import games.strategy.net.GUID;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 
 public class SpokeInvoke extends Invoke {
+  private static final long serialVersionUID = -2007645463748969L;
   private INode m_invoker;
 
   public SpokeInvoke() {

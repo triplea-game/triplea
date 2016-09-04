@@ -18,7 +18,7 @@ public class BanPlayerAction extends AbstractAction {
   private final IServerMessenger m_messenger;
 
   public BanPlayerAction(final Component parent, final IServerMessenger messenger) {
-    super("Ban Player From Game...");
+    super("Ban Player From Game");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_messenger = messenger;
   }

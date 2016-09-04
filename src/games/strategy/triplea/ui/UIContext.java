@@ -27,7 +27,8 @@ import games.strategy.triplea.image.PUImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 
 /**
@@ -96,12 +97,9 @@ public class UIContext extends AbstractUIContext {
     m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
-    final Runnable loadSounds = new Runnable() {
-      @Override
-      public void run() {
-        // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-        ClipPlayer.getInstance(m_resourceLoader);
-      }
+    final Runnable loadSounds = () -> {
+      // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+      ClipPlayer.getInstance(m_resourceLoader);
     };
     (new Thread(loadSounds, "Triplea sound loader")).start();
     // load a new cursor
@@ -139,9 +137,9 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(UnitType type, PlayerID player, GameData data,
-      UnitDamage damaged, UnitEnable disabled) {
-    Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, data, damaged == UnitDamage.DAMAGED,
+  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+      final UnitDamage damaged, final UnitEnable disabled) {
+    final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, data, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);
     if (image.isPresent()) {
       return new JLabel(image.get());

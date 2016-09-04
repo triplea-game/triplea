@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -13,28 +14,20 @@ import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
-
 
 public class NetworkMenu {
 
   private final IGame game;
   private final TripleAFrame frame;
 
-  public NetworkMenu(TripleAMenuBar menuBar, InGameLobbyWatcherWrapper watcher, TripleAFrame  frame) {
+  public NetworkMenu(final TripleAMenuBar menuBar, final Optional<InGameLobbyWatcherWrapper> watcher,
+      final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
-
-    // revisit
-    // if we are not a client or server game
-    // then this will not create the network menu
-    if (game.getMessenger() instanceof DummyMessenger) {
-      return;
-    }
     final JMenu menuNetwork = new JMenu("Network");
     menuNetwork.setMnemonic(KeyEvent.VK_N);
     addBootPlayer(menuNetwork);
@@ -72,18 +65,19 @@ public class NetworkMenu {
     parentMenu.add(mute);
   }
 
-  private void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
-    if (!game.getMessenger().isServer()) {
+  private void addSetGamePassword(final JMenu parentMenu, final Optional<InGameLobbyWatcherWrapper> watcher) {
+    if (!watcher.isPresent()) {
       return;
     }
     final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    parentMenu.add(new SetPasswordAction(parentMenu, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
+    parentMenu
+        .add(new SetPasswordAction(parentMenu, watcher.get(), (ClientLoginValidator) messenger.getLoginValidator()));
   }
 
   private void addShowPlayers(final JMenu menuGame) {
     if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction =
-          SwingAction.of("Show Who is Who...", e -> PlayersPanel.showPlayers(game, frame));
+          SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame));
       menuGame.add(optionsAction);
     }
   }

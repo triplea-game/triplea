@@ -6,10 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -28,20 +25,20 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingComponents;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.ui.SwingComponents;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -80,12 +77,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void updateGameData() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          updateGameData();
-        }
-      });
+      SwingUtilities.invokeLater(() -> updateGameData());
       return;
     }
     m_nameText.setText(m_model.getGameName());
@@ -149,12 +141,12 @@ public class GameSelectorPanel extends JPanel implements Observer {
     m_versionText = new JLabel();
     m_roundText = new JLabel();
     m_fileNameText = new JLabel();
-    m_loadNewGame = new JButton("Choose Game...");
+    m_loadNewGame = new JButton("Select Map");
     m_loadNewGame.setToolTipText(
         "<html>Select a game from all the maps/games that come with TripleA, <br>and the ones you have downloaded.</html>");
-    m_loadSavedGame = new JButton("Load Saved Game...");
-    m_loadSavedGame.setToolTipText("Load a previously saved game, or an autosave.");
-    m_gameOptions = new JButton("Game Options...");
+    m_loadSavedGame = new JButton("Open Saved Game");
+    m_loadSavedGame.setToolTipText("Open a previously saved game, or an autosave.");
+    m_gameOptions = new JButton("Map Options");
     m_gameOptions.setToolTipText(
         "<html>Set options for the currently selected game, <br>such as enabling/disabling Low Luck, or Technology, etc.</html>");
   }
@@ -219,54 +211,45 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
 
   private void setupListeners() {
-    m_loadNewGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameFile(false);
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            clientModelForHostBots.getHostBotSetMapClientAction(GameSelectorPanel.this).actionPerformed(e);
-          }
+    m_loadNewGame.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameFile(false);
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          clientModelForHostBots.getHostBotSetMapClientAction(GameSelectorPanel.this).actionPerformed(e);
         }
       }
     });
-    m_loadSavedGame.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameFile(true);
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            final JPopupMenu menu = new JPopupMenu();
-            menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
-            menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-                SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-            menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
-            final Point point = m_loadSavedGame.getLocation();
-            menu.show(GameSelectorPanel.this, point.x + m_loadSavedGame.getWidth(), point.y);
-          }
+    m_loadSavedGame.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameFile(true);
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          final JPopupMenu menu = new JPopupMenu();
+          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+          menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
+          final Point point = m_loadSavedGame.getLocation();
+          menu.show(GameSelectorPanel.this, point.x + m_loadSavedGame.getWidth(), point.y);
         }
       }
     });
-    m_gameOptions.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (canSelectLocalGameData()) {
-          selectGameOptions();
-        } else if (canChangeHostBotGameData()) {
-          final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
-          if (clientModelForHostBots != null) {
-            clientModelForHostBots.getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this).actionPerformed(e);
-          }
+    m_gameOptions.addActionListener(e -> {
+      if (canSelectLocalGameData()) {
+        selectGameOptions();
+      } else if (canChangeHostBotGameData()) {
+        final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+        if (clientModelForHostBots != null) {
+          clientModelForHostBots.getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this).actionPerformed(e);
         }
       }
     });
@@ -297,7 +280,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final String makeDefault = "Make Default";
     final String reset = "Reset";
     pane.setOptions(new Object[] {ok, makeDefault, reset, cancel});
-    final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
+    final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Map Options");
     window.setVisible(true);
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
@@ -327,12 +310,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
+      SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
     final boolean canSelectGameData = canSelectLocalGameData();
@@ -369,18 +347,15 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   public static File selectGameFile(final Component parent) {
-    if (GameRunner.isMac()) {
+    if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
       fileDialog.setMode(FileDialog.LOAD);
-      SaveGameFileChooser.ensureDefaultDirExists();
-      fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-      fileDialog.setFilenameFilter(new FilenameFilter() {
-        @Override
-        public boolean accept(final File dir, final String name) {
-          // the extension should be .tsvg, but find svg extensions as well
-          // also, macs download the file as tsvg.gz, so accept that as well
-          return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
-        }
+      SaveGameFileChooser.ensureMapsFolderExists();
+      fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
+      fileDialog.setFilenameFilter((dir, name) -> {
+        // the extension should be .tsvg, but find svg extensions as well
+        // also, macs download the file as tsvg.gz, so accept that as well
+        return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
       });
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();
@@ -408,7 +383,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
       final File file =
-          selectGameFile(GameRunner.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
+          selectGameFile(SystemProperties.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
       if (file == null || !file.exists()) {
         return;
       }

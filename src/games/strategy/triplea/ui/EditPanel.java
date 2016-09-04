@@ -1,34 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.TechnologyDelegate;
-import games.strategy.triplea.delegate.UnitBattleComparator;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.TransportUtils;
-import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-import games.strategy.util.Triple;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -65,6 +36,35 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TransportUtils;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.util.Triple;
+
 public class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;
   private TripleAFrame m_frame;
@@ -90,7 +90,7 @@ public class EditPanel extends ActionPanel {
   public EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
-    JLabel m_actionLabel = new JLabel();
+    final JLabel m_actionLabel = new JLabel();
     m_performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 
@@ -500,9 +500,9 @@ public class EditPanel extends ActionPanel {
     final JButton performMove = new JButton(m_performMoveAction);
     performMove
         .setToolTipText(
-        "<html>When in Edit Mode, you can perform special actions according to whatever phase you are in, by switching back to the 'Action' tab.<br /> "
-            + "So if you are in the 'Move' phase, you can move units virtually anywhere, because Edit Mode turns off the movement validation.<br /> "
-            + "You can use 'Action' tab during Edit Mode to do things not available by the other edit buttons.</html>");
+            "<html>When in Edit Mode, you can perform special actions according to whatever phase you are in, by switching back to the 'Action' tab.<br /> "
+                + "So if you are in the 'Move' phase, you can move units virtually anywhere, because Edit Mode turns off the movement validation.<br /> "
+                + "You can use 'Action' tab during Edit Mode to do things not available by the other edit buttons.</html>");
     add(performMove);
     add(new JButton(m_addUnitsAction));
     add(new JButton(m_delUnitsAction));
@@ -540,32 +540,29 @@ public class EditPanel extends ActionPanel {
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
-    final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>() {
-      @Override
-      public int compare(final Unit unit1, final Unit unit2) {
-        final TripleAUnit u1 = TripleAUnit.get(unit1);
-        final TripleAUnit u2 = TripleAUnit.get(unit2);
-        if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+    final Comparator<Unit> removableUnitsOrder = (unit1, unit2) -> {
+      final TripleAUnit u1 = TripleAUnit.get(unit1);
+      final TripleAUnit u2 = TripleAUnit.get(unit2);
+      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
 
-          // Sort by decreasing transport capacity
-          final Collection<Unit> transporting1 = u1.getTransporting();
-          final Collection<Unit> transporting2 = u2.getTransporting();
-          final int cost1 = TransportUtils.getTransportCost(transporting1);
-          final int cost2 = TransportUtils.getTransportCost(transporting2);
-          if (cost1 != cost2) {
-            return cost2 - cost1;
-          }
+        // Sort by decreasing transport capacity
+        final Collection<Unit> transporting1 = u1.getTransporting();
+        final Collection<Unit> transporting2 = u2.getTransporting();
+        final int cost1 = TransportUtils.getTransportCost(transporting1);
+        final int cost2 = TransportUtils.getTransportCost(transporting2);
+        if (cost1 != cost2) {
+          return cost2 - cost1;
         }
-
-        // Sort by increasing movement left
-        final int left1 = u1.getMovementLeft();
-        final int left2 = u2.getMovementLeft();
-        if (left1 != left2) {
-          return left1 - left2;
-        }
-
-        return Integer.compare(u1.hashCode(), u2.hashCode());
       }
+
+      // Sort by increasing movement left
+      final int left1 = u1.getMovementLeft();
+      final int left2 = u2.getMovementLeft();
+      if (left1 != left2) {
+        return left1 - left2;
+      }
+
+      return Integer.compare(u1.hashCode(), u2.hashCode());
     };
     return removableUnitsOrder;
   }
@@ -743,22 +740,19 @@ public class EditPanel extends ActionPanel {
       getMap().setMouseShadowUnits(m_selectedUnits);
     }
   };
-  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
-    @Override
-    public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails md) {
-      if (!getActive()) {
-        return;
-      }
-      if (m_currentAction != null) {
-        return;
-      }
-      if (!units.isEmpty()) {
-        final Map<Territory, List<Unit>> highlight = new HashMap<>();
-        highlight.put(territory, units);
-        getMap().setUnitHighlight(highlight);
-      } else {
-        getMap().setUnitHighlight(null);
-      }
+  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, md) -> {
+    if (!getActive()) {
+      return;
+    }
+    if (m_currentAction != null) {
+      return;
+    }
+    if (!units.isEmpty()) {
+      final Map<Territory, List<Unit>> highlight = new HashMap<>();
+      highlight.put(territory, units);
+      getMap().setUnitHighlight(highlight);
+    } else {
+      getMap().setUnitHighlight(null);
     }
   };
   private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
@@ -788,12 +782,7 @@ public class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            CANCEL_EDIT_ACTION.actionPerformed(null);
-          }
-        });
+        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
       } else if (m_currentAction == m_addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
@@ -821,12 +810,7 @@ public class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            CANCEL_EDIT_ACTION.actionPerformed(null);
-          }
-        });
+        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
       }
     }
 

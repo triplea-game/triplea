@@ -56,12 +56,12 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
   private String territoryCountListHandler(final Field field, final IAttachment attachment, final String fieldName)
       throws AttachmentExportException {
     try {
-      String[] valueArray = (String[]) field.get(attachment);
+      final String[] valueArray = (String[]) field.get(attachment);
       if (valueArray == null || valueArray.length == 0) {
         return "";
       }
-      //skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count
-      if(valueArray.length > 1){
+      // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count
+      if (valueArray.length > 1) {
         valueArray[0] = null;
       }
       final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
@@ -81,12 +81,13 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
         return "";
       }
       final String option = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-      final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount"); // TODO: unchecked reflection
+      final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount"); // TODO: unchecked
+                                                                                                  // reflection
       atWarPlayerCountField.setAccessible(true);
       final int count = atWarPlayerCountField.getInt(attachment);
-      StringBuilder value = new StringBuilder();
-      for(PlayerID player : atWarPlayers) {
-        if(value.length() != 0){
+      final StringBuilder value = new StringBuilder();
+      for (final PlayerID player : atWarPlayers) {
+        if (value.length() != 0) {
           value.append(":");
         }
         value.append(player.getName());
@@ -114,14 +115,14 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
     try {
       oValue = field.get(attachment);
     } catch (final IllegalArgumentException | IllegalAccessException e) {
-      ClientLogger.logError("Failed to get attachment: " + attachment + ", from field: " + field,  e);
+      ClientLogger.logError("Failed to get attachment: " + attachment + ", from field: " + field, e);
     }
     String intList = "";
     final HashMap<Integer, Integer> intMap = (HashMap<Integer, Integer>) oValue;
     if (intMap == null) {
       return "";
     }
-    for (final Integer curInt : intMap.keySet()) {
+    for (final int curInt : intMap.keySet()) {
       final int start = curInt;
       final int end = intMap.get(curInt);
       if (intList.length() > 0) {

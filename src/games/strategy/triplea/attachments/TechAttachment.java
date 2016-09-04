@@ -1,6 +1,7 @@
 package games.strategy.triplea.attachments;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -56,12 +57,12 @@ public class TechAttachment extends DefaultAttachment {
   private boolean increasedFactoryProduction = false;
   private boolean warBonds = false;
   private boolean mechanizedInfantry = false;
-  private boolean aaRadar = false;
+  private boolean aARadar = false;
   private boolean shipyards = false;
   // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
-  private HashMap<String, Boolean> genericTech = new HashMap<>();
+  private Map<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -69,12 +70,14 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   /**
-   * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null
-   * Player),
-   * we must ensure a default tech attachment is available for all these players. It is preferred to use the full
-   * constructor. Do not delete
-   * this.
-   * TODO: create tech attachments all players that don't have one, as the map is initialized.
+   * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments
+   *             for the Null
+   *             Player),
+   *             we must ensure a default tech attachment is available for all these players. It is preferred to use the
+   *             full
+   *             constructor. Do not delete
+   *             this.
+   *             TODO: create tech attachments all players that don't have one, as the map is initialized.
    */
   @Deprecated
   public TechAttachment() {
@@ -269,16 +272,16 @@ public class TechAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final String s) {
-    aaRadar = getBool(s);
+    aARadar = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAARadar(final Boolean s) {
-    aaRadar = s;
+    aARadar = s;
   }
 
   public void resetAARadar() {
-    aaRadar = false;
+    aARadar = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -349,7 +352,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   public boolean getAARadar() {
-    return aaRadar;
+    return aARadar;
   }
 
   public boolean getShipyards() {
@@ -383,7 +386,7 @@ public class TechAttachment extends DefaultAttachment {
    * @param value
    */
   @InternalDoNotExport
-  public void setGenericTech(final String name, final Boolean value) {
+  public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
   }
 
@@ -392,7 +395,7 @@ public class TechAttachment extends DefaultAttachment {
     genericTech = value;
   }
 
-  public HashMap<String, Boolean> getGenericTech() {
+  public Map<String, Boolean> getGenericTech() {
     return genericTech;
   }
 
@@ -403,7 +406,7 @@ public class TechAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {}
 
-  public static boolean isMechanizedInfantry(final PlayerID player) {
+  public static boolean isInfantryInfantry(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -411,7 +414,7 @@ public class TechAttachment extends DefaultAttachment {
     return ta.getMechanizedInfantry();
   }
 
-  public static boolean isParatroopers(final PlayerID player) {
+  public static boolean isAirTransportable(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;

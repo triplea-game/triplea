@@ -50,14 +50,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import com.google.common.collect.Lists;
-
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -65,22 +60,23 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -308,14 +304,14 @@ public class BattleDisplay extends JPanel {
     }
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    final AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
     SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
-    if(!getConfirmDefensiveRolls()) {
+    if (!getConfirmDefensiveRolls()) {
       final int maxWaitTime = 1500;
-      Timer t = new Timer();
+      final Timer t = new Timer();
       t.schedule(new TimerTask() {
         @Override
         public void run() {
@@ -340,7 +336,7 @@ public class BattleDisplay extends JPanel {
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
-    final Action close = SwingAction.of(message + " : (Press Space to close)", e -> enclosingFrame.setVisible(false));
+    final Action close = SwingAction.of(message + " : (Press Space to Close)", e -> enclosingFrame.setVisible(false));
     SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
   }
 
@@ -387,18 +383,8 @@ public class BattleDisplay extends JPanel {
       retreatTo[0] = m_location;
       latch.countDown();
     });
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(action);
-      }
-    });
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        action.actionPerformed(null);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(action));
+    SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     m_mapPanel.getUIContext().addShutdownLatch(latch);
     try {
       latch.await();
@@ -406,12 +392,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(latch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
     return retreatTo[0];
   }
 
@@ -454,18 +435,8 @@ public class BattleDisplay extends JPanel {
         }
       }
     });
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(action);
-      }
-    });
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        action.actionPerformed(null);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(action));
+    SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     m_mapPanel.getUIContext().addShutdownLatch(latch);
     try {
       latch.await();
@@ -474,12 +445,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(latch);
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_actionButton.setAction(m_nullAction);
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
     return retreatTo[0];
   }
 
@@ -508,12 +474,7 @@ public class BattleDisplay extends JPanel {
       this.add(scroll, BorderLayout.CENTER);
       scroll.setBorder(new EmptyBorder(10, 0, 10, 0));
       updateImage();
-      m_list.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(final ListSelectionEvent e) {
-          updateImage();
-        }
-      });
+      m_list.addListSelectionListener(e -> updateImage());
     }
 
     private void updateImage() {
@@ -540,73 +501,70 @@ public class BattleDisplay extends JPanel {
     }
     final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<>();
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final boolean isEditMode = (dice == null);
-        if (!isEditMode) {
-          m_actionLayout.show(m_actionPanel, DICE_KEY);
-          m_dicePanel.setDiceRoll(dice);
-        }
-        final boolean plural = isEditMode || (count > 1);
-        final String countStr = isEditMode ? "" : "" + count;
-        final String btnText =
-            hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
-        m_actionButton.setAction(new AbstractAction(btnText) {
-          private static final long serialVersionUID = -2156028313292233568L;
-          private UnitChooser chooser;
-          private JScrollPane chooserScrollPane;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            final String messageText = message + " " + btnText + ".";
-            if (chooser == null || chooserScrollPane == null) {
-              chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, allowMultipleHitsPerUnit,
-                  m_mapPanel.getUIContext());
-              chooser.setTitle(messageText);
-              if (isEditMode) {
-                chooser.setMax(selectFrom.size());
-              } else {
-                chooser.setMax(count);
-              }
-              chooserScrollPane = new JScrollPane(chooser);
-              final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-              int availHeight = screenResolution.height - 80;
-              final int availWidth = screenResolution.width - 30;
-              availHeight -= 50;
-              chooserScrollPane.setPreferredSize(new Dimension(
-                  (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
-                      : (chooserScrollPane.getPreferredSize().height > availHeight
-                          ? chooserScrollPane.getPreferredSize().width + 22
-                          : chooserScrollPane.getPreferredSize().width)),
-                  (chooserScrollPane.getPreferredSize().height > availHeight ? availHeight
-                      : chooserScrollPane.getPreferredSize().height)));
-              chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
-            }
-            final String[] options = {"Ok", "Cancel"};
-            final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
-            final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
-                hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-                focus);
-            if (option != 0) {
-              return;
-            }
-            final List<Unit> killed = chooser.getSelected(false);
-            final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
-            if (!isEditMode && (killed.size() + damaged.size() != count)) {
-              JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
-                  hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
-            } else {
-              final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
-              casualtyDetails.set(response);
-              m_dicePanel.clear();
-              m_actionButton.setEnabled(false);
-              m_actionButton.setAction(m_nullAction);
-              continueLatch.countDown();
-            }
-          }
-        });
+    SwingUtilities.invokeLater(() -> {
+      final boolean isEditMode = (dice == null);
+      if (!isEditMode) {
+        m_actionLayout.show(m_actionPanel, DICE_KEY);
+        m_dicePanel.setDiceRoll(dice);
       }
+      final boolean plural = isEditMode || (count > 1);
+      final String countStr = isEditMode ? "" : "" + count;
+      final String btnText =
+          hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
+      m_actionButton.setAction(new AbstractAction(btnText) {
+        private static final long serialVersionUID = -2156028313292233568L;
+        private UnitChooser chooser;
+        private JScrollPane chooserScrollPane;
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          final String messageText = message + " " + btnText + ".";
+          if (chooser == null || chooserScrollPane == null) {
+            chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, allowMultipleHitsPerUnit,
+                m_mapPanel.getUIContext());
+            chooser.setTitle(messageText);
+            if (isEditMode) {
+              chooser.setMax(selectFrom.size());
+            } else {
+              chooser.setMax(count);
+            }
+            chooserScrollPane = new JScrollPane(chooser);
+            final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+            int availHeight = screenResolution.height - 80;
+            final int availWidth = screenResolution.width - 30;
+            availHeight -= 50;
+            chooserScrollPane.setPreferredSize(new Dimension(
+                (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
+                    : (chooserScrollPane.getPreferredSize().height > availHeight
+                        ? chooserScrollPane.getPreferredSize().width + 22
+                        : chooserScrollPane.getPreferredSize().width)),
+                (chooserScrollPane.getPreferredSize().height > availHeight ? availHeight
+                    : chooserScrollPane.getPreferredSize().height)));
+            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
+          }
+          final String[] options = {"Ok", "Cancel"};
+          final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
+          final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
+              hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+              focus);
+          if (option != 0) {
+            return;
+          }
+          final List<Unit> killed = chooser.getSelected(false);
+          final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
+          if (!isEditMode && (killed.size() + damaged.size() != count)) {
+            JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
+                hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
+          } else {
+            final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
+            casualtyDetails.set(response);
+            m_dicePanel.clear();
+            m_actionButton.setEnabled(false);
+            m_actionButton.setAction(m_nullAction);
+            continueLatch.countDown();
+          }
+        }
+      });
     });
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
     try {
@@ -677,7 +635,7 @@ public class BattleDisplay extends JPanel {
     add(diceAndSteps, BorderLayout.CENTER);
     add(m_actionButton, BorderLayout.SOUTH);
     m_actionButton.setEnabled(false);
-    if (!GameRunner.isMac()) {
+    if (!SystemProperties.isMac()) {
       m_actionButton.setBackground(Color.lightGray.darker());
       m_actionButton.setForeground(Color.white);
     }
@@ -784,11 +742,11 @@ class BattleModel extends DefaultTableModel {
     // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
     final String[] diceColumns = new String[data.getDiceSides() + 1];
     {
-      for (Integer i = 0; i < diceColumns.length; i++) {
+      for (int i = 0; i < diceColumns.length; i++) {
         if (i == 0) {
           diceColumns[i] = " ";
         } else {
-          diceColumns[i] = i.toString();
+          diceColumns[i] = Integer.toString(i);
         }
       }
     }
@@ -843,7 +801,7 @@ class BattleModel extends DefaultTableModel {
 
     final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
     for (int i = 0; i <= m_data.getDiceSides(); i++) {
-        columns.add(i, new ArrayList<>());
+      columns.add(i, new ArrayList<>());
     }
     final List<Unit> units = new ArrayList<>(m_units);
     DiceRoll.sortByStrength(units, !m_attack);
@@ -854,7 +812,7 @@ class BattleModel extends DefaultTableModel {
         unitPowerAndRollsMap = null;
       } else {
         unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
-            Lists.newArrayList(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
+            new ArrayList<>(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
             m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
       }
     } finally {
@@ -945,7 +903,7 @@ class TableData {
       stamp.setIcon(null);
     } else {
       stamp.setText("x" + m_count);
-      if(m_icon.isPresent()) {
+      if (m_icon.isPresent()) {
         stamp.setIcon(m_icon.get());
       }
     }
@@ -1011,8 +969,9 @@ class CasualtyNotificationPanel extends JPanel {
       final UnitCategory category = categoryIter.next();
       final JPanel panel = new JPanel();
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      Optional<ImageIcon> unitImage = m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
-          damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
+      final Optional<ImageIcon> unitImage =
+          m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+              damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
       final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
       panel.add(unit);
       for (final UnitOwner owner : category.getDependents()) {

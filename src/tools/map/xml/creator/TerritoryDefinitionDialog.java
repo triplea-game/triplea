@@ -3,7 +3,6 @@ package tools.map.xml.creator;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class TerritoryDefinitionDialog extends JDialog {
   private static final long serialVersionUID = -2504102953599720855L;
   public static final String TERRITORY_DEFINITION_IS_WATER = "water";
   public static final String TERRITORY_DEFINITION_IS_VICTORY_CITY = "victoryCity";
-  public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassible"; // typo in engine!!!
+  public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassable"; // typo in engine!!!
   public static final String TERRITORY_DEFINITION_IS_CAPITAL = "capital";
 
   private final Map<DEFINITION, Boolean> properties;
@@ -116,48 +115,28 @@ public class TerritoryDefinitionDialog extends JDialog {
     final JCheckBox cbIsWater = new JCheckBox("is water territory");
     final Boolean isWater = properties.get(DEFINITION.IS_WATER);
     cbIsWater.setSelected((isWater != null ? isWater : false));
-    cbIsWater.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        properties.put(DEFINITION.IS_WATER, cbIsWater.isSelected());
-      }
-    });
+    cbIsWater.addActionListener(e -> properties.put(DEFINITION.IS_WATER, cbIsWater.isSelected()));
     buttonsPanel.add(cbIsWater);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbIsVictoryCity = new JCheckBox("is victory city");
     final Boolean isVictoryCity = properties.get(DEFINITION.IS_VICTORY_CITY);
     cbIsVictoryCity.setSelected((isVictoryCity != null ? isVictoryCity : false));
-    cbIsVictoryCity.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        properties.put(DEFINITION.IS_VICTORY_CITY, cbIsVictoryCity.isSelected());
-      }
-    });
+    cbIsVictoryCity.addActionListener(e -> properties.put(DEFINITION.IS_VICTORY_CITY, cbIsVictoryCity.isSelected()));
     buttonsPanel.add(cbIsVictoryCity);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbImpassable = new JCheckBox("is impassable");
     final Boolean impassable = properties.get(DEFINITION.IMPASSABLE);
     cbImpassable.setSelected((impassable != null ? impassable : false));
-    cbImpassable.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        properties.put(DEFINITION.IMPASSABLE, cbImpassable.isSelected());
-      }
-    });
+    cbImpassable.addActionListener(e -> properties.put(DEFINITION.IMPASSABLE, cbImpassable.isSelected()));
     buttonsPanel.add(cbImpassable);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbIsCapital = new JCheckBox("is capital");
     final Boolean isCapital = properties.get(DEFINITION.IS_CAPITAL);
     cbIsCapital.setSelected((isCapital != null ? isCapital : false));
-    cbIsCapital.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        properties.put(DEFINITION.IS_CAPITAL, cbIsCapital.isSelected());
-      }
-    });
+    cbIsCapital.addActionListener(e -> properties.put(DEFINITION.IS_CAPITAL, cbIsCapital.isSelected()));
     buttonsPanel.add(cbIsCapital);
 
     buttonsPanel.add(Box.createGlue());

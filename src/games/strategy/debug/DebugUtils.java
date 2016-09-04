@@ -4,14 +4,14 @@ import java.awt.Frame;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.system.Memory;
 
 /**
  * Moved out of Console class, so that we don't need swing.
@@ -25,10 +25,12 @@ public class DebugUtils {
     final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
     for (final ThreadInfo info : threadInfo) {
       if (info != null) {
-        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n").append("state:")
+        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n")
+            .append("state:")
             .append(info.getThreadState()).append("\n");
         if (info.getLockName() != null) {
-          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<").append(info.getLockOwnerId())
+          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<")
+              .append(info.getLockOwnerId())
               .append(",").append(info.getLockOwnerName()).append(">\n");
         }
         final StackTraceElement[] stackTrace = info.getStackTrace();
@@ -40,16 +42,8 @@ public class DebugUtils {
         result.append("\n");
       }
     }
-    long[] deadlocks;
-    try {
-      // invoke a 1.6 method if available
-      final Method m = threadMxBean.getClass().getMethod("findDeadlockedThreads");
-      final Object o = m.invoke(threadMxBean);
-      deadlocks = (long[]) o;
-    } catch (final Throwable t) {
-      // fall back to 1.5
-      deadlocks = threadMxBean.findMonitorDeadlockedThreads();
-    }
+    long[] deadlocks = threadMxBean.findDeadlockedThreads();
+
     if (deadlocks != null) {
       result.append("DEADLOCKS!!");
       for (final long l : deadlocks) {
@@ -70,18 +64,19 @@ public class DebugUtils {
     buf.append("Free memory: ").append(runtime.freeMemory() / mb).append("\r\n");
     buf.append("Total memory: ").append(runtime.totalMemory() / mb).append("\r\n");
     buf.append("Max memory: ").append(runtime.maxMemory() / mb).append("\r\n");
-    final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
+    final int currentMaxSetting = Memory.getMaxMemoryFromSystemIniFileInMB(GameRunner.getSystemIni());
     if (currentMaxSetting > 0) {
       buf.append("Max Memory user setting within 22% of: ").append(currentMaxSetting).append("\r\n");
     }
     return buf.toString();
   }
+
   public static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
     final Properties props = System.getProperties();
     final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
-    for(String property : keys) {
+    for (final String property : keys) {
       final String value = props.getProperty(property);
       buf.append(property).append(" ").append(value).append("\n");
     }
@@ -114,7 +109,8 @@ public class DebugUtils {
     final StringBuilder builder = new StringBuilder("WINDOWS\n");
     for (final Frame f : Frame.getFrames()) {
       if (f.isVisible()) {
-        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize()).append(" title ")
+        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize())
+            .append(" title ")
             .append(f.getTitle()).append("\n");
       }
     }

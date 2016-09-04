@@ -5,11 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
@@ -66,21 +62,13 @@ public class SelectAndViewEditor extends EditorPanel {
     add(m_view, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, 0, 0), 0, 0));
     m_selector.setRenderer(new DisplayNameComboBoxRender());
-    m_selector.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(final ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          updateView();
-          fireEditorChanged();
-        }
-      }
-    });
-    m_properChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
+    m_selector.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        updateView();
         fireEditorChanged();
       }
-    };
+    });
+    m_properChangeListener = evt -> fireEditorChanged();
     m_helpPanel = new JEditorPane();
     m_helpPanel.setEditable(false);
     m_helpPanel.setContentType("text/html");
@@ -93,19 +81,16 @@ public class SelectAndViewEditor extends EditorPanel {
     notesScroll.setViewportView(m_helpPanel);
     notesScroll.setBorder(null);
     notesScroll.getViewport().setBorder(null);
-    m_helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        String helpText;
-        if (getBean() == null) {
-          helpText = HelpSupport.loadHelp(m_defaultHelp);
-        } else {
-          helpText = getBean().getHelpText();
-        }
-        m_helpPanel.setText(helpText);
-        m_helpPanel.setCaretPosition(0);
-        JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
+    m_helpButton.addActionListener(e -> {
+      String helpText;
+      if (getBean() == null) {
+        helpText = HelpSupport.loadHelp(m_defaultHelp);
+      } else {
+        helpText = getBean().getHelpText();
       }
+      m_helpPanel.setText(helpText);
+      m_helpPanel.setCaretPosition(0);
+      JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
     });
   }
 

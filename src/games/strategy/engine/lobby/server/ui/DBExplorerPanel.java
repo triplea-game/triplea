@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server.ui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,12 +51,7 @@ public class DBExplorerPanel extends JPanel {
   }
 
   private void setupListeners() {
-    m_execute.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        execute();
-      }
-    });
+    m_execute.addActionListener(e -> execute());
   }
 
   public static boolean isNotQuery(String sql) {

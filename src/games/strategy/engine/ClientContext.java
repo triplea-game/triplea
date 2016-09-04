@@ -4,8 +4,11 @@ import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
-import games.strategy.triplea.ui.settings.folders.FolderSettings;
-import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.ai.AiSettings;
+import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
+import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
+import games.strategy.triplea.settings.folders.FolderSettings;
+import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 /**
  * IOC container for storing objects needed by the TripleA Swing client
@@ -32,7 +35,7 @@ import games.strategy.triplea.ui.settings.scrolling.ScrollSettings;
  *
  * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies
  * must be passed to them.
- * Since GameRunner2 creates ClientContext, similar none of the classes created by Client Context can game runner 2
+ * Since GameRunner creates ClientContext, similar none of the classes created by Client Context can game runner 2
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
@@ -43,6 +46,9 @@ public final class ClientContext {
   private final MapListingSource mapListingSource;
   private final ScrollSettings scrollSettings;
   private final FolderSettings folderSettings;
+  private final AiSettings aiSettings;
+  private final BattleCalcSettings battleCalcSettings;
+  private final BattleOptionsSettings battleOptionsSettings;
 
   private ClientContext() {
     propertyReader = new GameEnginePropertyFileReader();
@@ -51,6 +57,9 @@ public final class ClientContext {
     engineVersion = new EngineVersion(propertyReader);
     scrollSettings = new ScrollSettings();
     folderSettings = new FolderSettings();
+    aiSettings = new AiSettings();
+    battleCalcSettings = new BattleCalcSettings();
+    battleOptionsSettings = new BattleOptionsSettings();
   }
 
   public static PropertyReader propertyReader() {
@@ -76,5 +85,17 @@ public final class ClientContext {
 
   public static FolderSettings folderSettings() {
     return instance.folderSettings;
+  }
+
+  public static AiSettings aiSettings() {
+    return instance.aiSettings;
+  }
+
+  public static BattleCalcSettings battleCalcSettings() {
+    return instance.battleCalcSettings;
+  }
+
+  public static BattleOptionsSettings battleOptionsSettings() {
+    return instance.battleOptionsSettings;
   }
 }

@@ -102,14 +102,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     setWidgetActivation();
   }
 
+
   private void createComponents() {
-    m_localPlayerSelection.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's",
-            JOptionPane.PLAIN_MESSAGE);
-      }
-    });
+    m_localPlayerSelection.addActionListener(
+        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's",
+            JOptionPane.PLAIN_MESSAGE));
   }
 
   private void layoutComponents() {
@@ -138,6 +135,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     layoutPlayerPanel(this);
     setWidgetActivation();
   }
+
+  @Override
+  public boolean isMetaSetupPanelInstance() {
+    return false;
+  }
+
 
   @Override
   public void setWidgetActivation() {}
@@ -367,12 +370,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   @Override
   public void update(final Observable o, final Object arg) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          loadAll();
-          layoutComponents();
-        }
+      SwingUtilities.invokeLater(() -> {
+        loadAll();
+        layoutComponents();
       });
       return;
     } else {
@@ -505,7 +505,7 @@ class PBEMLocalPlayerComboBoxSelector {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
     m_enabledCheckBox = new JCheckBox();
-    ActionListener m_disablePlayerActionListener = new ActionListener() {
+    final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {
@@ -589,6 +589,7 @@ class PBEMLocalPlayerComboBoxSelector {
 
 }
 
+
 /** A bean cache used by PBEMSetupPanel */
 enum LocalBeanCache {
   INSTANCE;
@@ -601,12 +602,7 @@ enum LocalBeanCache {
     m_file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
     m_map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk
-    final Thread shutdown = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        writeToDisk();
-      }
-    });
+    final Thread shutdown = new Thread(() -> writeToDisk());
     Runtime.getRuntime().addShutdownHook(shutdown);
   }
 
@@ -617,7 +613,7 @@ enum LocalBeanCache {
           ObjectInput oin = new ObjectInputStream(fin);) {
         final Object o = oin.readObject();
         if (o instanceof Map) {
-          final Map<?,?> m = (Map<?,?>) o;
+          final Map<?, ?> m = (Map<?, ?>) o;
           for (final Object o1 : m.keySet()) {
             if (!(o1 instanceof String)) {
               throw new Exception("Map is corrupt");
@@ -677,5 +673,7 @@ enum LocalBeanCache {
   public IBean getSerializable(final String key) {
     return m_map.get(key);
   }
+
+
 }
 

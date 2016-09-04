@@ -22,7 +22,9 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.thread.LockUtil;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.DrawableComparator;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 

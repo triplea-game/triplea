@@ -43,7 +43,7 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
@@ -51,8 +51,8 @@ import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.screen.IDrawable;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -115,7 +115,7 @@ public class ViewMenu {
   }
 
   private void addShowGameUuid(final JMenu menuView) {
-    menuView.add(SwingAction.of("Game UUID...", e -> {
+    menuView.add(SwingAction.of("Game UUID", e -> {
       final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
       final JTextField text = new JTextField();
       text.setText(id);
@@ -131,7 +131,7 @@ public class ViewMenu {
   }
 
   private void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel...", e -> {
+    menuView.add(SwingAction.of("Set Look and Feel", e -> {
       final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
@@ -144,7 +144,7 @@ public class ViewMenu {
         if (selectedValue.equals(currentKey)) {
           return;
         }
-        GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
             new CountDownLatchHandler(true));
       }
@@ -154,7 +154,7 @@ public class ViewMenu {
 
 
   private void addZoomMenu(final JMenu menuGame) {
-    final Action mapZoom = SwingAction.of("Map Zoom...", e -> {
+    final Action mapZoom = SwingAction.of("Map Zoom", e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
       model.setMaximum(100);
       model.setMinimum(15);
@@ -395,12 +395,10 @@ public class ViewMenu {
       }
 
       @Override
-      public void menuDeselected(final MenuEvent e) {
-      }
+      public void menuDeselected(final MenuEvent e) {}
 
       @Override
-      public void menuCanceled(final MenuEvent e) {
-      }
+      public void menuCanceled(final MenuEvent e) {}
     });
     noneButton.addActionListener(e -> {
       if (noneButton.isSelected()
@@ -430,7 +428,7 @@ public class ViewMenu {
   }
 
   private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color...", e -> {
+    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
@@ -507,14 +505,14 @@ public class ViewMenu {
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
 
-    Preferences prefs = Preferences.userNodeForPackage(getClass());
-    UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
+    final Preferences prefs = Preferences.userNodeForPackage(getClass());
+    final UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
         prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
-    JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
+    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
     toggleFlags.addActionListener(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
@@ -531,15 +529,17 @@ public class ViewMenu {
     parentMenu.add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(String text, ButtonGroup group,
-      UnitsDrawer.UnitFlagDrawMode drawMode, UnitsDrawer.UnitFlagDrawMode setting, Preferences prefs) {
+  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
+      final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
+      final Preferences prefs) {
     return createRadioButtonItem(text, group, SwingAction.of(e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
     }), setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(String text, ButtonGroup group, Action action, boolean selected) {
+  private JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group, final Action action,
+      final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);

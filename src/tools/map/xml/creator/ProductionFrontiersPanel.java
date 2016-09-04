@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,21 +41,17 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
 
   @Override
   protected ActionListener getAutoFillAction() {
-    return new ActionListener() {
+    return e -> {
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-            "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
-            "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
-          MapXmlHelper.clearProductionFrontiers();
-          for (final String playerName : MapXmlHelper.getPlayerNames()) {
-            MapXmlHelper.putProductionFrontiers(playerName, new ArrayList<>(allUnitNames));
-          }
-          // Update UI
-          repaintOwnPanel();
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
+          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
+        MapXmlHelper.clearProductionFrontiers();
+        for (final String playerName1 : MapXmlHelper.getPlayerNames()) {
+          MapXmlHelper.putProductionFrontiers(playerName1, new ArrayList<>(allUnitNames));
         }
+        // Update UI
+        repaintOwnPanel();
       }
     };
   }

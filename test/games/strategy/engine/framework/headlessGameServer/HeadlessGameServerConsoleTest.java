@@ -45,14 +45,14 @@ public class HeadlessGameServerConsoleTest {
     final String testValueToSendThru = " some value ";
     try {
       when(mockBufferedReader.readLine()).thenReturn(testValueToSendThru + "\n").thenReturn(null);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException(e);
     }
     testObj.start();
 
     // console thread reads on another thread, sleep for a bit to give it a chance to read.
     ThreadUtil.sleep(HeadlessGameServerConsole.LOOP_SLEEP_MS * 5);
-    verify( mockHeadlessConsoleController,times(1)).process(testValueToSendThru.trim());
+    verify(mockHeadlessConsoleController, times(1)).process(testValueToSendThru.trim());
   }
 
 

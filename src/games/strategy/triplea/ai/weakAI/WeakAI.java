@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.weakAI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -67,7 +66,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> endMatch = new Match<Territory>() {
       @Override
       public boolean match(final Territory o) {
-        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
+        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
         return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
       }
     };
@@ -93,9 +92,8 @@ public class WeakAI extends AbstractAI {
     }
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
-        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-            new CompositeMatchAnd<>(Matches.TerritoryIsLand,
-                new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
+        Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
+            new CompositeMatchAnd<>(Matches.TerritoryIsLand, new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
             data);
     return invasionRoute == null;
   }
@@ -215,8 +213,8 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void populateTransportUnloadNonCom(final GameData data,
-      final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player) {
+  private void populateTransportUnloadNonCom(final GameData data, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final PlayerID player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
       return;
@@ -352,9 +350,9 @@ public class WeakAI extends AbstractAI {
 
   private Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player) {
-    final Match<Territory> routeCond = new CompositeMatchAnd<>(Matches.TerritoryIsWater,
-        Matches.territoryHasEnemyUnits(player, data).invert(),
-        Matches.territoryHasNonAllowedCanal(player, null, data).invert());
+    final Match<Territory> routeCond =
+        new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
+            Matches.territoryHasNonAllowedCanal(player, null, data).invert());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null) {
       return null;
@@ -566,67 +564,63 @@ public class WeakAI extends AbstractAI {
     populateBomberCombat(data, moveUnits, moveRoutes, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
-    final CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<>(
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-        Matches.isTerritoryFreeNeutral(data));
+    final CompositeMatchOr<Territory> walkInto =
+        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
+            Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
-    Collections.sort(enemyOwned, new Comparator<Territory>() {
-      // private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
-      @Override
-      public int compare(final Territory o1, final Territory o2) {
-        // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
-        if (o1 == o2 || (o1 == null && o2 == null)) {
-          return 0;
-        }
-        if (o1 == null) {
-          return 1;
-        }
-        if (o2 == null) {
-          return -1;
-        }
-        if (o1.equals(o2)) {
-          return 0;
-        }
-        final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
-        final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
-        if (ta1 == null && ta2 == null) {
-          return 0;
-        }
-        if (ta1 == null) {
-          return 1;
-        }
-        if (ta2 == null) {
-          return -1;
-        }
-        // take capitols first if we can
-        if (ta1.isCapital() && !ta2.isCapital()) {
-          return -1;
-        }
-        if (!ta1.isCapital() && ta2.isCapital()) {
-          return 1;
-        }
-        final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
-        final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
-        // next take territories which can produce
-        if (factoryInT1 && !factoryInT2) {
-          return -1;
-        }
-        if (!factoryInT1 && factoryInT2) {
-          return 1;
-        }
-        final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
-        final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
-        // next take territories with infrastructure
-        if (infrastructureInT1 && !infrastructureInT2) {
-          return -1;
-        }
-        if (!infrastructureInT1 && infrastructureInT2) {
-          return 1;
-        }
-        // next take territories with largest PU value
-        return ta2.getProduction() - ta1.getProduction();
+    Collections.sort(enemyOwned, (o1, o2) -> {
+      // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
+      if (o1 == o2 || (o1 == null && o2 == null)) {
+        return 0;
       }
+      if (o1 == null) {
+        return 1;
+      }
+      if (o2 == null) {
+        return -1;
+      }
+      if (o1.equals(o2)) {
+        return 0;
+      }
+      final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
+      final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
+      if (ta1 == null && ta2 == null) {
+        return 0;
+      }
+      if (ta1 == null) {
+        return 1;
+      }
+      if (ta2 == null) {
+        return -1;
+      }
+      // take capitols first if we can
+      if (ta1.isCapital() && !ta2.isCapital()) {
+        return -1;
+      }
+      if (!ta1.isCapital() && ta2.isCapital()) {
+        return 1;
+      }
+      final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      // next take territories which can produce
+      if (factoryInT1 && !factoryInT2) {
+        return -1;
+      }
+      if (!factoryInT1 && factoryInT2) {
+        return 1;
+      }
+      final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
+      final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
+      // next take territories with infrastructure
+      if (infrastructureInT1 && !infrastructureInT2) {
+        return -1;
+      }
+      if (!infrastructureInT1 && infrastructureInT2) {
+        return 1;
+      }
+      // next take territories with largest PU value
+      return ta2.getProduction() - ta1.getProduction();
     });
     final List<Territory> isWaterTerr = Utils.onlyWaterTerr(data, enemyOwned);
     enemyOwned.removeAll(isWaterTerr);
@@ -674,11 +668,11 @@ public class WeakAI extends AbstractAI {
       if (enemyStrength > 0) {
         final CompositeMatch<Unit> attackable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player),
             Matches.UnitIsStrategicBomber.invert(), new Match<Unit>() {
-          @Override
-          public boolean match(final Unit o) {
-            return !unitsAlreadyMoved.contains(o);
-          }
-        });
+              @Override
+              public boolean match(final Unit o) {
+                return !unitsAlreadyMoved.contains(o);
+              }
+            });
         attackable.add(Matches.UnitIsNotAA);
         attackable.add(Matches.UnitCanMove);
         attackable.add(Matches.UnitIsNotInfrastructure);
@@ -733,15 +727,13 @@ public class WeakAI extends AbstractAI {
       final List<Route> moveRoutes, final PlayerID player) {
     final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player,
         Matches.UnitCanProduceUnitsAndCanBeDamaged);
-    final Match<Unit> ownBomber =
-        new CompositeMatchAnd<>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownBomber = new CompositeMatchAnd<>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> bombers = t.getUnits().getMatches(ownBomber);
       if (bombers.isEmpty()) {
         continue;
       }
-      final Match<Territory> routeCond =
-          new InverseMatch<>(Matches.territoryHasEnemyAAforCombatOnly(player, data));
+      final Match<Territory> routeCond = new InverseMatch<>(Matches.territoryHasEnemyAAforCombatOnly(player, data));
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       moveUnits.add(bombers);
       moveRoutes.add(bombRoute);

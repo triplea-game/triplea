@@ -5,8 +5,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 
 public class SaveGameFileChooser extends JFileChooser {
@@ -15,7 +15,6 @@ public class SaveGameFileChooser extends JFileChooser {
   private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
-  public static final File DEFAULT_DIRECTORY = new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames");
   private static SaveGameFileChooser s_instance;
 
   public enum AUTOSAVE_TYPE {
@@ -24,8 +23,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_FILE_NAME;
       }
@@ -35,8 +34,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSave2FileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_2_FILE_NAME;
       }
@@ -46,8 +45,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveOddFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_ODD_ROUND_FILE_NAME;
       }
@@ -57,8 +56,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveEvenFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_EVEN_ROUND_FILE_NAME;
       }
@@ -76,12 +75,12 @@ public class SaveGameFileChooser extends JFileChooser {
   public SaveGameFileChooser() {
     super();
     setFileFilter(m_gameDataFileFilter);
-    ensureDefaultDirExists();
-    setCurrentDirectory(DEFAULT_DIRECTORY);
+    ensureMapsFolderExists();
+    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
 
-  public static void ensureDefaultDirExists() {
-    ensureDirectoryExists(DEFAULT_DIRECTORY);
+  public static void ensureMapsFolderExists() {
+    ensureDirectoryExists(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
 
   private static void ensureDirectoryExists(final File f) {

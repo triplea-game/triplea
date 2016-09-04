@@ -3,7 +3,6 @@ package tools.map.xml.creator;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,17 +34,13 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
   @Override
   protected ActionListener getAutoFillAction() {
-    return new ActionListener() {
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-            "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
-            "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
-          setGamePlaySequenceMapToDefault();
-          // Update UI
-          repaintOwnPanel();
-        }
+    return e -> {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
+          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
+        setGamePlaySequenceMapToDefault();
+        // Update UI
+        repaintOwnPanel();
       }
     };
   }

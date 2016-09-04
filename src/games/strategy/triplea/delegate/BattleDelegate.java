@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -23,6 +22,7 @@ import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
@@ -50,7 +50,7 @@ import games.strategy.util.Tuple;
 @MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
-  private BattleTracker m_battleTracker = new BattleTracker();
+  protected BattleTracker m_battleTracker = new BattleTracker();
   // private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
   private boolean m_needToInitialize = true;
   private boolean m_needToScramble = true;
@@ -60,7 +60,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToRecordBattleStatistics = true;
   private boolean m_needToCheckDefendingPlanesCanLand = true;
   private boolean m_needToCleanup = true;
-  private IBattle m_currentBattle = null;
+  protected IBattle m_currentBattle = null;
 
   /**
    * Called before the delegate will run, AND before "start" is called.
@@ -349,7 +349,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * Select which territory to bombard.
    */
   private IBattle selectBombardingBattle(final Unit u, final Territory uTerritory, final Collection<IBattle> battles) {
-    final Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
+    final boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
     // If only one battle to select from just return that battle
     if ((battles.size() == 1)) {
       return battles.iterator().next();
@@ -496,8 +496,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           || ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert()))
               && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
-        battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-            BattleRecord.BattleResultDescription.STALEMATE, results, 0);
+        battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+            BattleRecord.BattleResultDescription.STALEMATE, results);
         battle.cancelBattle(aBridge);
         battleTracker.removeBattle(battle);
         continue;
@@ -508,8 +508,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (territory.isWater() && games.strategy.triplea.Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-            battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+                BattleRecord.BattleResultDescription.NO_BATTLE, results);
             battle.cancelBattle(aBridge);
             battleTracker.removeBattle(battle);
           }
@@ -522,8 +522,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports)) {
             if (!remotePlayer.selectAttackTransports(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }
@@ -533,8 +533,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub)) {
             if (!remotePlayer.selectAttackSubs(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }
@@ -544,8 +544,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs)) {
             if (!remotePlayer.selectAttackUnits(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
             }

@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,10 +28,9 @@ import games.strategy.util.Util;
  * route.add(yetAnotherTerritory);
  * </code>
  */
-public class Route implements java.io.Serializable, Iterable<Territory> {
+public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
   final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<>());
-  final static Integer defaultMovementCost = new Integer(1);
   private final List<Territory> m_steps = new ArrayList<>();
   private Territory m_start;
 
@@ -552,9 +552,9 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     return ownedFightersOnOwnedCarriers;
   }
 
-  public static Route create(List<Route> routes) {
+  public static Route create(final List<Route> routes) {
     Route route = new Route();
-    for(Route r : routes){
+    for (final Route r : routes) {
       route = Route.join(route, r);
     }
     return route;

@@ -27,10 +27,10 @@ class UnitInformation {
 
   protected void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     FileWriter unitInformation = null;
-    PrintGenerationData printData1 = printData;
+    final PrintGenerationData printData1 = printData;
     data = printData1.getData();
-    Map<UnitType, UnitAttachment> unitInfoMap1 = unitInfoMap;
-    Iterator<UnitType> unitTypeIterator = unitInfoMap1.keySet().iterator();
+    final Map<UnitType, UnitAttachment> unitInfoMap1 = unitInfoMap;
+    final Iterator<UnitType> unitTypeIterator = unitInfoMap1.keySet().iterator();
     printData1.getOutDir().mkdir();
     final File outFile = new File(printData1.getOutDir(), "General Information.csv");
     try {
@@ -79,8 +79,8 @@ class UnitInformation {
       unitInformation.write("\r\n");
       unitInformation.close();
     } catch (final IOException e) {
-      ClientLogger.logError("There was an error while trying to save File " + outFile.toString() , e);
-    } 
+      ClientLogger.logError("There was an error while trying to save File " + outFile.toString(), e);
+    }
   }
 
   private int getCostInformation(final UnitType type) {

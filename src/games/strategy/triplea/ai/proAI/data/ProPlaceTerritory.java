@@ -1,10 +1,10 @@
 package games.strategy.triplea.ai.proAI.data;
 
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 
 public class ProPlaceTerritory {
   private Territory territory;

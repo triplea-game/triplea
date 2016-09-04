@@ -1,9 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.apple.eawt.AppEvent.QuitEvent;
 import com.apple.eawt.Application;
-import com.apple.eawt.QuitHandler;
-import com.apple.eawt.QuitResponse;
 
 /**
  * TODO This class should be merged with games.strategy.triplea.ui.MacQuitMenuWrapper.
@@ -14,14 +11,11 @@ public class MacLobbyWrapper {
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final LobbyFrame frame) {
     // new Application();
-    Application.getApplication().setQuitHandler(new QuitHandler(){
-      @Override
-      public void handleQuitRequestWith(QuitEvent quitEvent, QuitResponse quitResponse) {
-        if (frame != null) {
-          frame.shutdown();
-        } else {
-          System.exit(0);
-        }
+    Application.getApplication().setQuitHandler((quitEvent, quitResponse) -> {
+      if (frame != null) {
+        frame.shutdown();
+      } else {
+        System.exit(0);
       }
     });
   }

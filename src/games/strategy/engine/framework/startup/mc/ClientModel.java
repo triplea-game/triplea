@@ -21,7 +21,6 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
@@ -30,7 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.networkMaintenance.ChangeGameOptionsClientAction;
@@ -50,7 +49,7 @@ import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
@@ -59,6 +58,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -102,19 +102,19 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private ClientProps getProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
-        && System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals("")) {
+    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
+        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
       final ClientProps props = new ClientProps();
-      props.setHost(System.getProperty(GameRunner2.TRIPLEA_HOST_PROPERTY));
-      props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
-      props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
-      System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
+      props.setHost(System.getProperty(GameRunner.TRIPLEA_HOST_PROPERTY));
+      props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
+      props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
+      System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
       return props;
     }
     // load in the saved name!
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
-    final ClientOptions options = new ClientOptions(ui, playername, GameRunner2.PORT, "127.0.0.1");
+    final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
@@ -251,7 +251,7 @@ public class ClientModel implements IMessengerErrorListener {
       final CountDownLatch latch = new CountDownLatch(1);
       startGame(gameData, players, latch, false);
       try {
-        latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
@@ -264,7 +264,7 @@ public class ClientModel implements IMessengerErrorListener {
       final CountDownLatch latch = new CountDownLatch(1);
       startGame(gameData, players, latch, true);
       try {
-        latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
@@ -272,39 +272,30 @@ public class ClientModel implements IMessengerErrorListener {
 
     @Override
     public void cannotJoinGame(final String reason) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          m_typePanelModel.showSelectType();
-          EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
-              new CountDownLatchHandler(true));
-        }
+      SwingUtilities.invokeLater(() -> {
+        m_typePanelModel.showSelectType();
+        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
+            new CountDownLatchHandler(true));
       });
     }
   };
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
       final boolean gameRunning) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameLoadingWindow.setVisible(true);
-        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
-        m_gameLoadingWindow.showWait();
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_gameLoadingWindow.setVisible(true);
+      m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
+      m_gameLoadingWindow.showWait();
     });
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          startGameInNewThread(gameData, players, gameRunning);
-        } catch (final RuntimeException e) {
-          m_gameLoadingWindow.doneWait();
-          throw e;
-        } finally {
-          if (onDone != null) {
-            onDone.countDown();
-          }
+    final Runnable r = () -> {
+      try {
+        startGameInNewThread(gameData, players, gameRunning);
+      } catch (final RuntimeException e) {
+        m_gameLoadingWindow.doneWait();
+        throw e;
+      } finally {
+        if (onDone != null) {
+          onDone.countDown();
         }
       }
     };
@@ -337,12 +328,7 @@ public class ClientModel implements IMessengerErrorListener {
     final Thread t = new Thread("Client Game Launcher") {
       @Override
       public void run() {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            JOptionPane.getFrameForComponent(m_ui).setVisible(false);
-          }
-        });
+        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
         try {
           // game will be null if we loose the connection
           if (m_game != null) {
@@ -386,25 +372,16 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
-            listing.getGameVersion().toString());
-      }
-    });
+    SwingUtilities
+        .invokeLater(() -> m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
+            listing.getGameVersion().toString()));
     synchronized (this) {
       m_playersToNodes = listing.getPlayerToNodeListing();
       m_playersEnabledListing = listing.getPlayersEnabledListing();
       m_playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
       m_playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     }
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_listener.playerListChanged();
-      }
-    });
+    SwingUtilities.invokeLater(() -> m_listener.playerListChanged());
   }
 
   public Map<String, String> getPlayerToNodesMapping() {

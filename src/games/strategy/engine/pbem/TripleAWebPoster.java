@@ -21,12 +21,12 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.MicroWebPosterEditor;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.stats.AbstractStat;
-import games.strategy.net.DesktopUtilityBrowserLauncher;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -113,7 +113,7 @@ public class TripleAWebPoster implements IWebPoster {
     final HttpState httpState = new HttpState();
     final HostConfiguration hostConfiguration = new HostConfiguration();
     // add the proxy
-    GameRunner2.addProxy(hostConfiguration);
+    HttpProxy.addProxy(hostConfiguration);
     hostConfiguration.setHost(host);
     final MultipartRequestEntity entity =
         new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
@@ -264,7 +264,7 @@ public class TripleAWebPoster implements IWebPoster {
 
   @Override
   public void viewSite() {
-    DesktopUtilityBrowserLauncher.openURL(getHost());
+    OpenFileUtility.openURL(getHost());
   }
 
   public void setParties(final String[] parties) {

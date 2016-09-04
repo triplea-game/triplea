@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
@@ -52,7 +51,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
       @Override
       public void mouseEntered(final Territory territory) {
-          territoryChanged(territory);
+        territoryChanged(territory);
       }
     });
     initLayout();
@@ -71,12 +70,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         OddsCalculatorDialog.show(m_frame, m_currentTerritory);
       }
     };
-    m_showOdds.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        showBattleCalc.actionPerformed(e);
-      }
-    });
+    m_showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
     final JComponent contentPane = (JComponent) m_frame.getContentPane();
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
@@ -137,9 +131,10 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         panel.add(Box.createVerticalStrut(15));
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
-      final Optional<ImageIcon> unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
-          item.hasDamageOrBombingUnitDamage(), item.getDisabled());
-      if(unitIcon.isPresent()) {
+      final Optional<ImageIcon> unitIcon =
+          uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
+              item.hasDamageOrBombingUnitDamage(), item.getDisabled());
+      if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon
         final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
         final Icon flaggedUnitIcon =

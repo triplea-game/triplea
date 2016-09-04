@@ -42,11 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import games.strategy.ui.SwingAction;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;

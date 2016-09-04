@@ -19,7 +19,7 @@ public class IntegerMapTest {
     assertEquals(map.getInt(v1), 15);
     map.add(v1, -20);
     assertEquals(map.getInt(v1), -5);
-    map.add(v1, new Integer(5));
+    map.add(v1, 5);
     assertEquals(map.getInt(v1), 0);
   }
 
