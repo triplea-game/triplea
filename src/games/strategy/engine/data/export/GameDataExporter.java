@@ -145,15 +145,35 @@ public class GameDataExporter {
   private void propertyList(final GameData data) {// TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
+    Field conPropField = null;
+    Field edPropField = null;
     try {
-      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked
-                                                                                                // reflection
+      conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked
+    } catch (final SecurityException | IllegalArgumentException e) {
+      ClientLogger.logError("An Error occured whilst trying trying to setup the m_constant Property List", e);
+    } catch ( final NoSuchFieldException dummy) {
+      try {
+        conPropField = GameProperties.class.getDeclaredField("constantProperties");
+      } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException e) {
+        ClientLogger.logError("An Error occured whilst trying trying to setup the constant Property List", e);
+      }
+    }
+    try {
+      edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
+    } catch ( final NoSuchFieldException dummy) {
+      try {
+        edPropField = GameProperties.class.getDeclaredField("editableProperties");
+      } catch (final SecurityException | NoSuchFieldException e ) {
+        ClientLogger.logError("An Error occured whilst trying trying to setup the editable Property List", e);
+      }
+    }
+    // confusing code above is needed to ensure we have gotten both properties. Now process them.
+    try {
       conPropField.setAccessible(true);
-      final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
-    } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+    } catch (final SecurityException | IllegalArgumentException | IllegalAccessException e) {
       ClientLogger.logError("An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
