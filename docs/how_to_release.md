@@ -1,3 +1,4 @@
+
 ## Release Testing
 1. Test the following situations at a bare minimum (our unit tests cover virtually nothing):  
  1.	Can download maps, and can see and load both maps that come with triplea and downloaded maps.  
@@ -17,6 +18,9 @@
 
 The version number exists in 1 place:
 * https://github.com/triplea-game/triplea/blob/master/game_engine.properties
+
+## Bump download version on the website
+Update here: https://github.com/triplea-game/triplea-game.github.io/blob/master/_config.yml
 
 
 ## About the TripleA Version Number:  
