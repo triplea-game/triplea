@@ -18,7 +18,7 @@ final class DownloadFileParser {
   private DownloadFileParser() {}
 
   enum Tags {
-    url, mapType, version, mapName, description, mapCategory;
+    url, mapType, version, mapName, description, mapCategory, img
   }
 
   enum ValueType {
@@ -54,8 +54,12 @@ final class DownloadFileParser {
         mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
       }
 
+      String img = yaml.get(Tags.img.toString());
+      if(img == null ) {
+        img = "";
+      }
       final DownloadFileDescription dl =
-          new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory);
+          new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
       rVal.add(dl);
     }
     return rVal;

@@ -50,8 +50,8 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/releases/download/0.18/total_world_war.zip
   version: 2.7.7.2
+  img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png" />
     <br> <em><b><font size="6">Created by Rolf Larsson and Hepster</font></b></em>
     <br>
     <br> <em><b><font size="5">Map and Mechanics by Rolf Larsson</font></b></em>
@@ -113,19 +113,16 @@
 - mapName: 270BC
   mapCategory: BEST
   url: https://github.com/triplea-maps/270bc/releases/download/0.13/270bc.zip
+  img: http://tripleamaps.sourceforge.net/images/TripleA_270BC_mini.png
   description: |
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_270BC_mini.png" />
-    <br>
-    <br>270BC
     <br> by Dr.Che
-    <br>
     <br>270BC is a beautifully made fun map. With its slow and few units, and no air, but a very dynamic income situation, as well as nicely interlinked theaters of war, it plays refreshingly different.
   version: 1.6
 - mapName: Civil_War
   mapCategory: BEST
   url: https://github.com/triplea-maps/civil_war/releases/download/0.19/civil_war.zip
+  img: https://cloud.githubusercontent.com/assets/12397753/18229195/05ef3d68-7224-11e6-9698-f21923d51858.png
   description: |
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_civil_war_mini.png" />
     <br>Civil_War
     <br>by Pulicat
     <br>
