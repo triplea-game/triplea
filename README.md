@@ -25,19 +25,18 @@ TripleA Game Features
 
 Reporting Bugs / Feature Requests
 =================================
-Use github issues to create a tracking ticket: https://github.com/triplea-game/triplea/issues/new
-We encourage people to create these relatively liberally. To be most effective though, here is the information that will be of most help:
-- be as concise and specific as you can
-- describe the context of a problem, what do you need to do to trigger it, how do you set it up. Include any relevant files zipped to the tracking ticket, or include a link to the same files. Please keep in mind it may be some time before an issue is actually worked on
-- describe what goes wrong, what is the problem as exactly as you can state it? Can be pretty simple sometimes: "Then this error pops up: (include contents of the error message, or if it's really long, you can create a github git to save it to and post a link to that: https://gist.github.com/)
-- describe what you would have wanted to have happened, or what you were expecting. This helps keep us from guessing what the behavior should have been, so when we fix it, we know exactly how things "should" be.
+- http://www.triplea-game.org/bug_report/
 
-The overall goal is to keep a tracking ticket so we can discuss and identify problems/features directions we are going. Secondly, an issue is most ideal when it is an isolated independent nugget, that someone can pick up, read, and really understand enough context of the problem and have directions to reproduce the problem, at which point they can immediately begin work.
 
 Map Maker Setup
 ================
 See: https://github.com/triplea-maps/Project
 
+Development 
+===========
+- [Initiatives and Projects](https://github.com/triplea-game/triplea/issues/1073)
+- [Bug backlog](https://github.com/triplea-game/triplea/issues?q=is%3Aissue+is%3Aopen+label%3A%22Bug+Backlog%22)
+- [Developer and Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs)
 
 Developer Setup
 =================
@@ -63,9 +62,8 @@ Note that eclipse and NetBeans are currently not supporting JUnit 5. Therefore w
   - *Troubleshooting*
     - If you are getting "JAVA HOME not yet set", see: http://stackoverflow.com/questions/31215452/intellij-idea-importing-gradle-project-getting-java-home-not-defined-yet
 
- 
-Build system
-============
+Development - Building
+======================
 
 [Gradle](http://gradle.org) is used. The gradlew (on Windows gradlew.bat) file is a proxy to execute build commands. 
 On first call these files will install the correct version of Gradle on your system. Most commonly used commands:
@@ -97,15 +95,16 @@ Building Game Installers and Travis Deployment
 
 On each and every merge to master, travis picks up, runs gradle, which then invokes builds, tests, and invokes install4j to create game installers. Travis then is configured to push the installer files to [github releases ](https://github.com/triplea-game/triplea/releases)
 
-More documentation on how build system is configured can be found on the [triplea github wiki]
-(https://github.com/triplea-game/triplea/wiki/Continuous-Build-Process-Configs)
+More documentation on how build system is configured can be found in  the [/docs]
+(https://github.com/triplea-game/triplea/blob/master/docs/build_process.md)
+
 
 
 Task and Issue Tracking
 ========================
 
 * Discussion - technical discussions, anything non-technical should be pushed to forum
-* Feature Backlog (prefer feature over wishlist) - prioritized list of potential features
+* Feature Backlog - prioritized list of potential features
 * Bug Backlog - prioritized list of bugs to fix
 * Infra/Code Backlog - prioritized list of build, infra, code improvement, process, misc issues
 * Next Release - what we are currently targeting for the next release (anything in progress should have an assignee)

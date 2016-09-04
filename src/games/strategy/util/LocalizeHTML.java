@@ -95,7 +95,7 @@ public class LocalizeHTML {
           URL replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
 
           if (replacementURL == null || replacementURL.toString().length() == 0) {
-            System.out.println("Could not find: <map>/" + ASSET_IMAGE_FOLDER + imageFileName);
+            System.out.println("Could not find: " + mapNameDir + "/ " + ASSET_IMAGE_FOLDER + imageFileName);
             replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
           }
           if (replacementURL == null || replacementURL.toString().length() == 0) {
