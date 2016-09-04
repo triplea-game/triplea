@@ -37,7 +37,7 @@ public final class FeedbackDialog {
       final List<DownloadFileDescription> maps) {
     for (final String selection : selectedValuesList) {
       for (final DownloadFileDescription map : maps) {
-        if (!map.isDummyUrl() && map.getMapName().equals(selection)) {
+        if (map.getMapName().equals(selection)) {
           return Optional.of(map);
         }
       }
