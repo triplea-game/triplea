@@ -288,10 +288,10 @@ public class DownloadMapsWindow extends JFrame {
   private static void updateMapUrlAndSizeLabel(final DownloadFileDescription map, final MapAction action,
       final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
-    (new Thread(() -> {
+    new Thread(() -> {
       final String labelText = createLabelText(action, map);
       SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-    })).start();
+    }).start();
   }
 
   private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
