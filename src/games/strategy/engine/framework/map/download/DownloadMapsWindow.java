@@ -269,7 +269,7 @@ public class DownloadMapsWindow extends JFrame {
     return e -> {
       final int index = gamesList.getSelectedIndex();
 
-      final boolean somethingIsSelected = index > 0;
+      final boolean somethingIsSelected = index >= 0;
       if (somethingIsSelected) {
         final String mapName = gamesList.getModel().getElementAt(index);
 
