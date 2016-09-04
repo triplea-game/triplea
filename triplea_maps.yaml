@@ -1,3 +1,28 @@
+#
+# This file is read live by the game whenever you click 'download maps'. Updating this file on the
+# github server will have immediate effect on all game installations. Be careful to not break old
+# game engine versions when adding new fields (but note, unrecognized yaml field names are simply ignored)
+#
+#
+# Map Property Descriptions:
+#
+# mapName: This is the name of your map as it would be presented on the map download screen
+#
+# url: This is the location where a map zip can be downloaded. This should be a location on github and
+#      should be pretty similar to any of the other map downaod URLs
+#
+# version: The map download version, used by the game to determine if an existing map is out of date.
+#          The game engine uses the map version number found in XML for any other usages (yeah, that is confusig.)
+#          Just know that this is *only* used by the download screen for determining if a map is out of date.
+#          The game keeps track of the current map version downloaded in the extra .properties file that is created
+#          in addition to every map file downloaded
+#
+# description: HTMl description of the map. This description appears in the map download window. The map title
+#         and image are printed automatically and do not need to be included in the description
+#
+# img: A URL to a thumbnail of the map. This image is shown as part of the map download description
+# 
+#
 - mapName: MiniMap
   mapCategory: BEST
   url: https://github.com/triplea-maps/minimap/archive/master.zip
