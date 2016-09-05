@@ -14,11 +14,14 @@ public class MapDownloadList {
 
   public MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
+      if(download == null) {
+        return;
+      }
       final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
 
       if (mapVersion.isPresent()) {
         installed.add(download);
-        if (download.getVersion().isGreaterThan(mapVersion.get())) {
+        if (download.getVersion() != null && download.getVersion().isGreaterThan(mapVersion.get())) {
           outOfDate.add(download);
         }
       } else {
