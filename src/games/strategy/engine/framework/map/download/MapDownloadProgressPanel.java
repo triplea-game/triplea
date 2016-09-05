@@ -51,7 +51,7 @@ public final class MapDownloadProgressPanel extends JPanel {
   public void download(List<DownloadFileDescription> newDownloads) {
     final List<DownloadFileDescription> brandNewDownloads = new ArrayList<>();
     for (final DownloadFileDescription download : newDownloads) {
-      if (!downloadList.contains(download) && !download.isDummyUrl() && !download.getMapName().isEmpty()) {
+      if (!downloadList.contains(download) && !download.getMapName().isEmpty()) {
         brandNewDownloads.add(download);
       }
     }
@@ -71,7 +71,7 @@ public final class MapDownloadProgressPanel extends JPanel {
 
 
     for (final DownloadFileDescription download : newDownloads) {
-      if (download.isDummyUrl() || download.getMapName().isEmpty()) {
+      if (download.getMapName().isEmpty()) {
         continue;
       }
       // space at the end of the label so the text does not end right at the progress bar
@@ -98,7 +98,7 @@ public final class MapDownloadProgressPanel extends JPanel {
     repaint();
 
     for (final DownloadFileDescription download : newDownloads) {
-      if (download.isDummyUrl() || download.getMapName().isEmpty()) {
+      if (download.getMapName().isEmpty()) {
         continue;
       }
       final JProgressBar progressBar = progressBars.get(download);

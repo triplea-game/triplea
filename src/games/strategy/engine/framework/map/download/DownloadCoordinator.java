@@ -83,7 +83,7 @@ public class DownloadCoordinator {
       final Runnable completionListener) {
     // To avoid double acceptance, hold a lock while we check the 'downloadSet'
     synchronized (this) {
-      if (download.isDummyUrl() || downloadSet.contains(download)) {
+      if (downloadSet.contains(download)) {
         return;
       } else {
         downloadSet.add(download);

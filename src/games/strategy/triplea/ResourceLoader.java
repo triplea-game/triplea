@@ -181,18 +181,9 @@ public class ResourceLoader implements Closeable {
    */
   public URL getResource(final String inputPath) {
     String path = resourceLocationTracker.getMapPrefix() + inputPath;
-    URL defaultUrl = null;
-    // Return first any match that is not in the assets folder (we expect that to be the users maps folder (loading from
-    // map.zip))
-    // If we don't have any matches, then return any matches we had from the assets folder
-    for (final URL element : getMatchingResources(path)) {
-      if (element.toString().contains(RESOURCE_FOLDER)) {
-        defaultUrl = element;
-      } else {
-        return element;
-      }
-    }
-    return defaultUrl;
+    return getMatchingResources(path).stream().findFirst().orElse(
+        getMatchingResources(inputPath).stream().findFirst().orElseGet(
+            ()->null));
   }
 
   private List<URL> getMatchingResources(final String path) {

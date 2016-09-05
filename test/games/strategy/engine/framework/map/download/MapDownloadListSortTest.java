@@ -18,13 +18,13 @@ public class MapDownloadListSortTest {
                                                                                    // insensitive sorting
   private static final DownloadFileDescription MAP_C = createDownload("c", "url");
   private static final DownloadFileDescription MAP_D = createDownload("d", "url");
-  private static final DownloadFileDescription HEADER = createDownload("header", null);
 
 
   private static DownloadFileDescription createDownload(final String mapName, final String url) {
     final String description = "fake";
     final Version version = new Version("1");
-    return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP);
+    return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP,
+        DownloadFileDescription.MapCategory.EXPERIMENTAL);
   }
 
   @Test
@@ -48,32 +48,4 @@ public class MapDownloadListSortTest {
     assertSorted(sorted);
   }
 
-  @Test
-  public void testInsertEmptyRowAboveHeaders() {
-    final List<DownloadFileDescription> downloads =
-        Lists.newArrayList(HEADER, HEADER);
-    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
-    assertThat(sorted.size(), is(downloads.size() + 1));
-    assertThat(sorted.get(0).isDummyUrl(), is(true));
-    assertThat(sorted.get(1).isDummyUrl(), is(true));
-    assertThat(sorted.get(2).isDummyUrl(), is(true));
-  }
-
-  @Test
-  public void testSortingUnSortedListWithHeaders() {
-    final List<DownloadFileDescription> downloads =
-        Lists.newArrayList(HEADER, MAP_B, MAP_A, HEADER, MAP_D, MAP_C, HEADER, HEADER);
-    final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
-    assertThat(sorted.get(0).isDummyUrl(), is(true));
-    assertThat(sorted.get(1).getMapName(), is(MAP_A.getMapName()));
-    assertThat(sorted.get(2).getMapName(), is(MAP_B.getMapName()));
-    assertThat(sorted.get(3).isDummyUrl(), is(true));
-    assertThat(sorted.get(4).isDummyUrl(), is(true));
-    assertThat(sorted.get(5).getMapName(), is(MAP_C.getMapName()));
-    assertThat(sorted.get(6).getMapName(), is(MAP_D.getMapName()));
-    assertThat(sorted.get(7).isDummyUrl(), is(true));
-    assertThat(sorted.get(8).isDummyUrl(), is(true));
-    assertThat(sorted.get(9).isDummyUrl(), is(true));
-    assertThat(sorted.get(10).isDummyUrl(), is(true));
-  }
 }

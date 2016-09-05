@@ -240,7 +240,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   private void setSelectedTerritoriesFromTerritory() {
-    CanalTerritoriesTuple canalTerrs = MapXmlHelper.getCanalDefinitionsMap().get(currentCanalName);
+    CanalTerritoriesTuple canalTerrs = MapXmlHelper.getCanalDefinitionsMap().get(currentCanalName.get());
     if (canalTerrs == null) {
       canalTerrs = new CanalTerritoriesTuple();
       MapXmlHelper.putCanalDefinitions(currentCanalName.get(), canalTerrs);
@@ -285,7 +285,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
         currentCanalName = Optional.ofNullable(JOptionPane.showInputDialog(null,
             "Which canal should be selected for territory '" + newTerrName + "?", suggestedCanalName));
 
-        while (MapXmlHelper.getCanalDefinitionsMap().keySet().contains(currentCanalName)) {
+        while (MapXmlHelper.getCanalDefinitionsMap().keySet().contains(currentCanalName.get())) {
           JOptionPane.showMessageDialog(null, "The canal name " + currentCanalName + " is already in use!",
               "Input Error", JOptionPane.ERROR_MESSAGE);
           currentCanalName = Optional.ofNullable(JOptionPane.showInputDialog(null,
@@ -293,7 +293,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
         }
       } else if (currentCanalName.isPresent()) {
         final CanalTerritoriesTuple canalTerrs =
-            MapXmlHelper.getCanalDefinitionsMap().get(currentCanalName);
+            MapXmlHelper.getCanalDefinitionsMap().get(currentCanalName.get());
         selectedWaterTerritories = canalTerrs.getWaterTerritories();
         selectedLandTerritories = canalTerrs.getLandTerritories();
         repaint();
@@ -315,7 +315,7 @@ final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
           JOptionPane.WARNING_MESSAGE)) {
         return;
       }
-      MapXmlHelper.getCanalDefinitionsMap().remove(currentCanalName);
+      MapXmlHelper.getCanalDefinitionsMap().remove(currentCanalName.get());
     }
     currentCanalName = Optional.empty();
     if (!selectedLandTerritories.isEmpty() || !selectedWaterTerritories.isEmpty()) {

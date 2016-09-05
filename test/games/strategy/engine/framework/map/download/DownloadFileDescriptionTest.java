@@ -15,28 +15,28 @@ public class DownloadFileDescriptionTest {
   @Test
   public void testIsMap() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP);
+        DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMap(), is(true));
   }
 
   @Test
   public void testIsMod() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP_MOD);
+        DownloadFileDescription.DownloadType.MAP_MOD, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapMod(), is(true));
   }
 
   @Test
   public void testIsSkin() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP_SKIN);
+        DownloadFileDescription.DownloadType.MAP_SKIN, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapSkin(), is(true));
   }
 
   @Test
   public void testIsTool() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP_TOOL);
+        DownloadFileDescription.DownloadType.MAP_TOOL, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapTool(), is(true));
 
   }
@@ -45,9 +45,19 @@ public class DownloadFileDescriptionTest {
   public void testGetMapName() {
     final String mapName = "abc";
     final DownloadFileDescription testObj =
-        new DownloadFileDescription("", "", mapName, new Version(0, 0), DownloadFileDescription.DownloadType.MAP);
+        new DownloadFileDescription("", "", mapName, new Version(0, 0), DownloadFileDescription.DownloadType.MAP,
+            DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.getMapName(), is(mapName));
   }
+
+  @Test
+  public void testGetMapType() {
+    final DownloadFileDescription testObj =
+        new DownloadFileDescription("", "", "", new Version(0, 0), DownloadFileDescription.DownloadType.MAP,
+            DownloadFileDescription.MapCategory.BEST);
+    assertThat(testObj.getMapCategory(), is(DownloadFileDescription.MapCategory.BEST));
+  }
+
 
   @Test
   public void testGetMapFileName() {
@@ -69,7 +79,7 @@ public class DownloadFileDescriptionTest {
 
   private static DownloadFileDescription testObjFromUrl(final String inputUrl) {
     return new DownloadFileDescription(inputUrl, "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP);
+        DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
   }
 
   @Test
@@ -99,10 +109,22 @@ public class DownloadFileDescriptionTest {
 
   @Test
   public void testGetInstallLocation() {
-    final String inputUrl = "http://github.com/abc.zip";
-    final File f = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + "abc.zip");
+    String inputUrl = "http://github.com/abc.zip";
+    String mapName = "123-map";
+    File expected = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapName + ".zip");
 
-    final DownloadFileDescription testObj = testObjFromUrl(inputUrl);
-    assertThat(testObj.getInstallLocation().getAbsolutePath(), is(f.getAbsolutePath()));
+    mapInstallLocationTest(inputUrl, mapName, expected);
+
+    inputUrl = "http://github.com/abc-master.zip";
+    mapName = "best_map";
+    expected = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapName + "-master.zip");
+    mapInstallLocationTest(inputUrl, mapName, expected);
+  }
+
+  private static void mapInstallLocationTest(String inputUrl, String mapName, File expected) {
+    final DownloadFileDescription testObj =     new DownloadFileDescription(inputUrl, "", mapName, new Version(0, 0),
+        DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
+
+    assertThat(testObj.getInstallLocation().getAbsolutePath(), is(expected.getAbsolutePath()));
   }
 }
