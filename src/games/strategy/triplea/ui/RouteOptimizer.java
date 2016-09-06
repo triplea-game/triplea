@@ -22,51 +22,53 @@ public class RouteOptimizer {
   private static final int commonAdditionalScreens = 2;
   private static final int minAdditionalScreens = 0;
 
-  private Point endPoint;
+  private final double gameMapWidth;
   private int mapWidth;
   private int mapHeight;
 
   public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
     checkNotNull(mapData);
     this.mapPanel = checkNotNull(mapPanel);
-    isInfiniteY = mapData.scrollWrapY();
-    isInfiniteX = mapData.scrollWrapX();
-  }
-
-  /**
-   * Algorithm for finding the shortest path for the given Route
-   * 
-   * @param route The joints on the Map
-   * @return A Point array which goes through Map Borders if necessary
-   */
-  public Point[] getTranslatedRoute(Point... route) {
     mapWidth = mapPanel.getImageWidth();
     mapHeight = mapPanel.getImageHeight();
-    if (route == null || route.length == 0) {
-      // Or the array is too small
 
-      return route;
-    }
-    if (!isInfiniteX && !isInfiniteY) {
-      // If the Map is not infinite scrolling, we can safely return the given Points
-      endPoint = route[route.length - 1];
-      return route;
-    }
-    List<Point> result = new ArrayList<>();
-    Point previousPoint = null;
-    for (Point point : route) {
-      if (previousPoint == null) {
-        previousPoint = point;
-        result.add(point);
-        continue;
+    isInfiniteY = mapData.scrollWrapY();
+
+    isInfiniteX = mapData.scrollWrapX();
+
+    gameMapWidth = mapData.getMapDimensions().getWidth();
+
+  }
+
+  List<Point> normalizeForHorizontalWrapping(Point... route) {
+    final boolean crossesMapSeam = crossMapSeam(route);
+    final List<Point> points = Arrays.asList(route);
+
+    if(crossesMapSeam) {
+      final int minX = minX(route);
+      for(Point p : points) {
+        if((p.x - minX) > mapPanel.getWidth()) {
+          p.x -= this.gameMapWidth;
+
+        }
       }
-      previousPoint = normalizePoint(previousPoint);
-      Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
-      result.add(closestPoint);
-      previousPoint = closestPoint;
     }
-    endPoint = result.get(result.size() - 1);
-    return result.toArray(new Point[result.size()]);
+    return points;
+  }
+
+  private boolean crossMapSeam(Point... route) {
+    final int minX = minX(route);
+    return Arrays.stream(route).filter(point -> (point.x - minX) > mapPanel.getWidth()).findAny().isPresent();
+  }
+
+  private static int minX(Point... route) {
+    int minX = Integer.MAX_VALUE;
+    for(Point p : Arrays.asList(route)) {
+      if(p.x < minX) {
+        minX = p.x;
+      }
+    }
+    return minX;
   }
 
   /**
@@ -139,10 +141,6 @@ public class RouteOptimizer {
    */
   public static Point getPoint(Point2D point) {
     return new Point((int) point.getX(), (int) point.getY());
-  }
-
-  public Point getLastEndPoint() {
-    return endPoint;
   }
 
   /**
