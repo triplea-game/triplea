@@ -8,8 +8,6 @@ public class ScrollSettings implements HasDefaults {
 
   static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
   static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
-  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER = 2;
-  static final int DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE = 5;
 
   static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
   static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
@@ -19,8 +17,6 @@ public class ScrollSettings implements HasDefaults {
   public void setToDefault() {
     setMapEdgeScrollSpeed(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_SPEED));
     setMapEdgeScrollZoneSize(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE));
-    setMapEdgeFasterScrollMultiplier(String.valueOf(DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER));
-    setMapEdgeFasterScrollZoneSize(String.valueOf(DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE));
 
     setArrowKeyScrollSpeed(String.valueOf(DEFAULT_ARROW_KEY_SCROLL_SPEED));
     setFasterArrowKeyScrollMultiplier(String.valueOf(DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER));
@@ -31,23 +27,6 @@ public class ScrollSettings implements HasDefaults {
   private int getProp(final SystemPreferenceKey key, final int defaultValue) {
     return SystemPreferences.get(key, defaultValue);
   }
-
-  public int getMapEdgeFasterScrollZoneSize() {
-    return getProp(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE);
-  }
-
-  public void setMapEdgeFasterScrollMultiplier(final String value) {
-    SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, value);
-  }
-
-  public int getMapEdgeFasterScrollMultiplier() {
-    return getProp(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_MULTIPLER, DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER);
-  }
-
-  public void setMapEdgeFasterScrollZoneSize(final String value) {
-    SystemPreferences.put(SystemPreferenceKey.MAP_EDGE_FASTER_SCROLL_ZONE_SIZE, value);
-  }
-
 
   public int getMapEdgeScrollZoneSize() {
     return getProp(SystemPreferenceKey.MAP_EDGE_SCROLL_ZONE_SIZE, DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE);
