@@ -7,6 +7,11 @@
 # Map Property Descriptions:
 #
 # mapName: This is the name of your map as it would be presented on the map download screen
+#        NOTE: there is a constraint on your map name and repo name. When your map name is converted
+#              to all lower case, and spaces replaced with underscore, it must match the repository name.
+#        IE, for:  https://github.com/triplea-maps/hex_globe10/archive/master.zip
+#               The map name may be: "Hex Globe10", or "Hex_Glob10"
+#               But the map name may NOT be: "HexGlobe10", or "Hex Globe 10"
 #
 # url: This is the location where a map zip can be downloaded. This should be a location on github and
 #      should be pretty similar to any of the other map downaod URLs
@@ -71,7 +76,7 @@
   version: 1
   description: |
     <br>Revised World War II map with Italian Axis Power
-- mapName: Total_World_War
+- mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
   version: 1
@@ -588,7 +593,7 @@
     <br>Alson contains a second  Warlords FFA
     <br>A free for all, with 6 players.
   version: 1
-- mapName: FeudalJapan
+- mapName: Feudal Japan
   mapCategory: GOOD
   url: https://github.com/triplea-maps/feudal_japan/archive/master.zip
   description: |
@@ -1042,7 +1047,7 @@
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
     <br>
   version: 1
-- mapName: WorldWar2010
+- mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
   description: |
@@ -1093,7 +1098,7 @@
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
   version: 1
-- mapName: New World Order LebowskiEdition
+- mapName: New World Order Lebowski Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
   description: |
@@ -1238,7 +1243,7 @@
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn.
   version: 1
-- mapName: ColdWarAsia1948
+- mapName: Cold War Asia1948
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/cold_war_asia1948/archive/master.zip
   description: |
@@ -1283,7 +1288,7 @@
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn
   version: 1
-- mapName: TheGreatNorthernWar
+- mapName: The Great Northern War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_great_northern_war/archive/master.zip
   description: |
@@ -1298,7 +1303,7 @@
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn
   version: 1
-- mapName: Age_Of_The_Sturlungs
+- mapName: Age Of The Sturlungs
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/age_of_the_sturlungs/archive/master.zip
   description: |
@@ -1309,7 +1314,7 @@
         In 1218 Snorri Sturluson (chieftain of the vestur-Sturlugar) became a vassal of King Hakon of Norway.    
         After Snorri returned  home to Iceland he quickly began, expending his rule of domain and/or trying to bring Iceland under the sovereignty of the king of Norway.
   version: 1
-- mapName: FirstPunicWar
+- mapName: First Punic War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/first_punic_war/archive/master.zip
   description: |
@@ -1434,7 +1439,7 @@
     <br>AI play is not possible; human-vs.-human play only, online or via email. 
     <br>
   version: 1
-- mapName: UrQuanWarMastersEdition
+- mapName: Ur Quan War Masters Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ur_quan_war_masters_edition/archive/master.zip
   description: |
@@ -1522,7 +1527,7 @@
     <br />	Bomber			 7/7/6/12 (6)
     <br />	Strike			 7/0/99/-/-		Americans only.
   version: 1
-- mapName: FeudalJapanWarlords
+- mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
   description: |
@@ -1637,7 +1642,7 @@
     <br>abandoned? Excellent map already, needs a little work, feel free to take over.
     <br>
   version: 1
-- mapName: NewWorldOrder1915Lebowski
+- mapName: New World Order 1915Lebowski
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order1915lebowski/archive/master.zip
   description: |
@@ -1725,7 +1730,7 @@
     <br>abandoned
     <br>
   version: 1
-- mapName: HexGlobe10
+- mapName: Hex Globe10
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hex_globe10/archive/master.zip
   description: |
