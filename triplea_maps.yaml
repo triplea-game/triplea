@@ -897,17 +897,17 @@
     <br>Four If By Sea
     <br>
   version: 1
-- mapName: Napoleonic Empire Map Skin
+- mapName: Napoleonic Empire-Political Map Skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
   description: |
-     <br>Napoleonic Empire Map Skin
+     <br>
   version: 1
 - mapName: Middle Earth-Map Skin2
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/middle_earth-map_skin2/archive/master.zip
   description: |
-    <br>Lord of the Rings Map Skin
+    <br>
   version: 1
 - mapName: World War II Global-Battlemap Skin
   mapType: MAP_SKIN
