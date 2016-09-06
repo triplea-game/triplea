@@ -13,8 +13,9 @@ import javax.swing.JComponent;
  */
 public class ComboProperty<T> extends AEditableProperty {
   private static final long serialVersionUID = -3098612299805630587L;
-  private final List<T> m_possibleValues;
-  private T m_value;
+  public static final String POSSIBLE_VALUES_FIELD_NAME = "possibleValues";
+  private final List<T> possibleValues;
+  private T value;
 
   /**
    * @param name
@@ -36,49 +37,49 @@ public class ComboProperty<T> extends AEditableProperty {
     if (!allowNone && !possibleValues.contains(defaultValue) && defaultValue == null) {
       throw new IllegalStateException("possible values does not contain default");
     } else if (allowNone && !possibleValues.contains(defaultValue) && !possibleValues.isEmpty()) {
-      m_value = possibleValues.iterator().next();
+      value = possibleValues.iterator().next();
     } else if (allowNone && !possibleValues.contains(defaultValue)) {
       try {
-        m_value = (T) "";
+        value = (T) "";
       } catch (final Exception e) {
-        m_value = null;
+        value = null;
       }
     } else {
-      m_value = defaultValue;
+      value = defaultValue;
     }
-    m_possibleValues = new ArrayList<>(possibleValues);
+    this.possibleValues = new ArrayList<>(possibleValues);
   }
 
   @Override
   public Object getValue() {
-    return m_value;
+    return value;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
-    m_value = (T) value;
+    this.value = (T) value;
   }
 
   public void setValueT(final T value) {
-    m_value = value;
+    this.value = value;
   }
 
   @Override
   public JComponent getEditorComponent() {
-    final JComboBox<T> box = new JComboBox<>(new Vector<>(m_possibleValues));
-    box.setSelectedItem(m_value);
-    box.addActionListener(e -> m_value = box.getItemAt(box.getSelectedIndex()));
+    final JComboBox<T> box = new JComboBox<>(new Vector<>(possibleValues));
+    box.setSelectedItem(value);
+    box.addActionListener(e -> value = box.getItemAt(box.getSelectedIndex()));
     return box;
   }
 
   @Override
   public boolean validate(final Object value) {
-    if (m_possibleValues == null || m_possibleValues.isEmpty()) {
+    if (possibleValues == null || possibleValues.isEmpty()) {
       return false;
     }
     try {
-      if (m_possibleValues.contains(value)) {
+      if (possibleValues.contains(value)) {
         return true;
       }
     } catch (final ClassCastException e) {
