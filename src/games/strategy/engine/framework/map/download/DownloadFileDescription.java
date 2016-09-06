@@ -30,8 +30,8 @@ public class DownloadFileDescription {
 
 
   public enum MapCategory {
-    BEST("Best"),
-    GOOD("Good"),
+    BEST("High Quality"),
+    GOOD("Good Quality"),
     DEVELOPMENT("In Development"),
     EXPERIMENTAL("Experimental");
 
