@@ -146,10 +146,10 @@ public class GameDataExporter {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
-      final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked
-                                                                                                // reflection
+      // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
+      final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
       conPropField.setAccessible(true);
-      final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
+      final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
@@ -185,7 +185,7 @@ public class GameDataExporter {
     if (prop.getClass().equals(ComboProperty.class)) {
       Field listField;
       try {
-        listField = ComboProperty.class.getDeclaredField("m_possibleValues"); // TODO: unchecked reflection
+        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME); // TODO: unchecked reflection
         listField.setAccessible(true);
         typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
@@ -194,8 +194,8 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       try {
-        final Field maxField = NumberProperty.class.getDeclaredField("m_max"); // TODO: unchecked reflection
-        final Field minField = NumberProperty.class.getDeclaredField("m_min");
+        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME); // TODO: unchecked reflection
+        final Field minField = NumberProperty.class.getDeclaredField(NumberProperty.MIN_PROPERTY_NAME);
         maxField.setAccessible(true);
         minField.setAccessible(true);
         final int max = maxField.getInt(prop);
