@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -40,6 +41,7 @@ public class TestRoute {
                                           // territory
     dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
+    when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000,1000));
   }
 
   @Test

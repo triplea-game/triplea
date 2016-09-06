@@ -60,13 +60,16 @@ public class MapRouteDrawer {
     final int numTerritories = route.getAllTerritories().size();
     final int xOffset = mapPanel.getXOffset();
     final int yOffset = mapPanel.getYOffset();
-    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription, mapData));
+
+    Point[] routePoints = getRoutePoints(routeDescription, mapData);
+    Point[] points = routeOptimizer.normalizeForHorizontalWrapping(routePoints).toArray(new Point[routePoints.length]);
+
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {// AI has no End Point
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
+        drawDirectPath(graphics, points[0], points[points.length-1], xOffset, yOffset, scale);
       } else {
         drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
       }
@@ -117,7 +120,7 @@ public class MapRouteDrawer {
       final int yOffset, final double scale) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
-      for (Point[] endPoint : routeOptimizer.getAllPoints(routeOptimizer.getLastEndPoint())) {
+      for (Point[] endPoint : routeOptimizer.getAllPoints(routeDescription.getEnd())) {
         graphics.drawImage(cursorImage,
             (int) (((endPoint[0].x - xOffset) - (cursorImage.getWidth() / 2)) * scale),
             (int) (((endPoint[0].y - yOffset) - (cursorImage.getHeight() / 2)) * scale), null);
@@ -140,8 +143,7 @@ public class MapRouteDrawer {
    */
   private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int xOffset,
       final int yOffset, final double scale) {
-    final Point[] points = routeOptimizer.getTranslatedRoute(start, end);
-    for (Point[] newPoints : routeOptimizer.getAllPoints(points)) {
+    for (Point[] newPoints : routeOptimizer.getAllPoints(start, end)) {
       drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0], newPoints[1]), xOffset,
           yOffset, scale);
       if (newPoints[0].distance(newPoints[1]) > arrowLength) {
