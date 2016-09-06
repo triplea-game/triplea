@@ -66,7 +66,6 @@ public class ImageScrollerLargeView extends JComponent {
   // scrolling
   private final javax.swing.Timer m_timer = new javax.swing.Timer(50, m_timerAction);
   private boolean m_inside = false;
-  private boolean m_insideFasterPosition;
   private int m_insideCount = 0;
   private int m_edge = NONE;
   private final List<ScrollListener> m_scrollListeners = new ArrayList<>();
@@ -286,10 +285,6 @@ public class ImageScrollerLargeView extends JComponent {
     } else if ((m_edge & RIGHT) != 0) {
       dx = scrollSettings.getMapEdgeScrollSpeed();
     }
-    if (this.m_insideFasterPosition) {
-      dx *= scrollSettings.getMapEdgeFasterScrollMultiplier();
-      dy *= scrollSettings.getMapEdgeFasterScrollMultiplier();
-    }
 
     dx = (int) (dx / m_scale);
     dy = (int) (dy / m_scale);
@@ -304,28 +299,15 @@ public class ImageScrollerLargeView extends JComponent {
 
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
-    this.m_insideFasterPosition = false;
     if (x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += LEFT;
-      if (x < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
-        this.m_insideFasterPosition = true;
-      }
     } else if (width - x < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += RIGHT;
-      if ((width - x) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
-        this.m_insideFasterPosition = true;
-      }
     }
     if (y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += TOP;
-      if (y < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
-        this.m_insideFasterPosition = true;
-      }
     } else if (height - y < scrollSettings.getMapEdgeScrollZoneSize()) {
       newEdge += BOTTOM;
-      if ((height - y) < scrollSettings.getMapEdgeFasterScrollZoneSize()) {
-        this.m_insideFasterPosition = true;
-      }
     }
     return newEdge;
   }
