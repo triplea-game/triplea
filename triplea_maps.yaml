@@ -927,14 +927,15 @@
 - mapName: Napoleonic Empire Map Skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
-  version: 1
   description: |
      <br>Napoleonic Empire Map Skin
+  version: 1
 - mapName: Middle Earth Map Skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/middle_earth-map_skin2/archive/master.zip
   description: |
     <br>Lord of the Rings Map Skin
+  version: 1
 - mapName: World War II Global-battlemap_skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/archive/master.zip
