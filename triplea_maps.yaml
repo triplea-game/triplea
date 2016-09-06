@@ -927,15 +927,16 @@
 - mapName: Napoleonic Empire Map Skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
-  version: 1
   description: |
      <br>Napoleonic Empire Map Skin
-- mapName: Middle Earth Map Skin
+  version: 1
+- mapName: Middle Earth-Map Skin2
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/middle_earth-map_skin2/archive/master.zip
   description: |
     <br>Lord of the Rings Map Skin
-- mapName: World War II Global-battlemap_skin
+  version: 1
+- mapName: World War II Global-battlemap Skin
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/world_war_ii_global-battlemap_skin/archive/master.zip
   description: |
@@ -947,7 +948,7 @@
     <br>
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
-- mapName: new_world_order-skin_sieg_2
+- mapName: New World Order-skin_sieg_2
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_sieg_2/archive/master.zip
   description: |
@@ -961,7 +962,7 @@
     <div style="text-align: left;">
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
-- mapName: new_world_order-skin_pulicat_1
+- mapName: New World Order-skin_pulicat_1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/archive/master.zip
   description: |
@@ -975,7 +976,7 @@
     <div style="text-align: left;">
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
-- mapName: Diplomacy-MapSkin1
+- mapName: Diplomacy-Map Skin1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
   description: |
@@ -983,7 +984,7 @@
     <br>This is a MAP SKIN for "Diplomacy"
     <br>The original relief tiles, in all their glory, made by Veqryn.
   version: 1
-- mapName: Diplomacy-MapSkin2
+- mapName: Diplomacy-Map Skin2
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin2/archive/master.zip
   description: |
@@ -991,7 +992,7 @@
     <br>This is a MAP SKIN for "Diplomacy"
     <br>Similar style to ww2v3 relief tiles, made by Bung, Veqryn, TripleElk, and Imperious Leader
   version: 1
-- mapName: Diplomacy-MapSkin3
+- mapName: Diplomacy-Map Skin3
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin3/archive/master.zip
   description: |
@@ -1000,7 +1001,7 @@
     <br>A very basic style.  I made this one for people who hate the cursive writing of the other 3 skins.  It has a simple font, no textures, and no cursive.
   version: 1
 
-- mapName: World_At_War_Variants
+- mapName: World At War Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_at_war_variants/archive/master.zip
   description: |

@@ -27,12 +27,24 @@ class ResourceLocationTracker {
   ResourceLocationTracker(String mapName, URL[] resourcePaths) {
     boolean isUsingMasterZip = Arrays.asList(resourcePaths)
         .stream().filter(path -> path.toString().endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX)).findAny().isPresent();
-    mapPrefix = isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
+
+
+    // map skins will have the full path name as their map name.
+    if(mapName.endsWith("-master.zip")) {
+      mapPrefix = mapName.substring(0, mapName.length() - "-master.zip".length()) + MASTER_ZIP_MAGIC_PREFIX;
+    } else {
+      mapPrefix = isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
+    }
   }
 
   /**
    * Will return an empty string unless a special prefix is needed, in which case  that prefix is constructed
-   * basd on the map name.
+   * based on the map name.
+   *
+   * The 'mapPrefix' is the path within a map zip file where we will then find any map contents.
+   * For example, if the map prefix is "map", then when we expand the map zip, we would expect
+   * "/map" to be the first folder we see, and we woudl expect things like "/map/game" and
+   * "/map/polygons.txt" to exist.
    */
   String getMapPrefix() {
     return mapPrefix;
