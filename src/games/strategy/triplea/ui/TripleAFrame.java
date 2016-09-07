@@ -157,6 +157,10 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 
 /**
  * Main frame for the triple a game
@@ -167,37 +171,37 @@ public class TripleAFrame extends MainGameFrame {
   private IGame game;
   private MapPanel mapPanel;
   private MapPanelSmallView smallView;
-  private final JLabel message = new JLabel("No selection");
-  private final JLabel status = new JLabel("");
-  private final JLabel step = new JLabel("xxxxxx");
-  private final JLabel round = new JLabel("xxxxxx");
-  private final JLabel player = new JLabel("xxxxxx");
+  private final Text message = new Text("No selection");
+  private final Text status = new Text("");
+  private final Text step = new Text("xxxxxx");
+  private final Text round = new Text("xxxxxx");
+  private final Text player = new Text("xxxxxx");
   private ActionButtons actionButtons;
-  private final JPanel gameMainPanel = new JPanel();
-  private final JPanel rightHandSidePanel = new JPanel();
-  private final JTabbedPane tabsPanel = new JTabbedPane();
+  private final BorderPane gameMainPanel = new BorderPane();
+  private final BorderPane rightHandSidePanel = new BorderPane();
+  private final TabPane tabsPanel = new TabPane();
   private StatPanel statsPanel;
   private EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
   private NotesPanel notesPanel;
   private TerritoryDetailPanel details;
-  private final JPanel historyComponent = new JPanel();
-  private JPanel gameSouthPanel;
+  private final BorderPane historyComponent = new BorderPane();
+  private BorderPane gameSouthPanel;
   private HistoryPanel historyPanel;
   private boolean inHistory = false;
   private boolean inGame = true;
   private HistorySynchronizer historySyncher;
   private IUIContext uiContext;
-  private JPanel mapAndChatPanel;
+  private BorderPane mapAndChatPanel;
   private ChatPanel chatPanel;
   private CommentPanel commentPanel;
-  private JSplitPane chatSplit;
-  private JSplitPane commentSplit;
+  private SplitPane chatSplit;
+  private SplitPane commentSplit;
   private EditPanel editPanel;
   private final ButtonModel editModeButtonModel;
   private final ButtonModel showCommentLogButtonModel;
   private IEditDelegate editDelegate;
-  private JSplitPane gameCenterPanel;
+  private SplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;
   private PlayerID lastStepPlayer;
@@ -215,19 +219,12 @@ public class TripleAFrame extends MainGameFrame {
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
-    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    final WindowListener WINDOW_LISTENER = new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        leaveGame();
-      }
-    };
-    this.addWindowListener(WINDOW_LISTENER);
+    this.onCloseRequestProperty().set(e -> leaveGame());
     uiContext = new UIContext();
     uiContext.setDefaultMapDir(game.getData());
     uiContext.getMapData().verify(data);
     uiContext.setLocalPlayers(players);
-    this.setCursor(uiContext.getCursor());
+//    this.setCursor(uiContext.getCursor());
     // initialize m_editModeButtonModel before createMenuBar()
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
@@ -246,29 +243,28 @@ public class TripleAFrame extends MainGameFrame {
 
       private void hideCommentLog() {
         if (chatPanel != null) {
-          commentSplit.setBottomComponent(null);
-          chatSplit.setBottomComponent(chatPanel);
-          chatSplit.validate();
+          commentSplit.getItems().clear();
+          chatSplit.getItems().clear();
+          chatSplit.getItems().add(chatPanel);
         } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(null);
-          chatSplit.setBottomComponent(null);
-          mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
+          mapAndChatPanel.getChildren().clear();
+          chatSplit.getItems().clear();
+          mapAndChatPanel.getChildren().add(mapPanel);
         }
       }
 
       private void showCommentLog() {
         if (chatPanel != null) {
-          commentSplit.setBottomComponent(chatPanel);
-          chatSplit.setBottomComponent(commentSplit);
-          chatSplit.validate();
+          commentSplit.getItems().clear();
+          commentSplit.getItems().add(chatPanel);
+          chatSplit.getItems().clear();
+          chatSplit.getItems().add(commentSplit);
         } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(mapPanel);
-          chatSplit.setBottomComponent(commentPanel);
-          mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
+          mapAndChatPanel.getChildren().clear();
+          chatSplit.getItems().clear();
+          chatSplit.getItems().add(commentPanel);
+          chatSplit.getItems().add(mapPanel);
+          mapAndChatPanel.getChildren().add(chatSplit);
         }
       }
     };

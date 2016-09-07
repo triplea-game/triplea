@@ -1,20 +1,28 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import java.io.IOException;
 
+import javax.swing.JComponent;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
-public abstract class MainGameFrame extends JFrame {
-  private static final long serialVersionUID = 7433347393639606647L;
+public abstract class MainGameFrame extends Stage {
   protected LocalPlayers localPlayers;
 
   public MainGameFrame(final String name, final LocalPlayers players) {
-    super(name);
+    super();
+    this.setTitle(name);
     localPlayers = players;
-    setIconImage(GameRunner.getGameIcon(this));
+    try {
+      this.getIcons().add(new Image(GameRunner.class.getResource("ta_icon.png").openStream()));
+    } catch (IOException e) {
+      ClientLogger.logError("Could not load TripleA Icon", e);
+    }
   }
 
   public abstract IGame getGame();

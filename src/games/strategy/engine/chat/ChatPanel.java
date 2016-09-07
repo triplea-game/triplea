@@ -12,6 +12,7 @@ import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
+import javafx.scene.layout.BorderPane;
 
 /**
  * A Chat window.
@@ -19,8 +20,7 @@ import games.strategy.net.IMessenger;
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
  */
-public class ChatPanel extends JPanel implements IChatPanel {
-  private static final long serialVersionUID = -6177517517279779486L;
+public class ChatPanel extends BorderPane implements IChatPanel {
   static int s_divider_size = 5;
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;

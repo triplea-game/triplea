@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
 import java.awt.Window;
 import java.util.concurrent.CountDownLatch;
 
@@ -20,6 +19,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
+import javafx.scene.Cursor;
 
 public interface IUIContext {
   Cursor getCursor();

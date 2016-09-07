@@ -2,18 +2,12 @@ package games.strategy.triplea.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
@@ -62,12 +56,16 @@ import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 
 /**
  * Responsible for drawing the large map and keeping it updated.
  */
 public class MapPanel extends ImageScrollerLargeView {
-  private static final long serialVersionUID = -3571551538356292556L;
   private static Logger logger = Logger.getLogger(MapPanel.class.getName());
   private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<>();
   private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<>();
@@ -108,72 +106,60 @@ public class MapPanel extends ImageScrollerLargeView {
     final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
     t.start();
-    setDoubleBuffered(false);
     this.smallView = smallView;
     this.smallMapImageManager =
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
-    this.addMouseListener(new MouseAdapter() {
-      /**
-       * Invoked when the mouse exits a component.
-       */
-      @Override
-      public void mouseExited(final MouseEvent e) {
-        if (unitsChanged(null)) {
-          final MouseDetails md = convert(e);
-          currentUnits = null;
-          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
+    addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+      if (unitsChanged(null)) {
+        final MouseDetails md = convert(e);
+        currentUnits = null;
+        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
+      }
+    });
+    addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+      final MouseDetails md = convert(e);
+      final double scaledMouseX = e.getX() / m_scale;
+      final double scaledMouseY = e.getY() / m_scale;
+      final double x = normalizeX(scaledMouseX + getXOffset());
+      final double y = normalizeY(scaledMouseY + getYOffset());
+      final Territory terr = getTerritory(x, y);
+      if (terr != null) {
+        notifyTerritorySelected(terr, md);
+      }
+      if (!unitSelectionListeners.isEmpty()) {
+        Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
+        if (tuple == null) {
+          tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
+        }
+        notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
+      }
+    });
+    addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+      final MouseDetails md = convert(e);
+      final double scaledMouseX = e.getX() / m_scale;
+      final double scaledMouseY = e.getY() / m_scale;
+      final double x = normalizeX(scaledMouseX + getXOffset());
+      final double y = normalizeY(scaledMouseY + getYOffset());
+      final Territory terr = getTerritory(x, y);
+      // we can use == here since they will be the same object.
+      // dont use .equals since we have nulls
+      if (terr != currentTerritory) {
+        currentTerritory = terr;
+        notifyMouseEntered(terr);
+      }
+      notifyMouseMoved(terr, md);
+      final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
+      if (unitsChanged(tuple)) {
+        currentUnits = tuple;
+        if (tuple == null) {
+          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
+        } else {
+          notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
         }
       }
+    });
 
-      // this can't be mouseClicked, since a lot of people complain that clicking doesn't work well
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        final MouseDetails md = convert(e);
-        final double scaledMouseX = e.getX() / m_scale;
-        final double scaledMouseY = e.getY() / m_scale;
-        final double x = normalizeX(scaledMouseX + getXOffset());
-        final double y = normalizeY(scaledMouseY + getYOffset());
-        final Territory terr = getTerritory(x, y);
-        if (terr != null) {
-          notifyTerritorySelected(terr, md);
-        }
-        if (!unitSelectionListeners.isEmpty()) {
-          Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
-          if (tuple == null) {
-            tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
-          }
-          notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
-        }
-      }
-    });
-    this.addMouseMotionListener(new MouseMotionAdapter() {
-      @Override
-      public void mouseMoved(final MouseEvent e) {
-        final MouseDetails md = convert(e);
-        final double scaledMouseX = e.getX() / m_scale;
-        final double scaledMouseY = e.getY() / m_scale;
-        final double x = normalizeX(scaledMouseX + getXOffset());
-        final double y = normalizeY(scaledMouseY + getYOffset());
-        final Territory terr = getTerritory(x, y);
-        // we can use == here since they will be the same object.
-        // dont use .equals since we have nulls
-        if (terr != currentTerritory) {
-          currentTerritory = terr;
-          notifyMouseEntered(terr);
-        }
-        notifyMouseMoved(terr, md);
-        final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
-        if (unitsChanged(tuple)) {
-          currentUnits = tuple;
-          if (tuple == null) {
-            notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
-          } else {
-            notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
-          }
-        }
-      }
-    });
     this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(() -> repaint()));
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(() -> {
@@ -205,12 +191,10 @@ public class MapPanel extends ImageScrollerLargeView {
     tileManager.resetTiles(m_data, uiContext.getMapData());
   }
 
-  @Override
   public Dimension getPreferredSize() {
     return getImageDimensions();
   }
 
-  @Override
   public Dimension getMinimumSize() {
     return new Dimension(200, 200);
   }
@@ -462,10 +446,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   // this one is useful for screenshots
-  @Override
-  public void print(final Graphics g) {
-    final Graphics2D g2d = (Graphics2D) g;
-    super.print(g2d);
+  public void print(final GraphicsContext g2d) {
     // make sure we use the same data for the entire print
     final GameData gameData = m_data;
     final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
@@ -475,9 +456,8 @@ public class MapPanel extends ImageScrollerLargeView {
       try {
         final Image img = tile.getImage(gameData, uiContext.getMapData());
         if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
-          g2d.drawImage(img, t, this);
+          g2d.drawImage(SwingFXUtils.toFXImage((BufferedImage) img, null), 0, 0);
+          g2d.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
         }
       } finally {
         Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
@@ -486,10 +466,9 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   @Override
-  public void paint(final Graphics g) {
-    final Graphics2D g2d = (Graphics2D) g;
-    super.paint(g2d);
-    g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
+  public void repaint() {
+    graphics.clip();
+    // graphics.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
     int x = m_model.getX();
     int y = m_model.getY();
     final List<Tile> images = new ArrayList<>();
@@ -512,31 +491,30 @@ public class MapPanel extends ImageScrollerLargeView {
         if (fitAxisY && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
-          drawTiles(g2d, images, data, leftUpperBounds, 0, 0, undrawnTiles);
+          drawTiles(graphics, images, data, leftUpperBounds, 0, 0, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
             new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
-        drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+        drawTiles(graphics, images, data, leftBounds, 0, 0, undrawnTiles);
       }
       if (fitAxisY && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
-        drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
+        drawTiles(graphics, images, data, upperBounds, 0, 0, undrawnTiles);
       }
     }
     // handle non overlap
     final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, images, data, mainBounds, 0, 0, undrawnTiles);
+    drawTiles(graphics, images, data, mainBounds, 0, 0, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
-      final AffineTransform t = new AffineTransform();
-      t.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
+      graphics.drawImage(SwingFXUtils.toFXImage(mouseShadowImage, null), 0, 0);
+      graphics.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
           m_scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
-      t.translate(mouseShadowImage.getWidth() / -2, mouseShadowImage.getHeight() / -2);
-      t.scale(m_scale, m_scale);
-      g2d.drawImage(mouseShadowImage, t, this);
+      graphics.translate(mouseShadowImage.getWidth() / -2, mouseShadowImage.getHeight() / -2);
+      graphics.scale(m_scale, m_scale);
     }
     if (routeDescription != null) {
-      routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+      routeDrawer.drawRoute(graphics, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
     }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
@@ -558,10 +536,10 @@ public class MapPanel extends ImageScrollerLargeView {
           final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
-            final AffineTransform t = new AffineTransform();
-            t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
-            t.scale(m_scale, m_scale);
-            g2d.drawImage(image.get(), t, this);
+            graphics.drawImage(SwingFXUtils.toFXImage((BufferedImage) image.get(), null), 0, 0);
+            graphics.translate(normalizeX(r.getX() - getXOffset()) * m_scale,
+                normalizeY(r.getY() - getYOffset()) * m_scale);
+            graphics.scale(m_scale, m_scale);
           }
         }
       }
@@ -623,7 +601,8 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds,
+  private void drawTiles(final GraphicsContext graphics, final List<Tile> images, final GameData data,
+      Rectangle2D.Double bounds,
       final double overlapX, final double overlapY, final List<Tile> undrawn) {
     final List<Tile> tileList = tileManager.getTiles(bounds);
     bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
@@ -646,9 +625,9 @@ public class MapPanel extends ImageScrollerLargeView {
           images.add(tile);
         }
         if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate(m_scale * (tile.getBounds().x - bounds.getX()), m_scale * (tile.getBounds().y - bounds.getY()));
-          g.drawImage(img, t, this);
+          graphics.drawImage(SwingFXUtils.toFXImage((BufferedImage) img, null), 0, 0);
+          graphics.translate(m_scale * (tile.getBounds().x - bounds.getX()),
+              m_scale * (tile.getBounds().y - bounds.getY()));
         }
       } finally {
         Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
@@ -772,8 +751,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void hideMouseCursor() {
     if (hiddenCursor == null) {
-      hiddenCursor = getToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR),
-          new Point(0, 0), "Hidden");
+      hiddenCursor = new ImageCursor(new javafx.scene.image.WritableImage(1, 1));
     }
     setCursor(hiddenCursor);
   }
