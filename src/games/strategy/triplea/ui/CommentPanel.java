@@ -3,8 +3,10 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,13 +40,28 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.ui.SwingAction;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
-public class CommentPanel extends JPanel {
+public class CommentPanel extends BorderPane {
   private static final long serialVersionUID = -9122162393288045888L;
-  private JTextPane m_text;
-  private JScrollPane m_scrollPane;
-  private JTextField m_nextMessage;
-  private JButton m_save;
+  private TextFlow m_text;
+  private ScrollPane m_scrollPane;
+  private TextField m_nextMessage;
+  private Button m_save;
   private final GameData m_data;
   private final TripleAFrame m_frame;
   private Map<PlayerID, Icon> m_iconMap;
@@ -64,34 +81,28 @@ public class CommentPanel extends JPanel {
     setupKeyMap();
     StyleConstants.setBold(bold, true);
     StyleConstants.setItalic(italic, true);
-    setSize(300, 200);
+    setWidth(300);
+    setHeight(200);
     loadHistory();
     setupListeners();
   }
 
   private void layoutComponents() {
-    final Container content = this;
-    content.setLayout(new BorderLayout());
-    m_scrollPane = new JScrollPane(m_text);
-    content.add(m_scrollPane, BorderLayout.CENTER);
-    content.add(m_scrollPane, BorderLayout.CENTER);
-    final JPanel savePanel = new JPanel();
-    savePanel.setLayout(new BorderLayout());
-    savePanel.add(m_nextMessage, BorderLayout.CENTER);
-    savePanel.add(m_save, BorderLayout.WEST);
-    content.add(savePanel, BorderLayout.SOUTH);
+    m_scrollPane = new ScrollPane(m_text);
+    getChildren().add(m_scrollPane);
+    final BorderPane savePanel = new BorderPane();
+    savePanel.getChildren().add(m_nextMessage);
+    savePanel.getChildren().add(m_save);
+    getChildren().add(savePanel);
   }
 
   private void createComponents() {
-    m_text = new JTextPane();
-    m_text.setEditable(false);
-    m_text.setFocusable(false);
-    m_nextMessage = new JTextField(10);
+    m_text = new TextFlow();
+    m_nextMessage = new TextField();
     // when enter is pressed, send the message
     final Insets inset = new Insets(3, 3, 3, 3);
-    m_save = new JButton(m_saveAction);
-    m_save.setMargin(inset);
-    m_save.setFocusable(false);
+    m_save = new Button();
+    m_save.setOnAction(e -> m_saveAction.run());
     // create icon map
     m_iconMap = new HashMap<>();
     for (final PlayerID playerId : m_data.getPlayerList().getPlayers()) {
@@ -124,7 +135,7 @@ public class CommentPanel extends JPanel {
     final Runnable runner = () -> {
       m_data.acquireReadLock();
       try {
-        final Document doc = m_text.getDocument();
+        final List<Node> doc = m_text.getChildren();
         final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
         final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
         final String title =
@@ -140,9 +151,11 @@ public class CommentPanel extends JPanel {
           try {
             // insert into ui document
             final String prefix = " " + player + "(" + round + ") : ";
-            m_text.insertIcon(icon);
-            doc.insertString(doc.getLength(), prefix, bold);
-            doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+            doc.add(new ImageView(SwingFXUtils.toFXImage((BufferedImage)((ImageIcon)icon).getImage(), null)));
+            Text prefixText = new Text(prefix);
+            prefixText.setFont(Font.font(prefixText.getFont().getFamily(), FontWeight.BOLD, prefixText.getFont().getSize()));
+            doc.add(prefixText);
+            doc.add(new Text(m.group(1) + "\n"));
           } catch (final BadLocationException e1) {
             ClientLogger.logQuietly(e1);
           }
@@ -160,8 +173,11 @@ public class CommentPanel extends JPanel {
   }
 
   private void setupKeyMap() {
-    final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-    nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_saveAction);
+    m_nextMessage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+      if(e.getCharacter().equalsIgnoreCase("\n")){
+        m_saveAction.run();
+      }
+    });
   }
 
   private void loadHistory() {
@@ -255,11 +271,11 @@ public class CommentPanel extends JPanel {
     }
   }
 
-  private final Action m_saveAction = SwingAction.of("Add Comment", e -> {
+  private final Runnable m_saveAction = () -> {
     if (m_nextMessage.getText().trim().length() == 0) {
       return;
     }
     addMessage(m_nextMessage.getText());
     m_nextMessage.setText("");
-  });
+  };
 }

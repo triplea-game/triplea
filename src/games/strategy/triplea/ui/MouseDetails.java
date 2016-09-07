@@ -1,8 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Point;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
+
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 public class MouseDetails {
   private final MouseEvent m_mouseEvent;
@@ -33,7 +34,7 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    return (m_mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
+    return m_mouseEvent.getButton().equals(MouseButton.SECONDARY);
   }
 
   public boolean isControlDown() {
@@ -55,7 +56,7 @@ public class MouseDetails {
     return new Point((int) m_x, (int) m_y);
   }
 
-  public int getButton() {
+  public MouseButton getButton() {
     return m_mouseEvent.getButton();
   }
 }
