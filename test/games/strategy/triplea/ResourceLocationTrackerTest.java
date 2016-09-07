@@ -9,8 +9,6 @@ import org.junit.Test;
 
 
 public class ResourceLocationTrackerTest {
-  private ResourceLocationTracker testObj;
-
   @Test
   public void defaultEmptyMapPrefix() {
     ResourceLocationTracker testObj = new ResourceLocationTracker("", new URL[0]);
