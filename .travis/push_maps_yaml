@@ -25,3 +25,4 @@ if [ "$UPDATED" -eq 1 ]; then
 fi
 
 cd ..
+rm -rf website
