@@ -6,7 +6,7 @@ cd website
 
 STATUS=0; git status | grep "nothing to commit" && STATUS=1
 
-if [ "$STATUS" -eq 1 ]; then
+if [ "$STATUS" -eq 0 ]; then
   git commit _data/triplea_maps.yaml -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
   ## sed is here on the next line in case there is a failure message, make sure we block out the github auth token
   ## so we don't have to rotate it.
