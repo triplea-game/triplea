@@ -2,9 +2,9 @@
   host: 45.79.144.53
   port: 3304
   message: |
-    Welcome to Triplea - engine 1.9.0.0
+    Welcome to TripleA 1.9
 
-    To load 1.7.0.x savegames with 1.8.x.x, just start hosting then click 'Load Game' (bots do not load old saves).
+    Bots are unable to host 1.8 save games, but you can still load them in direct host matches.
     FAQ/Help: http://tinyurl.com/tripleaFAQ
     Download Maps: http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml
     Hosting: http://tinyurl.com/tripleaHostingnLadder/Forum: http://tripleawarclub.org/
