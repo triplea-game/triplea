@@ -11,7 +11,8 @@ script:
 - ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
 - ruby -e "require 'yaml';puts YAML.load_file('./lobby_server.yaml')" > /dev/null || exit 1
 ## run the gradle build, builds a jar file
-- ./gradlew check --info
+- ./gradlew package
+# Command with checkstyle run  - ./gradlew check --info
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
 - chmod +x ./.travis/setup && ./.travis/setup
