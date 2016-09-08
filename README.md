@@ -28,9 +28,11 @@ Reporting Bugs / Feature Requests
 - http://www.triplea-game.org/bug_report/
 
 
-Map Maker Setup
-================
-See: https://github.com/triplea-maps/Project
+Map Making
+==========
+Instructions and more: https://github.com/triplea-game/triplea/tree/master/docs/map_making
+Beyond experimental maps:  https://github.com/triplea-game/triplea/wiki/Broken-Maps
+
 
 Development 
 ===========
