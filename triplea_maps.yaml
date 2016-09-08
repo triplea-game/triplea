@@ -2,7 +2,7 @@
 # This file is read live by the game whenever you click 'download maps'. Updating this file on the
 # github server will have immediate effect on all game installations. Be careful to not break old
 # game engine versions when adding new fields (but note, unrecognized yaml field names are simply ignored)
-#
+# 
 #
 # Map Property Descriptions:
 #
