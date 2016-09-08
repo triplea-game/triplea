@@ -6,25 +6,10 @@
 
     Bots are unable to host 1.8 save games, but you can still load them in direct host matches.
     FAQ/Help: http://tinyurl.com/tripleaFAQ
-    Download Maps: http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml
-    Hosting: http://tinyurl.com/tripleaHostingnLadder/Forum: http://tripleawarclub.org/
-    Dev Forum: http://triplea.sourceforge.net/mywiki/Forum
+    Hosting: http://tinyurl.com/tripleaHosting\nLadder/Forum: http://tripleawarclub.org/
+    Warclub: www.tripleawarclub.org
+    Website: www.triplea-game.org
 
-    No talking politics in the lobby! Take your political comments to a private game!
-    Please report any bugs to: https://sourceforge.net/p/triplea/_list/tickets
-    Try out the new 'automated hosts': Join one then select a map. Game starts when all players are taken.
-  error_message:
-- version: 1.8.0.9
-  host: 45.79.144.53
-  port: 3303
-  message: |
-    Veqryn welcomes you to the new Stable Release engine 1.8.0.9
-    To load 1.7.0.x savegames with 1.8.x.x, just start hosting then click 'Load Game' (bots do not load old saves).
-    FAQ/Help: http://tinyurl.com/tripleaFAQ
-    Download Maps: http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml
-    Hosting: http://tinyurl.com/tripleaHostingnLadder/Forum: http://tripleawarclub.org/
-    Dev Forum: http://triplea.sourceforge.net/mywiki/Forum
-    
     No talking politics in the lobby! Take your political comments to a private game!
     Please report any bugs to: https://sourceforge.net/p/triplea/_list/tickets
     Try out the new 'automated hosts': Join one then select a map. Game starts when all players are taken.
