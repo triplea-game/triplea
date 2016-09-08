@@ -1,8 +1,13 @@
 #!/bin/bash
 
+git config --global user.email "tripleabuilderbot@gmail.com"
+git config --global user.name "tripleabuilderbot"
+
+
 git clone https://github.com/triplea-game/triplea-game.github.io.git website
 cp triplea_maps.yaml website/_data/
 cd website
+git pull --rebase
 
 STATUS=0; git status | grep "nothing to commit" && STATUS=1
 
@@ -10,7 +15,7 @@ if [ "$STATUS" -eq 0 ]; then
   git commit _data/triplea_maps.yaml -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
   ## sed is here on the next line in case there is a failure message, make sure we block out the github auth token
   ## so we don't have to rotate it.
-  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea | sed 's|https://.*github|https://[secure]@github|'
+  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea 2>&1 | sed 's|https://.*github|https://[secure]@github|'
 fi
 
 cd ..
