@@ -5,10 +5,9 @@ git config --global user.name "tripleabuilderbot"
 
 
 git clone https://github.com/triplea-game/triplea-game.github.io.git website
-cp triplea_maps.yaml website/_data/
 cd website
 git pull --rebase
-
+cp ../triplea_maps.yaml _data/
 STATUS=0; git status | grep "nothing to commit" && STATUS=1
 
 if [ "$STATUS" -eq 0 ]; then
