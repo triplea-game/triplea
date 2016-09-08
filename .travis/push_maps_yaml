@@ -1,9 +1,6 @@
 #!/bin/bash
 
-## Note: 
-##  - The redirect to dev/nulls are to prevent the token from being printed in case there is a failure
-##  - PUSH_TO_WEBSITE_TOKEN is encrypted in the .travis.yml file, to regenerate it, use the travis command:
-##       travis encrpyt PUSH_TO_WEBSITE_TOKEN=...new_token_here... --add
+## Note: The redirect to dev/nulls are to prevent the token from being printed in case there is a failure
 
 ## boiler plate git setup
 git config --global user.email "tripleabuilderbot@gmail.com"

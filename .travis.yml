@@ -64,7 +64,3 @@ deploy:
     branches:
       only:
         - master
-env:
-  global:
-    secure: sENDy/wCq/hY9Aws0OtOVtH1YMLytpPdEul4Qo4EFsMKbKhyByVpkd9G76qtfF+ZeKSdwk2n6xbAgC+WRmIYOadkVcrJSnF8A+h/ysR9Pg+Hg9RLGgm+ZK/MRw5cFJuaSwIHiXGLY/0oM8XgpK9uTLgmXpdxkq1YVrAEY5x+RfW5RpSlhbgwg36f4KHSasi7kVuJXzIPCgTEM9ihC48bESxoml7btr4QU2BMF3ReW2Fb/8Uf6+bWT80ReiWhOvbfBP2iKgjOKMMNJz5rL49ADYfSbfPFf+UYdXNbqT6AbqceYRqG1eZ6SwevHMPDhc8q3+nmK8LffuivNfdx7UusOYgqsgKUqwhu1dMXxs1A7Z8FF5d1GzQrVbx5ZaFtHmIkOudTmyjRUF3/PhCZCwKZ908ZntFMVsuuuxgWVQ1UAqKkIgTQNpAq1u66y60Q6Fu+gUyMBIGSr8w1LaZeBlkF5HvXhmWSwGHSsAr8fiAhr0+9b/5meo/8gh/MxCUt3B8QttgZVcKLSi9iZ9Hyyyu436hT/rz/z/R0nRUJRaBoDIwnqexyfd3BIje/Ubr6JVkz5SiIz3/kB5dnYPg3jVe03iSFrFbZIubiadfzdyKBhEh/qxMm+ncj6SMsYNkVAMUmvqQaFtoFxQPSdvgDR4Nlgs5IfO04fQEx1E+K32AQJMg=
-
