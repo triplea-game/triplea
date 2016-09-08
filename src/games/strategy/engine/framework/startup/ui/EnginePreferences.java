@@ -163,7 +163,8 @@ public class EnginePreferences extends JDialog {
         }
         LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
         EventThreadJOptionPane.showMessageDialog(m_parentFrame,
-            "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
+            "The look and feel has been applied. Please restart TripleA for it to take full effect",
+            new CountDownLatchHandler(true));
       }
     }));
     m_gameParser.addActionListener(SwingAction.of("Enable/Disable Delayed Parsing of Game XML's", e -> {
@@ -172,7 +173,8 @@ public class EnginePreferences extends JDialog {
       final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
       final int answer = JOptionPane.showOptionDialog(m_parentFrame,
           new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" + "<br><br>'" + options[1]
-              + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)."
+              + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid,"
+              + "but can slow down the game significantly)."
               + "<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString())
               + "'</html>"),
           "Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
