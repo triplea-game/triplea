@@ -1652,18 +1652,6 @@
     <br><i>Credits: Triple_Elk (base-line), iron__cross (integration), Adam (convoy center code), and the rest of the team...
     <br>Converted to TripleA 1.2.x.x, and additional rules properties and fixes by Veqryn</i>
   version: 1
-- mapName: Pacific 1942
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/pacific_1942/archive/master.zip
-  img: http://tripleamaps.sourceforge.net/images/TripleA_pacific_1942_mini.png
-  description: |
-    <br>Mod by Pulicat
-    <br>Historical scenario based on the original Pacific map.
-    <br>Six months after Pearl Harbor, the Japanese Empire reached its greatest extent. The question is: how long will they keep it?
-    <br>
-    <br>abandoned
-    <br>
-  version: 1
 - mapName: Zombieland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/zombieland/archive/master.zip
@@ -1673,18 +1661,6 @@
     <br>The zombie apocalypse has arrived!
     <br>Zombies have spread to most of the main population centers in the United States and are threatening to take over the rest. 
         Can the US military and bands of survivalist militias contain and exterminate the zombie plague, or will this be the end of civilization as we know it?
-    <br>
-    <br>abandoned
-    <br>
-  version: 1
-- mapName: Caravan
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/caravan/archive/master.zip
-  img: http://tripleamaps.sourceforge.net/images/TripleA_caravan_mini2.png
-  description: |
-    <br>by Pulicat
-    <br>
-    <br>In the deep, dark woods, a trade route is under threat from armed brigands. Can the town merchants get their goods through the forest paths safely?
     <br>
     <br>abandoned
     <br>
