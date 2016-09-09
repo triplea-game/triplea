@@ -150,6 +150,15 @@ public class MapData implements Closeable {
       m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
       m_territoryEffects =
           PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
+
+      if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
+        throw new IllegalStateException(
+            "Error in resource loading. Unable to load expected resource: " + prefix + POLYGON_FILE + ", the error"
+                + " is that either we did not find the correct path to load. Check the resource loader to make"
+                + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
+                + " relative to the map folder, or relative to the root of the map zip");
+      }
+      
       m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
       m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
       m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));

@@ -7,16 +7,35 @@ import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.util.Match;
+import games.strategy.triplea.MapSupport;
 
 /**
- * This is to support the new maps added to world_war_ii_global which enforce strategic bombing first in the combat order @MapSupport
+ * This is to support the new maps added to world_war_ii_global which enforce strategic bombing first in the combat order 
  * @author simon
  *
  */
+@MapSupport
 public class BattleDelegateOrdered extends BattleDelegate {
+  /**
+   * After the super class .start() method runs, this is called to fight all battles not requiring significant attacker input,
+   * in the order required for Global 1940. Other maps with the same required order can also use it or add it anyway
+   */
+  @Override
+  public void start() {
+    super.start();
+
+    stratBombing();
+    killUndefendedTransports();
+    final int battleCount = processAmphib();
+
+    if( battleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
+      fightRemainingBattle();
+    }
+  }
+
   // Fight all air and bombing raids which are supposed to be fought first. Order shouldn't matter because there won't normally be an attacker decision
   private void stratBombing() {
-    for( final Territory t : m_battleTracker.getPendingBattleSites(true) ) {
+    for( final Territory t : m_battleTracker.getPendingBattleSites(true) ) {            // Returns all territories with air/bombing raids
       final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
       if( airRaid != null ) {
         airRaid.fight(m_bridge);
@@ -35,21 +54,6 @@ public class BattleDelegateOrdered extends BattleDelegate {
         battle.fight( m_bridge );
       }
     }
-  }
-
-  private int fightAmphib( IBattle amphib ) {
-    int foughtBattleCount = 0;
-    // are there battles that must occur first
-    for( final IBattle seaBattle : m_battleTracker.getDependentOn( amphib ) ) {
-      if( seaBattle instanceof MustFightBattle && seaBattle != null ) {
-        seaBattle.fight( m_bridge );
-        foughtBattleCount++;
-      }
-    }
-    amphib.fight( m_bridge );
-    foughtBattleCount++;
-    
-    return foughtBattleCount;
   }
 
   private int processAmphib() {
@@ -85,6 +89,21 @@ public class BattleDelegateOrdered extends BattleDelegate {
     return battleCount;
   }
 
+  private int fightAmphib( IBattle amphib ) {
+    int foughtBattleCount = 0;
+    // are there battles that must occur first
+    for( final IBattle seaBattle : m_battleTracker.getDependentOn( amphib ) ) {
+      if( seaBattle instanceof MustFightBattle && seaBattle != null ) {
+        seaBattle.fight( m_bridge );
+        foughtBattleCount++;
+      }
+    }
+    amphib.fight( m_bridge );
+    foughtBattleCount++;
+    
+    return foughtBattleCount;
+  }
+
   private void fightRemainingBattle() {
     // This needs another loop just in case the last otherBattleCount was triggered by a sea combat already fought
     for( final Territory t : m_battleTracker.getPendingBattleSites(false) ) {  // Will only find one
@@ -95,20 +114,4 @@ public class BattleDelegateOrdered extends BattleDelegate {
     }
   }
 
-  /**
-   * After the super class .start() method runs, this is called to fight all battles not requiring significant attacker input,
-   * in the order required for Global 1940. Other maps with the same required order can also use it or add it anyway
-   */
-  @Override
-  public void start() {
-    super.start();
-
-    stratBombing();
-    killUndefendedTransports();
-    final int battleCount = processAmphib();
-
-    if( battleCount == 1 ) {  // If there is only one remaining normal combat, fight it here rather than requiring the user to click it.
-      fightRemainingBattle();
-    }
-  }
 }

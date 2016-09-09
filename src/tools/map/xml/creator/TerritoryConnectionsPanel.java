@@ -232,7 +232,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         firstTerritoryConnections = MapXmlHelper.getTerritoryConnectionsMap().get(territoryName);
         secondterritory = selectedTerritory.get();
       } else {
-        firstTerritoryConnections = MapXmlHelper.getTerritoryConnectionsMap().get(selectedTerritory);
+        firstTerritoryConnections = MapXmlHelper.getTerritoryConnectionsMap().get(selectedTerritory.get());
         secondterritory = territoryName;
       }
       if (firstTerritoryConnections.contains(secondterritory)) {

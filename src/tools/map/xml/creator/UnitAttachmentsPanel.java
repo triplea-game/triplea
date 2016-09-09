@@ -30,7 +30,7 @@ public class UnitAttachmentsPanel extends DynamicRowsPanel {
 
   public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String unitName) {
     if (!me.isPresent() || !(me.get() instanceof UnitAttachmentsPanel)
-        || ((UnitAttachmentsPanel) me.get()).unitName != unitName) {
+        || !((UnitAttachmentsPanel) me.get()).unitName.equals(unitName)) {
       me = Optional.of(new UnitAttachmentsPanel(stepActionPanel, unitName));
     }
     layout(mapXmlCreator);

@@ -22,113 +22,57 @@ public class RouteOptimizer {
   private static final int commonAdditionalScreens = 2;
   private static final int minAdditionalScreens = 0;
 
-  private Point endPoint;
+  private final double gameMapWidth;
   private int mapWidth;
   private int mapHeight;
 
   public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
     checkNotNull(mapData);
     this.mapPanel = checkNotNull(mapPanel);
-    isInfiniteY = mapData.scrollWrapY();
-    isInfiniteX = mapData.scrollWrapX();
-  }
-
-  /**
-   * Algorithm for finding the shortest path for the given Route
-   * 
-   * @param route The joints on the Map
-   * @return A Point array which goes through Map Borders if necessary
-   */
-  public Point[] getTranslatedRoute(Point... route) {
     mapWidth = mapPanel.getImageWidth();
     mapHeight = mapPanel.getImageHeight();
-    if (route == null || route.length == 0) {
-      // Or the array is too small
 
-      return route;
-    }
-    if (!isInfiniteX && !isInfiniteY) {
-      // If the Map is not infinite scrolling, we can safely return the given Points
-      endPoint = route[route.length - 1];
-      return route;
-    }
-    List<Point> result = new ArrayList<>();
-    Point previousPoint = null;
-    for (Point point : route) {
-      if (previousPoint == null) {
-        previousPoint = point;
-        result.add(point);
-        continue;
-      }
-      previousPoint = normalizePoint(previousPoint);
-      Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
-      result.add(closestPoint);
-      previousPoint = closestPoint;
-    }
-    endPoint = result.get(result.size() - 1);
-    return result.toArray(new Point[result.size()]);
+    isInfiniteY = mapData.scrollWrapY();
+
+    isInfiniteX = mapData.scrollWrapX();
+
+    gameMapWidth = mapData.getMapDimensions().getWidth();
+
   }
 
-  /**
-   * Returns the Closest Point out of the given Pool
-   * 
-   * @param source the reference Point
-   * @param pool Point2D List with all possible options
-   * @return the closest point in the Pool to the source
-   */
-  private Point getClosestPoint(Point source, List<Point2D> pool) {
-    double closestDistance = Double.MAX_VALUE;
-    Point closestPoint = null;
-    for (Point2D possibleClosestPoint : pool) {
-      if (closestPoint == null) {
-        closestDistance = source.distance(possibleClosestPoint);
-        closestPoint = normalizePoint(getPoint(possibleClosestPoint));
-      } else {
-        double distance = source.distance(possibleClosestPoint);
-        if (closestDistance > distance) {
-          closestPoint = getPoint(possibleClosestPoint);
-          closestDistance = distance;
+  List<Point> normalizeForHorizontalWrapping(Point... route) {
+    final boolean crossesMapSeam = crossMapSeam(route);
+    final List<Point> points = Arrays.asList(route);
+
+    if (crossesMapSeam) {
+      final int minX = minX(route);
+      for (Point p : points) {
+        if ((p.x - minX) > mapPanel.getWidth()) {
+          p.x -= this.gameMapWidth;
+
         }
       }
     }
-    return closestPoint;
+    return points;
+  }
+
+  private boolean crossMapSeam(Point... route) {
+    final int minX = minX(route);
+    return Arrays.stream(route).filter(point -> (point.x - minX) > mapPanel.getWidth()).findAny().isPresent();
+  }
+
+  private static int minX(Point... route) {
+    int minX = Integer.MAX_VALUE;
+    for (Point p : Arrays.asList(route)) {
+      if (p.x < minX) {
+        minX = p.x;
+      }
+    }
+    return minX;
   }
 
   private Point normalizePoint(Point point) {
     return new Point(point.x % mapWidth, point.y % mapHeight);
-  }
-
-  /**
-   * Method for getting Points, which are a mapHeight/Width away from the actual Point
-   * Used to display routes with higher offsets than the map width/height
-   * 
-   * @param point The Point to "clone"
-   * @return A List of all possible Points depending in map Properties
-   *         size may vary
-   */
-  private List<Point2D> getPossiblePoints(Point2D point) {
-    List<Point2D> result = new ArrayList<>();
-    result.add(point);
-    if (isInfiniteX && isInfiniteY) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() - mapWidth, point.getY() + mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() + mapHeight)));
-    }
-    if (isInfiniteX) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY()),
-          new Point2D.Double(point.getX() + mapWidth, point.getY())));
-
-    }
-    if (isInfiniteY) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX(), point.getY() - mapHeight),
-          new Point2D.Double(point.getX(), point.getY() + mapHeight)));
-
-    }
-    return result;
   }
 
   /**
@@ -139,10 +83,6 @@ public class RouteOptimizer {
    */
   public static Point getPoint(Point2D point) {
     return new Point((int) point.getX(), (int) point.getY());
-  }
-
-  public Point getLastEndPoint() {
-    return endPoint;
   }
 
   /**

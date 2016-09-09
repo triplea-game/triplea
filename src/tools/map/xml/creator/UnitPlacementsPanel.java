@@ -13,6 +13,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -175,8 +177,10 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
         throw new NullPointerException();
       }
       final JTextField[] countFields = new JTextField[playerUnitTypes.size()];
-      // @SuppressWarnings("unchecked") Reason
-      this.playerPlacements.putAll(playerPlacements);
+      // copy playPlacements map
+      this.playerPlacements = playerPlacements.entrySet().stream()
+      .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), new Integer(e.getValue())))
+      .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
       this.setLayout(new GridBagLayout());
       final JTextArea title = new JTextArea("Choose units");
       title.setBackground(this.getBackground());

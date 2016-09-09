@@ -10,8 +10,9 @@ script:
 ## validate yamls before we do anything else
 - ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
 - ruby -e "require 'yaml';puts YAML.load_file('./lobby_server.yaml')" > /dev/null || exit 1
-## run the gradle build, builds a jar file
-- ./gradlew check --info
+## run the gradle build
+- ./gradlew --no-daemon test
+# Command with checkstyle run  - ./gradlew check --info
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
 - chmod +x ./.travis/setup && ./.travis/setup
@@ -24,7 +25,7 @@ before_deploy:
 - mkdir -p maps
 - (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.125/tutorial.zip)
 ## Run the gradle release build process - creates the installers
-- ./gradlew release
+- ./gradlew --no-daemon release
 ### Debug, show the artifacts that have been built
 - ls build/releases/
 ### Rename the windows installers to have 32bit and 64bit extensions instead of 'x86'
@@ -32,6 +33,7 @@ before_deploy:
 - mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
 ## Push a tag to github, will trigger the releases process
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
+- chmod +x ./.travis/push_maps_yaml && ./.travis/push_maps_yaml
 ## rest is commented out, work in progress.. does not work and needs some debugging.
 #- echo "showing build artifacts" && ls build/distributions/
 #- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"

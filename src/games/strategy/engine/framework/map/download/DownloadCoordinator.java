@@ -1,15 +1,18 @@
 package games.strategy.engine.framework.map.download;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
+
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
@@ -19,8 +22,8 @@ public class DownloadCoordinator {
 
   private static final int MAX_CONCURRENT_DOWNLOAD = 3;
 
-  private final List<DownloadFile> downloadList = Lists.newCopyOnWriteArrayList();
-  private final Set<DownloadFileDescription> downloadSet = Sets.newHashSet();
+  private final Map<DownloadFile, Runnable> downloadMap = new HashMap<>();
+  private final Set<DownloadFileDescription> downloadSet = new HashSet<>();
 
   private volatile boolean cancelled = false;
 
@@ -46,7 +49,7 @@ public class DownloadCoordinator {
 
   private void startNextDownloads() {
     final long downloadingCount = countDownloadsInProgress();
-    if (downloadList != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {
+    if (downloadMap != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {
       startNextDownload();
     }
   }
@@ -58,13 +61,14 @@ public class DownloadCoordinator {
 
 
   private long count(final Predicate<DownloadFile> filter) {
-    return downloadList.stream().filter(filter).count();
+    return downloadMap.keySet().stream().filter(filter).count();
   }
 
   private void startNextDownload() {
-    for (final DownloadFile download : downloadList) {
-      if (download.isWaiting()) {
-        download.startAsyncDownload();
+    for (final Map.Entry<DownloadFile, Runnable> download : downloadMap.entrySet()) {
+      if (download.getKey().isWaiting()) {
+        new Thread(download.getValue()).start();
+        download.getKey().startAsyncDownload();
         break;
       }
     }
@@ -80,7 +84,7 @@ public class DownloadCoordinator {
    * @param completionListener A listener that is called when this specific download finishes.
    */
   public void accept(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
-      final Runnable completionListener) {
+      final Runnable completionListener, final JProgressBar progressBar) {
     // To avoid double acceptance, hold a lock while we check the 'downloadSet'
     synchronized (this) {
       if (downloadSet.contains(download)) {
@@ -89,7 +93,18 @@ public class DownloadCoordinator {
         downloadSet.add(download);
       }
     }
-    downloadList.add(new DownloadFile(download, progressUpdateListener, completionListener));
+    DownloadFile downloadFile = new DownloadFile(download, progressUpdateListener, completionListener);
+    Runnable progressBarStarter = () -> {
+      final Optional<Integer> length = DownloadUtils.getDownloadLength(download.newURL());
+      if (length.isPresent()) {
+        SwingUtilities.invokeLater(() -> {
+          progressBar.setMinimum(0);
+          progressBar.setMaximum(length.get());
+        });
+      }
+    };
+    downloadMap.put(downloadFile, progressBarStarter);
+
   }
 
   /**
@@ -98,7 +113,7 @@ public class DownloadCoordinator {
    */
   public void cancelDownloads() {
     cancelled = true;
-    for (final DownloadFile download : downloadList) {
+    for (final DownloadFile download : downloadMap.keySet()) {
       download.cancelDownload();
     }
   }

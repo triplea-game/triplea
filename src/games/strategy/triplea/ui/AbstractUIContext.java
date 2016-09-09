@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -292,33 +293,40 @@ public abstract class AbstractUIContext implements IUIContext {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
     final Map<String, String> rVal = new LinkedHashMap<>();
     rVal.put("Original", mapName);
-    getSkins(mapName, rVal, new File(ClientFileSystemHelper.getRootFolder(), "maps"));
-    getSkins(mapName, rVal, ClientFileSystemHelper.getUserMapsFolder());
+    rVal.putAll(getSkins(mapName));
     return rVal;
   }
 
-  protected static void getSkins(final String mapName, final Map<String, String> rVal, final File root) {
-    final File[] files = root.listFiles();
+  private static Map<String,String> getSkins(final String mapName) {
+    final Map<String, String> rVal = new HashMap<>();
+    final File[] files = ClientFileSystemHelper.getUserMapsFolder().listFiles();
     if (files == null) {
-      return;
+      return rVal;
     }
+
     for (final File f : files) {
       if (!f.isDirectory()) {
-        // jar files
-        if (f.getName().endsWith(".zip") && f.getName().startsWith(mapName + "-")) {
-          final String nameWithExtension = f.getName().substring(f.getName().indexOf('-') + 1);
-          rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),
-              f.getName().substring(0, f.getName().length() - 4));
+        if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
+          final String skinName = f.getName().substring(0, f.getName().indexOf('-'));
+          if (f.getName().endsWith(".zip")) {
+            rVal.put(skinName, f.getName());
+          } else {
+            rVal.put(f.getName().substring(f.getName().indexOf('-') + 1), f.getName());
+          }
         }
       }
-      // directories
-      else if (f.getName().startsWith(mapName + "-")) {
-        rVal.put(f.getName().substring(f.getName().indexOf('-') + 1), f.getName());
-      }
     }
+    return rVal;
   }
 
-  protected void closeActor(final Active actor) {
+  private static boolean mapSkinNameMatchesMapName(String mapSkin, String mapName) {
+    return mapSkin.startsWith(mapName) &&
+        mapSkin.toLowerCase().contains("skin") &&
+        mapSkin.contains("-") &&
+        !mapSkin.endsWith("properties");
+  }
+
+  private static void closeActor(final Active actor) {
     try {
       actor.deactivate();
     } catch (final RuntimeException e) {

@@ -109,10 +109,22 @@ public class DownloadFileDescriptionTest {
 
   @Test
   public void testGetInstallLocation() {
-    final String inputUrl = "http://github.com/abc.zip";
-    final File f = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + "abc.zip");
+    String inputUrl = "http://github.com/abc.zip";
+    String mapName = "123-map";
+    File expected = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapName + ".zip");
 
-    final DownloadFileDescription testObj = testObjFromUrl(inputUrl);
-    assertThat(testObj.getInstallLocation().getAbsolutePath(), is(f.getAbsolutePath()));
+    mapInstallLocationTest(inputUrl, mapName, expected);
+
+    inputUrl = "http://github.com/abc-master.zip";
+    mapName = "best_map";
+    expected = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapName + "-master.zip");
+    mapInstallLocationTest(inputUrl, mapName, expected);
+  }
+
+  private static void mapInstallLocationTest(String inputUrl, String mapName, File expected) {
+    final DownloadFileDescription testObj =     new DownloadFileDescription(inputUrl, "", mapName, new Version(0, 0),
+        DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
+
+    assertThat(testObj.getInstallLocation().getAbsolutePath(), is(expected.getAbsolutePath()));
   }
 }

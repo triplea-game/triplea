@@ -148,28 +148,10 @@ public class GameDataExporter {
     Field conPropField = null;
     Field edPropField = null;
     try {
-      conPropField = GameProperties.class.getDeclaredField("m_constantProperties"); // TODO: unchecked
-    } catch (final SecurityException | IllegalArgumentException e) {
-      ClientLogger.logError("An Error occured whilst trying trying to setup the m_constant Property List", e);
-    } catch ( final NoSuchFieldException dummy) {
-      try {
-        conPropField = GameProperties.class.getDeclaredField("constantProperties");
-      } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException e) {
-        ClientLogger.logError("An Error occured whilst trying trying to setup the constant Property List", e);
-      }
-    }
-    try {
-      edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
-    } catch ( final NoSuchFieldException dummy) {
-      try {
-        edPropField = GameProperties.class.getDeclaredField("editableProperties");
-      } catch (final SecurityException | NoSuchFieldException e ) {
-        ClientLogger.logError("An Error occured whilst trying trying to setup the editable Property List", e);
-      }
-    }
-    // confusing code above is needed to ensure we have gotten both properties. Now process them.
-    try {
+      // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
+      final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
       conPropField.setAccessible(true);
+      final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
@@ -205,7 +187,7 @@ public class GameDataExporter {
     if (prop.getClass().equals(ComboProperty.class)) {
       Field listField;
       try {
-        listField = ComboProperty.class.getDeclaredField("m_possibleValues"); // TODO: unchecked reflection
+        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME); // TODO: unchecked reflection
         listField.setAccessible(true);
         typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
@@ -214,8 +196,8 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       try {
-        final Field maxField = NumberProperty.class.getDeclaredField("m_max"); // TODO: unchecked reflection
-        final Field minField = NumberProperty.class.getDeclaredField("m_min");
+        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME); // TODO: unchecked reflection
+        final Field minField = NumberProperty.class.getDeclaredField(NumberProperty.MIN_PROPERTY_NAME);
         maxField.setAccessible(true);
         minField.setAccessible(true);
         final int max = maxField.getInt(prop);
