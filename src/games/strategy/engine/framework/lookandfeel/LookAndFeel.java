@@ -1,11 +1,14 @@
 package games.strategy.engine.framework.lookandfeel;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
@@ -56,6 +59,16 @@ public class LookAndFeel {
   }
 
   public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
+    try {
+      UIManager.setLookAndFeel(lookAndFeelClassName);
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+        | UnsupportedLookAndFeelException e) {
+      ClientLogger.logError("Unable to load look and feel: " + lookAndFeelClassName
+          + ", retaining the old look and feel. Please do not select this look and feel, it does not work."
+          + " Please do report this to the developers so the look and feel can be addressed. When doing so, please"
+          + " include this list of installed look and feel debug data: " + Arrays.asList(UIManager.getInstalledLookAndFeels()) , e);
+      return;
+    }
     SystemPreferences.put(SystemPreferenceKey.LOOK_AND_FEEL_PREF, lookAndFeelClassName);
   }
 }

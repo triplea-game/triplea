@@ -27,12 +27,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;

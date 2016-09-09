@@ -106,16 +106,8 @@ public final class MapDownloadProgressPanel extends JPanel {
       final Runnable completionListener =
           () -> SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
 
-      (new Thread(() -> {
-        final Optional<Integer> length = DownloadUtils.getDownloadLength(download.newURL());
-        if (length.isPresent()) {
-          SwingUtilities.invokeLater(() -> {
-            progressBar.setMinimum(0);
-            progressBar.setMaximum(length.get());
-          });
-        }
-        downloadCoordinator.accept(download, progressListener, completionListener);
-      })).start();
+
+      downloadCoordinator.accept(download, progressListener, completionListener, progressBar);
     }
   }
 }
