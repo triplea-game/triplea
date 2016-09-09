@@ -145,8 +145,6 @@ public class GameDataExporter {
   private void propertyList(final GameData data) {// TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
-    Field conPropField = null;
-    Field edPropField = null;
     try {
       // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
       final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
@@ -155,7 +153,7 @@ public class GameDataExporter {
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
-    } catch (final SecurityException | IllegalArgumentException | IllegalAccessException e) {
+    } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
       ClientLogger.logError("An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
