@@ -26,7 +26,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -65,6 +64,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 
@@ -102,7 +102,6 @@ public class ViewMenu {
     // The menuItem to turn TabbedProduction on or off
     addTabbedProduction(menuView);
     addShowGameUuid(menuView);
-    addSetLookAndFeel(menuView);
 
     showMapDetails.setDisable(!uiContext.getMapData().getHasRelief());
 
@@ -111,56 +110,28 @@ public class ViewMenu {
   private void addShowCommentLog(final Menu parentMenu) {
     final CheckMenuItem showCommentLog = new CheckMenuItem("Show Comment _Log");
     showCommentLog.setModel(frame.getShowCommentLogButtonModel());
-    parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
+    parentMenu.getItems().add(showCommentLog);
   }
 
   private static void addTabbedProduction(final Menu parentMenu) {
-    final CheckMenuItem tabbedProduction = new CheckMenuItem("Show Production Tabs");
-    tabbedProduction.setMnemonic(KeyEvent.VK_P);
+    final CheckMenuItem tabbedProduction = new CheckMenuItem("Show _Production Tabs");
+    tabbedProduction.setMnemonicParsing(true);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction
-        .addActionListener(SwingAction.of(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected())));
-    parentMenu.add(tabbedProduction);
+    tabbedProduction.setOnAction(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
+    parentMenu.getItems().add(tabbedProduction);
   }
 
   private void addShowGameUuid(final Menu menuView) {
-    menuView.add(SwingAction.of("Game UUID", e -> {
-      final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
-      final JTextField text = new JTextField();
-      text.setText(id);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-      panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-          new Insets(0, 0, 0, 0), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(menuView), panel, "Game UUID",
-          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-    })).setMnemonic(KeyEvent.VK_U);
+    MenuItem gameUUID = new MenuItem("Game _UUID");
+    gameUUID.setMnemonicParsing(true);
+    gameUUID.setOnAction(e -> {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Game UUID");
+      alert.setHeaderText((String) gameData.getProperties().get(GameData.GAME_UUID));
+      alert.showAndWait();
+    });
+    menuView.getItems().add(gameUUID);
   }
-
-  private void addSetLookAndFeel(final Menu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel", e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
-      final JList<String> list = lookAndFeel.getFirst();
-      final String currentKey = lookAndFeel.getThird();
-      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
-        final String selectedValue = list.getSelectedValue();
-        if (selectedValue == null) {
-          return;
-        }
-        if (selectedValue.equals(currentKey)) {
-          return;
-        }
-        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
-            new CountDownLatchHandler(true));
-      }
-    })).setMnemonic(KeyEvent.VK_F);
-  }
-
-
 
   private void addZoomMenu(final Menu menuView) {
     MenuItem mapZoom = new MenuItem("Map _Zoom");
@@ -209,94 +180,69 @@ public class ViewMenu {
     menuView.getItems().add(mapZoom);
   }
 
+  private RadioMenuItem getScaleRadioButton(double scale, ToggleGroup group, boolean setMnemonic) {
+    RadioMenuItem result =
+        new RadioMenuItem(setMnemonic ? "_" : "" + new DecimalFormat("00.##").format(scale * 100) + "%");
+    result.setOnAction(e -> {
+      uiContext.setUnitScaleFactor(scale);
+      frame.getMapPanel().resetMap();
+    });
+    if (setMnemonic) {
+      result.setMnemonicParsing(true);
+    }
+    result.setToggleGroup(group);
+    if (Math.abs(scale - uiContext.getUnitImageFactory().getScaleFactor()) < 0.01) {
+      result.setSelected(true);
+    }
+    return result;
+  }
+
   private void addUnitSizeMenu(final Menu menuView) {
-    final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
-    // This is the action listener used
-    class UnitSizeAction extends AbstractAction {
-      private static final long serialVersionUID = -6280511505686687867L;
-      private final double scaleFactor;
-
-      public UnitSizeAction(final double scaleFactor) {
-        this.scaleFactor = scaleFactor;
-        putValue(Action.NAME, s_decimalFormat.format(scaleFactor * 100) + "%");
-      }
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        uiContext.setUnitScaleFactor(scaleFactor);
-        frame.getMapPanel().resetMap();
-      }
-    }
     final Menu unitSizeMenu = new Menu("Unit _Size");
-    final ButtonGroup unitSizeGroup = new ButtonGroup();
-    final JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
-    final JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
-    radioItem100.setMnemonic(KeyEvent.VK_1);
-    final JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
-    final JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
-    radioItem83.setMnemonic(KeyEvent.VK_8);
-    final JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
-    radioItem75.setMnemonic(KeyEvent.VK_7);
-    final JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
-    radioItem66.setMnemonic(KeyEvent.VK_6);
-    final JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
-    final JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
-    radioItem50.setMnemonic(KeyEvent.VK_5);
-    unitSizeGroup.add(radioItem125);
-    unitSizeGroup.add(radioItem100);
-    unitSizeGroup.add(radioItem87);
-    unitSizeGroup.add(radioItem83);
-    unitSizeGroup.add(radioItem75);
-    unitSizeGroup.add(radioItem66);
-    unitSizeGroup.add(radioItem56);
-    unitSizeGroup.add(radioItem50);
-    radioItem100.setSelected(true);
-    // select the closest to to the default size
-    final Enumeration<AbstractButton> enum1 = unitSizeGroup.getElements();
-    boolean matchFound = false;
-    while (enum1.hasMoreElements()) {
-      final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
-      final UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-      if (Math.abs(action.scaleFactor - uiContext.getUnitImageFactory().getScaleFactor()) < 0.01) {
-        menuItem.setSelected(true);
-        matchFound = true;
-        break;
-      }
-    }
-    if (!matchFound) {
+    final ToggleGroup unitSizeGroup = new ToggleGroup();
+    final RadioMenuItem radioItem125 = getScaleRadioButton(1.25, unitSizeGroup, false);
+    final RadioMenuItem radioItem100 = getScaleRadioButton(1.0, unitSizeGroup, true);
+    final RadioMenuItem radioItem87 = getScaleRadioButton(0.875, unitSizeGroup, false);
+    final RadioMenuItem radioItem83 = getScaleRadioButton(0.8333, unitSizeGroup, true);
+    final RadioMenuItem radioItem75 = getScaleRadioButton(0.75, unitSizeGroup, true);
+    final RadioMenuItem radioItem66 = getScaleRadioButton(0.6666, unitSizeGroup, true);
+    final RadioMenuItem radioItem56 = getScaleRadioButton(0.5625, unitSizeGroup, false);
+    final RadioMenuItem radioItem50 = getScaleRadioButton(0.5, unitSizeGroup, true);
+    if (unitSizeGroup.getSelectedToggle() == null) {
       System.err.println("default unit size does not match any menu item");
+      radioItem100.setSelected(true);
     }
-    unitSizeMenu.add(radioItem125);
-    unitSizeMenu.add(radioItem100);
-    unitSizeMenu.add(radioItem87);
-    unitSizeMenu.add(radioItem83);
-    unitSizeMenu.add(radioItem75);
-    unitSizeMenu.add(radioItem66);
-    unitSizeMenu.add(radioItem56);
-    unitSizeMenu.add(radioItem50);
+    unitSizeMenu.getItems().add(radioItem125);
+    unitSizeMenu.getItems().add(radioItem100);
+    unitSizeMenu.getItems().add(radioItem87);
+    unitSizeMenu.getItems().add(radioItem83);
+    unitSizeMenu.getItems().add(radioItem75);
+    unitSizeMenu.getItems().add(radioItem66);
+    unitSizeMenu.getItems().add(radioItem56);
+    unitSizeMenu.getItems().add(radioItem50);
     menuView.getItems().add(unitSizeMenu);
   }
 
   private void addMapSkinsMenu(final Menu menuGame) {
     // beagles Mapskin code
     // creates a sub menu of radiobuttons for each available mapdir
-    MenuItem mapMenuItem;
-    final Menu mapSubMenu = new Menu("Map Skins");
-    mapSubMenu.setMnemonic(KeyEvent.VK_K);
-    final ButtonGroup mapButtonGroup = new ButtonGroup();
-    menuGame.add(mapSubMenu);
+    RadioMenuItem mapMenuItem;
+    final Menu mapSubMenu = new Menu("Map S_kins");
+    mapSubMenu.setMnemonicParsing(true);
+    final ToggleGroup mapButtonGroup = new ToggleGroup();
+    menuGame.getItems().add(mapSubMenu);
     final Map<String, String> skins = AbstractUIContext.getSkins(frame.getGame().getData());
     for (final String key : skins.keySet()) {
-      mapMenuItem = new JRadioButtonMenuItem(key);
+      mapMenuItem = new RadioMenuItem(key);
       // menu key navigation with ALT+first character (multiple hits for same character possible)
       // mapMenuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
-      mapButtonGroup.add(mapMenuItem);
-      mapSubMenu.add(mapMenuItem);
-      mapSubMenu.setEnabled(skins.size() > 1);
+      mapMenuItem.setToggleGroup(mapButtonGroup);
+      mapSubMenu.getItems().add(mapMenuItem);
+      mapSubMenu.setDisable(skins.size() <= 1);
       if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
-      mapMenuItem.addActionListener(e -> {
+      mapMenuItem.setOnAction(e -> {
         try {
           frame.updateMap(skins.get(key));
           if (uiContext.getMapData().getHasRelief()) {
@@ -366,9 +312,7 @@ public class ViewMenu {
   }
 
   private void addDrawTerritoryBordersAgain(final Menu parentMenu) {
-    final Menu drawBordersMenu = new Menu();
-    drawBordersMenu.setMnemonic(KeyEvent.VK_O);
-    drawBordersMenu.setText("Draw Borders On Top");
+    final Menu drawBordersMenu = new Menu("Draw Borders _On Top");
     final JRadioButton noneButton = new JRadioButton("Low");
     noneButton.setMnemonic(KeyEvent.VK_L);
     final JRadioButton mediumButton = new JRadioButton("Medium");

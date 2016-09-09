@@ -157,13 +157,17 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
+import javafx.beans.InvalidationListener;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
 /**
@@ -312,57 +316,47 @@ public class TripleAFrame extends MainGameFrame {
       chatSplit.getItems().add(mapPanel);
       mapAndChatPanel.setCenter(chatSplit);
     } else {
-      mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      mapAndChatPanel.setCenter(mapPanel);
     }
-    this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+    ((BorderPane)this.getScene().getRoot()).setCenter(gameMainPanel);
     gameSouthPanel = new BorderPane();
     // m_gameSouthPanel.add(m_message, BorderLayout.WEST);
-    message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    message.setPreferredSize(message.getPreferredSize());
-    message.setText("some text to set a reasonable preferred size");
-    status.setText("some text to set a reasonable preferred size for movement error messages");
-    message.setPreferredSize(message.getPreferredSize());
-    status.setPreferredSize(message.getPreferredSize());
-    message.setText("");
-    status.setText("");
+//    message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     // m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
-    final JPanel bottomMessagePanel = new JPanel();
-    bottomMessagePanel.setLayout(new GridBagLayout());
-    bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
+    final GridPane bottomMessagePanel = new GridPane();
+    bottomMessagePanel.setBorder(Border.EMPTY);
     bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    gameSouthPanel.add(bottomMessagePanel, BorderLayout.CENTER);
-    status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    final JPanel stepPanel = new JPanel();
-    stepPanel.setLayout(new GridBagLayout());
+    gameSouthPanel.setCenter(bottomMessagePanel);
+//    status.setBorder(new EtchedBorder(EtchedBorder.RAISED)); TODO with CSS
+    final GridPane stepPanel = new GridPane();
     stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
-    step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    step.setHorizontalTextPosition(SwingConstants.LEADING);
-    gameSouthPanel.add(stepPanel, BorderLayout.EAST);
-    gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-    rightHandSidePanel.setLayout(new BorderLayout());
-    final FocusAdapter focusToMapPanelFocusListener = new FocusAdapter() {
+//    step.setBorder(new EtchedBorder(EtchedBorder.RAISED));TODO CSS
+//    round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+//    player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+//    step.setHorizontalTextPosition(SwingConstants.LEADING);
+    gameSouthPanel.setRight(stepPanel);
+    gameMainPanel.setBottom(gameSouthPanel);
+    InvalidationListener focusToMapPanelFocusListener = e -> mapPanel.requestFocus();
+    rightHandSidePanel.focusTraversableProperty().addListener(focusToMapPanelFocusListener);
+    smallView.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         // give the focus back to the map panel
         mapPanel.requestFocus();
       }
-    };
-    rightHandSidePanel.addFocusListener(focusToMapPanelFocusListener);
-    smallView.addFocusListener(focusToMapPanelFocusListener);
-    tabsPanel.addFocusListener(focusToMapPanelFocusListener);
-    rightHandSidePanel.add(smallView, BorderLayout.NORTH);
+    });
+    tabsPanel.focusTraversableProperty().addListener(focusToMapPanelFocusListener);
+    rightHandSidePanel.setTop(smallView);
     tabsPanel.setBorder(null);
-    rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
+    rightHandSidePanel.setCenter(tabsPanel);
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
@@ -372,28 +366,27 @@ public class TripleAFrame extends MainGameFrame {
     for (final KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
     }
-
-    tabsPanel.addTab("Actions", actionButtons);
+    tabsPanel.getTabs().add(new Tab("Actions", actionButtons));
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
-    tabsPanel.addTab("Stats", statsPanel);
+    tabsPanel.getTabs().add(new Tab("Stats", statsPanel));
     economyPanel = new EconomyPanel(data);
-    tabsPanel.addTab("Economy", economyPanel);
+    tabsPanel.getTabs().add(new Tab("Economy", economyPanel));
     objectivePanel = new ObjectivePanel(data);
     if (objectivePanel.isEmpty()) {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     } else {
-      tabsPanel.addTab(objectivePanel.getName(), objectivePanel);
+      tabsPanel.getTabs().add(objectivePanel.getName(), objectivePanel);
     }
     notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
-    tabsPanel.addTab("Notes", notesPanel);
+    tabsPanel.getTabs().add(new Tab("Notes", notesPanel));
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());
+    tabsPanel.getTabs().add(new Tab("Territory", null, details, TerritoryDetailPanel.getHoverText()));//TODOs
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
     tabsPanel.addChangeListener(evt -> {
-      final JTabbedPane pane = (JTabbedPane) evt.getSource();
+      final TabPane pane = (TabPane) evt.getSource();
       // Get current tab
       final int sel = pane.getSelectedIndex();
       if (sel == -1) {
@@ -421,14 +414,15 @@ public class TripleAFrame extends MainGameFrame {
         editPanel.setActive(false);
       }
     });
-    rightHandSidePanel.setPreferredSize(new Dimension((int) smallView.getPreferredSize().getWidth(),
-        (int) mapPanel.getPreferredSize().getHeight()));
-    gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
-    gameCenterPanel.setOneTouchExpandable(true);
-    gameCenterPanel.setDividerSize(8);
-    gameCenterPanel.setResizeWeight(1.0);
-    gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-    gameCenterPanel.resetToPreferredSizes();
+    rightHandSidePanel.setPrefSize(smallView.getPreferredSize().getWidth(), mapPanel.getPrefHeight());
+    gameCenterPanel = new SplitPane();
+    gameCenterPanel.setOrientation(Orientation.HORIZONTAL);
+    gameCenterPanel.getItems().addAll(mapAndChatPanel, rightHandSidePanel);
+//    gameCenterPanel.setOneTouchExpandable(true);
+//    gameCenterPanel.setDividerSize(8);
+//    gameCenterPanel.setResizeWeight(1.0);
+    gameMainPanel.setCenter(gameCenterPanel);
+//    gameCenterPanel.resetToPreferredSizes();
     // set up the edit mode overlay text
     this.setGlassPane(new JComponent() {
       private static final long serialVersionUID = 6724687534214427291L;
