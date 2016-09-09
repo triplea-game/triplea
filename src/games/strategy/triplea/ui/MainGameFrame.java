@@ -2,12 +2,11 @@ package games.strategy.triplea.ui;
 
 import java.io.IOException;
 
-import javax.swing.JComponent;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -35,7 +34,7 @@ public abstract class MainGameFrame extends Stage {
 
   public abstract void notifyError(String error);
 
-  public abstract JComponent getMainPanel();
+  public abstract Node getMainPanel();
 
   public abstract void setShowChatTime(final boolean showTime);
 

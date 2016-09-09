@@ -34,7 +34,7 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    return m_mouseEvent.getButton().equals(MouseButton.SECONDARY);
+    return m_mouseEvent.isSecondaryButtonDown();
   }
 
   public boolean isControlDown() {

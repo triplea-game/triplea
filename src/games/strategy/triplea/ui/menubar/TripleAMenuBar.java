@@ -60,9 +60,9 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Triple;
+import javafx.scene.control.MenuBar;
 
-public class TripleAMenuBar extends JMenuBar {
-  private static final long serialVersionUID = -1447295944297939539L;
+public class TripleAMenuBar extends MenuBar {
   protected final TripleAFrame frame;
 
   public TripleAMenuBar(final TripleAFrame frame) {

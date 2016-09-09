@@ -157,6 +157,10 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
+import javafx.geometry.Orientation;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
@@ -219,12 +223,12 @@ public class TripleAFrame extends MainGameFrame {
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
-    this.onCloseRequestProperty().set(e -> leaveGame());
+    onCloseRequestProperty().set(e -> leaveGame());
     uiContext = new UIContext();
     uiContext.setDefaultMapDir(game.getData());
     uiContext.getMapData().verify(data);
     uiContext.setLocalPlayers(players);
-//    this.setCursor(uiContext.getCursor());
+    getScene().setCursor(uiContext.getCursor());
     // initialize m_editModeButtonModel before createMenuBar()
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
@@ -249,7 +253,7 @@ public class TripleAFrame extends MainGameFrame {
         } else {
           mapAndChatPanel.getChildren().clear();
           chatSplit.getItems().clear();
-          mapAndChatPanel.getChildren().add(mapPanel);
+          mapAndChatPanel.setCenter(mapPanel);
         }
       }
 
@@ -260,18 +264,18 @@ public class TripleAFrame extends MainGameFrame {
           chatSplit.getItems().clear();
           chatSplit.getItems().add(commentSplit);
         } else {
-          mapAndChatPanel.getChildren().clear();
+          mapAndChatPanel.getChildren().clear();//TODO maybe this isn't working...
           chatSplit.getItems().clear();
           chatSplit.getItems().add(commentPanel);
           chatSplit.getItems().add(mapPanel);
-          mapAndChatPanel.getChildren().add(chatSplit);
+          mapAndChatPanel.setCenter(chatSplit);
         }
       }
     };
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenuBar(this);
-    this.setJMenuBar(menu);
+    ((Group)getScene().getRoot()).getChildren().add(menu); //TODO may throw a classcast exception
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
@@ -285,37 +289,33 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     // link the small and large images
     mapPanel.initSmallMap();
-    mapAndChatPanel = new JPanel();
-    mapAndChatPanel.setLayout(new BorderLayout());
+    mapAndChatPanel = new BorderPane();
     commentPanel = new CommentPanel(this, data);
-    chatSplit = new JSplitPane();
-    chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
-    chatSplit.setOneTouchExpandable(true);
-    chatSplit.setDividerSize(8);
-    chatSplit.setResizeWeight(0.95);
+    chatSplit = new SplitPane();
+    chatSplit.setOrientation(Orientation.VERTICAL);
+    //chatSplit.setOneTouchExpandable(true);
+//    chatSplit.setDividerSize(8);
+//    chatSplit.setResizeWeight(0.95);
     if (MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null) {
-      commentSplit = new JSplitPane();
-      commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
-      commentSplit.setOneTouchExpandable(true);
-      commentSplit.setDividerSize(8);
-      commentSplit.setResizeWeight(0.5);
-      commentSplit.setTopComponent(commentPanel);
-      commentSplit.setBottomComponent(null);
+      commentSplit = new SplitPane();
+      commentSplit.setOrientation(Orientation.VERTICAL);
+//      commentSplit.setOneTouchExpandable(true);
+//      commentSplit.setDividerSize(8);
+//      commentSplit.setResizeWeight(0.5);
+      commentSplit.getItems().clear();
+      commentSplit.getItems().add(null);//TODO
+      commentSplit.getItems().add(commentPanel);
       chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
-      final Dimension chatPrefSize = new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
-      chatPanel.setPreferredSize(chatPrefSize);
-      chatSplit.setTopComponent(mapPanel);
-      chatSplit.setBottomComponent(chatPanel);
-      mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+      chatPanel.setPrefHeight(95);
+      chatSplit.getItems().add(mapPanel);
+      chatSplit.getItems().add(mapPanel);
+      mapAndChatPanel.setCenter(chatSplit);
     } else {
       mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
     }
-    gameMainPanel.setLayout(new BorderLayout());
-    this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
-    gameSouthPanel = new JPanel();
-    gameSouthPanel.setLayout(new BorderLayout());
+    gameSouthPanel = new BorderPane();
     // m_gameSouthPanel.add(m_message, BorderLayout.WEST);
     message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     message.setPreferredSize(message.getPreferredSize());
@@ -354,7 +354,7 @@ public class TripleAFrame extends MainGameFrame {
       @Override
       public void focusGained(final FocusEvent e) {
         // give the focus back to the map panel
-        mapPanel.requestFocusInWindow();
+        mapPanel.requestFocus();
       }
     };
     rightHandSidePanel.addFocusListener(focusToMapPanelFocusListener);
@@ -2069,7 +2069,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   @Override
-  public JComponent getMainPanel() {
+  public Node getMainPanel() {
     return mapPanel;
   }
 
