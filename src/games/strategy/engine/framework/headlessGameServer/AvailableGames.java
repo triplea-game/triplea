@@ -124,7 +124,7 @@ public class AvailableGames {
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
-        if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
+        if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
           // we have to close the loader to allow files to be deleted on windows
           try {
