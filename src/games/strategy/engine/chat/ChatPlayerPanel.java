@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
     if (ignore == null) {
       throw new IllegalStateException("Could not find ignore icon");
     }
-    Image img;
+    BufferedImage img;
     try {
       img = ImageIO.read(ignore);
     } catch (final IOException e) {

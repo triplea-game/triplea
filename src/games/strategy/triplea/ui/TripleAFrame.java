@@ -10,13 +10,11 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -157,18 +155,36 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 /**
  * Main frame for the triple a game
@@ -222,6 +238,7 @@ public class TripleAFrame extends MainGameFrame {
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
+    setScene(new Scene(new BorderPane()));
     scrollSettings = ClientContext.scrollSettings();
     this.game = game;
     data = game.getData();
@@ -268,7 +285,7 @@ public class TripleAFrame extends MainGameFrame {
           chatSplit.getItems().clear();
           chatSplit.getItems().add(commentSplit);
         } else {
-          mapAndChatPanel.getChildren().clear();//TODO maybe this isn't working...
+          mapAndChatPanel.getChildren().clear();// TODO maybe this isn't working...
           chatSplit.getItems().clear();
           chatSplit.getItems().add(commentPanel);
           chatSplit.getItems().add(mapPanel);
@@ -279,7 +296,7 @@ public class TripleAFrame extends MainGameFrame {
     showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenuBar(this);
-    ((Group)getScene().getRoot()).getChildren().add(menu); //TODO may throw a classcast exception
+    ((BorderPane) getScene().getRoot()).getChildren().add(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
@@ -297,17 +314,17 @@ public class TripleAFrame extends MainGameFrame {
     commentPanel = new CommentPanel(this, data);
     chatSplit = new SplitPane();
     chatSplit.setOrientation(Orientation.VERTICAL);
-    //chatSplit.setOneTouchExpandable(true);
-//    chatSplit.setDividerSize(8);
-//    chatSplit.setResizeWeight(0.95);
+    // chatSplit.setOneTouchExpandable(true);
+    // chatSplit.setDividerSize(8);
+    // chatSplit.setResizeWeight(0.95);
     if (MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null) {
       commentSplit = new SplitPane();
       commentSplit.setOrientation(Orientation.VERTICAL);
-//      commentSplit.setOneTouchExpandable(true);
-//      commentSplit.setDividerSize(8);
-//      commentSplit.setResizeWeight(0.5);
+      // commentSplit.setOneTouchExpandable(true);
+      // commentSplit.setDividerSize(8);
+      // commentSplit.setResizeWeight(0.5);
       commentSplit.getItems().clear();
-      commentSplit.getItems().add(null);//TODO
+      commentSplit.getItems().add(null);// TODO
       commentSplit.getItems().add(commentPanel);
       chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
@@ -318,41 +335,80 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       mapAndChatPanel.setCenter(mapPanel);
     }
-    ((BorderPane)this.getScene().getRoot()).setCenter(gameMainPanel);
+    ((BorderPane) this.getScene().getRoot()).setCenter(gameMainPanel);
     gameSouthPanel = new BorderPane();
     // m_gameSouthPanel.add(m_message, BorderLayout.WEST);
-//    message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    // message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     // m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
     final GridPane bottomMessagePanel = new GridPane();
     bottomMessagePanel.setBorder(Border.EMPTY);
-    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
-        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
-        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    bottomMessagePanel.add(message, 0, 0);
+    ColumnConstraints cc1 = new ColumnConstraints();
+    cc1.setPercentWidth(0.35);
+    bottomMessagePanel.getColumnConstraints().add(cc1);
+    RowConstraints rc1 = new RowConstraints();
+    rc1.setPercentHeight(1);// TODO not sure if this is necessary
+    bottomMessagePanel.getRowConstraints().add(rc1);
+    GridPane.setConstraints(message, 0, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
+        Insets.EMPTY);
+//    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
+//        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    bottomMessagePanel.add(status, 1, 0);
+    ColumnConstraints cc2 = new ColumnConstraints();
+    cc2.setPercentWidth(0.65);
+    bottomMessagePanel.getColumnConstraints().add(cc2);
+    RowConstraints rc2 = new RowConstraints();
+    rc2.setPercentHeight(1);// TODO not sure if this is necessary
+    bottomMessagePanel.getRowConstraints().add(rc2);
+    GridPane.setConstraints(message, 1, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
+        Insets.EMPTY);
+//    bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
+//        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     gameSouthPanel.setCenter(bottomMessagePanel);
-//    status.setBorder(new EtchedBorder(EtchedBorder.RAISED)); TODO with CSS
+    // status.setBorder(new EtchedBorder(EtchedBorder.RAISED)); TODO with CSS
     final GridPane stepPanel = new GridPane();
-    stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
-    stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
-    stepPanel.add(round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
-//    step.setBorder(new EtchedBorder(EtchedBorder.RAISED));TODO CSS
-//    round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-//    player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-//    step.setHorizontalTextPosition(SwingConstants.LEADING);
+    stepPanel.add(step, 1, 0);
+    ColumnConstraints cc3 = new ColumnConstraints();
+    cc3.setPercentWidth(0);
+    stepPanel.getColumnConstraints().add(cc3);
+    RowConstraints rc3 = new RowConstraints();
+    rc3.setPercentHeight(0);// TODO not sure if this is necessary
+    stepPanel.getRowConstraints().add(rc3);
+    GridPane.setConstraints(step, 1, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
+        Insets.EMPTY);
+//    stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+//        new Insets(0, 0, 0, 0), 0, 0));
+    stepPanel.add(player, 1, 0);
+    ColumnConstraints cc4 = new ColumnConstraints();
+    cc4.setPercentWidth(0);
+    stepPanel.getColumnConstraints().add(cc4);
+    RowConstraints rc4 = new RowConstraints();
+    rc4.setPercentHeight(0);// TODO not sure if this is necessary
+    stepPanel.getRowConstraints().add(rc4);
+    GridPane.setConstraints(player, 1, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
+        Insets.EMPTY);
+//    stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+//        new Insets(0, 0, 0, 0), 0, 0));
+    stepPanel.add(round, 2, 0);
+    ColumnConstraints cc5 = new ColumnConstraints();
+    cc5.setPercentWidth(0);
+    stepPanel.getColumnConstraints().add(cc4);
+    RowConstraints rc5 = new RowConstraints();
+    rc5.setPercentHeight(0);// TODO not sure if this is necessary
+    stepPanel.getRowConstraints().add(rc5);
+    GridPane.setConstraints(round, 2, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
+        Insets.EMPTY);
+    // stepPanel.add(round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    // new Insets(0, 0, 0, 0), 0, 0));
+    // step.setBorder(new EtchedBorder(EtchedBorder.RAISED));TODO CSS
+    // round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    // player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    // step.setHorizontalTextPosition(SwingConstants.LEADING);
     gameSouthPanel.setRight(stepPanel);
     gameMainPanel.setBottom(gameSouthPanel);
     InvalidationListener focusToMapPanelFocusListener = e -> mapPanel.requestFocus();
     rightHandSidePanel.focusTraversableProperty().addListener(focusToMapPanelFocusListener);
-    smallView.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(final FocusEvent e) {
-        // give the focus back to the map panel
-        mapPanel.requestFocus();
-      }
-    });
+    smallView.focusedProperty().addListener(e -> mapPanel.requestFocus());
     tabsPanel.focusTraversableProperty().addListener(focusToMapPanelFocusListener);
     rightHandSidePanel.setTop(smallView);
     tabsPanel.setBorder(null);
@@ -361,11 +417,9 @@ public class TripleAFrame extends MainGameFrame {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    final List<KeyListener> keyListeners =
-        ImmutableList.of(getArrowKeyListener(), movePanel.getCustomKeyListeners(), getFlagToggleKeyListener(this));
-    for (final KeyListener keyListener : keyListeners) {
-      mapPanel.addKeyListener(keyListener);
-    }
+    registerArrowKeyListener(mapPanel);
+    movePanel.registerCustomKeyListeners(mapPanel);
+    registerFlagToggleKeyListener(mapPanel);
     tabsPanel.getTabs().add(new Tab("Actions", actionButtons));
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
@@ -382,7 +436,7 @@ public class TripleAFrame extends MainGameFrame {
     notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
     tabsPanel.getTabs().add(new Tab("Notes", notesPanel));
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    tabsPanel.getTabs().add(new Tab("Territory", null, details, TerritoryDetailPanel.getHoverText()));//TODOs
+    tabsPanel.getTabs().add(new Tab("Territory", null, details, TerritoryDetailPanel.getHoverText()));// TODOs
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
     tabsPanel.addChangeListener(evt -> {
@@ -414,15 +468,15 @@ public class TripleAFrame extends MainGameFrame {
         editPanel.setActive(false);
       }
     });
-    rightHandSidePanel.setPrefSize(smallView.getPreferredSize().getWidth(), mapPanel.getPrefHeight());
+    rightHandSidePanel.setPrefSize(smallView.getPrefWidth(), mapPanel.getPrefHeight());
     gameCenterPanel = new SplitPane();
     gameCenterPanel.setOrientation(Orientation.HORIZONTAL);
     gameCenterPanel.getItems().addAll(mapAndChatPanel, rightHandSidePanel);
-//    gameCenterPanel.setOneTouchExpandable(true);
-//    gameCenterPanel.setDividerSize(8);
-//    gameCenterPanel.setResizeWeight(1.0);
+    // gameCenterPanel.setOneTouchExpandable(true);
+    // gameCenterPanel.setDividerSize(8);
+    // gameCenterPanel.setResizeWeight(1.0);
     gameMainPanel.setCenter(gameCenterPanel);
-//    gameCenterPanel.resetToPreferredSizes();
+    // gameCenterPanel.resetToPreferredSizes();
     // set up the edit mode overlay text
     this.setGlassPane(new JComponent() {
       private static final long serialVersionUID = 6724687534214427291L;
@@ -431,8 +485,7 @@ public class TripleAFrame extends MainGameFrame {
       protected void paintComponent(final Graphics g) {
         g.setFont(new Font("Ariel", Font.BOLD, 50));
         g.setColor(new Color(255, 255, 255, 175));
-        final Dimension size = mapPanel.getSize();
-        g.drawString("Edit Mode", (int) ((size.getWidth() - 200) / 2), (int) ((size.getHeight() - 100) / 2));
+        g.drawString("Edit Mode", (int) ((mapPanel.getWidth() - 200) / 2), (int) ((mapPanel.getHeight() - 100) / 2));
       }
     });
     // force a data change event to update the UI for edit mode
@@ -444,91 +497,70 @@ public class TripleAFrame extends MainGameFrame {
   }
 
 
-  public static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
-    return new KeyListener() {
-      private boolean blockInputs = false;
-      private long timeSinceLastPressEvent = 0;
-      private boolean running = true;
-
-      @Override
-      public void keyTyped(final KeyEvent e) {/* Do nothing */}
-
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        timeSinceLastPressEvent = 0;
-        if (!blockInputs) {
-          resetFlagsOnTimeOut(e.getKeyCode());
-          toggleFlags(e.getKeyCode());
-          blockInputs = true;
-        }
+  public static void registerFlagToggleKeyListener(MapPanel mapPanel) {
+      UnitFlagTimer timer = new UnitFlagTimer(mapPanel);
+      mapPanel.addEventHandler(KeyEvent.KEY_PRESSED, timer::keyPressed);
+      mapPanel.addEventHandler(KeyEvent.KEY_RELEASED, timer::keyReleased);
+  }
+  
+  static class UnitFlagTimer{
+    
+    private boolean blockInputs = false;
+    private long timeSinceLastPressEvent = 0;
+    private boolean running = true;
+    
+    MapPanel mapPanel;
+    public void keyPressed(final KeyEvent e) {
+      timeSinceLastPressEvent = 0;
+      if (!blockInputs) {
+        resetFlagsOnTimeOut(e.getCode());
+        toggleFlags(e.getCode());
+        blockInputs = true;
       }
+    }
 
-      private void resetFlagsOnTimeOut(final int keyCode) {
-        new Thread(() -> {
-          running = true;
-          while (running) {
-            timeSinceLastPressEvent++;
-            if (timeSinceLastPressEvent > 5) {
-              running = false;
-              toggleFlags(keyCode);
-              blockInputs = false;
-            }
-            ThreadUtil.sleep(100);
+    private void resetFlagsOnTimeOut(final KeyCode keyCode) {
+      new Thread(() -> {
+        running = true;
+        while (running) {
+          timeSinceLastPressEvent++;
+          if (timeSinceLastPressEvent > 5) {
+            running = false;
+            toggleFlags(keyCode);
+            blockInputs = false;
           }
-        }).start();
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        toggleFlags(e.getKeyCode());
-        blockInputs = false;
-        running = false;
-      }
-
-      private void toggleFlags(final int keyCode) {
-        if (keyCode == KeyEvent.VK_L) {
-          UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
-          frame.getMapPanel().resetMap();
+          ThreadUtil.sleep(100);
         }
-      }
-    };
+      }).start();
+    }
 
+    public void keyReleased(final KeyEvent e) {
+      toggleFlags(e.getCode());
+      blockInputs = false;
+      running = false;
+    }
+
+    private void toggleFlags(final KeyCode keyCode) {
+      if (keyCode == KeyCode.L) {
+        UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
+        mapPanel.resetMap();
+      }
+    }
+    UnitFlagTimer(MapPanel mapPanel){
+      this.mapPanel = mapPanel;
+    }
   }
 
   private void addZoomKeyboardShortcuts() {
-    final String zoom_map_in = "zoom_map_in";
     // do both = and + (since = is what you get when you hit ctrl+ )
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in) {
-      private static final long serialVersionUID = -7565304172320049817L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getScale() < 100) {
-          setScale(getScale() + 10);
-        }
+    getScene().getRoot().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+      if (e.getCode() == KeyCode.PLUS && getScale() < 100) {
+        setScale(getScale() + 10);
       }
     });
-    final String zoom_map_out = "zoom_map_out";
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
-    ((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out) {
-      private static final long serialVersionUID = 7677111833274819304L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getScale() > 16) {
-          setScale(getScale() - 10);
-        }
+    getScene().getRoot().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+      if (e.getCode() == KeyCode.MINUS && getScale() > 16) {
+        setScale(getScale() - 10);
       }
     });
   }
@@ -554,8 +586,7 @@ public class TripleAFrame extends MainGameFrame {
     if (uiContext == null) {
       return;
     }
-    this.setVisible(false);
-    TripleAFrame.this.dispose();
+    this.hide();
     if (SystemProperties.isMac()) {
       // this frame should not handle shutdowns anymore
       MacQuitMenuWrapper.unregisterShutdownHandler();
@@ -575,35 +606,33 @@ public class TripleAFrame extends MainGameFrame {
 
   @Override
   public void shutdown() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
-        JOptionPane.YES_NO_OPTION,
-        getUIContext().getCountDownLatchHandler());
-    if (rVal != JOptionPane.OK_OPTION) {
-      return;
-    }
-    stopGame();
-    System.exit(0);
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle("Exit Program");
+    alert.setHeaderText("Are you sure you want to exit TripleA?\nUnsaved game data will be lost.");
+    alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+    alert.showAndWait().filter(ButtonType.OK::equals).ifPresent(e -> {
+      stopGame();
+      System.exit(0);
+    });
   }
 
   @Override
   public void leaveGame() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
-        JOptionPane.YES_NO_OPTION,
-        getUIContext().getCountDownLatchHandler());
-    if (rVal != JOptionPane.OK_OPTION) {
-      return;
-    }
-    if (game instanceof ServerGame) {
-      ((ServerGame) game).stopGame();
-    } else {
-      game.getMessenger().shutDown();
-      ((ClientGame) game).shutDown();
-      // an ugly hack, we need a better
-      // way to get the main frame
-      MainFrame.getInstance().clientLeftGame();
-    }
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle("Leave Game");
+    alert.setHeaderText("Are you sure you want to leave the current game?\nUnsaved game data will be lost.");
+    alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+    alert.showAndWait().filter(ButtonType.OK::equals).ifPresent(e -> {
+      if (game instanceof ServerGame) {
+        ((ServerGame) game).stopGame();
+      } else {
+        game.getMessenger().shutDown();
+        ((ClientGame) game).shutDown();
+        // an ugly hack, we need a better
+        // way to get the main frame
+        MainFrame.getInstance().clientLeftGame();
+      }
+    });
   }
 
   public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
@@ -660,6 +689,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     status.setText("");
+    status.get
     status.setIcon(null);
   }
 
@@ -719,7 +749,7 @@ public class TripleAFrame extends MainGameFrame {
 
   private void requestWindowFocus() {
     SwingAction.invokeAndWait(() -> {
-      requestFocusInWindow();
+      requestFocus();
       transferFocus();
     });
   }
@@ -806,7 +836,7 @@ public class TripleAFrame extends MainGameFrame {
     final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
     if (messageAndDialogThreadPool != null) {
       messageAndDialogThreadPool.runTask(
-          () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title,
+          () -> EventThreadJOptionPane.showMessageDialog(this, displayMessage, title,
               JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
     }
   }
@@ -1021,11 +1051,13 @@ public class TripleAFrame extends MainGameFrame {
         if (!inGame) {
           showGame();
         }
-        if (tabsPanel.indexOfTab("Actions") == -1) {
+        if (tabsPanel.getTabs().indexOf(new Tab("Actions")) == -1) {
           // add actions tab
-          tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
+          tabsPanel.getTabs().add(new Tab("Actions"));
+          //TODO add to actions tab
+          actionButtons.someNonExistentMethod();
         }
-        tabsPanel.setSelectedIndex(0);
+        tabsPanel.getSelectionModel().select(0);
         latch1.countDown();
       });
       try {
@@ -1037,13 +1069,13 @@ public class TripleAFrame extends MainGameFrame {
     actionButtons.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> rVal =
         actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
-    final int index = tabsPanel == null ? -1 : tabsPanel.indexOfTab("Actions");
+    final int index = tabsPanel == null ? -1 : tabsPanel.getTabs().indexOf(new Tab("Actions"));//TODO check if this actually works
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(() -> {
         if (tabsPanel != null) {
           // remove actions tab
-          tabsPanel.remove(index);
+          tabsPanel.getTabs().remove(index);
         }
         latch2.countDown();
       });
@@ -1554,73 +1586,59 @@ public class TripleAFrame extends MainGameFrame {
     }
   };
 
-  private KeyListener getArrowKeyListener() {
-    return new KeyListener() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
+  private void registerArrowKeyListener(MapPanel mapPanel2) {
+    mapPanel.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 
-        // scroll map according to wasd/arrowkeys
-        final int diffPixel = computeScrollSpeed(e);
-        final int x = mapPanel.getXOffset();
-        final int y = mapPanel.getYOffset();
-        final int keyCode = e.getKeyCode();
+      // scroll map according to wasd/arrowkeys
+      final int diffPixel = computeScrollSpeed(e);
+      final int x = mapPanel.getXOffset();
+      final int y = mapPanel.getYOffset();
+      final KeyCode keyCode = e.getCode();
 
-        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-          getMapPanel().setTopLeft(x + diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-          getMapPanel().setTopLeft(x - diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-          getMapPanel().setTopLeft(x, y + diffPixel);
-        } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-          getMapPanel().setTopLeft(x, y - diffPixel);
+      if (keyCode == KeyCode.RIGHT || keyCode == KeyCode.D) {
+        getMapPanel().setTopLeft(x + diffPixel, y);
+      } else if (keyCode == KeyCode.LEFT || keyCode == KeyCode.A) {
+        getMapPanel().setTopLeft(x - diffPixel, y);
+      } else if (keyCode == KeyCode.DOWN || keyCode == KeyCode.S) {
+        getMapPanel().setTopLeft(x, y + diffPixel);
+      } else if (keyCode == KeyCode.UP || keyCode == KeyCode.W) {
+        getMapPanel().setTopLeft(x, y - diffPixel);
+      }
+      // I for info
+      if (keyCode == KeyCode.I || keyCode == KeyCode.V) {
+        String unitInfo = "";
+        if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
+          final Unit unit = unitsBeingMousedOver.get(0);
+          final UnitAttachment ua = UnitAttachment.get(unit.getType());
+          if (ua != null) {
+            unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": "
+                + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
+          }
         }
-        // I for info
-        if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
-          String unitInfo = "";
-          if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
-            final Unit unit = unitsBeingMousedOver.get(0);
-            final UnitAttachment ua = UnitAttachment.get(unit.getType());
-            if (ua != null) {
-              unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": "
-                  + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
-            }
+        String terrInfo = "";
+        if (territoryLastEntered != null) {
+          final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
+          if (ta != null) {
+            terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
+          } else {
+            terrInfo = "<b>Territory:</b><br>" + territoryLastEntered.getName() + "<br>Water Territory";
           }
-          String terrInfo = "";
-          if (territoryLastEntered != null) {
-            final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
-            if (ta != null) {
-              terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
-            } else {
-              terrInfo = "<b>Territory:</b><br>" + territoryLastEntered.getName() + "<br>Water Territory";
-            }
-          }
-          String tipText = unitInfo;
-          if (unitInfo.length() > 0 && terrInfo.length() > 0) {
-            tipText = tipText + "<br><br><br><br><br>";
-          }
-          tipText = tipText + terrInfo;
-          if (tipText.length() > 0) {
-            final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
-            final PopupFactory popupFactory = PopupFactory.getSharedInstance();
-            final JToolTip info = new JToolTip();
-            info.setTipText("<html>" + tipText + "</html>");
-            final Popup popup = popupFactory.getPopup(mapPanel, info, currentPoint.x, currentPoint.y);
-            popup.show();
-            final Runnable disposePopup = () -> {
-              ThreadUtil.sleep(5000);
-              popup.hide();
-            };
-            new Thread(disposePopup, "popup waiter").start();
-          }
+        }
+        String tipText = unitInfo;
+        if (unitInfo.length() > 0 && terrInfo.length() > 0) {
+          tipText = tipText + "<br><br><br><br><br>";
+        }
+        tipText = tipText + terrInfo;
+        if (tipText.length() > 0) {
+          Alert alert = new Alert(AlertType.NONE, "<html>" + tipText + "</html>");
+          alert.show();//TODO
+          new Thread(() -> {
+            ThreadUtil.sleep(5000);
+            alert.hide();
+          }, "popup waiter").start();
         }
       }
-
-      @Override
-      public void keyTyped(final KeyEvent e) {}
-
-      @Override
-      public void keyReleased(final KeyEvent e) {}
-    };
+    });
   }
 
   private int computeScrollSpeed(final KeyEvent e) {
@@ -1700,7 +1718,7 @@ public class TripleAFrame extends MainGameFrame {
     details.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
     final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, mapPanel);
-    tabsPanel.removeAll();
+    tabsPanel.getTabs().clear();
     tabsPanel.add("History", historyDetailPanel);
     tabsPanel.add("Stats", statsPanel);
     tabsPanel.add("Economy", economyPanel);
@@ -1715,8 +1733,7 @@ public class TripleAFrame extends MainGameFrame {
     if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
     }
-    historyComponent.removeAll();
-    historyComponent.setLayout(new BorderLayout());
+    historyComponent.getChildren().clear();
     // create history tree context menu
     // actions need to clear the history panel popup state when done
     final JPopupMenu popup = new JPopupMenu();
@@ -1825,9 +1842,8 @@ public class TripleAFrame extends MainGameFrame {
     split.setDividerLocation(150);
     historyComponent.add(split, BorderLayout.CENTER);
     historyComponent.add(gameSouthPanel, BorderLayout.SOUTH);
-    getContentPane().removeAll();
-    getContentPane().add(historyComponent, BorderLayout.CENTER);
-    validate();
+    ((BorderPane)getScene().getRoot()).getChildren().clear();
+    ((BorderPane)getScene().getRoot()).setCenter(historyComponent);
   }
 
   public void showGame() {
@@ -1851,7 +1867,7 @@ public class TripleAFrame extends MainGameFrame {
       details.setGameData(data);
       mapPanel.setGameData(data);
       data.addDataChangeListener(m_dataChangeListener);
-      tabsPanel.removeAll();
+      tabsPanel.getTabs().clear();
     }
     setWidgetActivation();
     tabsPanel.add("Action", actionButtons);
@@ -1868,14 +1884,12 @@ public class TripleAFrame extends MainGameFrame {
     if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(true);
     }
-    gameMainPanel.removeAll();
-    gameMainPanel.setLayout(new BorderLayout());
-    gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-    gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-    getContentPane().removeAll();
-    getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+    gameMainPanel.getChildren().clear();
+    gameMainPanel.setCenter(gameCenterPanel);
+    gameMainPanel.setBottom(gameSouthPanel);
+    ((BorderPane)getScene().getRoot()).getChildren().clear();
+    ((BorderPane)getScene().getRoot()).setCenter(gameMainPanel);
     mapPanel.setRoute(null);
-    validate();
   }
 
   public void showMapOnly() {
@@ -1891,20 +1905,18 @@ public class TripleAFrame extends MainGameFrame {
       mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
       mapPanel.setGameData(data);
       data.addDataChangeListener(m_dataChangeListener);
-      gameMainPanel.removeAll();
-      gameMainPanel.setLayout(new BorderLayout());
+      gameMainPanel.getChildren().clear();
       gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
       gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
       gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-      getContentPane().removeAll();
-      getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+      ((BorderPane)getScene().getRoot()).getChildren().clear();
+      ((BorderPane)getScene().getRoot()).setCenter(gameMainPanel);
       mapPanel.setRoute(null);
     } else {
       inGame = false;
     }
     uiContext.setShowMapOnly(true);
     setWidgetActivation();
-    validate();
   }
 
 

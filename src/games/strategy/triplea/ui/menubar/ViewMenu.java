@@ -63,6 +63,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -313,64 +314,55 @@ public class ViewMenu {
 
   private void addDrawTerritoryBordersAgain(final Menu parentMenu) {
     final Menu drawBordersMenu = new Menu("Draw Borders _On Top");
-    final JRadioButton noneButton = new JRadioButton("Low");
-    noneButton.setMnemonic(KeyEvent.VK_L);
-    final JRadioButton mediumButton = new JRadioButton("Medium");
-    mediumButton.setMnemonic(KeyEvent.VK_M);
-    final JRadioButton highButton = new JRadioButton("High");
-    highButton.setMnemonic(KeyEvent.VK_H);
-    final ButtonGroup group = new ButtonGroup();
-    group.add(noneButton);
-    group.add(mediumButton);
-    group.add(highButton);
-    drawBordersMenu.addMenuListener(new MenuListener() {
-      @Override
-      public void menuSelected(final MenuEvent e) {
-        final IDrawable.OptionalExtraBorderLevel current = uiContext.getDrawTerritoryBordersAgain();
-        if (current == IDrawable.OptionalExtraBorderLevel.LOW) {
-          noneButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.MEDIUM) {
-          mediumButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.HIGH) {
-          highButton.setSelected(true);
-        }
+    final RadioMenuItem noneButton = new RadioMenuItem("_Low");
+    noneButton.setMnemonicParsing(true);
+    final RadioMenuItem mediumButton = new RadioMenuItem("_Medium");
+    mediumButton.setMnemonicParsing(true);
+    final RadioMenuItem highButton = new RadioMenuItem("_High");
+    highButton.setMnemonicParsing(true);
+    final ToggleGroup group = new ToggleGroup();
+    noneButton.setToggleGroup(group);
+    mediumButton.setToggleGroup(group);
+    highButton.setToggleGroup(group);
+    drawBordersMenu.setOnShowing(e -> {
+      final IDrawable.OptionalExtraBorderLevel current = uiContext.getDrawTerritoryBordersAgain();
+      if (current == IDrawable.OptionalExtraBorderLevel.LOW) {
+        noneButton.setSelected(true);
+      } else if (current == IDrawable.OptionalExtraBorderLevel.MEDIUM) {
+        mediumButton.setSelected(true);
+      } else if (current == IDrawable.OptionalExtraBorderLevel.HIGH) {
+        highButton.setSelected(true);
       }
-
-      @Override
-      public void menuDeselected(final MenuEvent e) {}
-
-      @Override
-      public void menuCanceled(final MenuEvent e) {}
     });
-    noneButton.addActionListener(e -> {
+    noneButton.setOnAction(e -> {
       if (noneButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
         frame.getMapPanel().resetMap();
       }
     });
-    mediumButton.addActionListener(e -> {
+    mediumButton.setOnAction(e -> {
       if (mediumButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
         frame.getMapPanel().resetMap();
       }
     });
-    highButton.addActionListener(e -> {
+    highButton.setOnAction(e -> {
       if (highButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
         frame.getMapPanel().resetMap();
       }
     });
-    drawBordersMenu.add(noneButton);
-    drawBordersMenu.add(mediumButton);
-    drawBordersMenu.add(highButton);
-    parentMenu.add(drawBordersMenu);
+    drawBordersMenu.getItems().add(noneButton);
+    drawBordersMenu.getItems().add(mediumButton);
+    drawBordersMenu.getItems().add(highButton);
+    parentMenu.getItems().add(drawBordersMenu);
   }
 
   private void addMapFontAndColorEditorMenu(final Menu parentMenu) {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
+    final Action mapFontOptions = SwingAction.of("Edit Map Font and _Color", e -> {
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
@@ -421,7 +413,7 @@ public class ViewMenu {
       }
 
     });
-    parentMenu.add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+    parentMenu.getItems().add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
   }
 
   private void addShowTerritoryEffects(final Menu parentMenu) {
@@ -493,11 +485,11 @@ public class ViewMenu {
   }
 
   private void addChatTimeMenu(final Menu parentMenu) {
-    final CheckMenuItem chatTimeBox = new CheckMenuItem("Show Chat Times");
-    chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
+    final CheckMenuItem chatTimeBox = new CheckMenuItem("Show Chat _Times");
+    chatTimeBox.setMnemonicParsing(true);
+    chatTimeBox.setOnAction(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
-    parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
+    parentMenu.getItems().add(chatTimeBox);
+    chatTimeBox.setDisable(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
   }
 }

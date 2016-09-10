@@ -2,8 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,6 +47,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
+import javafx.scene.input.KeyEvent;
 
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
@@ -760,7 +759,7 @@ public class MovePanel extends AbstractMovePanel {
       } finally {
         data.releaseReadLock();
       }
-      getMap().requestFocusInWindow();
+      getMap().requestFocus();
     }
 
     private void selectUnitsToMove(final List<Unit> units, final Territory t, final MouseDetails me) {
@@ -1427,39 +1426,31 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
   }
 
-  public KeyListener getCustomKeyListeners() {
-    return new KeyListener() {
-      @Override
-      public void keyTyped(final KeyEvent e) {}
-
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        switch (e.getKeyCode()) {
-          case KeyEvent.VK_N:
-            centerOnNextMoveableUnit();
-            break;
-          case KeyEvent.VK_F:
-            highlightMoveableUnits();
-            break;
-          case KeyEvent.VK_U:
-            if (getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
-              m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
-            }
-            break;
-        }
+  public void registerCustomKeyListeners(MapPanel mapPanel) {
+    mapPanel.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+      switch (e.getCode()) {
+        case N:
+          centerOnNextMoveableUnit();
+          break;
+        case F:
+          highlightMoveableUnits();
+          break;
+        case U:
+          if (getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
+            m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
+          }
+          break;
+        default:
+          break;
       }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {}
-    };
-
+    });
   }
 
 
   @Override
   protected boolean doneMoveAction() {
     if (m_undoableMovesPanel.getCountOfMovesMade() == 0) {
-      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
+      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this),
           "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
       return rVal == JOptionPane.YES_OPTION;
     }

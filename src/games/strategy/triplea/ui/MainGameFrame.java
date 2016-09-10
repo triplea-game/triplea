@@ -1,8 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.io.IOException;
-
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -17,11 +14,7 @@ public abstract class MainGameFrame extends Stage {
     super();
     this.setTitle(name);
     localPlayers = players;
-    try {
-      this.getIcons().add(new Image(GameRunner.class.getResource("ta_icon.png").openStream()));
-    } catch (IOException e) {
-      ClientLogger.logError("Could not load TripleA Icon", e);
-    }
+    this.getIcons().add(new Image(GameRunner.class.getResourceAsStream("ta_icon.png")));
   }
 
   public abstract IGame getGame();

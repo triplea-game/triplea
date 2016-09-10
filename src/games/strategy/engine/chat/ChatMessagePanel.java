@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -32,6 +31,19 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.ui.SwingAction;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 
 /**
  * A Chat window.
@@ -39,15 +51,15 @@ import games.strategy.ui.SwingAction;
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
  */
-public class ChatMessagePanel extends JPanel implements IChatListener {
+public class ChatMessagePanel extends BorderPane implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;
   private final ChatFloodControl floodControl = new ChatFloodControl();
   private static final int MAX_LINES = 5000;
-  private JTextPane text;
-  private JScrollPane scrollPane;
-  private JTextField nextMessage;
-  private JButton send;
-  private JButton setStatus;
+  private TextArea text;
+  private ScrollPane scrollPane;
+  private TextField nextMessage;
+  private Button send;
+  private Button setStatus;
   private Chat chat;
   private boolean showTime = false;
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
@@ -70,7 +82,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     layoutComponents();
     StyleConstants.setBold(bold, true);
     StyleConstants.setItalic(italic, true);
-    setSize(300, 200);
+    setPrefSize(300, 200);
   }
 
   public String getAllText() {
@@ -80,11 +92,10 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   public void shutDown() {
     if (chat != null) {
       chat.removeChatListener(this);
-      cleanupKeyMap();
     }
     chat = null;
     this.setVisible(false);
-    this.removeAll();
+    this.getChildren().clear();
   }
 
   public void setChat(final Chat chat) {
@@ -94,14 +105,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     }
     if (chat != null) {
       chat.removeChatListener(this);
-      cleanupKeyMap();
     }
     this.chat = chat;
     if (chat != null) {
       setupKeyMap();
       chat.addChatListener(this);
-      send.setEnabled(true);
-      text.setEnabled(true);
+      send.setDisable(false);
+      text.setDisable(false);
       synchronized (chat.getMutex()) {
         text.setText("");
         for (final ChatMessage message : chat.getChatHistory()) {
@@ -119,8 +129,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         }
       }
     } else {
-      send.setEnabled(false);
-      text.setEnabled(false);
+      send.setDisable(true);
+      text.setDisable(true);
       updatePlayerList(Collections.emptyList());
     }
   }
@@ -134,70 +144,50 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private void layoutComponents() {
-    final Container content = this;
-    content.setLayout(new BorderLayout());
-    scrollPane = new JScrollPane(text);
-    content.add(scrollPane, BorderLayout.CENTER);
-    final JPanel sendPanel = new JPanel();
-    sendPanel.setLayout(new BorderLayout());
-    sendPanel.add(nextMessage, BorderLayout.CENTER);
-    sendPanel.add(send, BorderLayout.WEST);
-    sendPanel.add(setStatus, BorderLayout.EAST);
-    content.add(sendPanel, BorderLayout.SOUTH);
+    scrollPane = new ScrollPane(text);
+    setCenter(scrollPane);
+    final BorderPane sendPanel = new BorderPane();
+    sendPanel.setCenter(nextMessage);
+    sendPanel.setLeft(send);
+    sendPanel.setRight(setStatus);
+    setBottom(sendPanel);
   }
 
   @Override
-  public boolean requestFocusInWindow() {
-    return nextMessage.requestFocusInWindow();
+  public void requestFocus() {
+    nextMessage.requestFocus();
   }
 
   private void createComponents() {
-    text = new JTextPane();
+    text = new TextArea();
     text.setEditable(false);
-    text.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        final String markedText = text.getSelectedText();
-        if (markedText == null || markedText.length() == 0) {
-          nextMessage.requestFocusInWindow();
-        }
+    text.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+      final String markedText = text.getSelectedText();
+      if (markedText == null || markedText.length() == 0) {
+        nextMessage.requestFocus();
       }
-
-      @Override
-      public void mousePressed(final MouseEvent e) {}
-
-      @Override
-      public void mouseExited(final MouseEvent e) {}
-
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
-
-      @Override
-      public void mouseClicked(final MouseEvent e) {}
     });
-    nextMessage = new JTextField(10);
+    nextMessage = new TextField();
     // when enter is pressed, send the message
-    setStatus = new JButton(setStatusAction);
-    setStatus.setFocusable(false);
+    setStatus = new Button();
+    setStatus.setOnAction(e -> setStatusAction.run());
     final Insets inset = new Insets(3, 3, 3, 3);
-    send = new JButton(sendAction);
-    send.setMargin(inset);
-    send.setFocusable(false);
+    send = new Button();
+    send.setOnAction(e -> sendAction.run());
   }
 
   private void setupKeyMap() {
-    final InputMap nextMessageKeymap = nextMessage.getInputMap();
-    nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), sendAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false), upAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false), downAction);
+    addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+      if(e.getCode() == KeyCode.UP){
+        upAction.run();
+      } else if(e.getCode() == KeyCode.DOWN){
+        downAction.run();
+      }  else if(e.getCode() == KeyCode.ENTER){
+        sendAction.run();
+      }
+    });
   }
 
-  private void cleanupKeyMap() {
-    final InputMap nextMessageKeymap = nextMessage.getInputMap();
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false));
-  }
 
   /** thread safe */
   @Override
@@ -228,8 +218,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       }
       addChatMessage(message, from, thirdperson);
       SwingUtilities.invokeLater(() -> {
-        final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
-        scrollModel.setValue(scrollModel.getMaximum());
+        scrollPane.setVvalue(1);
       });
       ClipPlayer.play(sound);
     };
@@ -315,7 +304,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     }
   }
 
-  private final Action setStatusAction = SwingAction.of("Status...", e -> {
+  private final Runnable setStatusAction = () -> {
     String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
         "Enter Status Text (leave blank for no status)", "");
     if (status != null) {
@@ -324,8 +313,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       }
       chat.getStatusManager().setStatus(status);
     }
-  });
-  private final Action sendAction = SwingAction.of("Send", e -> {
+  };
+  private final Runnable sendAction = () -> {
     if (nextMessage.getText().trim().length() == 0) {
       return;
     }
@@ -335,21 +324,21 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       chat.sendMessage(nextMessage.getText(), false);
     }
     nextMessage.setText("");
-  });
-  private final Action downAction = SwingAction.of(e -> {
+  };
+  private final Runnable downAction = () -> {
     if (chat == null) {
       return;
     }
     chat.getSentMessagesHistory().next();
     nextMessage.setText(chat.getSentMessagesHistory().current());
-  });
-  private final Action upAction = SwingAction.of(e -> {
+  };
+  private final Runnable upAction = () -> {
     if (chat == null) {
       return;
     }
     chat.getSentMessagesHistory().prev();
     nextMessage.setText(chat.getSentMessagesHistory().current());
-  });
+  };
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {}

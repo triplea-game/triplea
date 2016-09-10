@@ -39,20 +39,22 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHTML;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Separator;
 
 public class HelpMenu {
 
   private final IUIContext iuiContext;
   private final GameData gameData;
 
-  public HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
+  public HelpMenu(final MenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
       final Color backgroundColor) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 
-    final JMenu helpMenu = new JMenu("Help");
-    helpMenu.setMnemonic(KeyEvent.VK_H);
-    menuBar.add(helpMenu);
+    final Menu helpMenu = new Menu("_Help");
+    menuBar.getMenus().add(helpMenu);
 
     addMoveHelpMenu(helpMenu);
     addUnitHelpMenu(helpMenu);
@@ -65,9 +67,9 @@ public class HelpMenu {
   }
 
 
-  private void addMoveHelpMenu(final JMenu parentMenu) {
+  private void addMoveHelpMenu(final Menu helpMenu) {
     final String moveSelectionHelpTitle = "Movement/Selection Help";
-    parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
+    helpMenu.getItems().add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
@@ -161,7 +163,7 @@ public class HelpMenu {
 
 
 
-  private void addUnitHelpMenu(final JMenu parentMenu) {
+  private void addUnitHelpMenu(final Menu parentMenu) {
     parentMenu.add(SwingAction.of("Unit Help", e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
@@ -216,7 +218,7 @@ public class HelpMenu {
 
   public static final JEditorPane gameNotesPane = new JEditorPane();
 
-  protected void addGameNotesMenu(final JMenu parentMenu) {
+  protected void addGameNotesMenu(final Menu helpMenu) {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
@@ -225,7 +227,7 @@ public class HelpMenu {
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
+      helpMenu.getItems().add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
         final JEditorPane pane = gameNotesPane;
         final JScrollPane scroll = new JScrollPane(pane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
@@ -269,7 +271,7 @@ public class HelpMenu {
     }
   }
 
-  private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
+  private void addAboutMenu(final Menu parentMenu, final Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
@@ -284,8 +286,8 @@ public class HelpMenu {
     final JScrollPane scroll = new JScrollPane(editorPane);
     scroll.setBorder(null);
     if (System.getProperty("mrj.version") == null) {
-      parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About", e -> {
+      parentMenu.getItems().add(new Separator());
+      parentMenu.getItems().add(SwingAction.of("About", e -> {
         JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
             JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_A);
@@ -298,8 +300,8 @@ public class HelpMenu {
     }
   }
 
-  private void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Send Bug Report", e -> {
+  private void addReportBugsMenu(final Menu parentMenu) {
+    parentMenu.getItems().add(SwingAction.of("Send Bug Report", e -> {
       SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
     })).setMnemonic(KeyEvent.VK_B);
   }

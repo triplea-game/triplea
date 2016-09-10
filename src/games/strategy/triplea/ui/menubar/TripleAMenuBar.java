@@ -60,6 +60,7 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Triple;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 
 public class TripleAMenuBar extends MenuBar {
@@ -84,12 +85,11 @@ public class TripleAMenuBar extends MenuBar {
     new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
 
-  private void createLobbyMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
-    final JMenu lobby = new JMenu("Lobby");
-    lobby.setMnemonic(KeyEvent.VK_L);
-    menuBar.add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, frame));
-    lobby.add(new RemoveGameFromLobbyAction(watcher));
+  private void createLobbyMenu(final MenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
+    final Menu lobby = new Menu("_Lobby");
+    menuBar.getMenus().add(lobby);
+    lobby.getItems().add(new EditGameCommentAction(watcher, frame));
+    lobby.getItems().add(new RemoveGameFromLobbyAction(watcher));
   }
 
 
