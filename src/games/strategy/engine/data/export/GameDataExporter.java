@@ -48,7 +48,7 @@ import games.strategy.util.Tuple;
 public class GameDataExporter {
   private final StringBuffer xmlfile;
 
-  public GameDataExporter(final GameData data, final boolean currentAttachmentObjects) {
+  public GameDataExporter(final GameData data) {
     xmlfile = new StringBuffer();
     init(data);
     tripleaMinimumVersion();
@@ -62,7 +62,7 @@ public class GameDataExporter {
     gamePlay(data);
     production(data);
     technology(data);
-    attachments(data, currentAttachmentObjects);
+    attachments(data);
     initialize(data);
     propertyList(data);
     finish();
@@ -329,7 +329,7 @@ public class GameDataExporter {
     xmlfile.append("        </ownerInitialize>\n");
   }
 
-  private void attachments(final GameData data, final boolean currentAttachmentObjects) {
+  private void attachments(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <attachmentList>\n");
     for (final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
@@ -337,7 +337,7 @@ public class GameDataExporter {
       // (including changes to
       // the game data)
       final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachment;
-      printAttachments(current, currentAttachmentObjects);
+      printAttachments(current);
     }
     xmlfile.append("    </attachmentList>\n");
   }
@@ -368,18 +368,12 @@ public class GameDataExporter {
     return sb.toString();
   }
 
-  private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues,
-      final boolean currentAttachmentObjects) {
+  private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues) {
     final IAttachment attachment = attachmentPlusValues.getFirst();
     try {
       // TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2
       final String attachmentOptions;
-      if (currentAttachmentObjects) {
-        final IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
-        attachmentOptions = exporter.getAttachmentOptions(attachment);
-      } else {
-        attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond(), attachment);
-      }
+      attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond(), attachment);
       final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
       // TODO: keep this list updated
       String type = "";
