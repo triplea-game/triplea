@@ -33,6 +33,12 @@ import javax.swing.UIManager;
 
 import games.strategy.net.INode;
 import games.strategy.ui.SwingAction;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
@@ -40,11 +46,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.util.Callback;
 
 public class ChatPlayerPanel extends BorderPane implements IChatListener {
-  private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
-
   static {
     final URL ignore = ChatPlayerPanel.class.getResource("ignore.png");
     if (ignore == null) {
@@ -59,7 +64,7 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
     ignoreIcon = new ImageIcon(img);
   }
 
-  private VBox players;
+  private ListView<INode> players;
   private Chat chat;
   private final Set<String> hiddenPlayers = new HashSet<>();
   // if our renderer is overridden
@@ -120,25 +125,28 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
   }
 
   private void createComponents() {
-    players = new VBox();
-    //TODO with CSS
-//    players.setCellRenderer((list, node, index, isSelected, cellHasFocus) -> {
-//      if (setCellRenderer == null) {
-//        return new JLabel();
-//      }
-//      final DefaultListCellRenderer renderer;
-//      if (setCellRenderer instanceof PlayerChatRenderer) {
-//        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list, node, index,
-//            isSelected, cellHasFocus);
-//      } else {
-//        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list,
-//            getDisplayString(node), index, isSelected, cellHasFocus);
-//      }
-//      if (chat.isIgnored(node)) {
-//        renderer.setIcon(ignoreIcon);
-//      }
-//      return renderer;
-//    });
+    players = new ListView<>();
+    // TODO with CSS
+    players.setCellFactory(new Callback<ListView<INode>, ListCell<INode>>() {
+
+      @Override
+      public ListCell<INode> call(ListView<INode> listView) {
+        return new ListCell<INode>() {
+
+          @Override
+          protected void updateItem(INode node, boolean b) {
+            super.updateItem(node, b);
+            if (node != null) {
+              setText(getDisplayString(node));
+              if (chat.isIgnored(node)) {
+                node.setIcon(ignoreIcon);
+              }
+            }
+          }
+
+        };
+      }
+    });
   }
 
   private void layoutComponents() {
@@ -157,7 +165,7 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
       final boolean isIgnored = chat.isIgnored(clickedOn);
       final Action ignore = SwingAction.of(isIgnored ? "Stop Ignoring" : "Ignore", e -> {
         chat.setIgnored(clickedOn, !isIgnored);
-//        repaint();
+        // repaint();
       });
       final Action slap = new AbstractAction("Slap " + clickedOn.getName()) {
         private static final long serialVersionUID = -5514772068903406263L;
@@ -185,11 +193,7 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
     if (!e.isPopupTrigger()) {
       return;
     }
-    final int index = players.locationToIndex(e.getPoint());
-    if (index == -1) {
-      return;
-    }
-    final INode player = listModel.get(index);
+    final INode player = players.getSelectionModel().getSelectedItem();
     final Popup menu = new Popup();
     boolean hasActions = false;
     for (final IPlayerActionFactory factory : actionFactories) {
@@ -215,20 +219,7 @@ public class ChatPlayerPanel extends BorderPane implements IChatListener {
    */
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
-    final Runnable runner = () -> {
-      this.players.getChildren().clear();
-      for (final INode name : players) {
-        if (!hiddenPlayers.contains(name.getName())) {
-          this.players.getChildren().add(name);
-        }
-      }
-    };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    Platform.runLater(() -> this.players.setItems(FXCollections.observableArrayList(players)));
   }
 
   @Override
