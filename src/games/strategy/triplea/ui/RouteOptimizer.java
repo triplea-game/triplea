@@ -22,57 +22,112 @@ public class RouteOptimizer {
   private static final int commonAdditionalScreens = 2;
   private static final int minAdditionalScreens = 0;
 
-  private final double gameMapWidth;
+  private Point endPoint;
   private int mapWidth;
   private int mapHeight;
 
   public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
     checkNotNull(mapData);
     this.mapPanel = checkNotNull(mapPanel);
-    mapWidth = mapPanel.getImageWidth();
-    mapHeight = mapPanel.getImageHeight();
-
     isInfiniteY = mapData.scrollWrapY();
-
     isInfiniteX = mapData.scrollWrapX();
-
-    gameMapWidth = mapData.getMapDimensions().getWidth();
-
   }
 
-  List<Point> normalizeForHorizontalWrapping(Point... route) {
-    final boolean crossesMapSeam = crossMapSeam(route);
-    final List<Point> points = Arrays.asList(route);
+  /**
+   * Algorithm for finding the shortest path for the given Route
+   * 
+   * @param route The joints on the Map
+   * @return A Point array which goes through Map Borders if necessary
+   */
+  public Point[] getTranslatedRoute(Point... route) {
+    mapWidth = mapPanel.getImageWidth();
+    mapHeight = mapPanel.getImageHeight();
+    if (route == null || route.length == 0) {
+      // Or the array is too small
 
-    if (crossesMapSeam) {
-      final int minX = minX(route);
-      for (Point p : points) {
-        if ((p.x - minX) > mapPanel.getWidth()) {
-          p.x -= this.gameMapWidth;
+      return route;
+    }
+    if (!isInfiniteX && !isInfiniteY) {
+      // If the Map is not infinite scrolling, we can safely return the given Points
+      endPoint = route[route.length - 1];
+      return route;
+    }
+    List<Point> result = new ArrayList<>();
+    Point previousPoint = null;
+    for (Point point : route) {
+      if (previousPoint == null) {
+        previousPoint = point;
+        result.add(point);
+        continue;
+      }
+      Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
+      result.add(closestPoint);
+      previousPoint = closestPoint;
+    }
+    endPoint = result.get(result.size() - 1);
+    return result.toArray(new Point[result.size()]);
+  }
 
+  /**
+   * Returns the Closest Point out of the given Pool
+   * 
+   * @param source the reference Point
+   * @param pool Point2D List with all possible options
+   * @return the closest point in the Pool to the source
+   */
+  private Point getClosestPoint(Point source, List<Point2D> pool) {
+    double closestDistance = Double.MAX_VALUE;
+    Point closestPoint = null;
+    for (Point2D possibleClosestPoint : pool) {
+      if (closestPoint == null) {
+        closestDistance = source.distance(possibleClosestPoint);
+        closestPoint = normalizePoint(getPoint(possibleClosestPoint));
+      } else {
+        double distance = source.distance(possibleClosestPoint);
+        if (closestDistance > distance) {
+          closestPoint = getPoint(possibleClosestPoint);
+          closestDistance = distance;
         }
       }
     }
-    return points;
-  }
-
-  private boolean crossMapSeam(Point... route) {
-    final int minX = minX(route);
-    return Arrays.stream(route).filter(point -> (point.x - minX) > mapPanel.getWidth()).findAny().isPresent();
-  }
-
-  private static int minX(Point... route) {
-    int minX = Integer.MAX_VALUE;
-    for (Point p : Arrays.asList(route)) {
-      if (p.x < minX) {
-        minX = p.x;
-      }
-    }
-    return minX;
+    return closestPoint;
   }
 
   private Point normalizePoint(Point point) {
     return new Point(point.x % mapWidth, point.y % mapHeight);
+  }
+
+  /**
+   * Method for getting Points, which are a mapHeight/Width away from the actual Point
+   * Used to display routes with higher offsets than the map width/height
+   * 
+   * @param point The Point to "clone"
+   * @return A List of all possible Points depending in map Properties
+   *         size may vary
+   */
+  private List<Point2D> getPossiblePoints(Point2D point) {
+    List<Point2D> result = new ArrayList<>();
+    result.add(point);
+    if (isInfiniteX && isInfiniteY) {
+      result.addAll(Arrays.asList(
+          new Point2D.Double(point.getX() - mapWidth, point.getY() - mapHeight),
+          new Point2D.Double(point.getX() - mapWidth, point.getY() + mapHeight),
+          new Point2D.Double(point.getX() + mapWidth, point.getY() - mapHeight),
+          new Point2D.Double(point.getX() + mapWidth, point.getY() + mapHeight)));
+    }
+    if (isInfiniteX) {
+      result.addAll(Arrays.asList(
+          new Point2D.Double(point.getX() - mapWidth, point.getY()),
+          new Point2D.Double(point.getX() + mapWidth, point.getY())));
+
+    }
+    if (isInfiniteY) {
+      result.addAll(Arrays.asList(
+          new Point2D.Double(point.getX(), point.getY() - mapHeight),
+          new Point2D.Double(point.getX(), point.getY() + mapHeight)));
+
+    }
+    return result;
   }
 
   /**
@@ -83,6 +138,10 @@ public class RouteOptimizer {
    */
   public static Point getPoint(Point2D point) {
     return new Point((int) point.getX(), (int) point.getY());
+  }
+
+  public Point getLastEndPoint() {
+    return endPoint;
   }
 
   /**
@@ -101,21 +160,20 @@ public class RouteOptimizer {
       }
       int counter = 0;
       for (Point point : points) {
-        Point normalizedPoint = normalizePoint(point);
         if (isInfiniteX) {
-          alternativePoints.get(0)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y);
-          alternativePoints.get(1)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y);
+          alternativePoints.get(0)[counter] = new Point(point.x - mapWidth, point.y);
+          alternativePoints.get(1)[counter] = new Point(point.x + mapWidth, point.y);
         }
         if (isInfiniteY) {
           int index = altArrayCount == maxAdditionalScreens ? 2 : 0;
-          alternativePoints.get(index)[counter] = new Point(normalizedPoint.x, normalizedPoint.y - mapHeight);
-          alternativePoints.get(index + 1)[counter] = new Point(normalizedPoint.x, normalizedPoint.y + mapHeight);
+          alternativePoints.get(index)[counter] = new Point(point.x, point.y - mapHeight);
+          alternativePoints.get(index + 1)[counter] = new Point(point.x, point.y + mapHeight);
         }
         if (isInfiniteX && isInfiniteY) {
-          alternativePoints.get(4)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y - mapHeight);
-          alternativePoints.get(5)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y + mapHeight);
-          alternativePoints.get(6)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y - mapHeight);
-          alternativePoints.get(7)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y + mapHeight);
+          alternativePoints.get(4)[counter] = new Point(point.x - mapWidth, point.y - mapHeight);
+          alternativePoints.get(5)[counter] = new Point(point.x - mapWidth, point.y + mapHeight);
+          alternativePoints.get(6)[counter] = new Point(point.x + mapWidth, point.y - mapHeight);
+          alternativePoints.get(7)[counter] = new Point(point.x + mapWidth, point.y + mapHeight);
         }
         counter++;
       }
@@ -131,11 +189,7 @@ public class RouteOptimizer {
    */
   public List<Point[]> getAllPoints(Point... points) {
     List<Point[]> allPoints = getAlternativePoints(points);
-    Point[] normalizedPoints = new Point[points.length];
-    for (int i = 0; i < points.length; i++) {
-      normalizedPoints[i] = normalizePoint(points[i]);
-    }
-    allPoints.add(normalizedPoints);
+    allPoints.add(points);
     return allPoints;
   }
 
@@ -165,7 +219,7 @@ public class RouteOptimizer {
     List<Line2D> lines = new ArrayList<>();
     Point2D previousPoint = null;
     for (int i = 0; i < xcoords.length; i++) {
-      Point2D trimmedPoint = normalizePoint(getPoint(new Point2D.Double(xcoords[i], ycoords[i])));
+      Point2D trimmedPoint = new Point2D.Double(xcoords[i], ycoords[i]);
       if (previousPoint != null) {
         lines.add(new Line2D.Double(previousPoint, trimmedPoint));
       }
@@ -190,6 +244,7 @@ public class RouteOptimizer {
         result.add(new Line2D.Double(points[0], points[1]));
       }
     }
+    result.forEach(e -> e = null);
     return result;
   }
 }
