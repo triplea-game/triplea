@@ -1,6 +1,5 @@
 package games.strategy.triplea;
 
-import java.awt.Frame;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +33,9 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
-import games.strategy.ui.SwingAction;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -114,19 +115,26 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame;
-        frame = new TripleAFrame(game, localPlayers);
-        display = new TripleADisplay(frame);
-        game.addDisplay(display);
-        soundChannel = new DefaultSoundChannel(localPlayers);
-        game.addSoundChannel(soundChannel);
-        frame.setSize(700, 400);
-        frame.setVisible(true);
-        ClipPlayer.play(SoundPath.CLIP_GAME_START);
-        connectPlayers(players, frame);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        frame.toFront();
+      Platform.runLater(() -> {
+        new Application() {
+          @Override
+          public void start(Stage primaryStage) throws Exception {
+            final TripleAFrame frame;
+            frame = new TripleAFrame(game, localPlayers);
+            display = new TripleADisplay(frame);
+            game.addDisplay(display);
+            soundChannel = new DefaultSoundChannel(localPlayers);
+            game.addSoundChannel(soundChannel);
+            frame.setHeight(400);
+            frame.setWidth(700);
+            frame.show();
+            ClipPlayer.play(SoundPath.CLIP_GAME_START);
+            connectPlayers(players, frame);
+            frame.toFront();
+
+          }
+        };
+        Application.launch();
       });
 
     }

@@ -1,40 +1,34 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Component;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 /**
  * Panel to show who is playing which players
  */
-public class PlayersPanel extends JPanel {
-  private static final long serialVersionUID = -4283654829822141065L;
-
+public class PlayersPanel extends VBox {
   public PlayersPanel(final PlayerManager players, final GameData data) {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     for (final String player : players.getPlayers()) {
       final PlayerID playerID = data.getPlayerList().getPlayerID(player);
       if (playerID.isAI()) {
-        add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
+        getChildren().add(new Label(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName()));
       } else {
-        add(new JLabel(players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
+        getChildren().add(new Label(players.getNode(player).getName() + " is " + playerID.getName()));
       }
     }
   }
 
-  public static void showPlayers(final IGame game, final Component parent) {
+  public static void showPlayers(final IGame game) {
     final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players",
-        JOptionPane.PLAIN_MESSAGE, new CountDownLatchHandler(true));
+    Alert info = new Alert(AlertType.INFORMATION);
+    info.setTitle("Players");
+    info.getDialogPane().getChildren().setAll(panel);
+    info.show();
   }
 }

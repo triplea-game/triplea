@@ -1,16 +1,10 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.net.URL;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -30,6 +24,9 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
 
 /**
  * A place to find images and map data for a ui.
@@ -48,7 +45,7 @@ public class UIContext extends AbstractUIContext {
   protected boolean m_drawMapOnly = false;
   protected OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   // protected final MainGameFrame m_frame;
-  protected Cursor m_cursor = Cursor.getDefaultCursor();
+  protected Cursor m_cursor = Cursor.DEFAULT;
 
   public UIContext() {
     super();
@@ -103,21 +100,8 @@ public class UIContext extends AbstractUIContext {
     };
     (new Thread(loadSounds, "Triplea sound loader")).start();
     // load a new cursor
-    m_cursor = Cursor.getDefaultCursor();
-    final Toolkit toolkit = Toolkit.getDefaultToolkit();
-    // URL's use "/" not "\"
-    final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
-    if (cursorURL != null) {
-      try {
-        final Image image = ImageIO.read(cursorURL);
-        if (image != null) {
-          final Point hotSpot = new Point(m_mapData.getMapCursorHotspotX(), m_mapData.getMapCursorHotspotY());
-          m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
-        }
-      } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
+    m_cursor = Cursor.DEFAULT;
+    m_cursor = new ImageCursor(new Image(m_resourceLoader.getResourceAsStream("misc" + "/" + "cursor.gif")));
     stopWatch.done();
   }
 

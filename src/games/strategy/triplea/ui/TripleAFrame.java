@@ -2,23 +2,12 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,24 +43,17 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
-import javax.swing.JToolTip;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -155,51 +137,48 @@ import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.scene.web.WebView;
 
 /**
  * Main frame for the triple a game
  */
 public class TripleAFrame extends MainGameFrame {
-  private static final long serialVersionUID = 7640069668264418976L;
   private GameData data;
   private IGame game;
   private MapPanel mapPanel;
   private MapPanelSmallView smallView;
-  private final Text message = new Text("No selection");
-  private final Text status = new Text("");
-  private final Text step = new Text("xxxxxx");
-  private final Text round = new Text("xxxxxx");
-  private final Text player = new Text("xxxxxx");
+  private final Label message = new Label("No selection");
+  private final Label status = new Label("");
+  private final Label step = new Label("xxxxxx");
+  private final Label round = new Label("xxxxxx");
+  private final Label player = new Label("xxxxxx");
   private ActionButtons actionButtons;
   private final BorderPane gameMainPanel = new BorderPane();
   private final BorderPane rightHandSidePanel = new BorderPane();
@@ -223,7 +202,7 @@ public class TripleAFrame extends MainGameFrame {
   private SplitPane commentSplit;
   private EditPanel editPanel;
   private final ButtonModel editModeButtonModel;
-  private final ButtonModel showCommentLogButtonModel;
+  private final EventHandler<ActionEvent> showCommentLogButtonModel;
   private IEditDelegate editDelegate;
   private SplitPane gameCenterPanel;
   private Territory territoryLastEntered;
@@ -253,32 +232,8 @@ public class TripleAFrame extends MainGameFrame {
     // initialize m_editModeButtonModel before createMenuBar()
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
-    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    final AbstractAction m_showCommentLogAction = new AbstractAction() {
-      private static final long serialVersionUID = 3964381772343872268L;
-
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        if (showCommentLogButtonModel.isSelected()) {
-          showCommentLog();
-        } else {
-          hideCommentLog();
-        }
-      }
-
-      private void hideCommentLog() {
-        if (chatPanel != null) {
-          commentSplit.getItems().clear();
-          chatSplit.getItems().clear();
-          chatSplit.getItems().add(chatPanel);
-        } else {
-          mapAndChatPanel.getChildren().clear();
-          chatSplit.getItems().clear();
-          mapAndChatPanel.setCenter(mapPanel);
-        }
-      }
-
-      private void showCommentLog() {
+    showCommentLogButtonModel = e -> {
+      if (((CheckMenuItem) e.getSource()).isSelected()) {
         if (chatPanel != null) {
           commentSplit.getItems().clear();
           commentSplit.getItems().add(chatPanel);
@@ -291,10 +246,18 @@ public class TripleAFrame extends MainGameFrame {
           chatSplit.getItems().add(mapPanel);
           mapAndChatPanel.setCenter(chatSplit);
         }
+      } else {
+        if (chatPanel != null) {
+          commentSplit.getItems().clear();
+          chatSplit.getItems().clear();
+          chatSplit.getItems().add(chatPanel);
+        } else {
+          mapAndChatPanel.getChildren().clear();
+          chatSplit.getItems().clear();
+          mapAndChatPanel.setCenter(mapPanel);
+        }
       }
     };
-    showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
-    showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenuBar(this);
     ((BorderPane) getScene().getRoot()).getChildren().add(menu);
     final ImageScrollModel model = new ImageScrollModel();
@@ -351,8 +314,8 @@ public class TripleAFrame extends MainGameFrame {
     bottomMessagePanel.getRowConstraints().add(rc1);
     GridPane.setConstraints(message, 0, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
         Insets.EMPTY);
-//    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
-//        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    // bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
+    // GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     bottomMessagePanel.add(status, 1, 0);
     ColumnConstraints cc2 = new ColumnConstraints();
     cc2.setPercentWidth(0.65);
@@ -362,8 +325,8 @@ public class TripleAFrame extends MainGameFrame {
     bottomMessagePanel.getRowConstraints().add(rc2);
     GridPane.setConstraints(message, 1, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
         Insets.EMPTY);
-//    bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
-//        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    // bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
+    // GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     gameSouthPanel.setCenter(bottomMessagePanel);
     // status.setBorder(new EtchedBorder(EtchedBorder.RAISED)); TODO with CSS
     final GridPane stepPanel = new GridPane();
@@ -376,8 +339,8 @@ public class TripleAFrame extends MainGameFrame {
     stepPanel.getRowConstraints().add(rc3);
     GridPane.setConstraints(step, 1, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
         Insets.EMPTY);
-//    stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-//        new Insets(0, 0, 0, 0), 0, 0));
+    // stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    // new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(player, 1, 0);
     ColumnConstraints cc4 = new ColumnConstraints();
     cc4.setPercentWidth(0);
@@ -387,8 +350,8 @@ public class TripleAFrame extends MainGameFrame {
     stepPanel.getRowConstraints().add(rc4);
     GridPane.setConstraints(player, 1, 0, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS,
         Insets.EMPTY);
-//    stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-//        new Insets(0, 0, 0, 0), 0, 0));
+    // stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    // new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(round, 2, 0);
     ColumnConstraints cc5 = new ColumnConstraints();
     cc5.setPercentWidth(0);
@@ -498,18 +461,19 @@ public class TripleAFrame extends MainGameFrame {
 
 
   public static void registerFlagToggleKeyListener(MapPanel mapPanel) {
-      UnitFlagTimer timer = new UnitFlagTimer(mapPanel);
-      mapPanel.addEventHandler(KeyEvent.KEY_PRESSED, timer::keyPressed);
-      mapPanel.addEventHandler(KeyEvent.KEY_RELEASED, timer::keyReleased);
+    UnitFlagTimer timer = new UnitFlagTimer(mapPanel);
+    mapPanel.addEventHandler(KeyEvent.KEY_PRESSED, timer::keyPressed);
+    mapPanel.addEventHandler(KeyEvent.KEY_RELEASED, timer::keyReleased);
   }
-  
-  static class UnitFlagTimer{
-    
+
+  static class UnitFlagTimer {
+
     private boolean blockInputs = false;
     private long timeSinceLastPressEvent = 0;
     private boolean running = true;
-    
+
     MapPanel mapPanel;
+
     public void keyPressed(final KeyEvent e) {
       timeSinceLastPressEvent = 0;
       if (!blockInputs) {
@@ -546,7 +510,8 @@ public class TripleAFrame extends MainGameFrame {
         mapPanel.resetMap();
       }
     }
-    UnitFlagTimer(MapPanel mapPanel){
+
+    UnitFlagTimer(MapPanel mapPanel) {
       this.mapPanel = mapPanel;
     }
   }
@@ -689,8 +654,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     status.setText("");
-    status.get
-    status.setIcon(null);
+    status.setGraphic(null);
   }
 
   public void setStatusErrorMessage(final String msg) {
@@ -704,9 +668,9 @@ public class TripleAFrame extends MainGameFrame {
     status.setText(msg);
 
     if (!msg.equals("") && image.isPresent()) {
-      status.setIcon(new ImageIcon(image.get()));
+      status.setGraphic(new ImageView(SwingFXUtils.toFXImage((BufferedImage) image.get(), null)));
     } else {
-      status.setIcon(null);
+      status.setGraphic(null);
     }
   }
 
@@ -750,7 +714,6 @@ public class TripleAFrame extends MainGameFrame {
   private void requestWindowFocus() {
     SwingAction.invokeAndWait(() -> {
       requestFocus();
-      transferFocus();
     });
   }
 
@@ -800,9 +763,13 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.runTask(
-        () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error",
-            JOptionPane.ERROR_MESSAGE,
-            true, getUIContext().getCountDownLatchHandler()));
+        () -> {
+          Alert alert = new Alert(AlertType.ERROR);
+          WebView webView = new WebView();
+          webView.getEngine().loadContent(displayMessage);
+          alert.getDialogPane().setContent(webView);
+          alert.show();
+        });
   }
 
   /**
@@ -836,8 +803,14 @@ public class TripleAFrame extends MainGameFrame {
     final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
     if (messageAndDialogThreadPool != null) {
       messageAndDialogThreadPool.runTask(
-          () -> EventThreadJOptionPane.showMessageDialog(this, displayMessage, title,
-              JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
+          () -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle(title);
+            WebView webView = new WebView();
+            webView.getEngine().loadContent(displayMessage);
+            alert.getDialogPane().setContent(webView);
+            alert.show();
+          });
     }
   }
 
@@ -1054,7 +1027,7 @@ public class TripleAFrame extends MainGameFrame {
         if (tabsPanel.getTabs().indexOf(new Tab("Actions")) == -1) {
           // add actions tab
           tabsPanel.getTabs().add(new Tab("Actions"));
-          //TODO add to actions tab
+          // TODO add to actions tab
           actionButtons.someNonExistentMethod();
         }
         tabsPanel.getSelectionModel().select(0);
@@ -1069,7 +1042,8 @@ public class TripleAFrame extends MainGameFrame {
     actionButtons.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> rVal =
         actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
-    final int index = tabsPanel == null ? -1 : tabsPanel.getTabs().indexOf(new Tab("Actions"));//TODO check if this actually works
+    final int index = tabsPanel == null ? -1 : tabsPanel.getTabs().indexOf(new Tab("Actions"));// TODO check if this
+                                                                                               // actually works
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(() -> {
@@ -1631,7 +1605,7 @@ public class TripleAFrame extends MainGameFrame {
         tipText = tipText + terrInfo;
         if (tipText.length() > 0) {
           Alert alert = new Alert(AlertType.NONE, "<html>" + tipText + "</html>");
-          alert.show();//TODO
+          alert.show();// TODO
           new Thread(() -> {
             ThreadUtil.sleep(5000);
             alert.hide();
@@ -1842,8 +1816,8 @@ public class TripleAFrame extends MainGameFrame {
     split.setDividerLocation(150);
     historyComponent.add(split, BorderLayout.CENTER);
     historyComponent.add(gameSouthPanel, BorderLayout.SOUTH);
-    ((BorderPane)getScene().getRoot()).getChildren().clear();
-    ((BorderPane)getScene().getRoot()).setCenter(historyComponent);
+    ((BorderPane) getScene().getRoot()).getChildren().clear();
+    ((BorderPane) getScene().getRoot()).setCenter(historyComponent);
   }
 
   public void showGame() {
@@ -1887,8 +1861,8 @@ public class TripleAFrame extends MainGameFrame {
     gameMainPanel.getChildren().clear();
     gameMainPanel.setCenter(gameCenterPanel);
     gameMainPanel.setBottom(gameSouthPanel);
-    ((BorderPane)getScene().getRoot()).getChildren().clear();
-    ((BorderPane)getScene().getRoot()).setCenter(gameMainPanel);
+    ((BorderPane) getScene().getRoot()).getChildren().clear();
+    ((BorderPane) getScene().getRoot()).setCenter(gameMainPanel);
     mapPanel.setRoute(null);
   }
 
@@ -1909,8 +1883,8 @@ public class TripleAFrame extends MainGameFrame {
       gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
       gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
       gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-      ((BorderPane)getScene().getRoot()).getChildren().clear();
-      ((BorderPane)getScene().getRoot()).setCenter(gameMainPanel);
+      ((BorderPane) getScene().getRoot()).getChildren().clear();
+      ((BorderPane) getScene().getRoot()).setCenter(gameMainPanel);
       mapPanel.setRoute(null);
     } else {
       inGame = false;
@@ -1971,7 +1945,7 @@ public class TripleAFrame extends MainGameFrame {
     return editModeButtonModel;
   }
 
-  public ButtonModel getShowCommentLogButtonModel() {
+  public EventHandler<ActionEvent> getShowCommentLogButtonModel() {
     return showCommentLogButtonModel;
   }
 

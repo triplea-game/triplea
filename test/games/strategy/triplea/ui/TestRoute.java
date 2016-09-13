@@ -11,11 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Shape;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -25,6 +21,8 @@ import org.junit.Test;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 public class TestRoute {
   private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer());
@@ -41,7 +39,7 @@ public class TestRoute {
                                           // territory
     dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
-    when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000,1000));
+    when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
 
   @Test
@@ -83,12 +81,10 @@ public class TestRoute {
     when(mockedMapPanel.getScale()).thenReturn(0.0);
     when(mockedMapPanel.getImageWidth()).thenReturn(1);
     when(mockedMapPanel.getImageHeight()).thenReturn(1);
-    final Shape mockShape = mock(Shape.class);
-    final Graphics2D mockGraphics = mock(Graphics2D.class);
-    when(mockShape.contains(any(Point2D.class))).thenReturn(true);
-    when(mockGraphics.getClip()).thenReturn(mockShape);
+    final GraphicsContext mockGraphics = mock(GraphicsContext.class);
+    when(mockGraphics.getCanvas()).thenReturn(new Canvas(10000, 10000));
     spyRouteDrawer.drawRoute(mockGraphics, dummyRouteDescription, mockedMapPanel, dummyMapData, "2");
-    verify(mockGraphics, atLeastOnce()).draw(any(Line2D.class));
+    verify(mockGraphics, atLeastOnce()).strokeLine(any(), any(), any(), any());
     verify(mockedMapPanel).getXOffset();// Those methods are needed
     verify(mockedMapPanel).getYOffset();
     verify(mockedMapPanel).getScale();

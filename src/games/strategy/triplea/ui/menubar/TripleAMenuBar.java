@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.menubar;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,8 +13,6 @@ import java.util.Vector;
 
 import javax.swing.JFileChooser;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -82,13 +79,13 @@ public class TripleAMenuBar extends MenuBar {
     new WebHelpMenu(this);
 
     new DebugMenu(this, frame);
-    new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
+    new HelpMenu(this, frame.getUIContext(), frame.getGame().getData());
   }
 
   private void createLobbyMenu(final MenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
     final Menu lobby = new Menu("_Lobby");
     menuBar.getMenus().add(lobby);
-    lobby.getItems().add(new EditGameCommentAction(watcher, frame));
+    lobby.getItems().add(new EditGameCommentAction(watcher));
     lobby.getItems().add(new RemoveGameFromLobbyAction(watcher));
   }
 
@@ -98,7 +95,7 @@ public class TripleAMenuBar extends MenuBar {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (SystemProperties.isMac()) {
+    if (SystemProperties.isMac()) {//TODO unify with javafx
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
 

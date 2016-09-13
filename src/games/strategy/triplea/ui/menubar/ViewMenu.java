@@ -3,35 +3,18 @@ package games.strategy.triplea.ui.menubar;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.DocumentEvent.EventType;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -39,7 +22,6 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
@@ -49,25 +31,17 @@ import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeItem;
 
 public class ViewMenu {
   private CheckMenuItem showMapDetails;
@@ -110,7 +84,8 @@ public class ViewMenu {
 
   private void addShowCommentLog(final Menu parentMenu) {
     final CheckMenuItem showCommentLog = new CheckMenuItem("Show Comment _Log");
-    showCommentLog.setModel(frame.getShowCommentLogButtonModel());
+    
+    showCommentLog.setOnAction(frame.getShowCommentLogButtonModel());
     parentMenu.getItems().add(showCommentLog);
   }
 
@@ -362,7 +337,9 @@ public class ViewMenu {
   }
 
   private void addMapFontAndColorEditorMenu(final Menu parentMenu) {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and _Color", e -> {
+    MenuItem mapFontOptions = new MenuItem("Edit Map Font and _Color");
+    mapFontOptions.setMnemonicParsing(true);
+    mapFontOptions.setOnAction(e -> {//TODO change to javafx
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
@@ -390,7 +367,6 @@ public class ViewMenu {
               + "<br />you are using. If you have an error come up, try switching to the "
               + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
           BorderLayout.NORTH);
-      final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
       Optional<ButtonType> chosenOption =
           new Alert(AlertType.CONFIRMATION, "Edit Map Font and Color", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL)
               .showAndWait();
@@ -411,9 +387,8 @@ public class ViewMenu {
           frame.getMapPanel().resetMap();
         }
       }
-
     });
-    parentMenu.getItems().add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+    parentMenu.getItems().add(mapFontOptions);
   }
 
   private void addShowTerritoryEffects(final Menu parentMenu) {

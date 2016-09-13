@@ -1,12 +1,6 @@
 package games.strategy.engine.chat;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 
 import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
@@ -85,9 +79,9 @@ public class ChatPanel extends BorderPane implements IChatPanel {
     split.setOrientation(Orientation.HORIZONTAL);
     split.getItems().add(chatMessagePanel);
     split.getItems().add(chatPlayerPanel);
-//    split.setOneTouchExpandable(false);
-//    split.setDividerSize(s_divider_size);
-//    split.setResizeWeight(1);
+    // split.setOneTouchExpandable(false);
+    // split.setDividerSize(s_divider_size);
+    // split.setResizeWeight(1);
     setCenter(split);
   }
 
@@ -101,7 +95,7 @@ public class ChatPanel extends BorderPane implements IChatPanel {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting
     // the width is not really necessary
-    chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
+    chatMessagePanel.setPrefSize(30, chatMessagePanel.getPrefHeight());
   }
 
   @Override

@@ -39,6 +39,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -178,11 +179,11 @@ public class ChatMessagePanel extends BorderPane implements IChatListener {
 
   private void setupKeyMap() {
     addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-      if(e.getCode() == KeyCode.UP){
+      if (e.getCode() == KeyCode.UP) {
         upAction.run();
-      } else if(e.getCode() == KeyCode.DOWN){
+      } else if (e.getCode() == KeyCode.DOWN) {
         downAction.run();
-      }  else if(e.getCode() == KeyCode.ENTER){
+      } else if (e.getCode() == KeyCode.ENTER) {
         sendAction.run();
       }
     });
@@ -305,14 +306,15 @@ public class ChatMessagePanel extends BorderPane implements IChatListener {
   }
 
   private final Runnable setStatusAction = () -> {
-    String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
-        "Enter Status Text (leave blank for no status)", "");
-    if (status != null) {
+    TextInputDialog dialog = new TextInputDialog();
+    dialog.setTitle("Enter Status Text");
+    dialog.setContentText("Enter Status Text (leave blank for no status)");
+    dialog.showAndWait().ifPresent(status -> {
       if (status.trim().length() == 0) {
         status = null;
       }
       chat.getStatusManager().setStatus(status);
-    }
+    });
   };
   private final Runnable sendAction = () -> {
     if (nextMessage.getText().trim().length() == 0) {

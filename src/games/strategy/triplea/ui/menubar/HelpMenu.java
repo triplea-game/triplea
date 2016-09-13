@@ -1,29 +1,9 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import com.apple.eawt.Application;
 
@@ -36,20 +16,23 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHTML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.Separator;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.web.WebView;
 
 public class HelpMenu {
 
   private final IUIContext iuiContext;
   private final GameData gameData;
 
-  public HelpMenu(final MenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
-      final Color backgroundColor) {
+  public HelpMenu(final MenuBar menuBar, final IUIContext iuiContext, final GameData gameData) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 
@@ -61,17 +44,18 @@ public class HelpMenu {
 
     addGameNotesMenu(helpMenu);
 
-    addAboutMenu(helpMenu, backgroundColor);
+    addAboutMenu(helpMenu);
 
     addReportBugsMenu(helpMenu);
   }
 
 
   private void addMoveHelpMenu(final Menu helpMenu) {
-    final String moveSelectionHelpTitle = "Movement/Selection Help";
-    helpMenu.getItems().add(SwingAction.of(moveSelectionHelpTitle, e -> {
+    MenuItem moveHelp = new MenuItem("_Movement/Selection Help");
+    moveHelp.setMnemonicParsing(true);
+    moveHelp.setOnAction(e -> {
       // html formatted string
-      final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
+      final String hints = "<html><b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
           + "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
           + "Shift-Left click on a unit to select all units in the territory.<br>"
@@ -101,14 +85,14 @@ public class HelpMenu {
           + "Press 'f' to highlight all units you own that have movement left (move phases only).<br>"
           + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
           + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
-          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";
-      final JEditorPane editorPane = new JEditorPane();
-      editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(hints);
-      final JScrollPane scroll = new JScrollPane(editorPane);
-      JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
-    })).setMnemonic(KeyEvent.VK_M);
+          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br></html>";
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle(moveHelp.getText());
+      WebView webView = new WebView();
+      webView.getEngine().loadContent(hints);
+      alert.getDialogPane().setContent(webView);
+      alert.show();
+    });
   }
 
   protected static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
@@ -164,59 +148,21 @@ public class HelpMenu {
 
 
   private void addUnitHelpMenu(final Menu parentMenu) {
-    parentMenu.add(SwingAction.of("Unit Help", e -> {
-      final JEditorPane editorPane = new JEditorPane();
-      editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(getUnitStatsTable(gameData, iuiContext));
-      editorPane.setCaretPosition(0);
-      final JScrollPane scroll = new JScrollPane(editorPane);
-      scroll.setBorder(BorderFactory.createEmptyBorder());
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
-      // the window sides
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 40;
-      scroll.setPreferredSize(new Dimension(
-          (scroll.getPreferredSize().width > availWidth ? availWidth
-              : (scroll.getPreferredSize().height > availHeight
-                  ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
-          (scroll.getPreferredSize().height > availHeight ? availHeight
-              : (scroll.getPreferredSize().width > availWidth
-                  ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                  : scroll.getPreferredSize().height))));
-      final JDialog dialog = new JDialog();
-      dialog.setModal(false);
-      // needs java 1.6 at least...
-      // dialog.setModalityType(ModalityType.MODELESS);
-      dialog.setAlwaysOnTop(true);
-      dialog.add(scroll, BorderLayout.CENTER);
-      final JPanel buttons = new JPanel();
-      final JButton button = new JButton(SwingAction.of("OK", event -> {
-        dialog.setVisible(false);
-        dialog.removeAll();
-        dialog.dispose();
-      }));
-      buttons.add(button);
-      dialog.getRootPane().setDefaultButton(button);
-      dialog.add(buttons, BorderLayout.SOUTH);
-      dialog.pack();
-      // dialog.setLocationRelativeTo(frame);
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowOpened(final WindowEvent e) {
-          scroll.getVerticalScrollBar().getModel().setValue(0);
-          scroll.getHorizontalScrollBar().getModel().setValue(0);
-          button.requestFocus();
-        }
-      });
-      dialog.setVisible(true);
-      // dialog.dispose();
-    })).setMnemonic(KeyEvent.VK_U);
+    MenuItem unitHelp = new MenuItem("_Unit Help");
+    unitHelp.setMnemonicParsing(true);
+    unitHelp.setOnAction(e -> {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle(unitHelp.getText());
+      WebView webView = new WebView();
+      webView.getEngine().loadContent(getUnitStatsTable(gameData, iuiContext));
+      ScrollPane scrollPane = new ScrollPane(webView);
+      alert.getDialogPane().setContent(scrollPane);
+      alert.show();
+    });
   }
 
 
-  public static final JEditorPane gameNotesPane = new JEditorPane();
+  public static final WebView gameNotesPane = new WebView();
 
   protected void addGameNotesMenu(final Menu helpMenu) {
     // allow the game developer to write notes that appear in the game
@@ -224,86 +170,49 @@ public class HelpMenu {
     final String notesProperty = gameData.getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-      gameNotesPane.setEditable(false);
-      gameNotesPane.setContentType("text/html");
-      gameNotesPane.setText(notes);
-      helpMenu.getItems().add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
-        final JEditorPane pane = gameNotesPane;
-        final JScrollPane scroll = new JScrollPane(pane);
-        scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        final JDialog dialog = new JDialog();
-        dialog.setModalityType(Dialog.ModalityType.MODELESS);
-        dialog.setAlwaysOnTop(true);
-        dialog.add(scroll, BorderLayout.CENTER);
-        final JPanel buttons = new JPanel();
-        final JButton button = new JButton(SwingAction.of("OK", event -> {
-          dialog.setVisible(false);
-          dialog.removeAll();
-          dialog.dispose();
-        }));
-        buttons.add(button);
-        dialog.getRootPane().setDefaultButton(button);
-        dialog.add(buttons, BorderLayout.SOUTH);
-        dialog.pack();
-        if (dialog.getWidth() < 400) {
-          dialog.setSize(400, dialog.getHeight());
-        }
-        if (dialog.getHeight() < 300) {
-          dialog.setSize(dialog.getWidth(), 300);
-        }
-        if (dialog.getWidth() > 800) {
-          dialog.setSize(800, dialog.getHeight());
-        }
-        if (dialog.getHeight() > 600) {
-          dialog.setSize(dialog.getWidth(), 600);
-        }
-        // dialog.setLocationRelativeTo(frame);
-        dialog.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowOpened(final WindowEvent e) {
-            scroll.getVerticalScrollBar().getModel().setValue(0);
-            scroll.getHorizontalScrollBar().getModel().setValue(0);
-            button.requestFocus();
-          }
-        });
-        dialog.setVisible(true);
-      }))).setMnemonic(KeyEvent.VK_N);
+      MenuItem gameNotes = new MenuItem("Game _Notes");
+      gameNotes.setMnemonicParsing(true);
+      gameNotes.setOnAction(e -> {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(gameNotes.getText());
+        gameNotesPane.getEngine().loadContent(notes);
+        alert.getDialogPane().setContent(gameNotesPane);
+        alert.show();
+      });
+      helpMenu.getItems().add(gameNotes);
     }
   }
 
-  private void addAboutMenu(final Menu parentMenu, final Color backgroundColor) {
+  private void addAboutMenu(final Menu parentMenu) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
         + "<b><a hlink='" + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
-    final JEditorPane editorPane = new JEditorPane();
-    editorPane.setBorder(null);
-    editorPane.setBackground(backgroundColor);
-    editorPane.setEditable(false);
-    editorPane.setContentType("text/html");
-    editorPane.setText(text);
-    final JScrollPane scroll = new JScrollPane(editorPane);
-    scroll.setBorder(null);
+    MenuItem aboutMenu = new MenuItem("_About");
+    aboutMenu.setMnemonicParsing(true);
+    aboutMenu.setOnAction(e -> {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle(aboutMenu.getText());
+      gameNotesPane.getEngine().loadContent(text);
+      alert.getDialogPane().setContent(gameNotesPane);
+      alert.show();
+    });
     if (System.getProperty("mrj.version") == null) {
-      parentMenu.getItems().add(new Separator());
-      parentMenu.getItems().add(SwingAction.of("About", e -> {
-        JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
-            JOptionPane.PLAIN_MESSAGE);
-      })).setMnemonic(KeyEvent.VK_A);
-    } else
-    // On Mac OS X, put the About menu where Mac users expect it to be
-    {
-      Application.getApplication().setAboutHandler(
-          paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
-              JOptionPane.PLAIN_MESSAGE));
+      parentMenu.getItems().add(new SeparatorMenuItem());
+      parentMenu.getItems().add(aboutMenu);
+    } else {
+      // On Mac OS X, put the About menu where Mac users expect it to be
+      Application.getApplication().setAboutHandler(paramAboutEvent -> aboutMenu.getOnAction().handle(null));
     }
   }
 
   private void addReportBugsMenu(final Menu parentMenu) {
-    parentMenu.getItems().add(SwingAction.of("Send Bug Report", e -> {
-      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
-    })).setMnemonic(KeyEvent.VK_B);
+    MenuItem sendBugs = new MenuItem("Send _Bug Report");
+    sendBugs.setMnemonicParsing(true);
+    sendBugs.setOnAction(e -> {
+      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);// TODO change this
+    });
   }
 
 }

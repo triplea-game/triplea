@@ -56,6 +56,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -371,8 +372,8 @@ public class MapPanel extends ImageScrollerLargeView {
   public void updateCountries(final Collection<Territory> countries) {
     tileManager.updateTerritories(countries, m_data, uiContext.getMapData());
     smallMapImageManager.update(m_data, uiContext.getMapData());
-    SwingUtilities.invokeLater(() -> {
-      smallView.repaint();
+    Platform.runLater(() -> {
+      smallView.paintComponent();
       repaint();
     });
   }
