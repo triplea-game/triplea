@@ -244,7 +244,6 @@ public class RouteOptimizer {
         result.add(new Line2D.Double(points[0], points[1]));
       }
     }
-    result.forEach(e -> e = null);
     return result;
   }
 }
