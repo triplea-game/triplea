@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.mapdata;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
@@ -34,6 +33,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.UrlStreams;
+import javafx.scene.paint.Color;
 
 /**
  * contains data about the territories useful for drawing
@@ -439,7 +439,7 @@ public class MapData implements Closeable {
         throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
       try {
-        return new Color(Integer.decode("0x" + colorString));
+        return Color.web("0x" + colorString);
       } catch (final NumberFormatException nfe) {
         throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
       }

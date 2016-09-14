@@ -1,11 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,16 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import games.strategy.debug.ClientLogger;
@@ -41,7 +26,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -57,9 +41,24 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.Util;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 
 public class ExportMenu {
 
@@ -72,9 +71,9 @@ public class ExportMenu {
     gameData = frame.getGame().getData();
     iuiContext = frame.getUIContext();
 
-    final JMenu menuGame = new JMenu("Export");
-    menuGame.setMnemonic(KeyEvent.VK_E);
-    menuBar.add(menuGame);
+    final Menu menuGame = new Menu("_Export");
+    menuGame.setMnemonicParsing(true);
+    menuBar.getMenus().add(menuGame);
     addExportXML(menuGame);
     addExportStats(menuGame);
     addExportStatsFull(menuGame);
@@ -84,14 +83,15 @@ public class ExportMenu {
   }
 
   // TODO: create a second menu option for parsing current attachments
-  private void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
-    parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
+  private void addExportXML(final Menu parentMenu) {
+    final MenuItem exportXML = new MenuItem("E_xport game.xml File (Beta)");
+    exportXML.setMnemonicParsing(true);
+    exportXML.setOnAction(e -> exportXMLFile());
+    parentMenu.getItems().add(exportXML);
   }
 
   private void exportXMLFile() {
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    final FileChooser chooser = new FileChooser();
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
     final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int round = 0;
@@ -105,8 +105,10 @@ public class ExportMenu {
         "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
+    chooser.setInitialDirectory(rootDir);
+    chooser.setInitialFileName(defaultFileName);
+    File file = chooser.showSaveDialog(frame);
+    if (file == null) {
       return;
     }
     final String xmlFile;
@@ -118,7 +120,7 @@ public class ExportMenu {
       gameData.releaseReadLock();
     }
     try {
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+      try (final FileWriter writer = new FileWriter(file);) {
         writer.write(xmlFile);
       }
     } catch (final IOException e1) {
@@ -127,8 +129,10 @@ public class ExportMenu {
   }
 
 
-  private void addSaveScreenshot(final JMenu parentMenu) {
-    final AbstractAction abstractAction = SwingAction.of("Export Screenshot", e -> {
+  private void addSaveScreenshot(final Menu parentMenu) {
+    MenuItem saveScreenshot = new MenuItem("_Export Screenshot");
+    saveScreenshot.setMnemonicParsing(true);
+    saveScreenshot.setOnAction(e -> {
 
       final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
@@ -139,51 +143,36 @@ public class ExportMenu {
       }
       saveScreenshot(curNode, frame, gameData);
     });
-    parentMenu.add(abstractAction).setMnemonic(KeyEvent.VK_E);
+    parentMenu.getItems().add(saveScreenshot);
   }
 
   public static void saveScreenshot(final HistoryNode node, final TripleAFrame frame, final GameData gameData) {
-    final FileFilter pngFilter = new FileFilter() {
-      @Override
-      public boolean accept(final File f) {
-        if (f.isDirectory()) {
-          return true;
-        } else {
-          return f.getName().endsWith(".png");
-        }
+    final FileChooser fileChooser = new FileChooser();
+    fileChooser.getExtensionFilters().add(new ExtensionFilter("Saved Screenshots", "*.png"));
+    File f = fileChooser.showSaveDialog(null);
+    if (f == null) {
+      return;
+    }
+    if (!f.getName().toLowerCase().endsWith(".png")) {
+      f = new File(f.getParent(), f.getName() + ".png");
+    }
+    // A small warning so users will not over-write a file,
+    if (f.exists()) {
+      final int choice =
+          JOptionPane.showConfirmDialog(null, "A file by that name already exists. Do you wish to over write it?",
+              "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+      if (choice != JOptionPane.OK_OPTION) {
+        return;
       }
-
-      @Override
-      public String getDescription() {
-        return "Saved Screenshots, *.png";
+    }
+    final File file = f;
+    final Runnable t = () -> {
+      if (saveScreenshot(node, file, frame, gameData)) {
+        Platform.runLater(() -> new Alert(AlertType.INFORMATION, "Screenshot Saved"));
       }
     };
-    final JFileChooser fileChooser = new SaveGameFileChooser();
-    fileChooser.setFileFilter(pngFilter);
-    final int rVal = fileChooser.showSaveDialog(null);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-      File f = fileChooser.getSelectedFile();
-      if (!f.getName().toLowerCase().endsWith(".png")) {
-        f = new File(f.getParent(), f.getName() + ".png");
-      }
-      // A small warning so users will not over-write a file,
-      if (f.exists()) {
-        final int choice =
-            JOptionPane.showConfirmDialog(null, "A file by that name already exists. Do you wish to over write it?",
-                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return;
-        }
-      }
-      final File file = f;
-      final Runnable t = () -> {
-        if (saveScreenshot(node, file, frame, gameData)) {
-          JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved",
-              JOptionPane.INFORMATION_MESSAGE);
-        }
-      };
-      SwingAction.invokeAndWait(t);
-    }
+    SwingAction.invokeAndWait(t);
+
   }
 
   private static boolean saveScreenshot(final HistoryNode node, final File file, final TripleAFrame frame,
@@ -204,16 +193,14 @@ public class ExportMenu {
     // print map panel to image
 
     final MapPanel mapPanel = frame.getMapPanel();
-    final BufferedImage mapImage =
-        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
-    final Graphics2D mapGraphics = mapImage.createGraphics();
+    Canvas canvas = new Canvas(scale * mapPanel.getImageWidth(), scale * mapPanel.getImageHeight());
     try {
       // workaround to get the whole map
       // (otherwise the map is cut if current window is not on top of map)
       final int xOffset = mapPanel.getXOffset();
       final int yOffset = mapPanel.getYOffset();
       mapPanel.setTopLeft(0, 0);
-      mapPanel.print(mapGraphics);
+      mapPanel.print(canvas.getGraphicsContext2D());
       mapPanel.setTopLeft(xOffset, yOffset);
       // overlay title
       Color title_color = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
@@ -236,48 +223,47 @@ public class ExportMenu {
         title_y = (int) (15 * scale);
         title_size = 15;
       }
-      // everything else should be scaled down onto map image
-      final AffineTransform transform = new AffineTransform();
-      transform.scale(scale, scale);
-      mapGraphics.setTransform(transform);
-      mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
-      mapGraphics.setColor(title_color);
       if (iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(gameData.getGameName() + " Round " + round, title_x, title_y);
+        // everything else should be scaled down onto map image
+        GraphicsContext mapGraphics = canvas.getGraphicsContext2D();
+        mapGraphics.scale(scale, scale);
+        mapGraphics.setFont(Font.font("Ariel", FontWeight.BOLD, title_size));
+        mapGraphics.setFill(title_color);
+        mapGraphics.fillText(gameData.getGameName() + " Round " + round, title_x, title_y);
       }
 
       // save Image as .png
       try {
-        ImageIO.write(mapImage, "png", file);
-      } catch (final Exception e2) {
-        e2.printStackTrace();
-        JOptionPane.showMessageDialog(frame, e2.getMessage(), "Error saving Screenshot",
-            JOptionPane.OK_OPTION);
+        WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+        canvas.snapshot(null, writableImage);
+        ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
+      } catch (final IOException e) {
+        ClientLogger.logError("Error while saving Screenshot", e);
         retval = false;
       }
-      // Clean up objects. There might be some overkill here,
-      // but there were memory leaks that are fixed by some/all of these.
-    } finally {
-      mapImage.flush();
-      mapGraphics.dispose();
+    } catch (Exception e) {
+      ClientLogger.logError(e);
     }
     return retval;
   }
 
-  private void addExportStatsFull(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Export Full Game Stats", e -> createAndSaveStats(true));
-    parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_F);
+  private void addExportStatsFull(final Menu parentMenu) {
+    MenuItem showDiceStats = new MenuItem("Export _Full Game Stats");
+    showDiceStats.setMnemonicParsing(true);
+    showDiceStats.setOnAction(e -> createAndSaveStats(true));
+    parentMenu.getItems().add(showDiceStats);
   }
 
-  private void addExportStats(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Export Short Game Stats", e -> createAndSaveStats(false));
-    parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
+  private void addExportStats(final Menu parentMenu) {
+    MenuItem showDiceStats = new MenuItem("Export _Short Game Stats");
+    showDiceStats.setMnemonicParsing(true);
+    showDiceStats.setOnAction(e -> createAndSaveStats(false));
+    parentMenu.getItems().add(showDiceStats);
   }
 
   private void createAndSaveStats(final boolean showPhaseStats) {
     final ExtendedStats statPanel = new ExtendedStats(gameData, iuiContext);
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    final FileChooser chooser = new FileChooser();
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
     final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int currentRound = 0;
@@ -291,8 +277,10 @@ public class ExportMenu {
         + currentRound + (showPhaseStats ? "_full" : "_short");
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".csv";
-    chooser.setSelectedFile(new File(rootDir, defaultFileName));
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
+    chooser.setInitialDirectory(rootDir);
+    chooser.setInitialFileName(defaultFileName);
+    File file = chooser.showSaveDialog(frame);
+    if (file == null) {
       return;
     }
     final StringBuilder text = new StringBuilder(1000);
@@ -519,26 +507,29 @@ public class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+    try (final FileWriter writer = new FileWriter(file)) {
       writer.write(text.toString());
     } catch (final IOException e1) {
       ClientLogger.logQuietly(e1);
     }
   }
 
-  private void addExportUnitStats(final JMenu parentMenu) {
-    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Unit Charts", e -> {
-      final JFileChooser chooser = new JFileChooser();
-      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+  private void addExportUnitStats(final Menu parentMenu) {
+    final MenuItem menuFileExport = new MenuItem("Export _Unit Charts");
+    menuFileExport.setMnemonicParsing(true);
+    menuFileExport.setOnAction(e -> {
+      final FileChooser chooser = new FileChooser();
       final File rootDir = new File(System.getProperties().getProperty("user.dir"));
       String defaultFileName = gameData.getGameName() + "_unit_stats";
       defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
       defaultFileName = defaultFileName + ".html";
-      chooser.setSelectedFile(new File(rootDir, defaultFileName));
-      if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
+      chooser.setInitialFileName(defaultFileName);
+      chooser.setInitialDirectory(rootDir);
+      File selectedFile = chooser.showSaveDialog(frame);
+      if (selectedFile == null) {
         return;
       }
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+      try (final FileWriter writer = new FileWriter(selectedFile)) {
         writer.write(HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n")
             .replaceAll("</p>", "</p>\r\n")
             .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
@@ -546,16 +537,17 @@ public class ExportMenu {
         ClientLogger.logQuietly(e1);
       }
 
-    }));
-    menuFileExport.setMnemonic(KeyEvent.VK_U);
-    parentMenu.add(menuFileExport);
+    });
+    parentMenu.getItems().add(menuFileExport);
   }
 
 
-  private void addExportSetupCharts(final JMenu parentMenu) {
-    final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts", e -> {
-      final JFrame frame = new JFrame("Export Setup Charts");
-      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  private void addExportSetupCharts(final Menu parentMenu) {
+    final MenuItem menuFileExport = new MenuItem("Export Setup _Charts");
+    menuFileExport.setMnemonicParsing(true);
+    menuFileExport.setOnAction(e -> Platform.runLater(() -> {
+      Stage stage = new Stage();
+      stage.setTitle("Export Setup Charts");
       GameData clonedGameData;
       gameData.acquireReadLock();
       try {
@@ -563,19 +555,11 @@ public class ExportMenu {
       } finally {
         gameData.releaseReadLock();
       }
-      final JComponent newContentPane = new SetupFrame(clonedGameData);
-      // content panes must be opaque
-      newContentPane.setOpaque(true);
-      frame.setContentPane(newContentPane);
-      // Display the window.
-      frame.pack();
-      frame.setLocationRelativeTo(frame);
-      frame.setVisible(true);
-      iuiContext.addShutdownWindow(frame);
-
+      stage.setScene(new Scene(new SetupFrame(clonedGameData)));
+      iuiContext.addShutdownWindow(stage.getScene().getWindow());
+      stage.show();
     }));
-    menuFileExport.setMnemonic(KeyEvent.VK_C);
-    parentMenu.add(menuFileExport);
+    parentMenu.getItems().add(menuFileExport);
 
   }
 }

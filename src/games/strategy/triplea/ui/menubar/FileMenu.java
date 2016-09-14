@@ -1,12 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -18,7 +12,14 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.SwingAction;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 
 public class FileMenu {
 
@@ -31,35 +32,36 @@ public class FileMenu {
     game = frame.getGame();
     gameData = frame.getGame().getData();
 
-    final JMenu fileMenu = new JMenu("File");
-    fileMenu.setMnemonic(KeyEvent.VK_F);
-    fileMenu.add(createSaveMenu());
+    final Menu fileMenu = new Menu("_File");
+    fileMenu.getItems().add(createSaveMenu());
 
     if (PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
-      fileMenu.add(addPostPBEM());
+      fileMenu.getItems().add(addPostPBEM());
     }
 
-    fileMenu.addSeparator();
+    fileMenu.getItems().add(new SeparatorMenuItem());
     addExitMenu(fileMenu);
-    menuBar.add(fileMenu);
+    menuBar.getMenus().add(fileMenu);
   }
 
-  private JMenuItem createSaveMenu() {
-    final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save", e -> {
+  private MenuItem createSaveMenu() {
+    final MenuItem menuFileSave = new MenuItem("_Save");
+    menuFileSave.setMnemonicParsing(true);
+    menuFileSave.setOnAction(e -> {
       final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
       if (f != null) {
         game.saveGame(f);
-        JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+        new Alert(AlertType.INFORMATION, "Game Saved").show();
       }
-    }));
-    menuFileSave.setMnemonic(KeyEvent.VK_S);
-    menuFileSave.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    });
+    menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
     return menuFileSave;
   }
 
-  protected JMenuItem addPostPBEM() {
-    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
+  protected MenuItem addPostPBEM() {
+    final MenuItem menuPBEM = new MenuItem("_Post PBEM/PBF Gamesave");
+    menuPBEM.setMnemonicParsing(true);
+    menuPBEM.setOnAction(e -> {
       if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
@@ -77,34 +79,31 @@ public class FileMenu {
       } finally {
         gameData.releaseReadLock();
       }
-    }));
-    menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    });
+    menuPBEM.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
     return menuPBEM;
   }
 
-  protected void addExitMenu(final JMenu parentMenu) {
+  protected void addExitMenu(final Menu parentMenu) {
     final boolean isMac = SystemProperties.isMac();
-    final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
-    leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
-    if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
-      // so set the command-L key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    }
-    parentMenu.add(leaveGameMenuExit);
+    final MenuItem leaveGameMenuExit = new MenuItem("_Leave Game");
+    leaveGameMenuExit.setMnemonicParsing(true);
+    leaveGameMenuExit.setOnAction(e -> frame.leaveGame());
+    // On Mac OS X, the command-Q is reserved for the Quit action,
+    // so set the command-L key combo for the Leave Game action
+    // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
+    leaveGameMenuExit
+        .setAccelerator(new KeyCodeCombination(isMac ? KeyCode.L : KeyCode.Q, KeyCombination.CONTROL_DOWN));
+    parentMenu.getItems().add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
       MacQuitMenuWrapper.registerMacShutdownHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
-      menuFileExit.setMnemonic(KeyEvent.VK_E);
-      parentMenu.add(menuFileExit);
+      final MenuItem menuFileExit = new MenuItem("_Exit Program");
+      menuFileExit.setMnemonicParsing(true);
+      menuFileExit.setOnAction(e -> frame.shutdown());
+      parentMenu.getItems().add(menuFileExit);
     }
   }
 
