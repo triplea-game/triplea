@@ -146,6 +146,7 @@ public class GameDataExporter {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
+      // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
       final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
       conPropField.setAccessible(true);
       final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
