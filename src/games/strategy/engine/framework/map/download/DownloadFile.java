@@ -20,7 +20,7 @@ import games.strategy.engine.ClientFileSystemHelper;
  */
 public class DownloadFile {
 
-  public static enum DownloadState {
+  public enum DownloadState {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 

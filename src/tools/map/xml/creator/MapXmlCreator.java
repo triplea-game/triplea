@@ -1120,14 +1120,14 @@ public class MapXmlCreator extends JFrame {
         return (arg1.endsWith(FILE_NAME_ENDING_GIF) || arg1.endsWith(FILE_NAME_ENDING_PNG));
       }
     });
-    if (imageFiles.length == 1) {
+    if (imageFiles != null && imageFiles.length == 1) {
       mapImageFile = imageFiles[0];
     } else {
       MapPropertiesPanel.selectMapImageFile();
     }
 
     final File fileGuess = new File(mapFolderLocation, FILE_NAME_CENTERS_TXT);
-    if (fileGuess.exists()) {
+    if (fileGuess != null && fileGuess.exists()) {
       mapCentersFile = fileGuess;
     } else {
       MapPropertiesPanel.selectCentersFile();

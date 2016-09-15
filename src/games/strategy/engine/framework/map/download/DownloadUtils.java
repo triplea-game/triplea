@@ -10,17 +10,41 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class DownloadUtils {
-  public static Optional<Integer> getDownloadLength(URL url) {
+
+  private static Map<URL, Integer> downloadLengthCache = new HashMap<>();
+
+
+  static Optional<Integer> getDownloadLength(URL url) {
+    if(!downloadLengthCache.containsKey(url)) {
+      Optional<Integer> length = getDownloadLengthWithoutCache(url);
+      if(length.isPresent()) {
+        downloadLengthCache.put(url, length.get());
+      } else {
+        return Optional.empty();
+      }
+    }
+    return Optional.of(downloadLengthCache.get(url));
+  }
+
+  private static Optional<Integer> getDownloadLengthWithoutCache(URL url) {
     try {
       HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
       int responseCode = httpConn.getResponseCode();
       // always check HTTP response code first
       if (responseCode == HttpURLConnection.HTTP_OK) {
-        return Optional.of(httpConn.getContentLength());
+        int length = httpConn.getContentLength();
+        if(length <= 0) {
+          return Optional.empty();
+        } else {
+          return Optional.of(httpConn.getContentLength());
+        }
       } else {
+        ClientLogger.logQuietly("Unexpected response code:  " + responseCode);
         return Optional.empty();
       }
     } catch (IOException e) {

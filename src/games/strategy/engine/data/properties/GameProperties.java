@@ -27,9 +27,16 @@ import games.strategy.engine.data.GameDataComponent;
  */
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
+
+  // keep this in sync with the corresponding property, this name is used by reflection
+  public static final String CONSTANT_PROPERTIES_FIELD_NAME = "constantProperties";
   private final Map<String, Object> constantProperties = new HashMap<>();
-  // a set of IEditableProperties
+
+
+  // keep this in sync with the corresponding property, this name is used by reflection
+  public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
   private final Map<String, IEditableProperty> editableProperties = new HashMap<>();
+
   // This list is used to keep track of order properties were
   // added.
   private final List<String> ordering = new ArrayList<>();

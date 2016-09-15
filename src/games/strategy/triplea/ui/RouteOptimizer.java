@@ -60,7 +60,6 @@ public class RouteOptimizer {
         result.add(point);
         continue;
       }
-      previousPoint = normalizePoint(previousPoint);
       Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
       result.add(closestPoint);
       previousPoint = closestPoint;
@@ -161,21 +160,20 @@ public class RouteOptimizer {
       }
       int counter = 0;
       for (Point point : points) {
-        Point normalizedPoint = normalizePoint(point);
         if (isInfiniteX) {
-          alternativePoints.get(0)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y);
-          alternativePoints.get(1)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y);
+          alternativePoints.get(0)[counter] = new Point(point.x - mapWidth, point.y);
+          alternativePoints.get(1)[counter] = new Point(point.x + mapWidth, point.y);
         }
         if (isInfiniteY) {
           int index = altArrayCount == maxAdditionalScreens ? 2 : 0;
-          alternativePoints.get(index)[counter] = new Point(normalizedPoint.x, normalizedPoint.y - mapHeight);
-          alternativePoints.get(index + 1)[counter] = new Point(normalizedPoint.x, normalizedPoint.y + mapHeight);
+          alternativePoints.get(index)[counter] = new Point(point.x, point.y - mapHeight);
+          alternativePoints.get(index + 1)[counter] = new Point(point.x, point.y + mapHeight);
         }
         if (isInfiniteX && isInfiniteY) {
-          alternativePoints.get(4)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y - mapHeight);
-          alternativePoints.get(5)[counter] = new Point(normalizedPoint.x - mapWidth, normalizedPoint.y + mapHeight);
-          alternativePoints.get(6)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y - mapHeight);
-          alternativePoints.get(7)[counter] = new Point(normalizedPoint.x + mapWidth, normalizedPoint.y + mapHeight);
+          alternativePoints.get(4)[counter] = new Point(point.x - mapWidth, point.y - mapHeight);
+          alternativePoints.get(5)[counter] = new Point(point.x - mapWidth, point.y + mapHeight);
+          alternativePoints.get(6)[counter] = new Point(point.x + mapWidth, point.y - mapHeight);
+          alternativePoints.get(7)[counter] = new Point(point.x + mapWidth, point.y + mapHeight);
         }
         counter++;
       }
@@ -191,11 +189,7 @@ public class RouteOptimizer {
    */
   public List<Point[]> getAllPoints(Point... points) {
     List<Point[]> allPoints = getAlternativePoints(points);
-    Point[] normalizedPoints = new Point[points.length];
-    for (int i = 0; i < points.length; i++) {
-      normalizedPoints[i] = normalizePoint(points[i]);
-    }
-    allPoints.add(normalizedPoints);
+    allPoints.add(points);
     return allPoints;
   }
 
@@ -225,7 +219,7 @@ public class RouteOptimizer {
     List<Line2D> lines = new ArrayList<>();
     Point2D previousPoint = null;
     for (int i = 0; i < xcoords.length; i++) {
-      Point2D trimmedPoint = normalizePoint(getPoint(new Point2D.Double(xcoords[i], ycoords[i])));
+      Point2D trimmedPoint = new Point2D.Double(xcoords[i], ycoords[i]);
       if (previousPoint != null) {
         lines.add(new Line2D.Double(previousPoint, trimmedPoint));
       }

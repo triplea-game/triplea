@@ -33,7 +33,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
 
   public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof ProductionFrontiersPanel)
-        || ((ProductionFrontiersPanel) me.get()).playerName != playerName) {
+        || !((ProductionFrontiersPanel) me.get()).playerName.equals(playerName)) {
       me = Optional.of(new ProductionFrontiersPanel(stepActionPanel, playerName));
     }
     DynamicRowsPanel.layout(mapXmlCreator);

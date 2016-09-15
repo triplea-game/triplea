@@ -10,8 +10,15 @@ import games.strategy.ui.IntTextField;
 public class NumberProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = 6826763550643504789L;
-  private final int m_max;
-  private final int m_min;
+
+  // Keep this in sync with the matchin property name, used by reflection.
+  public static final String MAX_PROPERTY_NAME = "max";
+  private final int max;
+
+  // Keep this in sync with the matchin property name, used by reflection.
+  public static final String MIN_PROPERTY_NAME = "min";
+  private final int min;
+
   private int m_value;
 
   public NumberProperty(final String name, final String description, final int max, final int min, final int def) {
@@ -22,8 +29,8 @@ public class NumberProperty extends AEditableProperty {
     if (def > max || def < min) {
       throw new IllegalThreadStateException("Default value out of range");
     }
-    m_max = max;
-    m_min = min;
+    this.max = max;
+    this.min = min;
     m_value = def;
   }
 
@@ -47,7 +54,7 @@ public class NumberProperty extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final IntTextField field = new IntTextField(m_min, m_max);
+    final IntTextField field = new IntTextField(min, max);
     field.setValue(m_value);
     field.addChangeListener(aField -> m_value = aField.getValue());
     return field;
@@ -57,7 +64,7 @@ public class NumberProperty extends AEditableProperty {
   public boolean validate(final Object value) {
     if (value instanceof Integer) {
       final int i = ((Integer) value);
-      if (i <= m_max && i >= m_min) {
+      if (i <= max && i >= min) {
         return true;
       }
     }

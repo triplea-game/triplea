@@ -46,24 +46,8 @@ public class ScrollSettingsTab implements SettingsTab<ScrollSettings> {
             "Map Edge Scroll Zone Size",
             "How close the mouse cursor must be to the edge of the map for the map to scroll",
             new JTextField(String.valueOf(settings.getMapEdgeScrollZoneSize()), 5),
-            ScrollSettings::setMapEdgeFasterScrollZoneSize,
+            ScrollSettings::setMapEdgeScrollZoneSize,
             scrollSettings -> String.valueOf(scrollSettings.getMapEdgeScrollZoneSize())),
-
-        SettingInputComponentFactory.buildIntegerText(
-            new IntegerValueRange(0, 100, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_ZONE_SIZE),
-            "Map Edge Faster Scroll Zone Size",
-            "How close the mouse cursor must be to the edge of the map for the map to scroll faster",
-            new JTextField(String.valueOf(settings.getMapEdgeFasterScrollZoneSize()), 5),
-            ScrollSettings::setMapEdgeFasterScrollZoneSize,
-            scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollZoneSize())),
-
-        SettingInputComponentFactory.buildIntegerText(
-            new IntegerValueRange(2, 5, ScrollSettings.DEFAULT_MAP_EDGE_FASTER_SCROLL_MULTIPLIER),
-            "Scroll Zone Multiplier",
-            "Multiplier for how much faster the map scrolls when the mouse is closest to the edge",
-            new JTextField(String.valueOf(settings.getMapEdgeFasterScrollMultiplier()), 5),
-            ScrollSettings::setMapEdgeFasterScrollMultiplier,
-            scrollSettings -> String.valueOf(scrollSettings.getMapEdgeFasterScrollMultiplier())),
 
         SettingInputComponentFactory.buildIntegerText(
             new IntegerValueRange(10, 400, ScrollSettings.DEFAULT_WHEEL_SCROLL_AMOUNT),
