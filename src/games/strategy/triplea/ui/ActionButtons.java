@@ -61,7 +61,7 @@ public class ActionButtons extends JPanel {
     m_moveForumPosterPanel = new MoveForumPosterPanel(data, map);
     m_politicsPanel = new PoliticsPanel(data, map, parent);
     m_userActionPanel = new UserActionPanel(data, map, parent);
-    m_pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map, parent);
+    m_pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map);
     m_current = m_techPanel;
     setLayout(m_layout);
     add(new JLabel(""), "");
