@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -55,6 +56,6 @@ public class BattleOrderTest {
     bridge.setStepName("germansBattle");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-    assertTrue( iceland.getOwner() == germans );
+    assertEquals( iceland.getOwner() , germans );
   }
 }
