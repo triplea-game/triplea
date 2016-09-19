@@ -1250,12 +1250,12 @@
     <gamePlay>
         <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
         <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
-        <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+        <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="move"/>
         <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
         <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
         <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
         <delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Airborne Attack Move"/>
-        <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegateOrdered" display="Combat"/>
+        <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegateOrdered" display="BattleDelegateOrdered"/>
         <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
         <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
         <delegate name="placeNoAirCheck" javaClass="games.strategy.triplea.delegate.NoAirCheckPlaceDelegate" display="Place Units"/>
@@ -2275,43 +2275,107 @@
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Iwo Jima" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Paulau Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Marshall Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Shantung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Formosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kwangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Korea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kiangsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
@@ -2319,12 +2383,28 @@
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kiangsi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Japan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="8"/>
@@ -2332,131 +2412,339 @@
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Jehol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Okinawa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Marianas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Siam" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Manchuria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="originalOwner" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Hainan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Shensi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Yunnan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Suiyuyan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kweichow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Hunan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kansu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Hopei" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tsinghai" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Szechwan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Chahar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sikang" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Anhwe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Gilbert Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Fiji" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ceylon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Samoa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Shan State" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Burma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="British Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
@@ -2464,47 +2752,119 @@
             <option name="capital" value="UK_Pacific"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Malaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Borneo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Queensland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Victoria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New Britain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Northern Territory" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New Zealand" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New South Wales" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
@@ -2512,89 +2872,225 @@
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="South Australia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Western Australia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Solomon Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New Guinea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
+            <option name="originalOwner" value="ANZAC"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Philippines" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Line Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Mexico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Guam" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Wake Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Western United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="10"/>
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Alaska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Aleutian Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Johnston Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Hawaiian Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="victoryCity" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Midway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sakha" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2605,36 +3101,92 @@
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Yenisey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Soviet Far East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Amur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Yakut S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Timguska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Siberia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kazakhstan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2645,52 +3197,132 @@
             <option name="production" value="1"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French Indo China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New Hebrides" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Celebes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Java" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Dutch New Guinea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sumatra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Olgiy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Dzavhan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Central Mongolia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Himalayas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2698,21 +3330,53 @@
             <option name="capital" value="Chinese"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Buyant-Uhaa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ulaanbaatar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tsagaan Olom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
+            <option name="originalOwner" value="Mongolians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="1 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2730,6 +3394,14 @@
             <option name="blockadeZone" value="true"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="10 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2741,23 +3413,55 @@
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="19 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="blockadeZone" value="true"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="20 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="blockadeZone" value="true"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="22 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="26 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2770,6 +3474,14 @@
             <option name="blockadeZone" value="true"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
+            <option name="originalOwner" value="Japanese"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="36 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -2838,341 +3550,1125 @@
         </attachment>
         <attachment name="territoryAttachment" attachTo="West Indies" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Central United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="12"/>
             <option name="unitProduction" value="12"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Central America" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Greenland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Southeast Mexico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Eastern United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="20"/>
             <option name="unitProduction" value="20"/>
             <option name="capital" value="Americans"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
+            <option name="originalOwner" value="Americans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="West India" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="changeUnitOwners" value="British"/>
             <option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
+            <option name="originalOwner" value="UK_Pacific"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Belgian Congo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Iceland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="3"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Alberta Saskatchewan Manitoba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Trans-Jordan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="British Somaliland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Alexandria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Gibraltar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Rio de Oro" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="New Brunswick Nova Scotia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Egypt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Union of South Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="3"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Cyprus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="British Guiana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Gold Coast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Scotland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="South West Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Nigeria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kenya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Malta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="United Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="6"/>
             <option name="unitProduction" value="10"/>
             <option name="capital" value="British"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Anglo Egyptian Sudan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Rhodesia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tanganyika Territory" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Newfoundland Labrador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
+            <option name="originalOwner" value="British"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Morocco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French Equatorial Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Normandy Bordeaux" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="3"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French Central Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French Madagascar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French Guiana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Algeria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Southern France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="unitProduction" value="3"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Syria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="French West Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
             <option name="unitProduction" value="10"/>
             <option name="capital" value="French"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tunisia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
+            <option name="originalOwner" value="French"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Greater Southern Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Slovakia Hungary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Western Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="5"/>
             <option name="unitProduction" value="10"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Romania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Poland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="5"/>
             <option name="unitProduction" value="5"/>
             <option name="capital" value="Germans"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Norway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Denmark" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Holland Belgium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
+            <option name="originalOwner" value="Germans"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tobruk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Albania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Northern Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="4"/>
             <option name="unitProduction" value="10"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sicily" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Italian Somaliland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Southern Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="unitProduction" value="3"/>
             <option name="capital" value="Italians"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ethiopia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sardinia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
+            <option name="originalOwner" value="Italians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Belarus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Karelia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Baltic States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Bryansk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Rostov" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Nenetsia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Urals" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Vyborg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Archangel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Eastern Poland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Bessarabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
             <option name="unitProduction" value="10"/>
             <option name="capital" value="Russians"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Tambov" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ukraine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Western Ukraine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="2"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Novosibirsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Vologda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Volgograd" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="3"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Turkmenistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Novgorod" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="unitProduction" value="3"/>
             <option name="victoryCity" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Caucasus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Smolensk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Kazakhstan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Samara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
+            <option name="originalOwner" value="Russians"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Portugal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Portuguese Guinea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Ecuador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Chile" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Afghanistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sierra Leone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Turkey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Mozambique" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Saudi Arabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Paraguay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Switzerland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Pripet Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -3180,79 +4676,255 @@
         </attachment>
         <attachment name="territoryAttachment" attachTo="Eire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Crete" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Bulgaria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Angola" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="1"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Greece" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Iraq" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Eastern Persia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Uruguay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Venezuela" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Northwest Persia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Persia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Sweden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="3"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Yugoslavia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
+            <option name="originalOwner" value="Neutral_Allies"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Spain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Colombia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Bolivia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Liberia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Peru" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
+            <option name="originalOwner" value="Neutral_True"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Finland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="2"/>
             <option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
+            <option name="originalOwner" value="Neutral_Axis"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="Suriname" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
+            <option name="originalOwner" value="Dutch"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="70 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
             <option name="production" value="0"/>
@@ -13954,7 +15626,6 @@
             <unitPlacement unitType="artillery" territory="Eastern United States" quantity="1" owner="Americans"/>
             <unitPlacement unitType="factory_minor" territory="Eastern United States" quantity="1" owner="Americans"/>
             <unitPlacement unitType="infantry" territory="West India" quantity="1" owner="British"/>
-            <unitPlacement unitType="infantry" territory="Iceland" quantity="1" owner="Germans"/>
             <unitPlacement unitType="airfield" territory="Iceland" quantity="1" owner="British"/>
             <unitPlacement unitType="infantry" territory="Quebec" quantity="1" owner="British"/>
             <unitPlacement unitType="factory_minor" territory="Quebec" quantity="1" owner="British"/>
@@ -13975,7 +15646,6 @@
             <unitPlacement unitType="factory_minor" territory="Union of South Africa" quantity="1" owner="British"/>
             <unitPlacement unitType="infantry" territory="Ontario" quantity="1" owner="British"/>
             <unitPlacement unitType="artillery" territory="Ontario" quantity="1" owner="British"/>
-            <unitPlacement unitType="tactical_bomber" territory="Scotland" quantity="1" owner="Germans"/>
             <unitPlacement unitType="aaGun" territory="Scotland" quantity="1" owner="British"/>
             <unitPlacement unitType="airfield" territory="Scotland" quantity="1" owner="British"/>
             <unitPlacement unitType="infantry" territory="Scotland" quantity="2" owner="British"/>
@@ -14021,6 +15691,7 @@
             <unitPlacement unitType="mech_infantry" territory="Western Germany" quantity="4" owner="Germans"/>
             <unitPlacement unitType="harbour" territory="Western Germany" quantity="1" owner="Germans"/>
             <unitPlacement unitType="aaGun" territory="Western Germany" quantity="3" owner="Germans"/>
+            <unitPlacement unitType="bomber" territory="Western Germany" quantity="2" owner="Germans"/>
             <unitPlacement unitType="airfield" territory="Western Germany" quantity="1" owner="Germans"/>
             <unitPlacement unitType="fighter" territory="Western Germany" quantity="2" owner="Germans"/>
             <unitPlacement unitType="infantry" territory="Western Germany" quantity="3" owner="Germans"/>
@@ -14067,14 +15738,11 @@
             <unitPlacement unitType="artillery" territory="Ethiopia" quantity="1" owner="Italians"/>
             <unitPlacement unitType="infantry" territory="Belarus" quantity="1" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Karelia" quantity="2" owner="Russians"/>
-            <unitPlacement unitType="tactical_bomber" territory="Baltic States" quantity="1" owner="Germans"/>
-            <unitPlacement unitType="infantry" territory="Baltic States" quantity="3" owner="Germans"/>
-            <unitPlacement unitType="artillery" territory="Baltic States" quantity="1" owner="Germans"/>
+            <unitPlacement unitType="infantry" territory="Baltic States" quantity="2" owner="Germans"/>
             <unitPlacement unitType="infantry" territory="Baltic States" quantity="3" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Vyborg" quantity="3" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Archangel" quantity="1" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Eastern Poland" quantity="2" owner="Germans"/>
-            <unitPlacement unitType="armour" territory="Eastern Poland" quantity="1" owner="Germans"/>
             <unitPlacement unitType="infantry" territory="Eastern Poland" quantity="2" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Bessarabia" quantity="2" owner="Russians"/>
             <unitPlacement unitType="tactical_bomber" territory="Russia" quantity="1" owner="Russians"/>
@@ -14107,6 +15775,8 @@
             <unitPlacement unitType="transport" territory="96 Sea Zone" quantity="1" owner="Italians"/>
             <unitPlacement unitType="destroyer" territory="96 Sea Zone" quantity="1" owner="Italians"/>
             <unitPlacement unitType="transport" territory="123 Sea Zone" quantity="1" owner="Germans"/>
+            <unitPlacement unitType="destroyer" territory="123 Sea Zone" quantity="1" owner="Germans"/>
+            <unitPlacement unitType="infantry" territory="123 Sea Zone" quantity="1" owner="Germans"/>
             <unitPlacement unitType="submarine" territory="108 Sea Zone" quantity="1" owner="Germans"/>
             <unitPlacement unitType="infantry" territory="Turkey" quantity="8" owner="Neutral_True"/>
             <unitPlacement unitType="infantry" territory="Mozambique" quantity="2" owner="Neutral_True"/>
@@ -14135,15 +15805,15 @@
             <unitPlacement unitType="destroyer" territory="72 Sea Zone" quantity="1" owner="French"/>
             <unitPlacement unitType="transport" territory="101 Sea Zone" quantity="1" owner="Americans"/>
             <unitPlacement unitType="cruiser" territory="101 Sea Zone" quantity="1" owner="Americans"/>
+            <unitPlacement unitType="transport" territory="114 Sea Zone" quantity="1" owner="Germans"/>
+            <unitPlacement unitType="infantry" territory="114 Sea Zone" quantity="2" owner="Germans"/>
+            <unitPlacement unitType="cruiser" territory="114 Sea Zone" quantity="2" owner="Germans"/>
             <unitPlacement unitType="destroyer" territory="71 Sea Zone" quantity="1" owner="British"/>
             <unitPlacement unitType="infantry" territory="Brazil" quantity="3" owner="Neutral_Allies"/>
             <unitPlacement unitType="infantry" territory="Venezuela" quantity="2" owner="Neutral_True"/>
             <unitPlacement unitType="submarine" territory="127 Sea Zone" quantity="1" owner="Russians"/>
             <unitPlacement unitType="infantry" territory="Persia" quantity="2" owner="Neutral_Allies"/>
             <unitPlacement unitType="infantry" territory="Sweden" quantity="6" owner="Neutral_True"/>
-            <unitPlacement unitType="battleship" territory="115 Sea Zone" quantity="1" owner="Germans"/>
-            <unitPlacement unitType="transport" territory="115 Sea Zone" quantity="1" owner="Germans"/>
-            <unitPlacement unitType="cruiser" territory="115 Sea Zone" quantity="1" owner="Germans"/>
             <unitPlacement unitType="cruiser" territory="115 Sea Zone" quantity="1" owner="Russians"/>
             <unitPlacement unitType="submarine" territory="103 Sea Zone" quantity="1" owner="Germans"/>
             <unitPlacement unitType="infantry" territory="Yugoslavia" quantity="5" owner="Neutral_Allies"/>
@@ -14295,6 +15965,22 @@
         <property name="notes">
             <value>
             <![CDATA[
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
   
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
 <b>G40 Balanced - Balance Mod 2.0 with ordered selected combats</b><br>
@@ -14769,7 +16455,15 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 </div>
 						
-						]]>
+						
+            
+            
+            
+            
+            
+            
+            
+            ]]>
             </value>
         </property>
         <property name="National Objectives" value="true" editable="false">
