@@ -148,7 +148,7 @@
     <br> by Dr.Che
     <br>270BC is a beautifully made fun map. With its slow and few units, and no air, but a very dynamic income situation, as well as nicely interlinked theaters of war, it plays refreshingly different.
   version: 1
-- mapName: Civil_War
+- mapName: Civil War
   mapCategory: BEST
   url: https://github.com/triplea-maps/civil_war/archive/master.zip
   img: https://cloud.githubusercontent.com/assets/12397753/18229195/05ef3d68-7224-11e6-9698-f21923d51858.png
@@ -190,7 +190,7 @@
     <br>
     <br>
   version: 1
-- mapName: World_At_War
+- mapName: World At War
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_at_war/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png
@@ -203,9 +203,9 @@
     <br>If link does not work, download manually from:
     <br>https://sourceforge.net/projects/tripleamaps/files/
     <br>
-    <br>Includes World at War 1940 Mod by Ice, version: 1
-  version: 1.1
-- mapName: The_Rising_Sun
+    <br>Includes World at War 1940 Mod by Ice
+  version: 2 
+- mapName: The Rising Sun
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_the_rising_sun_mini.png
@@ -617,7 +617,7 @@
     <br>Battle of Aventurica is a well done adaption of a fantasy boardgame. The map is fast, thanks to its small size, and appears to have decent balance.
     <br>if you play it, help it be perfected by giving feedback!
   version: 1
-- mapName: Greyhawk_Wars
+- mapName: Greyhawk Wars
   mapCategory: GOOD
   url: https://github.com/triplea-maps/greyhawk_wars/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_wars_mini.png
@@ -701,7 +701,7 @@
     <br>
     <br>
   version: 1
-- mapName: twilight_imperium
+- mapName: Twilight Imperium
   mapCategory: GOOD
   url: https://github.com/triplea-maps/twilight_imperium/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_twilight_imperium_mini2.png
@@ -773,7 +773,7 @@
     <br>
     <br>
   version: 1
-- mapName: Pacific_Challenge
+- mapName: Pacific Challenge
   mapCategory: GOOD
   url: https://github.com/triplea-maps/pacific_challenge/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_pacific_challenge_mini.png
@@ -932,7 +932,7 @@
     <div style="text-align: left;">
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
-- mapName: New World Order-skin_pulicat_1
+- mapName: New World Order-skin pulicat 1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_pulicatSkin_mini.png
@@ -1040,7 +1040,7 @@
     <br>* Neutral territories are powerful, yet interesting to conquer due to their strategic positions and/or production-values. 
     <br>
   version: 1
-- mapName: Global_War
+- mapName: Global War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_global_war_mini.png
@@ -1056,7 +1056,7 @@
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
   version: 1
-- mapName: Global_War2
+- mapName: Global War2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war2/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_global_war_2_mini.png
@@ -1143,7 +1143,7 @@
     <br>Hybrid rules.
     <br>
   version: 1
-- mapName: Eastern_Front
+- mapName: Eastern Front
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/eastern_front/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_eastern_front_mini.png
@@ -1186,7 +1186,7 @@
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn.
   version: 1
-- mapName: Tactics_Campaign
+- mapName: Tactics Campaign
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/tactics_campaign/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_mini2.png
@@ -1613,7 +1613,7 @@
     <br>Brought back to life by Ajmdeman and Rolf Larsson.
     <br>
   version: 1
-- mapName: Stellar_Forces
+- mapName: Stellar Forces
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/stellar_forces/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_stellar_forces_mini.png
@@ -1715,7 +1715,7 @@
     <br>by Gregorek
   version: 1
 
-- mapName: TripleA_Map_Creator
+- mapName: TripleA Map Creator
   url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip
   mapType: MAP_TOOL
   img: http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png
@@ -1766,8 +1766,8 @@
     <br>If you would like to download the latest version of the program, visit http://code.google.com/p/tmapc/downloads/list
     <br>You can also view the source code for the program at http://code.google.com/p/tmapc/source/browse/
   version: 1
-- url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip
-  mapName: Map_Making_Tutorial_Map
+- mapName: Map Making Tutorial Map
+  url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip
   mapType: MAP_TOOL
   img: http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png
   description: |
