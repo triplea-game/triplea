@@ -114,7 +114,7 @@ public class ExportMenu {
     final String xmlFile;
     try {
       gameData.acquireReadLock();
-      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(gameData, false);
+      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(gameData);
       xmlFile = exporter.getXML();
     } finally {
       gameData.releaseReadLock();
