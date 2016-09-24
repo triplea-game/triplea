@@ -786,7 +786,6 @@
   version: 1
 
 - mapName: Big World Variations
-  mapType: MAP_MOD
   url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_big_world_mini.png
   description: |
@@ -801,7 +800,6 @@
     <br>
   version: 1
 - mapName: NWO Variants
-  mapType: MAP_MOD
   url: https://github.com/triplea-maps/nwo_variants/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_mini.png
   description: |
@@ -822,7 +820,6 @@
     <br>You must have TripleA 1.5.x.x or later installed in order to use these game variants, as only triplea 1.5 or later come with "new_world_order" and the needed unit images.
   version: 1
 - mapName: Pact of Steel Variations
-  mapType: MAP_MOD
   url: https://github.com/triplea-maps/pact_of_steel_variations/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_pact_of_steel_china_added_mini.png
   description: |
@@ -837,7 +834,6 @@
     <br>
   version: 1
 - mapName: World War II Revised Variations
-  mapType: MAP_MOD
   url: https://github.com/triplea-maps/world_war_ii_revised_variations/archive/master.zip
   description: |
     <br>6 army ffa
@@ -871,7 +867,6 @@
     <br>
   version: 1
 - mapName: Classic Variations
-  mapType: MAP_MOD
   url: https://github.com/triplea-maps/classic_variations/archive/master.zip
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v1_classic_mini.png
   description: |
