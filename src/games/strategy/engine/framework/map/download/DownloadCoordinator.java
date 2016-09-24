@@ -27,13 +27,8 @@ public class DownloadCoordinator {
 
   private volatile boolean cancelled = false;
 
-  public DownloadCoordinator() {
-    final Thread downloadFileStarter = createDownloadFileStarterThread();
-    downloadFileStarter.start();
-  }
-
-  private Thread createDownloadFileStarterThread() {
-    return new Thread(() -> {
+  DownloadCoordinator() {
+    new Thread(() -> {
       while (!cancelled) {
         try {
           startNextDownloads();
@@ -44,7 +39,7 @@ public class DownloadCoordinator {
           throw e;
         }
       }
-    });
+    }).start();
   }
 
   private void startNextDownloads() {
