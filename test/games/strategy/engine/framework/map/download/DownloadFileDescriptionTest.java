@@ -20,13 +20,6 @@ public class DownloadFileDescriptionTest {
   }
 
   @Test
-  public void testIsMod() {
-    final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP_MOD, DownloadFileDescription.MapCategory.EXPERIMENTAL);
-    assertThat(testObj.isMapMod(), is(true));
-  }
-
-  @Test
   public void testIsSkin() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP_SKIN, DownloadFileDescription.MapCategory.EXPERIMENTAL);

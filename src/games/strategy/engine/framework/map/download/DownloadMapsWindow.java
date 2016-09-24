@@ -109,9 +109,6 @@ public class DownloadMapsWindow extends JFrame {
     final List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
     outerTabs.add("Maps", createdTabbedPanelForMaps(maps));
 
-    final List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
-    outerTabs.add("Mods", createAvailableInstalledTabbedPanel(mapName, mods));
-
     final List<DownloadFileDescription> skins = filterMaps(games, download -> download.isMapSkin());
     outerTabs.add("Skins", createAvailableInstalledTabbedPanel(mapName, skins));
 

@@ -27,19 +27,6 @@ public class DownloadFileParserTest {
 
 
     assertThat(desc.isMap(), is(true));
-    assertThat(desc.isMapMod(), is(false));
-    assertThat(desc.isMapSkin(), is(false));
-    assertThat(desc.isMapTool(), is(false));
-  }
-
-  @Test
-  public void testParseMapMod() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
-    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
-    assertThat(games.size(), is(4));
-    final DownloadFileDescription desc = games.get(1);
-    assertThat(desc.isMap(), is(false));
-    assertThat(desc.isMapMod(), is(true));
     assertThat(desc.isMapSkin(), is(false));
     assertThat(desc.isMapTool(), is(false));
   }
@@ -51,7 +38,6 @@ public class DownloadFileParserTest {
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(2);
     assertThat(desc.isMap(), is(false));
-    assertThat(desc.isMapMod(), is(false));
     assertThat(desc.isMapSkin(), is(true));
     assertThat(desc.isMapTool(), is(false));
   }
@@ -63,7 +49,6 @@ public class DownloadFileParserTest {
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(3);
     assertThat(desc.isMap(), is(false));
-    assertThat(desc.isMapMod(), is(false));
     assertThat(desc.isMapSkin(), is(false));
     assertThat(desc.isMapTool(), is(true));
   }
@@ -110,7 +95,6 @@ public class DownloadFileParserTest {
     assertThat(download.isMap(), is(true));
     assertThat(download.isMapSkin(), is(false));
     assertThat(download.isMapTool(), is(false));
-    assertThat(download.isMapMod(), is(false));
   }
 
   private static byte[] createSimpleGameXmlWithNoTypeTag() {
