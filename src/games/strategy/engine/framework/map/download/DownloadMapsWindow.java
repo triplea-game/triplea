@@ -129,8 +129,10 @@ public class DownloadMapsWindow extends JFrame {
 
       List<DownloadFileDescription> mapsByCategory =
           maps.stream().filter(map -> map.getMapCategory() == mapCategory).collect(Collectors.toList());
-      JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
-      mapTabs.add(mapCategory.toString(), subTab);
+      if(!mapsByCategory.isEmpty()) {
+        JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
+        mapTabs.add(mapCategory.toString(), subTab);
+      }
     }
     return mapTabs;
   }
