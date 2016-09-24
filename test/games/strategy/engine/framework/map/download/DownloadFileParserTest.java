@@ -17,7 +17,7 @@ public class DownloadFileParserTest {
 
   @Test
   public void testParseMap() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
     final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(0);
@@ -33,7 +33,7 @@ public class DownloadFileParserTest {
 
   @Test
   public void testParseModSkin() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
     final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(2);
@@ -44,7 +44,7 @@ public class DownloadFileParserTest {
 
   @Test
   public void testParseMapTool() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestXml());
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
     final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(3);
@@ -58,7 +58,7 @@ public class DownloadFileParserTest {
     return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
   }
 
-  private static byte[] buildTestXml() {
+  private static byte[] buildTestData() {
     String xml = "";
     xml += "- url: http://example.com/games/game.zip\n";
     xml += "  mapName: " + GAME_NAME + "\n";
@@ -67,8 +67,7 @@ public class DownloadFileParserTest {
     xml += "     <pre>Some notes about the game, simple html allowed.\n";
     xml += "     </pre>\n";
     xml += "- url: http://example.com/games/mod.zip\n";
-    xml += "  mapName: mapModName\n";
-    xml += createTypeTag(DownloadFileParser.ValueType.MAP_MOD);
+    // missing map type defaults to map
     xml += "  description: |\n";
     xml += "      map mod\n";
     xml += "- url: http://example.com/games/skin.zip\n";
