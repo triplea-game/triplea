@@ -27,7 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -36,7 +35,6 @@ import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
-import games.strategy.net.OpenFileUtility;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
@@ -66,8 +64,6 @@ public class EnginePreferences extends JDialog {
   // private JButton m_runAutoHost;
   private JButton m_mapCreator;
   private JButton m_mapXmlCreator;
-  private JButton m_userFolder;
-  private JButton m_programFolder;
 
   private EnginePreferences(final Frame parentFrame) {
     super(parentFrame, "Edit TripleA Engine Preferences", true);
@@ -96,8 +92,6 @@ public class EnginePreferences extends JDialog {
     m_mapCreator = new JButton("Run the Map Creator");
     m_mapXmlCreator = new JButton("[Beta] Run the Map Creator");
     m_console = new JButton("Show Console");
-    m_userFolder = new JButton("Open User Maps and Savegames Folder");
-    m_programFolder = new JButton("Open Installed Program Folder");
   }
 
   private void layoutCoponents() {
@@ -132,10 +126,6 @@ public class EnginePreferences extends JDialog {
     buttonsPanel.add(m_mapXmlCreator);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_console);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_userFolder);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_programFolder);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(Box.createGlue());
     buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -376,21 +366,6 @@ public class EnginePreferences extends JDialog {
     m_console.addActionListener(SwingAction.of("Show Console", e -> {
       ErrorConsole.getConsole().setVisible(true);
       reportMemoryUsageToConsole();
-    }));
-    m_userFolder.addActionListener(SwingAction.of("Open User Maps and Savegames Folder", e -> {
-      try {
-        OpenFileUtility.openFile(ClientFileSystemHelper.getUserRootFolder());
-      } catch (final Exception e1) {
-        e1.printStackTrace();
-      }
-
-    }));
-    m_programFolder.addActionListener(SwingAction.of("Open Installed Program Folder", e -> {
-      try {
-        OpenFileUtility.openFile(ClientFileSystemHelper.getRootFolder());
-      } catch (final Exception e1) {
-        e1.printStackTrace();
-      }
     }));
   }
 

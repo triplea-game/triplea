@@ -91,7 +91,6 @@ public class DownloadMapsWindow extends JFrame {
 
   private DownloadMapsWindow(final Optional<String> mapName, final List<DownloadFileDescription> games) {
     super("Download Maps");
-    setAlwaysOnTop(true);
     setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel(this);
     if (mapName.isPresent()) {
@@ -108,9 +107,6 @@ public class DownloadMapsWindow extends JFrame {
 
     final List<DownloadFileDescription> maps = filterMaps(games, download -> download.isMap());
     outerTabs.add("Maps", createdTabbedPanelForMaps(maps));
-
-    final List<DownloadFileDescription> mods = filterMaps(games, download -> download.isMapMod());
-    outerTabs.add("Mods", createAvailableInstalledTabbedPanel(mapName, mods));
 
     final List<DownloadFileDescription> skins = filterMaps(games, download -> download.isMapSkin());
     outerTabs.add("Skins", createAvailableInstalledTabbedPanel(mapName, skins));
@@ -132,8 +128,10 @@ public class DownloadMapsWindow extends JFrame {
 
       List<DownloadFileDescription> mapsByCategory =
           maps.stream().filter(map -> map.getMapCategory() == mapCategory).collect(Collectors.toList());
-      JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
-      mapTabs.add(mapCategory.toString(), subTab);
+      if(!mapsByCategory.isEmpty()) {
+        JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
+        mapTabs.add(mapCategory.toString(), subTab);
+      }
     }
     return mapTabs;
   }
