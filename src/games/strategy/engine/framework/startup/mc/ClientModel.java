@@ -337,6 +337,7 @@ public class ClientModel implements IMessengerErrorListener {
               data.testLocksOnRead();
             } catch (final Exception e) {
               ClientLogger.logQuietly(e);
+              m_game.shutDown();
               m_messenger.shutDown();
               m_gameLoadingWindow.doneWait();
               // an ugly hack, we need a better
