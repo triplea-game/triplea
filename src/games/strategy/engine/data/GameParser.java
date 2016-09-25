@@ -1264,32 +1264,18 @@ public class GameParser {
   }
 
   private void parseAttachments(final Element root) throws GameParseException {
-    final HashMap<String, Constructor<?>> constructors = new HashMap<>();
     for (final Element current : getChildren("attachment", root)) {
       // get class name and constructor
       final String className = current.getAttribute("javaClass");
-      if (!constructors.containsKey(className)) {
-        try {
-          final Class<?> objectClass = getClassByName(className);
-          if (!IAttachment.class.isAssignableFrom(objectClass)) {
-            throw new GameParseException(mapName, className + " does not implement IAttachable");
-          }
-          constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
-        } catch (final NoSuchMethodException | SecurityException exception) {
-          throw new GameParseException(mapName,
-              "Constructor for class " + className + " could not be found: " + exception.getMessage());
-        }
-      }
-      // find the attachable
       final String type = current.getAttribute("type");
       final Attachable attachable = findAttachment(current, type);
-      // create new attachment
       final String name = current.getAttribute("name");
-      final List<Element> options = getChildren("option", current);
       IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
           .orElseThrow(
               () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
+
+      final List<Element> options = getChildren("option", current);
         final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
