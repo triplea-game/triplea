@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -466,22 +467,9 @@ public class GameParser {
    */
   private Class<?> getClassByName(final String className) throws GameParseException {
     try {
-      final Class<?> instanceClass = Class.forName(className);
-      return instanceClass;
-    }
-    // if class cannot be found than it is either not a valid class or an old class that was deleted/renamed
-    catch (final ClassNotFoundException cnfe) {
-      if (newClassesForOldNames == null) {
-        newClassesForOldNames = new HashMap<>();
-        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
-        // "<newClassName>"), e.g.
-        // newClassesForOldNames.put("attachment", "attachment")
-      }
-      final String newClassName = newClassesForOldNames.get(className);
-      if (newClassName != null) {
-        return getClassByName(newClassName);
-      }
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
+      return Class.forName(className);
+    } catch (final ClassNotFoundException e) {
+      throw new GameParseException(mapName, "Class <" + className + "> could not be found: " + e);
     }
   }
 
@@ -1015,12 +1003,10 @@ public class GameParser {
       final Element current = iterator.next();
       // load the class
       final String className = current.getAttribute("javaClass");
-      IDelegate delegate = null;
-      try {
-        delegate = (IDelegate) getInstance(className);
-      } catch (final ClassCastException cce) {
-        throw new GameParseException(mapName, "Class <" + className + "> is not a delegate.");
-      }
+      XmlGameElementMapper elementMapper = new XmlGameElementMapper();
+
+      IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
+          () -> new GameParseException(mapName, "Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
       if (displayName == null) {

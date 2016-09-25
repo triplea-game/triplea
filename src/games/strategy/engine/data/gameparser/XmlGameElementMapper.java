@@ -60,7 +60,7 @@ import games.strategy.twoIfBySea.delegate.InitDelegate;
  * Note: attachments and delegates are initialized slightly differently, one is is no-arg the other has initialization
  * parameters.
  */
-class XmlGameElementMapper {
+public class XmlGameElementMapper {
 
   // these keys are package protected to allow test to have access to known good keys
   @VisibleForTesting
@@ -159,7 +159,7 @@ class XmlGameElementMapper {
    * Loads a new instance of the given class.
    * Assumes a zero argument constructor.
    */
-  Optional<IDelegate> getDelegate(final String className) {
+  public Optional<IDelegate> getDelegate(final String className) {
     if(!delegateMap.containsKey(className)) {
       handleMissingObjectError("delegate", className);
       return Optional.empty();
