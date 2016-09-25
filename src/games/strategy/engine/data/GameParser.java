@@ -1265,10 +1265,8 @@ public class GameParser {
 
   private void parseAttachments(final Element root) throws GameParseException {
     for (final Element current : getChildren("attachment", root)) {
-      // get class name and constructor
       final String className = current.getAttribute("javaClass");
-      final String type = current.getAttribute("type");
-      final Attachable attachable = findAttachment(current, type);
+      final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
       IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
           .orElseThrow(
@@ -1276,10 +1274,9 @@ public class GameParser {
       attachable.addAttachment(name, attachment);
 
       final List<Element> options = getChildren("option", current);
-        final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
-        // keep a list of attachment references in the order they were added
-        data.addToAttachmentOrderAndValues(
-            Tuple.of(attachment, attachmentOptionValues));
+      final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
+      // keep a list of attachment references in the order they were added
+      data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
     }
   }
 
