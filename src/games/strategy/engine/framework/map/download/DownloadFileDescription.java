@@ -25,7 +25,7 @@ public class DownloadFileDescription {
 
 
   public enum DownloadType {
-    MAP, MAP_MOD, MAP_SKIN, MAP_TOOL
+    MAP, MAP_SKIN, MAP_TOOL
   }
 
 
@@ -94,10 +94,6 @@ public class DownloadFileDescription {
 
   public boolean isMap() {
     return downloadType == DownloadType.MAP;
-  }
-
-  public boolean isMapMod() {
-    return downloadType == DownloadType.MAP_MOD;
   }
 
   public boolean isMapSkin() {
