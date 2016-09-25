@@ -1286,18 +1286,14 @@ public class GameParser {
       // create new attachment
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
-      try {
-        final IAttachment attachment = (IAttachment) constructors.get(className).newInstance(name, attachable, data);
-        attachable.addAttachment(name, attachment);
+      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
+          .orElseThrow(
+              () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
+      attachable.addAttachment(name, attachment);
         final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
         // keep a list of attachment references in the order they were added
         data.addToAttachmentOrderAndValues(
             Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException
-          | IllegalAccessException e) {
-        throw new GameParseException(mapName,
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      }
     }
   }
 
