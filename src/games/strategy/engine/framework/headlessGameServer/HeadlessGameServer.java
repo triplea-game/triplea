@@ -102,7 +102,8 @@ public class HeadlessGameServer {
         return;
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      if (!m_availableGames.getAvailableMapFolderOrZipNames().contains(mapNameProperty)) {
+      Set<String> availableMaps = m_availableGames.getAvailableMapFolderOrZipNames();
+      if (!availableMaps.contains(mapNameProperty) && !availableMaps.contains(mapNameProperty + "-master")) {
         System.out.println("Game mapName not in available games listing: " + mapNameProperty);
         return;
       }

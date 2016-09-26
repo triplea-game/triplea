@@ -41,10 +41,6 @@ public class AvailableGames {
   public AvailableGames() {
     final Set<String> mapNamePropertyList = new HashSet<>();
     populateAvailableGames(m_availableGames, m_availableMapFolderOrZipNames, mapNamePropertyList);
-    // System.out.println(mapNamePropertyList);
-    // System.out.println(m_availableMapFolderOrZipNames);
-    m_availableMapFolderOrZipNames.retainAll(mapNamePropertyList);
-    // System.out.println(m_availableMapFolderOrZipNames);
   }
 
   public List<String> getGameNames() {
@@ -107,7 +103,7 @@ public class AvailableGames {
       return;
     }
     for (final File game : games.listFiles()) {
-      if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+      if (game.toURI() != null && game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
         final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
         if (added) {
           availableMapFolderOrZipNames.add(mapDir.getName());
@@ -145,6 +141,7 @@ public class AvailableGames {
       ClientLogger.logQuietly("Map: " + map, e);
     }
   }
+
 
   private static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames,
       final Set<String> mapNamePropertyList) {
