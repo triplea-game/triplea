@@ -635,7 +635,7 @@
     <br>c.) General tips: 
     <br>Hard AI is recommended. Human players must select the "I am Human" option to enable certain features for their faction. Consult the game notes for further tips, rules, and details, or visit the development forum: http://tinyurl.com/ghwars 
     <br>    
-  version: 1
+  version: 2
 - mapName: Greyhawk
   mapCategory: GOOD
   url: https://github.com/triplea-maps/greyhawk/archive/master.zip
