@@ -50,11 +50,14 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * UI for fighting battles.
@@ -70,51 +73,19 @@ public class BattlePanel extends ActionPanel {
   // there is a bug in linux jdk1.5.0_6 where frames are not
   // being garbage collected
   // reuse one frame
-  private final JFrame m_battleFrame;
+  private final Stage m_battleFrame;
+  private final Pane contentPane = new Pane();
   Map<BattleType, Collection<Territory>> m_battles;
 
   /** Creates new BattlePanel */
   public BattlePanel(final GameData data, final MapPanel map) {
     super(data, map);
-    m_battleFrame = new JFrame() {
-      private static final long serialVersionUID = -947813247703330615L;
-
-      @Override
-      public void dispose() {
-        games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(null);
-        super.dispose();
-      }
-    };
-    m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame));
+    m_battleFrame = new Stage();
+    m_battleFrame.getIcons().add(new Image(GameRunner.class.getResourceAsStream("ta_icon.png")));
     getMap().getUIContext().addShutdownWindow(m_battleFrame);
-    m_battleFrame.addWindowListener(new WindowListener() {
-      @Override
-      public void windowActivated(final WindowEvent e) {
-        SwingUtilities.invokeLater(() -> {
-          if (m_battleDisplay != null) {
-            m_battleDisplay.takeFocus();
-          }
-        });
-      }
-
-      @Override
-      public void windowClosed(final WindowEvent e) {}
-
-      @Override
-      public void windowClosing(final WindowEvent e) {}
-
-      @Override
-      public void windowDeactivated(final WindowEvent e) {}
-
-      @Override
-      public void windowDeiconified(final WindowEvent e) {}
-
-      @Override
-      public void windowIconified(final WindowEvent e) {}
-
-      @Override
-      public void windowOpened(final WindowEvent e) {}
-    });
+    m_battleFrame.setScene(new Scene(contentPane));
+    m_battleFrame.show();
+    m_battleFrame.requestFocus();
   }
 
   public void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {

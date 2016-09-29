@@ -1,29 +1,28 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 /**
  * Avoid holding a strong reference to the action
  * fixes a memory leak in swing.
+ * @deprecated remove! No longer using swing
  */
-public class WeakAction extends AbstractAction {
-  private static final long serialVersionUID = 8931357243476123862L;
-  private final WeakReference<Action> delegate;
+@Deprecated
+public class WeakAction implements EventHandler<ActionEvent> {
+  private final WeakReference<EventHandler<ActionEvent>> delegate;
 
-  WeakAction(final String name, final Action delegate) {
-    super(name);
+  WeakAction(final String name, final EventHandler<ActionEvent> delegate) {
     this.delegate = new WeakReference<>(delegate);
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
-    final Action a = delegate.get();
+  public void handle(ActionEvent event) {
+    final EventHandler<ActionEvent> a = delegate.get();
     if (a != null) {
-      a.actionPerformed(e);
+      a.handle(event);
     }
   }
 }
