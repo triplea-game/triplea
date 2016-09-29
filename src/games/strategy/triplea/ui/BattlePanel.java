@@ -48,11 +48,15 @@ import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -215,9 +219,10 @@ public class BattlePanel extends ActionPanel {
             killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
             isAmphibious, battleType, amphibiousLandAttackers);
         m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-        m_battleFrame.getContentPane().removeAll();
-        m_battleFrame.getContentPane().add(m_battleDisplay);
-        m_battleFrame.setSize(800, 600);
+        contentPane.getChildren().clear();
+        contentPane.getChildren().add(m_battleDisplay);
+        m_battleFrame.setWidth(800);
+        m_battleFrame.setHeight(600);
         games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
         boolean foundHumanInBattle = false;
         for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
@@ -493,31 +498,30 @@ public class BattlePanel extends ActionPanel {
     return "BattlePanel";
   }
 
-  private class BombardComponent extends JPanel {
+  private class BombardComponent extends BorderPane {
     private static final long serialVersionUID = -2388895995673156507L;
-    private final JList<Object> m_list;
+    private final ListView<Object> m_list;
 
     BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
         final boolean noneAvailable) {
-      this.setLayout(new BorderLayout());
       final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
-      final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
-      this.add(label, BorderLayout.NORTH);
+      final Label label = new Label("Which territory should " + unitName + " bombard?");
+      setTop(label);
       final Vector<Object> listElements = new Vector<>(territories);
       if (noneAvailable) {
         listElements.add(0, "None");
       }
-      m_list = new JList<>(listElements);
-      m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      m_list = new ListView<>(FXCollections.observableArrayList(listElements));
+      m_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
       if (listElements.size() >= 1) {
-        m_list.setSelectedIndex(0);
+        m_list.getSelectionModel().select(0);
       }
-      final JScrollPane scroll = new JScrollPane(m_list);
-      this.add(scroll, BorderLayout.CENTER);
+      final ScrollPane scroll = new ScrollPane(m_list);
+      setCenter(scroll);
     }
 
     public Territory getSelection() {
-      final Object selected = m_list.getSelectedValue();
+      final Object selected = m_list.getSelectionModel().getSelectedItem();
       if (selected instanceof Territory) {
         return (Territory) selected;
       }

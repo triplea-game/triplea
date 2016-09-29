@@ -61,6 +61,13 @@ public class PlayerChooser extends Alert {
     setHeight(300);
     setWidth(actualSize);
   }
+
+  public PlayerID getSelected() {
+    if (showAndWait().filter(ButtonType.OK::equals).isPresent()) {
+      return m_list.getSelectionModel().getSelectedItem();
+    }
+    return null;
+  }
 }
 
 
