@@ -2,18 +2,14 @@ package games.strategy.triplea.ui;
 
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import javafx.scene.layout.VBox;
 
 /**
  * Abstract superclass for all action panels. <br>
  */
-public abstract class ActionPanel extends JPanel {
-  private static final long serialVersionUID = -5954576036704958641L;
+public abstract class ActionPanel extends VBox {
   private final GameData m_data;
   private PlayerID m_currentPlayer;
   private final MapPanel m_map;
@@ -25,8 +21,7 @@ public abstract class ActionPanel extends JPanel {
   public ActionPanel(final GameData data, final MapPanel map) {
     m_data = data;
     m_map = map;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setBorder(new EmptyBorder(5, 5, 0, 0));
+//    setBorder(new EmptyBorder(5, 5, 0, 0));TODO CSS
   }
 
   protected final boolean isWW2V2() {
@@ -127,12 +122,4 @@ public abstract class ActionPanel extends JPanel {
   public boolean getActive() {
     return m_active;
   }
-
-  /**
-   * Refreshes the action panel. Should be run within the swing event queue.
-   */
-  protected final Runnable REFRESH = () -> {
-    revalidate();
-    repaint();
-  };
 }

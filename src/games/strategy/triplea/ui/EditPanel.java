@@ -64,9 +64,9 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
+import javafx.scene.control.Label;
 
 public class EditPanel extends ActionPanel {
-  private static final long serialVersionUID = 5043639777373556106L;
   private TripleAFrame m_frame;
   private Action m_performMoveAction;
   private Action m_addUnitsAction;
@@ -90,7 +90,7 @@ public class EditPanel extends ActionPanel {
   public EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
-    final JLabel m_actionLabel = new JLabel();
+    final Label m_actionLabel = new Label();
     m_performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 

@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Collection;
@@ -42,19 +41,26 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
+import games.strategy.triplea.util.JFXUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 /**
  * UI for fighting battles.
  */
 public class BattlePanel extends ActionPanel {
-  private static final long serialVersionUID = 5304208569738042592L;
-  private final JLabel m_actionLabel = new JLabel();
+  private final Label m_actionLabel = new Label();
   private FightBattleDetails m_fightBattleMessage;
   private volatile BattleDisplay m_battleDisplay;
   // if we are showing a battle, then this will be set to the currently
@@ -121,27 +127,24 @@ public class BattlePanel extends ActionPanel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        removeAll();
+        getChildren().clear();
         m_actionLabel.setText(id.getName() + " battle");
-        setLayout(new BorderLayout());
-        final JPanel panel = SwingComponents.gridPanel(0, 1);
-        panel.add(m_actionLabel);
+        final GridPane panel;
+        panel.getChildren().add(m_actionLabel);
         for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
             addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
           }
         }
-        add(panel, BorderLayout.NORTH);
-        SwingUtilities.invokeLater(REFRESH);
+        getChildren().add(panel);
       }
 
-      private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb,
+      private void addBattleActions(final Pane panel, final Territory territory, final boolean bomb,
           final BattleType battleType) {
-        final JPanel innerPanel = new JPanel();
-        innerPanel.setLayout(new BorderLayout());
-        innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
-        innerPanel.add(new JButton(new CenterBattleAction(territory)), BorderLayout.EAST);
-        panel.add(innerPanel);
+        final BorderPane innerPanel = new BorderPane();
+        innerPanel.setCenter(JFXUtils.getButtonWithAction(new FightBattleAction(territory, bomb, battleType)));
+        innerPanel.setRight(JFXUtils.getButtonWithAction(new CenterBattleAction(territory)));
+        panel.getChildren().add(innerPanel);
       }
     });
   }
@@ -219,7 +222,7 @@ public class BattlePanel extends ActionPanel {
       }
       return;
     }
-    removeAll();
+    getChildren().clear();
     if (m_battleDisplay != null) {
       getMap().centerOn(m_battleDisplay.getBattleLocation());
       m_battleDisplay.listBattle(steps);
@@ -244,7 +247,6 @@ public class BattlePanel extends ActionPanel {
         m_battleFrame.getContentPane().removeAll();
         m_battleFrame.getContentPane().add(m_battleDisplay);
         m_battleFrame.setSize(800, 600);
-        m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
         games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
         boolean foundHumanInBattle = false;
         for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
@@ -386,12 +388,11 @@ public class BattlePanel extends ActionPanel {
       if (!isEditMode) {
         dicePanel.setDiceRoll(dice);
       }
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      panel.add(chooser, BorderLayout.CENTER);
-      dicePanel.setMaximumSize(new Dimension(450, 600));
-      dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
-      panel.add(dicePanel, BorderLayout.SOUTH);
+      final BorderPane panel = new BorderPane();
+      panel.setCenter(chooser);
+      dicePanel.setMaxSize(450, 600);
+      dicePanel.setPrefSize(300, dicePanel.getPrefHeight());
+      panel.setBottom(dicePanel);
       final String[] options = {"OK"};
       EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties",
           JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
@@ -440,27 +441,11 @@ public class BattlePanel extends ActionPanel {
   Territory m_oldCenteredTerritory = null;
   Timer m_CenterBattleActionTimer = null;
 
-  class CenterBattleAction extends AbstractAction {
-    private static final long serialVersionUID = -5071133874755970334L;
+  class CenterBattleAction implements EventHandler<ActionEvent> {
     Territory m_territory;
 
     CenterBattleAction(final Territory battleSite) {
-      super("Center");
       m_territory = battleSite;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (m_CenterBattleActionTimer != null) {
-        m_CenterBattleActionTimer.cancel();
-      }
-      if (m_oldCenteredTerritory != null) {
-        getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
-      }
-      getMap().centerOn(m_territory);
-      m_CenterBattleActionTimer = new Timer();
-      m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
-      m_oldCenteredTerritory = m_territory;
     }
 
     class MyTimerTask extends TimerTask {
@@ -494,27 +479,41 @@ public class BattlePanel extends ActionPanel {
         m_count++;
       }
     }
+
+    @Override
+    public void handle(ActionEvent event) {
+      if (m_CenterBattleActionTimer != null) {
+        m_CenterBattleActionTimer.cancel();
+      }
+      if (m_oldCenteredTerritory != null) {
+        getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
+      }
+      getMap().centerOn(m_territory);
+      m_CenterBattleActionTimer = new Timer();
+      m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
+      m_oldCenteredTerritory = m_territory;
+    }
   }
-  class FightBattleAction extends AbstractAction {
+  class FightBattleAction implements EventHandler<ActionEvent> {
     private static final long serialVersionUID = 5510976406003707776L;
     Territory m_territory;
     boolean m_bomb;
     BattleType m_type;
 
     FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType) {
-      super(battleType.toString() + " in " + battleSite.getName() + "...");
       m_territory = battleSite;
       m_bomb = bomb;
       m_type = battleType;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent actionEvent) {
+    public void handle(ActionEvent event) {
       if (m_oldCenteredTerritory != null) {
         getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
       }
       m_fightBattleMessage = new FightBattleDetails(m_territory, m_bomb, m_type);
       release();
+
     }
   }
 

@@ -49,7 +49,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.base.Joiner;
@@ -155,6 +154,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -394,29 +394,30 @@ public class TripleAFrame extends MainGameFrame {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     } else {
-      tabsPanel.getTabs().add(objectivePanel.getName(), objectivePanel);
+      tabsPanel.getTabs().add(new Tab(objectivePanel.getName(), objectivePanel));
     }
     notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
     tabsPanel.getTabs().add(new Tab("Notes", notesPanel));
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    tabsPanel.getTabs().add(new Tab("Territory", null, details, TerritoryDetailPanel.getHoverText()));// TODOs
+    Tab territoryTab = new Tab("Territory", details);
+    territoryTab.setTooltip(new Tooltip(TerritoryDetailPanel.getHoverText()));
+    tabsPanel.getTabs().add(territoryTab);
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
-    tabsPanel.addChangeListener(evt -> {
-      final TabPane pane = (TabPane) evt.getSource();
+    tabsPanel.getSelectionModel().selectedItemProperty().addListener((value, oldValue, newValue) -> {
       // Get current tab
-      final int sel = pane.getSelectedIndex();
+      final int sel = tabsPanel.getSelectionModel().getSelectedIndex();
       if (sel == -1) {
         return;
       }
-      if (pane.getComponentAt(sel).equals(notesPanel)) {
+      if (newValue.getContent().equals(notesPanel)) {
         notesPanel.layoutNotes();
       } else {
         // for memory management reasons the notes are in a SoftReference,
         // so we must remove our hard reference link to them so it can be reclaimed if needed
         notesPanel.removeNotes();
       }
-      if (pane.getComponentAt(sel).equals(editPanel)) {
+      if (newValue.getContent().equals(editPanel)) {
         PlayerID player1 = null;
         data.acquireReadLock();
         try {
@@ -1024,11 +1025,11 @@ public class TripleAFrame extends MainGameFrame {
         if (!inGame) {
           showGame();
         }
-        if (tabsPanel.getTabs().indexOf(new Tab("Actions")) == -1) {
+        Tab actionTab = new Tab("Actions");
+        if (!tabsPanel.getTabs().contains(actionTab)) {
           // add actions tab
-          tabsPanel.getTabs().add(new Tab("Actions"));
-          // TODO add to actions tab
-          actionButtons.someNonExistentMethod();
+          tabsPanel.getTabs().add(actionTab);
+          actionTab.setContent(actionButtons);
         }
         tabsPanel.getSelectionModel().select(0);
         latch1.countDown();
@@ -1525,11 +1526,11 @@ public class TripleAFrame extends MainGameFrame {
             return;
           }
           if (getEditMode()) {
-            if (tabsPanel.indexOfComponent(editPanel) == -1) {
+            if (!tabsPanel.getTabs().contains(editPanel)) {
               showEditMode();
             }
           } else {
-            if (tabsPanel.indexOfComponent(editPanel) != -1) {
+            if (tabsPanel.getTabs().contains(editPanel)) {
               hideEditMode();
             }
           }
@@ -1628,9 +1629,13 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void showEditMode() {
-    tabsPanel.addTab("Edit", editPanel);
+    tabsPanel.getTabs().add(new Tab("Edit", editPanel));
     if (editDelegate != null) {
-      tabsPanel.setSelectedComponent(editPanel);
+      tabsPanel.getTabs().forEach(e -> {
+        if (e.getContent().equals(editPanel)) {
+          tabsPanel.getSelectionModel().select(e);
+        }
+      });
     }
     editModeButtonModel.setSelected(true);
     getGlassPane().setVisible(true);
@@ -1640,13 +1645,13 @@ public class TripleAFrame extends MainGameFrame {
     if (tabsPanel.getSelectedComponent() == editPanel) {
       tabsPanel.setSelectedIndex(0);
     }
-    tabsPanel.remove(editPanel);
+    tabsPanel.getTabs().remove(editPanel);
     editModeButtonModel.setSelected(false);
     getGlassPane().setVisible(false);
   }
 
   public void showActionPanelTab() {
-    tabsPanel.setSelectedIndex(0);
+    tabsPanel.getSelectionModel().select(0);
   }
 
   public void showRightHandSidePanel() {
@@ -1693,16 +1698,16 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.setGameData(clonedGameData);
     final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, mapPanel);
     tabsPanel.getTabs().clear();
-    tabsPanel.add("History", historyDetailPanel);
-    tabsPanel.add("Stats", statsPanel);
-    tabsPanel.add("Economy", economyPanel);
+    tabsPanel.getTabs().add(new Tab("History", historyDetailPanel));
+    tabsPanel.getTabs().add(new Tab("Stats", statsPanel));
+    tabsPanel.getTabs().add(new Tab("Economy", economyPanel));
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      tabsPanel.add(objectivePanel.getName(), objectivePanel);
+      tabsPanel.getTabs().add(new Tab(objectivePanel.getName(), objectivePanel));
     }
-    tabsPanel.add("Notes", notesPanel);
-    tabsPanel.add("Territory", details);
+    tabsPanel.getTabs().add(new Tab("Notes", notesPanel));
+    tabsPanel.getTabs().add(new Tab("Territory", details));
     if (getEditMode()) {
-      tabsPanel.add("Edit", editPanel);
+      tabsPanel.getTabs().add(new Tab("Edit", editPanel));
     }
     if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
@@ -1844,16 +1849,16 @@ public class TripleAFrame extends MainGameFrame {
       tabsPanel.getTabs().clear();
     }
     setWidgetActivation();
-    tabsPanel.add("Action", actionButtons);
-    tabsPanel.add("Stats", statsPanel);
-    tabsPanel.add("Economy", economyPanel);
+    tabsPanel.getTabs().add(new Tab("Action", actionButtons));
+    tabsPanel.getTabs().add(new Tab("Stats", statsPanel));
+    tabsPanel.getTabs().add(new Tab("Economy", economyPanel));
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      tabsPanel.add(objectivePanel.getName(), objectivePanel);
+      tabsPanel.getTabs().add(new Tab(objectivePanel.getName(), objectivePanel));
     }
-    tabsPanel.add("Notes", notesPanel);
-    tabsPanel.add("Territory", details);
+    tabsPanel.getTabs().add(new Tab("Notes", notesPanel));
+    tabsPanel.getTabs().add(new Tab("Territory", details));
     if (getEditMode()) {
-      tabsPanel.add("Edit", editPanel);
+      tabsPanel.getTabs().add(new Tab("Edit", editPanel));
     }
     if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(true);
@@ -1880,9 +1885,9 @@ public class TripleAFrame extends MainGameFrame {
       mapPanel.setGameData(data);
       data.addDataChangeListener(m_dataChangeListener);
       gameMainPanel.getChildren().clear();
-      gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
-      gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
-      gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
+      gameMainPanel.setCenter(mapAndChatPanel);
+      gameMainPanel.setRight(rightHandSidePanel);
+      gameMainPanel.setBottom(gameSouthPanel);
       ((BorderPane) getScene().getRoot()).getChildren().clear();
       ((BorderPane) getScene().getRoot()).setCenter(gameMainPanel);
       mapPanel.setRoute(null);
@@ -2000,15 +2005,13 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
     final AtomicReference<ScrollableTextField> textRef = new AtomicReference<>();
-    final AtomicReference<JPanel> panelRef = new AtomicReference<>();
+    final AtomicReference<BorderPane> panelRef = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
+      final BorderPane panel = new BorderPane();
       final ScrollableTextField text = new ScrollableTextField(0, fighters.size());
-      text.setBorder(new EmptyBorder(8, 8, 8, 8));
-      panel.add(text, BorderLayout.CENTER);
-      panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"),
-          BorderLayout.NORTH);
+      // text.setBorder(new EmptyBorder(8, 8, 8, 8));TODO CSS
+      panel.setCenter(text);
+      panel.setTop(new Label("How many fighters do you want to move from " + where.getName() + " to new carrier?"));
       panelRef.set(panel);
       textRef.set(text);
       panelRef.set(panel);

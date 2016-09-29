@@ -1,26 +1,25 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
-import games.strategy.ui.SwingComponents;
-import games.strategy.ui.Util;
+import games.strategy.triplea.util.JFXUtils;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.util.Callback;
 
-public class PlayerChooser extends JOptionPane {
-  private static final long serialVersionUID = -7272867474891641839L;
-  private JList<PlayerID> m_list;
+public class PlayerChooser extends Alert {
+  private ListView<PlayerID> m_list;
   private final PlayerList m_players;
   private final PlayerID m_defaultPlayer;
   private final IUIContext m_uiContext;
@@ -35,9 +34,8 @@ public class PlayerChooser extends JOptionPane {
   /** Creates new PlayerChooser */
   public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext,
       final boolean allowNeutral) {
-    setMessageType(JOptionPane.PLAIN_MESSAGE);
-    setOptionType(JOptionPane.OK_CANCEL_OPTION);
-    setIcon(null);
+    super(AlertType.CONFIRMATION, "Choose Player", ButtonType.OK, ButtonType.CANCEL);
+    setGraphic(new ImageView(new WritableImage(32, 32)));
     m_players = players;
     m_defaultPlayer = defaultPlayer;
     m_uiContext = uiContext;
@@ -50,60 +48,44 @@ public class PlayerChooser extends JOptionPane {
     if (m_allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }
-    m_list = new JList<>(players.toArray(new PlayerID[players.size()]));
-    m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    m_list.setSelectedValue(m_defaultPlayer, true);
-    m_list.setFocusable(false);
-    m_list.setCellRenderer(new PlayerChooserRenderer(m_uiContext));
-    m_list.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent evt) {
-        if (evt.getClickCount() == 2) {
-          // set OK_OPTION on DoubleClick, this fires a property change which causes the dialog to close()
-          setValue(OK_OPTION);
-        }
-      }
-    });
-    setMessage(SwingComponents.newJScrollPane(m_list));
+    m_list = new ListView<>();
+    m_list.setItems(FXCollections.observableArrayList(players));
+    m_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    m_list.getSelectionModel().select(m_defaultPlayer);
+    m_list.setCellFactory(new PlayerChooserRenderer(m_uiContext));
+    getDialogPane().setContent(new ScrollPane(m_list));
 
     final int maxSize = 700;
     final int suggestedSize = m_players.size() * 40;
     final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
-    setPreferredSize(new Dimension(300, actualSize));
-  }
-
-
-  /**
-   * Returns the selected player or null, or null if the dialog was closed
-   *
-   * @return the player or null
-   */
-  public PlayerID getSelected() {
-    if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
-      return m_list.getSelectedValue();
-    }
-    return null;
+    setHeight(300);
+    setWidth(actualSize);
   }
 }
 
 
-class PlayerChooserRenderer extends DefaultListCellRenderer {
-  private static final long serialVersionUID = -2185921124436293304L;
+class PlayerChooserRenderer implements Callback<ListView<PlayerID>, ListCell<PlayerID>> {
   private final IUIContext m_uiContext;
 
   PlayerChooserRenderer(final IUIContext uiContext) {
     m_uiContext = uiContext;
   }
 
+
   @Override
-  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
-      final boolean isSelected, final boolean cellHasFocus) {
-    super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-    if (m_uiContext == null || value == PlayerID.NULL_PLAYERID) {
-      setIcon(new ImageIcon(Util.createImage(32, 32, true)));
-    } else {
-      setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
-    }
-    return this;
+  public ListCell<PlayerID> call(ListView<PlayerID> list) {
+    return new ListCell<PlayerID>() {
+
+      @Override
+      protected void updateItem(PlayerID id, boolean b) {
+        setText(id.getName());
+        if (m_uiContext == null || id == PlayerID.NULL_PLAYERID) {
+          setGraphic(new ImageView(new WritableImage(32, 32)));
+        } else {
+          setGraphic(
+              new ImageView(JFXUtils.convertToFx((BufferedImage) m_uiContext.getFlagImageFactory().getFlag(id))));
+        }
+      }
+    };
   }
 }

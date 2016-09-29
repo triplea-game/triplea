@@ -1,42 +1,38 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.util.JFXUtils;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class DicePanel extends JPanel {
-  private static final long serialVersionUID = -7544999867518263506L;
+public class DicePanel extends VBox {
   private final IUIContext m_uiContext;
   private final GameData m_data;
 
   public DicePanel(final IUIContext uiContext, final GameData data) {
     m_uiContext = uiContext;
     m_data = data;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
   public void clear() {
-    removeAll();
+    getChildren().clear();
   }
 
   public void setDiceRollForBombing(final List<Die> dice, final int cost) {
-    removeAll();
-    add(create(dice));
-    add(Box.createVerticalGlue());
-    add(new JLabel("Cost:" + cost));
-    invalidate();
+    clear();
+    getChildren().add(create(dice));
+    getChildren().add(new Label("Cost:" + cost));
   }
 
   public void setDiceRoll(final DiceRoll diceRoll) {
@@ -44,43 +40,36 @@ public class DicePanel extends JPanel {
       SwingUtilities.invokeLater(() -> setDiceRoll(diceRoll));
       return;
     }
-    removeAll();
+    clear();
     for (int i = 1; i <= m_data.getDiceSides(); i++) {
       final List<Die> dice = diceRoll.getRolls(i);
       if (dice.isEmpty()) {
         continue;
       }
-      add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i)));
+      getChildren().add(new Label("Rolled at " + (i) + ":"));
+      getChildren().add(create(diceRoll.getRolls(i)));
     }
-    add(Box.createVerticalGlue());
-    add(new JLabel("Total hits:" + diceRoll.getHits()));
-    validate();
-    invalidate();
-    repaint();
+    getChildren().add(new Label("Total hits:" + diceRoll.getHits()));
   }
 
-  private JComponent create(final List<Die> dice) {
-    final JPanel dicePanel = new JPanel();
-    dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
-    dicePanel.add(Box.createHorizontalStrut(20));
+  private Node create(final List<Die> dice) {
+    final HBox dicePanel = new HBox();
     for (final Die die : dice) {
       final int roll = die.getValue() + 1;
-      dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
-      dicePanel.add(Box.createHorizontalStrut(2));
+      Label dieLabel = new Label();
+      dieLabel.setGraphic(new ImageView(
+          JFXUtils.convertToFx((BufferedImage) m_uiContext.getDiceImageFactory().getDieImage(roll, die.getType()))));
+      dicePanel.getChildren().add(new Label());
     }
-    final JScrollPane scroll = new JScrollPane(dicePanel);
+    final ScrollPane scroll = new ScrollPane(dicePanel);
     scroll.setBorder(null);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+    scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     // we're adding to a box layout, so to prevent the component from
     // grabbing extra space, set the max height.
     // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(
-        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(
-        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(
-        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMinSize(scroll.getMinWidth(), m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17);
+    scroll.setMaxSize(scroll.getMaxWidth(), m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17);
+    scroll.setPrefSize(scroll.getPrefWidth(), m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17);
     return scroll;
   }
 }

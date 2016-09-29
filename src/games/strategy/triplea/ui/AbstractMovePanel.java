@@ -28,6 +28,8 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import javafx.application.Platform;
+import javafx.scene.control.Button;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
@@ -235,8 +237,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       if (rootPane != null) {
         rootPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null);
       }
-      removeAll();
-      REFRESH.run();
+      getChildren().clear();
     });
   }
 
@@ -253,19 +254,18 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final void display(final PlayerID id, final String actionLabel) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
+    Platform.runLater(() -> {
+      getChildren().clear();
       m_actionLabel.setText(id.getName() + actionLabel);
-      add(leftBox(m_actionLabel));
+      getChildren().add(leftBox(m_actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(m_CANCEL_MOVE_ACTION)));
+        getChildren().add(leftBox(new Button(m_CANCEL_MOVE_ACTION)));
       }
-      add(leftBox(new JButton(m_DONE_MOVE_ACTION)));
+      getChildren().add(leftBox(new Button(m_DONE_MOVE_ACTION)));
       addAdditionalButtons();
-      add(Box.createVerticalStrut(s_entryPadding));
-      add(m_undoableMovesPanel);
-      add(Box.createGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      getChildren().add(Box.createVerticalStrut(s_entryPadding));
+      getChildren().add(m_undoableMovesPanel);
+      getChildren().add(Box.createGlue());
     });
   }
 

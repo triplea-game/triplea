@@ -1,11 +1,16 @@
 package games.strategy.triplea.util;
 
+import java.awt.image.BufferedImage;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 
 public final class JFXUtils {
 
@@ -26,6 +31,12 @@ public final class JFXUtils {
     return alert;
   }
 
+  public static Button getButtonWithAction(EventHandler<ActionEvent> value) {
+    Button button = new Button();
+    button.setOnAction(value);
+    return button;
+  }
+
   public static void showInfoDialog(String title, String headerText, String contentText) {
     getDialog(AlertType.INFORMATION, contentText, contentText, contentText).showAndWait();
   }
@@ -42,5 +53,9 @@ public final class JFXUtils {
     Alert alert = getDialog(AlertType.INFORMATION, contentText, contentText, contentText);
     alert.getDialogPane().setContent(content);
     return alert;
+  }
+  
+  public static Image convertToFx(BufferedImage oldImg){
+    return SwingFXUtils.toFXImage(oldImg, null);
   }
 }

@@ -6,19 +6,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import javax.swing.JPanel;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.util.PlayerOrderComparator;
+import javafx.scene.layout.GridPane;
 
 /**
  * Hold some common things like GameData for stats panels and other tab panels.
  */
-public abstract class AbstractStatPanel extends JPanel {
-  private static final long serialVersionUID = 1906611524937548809L;
+public abstract class AbstractStatPanel extends GridPane {
   protected GameData m_data;
 
   /**

@@ -1,15 +1,10 @@
 package games.strategy.triplea.ui;
 
-import java.awt.CardLayout;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -29,13 +24,13 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 
 /**
  * Root panel for all action buttons in a triplea game. <br>
  */
-public class ActionButtons extends JPanel {
-  private static final long serialVersionUID = 2175685892863042399L;
-  private final CardLayout m_layout = new CardLayout();
+public class ActionButtons extends StackPane {
   private BattlePanel m_battlePanel;
   private MovePanel m_movePanel;
   private PurchasePanel m_purchasePanel;
@@ -63,19 +58,18 @@ public class ActionButtons extends JPanel {
     m_userActionPanel = new UserActionPanel(data, map, parent);
     m_pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map);
     m_current = m_techPanel;
-    setLayout(m_layout);
-    add(new JLabel(""), "");
-    add(m_battlePanel, m_battlePanel.toString());
-    add(m_movePanel, m_movePanel.toString());
-    add(m_repairPanel, m_repairPanel.toString());
-    add(m_purchasePanel, m_purchasePanel.toString());
-    add(m_placePanel, m_placePanel.toString());
-    add(m_techPanel, m_techPanel.toString());
-    add(m_endTurnPanel, m_endTurnPanel.toString());
-    add(m_moveForumPosterPanel, m_moveForumPosterPanel.toString());
-    add(m_politicsPanel, m_politicsPanel.toString());
-    add(m_userActionPanel, m_userActionPanel.toString());
-    add(m_pickTerritoryAndUnitsPanel, m_pickTerritoryAndUnitsPanel.toString());
+    getChildren().add(new Label(""));
+    getChildren().add(m_battlePanel);
+    getChildren().add(m_movePanel);
+    getChildren().add(m_repairPanel);
+    getChildren().add(m_purchasePanel);
+    getChildren().add(m_placePanel);
+    getChildren().add(m_techPanel);
+    getChildren().add(m_endTurnPanel);
+    getChildren().add(m_moveForumPosterPanel);
+    getChildren().add(m_politicsPanel);
+    getChildren().add(m_userActionPanel);
+    getChildren().add(m_pickTerritoryAndUnitsPanel);
     // this should not be necceessary
     // but it makes tracking down garbage leaks easier
     // in the profiler
@@ -84,19 +78,19 @@ public class ActionButtons extends JPanel {
     // and if there is a memory leak
     // this will minimize the damage
     map.getUIContext().addActive(() -> {
-      removeAll();
+      getChildren().clear();
       m_current = null;
-      m_battlePanel.removeAll();
-      m_movePanel.removeAll();
-      m_repairPanel.removeAll();
-      m_purchasePanel.removeAll();
-      m_placePanel.removeAll();
-      m_techPanel.removeAll();
-      m_endTurnPanel.removeAll();
-      m_moveForumPosterPanel.removeAll();
-      m_politicsPanel.removeAll();
-      m_userActionPanel.removeAll();
-      m_pickTerritoryAndUnitsPanel.removeAll();
+      m_battlePanel.getChildren().clear();
+      m_movePanel.getChildren().clear();
+      m_repairPanel.getChildren().clear();
+      m_purchasePanel.getChildren().clear();
+      m_placePanel.getChildren().clear();
+      m_techPanel.getChildren().clear();
+      m_endTurnPanel.getChildren().clear();
+      m_moveForumPosterPanel.getChildren().clear();
+      m_politicsPanel.getChildren().clear();
+      m_userActionPanel.getChildren().clear();
+      m_pickTerritoryAndUnitsPanel.getChildren().clear();
       m_battlePanel = null;
       m_movePanel = null;
       m_repairPanel = null;
@@ -165,12 +159,6 @@ public class ActionButtons extends JPanel {
       return;
     }
     m_current.display(id);
-    final String currentName = m_current.toString();
-    SwingUtilities.invokeLater(() -> {
-      if (m_layout != null) {
-        m_layout.show(ActionButtons.this, currentName);
-      }
-    });
   }
 
   public void changeToPickTerritoryAndUnits(final PlayerID id) {

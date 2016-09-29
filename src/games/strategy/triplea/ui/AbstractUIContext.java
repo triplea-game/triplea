@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,10 +12,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -27,6 +21,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
+import javafx.stage.Window;
 
 
 public abstract class AbstractUIContext implements IUIContext {
@@ -205,43 +200,7 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   protected static void closeWindow(final Window window) {
-    window.setVisible(false);
-    SwingUtilities.invokeLater(() -> {
-      // Having dispose run on anything but the Swing Event Dispatch Thread is very dangerous.
-      // This is because dispose will call invokeAndWait if it is not on this thread already.
-      // If you are calling this method while holding a lock on an object, while the EDT is separately
-      // waiting for that lock, then you have a deadlock.
-      // A real life example: player disconnects while you have the battle calc open.
-      // Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
-      // window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
-      // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
-      // deadlock.
-      window.dispose();
-      // there is a bug in java (1.50._06 for linux at least)
-      // where frames are not garbage collected.
-      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
-      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
-      // so remove all references to everything
-      // to minimize the damage
-      if (window instanceof JFrame) {
-        final JFrame frame = ((JFrame) window);
-        final JMenuBar menu = frame.getJMenuBar();
-        if (menu != null) {
-          while (menu.getMenuCount() > 0) {
-            menu.remove(0);
-          }
-        }
-        frame.setMenuBar(null);
-        frame.setJMenuBar(null);
-        frame.getRootPane().removeAll();
-        frame.getRootPane().setJMenuBar(null);
-        frame.getContentPane().removeAll();
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.setContentPane(new JPanel());
-        frame.setIconImage(null);
-        clearInputMap(frame.getRootPane());
-      }
-    });
+    window.hide();
   }
 
   protected static void clearInputMap(final JComponent c) {
@@ -297,7 +256,7 @@ public abstract class AbstractUIContext implements IUIContext {
     return rVal;
   }
 
-  private static Map<String,String> getSkins(final String mapName) {
+  private static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> rVal = new HashMap<>();
     final File[] files = ClientFileSystemHelper.getUserMapsFolder().listFiles();
     if (files == null) {
