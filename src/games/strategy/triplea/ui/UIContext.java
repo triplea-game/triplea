@@ -1,12 +1,12 @@
 package games.strategy.triplea.ui;
 
+import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -23,10 +23,13 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
+import games.strategy.triplea.util.JFXUtils;
 import games.strategy.triplea.util.Stopwatch;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * A place to find images and map data for a ui.
@@ -121,15 +124,15 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+  public Label createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, data, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);
+    Label result = new Label();
     if (image.isPresent()) {
-      return new JLabel(image.get());
-    } else {
-      return new JLabel();
+      result.setGraphic(new ImageView(JFXUtils.convertToFx((BufferedImage) image.get().getImage())));
     }
+    return result;
   }
 
   @Override

@@ -11,6 +11,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 
 public final class JFXUtils {
 
@@ -23,11 +24,13 @@ public final class JFXUtils {
     return item;
   }
 
-  public static Alert getDialog(AlertType type, String title, String headerText, String contentText) {
+  public static Alert getDialog(AlertType type, String title, String headerText, String contentText,
+      ButtonType... types) {
     Alert alert = new Alert(type);
     alert.setTitle(title);
     alert.setHeaderText(headerText);
     alert.setContentText(contentText);
+    alert.getButtonTypes().addAll(types);
     return alert;
   }
 
@@ -49,13 +52,14 @@ public final class JFXUtils {
     getDialog(AlertType.ERROR, contentText, contentText, contentText).showAndWait();
   }
 
-  public static Alert getDialogWithContent(Node content, String title, String headerText, String contentText) {
-    Alert alert = getDialog(AlertType.INFORMATION, contentText, contentText, contentText);
+  public static Alert getDialogWithContent(Node content, AlertType type, String title, String headerText,
+      String contentText, ButtonType... types) {
+    Alert alert = getDialog(type, contentText, contentText, contentText, types);
     alert.getDialogPane().setContent(content);
     return alert;
   }
-  
-  public static Image convertToFx(BufferedImage oldImg){
+
+  public static Image convertToFx(BufferedImage oldImg) {
     return SwingFXUtils.toFXImage(oldImg, null);
   }
 }

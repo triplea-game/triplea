@@ -2,8 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JLabel;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -19,6 +17,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.stage.Window;
 
 public interface IUIContext {
@@ -45,11 +44,11 @@ public interface IUIContext {
     DISABLED, ENABLED
   }
 
-  default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data) {
+  default Label createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data) {
     return createUnitImageJLabel(type, player, data, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+  Label createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
       final UnitDamage damaged,
       final UnitEnable disabled);
 

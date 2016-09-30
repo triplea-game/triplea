@@ -19,6 +19,7 @@ import games.strategy.util.Tuple;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -167,7 +168,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     final UnitChooser unitChooser = new UnitChooser(m_unitChoices, Collections.emptyMap(),
         getData(), false, getMap().getUIContext());
     unitChooser.setMaxAndShowMaxButton(m_unitsPerPick);
-    JFXUtils.getDialogWithContent(unitChooser, "Select Units", "Select Units", "").showAndWait()
+    JFXUtils.getDialogWithContent(unitChooser, AlertType.INFORMATION, "Select Units", "Select Units", "").showAndWait()
         .filter(ButtonType.OK::equals).ifPresent(b -> {
           m_pickedUnits.clear();
           m_pickedUnits.addAll(unitChooser.getSelected());

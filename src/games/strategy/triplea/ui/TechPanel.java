@@ -31,15 +31,21 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.util.JFXUtils;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 
 public class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
-  private final JLabel m_actionLabel = new JLabel();
+  private final Label m_actionLabel = new Label();
   private TechRoll m_techRoll;
   private int m_currTokens = 0;
   private int m_quantity;
@@ -53,16 +59,16 @@ public class TechPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
+    Platform.runLater(() -> {
+      getChildren().clear();
       m_actionLabel.setText(id.getName() + " Tech Roll");
-      add(m_actionLabel);
+      getChildren().add(m_actionLabel);
       if (isWW2V3TechModel()) {
-        add(new JButton(getTechTokenAction));
-        add(new JButton(JustRollTech));
+        getChildren().add(JFXUtils.getButtonWithAction(getTechTokenAction));
+        getChildren().add(JFXUtils.getButtonWithAction(JustRollTech));
       } else {
-        add(new JButton(getTechRollsAction));
-        add(new JButton(DontBother));
+        getChildren().add(JFXUtils.getButtonWithAction(getTechRollsAction));
+        getChildren().add(JFXUtils.getButtonWithAction(DontBother));
       }
     });
   }
@@ -100,12 +106,12 @@ public class TechPanel extends ActionPanel {
     return Util.difference(allAdvances, currentAdvances);
   }
 
-  private final Action getTechRollsAction = SwingAction.of("Roll Tech...", e -> {
+  private final EventHandler<ActionEvent> getTechRollsAction = e -> {
     TechAdvance advance = null;
     if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
       final List<TechAdvance> available = getAvailableTechs();
       if (available.isEmpty()) {
-        JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+        JFXUtils.showInfoDialog("No more available tech advances", "No more available tech advances", "");
         return;
       }
       final JList<TechAdvance> list = new JList<>(new Vector<>(available));
@@ -143,12 +149,12 @@ public class TechPanel extends ActionPanel {
       }
     }
     release();
-  });
-  private final Action DontBother = SwingAction.of("Done", e -> {
+  };
+  private final EventHandler<ActionEvent> DontBother = e -> {
     m_techRoll = null;
     release();
-  });
-  private final Action getTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
+  };
+  private final EventHandler<ActionEvent> getTechTokenAction = e -> {
     final PlayerID currentPlayer = getCurrentPlayer();
     m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
     // Notify user if there are no more techs to acheive
@@ -206,8 +212,8 @@ public class TechPanel extends ActionPanel {
     release();
 
 
-  });
-  private final Action JustRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
+  };
+  private final EventHandler<ActionEvent> JustRollTech = e -> {
     m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
     // If this player has tokens, roll them.
     if (m_currTokens > 0) {
@@ -243,7 +249,7 @@ public class TechPanel extends ActionPanel {
     }
     release();
 
-  });
+  };
 
   private static String getTechListToolTipText(final TechnologyFrontier techCategory) {
     final List<TechAdvance> techList = techCategory.getTechs();
@@ -311,8 +317,7 @@ class TechRollPanel extends JPanel {
 }
 
 
-class TechTokenPanel extends JPanel {
-  private static final long serialVersionUID = 332026624893335993L;
+class TechTokenPanel extends GridPane {
   int m_totalPUs;
   int m_playerPUs;
   final ScrollableTextField m_playerPUField;
@@ -333,8 +338,7 @@ class TechTokenPanel extends JPanel {
       }
     }
     m_playerPUField = new ScrollableTextField(0, m_totalPUs);
-    m_playerPUField.setEnabled(false);
-    setLayout(new GridBagLayout());
+    m_playerPUField.setDisable(true);
     m_player = player;
     final JLabel title = new JLabel("Select the number of tech tokens to purchase:");
     title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
