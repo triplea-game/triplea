@@ -360,6 +360,7 @@ public class GameRunner {
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
           } catch (Throwable t) {
             ClientLogger.logError(t);
+            throw t;
           }
         }
       });
