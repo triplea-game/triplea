@@ -5,11 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -90,7 +92,7 @@ public class TripleA implements IGameLoader {
 
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless, Runnable exceptionAction) {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -115,18 +117,25 @@ public class TripleA implements IGameLoader {
       connectPlayers(players, null);
     } else {
       SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame;
-        frame = new TripleAFrame(game, localPlayers);
-        display = new TripleADisplay(frame);
-        game.addDisplay(display);
-        soundChannel = new DefaultSoundChannel(localPlayers);
-        game.addSoundChannel(soundChannel);
-        frame.setSize(700, 400);
-        frame.setVisible(true);
-        ClipPlayer.play(SoundPath.CLIP_GAME_START);
-        connectPlayers(players, frame);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        frame.toFront();
+        try {
+          final TripleAFrame frame;
+          frame = new TripleAFrame(game, localPlayers);
+          display = new TripleADisplay(frame);
+          game.addDisplay(display);
+          soundChannel = new DefaultSoundChannel(localPlayers);
+          game.addSoundChannel(soundChannel);
+          frame.setSize(700, 400);
+          frame.setVisible(true);
+          ClipPlayer.play(SoundPath.CLIP_GAME_START);
+          connectPlayers(players, frame);
+          frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+          frame.toFront();
+        } catch (Exception e) {
+          if(game instanceof ClientGame){
+            ClientLogger.logError(e);
+            exceptionAction.run();
+          }
+        }
       });
 
     }

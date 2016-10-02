@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -52,7 +52,9 @@ import games.strategy.util.Version;
  */
 public class GameRunner {
 
-  public enum GameMode { SWING_CLIENT, HEADLESS_BOT }
+  public enum GameMode {
+    SWING_CLIENT, HEADLESS_BOT
+  }
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -114,7 +116,7 @@ public class GameRunner {
 
 
   private static void usage(GameMode gameMode) {
-    if(gameMode == GameMode.HEADLESS_BOT) {
+    if (gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
           + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
           + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
@@ -127,7 +129,8 @@ public class GameRunner {
           + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
           + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
           + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
+          + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
           + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
           + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
           + "   " + MAP_FOLDER + "=mapFolder"
@@ -181,8 +184,11 @@ public class GameRunner {
     handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
 
-  private static void showMainFrame() {
+  public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
+      if (MainFrame.getInstance() != null) {
+        MainFrame.clearInstance();
+      }
       final MainFrame frame = new MainFrame();
       frame.requestFocus();
       frame.toFront();
@@ -339,7 +345,7 @@ public class GameRunner {
   }
 
   public static void setupLogging(GameMode gameMode) {
-    if(gameMode == GameMode.SWING_CLIENT) {
+    if (gameMode == GameMode.SWING_CLIENT) {
       // setup logging to read our logging.properties
       try {
         LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
@@ -505,7 +511,8 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final boolean firstTimeThisVersion = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion =
+          SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
@@ -611,7 +618,8 @@ public class GameRunner {
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+            + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
@@ -633,7 +641,8 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    if (!ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin)) {
+    final boolean areSameVersion = ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin);
+    if (!areSameVersion) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
@@ -666,21 +675,34 @@ public class GameRunner {
         return;
       }
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(),
+        areSameVersion ? "" : newClassPath, messengers);
   }
 
   // newClassPath can be null
   private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    commands.add("-D" + TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
-    final String javaClass = "games.strategy.engine.framework.GameRunner";
-    commands.add(javaClass);
-    ProcessRunnerUtil.exec(commands);
+    final boolean startInNewProcess = !("".equals(newClassPath) && MainFrame.getInstance() != null);
+    String prefix = startInNewProcess ? "-D" : "";
+    if (startInNewProcess) {
+      ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
+    }
+    commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    if (startInNewProcess) {
+      final String javaClass = "games.strategy.engine.framework.GameRunner";
+      commands.add(javaClass);
+    }
+    if (startInNewProcess) {
+      ProcessRunnerUtil.exec(commands);
+    } else {
+      MainFrame.getInstance().setVisible(true);
+      handleCommandLineArgs(commands.toArray(new String[commands.size()]), COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
+      showMainFrame();
+    }
   }
 
   public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {

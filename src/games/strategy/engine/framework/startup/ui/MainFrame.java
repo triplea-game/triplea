@@ -33,6 +33,11 @@ public class MainFrame extends JFrame {
   public static MainFrame getInstance() {
     return s_instance;
   }
+  
+  public static void clearInstance(){
+    s_instance.dispose();
+    s_instance = null;
+  }
 
   private final GameSelectorModel m_gameSelectorModel;
   private final SetupPanelModel m_setupPanelModel;

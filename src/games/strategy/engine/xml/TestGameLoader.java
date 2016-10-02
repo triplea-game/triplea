@@ -35,7 +35,7 @@ public class TestGameLoader implements IGameLoader {
    * The game is about to start.
    */
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {}
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless, Runnable exceptionAction) {}
 
   /**
    * Create the players. Given a map of playerName -> type,

@@ -335,35 +335,38 @@ public class ClientModel implements IMessengerErrorListener {
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
     final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
     m_game = new ClientGame(data, playerSet, players, messengers);
-    final Thread t = new Thread("Client Game Launcher") {
-      @Override
-      public void run() {
-        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
-        try {
-          // game will be null if we loose the connection
-          if (m_game != null) {
-            try {
-              data.getGameLoader().startGame(m_game, playerSet, false);
-              data.testLocksOnRead();
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
+    new Thread(() -> {
+      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
+      try {
+        // game will be null if we loose the connection
+        if (m_game != null) {
+          try {
+            data.getGameLoader().startGame(m_game, playerSet, false, () -> {
               m_game.shutDown();
               m_messenger.shutDown();
               m_gameLoadingWindow.doneWait();
               // an ugly hack, we need a better
               // way to get the main frame
               MainFrame.getInstance().clientLeftGame();
-            }
+            });
+            data.testLocksOnRead();
+          } catch (final Exception e) {
+            ClientLogger.logQuietly(e);
+            m_game.shutDown();
+            m_messenger.shutDown();
+            m_gameLoadingWindow.doneWait();
+            // an ugly hack, we need a better
+            // way to get the main frame
+            MainFrame.getInstance().clientLeftGame();
           }
-          if (!gameRunning) {
-            ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
-          }
-        } finally {
-          m_gameLoadingWindow.doneWait();
         }
+        if (!gameRunning) {
+          ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+        }
+      } finally {
+        m_gameLoadingWindow.doneWait();
       }
-    };
-    t.start();
+    }, "Client Game Launcher").start();
   }
 
   public void takePlayer(final String playerName) {
