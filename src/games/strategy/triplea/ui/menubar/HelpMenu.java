@@ -272,7 +272,7 @@ public class HelpMenu {
 
   private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName() + "<br><b>Game Version:</b>"
+        + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName() + "<br><b>Game Version:</b> "
         + gameData.getGameVersion() + "</p>" + "<p>For more information please visit,<br><br>" + "<b><a hlink='"
         + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
