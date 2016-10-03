@@ -175,14 +175,15 @@ public class HelpMenu {
       // the window sides
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 40;
-      scroll.setPreferredSize(new Dimension(
-          (scroll.getPreferredSize().width > availWidth ? availWidth
-              : (scroll.getPreferredSize().height > availHeight
-                  ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
-          (scroll.getPreferredSize().height > availHeight ? availHeight
-              : (scroll.getPreferredSize().width > availWidth
-                  ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                  : scroll.getPreferredSize().height))));
+      scroll
+          .setPreferredSize(new Dimension(
+              (scroll.getPreferredSize().width > availWidth ? availWidth
+                  : (scroll.getPreferredSize().height > availHeight
+                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
+              (scroll.getPreferredSize().height > availHeight ? availHeight
+                  : (scroll.getPreferredSize().width > availWidth
+                      ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
+                      : scroll.getPreferredSize().height))));
       final JDialog dialog = new JDialog();
       dialog.setModal(false);
       // needs java 1.6 at least...
@@ -271,10 +272,9 @@ public class HelpMenu {
 
   private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName()
-        + "<br><b>Game Version:</b>" + gameData.getGameVersion() + "</p>"
-        + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='" + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
+        + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName() + "<br><b>Game Version:</b> "
+        + gameData.getGameVersion() + "</p>" + "<p>For more information please visit,<br><br>" + "<b><a hlink='"
+        + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setBorder(null);
     editorPane.setBackground(backgroundColor);
@@ -286,15 +286,13 @@ public class HelpMenu {
     if (System.getProperty("mrj.version") == null) {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> {
-        JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
-            JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_A);
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
-      Application.getApplication().setAboutHandler(
-          paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(),
-              JOptionPane.PLAIN_MESSAGE));
+      Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane,
+          "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));
     }
   }
 
