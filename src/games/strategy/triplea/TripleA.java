@@ -140,30 +140,6 @@ public class TripleA implements IGameLoader {
 
   }
 
-  static class ObjectContainer<T> {
-    T object;
-
-    ObjectContainer() {
-      object = null;
-    }
-
-    ObjectContainer(T object) {
-      this.object = object;
-    }
-
-    public void setObject(T object) {
-      this.object = object;
-    }
-
-    public T getObject() {
-      return object;
-    }
-
-    public boolean isPresent() {
-      return object != null;
-    }
-  }
-
   private static void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {
     for (final IGamePlayer player : players) {
       if (player instanceof TripleAPlayer) {

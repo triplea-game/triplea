@@ -354,7 +354,7 @@ public class GameRunner {
       }
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
-        protected void dispatchEvent(AWTEvent newEvent){
+        protected void dispatchEvent(AWTEvent newEvent) {
           try {
             super.dispatchEvent(newEvent);
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
