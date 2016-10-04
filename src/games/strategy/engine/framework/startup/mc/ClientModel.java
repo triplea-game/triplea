@@ -341,17 +341,10 @@ public class ClientModel implements IMessengerErrorListener {
         // game will be null if we loose the connection
         if (m_game != null) {
           try {
-            data.getGameLoader().startGame(m_game, playerSet, false, () -> {
-              m_game.shutDown();
-              m_messenger.shutDown();
-              m_gameLoadingWindow.doneWait();
-              // an ugly hack, we need a better
-              // way to get the main frame
-              MainFrame.getInstance().clientLeftGame();
-            });
+            data.getGameLoader().startGame(m_game, playerSet, false);
             data.testLocksOnRead();
           } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
+            ClientLogger.logError("Failed to start Game", e);
             m_game.shutDown();
             m_messenger.shutDown();
             m_gameLoadingWindow.doneWait();

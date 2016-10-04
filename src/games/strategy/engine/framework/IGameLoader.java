@@ -33,16 +33,9 @@ public interface IGameLoader extends java.io.Serializable {
   Set<IGamePlayer> createPlayers(Map<String, String> players);
 
   /**
-   * The game is about to start.
-   *
-   * @throws Exception
+   * The game is about to start. 
    */
-  void startGame(IGame game, Set<IGamePlayer> players, boolean headless, Runnable exceptionAction) throws Exception;
-
-  default void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception {
-    startGame(game, players, headless, () -> {
-    });
-  };
+  void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
 
   /**
    * Get the type of the display

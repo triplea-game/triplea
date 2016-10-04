@@ -354,7 +354,7 @@ public class GameRunner {
       }
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
-        protected void dispatchEvent(AWTEvent newEvent) {
+        protected void dispatchEvent(AWTEvent newEvent){
           try {
             super.dispatchEvent(newEvent);
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
@@ -642,8 +642,8 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    final boolean areSameVersion = ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin);
-    if (!areSameVersion) {
+    final boolean sameVersion = ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin);
+    if (!sameVersion) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
@@ -677,14 +677,14 @@ public class GameRunner {
       }
     }
     joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(),
-        areSameVersion ? "" : newClassPath, messengers);
+        sameVersion ? "" : newClassPath, messengers);
   }
 
   // newClassPath can be null
   private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
-    final boolean startInNewProcess = !("".equals(newClassPath) && MainFrame.getInstance() != null);
+    final boolean startInNewProcess = newClassPath == null || !newClassPath.isEmpty();
     String prefix = startInNewProcess ? "-D" : "";
     if (startInNewProcess) {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
@@ -694,7 +694,7 @@ public class GameRunner {
     commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
     commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (startInNewProcess) {
-      final String javaClass = "games.strategy.engine.framework.GameRunner";
+      final String javaClass = GameRunner.class.getName();
       commands.add(javaClass);
     }
     if (startInNewProcess) {

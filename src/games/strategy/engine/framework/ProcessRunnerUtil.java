@@ -102,11 +102,11 @@ public class ProcessRunnerUtil {
       // we need to read the input stream to prevent possible
       // deadlocks
       final Thread t = new Thread(() -> {
-        Scanner scanner = new Scanner(s);
-        while (scanner.hasNextLine()) {
-          System.out.println(scanner.nextLine());
+        try (Scanner scanner = new Scanner(s);) {
+          while (scanner.hasNextLine()) {
+            System.out.println(scanner.nextLine());
+          }
         }
-        scanner.close();
       }, "Process output gobbler");
       t.setDaemon(true);
       t.start();

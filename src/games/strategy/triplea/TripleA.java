@@ -1,9 +1,12 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -11,7 +14,6 @@ import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -36,7 +38,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
-import games.strategy.ui.SwingAction;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -92,7 +93,8 @@ public class TripleA implements IGameLoader {
 
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless, Runnable exceptionAction) {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless)
+      throws InvocationTargetException {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -116,8 +118,8 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      SwingAction.invokeAndWait(() -> {
-        try {
+      try {
+        SwingUtilities.invokeAndWait(() -> {
           final TripleAFrame frame;
           frame = new TripleAFrame(game, localPlayers);
           display = new TripleADisplay(frame);
@@ -130,16 +132,36 @@ public class TripleA implements IGameLoader {
           connectPlayers(players, frame);
           frame.setExtendedState(Frame.MAXIMIZED_BOTH);
           frame.toFront();
-        } catch (Exception e) {
-          if(game instanceof ClientGame){
-            ClientLogger.logError(e);
-            exceptionAction.run();
-          }
-        }
-      });
-
+        });
+      } catch (InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
     }
 
+  }
+
+  static class ObjectContainer<T> {
+    T object;
+
+    ObjectContainer() {
+      object = null;
+    }
+
+    ObjectContainer(T object) {
+      this.object = object;
+    }
+
+    public void setObject(T object) {
+      this.object = object;
+    }
+
+    public T getObject() {
+      return object;
+    }
+
+    public boolean isPresent() {
+      return object != null;
+    }
   }
 
   private static void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {
