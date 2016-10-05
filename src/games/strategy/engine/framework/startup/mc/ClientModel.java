@@ -102,8 +102,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private ClientProps getProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
-        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
+    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
       final ClientProps props = new ClientProps();
       props.setHost(System.getProperty(GameRunner.TRIPLEA_HOST_PROPERTY));
       props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
@@ -282,35 +281,21 @@ public class ClientModel implements IMessengerErrorListener {
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
       final boolean gameRunning) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameLoadingWindow.setVisible(true);
-        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
-        m_gameLoadingWindow.showWait();
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_gameLoadingWindow.setVisible(true);
+      m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
+      m_gameLoadingWindow.showWait();
     });
-
-    // DO NOT REPLACE THIS WITH A LAMBDA! We are very dependendant upon an exception being thrown in the code below
-    // and killing this thread. Without that a zombie player will connect to the bot and the game will then proceed
-    // with no-op moves until the player kills the java process.
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          startGameInNewThread(gameData, players, gameRunning);
-        } catch (final RuntimeException e) {
-          m_gameLoadingWindow.doneWait();
-          throw e;
-        } finally {
-          if (onDone != null) {
-            onDone.countDown();
-          }
-        }
+    try {
+      startGameInNewThread(gameData, players, gameRunning);
+    } catch (final RuntimeException e) {
+      m_gameLoadingWindow.doneWait();
+      throw e;
+    } finally {
+      if (onDone != null) {
+        onDone.countDown();
       }
-    };
-    final Thread t = new Thread(r);
-    t.start();
+    }
   }
 
   private void startGameInNewThread(final byte[] gameData, final Map<String, INode> players,

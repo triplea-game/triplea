@@ -33,9 +33,12 @@ public class MainFrame extends JFrame {
   public static MainFrame getInstance() {
     return s_instance;
   }
-  
-  public static void clearInstance(){
-    s_instance.dispose();
+
+  public static void clearInstance() {
+    if (s_instance != null) {
+      s_instance.setVisible(false);
+      s_instance.dispose();
+    }
     s_instance = null;
   }
 
@@ -68,7 +71,7 @@ public class MainFrame extends JFrame {
    * For displaying on startup.
    * Only call once!
    */
-  private void start() {
+  public void start() {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

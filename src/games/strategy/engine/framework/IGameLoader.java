@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import games.strategy.engine.message.IRemote;
  * game data, merely performs the game specific steps for starting the game
  * and meta data needed by the engine.
  */
-public interface IGameLoader extends java.io.Serializable {
+public interface IGameLoader extends Serializable {
   String CLIENT_PLAYER_TYPE = "Client";
 
   /**

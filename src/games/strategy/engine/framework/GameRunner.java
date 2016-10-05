@@ -186,9 +186,7 @@ public class GameRunner {
 
   public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
-      if (MainFrame.getInstance() != null) {
-        MainFrame.clearInstance();
-      }
+      MainFrame.clearInstance();
       final MainFrame frame = new MainFrame();
       frame.requestFocus();
       frame.toFront();
@@ -207,28 +205,16 @@ public class GameRunner {
     }
 
     boolean usagePrinted = false;
-    for (final String arg1 : args) {
-      boolean found = false;
-      String arg = arg1;
+    for (final String arg : args) {
+      String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String property : availableProperties) {
-          if (arg.equals(property)) {
-            final String value = getValue(arg1);
-            if (property.equals(MAP_FOLDER)) {
-              SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
-            } else {
-              System.getProperties().setProperty(property, value);
-            }
-            System.out.println(property + ":" + value);
-            found = true;
-            break;
-          }
-        }
+        key = arg.substring(0, indexOf);
+      } else {
+        throw new IllegalArgumentException("Argument " + arg + "doesn't match pattern 'key=value'");
       }
-      if (!found) {
-        System.out.println("Unrecogized:" + arg1);
+      if (!setSystemProperty(key, getValue(arg), availableProperties)) {
+        System.out.println("Unrecogized:" + arg);
         if (!usagePrinted) {
           usagePrinted = true;
           usage(gameMode);
@@ -334,6 +320,21 @@ public class GameRunner {
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
       }
     }
+  }
+
+  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
+    for (final String property : availableProperties) {
+      if (key.equals(property)) {
+        if (property.equals(MAP_FOLDER)) {
+          SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+        } else {
+          System.getProperties().setProperty(property, value);
+        }
+        System.out.println(property + ":" + value);
+        return true;
+      }
+    }
+    return false;
   }
 
   private static String getValue(final String arg) {
@@ -683,25 +684,23 @@ public class GameRunner {
   // newClassPath can be null
   private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
-    final List<String> commands = new ArrayList<>();
     final boolean startInNewProcess = newClassPath == null || !newClassPath.isEmpty();
-    String prefix = startInNewProcess ? "-D" : "";
     if (startInNewProcess) {
+      final List<String> commands = new ArrayList<>();
       ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    }
-    commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-    commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
-    if (startInNewProcess) {
-      final String javaClass = GameRunner.class.getName();
-      commands.add(javaClass);
-    }
-    if (startInNewProcess) {
+      final String prefix = "-D";
+      commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
+      commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
+      commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+      commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+      commands.add(GameRunner.class.getName());
       ProcessRunnerUtil.exec(commands);
     } else {
       MainFrame.getInstance().setVisible(true);
-      handleCommandLineArgs(commands.toArray(new String[commands.size()]), COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
+      setSystemProperty(TRIPLEA_CLIENT_PROPERTY, "true", COMMAND_LINE_ARGS);
+      setSystemProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port), COMMAND_LINE_ARGS);
+      setSystemProperty(TRIPLEA_HOST_PROPERTY, hostAddressIP, COMMAND_LINE_ARGS);
+      setSystemProperty(TRIPLEA_NAME_PROPERTY, messengers.getMessenger().getLocalNode().getName(), COMMAND_LINE_ARGS);
       showMainFrame();
     }
   }
