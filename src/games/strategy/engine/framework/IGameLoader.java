@@ -34,9 +34,9 @@ public interface IGameLoader extends Serializable {
   Set<IGamePlayer> createPlayers(Map<String, String> players);
 
   /**
-   * The game is about to start. 
-   * 
-   * @throws Excpetion
+   * The game is about to start.
+   *
+   * @throws Exception
    */
   void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
 

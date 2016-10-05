@@ -34,14 +34,6 @@ public class MainFrame extends JFrame {
     return s_instance;
   }
 
-  public static void clearInstance() {
-    if (s_instance != null) {
-      s_instance.setVisible(false);
-      s_instance.dispose();
-    }
-    s_instance = null;
-  }
-
   private final GameSelectorModel m_gameSelectorModel;
   private final SetupPanelModel m_setupPanelModel;
 

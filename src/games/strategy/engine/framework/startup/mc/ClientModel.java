@@ -102,7 +102,8 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private ClientProps getProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+    if (System.getProperties().getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
+        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
       final ClientProps props = new ClientProps();
       props.setHost(System.getProperty(GameRunner.TRIPLEA_HOST_PROPERTY));
       props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));

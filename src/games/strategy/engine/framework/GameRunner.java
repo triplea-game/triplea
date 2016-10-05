@@ -184,9 +184,8 @@ public class GameRunner {
     handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
 
-  public static void showMainFrame() {
+  private static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
-      MainFrame.clearInstance();
       final MainFrame frame = new MainFrame();
       frame.requestFocus();
       frame.toFront();
@@ -697,11 +696,13 @@ public class GameRunner {
       ProcessRunnerUtil.exec(commands);
     } else {
       MainFrame.getInstance().setVisible(true);
+      MainFrame.getInstance().requestFocus();
       setSystemProperty(TRIPLEA_CLIENT_PROPERTY, "true", COMMAND_LINE_ARGS);
       setSystemProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port), COMMAND_LINE_ARGS);
       setSystemProperty(TRIPLEA_HOST_PROPERTY, hostAddressIP, COMMAND_LINE_ARGS);
       setSystemProperty(TRIPLEA_NAME_PROPERTY, messengers.getMessenger().getLocalNode().getName(), COMMAND_LINE_ARGS);
-      showMainFrame();
+      setSystemProperty(TRIPLEA_STARTED, "", COMMAND_LINE_ARGS);
+      MainFrame.getInstance().start();
     }
   }
 
