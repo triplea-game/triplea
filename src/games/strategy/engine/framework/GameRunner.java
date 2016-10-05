@@ -211,7 +211,7 @@ public class GameRunner {
       if (indexOf > 0) {
         key = arg.substring(0, indexOf);
       } else {
-        throw new IllegalArgumentException("Argument " + arg + "doesn't match pattern 'key=value'");
+        throw new IllegalArgumentException("Argument " + arg + " doesn't match pattern 'key=value'");
       }
       if (!setSystemProperty(key, getValue(arg), availableProperties)) {
         System.out.println("Unrecogized:" + arg);
