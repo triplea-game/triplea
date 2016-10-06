@@ -127,7 +127,7 @@ public class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    final AbstractAction abstractAction = SwingAction.of("Export Screenshot", e -> {
+    final AbstractAction abstractAction = SwingAction.of("Export Map Snapshot", e -> {
 
       final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
@@ -177,7 +177,8 @@ public class ExportMenu {
       final File file = f;
       final Runnable t = () -> {
         if (saveScreenshot(node, file, frame, gameData)) {
-          JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved", JOptionPane.INFORMATION_MESSAGE);
+          JOptionPane.showMessageDialog(null, "Map Snapshot Saved", "Map Snapshot Saved",
+              JOptionPane.INFORMATION_MESSAGE);
         }
       };
       SwingAction.invokeAndWait(t);
