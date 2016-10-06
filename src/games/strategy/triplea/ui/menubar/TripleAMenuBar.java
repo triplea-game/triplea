@@ -58,6 +58,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
+import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Triple;
 
@@ -72,14 +73,14 @@ public class TripleAMenuBar extends JMenuBar {
     new GameMenu(this, frame);
     new ExportMenu(this, frame);
 
-
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
     if (watcher.isPresent() && watcher.get().isActive()) {
       createLobbyMenu(this, watcher.get());
     }
-    new NetworkMenu(this, watcher, frame);
+    if (!(frame.getGame().getMessenger() instanceof HeadlessServerMessenger)) {
+      new NetworkMenu(this, watcher, frame);
+    }
     new WebHelpMenu(this);
-
     new DebugMenu(this, frame);
     new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
   }
