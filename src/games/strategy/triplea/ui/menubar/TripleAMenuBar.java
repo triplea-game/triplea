@@ -162,36 +162,21 @@ public class TripleAMenuBar extends JMenuBar {
     for (final LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
       substanceLooks.add(look.getClassName());
     }
-    substanceLooks.addAll(
-        Arrays.asList(
-            SubstanceAutumnLookAndFeel.class.getName(),
-            SubstanceBusinessBlackSteelLookAndFeel.class.getName(),
-            SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
-            SubstanceBusinessLookAndFeel.class.getName(),
-            SubstanceCeruleanLookAndFeel.class.getName(),
-            SubstanceChallengerDeepLookAndFeel.class.getName(),
-            SubstanceCremeCoffeeLookAndFeel.class.getName(),
-            SubstanceCremeLookAndFeel.class.getName(),
-            SubstanceDustCoffeeLookAndFeel.class.getName(),
-            SubstanceDustLookAndFeel.class.getName(),
-            SubstanceEmeraldDuskLookAndFeel.class.getName(),
-            SubstanceGeminiLookAndFeel.class.getName(),
-            SubstanceGraphiteAquaLookAndFeel.class.getName(),
-            SubstanceGraphiteGlassLookAndFeel.class.getName(),
-            SubstanceGraphiteLookAndFeel.class.getName(),
-            SubstanceMagellanLookAndFeel.class.getName(),
-            SubstanceMarinerLookAndFeel.class.getName(),
-            SubstanceMistAquaLookAndFeel.class.getName(),
-            SubstanceMistSilverLookAndFeel.class.getName(),
-            SubstanceModerateLookAndFeel.class.getName(),
-            SubstanceNebulaBrickWallLookAndFeel.class.getName(),
-            SubstanceNebulaLookAndFeel.class.getName(),
-            SubstanceOfficeBlack2007LookAndFeel.class.getName(),
-            SubstanceOfficeBlue2007LookAndFeel.class.getName(),
-            SubstanceOfficeSilver2007LookAndFeel.class.getName(),
-            SubstanceRavenLookAndFeel.class.getName(),
-            SubstanceSaharaLookAndFeel.class.getName(),
-            SubstanceTwilightLookAndFeel.class.getName()));
+    substanceLooks.addAll(Arrays.asList(SubstanceAutumnLookAndFeel.class.getName(),
+        SubstanceBusinessBlackSteelLookAndFeel.class.getName(), SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
+        SubstanceBusinessLookAndFeel.class.getName(), SubstanceCeruleanLookAndFeel.class.getName(),
+        SubstanceChallengerDeepLookAndFeel.class.getName(), SubstanceCremeCoffeeLookAndFeel.class.getName(),
+        SubstanceCremeLookAndFeel.class.getName(), SubstanceDustCoffeeLookAndFeel.class.getName(),
+        SubstanceDustLookAndFeel.class.getName(), SubstanceEmeraldDuskLookAndFeel.class.getName(),
+        SubstanceGeminiLookAndFeel.class.getName(), SubstanceGraphiteAquaLookAndFeel.class.getName(),
+        SubstanceGraphiteGlassLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
+        SubstanceMagellanLookAndFeel.class.getName(), SubstanceMarinerLookAndFeel.class.getName(),
+        SubstanceMistAquaLookAndFeel.class.getName(), SubstanceMistSilverLookAndFeel.class.getName(),
+        SubstanceModerateLookAndFeel.class.getName(), SubstanceNebulaBrickWallLookAndFeel.class.getName(),
+        SubstanceNebulaLookAndFeel.class.getName(), SubstanceOfficeBlack2007LookAndFeel.class.getName(),
+        SubstanceOfficeBlue2007LookAndFeel.class.getName(), SubstanceOfficeSilver2007LookAndFeel.class.getName(),
+        SubstanceRavenLookAndFeel.class.getName(), SubstanceSaharaLookAndFeel.class.getName(),
+        SubstanceTwilightLookAndFeel.class.getName()));
     return substanceLooks;
   }
 
