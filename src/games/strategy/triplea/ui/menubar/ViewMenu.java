@@ -189,8 +189,8 @@ public class ViewMenu {
         model.setValue((int) (ratio * 100));
       });
       reset.addActionListener(event -> model.setValue(100));
-      final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale",
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
+      final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
       if (result != 0) {
         return;
       }
@@ -512,7 +512,7 @@ public class ViewMenu {
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
-    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show by default");
+    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show Unit Flags");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
     toggleFlags.addActionListener(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
