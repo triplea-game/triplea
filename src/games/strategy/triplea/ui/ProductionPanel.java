@@ -96,8 +96,7 @@ public class ProductionPanel extends JPanel {
 
 
   // made this protected so can be extended by edit production panel
-  protected void initRules(final PlayerID player,
-      final GameData data,
+  protected void initRules(final PlayerID player, final GameData data,
       final IntegerMap<ProductionRule> initialPurchase) {
     m_data.acquireReadLock();
     try {
@@ -145,11 +144,15 @@ public class ProductionPanel extends JPanel {
     final int availWidthRules = availWidth - 16;
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(BorderFactory.createEmptyBorder());
-    scroll.setPreferredSize(new Dimension(
-        (scroll.getPreferredSize().width > availWidthRules ? availWidthRules
-            : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 20 : 0)),
-        (scroll.getPreferredSize().height > availHeightRules ? availHeightRules
-            : scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidthRules ? 20 : 0))));
+    scroll
+        .setPreferredSize(
+            new Dimension(
+                (scroll.getPreferredSize().width > availWidthRules
+                    ? availWidthRules
+                    : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
+                (scroll.getPreferredSize().height > availHeightRules ? availHeightRules
+                    : scroll.getPreferredSize().height
+                        + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
     this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH,
         new Insets(8, 8, 8, 4), 0, 0));
     // final int startY = m_rules.size() / rows;
