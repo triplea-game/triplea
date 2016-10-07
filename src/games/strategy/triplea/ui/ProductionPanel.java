@@ -149,10 +149,10 @@ public class ProductionPanel extends JPanel {
             new Dimension(
                 (scroll.getPreferredSize().width > availWidthRules
                     ? availWidthRules
-                    : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 20 : 0)),
+                    : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
                 (scroll.getPreferredSize().height > availHeightRules ? availHeightRules
                     : scroll.getPreferredSize().height
-                        + (scroll.getPreferredSize().width > availWidthRules ? 20 : 0))));
+                        + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
     this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH,
         new Insets(8, 8, 8, 4), 0, 0));
     // final int startY = m_rules.size() / rows;
