@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -113,7 +114,7 @@ public class MainPanel extends JPanel implements Observer {
       try {
         gameSetupPanel.shutDown();
       } finally {
-        System.exit(0);
+        MainFrame.getInstance().dispatchEvent(new WindowEvent(MainFrame.getInstance(), WindowEvent.WINDOW_CLOSING));
       }
     });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());

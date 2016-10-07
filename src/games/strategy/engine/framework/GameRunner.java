@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import java.awt.AWTEvent;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
@@ -796,6 +797,22 @@ public class GameRunner {
       throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     return newClassPath;
+  }
+
+
+  public static void exitGameIfFinished() {
+    SwingUtilities.invokeLater(() -> {
+      boolean allFramesClosed = true;
+      for (Frame f : Frame.getFrames()) {
+        if (f.isVisible()) {
+          allFramesClosed = false;
+          break;
+        }
+      }
+      if (allFramesClosed) {
+        System.exit(0);
+      }
+    });
   }
 
 }
