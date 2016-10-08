@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -76,16 +75,6 @@ public class TabbedProductionPanel extends ProductionPanel {
     m_done = new JButton(m_done_action);
     add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
-    final Dimension dtab = tabs.getPreferredSize();
-    final Dimension dthis = this.getPreferredSize();
-    if (dtab != null && dthis != null) {
-      // for an unknown reason, the tabs need a couple extra height and width or else scroll bars will appear
-      tabs.setPreferredSize(new Dimension(dtab.width + 10, dtab.height + 10));
-      // for an unknown reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate
-      // the tabs
-      this.setPreferredSize(new Dimension(dthis.width + 10, dthis.height + 30));
-
-    }
     tabs.validate();
     this.validate();
   }
