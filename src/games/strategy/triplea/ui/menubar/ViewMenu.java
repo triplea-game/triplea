@@ -84,7 +84,7 @@ public class ViewMenu {
 
   private void addShowCommentLog(final Menu parentMenu) {
     final CheckMenuItem showCommentLog = new CheckMenuItem("Show Comment _Log");
-    
+
     showCommentLog.setOnAction(frame.getShowCommentLogButtonModel());
     parentMenu.getItems().add(showCommentLog);
   }
@@ -339,7 +339,7 @@ public class ViewMenu {
   private void addMapFontAndColorEditorMenu(final Menu parentMenu) {
     MenuItem mapFontOptions = new MenuItem("Edit Map Font and _Color");
     mapFontOptions.setMnemonicParsing(true);
-    mapFontOptions.setOnAction(e -> {//TODO change to javafx
+    mapFontOptions.setOnAction(e -> {// TODO change to javafx
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
@@ -421,7 +421,8 @@ public class ViewMenu {
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
-    final CheckMenuItem toggleFlags = new CheckMenuItem("Show by default");
+    final CheckMenuItem toggleFlags = new CheckMenuItem("Show _Unit Flags");
+    toggleFlags.setMnemonicParsing(true);
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
     toggleFlags.setOnAction(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
