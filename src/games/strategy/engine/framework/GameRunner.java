@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import java.awt.AWTEvent;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
@@ -15,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -52,7 +53,9 @@ import games.strategy.util.Version;
  */
 public class GameRunner {
 
-  public enum GameMode { SWING_CLIENT, HEADLESS_BOT }
+  public enum GameMode {
+    SWING_CLIENT, HEADLESS_BOT
+  }
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -114,7 +117,7 @@ public class GameRunner {
 
 
   private static void usage(GameMode gameMode) {
-    if(gameMode == GameMode.HEADLESS_BOT) {
+    if (gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
           + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
           + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
@@ -127,7 +130,8 @@ public class GameRunner {
           + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
           + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
           + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
+          + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
           + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
           + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
           + "   " + MAP_FOLDER + "=mapFolder"
@@ -201,28 +205,16 @@ public class GameRunner {
     }
 
     boolean usagePrinted = false;
-    for (final String arg1 : args) {
-      boolean found = false;
-      String arg = arg1;
+    for (final String arg : args) {
+      String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String property : availableProperties) {
-          if (arg.equals(property)) {
-            final String value = getValue(arg1);
-            if (property.equals(MAP_FOLDER)) {
-              SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
-            } else {
-              System.getProperties().setProperty(property, value);
-            }
-            System.out.println(property + ":" + value);
-            found = true;
-            break;
-          }
-        }
+        key = arg.substring(0, indexOf);
+      } else {
+        throw new IllegalArgumentException("Argument " + arg + " doesn't match pattern 'key=value'");
       }
-      if (!found) {
-        System.out.println("Unrecogized:" + arg1);
+      if (!setSystemProperty(key, getValue(arg), availableProperties)) {
+        System.out.println("Unrecogized:" + arg);
         if (!usagePrinted) {
           usagePrinted = true;
           usage(gameMode);
@@ -330,6 +322,21 @@ public class GameRunner {
     }
   }
 
+  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
+    for (final String property : availableProperties) {
+      if (key.equals(property)) {
+        if (property.equals(MAP_FOLDER)) {
+          SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+        } else {
+          System.getProperties().setProperty(property, value);
+        }
+        System.out.println(property + ":" + value);
+        return true;
+      }
+    }
+    return false;
+  }
+
   private static String getValue(final String arg) {
     final int index = arg.indexOf('=');
     if (index == -1) {
@@ -339,7 +346,7 @@ public class GameRunner {
   }
 
   public static void setupLogging(GameMode gameMode) {
-    if(gameMode == GameMode.SWING_CLIENT) {
+    if (gameMode == GameMode.SWING_CLIENT) {
       // setup logging to read our logging.properties
       try {
         LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
@@ -354,6 +361,7 @@ public class GameRunner {
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
           } catch (Throwable t) {
             ClientLogger.logError(t);
+            throw t;
           }
         }
       });
@@ -505,7 +513,8 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final boolean firstTimeThisVersion = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion =
+          SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
@@ -611,7 +620,8 @@ public class GameRunner {
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+            + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
@@ -633,7 +643,8 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    if (!ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin)) {
+    final boolean sameVersion = ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin);
+    if (!sameVersion) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
@@ -674,12 +685,12 @@ public class GameRunner {
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    commands.add("-D" + TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
-    final String javaClass = "games.strategy.engine.framework.GameRunner";
-    commands.add(javaClass);
+    final String prefix = "-D";
+    commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add(GameRunner.class.getName());
     ProcessRunnerUtil.exec(commands);
   }
 
@@ -773,6 +784,22 @@ public class GameRunner {
       throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
     }
     return newClassPath;
+  }
+
+
+  public static void exitGameIfFinished() {
+    SwingUtilities.invokeLater(() -> {
+      boolean allFramesClosed = true;
+      for (Frame f : Frame.getFrames()) {
+        if (f.isVisible()) {
+          allFramesClosed = false;
+          break;
+        }
+      }
+      if (allFramesClosed) {
+        System.exit(0);
+      }
+    });
   }
 
 }

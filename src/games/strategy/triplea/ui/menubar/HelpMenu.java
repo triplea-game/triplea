@@ -147,18 +147,57 @@ public class HelpMenu {
 
 
 
-  private void addUnitHelpMenu(final Menu parentMenu) {
-    MenuItem unitHelp = new MenuItem("_Unit Help");
-    unitHelp.setMnemonicParsing(true);
-    unitHelp.setOnAction(e -> {
-      Alert alert = new Alert(AlertType.INFORMATION);
-      alert.setTitle(unitHelp.getText());
-      WebView webView = new WebView();
-      webView.getEngine().loadContent(getUnitStatsTable(gameData, iuiContext));
-      ScrollPane scrollPane = new ScrollPane(webView);
-      alert.getDialogPane().setContent(scrollPane);
-      alert.show();
-    });
+  private void addUnitHelpMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of("Unit Help", e -> {
+      final JEditorPane editorPane = new JEditorPane();
+      editorPane.setEditable(false);
+      editorPane.setContentType("text/html");
+      editorPane.setText(getUnitStatsTable(gameData, iuiContext));
+      editorPane.setCaretPosition(0);
+      final JScrollPane scroll = new JScrollPane(editorPane);
+      scroll.setBorder(BorderFactory.createEmptyBorder());
+      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+      // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
+      // the window sides
+      final int availHeight = screenResolution.height - 120;
+      final int availWidth = screenResolution.width - 40;
+      scroll
+          .setPreferredSize(new Dimension(
+              (scroll.getPreferredSize().width > availWidth ? availWidth
+                  : (scroll.getPreferredSize().height > availHeight
+                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
+              (scroll.getPreferredSize().height > availHeight ? availHeight
+                  : (scroll.getPreferredSize().width > availWidth
+                      ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
+                      : scroll.getPreferredSize().height))));
+      final JDialog dialog = new JDialog();
+      dialog.setModal(false);
+      // needs java 1.6 at least...
+      // dialog.setModalityType(ModalityType.MODELESS);
+      dialog.setAlwaysOnTop(true);
+      dialog.add(scroll, BorderLayout.CENTER);
+      final JPanel buttons = new JPanel();
+      final JButton button = new JButton(SwingAction.of("OK", event -> {
+        dialog.setVisible(false);
+        dialog.removeAll();
+        dialog.dispose();
+      }));
+      buttons.add(button);
+      dialog.getRootPane().setDefaultButton(button);
+      dialog.add(buttons, BorderLayout.SOUTH);
+      dialog.pack();
+      // dialog.setLocationRelativeTo(frame);
+      dialog.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowOpened(final WindowEvent e) {
+          scroll.getVerticalScrollBar().getModel().setValue(0);
+          scroll.getHorizontalScrollBar().getModel().setValue(0);
+          button.requestFocus();
+        }
+      });
+      dialog.setVisible(true);
+      // dialog.dispose();
+    })).setMnemonic(KeyEvent.VK_U);
   }
 
 

@@ -282,35 +282,21 @@ public class ClientModel implements IMessengerErrorListener {
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
       final boolean gameRunning) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        m_gameLoadingWindow.setVisible(true);
-        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
-        m_gameLoadingWindow.showWait();
-      }
+    SwingUtilities.invokeLater(() -> {
+      m_gameLoadingWindow.setVisible(true);
+      m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
+      m_gameLoadingWindow.showWait();
     });
-
-    // DO NOT REPLACE THIS WITH A LAMBDA! We are very dependendant upon an exception being thrown in the code below
-    // and killing this thread. Without that a zombie player will connect to the bot and the game will then proceed
-    // with no-op moves until the player kills the java process.
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          startGameInNewThread(gameData, players, gameRunning);
-        } catch (final RuntimeException e) {
-          m_gameLoadingWindow.doneWait();
-          throw e;
-        } finally {
-          if (onDone != null) {
-            onDone.countDown();
-          }
-        }
+    try {
+      startGameInNewThread(gameData, players, gameRunning);
+    } catch (final RuntimeException e) {
+      m_gameLoadingWindow.doneWait();
+      throw e;
+    } finally {
+      if (onDone != null) {
+        onDone.countDown();
       }
-    };
-    final Thread t = new Thread(r);
-    t.start();
+    }
   }
 
   private void startGameInNewThread(final byte[] gameData, final Map<String, INode> players,
@@ -335,35 +321,31 @@ public class ClientModel implements IMessengerErrorListener {
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
     final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
     m_game = new ClientGame(data, playerSet, players, messengers);
-    final Thread t = new Thread("Client Game Launcher") {
-      @Override
-      public void run() {
-        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
-        try {
-          // game will be null if we loose the connection
-          if (m_game != null) {
-            try {
-              data.getGameLoader().startGame(m_game, playerSet, false);
-              data.testLocksOnRead();
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-              m_game.shutDown();
-              m_messenger.shutDown();
-              m_gameLoadingWindow.doneWait();
-              // an ugly hack, we need a better
-              // way to get the main frame
-              MainFrame.getInstance().clientLeftGame();
-            }
+    new Thread(() -> {
+      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(m_ui).setVisible(false));
+      try {
+        // game will be null if we loose the connection
+        if (m_game != null) {
+          try {
+            data.getGameLoader().startGame(m_game, playerSet, false);
+            data.testLocksOnRead();
+          } catch (final Exception e) {
+            ClientLogger.logError("Failed to start Game", e);
+            m_game.shutDown();
+            m_messenger.shutDown();
+            m_gameLoadingWindow.doneWait();
+            // an ugly hack, we need a better
+            // way to get the main frame
+            MainFrame.getInstance().clientLeftGame();
           }
-          if (!gameRunning) {
-            ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
-          }
-        } finally {
-          m_gameLoadingWindow.doneWait();
         }
+        if (!gameRunning) {
+          ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+        }
+      } finally {
+        m_gameLoadingWindow.doneWait();
       }
-    };
-    t.start();
+    }, "Client Game Launcher").start();
   }
 
   public void takePlayer(final String playerName) {

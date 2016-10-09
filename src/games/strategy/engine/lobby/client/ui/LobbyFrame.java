@@ -24,6 +24,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -43,6 +44,7 @@ public class LobbyFrame extends JFrame {
 
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties props) {
     super("TripleA Lobby");
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
@@ -347,7 +349,9 @@ public class LobbyFrame extends JFrame {
   }
 
   public void shutdown() {
-    System.exit(0);
+    MainFrame.getInstance().setVisible(true);
+    m_client.getMessenger().shutDown();
+    GameRunner.exitGameIfFinished();
   }
 
   private void connectionToServerLost() {

@@ -101,8 +101,7 @@ public class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName =
-        "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
+    String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setInitialDirectory(rootDir);
@@ -171,8 +170,32 @@ public class ExportMenu {
         Platform.runLater(() -> new Alert(AlertType.INFORMATION, "Screenshot Saved"));
       }
     };
-    SwingAction.invokeAndWait(t);
-
+    final JFileChooser fileChooser = new SaveGameFileChooser();
+    fileChooser.setFileFilter(pngFilter);
+    final int rVal = fileChooser.showSaveDialog(null);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+      File f = fileChooser.getSelectedFile();
+      if (!f.getName().toLowerCase().endsWith(".png")) {
+        f = new File(f.getParent(), f.getName() + ".png");
+      }
+      // A small warning so users will not over-write a file,
+      if (f.exists()) {
+        final int choice =
+            JOptionPane.showConfirmDialog(null, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (choice != JOptionPane.OK_OPTION) {
+          return;
+        }
+      }
+      final File file = f;
+      final Runnable t = () -> {
+        if (saveScreenshot(node, file, frame, gameData)) {
+          JOptionPane.showMessageDialog(null, "Map Snapshot Saved", "Map Snapshot Saved",
+              JOptionPane.INFORMATION_MESSAGE);
+        }
+      };
+      SwingAction.invokeAndWait(t);
+    }
   }
 
   private static boolean saveScreenshot(final HistoryNode node, final File file, final TripleAFrame frame,
@@ -529,10 +552,10 @@ public class ExportMenu {
       if (selectedFile == null) {
         return;
       }
-      try (final FileWriter writer = new FileWriter(selectedFile)) {
-        writer.write(HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n")
-            .replaceAll("</p>", "</p>\r\n")
-            .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+        writer.write(
+            HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
       }
