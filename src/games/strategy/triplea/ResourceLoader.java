@@ -184,7 +184,7 @@ public class ResourceLoader implements Closeable {
     String path = resourceLocationTracker.getMapPrefix() + inputPath;
     return getMatchingResources(path).stream().findFirst().orElse(
         getMatchingResources(inputPath).stream().findFirst().orElseGet(
-            ()->null));
+            () -> null));
   }
 
   private List<URL> getMatchingResources(final String path) {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -101,12 +102,10 @@ public class ProcessRunnerUtil {
       // we need to read the input stream to prevent possible
       // deadlocks
       final Thread t = new Thread(() -> {
-        try {
-          while (s.read() >= 0) {
-            // just read
+        try (Scanner scanner = new Scanner(s);) {
+          while (scanner.hasNextLine()) {
+            System.out.println(scanner.nextLine());
           }
-        } catch (final IOException e) {
-          ClientLogger.logQuietly(e);
         }
       }, "Process output gobbler");
       t.setDaemon(true);
