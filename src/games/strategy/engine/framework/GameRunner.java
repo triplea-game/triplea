@@ -677,34 +677,21 @@ public class GameRunner {
         return;
       }
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(),
-        sameVersion ? "" : newClassPath, messengers);
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
   }
 
   // newClassPath can be null
   private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
       final Messengers messengers) {
-    final boolean startInNewProcess = newClassPath == null || !newClassPath.isEmpty();
-    if (startInNewProcess) {
-      final List<String> commands = new ArrayList<>();
-      ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-      final String prefix = "-D";
-      commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
-      commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
-      commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
-      commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
-      commands.add(GameRunner.class.getName());
-      ProcessRunnerUtil.exec(commands);
-    } else {
-      MainFrame.getInstance().setVisible(true);
-      MainFrame.getInstance().requestFocus();
-      setSystemProperty(TRIPLEA_CLIENT_PROPERTY, "true", COMMAND_LINE_ARGS);
-      setSystemProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port), COMMAND_LINE_ARGS);
-      setSystemProperty(TRIPLEA_HOST_PROPERTY, hostAddressIP, COMMAND_LINE_ARGS);
-      setSystemProperty(TRIPLEA_NAME_PROPERTY, messengers.getMessenger().getLocalNode().getName(), COMMAND_LINE_ARGS);
-      setSystemProperty(TRIPLEA_STARTED, "", COMMAND_LINE_ARGS);
-      MainFrame.getInstance().start();
-    }
+    final List<String> commands = new ArrayList<>();
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
+    final String prefix = "-D";
+    commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
+    commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
+    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add(GameRunner.class.getName());
+    ProcessRunnerUtil.exec(commands);
   }
 
   public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
