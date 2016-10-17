@@ -1,10 +1,14 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -34,7 +38,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
-import games.strategy.ui.SwingAction;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -90,7 +93,8 @@ public class TripleA implements IGameLoader {
 
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless)
+      throws InvocationTargetException {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -114,21 +118,24 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame;
-        frame = new TripleAFrame(game, localPlayers);
-        display = new TripleADisplay(frame);
-        game.addDisplay(display);
-        soundChannel = new DefaultSoundChannel(localPlayers);
-        game.addSoundChannel(soundChannel);
-        frame.setSize(700, 400);
-        frame.setVisible(true);
-        ClipPlayer.play(SoundPath.CLIP_GAME_START);
-        connectPlayers(players, frame);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        frame.toFront();
-      });
-
+      try {
+        SwingUtilities.invokeAndWait(() -> {
+          final TripleAFrame frame;
+          frame = new TripleAFrame(game, localPlayers);
+          display = new TripleADisplay(frame);
+          game.addDisplay(display);
+          soundChannel = new DefaultSoundChannel(localPlayers);
+          game.addSoundChannel(soundChannel);
+          frame.setSize(700, 400);
+          frame.setVisible(true);
+          ClipPlayer.play(SoundPath.CLIP_GAME_START);
+          connectPlayers(players, frame);
+          frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+          frame.toFront();
+        });
+      } catch (InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
     }
 
   }

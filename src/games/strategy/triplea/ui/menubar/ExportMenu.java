@@ -101,8 +101,7 @@ public class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName =
-        "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
+    String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -128,7 +127,7 @@ public class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    final AbstractAction abstractAction = SwingAction.of("Export Screenshot", e -> {
+    final AbstractAction abstractAction = SwingAction.of("Export Map Snapshot", e -> {
 
       final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
@@ -178,7 +177,7 @@ public class ExportMenu {
       final File file = f;
       final Runnable t = () -> {
         if (saveScreenshot(node, file, frame, gameData)) {
-          JOptionPane.showMessageDialog(null, "Screenshot Saved", "Screenshot Saved",
+          JOptionPane.showMessageDialog(null, "Map Snapshot Saved", "Map Snapshot Saved",
               JOptionPane.INFORMATION_MESSAGE);
         }
       };
@@ -251,8 +250,7 @@ public class ExportMenu {
         ImageIO.write(mapImage, "png", file);
       } catch (final Exception e2) {
         e2.printStackTrace();
-        JOptionPane.showMessageDialog(frame, e2.getMessage(), "Error saving Screenshot",
-            JOptionPane.OK_OPTION);
+        JOptionPane.showMessageDialog(frame, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
         retval = false;
       }
       // Clean up objects. There might be some overkill here,
@@ -539,9 +537,9 @@ public class ExportMenu {
         return;
       }
       try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
-        writer.write(HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n")
-            .replaceAll("</p>", "</p>\r\n")
-            .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+        writer.write(
+            HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
       }

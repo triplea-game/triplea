@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -466,22 +467,9 @@ public class GameParser {
    */
   private Class<?> getClassByName(final String className) throws GameParseException {
     try {
-      final Class<?> instanceClass = Class.forName(className);
-      return instanceClass;
-    }
-    // if class cannot be found than it is either not a valid class or an old class that was deleted/renamed
-    catch (final ClassNotFoundException cnfe) {
-      if (newClassesForOldNames == null) {
-        newClassesForOldNames = new HashMap<>();
-        // put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>",
-        // "<newClassName>"), e.g.
-        // newClassesForOldNames.put("attachment", "attachment")
-      }
-      final String newClassName = newClassesForOldNames.get(className);
-      if (newClassName != null) {
-        return getClassByName(newClassName);
-      }
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
+      return Class.forName(className);
+    } catch (final ClassNotFoundException e) {
+      throw new GameParseException(mapName, "Class <" + className + "> could not be found: " + e);
     }
   }
 
@@ -1015,12 +1003,10 @@ public class GameParser {
       final Element current = iterator.next();
       // load the class
       final String className = current.getAttribute("javaClass");
-      IDelegate delegate = null;
-      try {
-        delegate = (IDelegate) getInstance(className);
-      } catch (final ClassCastException cce) {
-        throw new GameParseException(mapName, "Class <" + className + "> is not a delegate.");
-      }
+      XmlGameElementMapper elementMapper = new XmlGameElementMapper();
+
+      IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
+          () -> new GameParseException(mapName, "Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
       if (displayName == null) {
@@ -1278,40 +1264,19 @@ public class GameParser {
   }
 
   private void parseAttachments(final Element root) throws GameParseException {
-    final HashMap<String, Constructor<?>> constructors = new HashMap<>();
     for (final Element current : getChildren("attachment", root)) {
-      // get class name and constructor
       final String className = current.getAttribute("javaClass");
-      if (!constructors.containsKey(className)) {
-        try {
-          final Class<?> objectClass = getClassByName(className);
-          if (!IAttachment.class.isAssignableFrom(objectClass)) {
-            throw new GameParseException(mapName, className + " does not implement IAttachable");
-          }
-          constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
-        } catch (final NoSuchMethodException | SecurityException exception) {
-          throw new GameParseException(mapName,
-              "Constructor for class " + className + " could not be found: " + exception.getMessage());
-        }
-      }
-      // find the attachable
-      final String type = current.getAttribute("type");
-      final Attachable attachable = findAttachment(current, type);
-      // create new attachment
+      final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
+      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
+          .orElseThrow(
+              () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
+      attachable.addAttachment(name, attachment);
+
       final List<Element> options = getChildren("option", current);
-      try {
-        final IAttachment attachment = (IAttachment) constructors.get(className).newInstance(name, attachable, data);
-        attachable.addAttachment(name, attachment);
-        final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
-        // keep a list of attachment references in the order they were added
-        data.addToAttachmentOrderAndValues(
-            Tuple.of(attachment, attachmentOptionValues));
-      } catch (final InstantiationException | InvocationTargetException | IllegalArgumentException
-          | IllegalAccessException e) {
-        throw new GameParseException(mapName,
-            "Attachment of type " + className + " could not be instanciated: " + e.getMessage());
-      }
+      final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
+      // keep a list of attachment references in the order they were added
+      data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
     }
   }
 

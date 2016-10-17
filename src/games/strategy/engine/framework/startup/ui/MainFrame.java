@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.JFrame;
@@ -43,7 +45,13 @@ public class MainFrame extends JFrame {
       throw new IllegalStateException("Instance already exists");
     }
     s_instance = this;
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    addWindowListener(new WindowAdapter(){
+      @Override
+      public void windowClosing(WindowEvent e){
+        GameRunner.exitGameIfFinished();
+      }
+    });
     setIconImage(GameRunner.getGameIcon(this));
     m_gameSelectorModel = new GameSelectorModel();
     m_gameSelectorModel.loadDefaultGame(this);
@@ -63,7 +71,7 @@ public class MainFrame extends JFrame {
    * For displaying on startup.
    * Only call once!
    */
-  private void start() {
+  public void start() {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

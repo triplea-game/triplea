@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
@@ -111,45 +110,23 @@ public class UserActionPanel extends ActionPanel {
     @Override
     public void actionPerformed(final ActionEvent event) {
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      final int availHeight = screenResolution.height - 96;
+      final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 30;
-      final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
-      final int availHeightChoice = (int) ((float) availHeight / 3);
       final JDialog userChoiceDialog = new JDialog(m_parent, "Actions and Operations", true);
       final Insets insets = new Insets(1, 1, 1, 1);
       int row = 0;
       final JPanel userChoicePanel = new JPanel();
       userChoicePanel.setLayout(new GridBagLayout());
-      final JPanel overview = new JPanel();
-      overview.setLayout(new GridBagLayout());
-      overview.add(new JLabel("You have the following Actions and Operations at your disposal:"),
-          new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-              new Insets(25, 10, 25, 30), 0, 0));
-      final JScrollPane overviewScroll = new JScrollPane(overview);
-      overviewScroll.setBorder(BorderFactory.createEmptyBorder());
-      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
-      // (again)...
-      // add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
-      overviewScroll.setPreferredSize(new Dimension(
-          (overviewScroll.getPreferredSize().width > availWidth ? availWidth
-              : (overviewScroll.getPreferredSize().width
-                  + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
-          (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
-              : (overviewScroll.getPreferredSize().height + (m_validUserActions.isEmpty() ? 26 : 0)
-                  + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
       choiceScroll.setPreferredSize(new Dimension(
           (choiceScroll.getPreferredSize().width > availWidth ? availWidth
               : (choiceScroll.getPreferredSize().width
-                  + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
-          (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
+                  + (choiceScroll.getPreferredSize().height > availHeight ? 25 : 0))),
+          (choiceScroll.getPreferredSize().height > availHeight ? availHeight
               : (choiceScroll.getPreferredSize().height)
-                  + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-      final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
-      splitPane.setOneTouchExpandable(false);
-      splitPane.setDividerSize(8);
-      userChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
+                  + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
+      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
       final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
         private static final long serialVersionUID = -807175594221278068L;
