@@ -70,10 +70,9 @@ public class ProcessRunnerUtil {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
-      if (!icons.exists()) {
-        throw new IllegalStateException("Icon file not found");
+      if (icons.exists()) {
+        commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
       }
-      commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
     }
     final String version = System.getProperty(GameRunner.TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
