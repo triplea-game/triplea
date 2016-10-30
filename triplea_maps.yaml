@@ -405,32 +405,6 @@
     <br>
     <br>
   version: 1
-- mapName: Big World 1939
-  mapCategory: GOOD
-  url: https://github.com/triplea-maps/big_world_1939/archive/master.zip
-  img: https://github.com/KaiMAD/big_world_1939/blob/master/screenshot.png
-  description: |
-    <br>Version 1.0, created ~2016.2
-    <br>Mod by KaiMAD
-    <br>Please post suggestions/comments at "https://github.com/KaiMAD/big_world_1939/issues"
-    <br>
-    <br> Description:
-    <br> This map is based on the original TripleA map Big World 1942, but set instead in 1939.
-    <br> It has the same layout, but includes:
-    <br> Germany,
-    <br> America,
-    <br> Britain,
-    <br> Slovakia,
-    <br> Finland,
-    <br> Russia,
-    <br> China,
-    <br> Japan,
-    <br> Italy,
-    <br> Canada,
-    <br> Romania, and 
-    <br> France (12 players total). 
-    <br> Note: This map is set in late 1939; America was not yet part of the war. 
-    <br> However, it was entirely an option for them to begin fighting, so they are included as a player.
 - url: https://github.com/triplea-maps/big_world_2/archive/master.zip
   mapCategory: GOOD
   mapName: Big World 2
