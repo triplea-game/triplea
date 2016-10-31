@@ -58,9 +58,9 @@
   version: 1
   description: |
     <br>Lord of the Rings
-- mapName: Napoleonic Empire
+- mapName: Napoleonic Empires
   mapCategory: BEST
-  url: https://github.com/triplea-maps/napoleonic_empire/archive/master.zip
+  url: https://github.com/triplea-maps/napoleonic_empires/archive/master.zip
   version: 1
   description: |
     <br>Preindustrial Napoleonic era European conquest
@@ -866,9 +866,9 @@
     <br>Four If By Sea
     <br>
   version: 1
-- mapName: Napoleonic Empire-Political Map Skin
+- mapName: Napoleonic Empires-Topographical Map Skin
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
+  url: https://github.com/triplea-maps/napoleonic_empires-topographical_map_skin/archive/master.zip
   description: |
      <br>
   version: 1
