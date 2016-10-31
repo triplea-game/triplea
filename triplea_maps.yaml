@@ -1683,7 +1683,16 @@
     <br>
     <br>by Gregorek
   version: 1
-
+- mapName: Ultimate World Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ultimate_world_variants/archive/master.zip
+  img: http://tripleamaps.sourceforge.net/images/TripleA_ultimate_world_mini.png
+  description: |
+    <br>
+    Ultimate World Variants
+    <br>Includes several Ultimate World Variants including FFAs
+  version: 1
+  
 - mapName: TripleA Map Creator
   url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip
   mapType: MAP_TOOL
