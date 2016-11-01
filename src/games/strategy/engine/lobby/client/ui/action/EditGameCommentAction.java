@@ -1,36 +1,28 @@
 package games.strategy.engine.lobby.client.ui.action;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 
-public class EditGameCommentAction extends AbstractAction {
-  private static final long serialVersionUID = 1723950003185387843L;
+public class EditGameCommentAction extends MenuItem {
   private final InGameLobbyWatcherWrapper m_lobbyWatcher;
-  private final Component m_parent;
 
-  public EditGameCommentAction(final InGameLobbyWatcherWrapper watcher, final Component parent) {
+  public EditGameCommentAction(final InGameLobbyWatcherWrapper watcher) {
     super("Set Lobby Comment...");
-    m_parent = parent;
     m_lobbyWatcher = watcher;
-  }
+    setOnAction(e -> {
+      if (!m_lobbyWatcher.isActive()) {
+        setDisable(true);
+        new Alert(AlertType.WARNING, "Not connected to Lobby").show();
+        return;
+      }
+      TextInputDialog dialog = new TextInputDialog();
+      dialog.setTitle("Edit the comments for the game");
+      dialog.setContentText("Edit the comments for the game");
 
-  @Override
-  public void actionPerformed(final ActionEvent e) {
-    if (!m_lobbyWatcher.isActive()) {
-      setEnabled(false);
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), "Not connected to Lobby");
-      return;
-    }
-    final String current = m_lobbyWatcher.getComments();
-    final String rVal = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(m_parent),
-        "Edit the comments for the game", current);
-    if (rVal != null) {
-      m_lobbyWatcher.setGameComments(rVal);
-    }
+      dialog.showAndWait().ifPresent(m_lobbyWatcher::setGameComments);
+    });
   }
 }

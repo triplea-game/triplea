@@ -1,18 +1,14 @@
 package games.strategy.performance;
 
 
-import java.awt.event.KeyEvent;
+import javafx.scene.control.CheckMenuItem;
 
-import javax.swing.JCheckBoxMenuItem;
-
-public class EnablePerformanceLoggingCheckBox extends JCheckBoxMenuItem {
-  private static final long serialVersionUID = -8622339162927764406L;
-
+public class EnablePerformanceLoggingCheckBox extends CheckMenuItem {
   public EnablePerformanceLoggingCheckBox() {
-    super("Enable Performance Logging");
+    super("Enable Performance _Logging");
     setSelected(PerfTimer.isEnabled());
-    setMnemonic(KeyEvent.VK_L);
-    addActionListener(e -> handleCheckAction(super.isSelected()));
+    setMnemonicParsing(true);
+    setOnAction(e -> handleCheckAction(super.isSelected()));
   }
 
   private static void handleCheckAction(final boolean checked) {

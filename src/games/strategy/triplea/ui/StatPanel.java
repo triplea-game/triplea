@@ -44,7 +44,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 public class StatPanel extends AbstractStatPanel {
-  private static final long serialVersionUID = 4340684166664492498L;
   final private StatTableModel m_dataModel;
   final private TechTableModel m_techModel;
   protected IStat[] m_stats;
@@ -66,7 +65,7 @@ public class StatPanel extends AbstractStatPanel {
   @Override
   protected void initLayout() {
     final boolean hasTech = !TechAdvance.getTechAdvances(m_data, null).isEmpty();
-    // do no include a grid box for tech if there is no tech
+    // do no include a grid box for tech if there is no techList
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     m_statsTable = new JTable(m_dataModel) {
       private static final long serialVersionUID = -5516554955307630864L;

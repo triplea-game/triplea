@@ -1,17 +1,14 @@
 package games.strategy.engine.chat;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 
 import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
+import javafx.geometry.Orientation;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.BorderPane;
 
 /**
  * A Chat window.
@@ -19,8 +16,7 @@ import games.strategy.net.IMessenger;
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
  */
-public class ChatPanel extends JPanel implements IChatPanel {
-  private static final long serialVersionUID = -6177517517279779486L;
+public class ChatPanel extends BorderPane implements IChatPanel {
   static int s_divider_size = 5;
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;
@@ -41,7 +37,8 @@ public class ChatPanel extends JPanel implements IChatPanel {
   private void init() {
     createComponents();
     layoutComponents();
-    setSize(300, 200);
+    setWidth(300);
+    setHeight(200);
   }
 
   @Override
@@ -78,15 +75,14 @@ public class ChatPanel extends JPanel implements IChatPanel {
   }
 
   private void layoutComponents() {
-    final Container content = this;
-    content.setLayout(new BorderLayout());
-    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    split.setLeftComponent(chatMessagePanel);
-    split.setRightComponent(chatPlayerPanel);
-    split.setOneTouchExpandable(false);
-    split.setDividerSize(s_divider_size);
-    split.setResizeWeight(1);
-    content.add(split, BorderLayout.CENTER);
+    final SplitPane split = new SplitPane();
+    split.setOrientation(Orientation.HORIZONTAL);
+    split.getItems().add(chatMessagePanel);
+    split.getItems().add(chatPlayerPanel);
+    // split.setOneTouchExpandable(false);
+    // split.setDividerSize(s_divider_size);
+    // split.setResizeWeight(1);
+    setCenter(split);
   }
 
   private void createComponents() {
@@ -99,7 +95,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting
     // the width is not really necessary
-    chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
+    chatMessagePanel.setPrefSize(30, chatMessagePanel.getPrefHeight());
   }
 
   @Override

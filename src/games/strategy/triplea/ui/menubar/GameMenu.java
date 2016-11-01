@@ -13,8 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -36,9 +34,13 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
+import games.strategy.triplea.util.JFXUtils;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
+import javafx.scene.control.Menu;
+import javafx.scene.control.Separator;
+import javafx.scene.control.SeparatorMenuItem;
 
 public class GameMenu {
 
@@ -53,23 +55,22 @@ public class GameMenu {
     gameData = frame.getGame().getData();
     iuiContext = frame.getUIContext();
 
-    menuBar.add(createGameMenu());
+    menuBar.getMenus().add(createGameMenu());
   }
 
-  private JMenu createGameMenu() {
-    final JMenu menuGame = SwingComponents.newJMenu("Game", SwingComponents.KeyboardCode.G);
+  private Menu createGameMenu() {
+    final Menu menuGame = new Menu("_Game");
     addEditMode(menuGame);
 
-    menuGame.addSeparator();
-    menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
+    menuGame.getItems().add(new SeparatorMenuItem());
+    menuGame.getItems().add(JFXUtils.getMenuButton("Engine Settings", e -> SettingsWindow.showWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame);
-    menuGame.addSeparator();
-    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
-    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
-    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
+    menuGame.getItems().add(new SeparatorMenuItem());
+    menuGame.getItems().add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
+    menuGame.getItems().add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+    menuGame.getItems().add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
 
-    menuGame.addSeparator();
     addGameOptionsMenu(menuGame);
     addShowVerifiedDice(menuGame);
     addPoliticsMenu(menuGame);
@@ -80,7 +81,7 @@ public class GameMenu {
     return menuGame;
   }
 
-  private void addEditMode(final JMenu parentMenu) {
+  private void addEditMode(final Menu parentMenu) {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
     parentMenu.add(editMode).setMnemonic(KeyEvent.VK_E);
@@ -88,7 +89,7 @@ public class GameMenu {
 
 
 
-  private void addShowVerifiedDice(final JMenu parentMenu) {
+  private void addShowVerifiedDice(final Menu parentMenu) {
     final Action showVerifiedDice = SwingAction.of("Show Verified Dice",
         e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
     if (game instanceof ClientGame) {
@@ -96,7 +97,7 @@ public class GameMenu {
     }
   }
 
-  protected void addGameOptionsMenu(final JMenu menuGame) {
+  protected void addGameOptionsMenu(final Menu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction = SwingAction.of("Map Options", e -> {
         final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
@@ -112,7 +113,7 @@ public class GameMenu {
    *
    * @param menuGame
    */
-  private void addPoliticsMenu(final JMenu menuGame) {
+  private void addPoliticsMenu(final Menu menuGame) {
     final AbstractAction politicsAction = SwingAction.of("Show Politics Panel", e -> {
       final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, iuiContext, false);
       final JScrollPane scroll = new JScrollPane(ui);
@@ -133,8 +134,8 @@ public class GameMenu {
     menuGame.add(politicsAction).setMnemonic(KeyEvent.VK_P);
   }
 
-  private void addNotificationSettings(final JMenu parentMenu) {
-    final JMenu notificationMenu = new JMenu();
+  private void addNotificationSettings(final Menu parentMenu) {
+    final Menu notificationMenu = new Menu();
     notificationMenu.setMnemonic(KeyEvent.VK_U);
     notificationMenu.setText("User Notifications");
     final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
@@ -176,7 +177,7 @@ public class GameMenu {
     parentMenu.add(notificationMenu);
   }
 
-  private void addShowDiceStats(final JMenu parentMenu) {
+  private void addShowDiceStats(final Menu parentMenu) {
     final Action showDiceStats = SwingAction.of("Show Dice Stats", e -> {
       final IRandomStats randomStats =
           (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
@@ -187,8 +188,8 @@ public class GameMenu {
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_D);
   }
 
-  private void addRollDice(final JMenu parentMenu) {
-    final JMenuItem RollDiceBox = new JMenuItem("Roll Dice");
+  private void addRollDice(final Menu parentMenu) {
+    final MenuItem RollDiceBox = new MenuItem("Roll Dice");
     RollDiceBox.setMnemonic(KeyEvent.VK_R);
     RollDiceBox.addActionListener(e -> {
       final IntTextField numberOfText = new IntTextField(0, 100);
@@ -233,9 +234,9 @@ public class GameMenu {
     parentMenu.add(RollDiceBox);
   }
 
-  private void addBattleCalculatorMenu(final JMenu menuGame) {
+  private void addBattleCalculatorMenu(final Menu menuGame) {
     final Action showBattleMenu = SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null));
-    final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
+    final MenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
     showBattleMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));

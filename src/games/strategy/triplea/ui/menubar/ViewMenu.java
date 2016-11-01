@@ -3,39 +3,18 @@ package games.strategy.triplea.ui.menubar;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -43,7 +22,6 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
@@ -53,28 +31,34 @@ import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
 
 public class ViewMenu {
-  private JCheckBoxMenuItem showMapDetails;
-  private JCheckBoxMenuItem showMapBlends;
+  private CheckMenuItem showMapDetails;
+  private CheckMenuItem showMapBlends;
 
   private final GameData gameData;
   private final TripleAFrame frame;
   private final IUIContext uiContext;
 
-  public ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  public ViewMenu(final MenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     this.uiContext = frame.getUIContext();
     gameData = frame.getGame().getData();
 
 
-    final JMenu menuView = new JMenu("View");
-    menuView.setMnemonic(KeyEvent.VK_V);
-    menuBar.add(menuView);
+    final Menu menuView = new Menu("_View");
+    menuBar.getMenus().add(menuView);
     addZoomMenu(menuView);
     addUnitSizeMenu(menuView);
     addLockMap(menuView);
@@ -93,68 +77,41 @@ public class ViewMenu {
     // The menuItem to turn TabbedProduction on or off
     addTabbedProduction(menuView);
     addShowGameUuid(menuView);
-    addSetLookAndFeel(menuView);
 
-    showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
+    showMapDetails.setDisable(!uiContext.getMapData().getHasRelief());
 
   }
 
-  private void addShowCommentLog(final JMenu parentMenu) {
-    final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
-    showCommentLog.setModel(frame.getShowCommentLogButtonModel());
-    parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
+  private void addShowCommentLog(final Menu parentMenu) {
+    final CheckMenuItem showCommentLog = new CheckMenuItem("Show Comment _Log");
+
+    showCommentLog.setOnAction(frame.getShowCommentLogButtonModel());
+    parentMenu.getItems().add(showCommentLog);
   }
 
-  private static void addTabbedProduction(final JMenu parentMenu) {
-    final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
-    tabbedProduction.setMnemonic(KeyEvent.VK_P);
+  private static void addTabbedProduction(final Menu parentMenu) {
+    final CheckMenuItem tabbedProduction = new CheckMenuItem("Show _Production Tabs");
+    tabbedProduction.setMnemonicParsing(true);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction
-        .addActionListener(SwingAction.of(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected())));
-    parentMenu.add(tabbedProduction);
+    tabbedProduction.setOnAction(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
+    parentMenu.getItems().add(tabbedProduction);
   }
 
-  private void addShowGameUuid(final JMenu menuView) {
-    menuView.add(SwingAction.of("Game UUID", e -> {
-      final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
-      final JTextField text = new JTextField();
-      text.setText(id);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-      panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-          new Insets(0, 0, 0, 0), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(menuView), panel, "Game UUID",
-          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-    })).setMnemonic(KeyEvent.VK_U);
+  private void addShowGameUuid(final Menu menuView) {
+    MenuItem gameUUID = new MenuItem("Game _UUID");
+    gameUUID.setMnemonicParsing(true);
+    gameUUID.setOnAction(e -> {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Game UUID");
+      alert.setHeaderText((String) gameData.getProperties().get(GameData.GAME_UUID));
+      alert.showAndWait();
+    });
+    menuView.getItems().add(gameUUID);
   }
 
-  private void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel", e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
-      final JList<String> list = lookAndFeel.getFirst();
-      final String currentKey = lookAndFeel.getThird();
-      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
-        final String selectedValue = list.getSelectedValue();
-        if (selectedValue == null) {
-          return;
-        }
-        if (selectedValue.equals(currentKey)) {
-          return;
-        }
-        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
-            new CountDownLatchHandler(true));
-      }
-    })).setMnemonic(KeyEvent.VK_F);
-  }
-
-
-
-  private void addZoomMenu(final JMenu menuGame) {
-    final Action mapZoom = SwingAction.of("Map Zoom", e -> {
+  private void addZoomMenu(final Menu menuView) {
+    MenuItem mapZoom = new MenuItem("Map _Zoom");
+    mapZoom.setOnAction(e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
       model.setMaximum(100);
       model.setMinimum(15);
@@ -189,114 +146,85 @@ public class ViewMenu {
         model.setValue((int) (ratio * 100));
       });
       reset.addActionListener(event -> model.setValue(100));
-      final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
-      if (result != 0) {
-        return;
-      }
-      final Number value = (Number) model.getValue();
-      frame.setScale(value.doubleValue());
+      new Alert(AlertType.CONFIRMATION, "Choose Map Scale", ButtonType.OK, ButtonType.CANCEL).showAndWait()
+          .filter(ButtonType.OK::equals).ifPresent(response -> {
+            final Number value = (Number) model.getValue();
+            frame.setScale(value.doubleValue());
+          });
 
     });
-    menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
+    menuView.getItems().add(mapZoom);
   }
 
-  private void addUnitSizeMenu(final JMenu parentMenu) {
-    final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
-    // This is the action listener used
-    class UnitSizeAction extends AbstractAction {
-      private static final long serialVersionUID = -6280511505686687867L;
-      private final double scaleFactor;
-
-      public UnitSizeAction(final double scaleFactor) {
-        this.scaleFactor = scaleFactor;
-        putValue(Action.NAME, s_decimalFormat.format(scaleFactor * 100) + "%");
-      }
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        uiContext.setUnitScaleFactor(scaleFactor);
-        frame.getMapPanel().resetMap();
-      }
+  private RadioMenuItem getScaleRadioButton(double scale, ToggleGroup group, boolean setMnemonic) {
+    RadioMenuItem result =
+        new RadioMenuItem(setMnemonic ? "_" : "" + new DecimalFormat("00.##").format(scale * 100) + "%");
+    result.setOnAction(e -> {
+      uiContext.setUnitScaleFactor(scale);
+      frame.getMapPanel().resetMap();
+    });
+    if (setMnemonic) {
+      result.setMnemonicParsing(true);
     }
-    final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_S);
-    unitSizeMenu.setText("Unit Size");
-    final ButtonGroup unitSizeGroup = new ButtonGroup();
-    final JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
-    final JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
-    radioItem100.setMnemonic(KeyEvent.VK_1);
-    final JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
-    final JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
-    radioItem83.setMnemonic(KeyEvent.VK_8);
-    final JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
-    radioItem75.setMnemonic(KeyEvent.VK_7);
-    final JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
-    radioItem66.setMnemonic(KeyEvent.VK_6);
-    final JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
-    final JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
-    radioItem50.setMnemonic(KeyEvent.VK_5);
-    unitSizeGroup.add(radioItem125);
-    unitSizeGroup.add(radioItem100);
-    unitSizeGroup.add(radioItem87);
-    unitSizeGroup.add(radioItem83);
-    unitSizeGroup.add(radioItem75);
-    unitSizeGroup.add(radioItem66);
-    unitSizeGroup.add(radioItem56);
-    unitSizeGroup.add(radioItem50);
-    radioItem100.setSelected(true);
-    // select the closest to to the default size
-    final Enumeration<AbstractButton> enum1 = unitSizeGroup.getElements();
-    boolean matchFound = false;
-    while (enum1.hasMoreElements()) {
-      final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
-      final UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-      if (Math.abs(action.scaleFactor - uiContext.getUnitImageFactory().getScaleFactor()) < 0.01) {
-        menuItem.setSelected(true);
-        matchFound = true;
-        break;
-      }
+    result.setToggleGroup(group);
+    if (Math.abs(scale - uiContext.getUnitImageFactory().getScaleFactor()) < 0.01) {
+      result.setSelected(true);
     }
-    if (!matchFound) {
+    return result;
+  }
+
+  private void addUnitSizeMenu(final Menu menuView) {
+    final Menu unitSizeMenu = new Menu("Unit _Size");
+    final ToggleGroup unitSizeGroup = new ToggleGroup();
+    final RadioMenuItem radioItem125 = getScaleRadioButton(1.25, unitSizeGroup, false);
+    final RadioMenuItem radioItem100 = getScaleRadioButton(1.0, unitSizeGroup, true);
+    final RadioMenuItem radioItem87 = getScaleRadioButton(0.875, unitSizeGroup, false);
+    final RadioMenuItem radioItem83 = getScaleRadioButton(0.8333, unitSizeGroup, true);
+    final RadioMenuItem radioItem75 = getScaleRadioButton(0.75, unitSizeGroup, true);
+    final RadioMenuItem radioItem66 = getScaleRadioButton(0.6666, unitSizeGroup, true);
+    final RadioMenuItem radioItem56 = getScaleRadioButton(0.5625, unitSizeGroup, false);
+    final RadioMenuItem radioItem50 = getScaleRadioButton(0.5, unitSizeGroup, true);
+    if (unitSizeGroup.getSelectedToggle() == null) {
       System.err.println("default unit size does not match any menu item");
+      radioItem100.setSelected(true);
     }
-    unitSizeMenu.add(radioItem125);
-    unitSizeMenu.add(radioItem100);
-    unitSizeMenu.add(radioItem87);
-    unitSizeMenu.add(radioItem83);
-    unitSizeMenu.add(radioItem75);
-    unitSizeMenu.add(radioItem66);
-    unitSizeMenu.add(radioItem56);
-    unitSizeMenu.add(radioItem50);
-    parentMenu.add(unitSizeMenu);
+    unitSizeMenu.getItems().add(radioItem125);
+    unitSizeMenu.getItems().add(radioItem100);
+    unitSizeMenu.getItems().add(radioItem87);
+    unitSizeMenu.getItems().add(radioItem83);
+    unitSizeMenu.getItems().add(radioItem75);
+    unitSizeMenu.getItems().add(radioItem66);
+    unitSizeMenu.getItems().add(radioItem56);
+    unitSizeMenu.getItems().add(radioItem50);
+    menuView.getItems().add(unitSizeMenu);
   }
 
-  private void addMapSkinsMenu(final JMenu menuGame) {
+  private void addMapSkinsMenu(final Menu menuGame) {
     // beagles Mapskin code
     // creates a sub menu of radiobuttons for each available mapdir
-    JMenuItem mapMenuItem;
-    final JMenu mapSubMenu = new JMenu("Map Skins");
-    mapSubMenu.setMnemonic(KeyEvent.VK_K);
-    final ButtonGroup mapButtonGroup = new ButtonGroup();
-    menuGame.add(mapSubMenu);
+    RadioMenuItem mapMenuItem;
+    final Menu mapSubMenu = new Menu("Map S_kins");
+    mapSubMenu.setMnemonicParsing(true);
+    final ToggleGroup mapButtonGroup = new ToggleGroup();
+    menuGame.getItems().add(mapSubMenu);
     final Map<String, String> skins = AbstractUIContext.getSkins(frame.getGame().getData());
     for (final String key : skins.keySet()) {
-      mapMenuItem = new JRadioButtonMenuItem(key);
+      mapMenuItem = new RadioMenuItem(key);
       // menu key navigation with ALT+first character (multiple hits for same character possible)
       // mapMenuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
-      mapButtonGroup.add(mapMenuItem);
-      mapSubMenu.add(mapMenuItem);
-      mapSubMenu.setEnabled(skins.size() > 1);
+      mapMenuItem.setToggleGroup(mapButtonGroup);
+      mapSubMenu.getItems().add(mapMenuItem);
+      mapSubMenu.setDisable(skins.size() <= 1);
       if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
-      mapMenuItem.addActionListener(e -> {
+      mapMenuItem.setOnAction(e -> {
         try {
           frame.updateMap(skins.get(key));
           if (uiContext.getMapData().getHasRelief()) {
             showMapDetails.setSelected(true);
           }
-          showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
+          showMapDetails.setDisable(!uiContext.getMapData().getHasRelief());
         } catch (final Exception exception) {
           ClientLogger.logError("Error Changing Map Skin2", exception);
         }
@@ -304,131 +232,114 @@ public class ViewMenu {
     }
   }
 
-  private void addShowMapDetails(final JMenu menuGame) {
-    showMapDetails = new JCheckBoxMenuItem("Show Map Details");
-    showMapDetails.setMnemonic(KeyEvent.VK_D);
+  private void addShowMapDetails(final Menu menuGame) {
+    showMapDetails = new CheckMenuItem("Show Map _Details");
+    showMapDetails.setMnemonicParsing(true);
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
-    showMapDetails.addActionListener(e -> {
+    showMapDetails.setOnAction(e -> {
       if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
         return;
       }
       TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-      final Thread t = new Thread("Triplea : Show map details thread") {
-        @Override
-        public void run() {
-          yield();
-          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-        }
-      };
-      t.start();
+      new Thread(() -> {
+        Thread.yield();
+        frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
+      }, "Triplea : Show map details thread").start();
     });
-    menuGame.add(showMapDetails);
+    menuGame.getItems().add(showMapDetails);
   }
 
-  private void addShowMapBlends(final JMenu menuGame) {
-    showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
-    showMapBlends.setMnemonic(KeyEvent.VK_B);
-    if (uiContext.getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected()) {
-      showMapBlends.setEnabled(true);
+  private void addShowMapBlends(final Menu menuGame) {
+    showMapBlends = new CheckMenuItem("Show Map _Blends");
+    showMapBlends.setMnemonicParsing(true);
+    if (uiContext.getMapData().getHasRelief() && !showMapDetails.isDisable() && showMapDetails.isSelected()) {
+      showMapBlends.setDisable(false);
       showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
     } else {
       showMapBlends.setSelected(false);
-      showMapBlends.setEnabled(false);
+      showMapBlends.setDisable(true);
     }
-    showMapBlends.addActionListener(e -> {
+    showMapBlends.setOnAction(e -> {
       if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
         return;
       }
       TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
       TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
       TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-      final Thread t = new Thread("Triplea : Show map Blends thread") {
-        @Override
-        public void run() {
-          frame.setScale(uiContext.getScale() * 100);
-          yield();
-          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-        }
-      };
-      t.start();
+      new Thread(() -> {
+        frame.setScale(uiContext.getScale() * 100);
+        Thread.yield();
+        frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
+      }, "Triplea : Show map Blends thread").start();
     });
-    menuGame.add(showMapBlends);
+    menuGame.getItems().add(showMapBlends);
   }
 
-  private void addShowUnits(final JMenu parentMenu) {
-    final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
-    showUnitsBox.setMnemonic(KeyEvent.VK_U);
+  private void addShowUnits(final Menu menuView) {
+    final CheckMenuItem showUnitsBox = new CheckMenuItem("Show _Units");
+    showUnitsBox.setMnemonicParsing(true);
     showUnitsBox.setSelected(true);
-    showUnitsBox.addActionListener(e -> {
+    showUnitsBox.setOnAction(e -> {
       final boolean tfselected = showUnitsBox.isSelected();
       uiContext.setShowUnits(tfselected);
       frame.getMapPanel().resetMap();
     });
-    parentMenu.add(showUnitsBox);
+    menuView.getItems().add(showUnitsBox);
   }
 
-  private void addDrawTerritoryBordersAgain(final JMenu parentMenu) {
-    final JMenu drawBordersMenu = new JMenu();
-    drawBordersMenu.setMnemonic(KeyEvent.VK_O);
-    drawBordersMenu.setText("Draw Borders On Top");
-    final JRadioButton noneButton = new JRadioButton("Low");
-    noneButton.setMnemonic(KeyEvent.VK_L);
-    final JRadioButton mediumButton = new JRadioButton("Medium");
-    mediumButton.setMnemonic(KeyEvent.VK_M);
-    final JRadioButton highButton = new JRadioButton("High");
-    highButton.setMnemonic(KeyEvent.VK_H);
-    final ButtonGroup group = new ButtonGroup();
-    group.add(noneButton);
-    group.add(mediumButton);
-    group.add(highButton);
-    drawBordersMenu.addMenuListener(new MenuListener() {
-      @Override
-      public void menuSelected(final MenuEvent e) {
-        final IDrawable.OptionalExtraBorderLevel current = uiContext.getDrawTerritoryBordersAgain();
-        if (current == IDrawable.OptionalExtraBorderLevel.LOW) {
-          noneButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.MEDIUM) {
-          mediumButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.HIGH) {
-          highButton.setSelected(true);
-        }
+  private void addDrawTerritoryBordersAgain(final Menu parentMenu) {
+    final Menu drawBordersMenu = new Menu("Draw Borders _On Top");
+    final RadioMenuItem noneButton = new RadioMenuItem("_Low");
+    noneButton.setMnemonicParsing(true);
+    final RadioMenuItem mediumButton = new RadioMenuItem("_Medium");
+    mediumButton.setMnemonicParsing(true);
+    final RadioMenuItem highButton = new RadioMenuItem("_High");
+    highButton.setMnemonicParsing(true);
+    final ToggleGroup group = new ToggleGroup();
+    noneButton.setToggleGroup(group);
+    mediumButton.setToggleGroup(group);
+    highButton.setToggleGroup(group);
+    drawBordersMenu.setOnShowing(e -> {
+      final IDrawable.OptionalExtraBorderLevel current = uiContext.getDrawTerritoryBordersAgain();
+      if (current == IDrawable.OptionalExtraBorderLevel.LOW) {
+        noneButton.setSelected(true);
+      } else if (current == IDrawable.OptionalExtraBorderLevel.MEDIUM) {
+        mediumButton.setSelected(true);
+      } else if (current == IDrawable.OptionalExtraBorderLevel.HIGH) {
+        highButton.setSelected(true);
       }
-
-      @Override
-      public void menuDeselected(final MenuEvent e) {}
-
-      @Override
-      public void menuCanceled(final MenuEvent e) {}
     });
-    noneButton.addActionListener(e -> {
+    noneButton.setOnAction(e -> {
       if (noneButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
         frame.getMapPanel().resetMap();
       }
     });
-    mediumButton.addActionListener(e -> {
+    mediumButton.setOnAction(e -> {
       if (mediumButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
         frame.getMapPanel().resetMap();
       }
     });
-    highButton.addActionListener(e -> {
+    highButton.setOnAction(e -> {
       if (highButton.isSelected()
           && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
         frame.getMapPanel().resetMap();
       }
     });
-    drawBordersMenu.add(noneButton);
-    drawBordersMenu.add(mediumButton);
-    drawBordersMenu.add(highButton);
-    parentMenu.add(drawBordersMenu);
+    drawBordersMenu.getItems().add(noneButton);
+    drawBordersMenu.getItems().add(mediumButton);
+    drawBordersMenu.getItems().add(highButton);
+    parentMenu.getItems().add(drawBordersMenu);
   }
 
-  private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
+  private void addMapFontAndColorEditorMenu(final Menu parentMenu) {
+    MenuItem mapFontOptions = new MenuItem("Edit Map Font and _Color");
+    mapFontOptions.setMnemonicParsing(true);
+    mapFontOptions.setOnAction(e -> {// TODO change to javafx
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
@@ -456,54 +367,52 @@ public class ViewMenu {
               + "<br />you are using. If you have an error come up, try switching to the "
               + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
           BorderLayout.NORTH);
-      final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
-      final int result = JOptionPane.showOptionDialog(frame, ui, "Edit Map Font and Color",
-          JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
-      if (result == 2) {
-      } else if (result == 1) {
-        MapImage.resetPropertyMapFont();
-        MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
-        MapImage.resetPropertyUnitCountColor();
-        MapImage.resetPropertyUnitFactoryDamageColor();
-        MapImage.resetPropertyUnitHitDamageColor();
-        frame.getMapPanel().resetMap();
-      } else if (result == 0) {
-        MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
-        MapImage.setPropertyTerritoryNameAndPUAndCommentcolor((Color) territoryNameColor.getValue());
-        MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
-        MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
-        MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
-        frame.getMapPanel().resetMap();
+      Optional<ButtonType> chosenOption =
+          new Alert(AlertType.CONFIRMATION, "Edit Map Font and Color", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL)
+              .showAndWait();
+      if (chosenOption.isPresent() && chosenOption.get() != ButtonType.CANCEL) {
+        if (chosenOption.get() == ButtonType.NO) {
+          MapImage.resetPropertyMapFont();
+          MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
+          MapImage.resetPropertyUnitCountColor();
+          MapImage.resetPropertyUnitFactoryDamageColor();
+          MapImage.resetPropertyUnitHitDamageColor();
+          frame.getMapPanel().resetMap();
+        } else if (chosenOption.get() == ButtonType.YES) {
+          MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
+          MapImage.setPropertyTerritoryNameAndPUAndCommentcolor((Color) territoryNameColor.getValue());
+          MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
+          MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
+          MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
+          frame.getMapPanel().resetMap();
+        }
       }
-
     });
-    parentMenu.add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+    parentMenu.getItems().add(mapFontOptions);
   }
 
-  private void addShowTerritoryEffects(final JMenu parentMenu) {
-    final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
-    territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
-    territoryEffectsBox.addActionListener(e -> {
+  private void addShowTerritoryEffects(final Menu parentMenu) {
+    final CheckMenuItem territoryEffectsBox = new CheckMenuItem("Show _TerritoryEffects");
+    territoryEffectsBox.setMnemonicParsing(true);
+    territoryEffectsBox.setOnAction(e -> {
       final boolean tfselected = territoryEffectsBox.isSelected();
       uiContext.setShowTerritoryEffects(tfselected);
       frame.getMapPanel().resetMap();
     });
-    parentMenu.add(territoryEffectsBox);
+    parentMenu.getItems().add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
   }
 
-  private void addLockMap(final JMenu parentMenu) {
-    final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
-    lockMapBox.setMnemonic(KeyEvent.VK_M);
+  private void addLockMap(final Menu menuView) {
+    final CheckMenuItem lockMapBox = new CheckMenuItem("Lock _Map");
+    lockMapBox.setMnemonicParsing(true);
     lockMapBox.setSelected(uiContext.getLockMap());
-    lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
-    parentMenu.add(lockMapBox);
+    lockMapBox.setOnAction(e -> uiContext.setLockMap(lockMapBox.isSelected()));
+    menuView.getItems().add(lockMapBox);
   }
 
-  private void addUnitNationDrawMenu(final JMenu parentMenu) {
-    final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_N);
-    unitSizeMenu.setText("Flag Display Mode");
+  private void addUnitNationDrawMenu(final Menu menuView) {
+    final Menu unitSizeMenu = new Menu("Flag Display Mode");// TODO add Mnemonic
 
     final Preferences prefs = Preferences.userNodeForPackage(getClass());
     final UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
@@ -512,47 +421,51 @@ public class ViewMenu {
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
-    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show Unit Flags");
+    final CheckMenuItem toggleFlags = new CheckMenuItem("Show _Unit Flags");
+    toggleFlags.setMnemonicParsing(true);
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
-    toggleFlags.addActionListener(e -> {
+    toggleFlags.setOnAction(e -> {
       UnitsDrawer.enabledFlags = toggleFlags.isSelected();
       prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
       frame.getMapPanel().resetMap();
     });
-    unitSizeMenu.add(toggleFlags);
+    unitSizeMenu.getItems().add(toggleFlags);
 
-    final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup,
+    final ToggleGroup unitFlagSettingGroup = new ToggleGroup();
+    unitSizeMenu.getItems().add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup,
         UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup,
+    unitSizeMenu.getItems().add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup,
         UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
-    parentMenu.add(unitSizeMenu);
+    menuView.getItems().add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
+  private RadioMenuItem createFlagDrawModeRadionButtonItem(final String text, final ToggleGroup group,
       final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
       final Preferences prefs) {
-    return createRadioButtonItem(text, group, SwingAction.of(e -> {
+    return createRadioButtonItem(text, group, e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
-    }), setting.equals(drawMode));
+    }, setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group, final Action action,
+  private RadioMenuItem createRadioButtonItem(final String text, final ToggleGroup group,
+      final EventHandler<ActionEvent> action,
       final boolean selected) {
-    final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
-    buttonItem.addActionListener(action);
+
+    final RadioMenuItem buttonItem = new RadioMenuItem(text);
+    buttonItem.setOnAction(action);
+    ;
     buttonItem.setSelected(selected);
-    group.add(buttonItem);
+    buttonItem.setToggleGroup(group);
     return buttonItem;
   }
 
-  private void addChatTimeMenu(final JMenu parentMenu) {
-    final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
+  private void addChatTimeMenu(final Menu parentMenu) {
+    final CheckMenuItem chatTimeBox = new CheckMenuItem("Show Chat _Times");
+    chatTimeBox.setMnemonicParsing(true);
+    chatTimeBox.setOnAction(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
-    parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
+    parentMenu.getItems().add(chatTimeBox);
+    chatTimeBox.setDisable(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
   }
 }

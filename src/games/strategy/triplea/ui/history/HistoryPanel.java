@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,14 +32,20 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.IUIContext;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 
 /**
  * Shows the history as a tree.
  */
-public class HistoryPanel extends JPanel {
-  private static final long serialVersionUID = -8353246449552215276L;
+public class HistoryPanel extends BorderPane {
   private final GameData m_data;
-  private final JTree m_tree;
+  private final TreeView<String> m_tree;
   private final IHistoryDetailsPanel m_details;
   private HistoryNode m_currentPopupNode;
   private final JPopupMenu m_popup;
@@ -52,36 +57,16 @@ public class HistoryPanel extends JPanel {
     // m_uiContext = uiContext;
     m_mouseOverPanel = false;
     m_mouseWasOverPanel = false;
-    final MouseListener mouseFocusListener = new MouseListener() {
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
-
-      @Override
-      public void mousePressed(final MouseEvent e) {}
-
-      @Override
-      public void mouseClicked(final MouseEvent e) {}
-
-      @Override
-      public void mouseExited(final MouseEvent e) {
-        m_mouseOverPanel = false;
-      }
-
-      @Override
-      public void mouseEntered(final MouseEvent e) {
-        m_mouseOverPanel = true;
-      }
-    };
-    addMouseListener(mouseFocusListener);
+    addEventHandler(MouseEvent.MOUSE_ENTERED, e -> m_mouseOverPanel = true);
+    addEventHandler(MouseEvent.MOUSE_EXITED, e -> m_mouseOverPanel = false);
     m_data = data;
     m_details = details;
-    setLayout(new BorderLayout());
     if (!m_data.areChangesOnlyInSwingEventThread()) {
       throw new IllegalStateException();
     }
-    m_tree = new JTree(m_data.getHistory());
+    m_tree = new TreeView<>();// m_data.getHistory()
     m_data.getHistory().setTreePanel(this);
-    m_tree.expandRow(0);
+    m_tree.getTreeItem(0).setExpanded(true);
     m_popup = popup;
     m_tree.add(m_popup);
     m_popup.addPopupMenuListener(new PopupMenuListener() {
@@ -101,16 +86,16 @@ public class HistoryPanel extends JPanel {
     renderer.setClosedIcon(null);
     renderer.setOpenIcon(null);
     renderer.setBackgroundNonSelectionColor(getBackground());
-    m_tree.setCellRenderer(renderer);
+    m_tree.setCellFactory(renderer);
     m_tree.setBackground(getBackground());
-    final JScrollPane scroll = new JScrollPane(m_tree);
+    final ScrollPane scroll = new ScrollPane(m_tree);
     scroll.addMouseListener(mouseFocusListener);
     for (final Component comp : scroll.getComponents()) {
       comp.addMouseListener(mouseFocusListener);
     }
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
-    add(scroll, BorderLayout.CENTER);
+    setCenter(scroll);
     m_tree.setEditable(false);
     final HistoryNode node = m_data.getHistory().getLastNode();
     m_data.getHistory().gotoNode(node);
@@ -399,35 +384,41 @@ public class HistoryPanel extends JPanel {
 }
 
 
-class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
-  private static final long serialVersionUID = -72258573320689596L;
+class HistoryTreeCellRenderer implements Callback<TreeView<String>, TreeCell<String>> {
+  @SuppressWarnings("unused")
   private final ImageIcon icon = new ImageIcon();
+  @SuppressWarnings("unused")
   private final IUIContext m_uiContext;
 
   public HistoryTreeCellRenderer(final IUIContext uiContext) {
     m_uiContext = uiContext;
   }
 
+  // @Override
+  // public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
+  // final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
+  // }
+
   @Override
-  public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
-      final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
-    if (value instanceof Step) {
-      final PlayerID player = ((Step) value).getPlayerID();
-      if (player != null) {
-        if (m_uiContext != null) {
-          super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
-          icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
-          setIcon(icon);
-        } else {
-          final String text = value.toString() + " (" + player.getName() + ")";
-          super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
-        }
-      } else {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
-      }
-    } else {
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
-    }
-    return this;
+  public TreeCell<String> call(TreeView<String> param) {
+    // if (value instanceof Step) {
+    // final PlayerID player = ((Step) value).getPlayerID();
+    // if (player != null) {
+    // if (m_uiContext != null) {
+    // super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+    // icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
+    // setIcon(icon);
+    // } else {
+    // final String text = value.toString() + " (" + player.getName() + ")";
+    // super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
+    // }
+    // } else {
+    // super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+    // }
+    // } else {
+    // super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+    // }
+    // return this;TODO
+    return null;
   }
 }

@@ -24,9 +24,9 @@ import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import javafx.scene.layout.GridPane;
 
-public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel {
-  private static final long serialVersionUID = 5092004144144006960L;
+public class HistoryDetailsPanel extends GridPane implements IHistoryDetailsPanel {
   private final GameData m_data;
   private final JTextArea m_title = new JTextArea();
   private final JScrollPane m_scroll = new JScrollPane(m_title);
@@ -34,7 +34,6 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
 
   public HistoryDetailsPanel(final GameData data, final MapPanel mapPanel) {
     m_data = data;
-    setLayout(new GridBagLayout());
     m_title.setWrapStyleWord(true);
     m_title.setBackground(this.getBackground());
     m_title.setLineWrap(true);

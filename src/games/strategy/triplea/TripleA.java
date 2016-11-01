@@ -38,6 +38,9 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 @MapSupport
 public class TripleA implements IGameLoader {

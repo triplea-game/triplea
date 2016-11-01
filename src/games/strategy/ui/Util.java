@@ -15,7 +15,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -85,10 +84,6 @@ public final class Util {
     } else {
       return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
     }
-  }
-
-  public static Dimension getDimension(final Image anImage, final ImageObserver obs) {
-    return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
   }
 
   public static void center(final Window w) {
@@ -195,5 +190,9 @@ public final class Util {
    */
   public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
     return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX) || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
+  }
+
+  public static Dimension getDimension(BufferedImage anImage) {
+    return new Dimension(anImage.getWidth(), anImage.getHeight());
   }
 }

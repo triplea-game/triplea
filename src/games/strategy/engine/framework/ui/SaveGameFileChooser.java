@@ -2,20 +2,20 @@ package games.strategy.engine.framework.ui;
 
 import java.io.File;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Window;
 
-public class SaveGameFileChooser extends JFileChooser {
-  private static final long serialVersionUID = 1548668790891292106L;
+public class SaveGameFileChooser {
   private static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
   private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
   private static SaveGameFileChooser s_instance;
+  private FileChooser fileChooser;
 
   public enum AUTOSAVE_TYPE {
     AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
@@ -74,9 +74,10 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public SaveGameFileChooser() {
     super();
-    setFileFilter(m_gameDataFileFilter);
+    fileChooser = new FileChooser();
+    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Saved Games", "*.tsvg", "*.svg", "*.tsvg.gz"));
     ensureMapsFolderExists();
-    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
+    fileChooser.setInitialDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
 
   public static void ensureMapsFolderExists() {
@@ -92,20 +93,7 @@ public class SaveGameFileChooser extends JFileChooser {
     }
   }
 
-  FileFilter m_gameDataFileFilter = new FileFilter() {
-    @Override
-    public boolean accept(final File f) {
-      if (f.isDirectory()) {
-        return true;
-      }
-      // the extension should be .tsvg, but find svg extensions as well
-      // also, macs download the file as tsvg.gz, so accept that as well
-      return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg") || f.getName().endsWith("tsvg.gz");
-    }
-
-    @Override
-    public String getDescription() {
-      return "Saved Games, *.tsvg";
-    }
-  };
+  public static File getSelectedFile(Window ownerWindow) {
+    return getInstance().fileChooser.showSaveDialog(ownerWindow);
+  }
 }

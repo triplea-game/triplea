@@ -1,8 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,11 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
 
-import javax.swing.JFileChooser;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -52,18 +45,18 @@ import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Triple;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.stage.Window;
 
-public class TripleAMenuBar extends JMenuBar {
-  private static final long serialVersionUID = -1447295944297939539L;
+public class TripleAMenuBar extends MenuBar {
   protected final TripleAFrame frame;
 
   public TripleAMenuBar(final TripleAFrame frame) {
@@ -82,80 +75,27 @@ public class TripleAMenuBar extends JMenuBar {
     }
     new WebHelpMenu(this);
     new DebugMenu(this, frame);
-    new HelpMenu(this, frame.getUIContext(), frame.getGame().getData(), getBackground());
+    new HelpMenu(this, frame.getUIContext(), frame.getGame().getData());
   }
 
-  private void createLobbyMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
-    final JMenu lobby = new JMenu("Lobby");
-    lobby.setMnemonic(KeyEvent.VK_L);
-    menuBar.add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, frame));
-    lobby.add(new RemoveGameFromLobbyAction(watcher));
+  private void createLobbyMenu(final MenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
+    final Menu lobby = new Menu("_Lobby");
+    menuBar.getMenus().add(lobby);
+    lobby.getItems().add(new EditGameCommentAction(watcher));
+    lobby.getItems().add(new RemoveGameFromLobbyAction(watcher));
   }
 
 
-  public static File getSaveGameLocationDialog(final Frame frame) {
+  public static File getSaveGameLocationDialog(Window ownerWindow) {
 
-    // For some strange reason,
-    // the only way to get a Mac OS X native-style file dialog
-    // is to use an AWT FileDialog instead of a Swing JDialog
-    if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = new FileDialog(frame);
-      fileDialog.setMode(FileDialog.SAVE);
-
-
-      fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
-      fileDialog.setFilenameFilter((dir, name) -> { // the extension should be .tsvg, but find svg
-                                                    // extensions as well
-        return name.endsWith(".tsvg") || name.endsWith(".svg");
-      });
-      fileDialog.setVisible(true);
-      String fileName = fileDialog.getFile();
-      final String dirName = fileDialog.getDirectory();
-      if (fileName == null) {
-        return null;
-      } else {
-        if (!fileName.endsWith(".tsvg")) {
-          fileName += ".tsvg";
-        }
-        // If the user selects a filename that already exists,
-        // the AWT Dialog on Mac OS X will ask the user for confirmation
-        final File f = new File(dirName, fileName);
-        return f;
-      }
+    File f = SaveGameFileChooser.getSelectedFile(ownerWindow);
+    if (f == null) {
+      return null;
     }
-    // Non-Mac platforms should use the normal Swing JFileChooser
-    else {
-      final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int rVal = fileChooser.showSaveDialog(frame);
-      if (rVal != JFileChooser.APPROVE_OPTION) {
-        return null;
-      }
-      File f = fileChooser.getSelectedFile();
-      // disallow sub directories to be entered (in the form directory/name) for Windows boxes
-      if (SystemProperties.isWindows()) {
-        final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
-        final String filePath = f.getPath().substring(0, slashIndex);
-        if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
-          JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.",
-              "Cancel?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-          return null;
-        }
-      }
-      if (!f.getName().toLowerCase().endsWith(".tsvg")) {
-        f = new File(f.getParent(), f.getName() + ".tsvg");
-      }
-      // A small warning so users will not over-write a file
-      if (f.exists()) {
-        final int choice =
-            JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
-                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return null;
-        }
-      }
-      return f;
+    if (!f.getName().toLowerCase().endsWith(".tsvg")) {
+      f = new File(f.getParent(), f.getName() + ".tsvg");
     }
+    return f;
   }
 
   public static List<String> getLookAndFeelAvailableList() {

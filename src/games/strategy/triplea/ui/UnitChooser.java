@@ -1,11 +1,7 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,12 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
@@ -30,18 +20,31 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.VPos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 
-public class UnitChooser extends JPanel {
-  private static final long serialVersionUID = -4667032237550267682L;
+public class UnitChooser extends GridPane {
   private final List<ChooserEntry> m_entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> m_dependents;
-  private JTextArea m_title;
+  private TextArea m_title;
   private int m_total = -1;
-  private final JLabel m_leftToSelect = new JLabel();
+  private final Label m_leftToSelect = new Label();
   private final GameData m_data;
   private boolean m_allowMultipleHits = false;
-  private JButton m_autoSelectButton;
-  private JButton m_selectNoneButton;
+  private Button m_autoSelectButton;
+  private Button m_selectNoneButton;
   private final IUIContext m_uiContext;
   private final Match<Collection<Unit>> m_match;
 
@@ -199,31 +202,43 @@ public class UnitChooser extends JPanel {
   }
 
   private void layoutEntries() {
-    this.setLayout(new GridBagLayout());
-    m_title = new JTextArea("Choose units");
+    m_title = new TextArea("Choose units");
     m_title.setBackground(this.getBackground());
     m_title.setEditable(false);
-    m_title.setWrapStyleWord(true);
-    final Insets nullInsets = new Insets(0, 0, 0, 0);
-    final Dimension buttonSize = new Dimension(80, 20);
-    m_selectNoneButton = new JButton("None");
-    m_selectNoneButton.setPreferredSize(buttonSize);
-    m_autoSelectButton = new JButton("All");
-    m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(e -> selectNone());
-    m_autoSelectButton.addActionListener(e -> autoSelect());
+    m_title.setWrapText(true);
+    int buttonWidth = 80;
+    int buttonHeight = 20;
+    m_selectNoneButton = new Button("None");
+    m_selectNoneButton.setPrefSize(buttonWidth, buttonHeight);
+    m_autoSelectButton = new Button("All");
+    m_autoSelectButton.setPrefSize(buttonWidth, buttonHeight);
+    add(m_title, 0, 0, 7, 1);
+    ColumnConstraints cc1 = new ColumnConstraints();
+    cc1.setPercentWidth(0);
+    RowConstraints rc1 = new RowConstraints();
+    rc1.setPercentHeight(0.5);
+    getRowConstraints().add(rc1);
+    getColumnConstraints().add(cc1);
+    setValignment(m_title, VPos.CENTER);
+    setHalignment(m_title, HPos.RIGHT);
+    setFillHeight(m_title, false);
+    m_selectNoneButton.setOnAction(e -> selectNone());
+    m_autoSelectButton.setOnAction(e -> autoSelect());
     int yIndex = 1;
     for (final ChooserEntry entry : m_entries) {
       entry.createComponents(this, yIndex);
       yIndex++;
     }
-    add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, nullInsets, 0, 0));
+    add(m_autoSelectButton, 0, yIndex, 7, 1);
+    setValignment(m_autoSelectButton, VPos.CENTER);
+    setHalignment(m_autoSelectButton, HPos.RIGHT);
+    setFillHeight(m_autoSelectButton, false);
+    setFillWidth(m_autoSelectButton, false);
     yIndex++;
-    add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(m_leftToSelect, 0, yIndex, 5, 2);
+    setValignment(m_leftToSelect, VPos.CENTER);
+    setHalignment(m_leftToSelect, HPos.LEFT);
+    setFillHeight(m_leftToSelect, false);
     if (m_match != null) {
       m_autoSelectButton.setVisible(false);
       m_selectNoneButton.setVisible(false);
@@ -338,9 +353,8 @@ class ChooserEntry {
   private final boolean m_hasMultipleHits;
   private final List<Integer> m_defaultHits;
   private final List<ScrollableTextField> m_hitTexts;
-  private final List<JLabel> m_hitLabel = new ArrayList<>();
+  private final List<Label> m_hitLabel = new ArrayList<>();
   private int m_leftToSelect = 0;
-  private static Insets nullInsets = new Insets(0, 0, 0, 0);
   private final IUIContext m_uiContext;
 
   ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
@@ -364,7 +378,7 @@ class ChooserEntry {
     m_uiContext = uiContext;
   }
 
-  public void createComponents(final JPanel panel, final int yIndex) {
+  public void createComponents(final GridPane panel, final int yIndex) {
     int gridx = 0;
     for (int i =
         0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++) {
@@ -372,25 +386,48 @@ class ChooserEntry {
       m_hitTexts.add(scroll);
       scroll.setValue(m_defaultHits.get(i));
       scroll.addChangeListener(m_hitTextFieldListener);
-      final JLabel label = new JLabel("x" + m_category.getUnits().size());
+      final Label label = new Label("x" + m_category.getUnits().size());
       m_hitLabel.add(label);
-      panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
+      UnitChooserEntryIcon icon = new UnitChooserEntryIcon(i > 0, m_uiContext);
+      panel.add(icon, gridx++, yIndex, 1, 1);
+      ColumnConstraints cc1 = new ColumnConstraints();
+      cc1.setPercentWidth(0);
+      RowConstraints rc1 = new RowConstraints();
+      rc1.setPercentHeight(0);
+      panel.getRowConstraints().add(rc1);
+      panel.getColumnConstraints().add(cc1);
+      GridPane.setValignment(icon, VPos.CENTER);
+      GridPane.setHalignment(icon, HPos.LEFT);
+      GridPane.setFillHeight(icon, false);
+      GridPane.setMargin(icon, new Insets(0, (i == 0 ? 0 : 8), 0, 0));
       if (i == 0) {
         if (m_category.getMovement() != -1) {
-          panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0,
-              GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
+          Label movementLabel = new Label("mvt " + m_category.getMovement());
+          panel.add(movementLabel, gridx, yIndex);
+          GridPane.setValignment(movementLabel, VPos.CENTER);
+          GridPane.setHalignment(movementLabel, HPos.LEFT);
+          GridPane.setFillHeight(movementLabel, false);
+          GridPane.setMargin(icon, new Insets(0, 4, 0, 4));
         }
         if (m_category.getTransportCost() != -1) {
-          panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(gridx, yIndex, 1, 1, 0,
-              0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
+          Label costLabel = new Label("cst " + m_category.getTransportCost());
+          panel.add(costLabel, gridx, yIndex);
+          GridPane.setValignment(costLabel, VPos.CENTER);
+          GridPane.setHalignment(costLabel, HPos.LEFT);
+          GridPane.setFillHeight(costLabel, false);
+          GridPane.setMargin(icon, new Insets(0, 4, 0, 4));
         }
         gridx++;
       }
-      panel.add(label, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-      panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
+      panel.add(label, gridx++, yIndex);
+      GridPane.setValignment(label, VPos.CENTER);
+      GridPane.setHalignment(label, HPos.LEFT);
+      GridPane.setFillHeight(label, false);
+      panel.add(scroll, gridx++, yIndex);
+      GridPane.setValignment(scroll, VPos.CENTER);
+      GridPane.setHalignment(scroll, HPos.LEFT);
+      GridPane.setFillHeight(scroll, false);
+      GridPane.setMargin(scroll, new Insets(0, 4, 0, 0));
       scroll.addChangeListener(field -> updateLeftToSelect());
     }
     updateLeftToSelect();
@@ -483,24 +520,24 @@ class ChooserEntry {
     return m_hasMultipleHits;
   }
 
-  private class UnitChooserEntryIcon extends JComponent {
-    private static final long serialVersionUID = 591598594559651745L;
+  private class UnitChooserEntryIcon extends ImageView {
     private final boolean m_forceDamaged;
     private final IUIContext uiContext;
 
     UnitChooserEntryIcon(final boolean forceDamaged, final IUIContext uiContext) {
+      this.setImage(getCustomImage());
       m_forceDamaged = forceDamaged;
       this.uiContext = uiContext;
     }
 
-    @Override
-    public void paint(final Graphics g) {
-      super.paint(g);
+    public javafx.scene.image.Image getCustomImage() {
+      Canvas canvas = new Canvas();
+      GraphicsContext g = canvas.getGraphicsContext2D();
       final Optional<Image> image =
           uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
               m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
       if (image.isPresent()) {
-        g.drawImage(image.get(), 0, 0, this);
+        g.drawImage(SwingFXUtils.toFXImage((BufferedImage) image.get(), null), 0, 0);
       }
 
       final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
@@ -511,40 +548,13 @@ class ChooserEntry {
         final Optional<Image> unitImg =
             uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
         if (unitImg.isPresent()) {
-          g.drawImage(unitImg.get(), x, 0, this);
+          g.drawImage(SwingFXUtils.toFXImage((BufferedImage) unitImg.get(), null), x, 0);
         }
         index++;
       }
-    }
-
-    @Override
-    public int getWidth() {
-      // we draw a unit symbol for each dependent
-      return uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
-    }
-
-    @Override
-    public int getHeight() {
-      return uiContext.getUnitImageFactory().getUnitImageHeight();
-    }
-
-    @Override
-    public Dimension getMaximumSize() {
-      return getDimension();
-    }
-
-    @Override
-    public Dimension getMinimumSize() {
-      return getDimension();
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-      return getDimension();
-    }
-
-    public Dimension getDimension() {
-      return new Dimension(getWidth(), getHeight());
+      WritableImage img = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+      canvas.snapshot(null, img);
+      return img;
     }
   }
 }

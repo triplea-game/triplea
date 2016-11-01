@@ -1,26 +1,12 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -31,13 +17,21 @@ import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.OverlayIcon;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 
 public class TerritoryDetailPanel extends AbstractStatPanel {
-  private static final long serialVersionUID = 1377022163587438988L;
   private final IUIContext m_uiContext;
-  private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
+  private final Button m_showOdds = new Button("Battle Calculator (Ctrl-B)");
   private Territory m_currentTerritory;
   private final TripleAFrame m_frame;
+  private final VBox content = new VBox();
 
   public static String getHoverText() {
     return "Hover over or drag and drop from a territory to list those units in this panel";
@@ -59,24 +53,12 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
 
   @Override
   protected void initLayout() {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setBorder(new EmptyBorder(5, 5, 0, 0));
-    final String show_battle_calc = "show_battle_calc";
-    final Action showBattleCalc = new AbstractAction(show_battle_calc) {
-      private static final long serialVersionUID = -1863748437390486994L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
+    getChildren().add(content);
+    content.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+      if (e.getCode() == KeyCode.B && (e.isMetaDown() || e.isControlDown())) {
         OddsCalculatorDialog.show(m_frame, m_currentTerritory);
       }
-    };
-    m_showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
-    final JComponent contentPane = (JComponent) m_frame.getContentPane();
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
-    contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
+    });
   }
 
   @Override
@@ -87,12 +69,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
 
   private void territoryChanged(final Territory territory) {
     m_currentTerritory = territory;
-    removeAll();
-    refresh();
+    content.getChildren().clear();
     if (territory == null) {
       return;
     }
-    add(m_showOdds);
+    content.getChildren().add(m_showOdds);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     String labelText;
     if (ta == null) {
@@ -100,7 +81,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     } else {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
-    add(new JLabel(labelText));
+    content.getChildren().add(new Label(labelText));
     Collection<Unit> unitsInTerritory;
     m_data.acquireReadLock();
     try {
@@ -108,18 +89,15 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     } finally {
       m_data.releaseReadLock();
     }
-    add(new JLabel("Units: " + unitsInTerritory.size()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
-    scroll.setBorder(BorderFactory.createEmptyBorder());
-    add(scroll);
-    refresh();
+    content.getChildren().add(new Label("Units: " + unitsInTerritory.size()));
+    final ScrollPane scroll = new ScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
+    content.getChildren().add(scroll);
   }
 
-  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext,
+  private static VBox unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext,
       final GameData data) {
-    final JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    final VBox panel = new VBox();
+    // panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));TODO CSS
     final Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
     final Iterator<UnitCategory> iter = units.iterator();
     PlayerID currentPlayer = null;
@@ -128,7 +106,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       final UnitCategory item = iter.next();
       if (item.getOwner() != currentPlayer) {
         currentPlayer = item.getOwner();
-        panel.add(Box.createVerticalStrut(15));
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
       final Optional<ImageIcon> unitIcon =
@@ -137,20 +114,17 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon
         final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+        @SuppressWarnings("unused")
         final Icon flaggedUnitIcon =
             new OverlayIcon(unitIcon.get(), flagIcon, unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
-        final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+        final Label label = new Label("x" + item.getUnits().size());
+        label.setGraphic(new ImageView(/* flaggedUnitIcon belongs here */));
         final String toolTipText =
             "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer) + "</html>";
-        label.setToolTipText(toolTipText);
-        panel.add(label);
+        label.setTooltip(new Tooltip(toolTipText));
+        panel.getChildren().add(label);
       }
     }
     return panel;
-  }
-
-  private void refresh() {
-    validate();
-    repaint();
   }
 }

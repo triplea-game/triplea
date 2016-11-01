@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +26,16 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import games.strategy.triplea.util.JFXUtils;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
@@ -36,39 +44,26 @@ public abstract class AbstractMovePanel extends ActionPanel {
   private static final int s_entryPadding = 15;
   private final TripleAFrame m_frame;
   private boolean m_listening = false;
-  private final JLabel m_actionLabel = new JLabel();
+  private final Label m_actionLabel = new Label();
   protected MoveDescription m_moveMessage;
   protected List<UndoableMove> m_undoableMoves;
-  protected AbstractAction m_doneMove = new AbstractAction("Done") {
-    private static final long serialVersionUID = -6497408896615920650L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
+  protected EventHandler<ActionEvent> m_doneMove = e -> {
       if (doneMoveAction()) {
         m_moveMessage = null;
         release();
       }
-    }
   };
-  private final Action m_DONE_MOVE_ACTION = new WeakAction("Done", m_doneMove);
-  private final Action m_cancelMove = new AbstractAction("Cancel") {
-    private static final long serialVersionUID = -257745862234175428L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
+  private final EventHandler<ActionEvent> m_DONE_MOVE_ACTION = new WeakAction("Done", m_doneMove);
+  private final EventHandler<ActionEvent> m_cancelMove = e -> {
       cancelMoveAction();
       if (m_frame != null) {
         m_frame.clearStatusMessage();
       }
-      this.setEnabled(false);
-      m_CANCEL_MOVE_ACTION.setEnabled(false);
-    }
   };
 
   public AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
-    m_CANCEL_MOVE_ACTION.setEnabled(false);
     m_undoableMoves = Collections.emptyList();
   }
 
@@ -82,7 +77,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
    */
   abstract protected void cancelMoveAction();
 
-  private final AbstractAction m_CANCEL_MOVE_ACTION = new WeakAction("Cancel", m_cancelMove);
+  private final EventHandler<ActionEvent> m_CANCEL_MOVE_ACTION = new WeakAction("Cancel", m_cancelMove);
   protected AbstractUndoableMovesPanel m_undoableMovesPanel;
   private IPlayerBridge m_bridge;
 
@@ -116,7 +111,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected final void enableCancelButton() {
-    m_CANCEL_MOVE_ACTION.setEnabled(true);
+    //TODO
   }
 
   /**
@@ -137,7 +132,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   public final void cancelMove() {
-    m_CANCEL_MOVE_ACTION.actionPerformed(null);
+    m_CANCEL_MOVE_ACTION.handle(null);
   }
 
   public final String undoMove(final int moveIndex) {
@@ -204,7 +199,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
-    m_CANCEL_MOVE_ACTION.actionPerformed(null);
+    m_CANCEL_MOVE_ACTION.handle(null);
     // undo the move
     final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
@@ -230,13 +225,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       m_listening = false;
       cleanUpSpecific();
       m_bridge = null;
-      m_CANCEL_MOVE_ACTION.setEnabled(false);
-      final JComponent rootPane = getRootPane();
-      if (rootPane != null) {
-        rootPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null);
-      }
-      removeAll();
-      REFRESH.run();
+      getChildren().clear();
     });
   }
 
@@ -248,24 +237,21 @@ public abstract class AbstractMovePanel extends ActionPanel {
   @Override
   public final void setActive(final boolean active) {
     super.setActive(active);
-    SwingUtilities.invokeLater(() -> m_CANCEL_MOVE_ACTION.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> m_CANCEL_MOVE_ACTION.handle(null));
   }
 
   protected final void display(final PlayerID id, final String actionLabel) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
+    Platform.runLater(() -> {
+      getChildren().clear();
       m_actionLabel.setText(id.getName() + actionLabel);
-      add(leftBox(m_actionLabel));
+      getChildren().add(leftBox(m_actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(m_CANCEL_MOVE_ACTION)));
+        getChildren().add(leftBox(JFXUtils.getButtonWithAction(m_CANCEL_MOVE_ACTION)));
       }
-      add(leftBox(new JButton(m_DONE_MOVE_ACTION)));
+      getChildren().add(leftBox(JFXUtils.getButtonWithAction(m_DONE_MOVE_ACTION)));
       addAdditionalButtons();
-      add(Box.createVerticalStrut(s_entryPadding));
-      add(m_undoableMovesPanel);
-      add(Box.createGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      getChildren().add(m_undoableMovesPanel);
     });
   }
 
@@ -273,10 +259,9 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   abstract protected boolean setCancelButton();
 
-  protected static JComponent leftBox(final JComponent c) {
-    final Box b = new Box(BoxLayout.X_AXIS);
-    b.add(c);
-    b.add(Box.createHorizontalGlue());
+  protected static HBox leftBox(final Node c) {
+    final HBox b = new HBox();
+    b.getChildren().add(c);
     return b;
   }
 

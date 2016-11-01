@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,15 +28,21 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import games.strategy.triplea.util.JFXUtils;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.
  */
 public class UserActionPanel extends ActionPanel {
   private static final long serialVersionUID = -2735582890226625860L;
-  private final JLabel m_actionLabel = new JLabel();
-  private JButton m_selectUserActionButton = null;
-  private JButton m_doneButton = null;
+  private final Label m_actionLabel = new Label();
+  private Button m_selectUserActionButton = null;
+  private Button m_doneButton = null;
   private UserActionAttachment m_choice = null;
   private final TripleAFrame m_parent;
   private boolean m_firstRun = true;
@@ -57,17 +62,17 @@ public class UserActionPanel extends ActionPanel {
   public void display(final PlayerID id) {
     super.display(id);
     m_choice = null;
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
+    Platform.runLater(() -> {
+      getChildren().clear();
       m_actionLabel.setText(id.getName() + " Actions and Operations");
-      add(m_actionLabel);
-      m_selectUserActionButton = new JButton(SelectUserActionAction);
-      m_selectUserActionButton.setEnabled(false);
-      add(m_selectUserActionButton);
-      m_doneButton = new JButton(DontBotherAction);
-      m_doneButton.setEnabled(false);
-      SwingUtilities.invokeLater(() -> m_doneButton.requestFocusInWindow());
-      add(m_doneButton);
+      getChildren().add(m_actionLabel);
+      m_selectUserActionButton = JFXUtils.getButtonWithAction(SelectUserActionAction);
+      m_selectUserActionButton.setDisable(true);
+      getChildren().add(m_selectUserActionButton);
+      m_doneButton = JFXUtils.getButtonWithAction(DontBotherAction);
+      m_doneButton.setDisable(true);
+      SwingUtilities.invokeLater(() -> m_doneButton.requestFocus());
+      getChildren().add(m_doneButton);
     });
   }
 
@@ -89,11 +94,11 @@ public class UserActionPanel extends ActionPanel {
       if (m_firstRun) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
       }
-      SwingUtilities.invokeLater(() -> {
-        m_selectUserActionButton.setEnabled(true);
-        m_doneButton.setEnabled(true);
+      Platform.runLater(() -> {
+        m_selectUserActionButton.setDisable(false);
+        m_doneButton.setDisable(false);
         // press the user action button for us.
-        SelectUserActionAction.actionPerformed(null);
+        SelectUserActionAction.handle(null);
       });
     }
     waitForRelease();
@@ -104,11 +109,7 @@ public class UserActionPanel extends ActionPanel {
    * Fires up a JDialog showing valid actions,
    * choosing an action will release this model and trigger waitForRelease()
    */
-  private final Action SelectUserActionAction = new AbstractAction("Take Action...") {
-    private static final long serialVersionUID = 2389485901611958851L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
+  private final EventHandler<ActionEvent> SelectUserActionAction = e -> {
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 30;
@@ -128,24 +129,15 @@ public class UserActionPanel extends ActionPanel {
                   + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
-      final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
-        private static final long serialVersionUID = -807175594221278068L;
-
-        @Override
-        public void actionPerformed(final ActionEvent arg0) {
-          userChoiceDialog.setVisible(false);
-        }
-      });
-      SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
+      final Button noActionButton = JFXUtils.getButtonWithAction(ev -> userChoiceDialog.setVisible(false));
+      Platform.runLater(noActionButton::requestFocus);
       userChoicePanel.add(noActionButton,
           new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
       userChoiceDialog.setMinimumSize(new Dimension(600, 300));
       userChoiceDialog.add(userChoicePanel);
       userChoiceDialog.pack();
-      userChoiceDialog.setLocationRelativeTo(m_parent);
       userChoiceDialog.setVisible(true);
       userChoiceDialog.dispose();
-    }
   };
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
@@ -158,8 +150,8 @@ public class UserActionPanel extends ActionPanel {
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(uaa));
       button.addActionListener(ae -> {
-        m_selectUserActionButton.setEnabled(false);
-        m_doneButton.setEnabled(false);
+        m_selectUserActionButton.setDisable(true);
+        m_doneButton.setDisable(true);
         m_validUserActions = null;
         m_choice = uaa;
         parent.setVisible(false);
@@ -177,23 +169,18 @@ public class UserActionPanel extends ActionPanel {
   /**
    * This will stop the user action Phase
    */
-  private final Action DontBotherAction = new AbstractAction("Done") {
-    private static final long serialVersionUID = 2835948679299520899L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
+  private final EventHandler<ActionEvent> DontBotherAction = e -> {
       if (!m_firstRun || youSureDoNothing()) {
         m_choice = null;
         release();
       }
-    }
-
-    private boolean youSureDoNothing() {
-      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
-          "Are you sure you dont want to do anything?", "End Actions", JOptionPane.YES_NO_OPTION);
-      return rVal == JOptionPane.YES_OPTION;
-    }
   };
+  
+  private boolean youSureDoNothing() {
+    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
+        "Are you sure you dont want to do anything?", "End Actions", JOptionPane.YES_NO_OPTION);
+    return rVal == JOptionPane.YES_OPTION;
+  }
 
   /**
    * Convenient method to get a JCompenent showing the flags involved in this

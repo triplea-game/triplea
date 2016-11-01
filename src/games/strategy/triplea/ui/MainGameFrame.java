@@ -1,20 +1,20 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
-public abstract class MainGameFrame extends JFrame {
-  private static final long serialVersionUID = 7433347393639606647L;
+public abstract class MainGameFrame extends Stage {
   protected LocalPlayers localPlayers;
 
   public MainGameFrame(final String name, final LocalPlayers players) {
-    super(name);
+    super();
+    this.setTitle(name);
     localPlayers = players;
-    setIconImage(GameRunner.getGameIcon(this));
+    this.getIcons().add(new Image(GameRunner.class.getResourceAsStream("ta_icon.png")));
   }
 
   public abstract IGame getGame();
@@ -27,7 +27,7 @@ public abstract class MainGameFrame extends JFrame {
 
   public abstract void notifyError(String error);
 
-  public abstract JComponent getMainPanel();
+  public abstract Node getMainPanel();
 
   public abstract void setShowChatTime(final boolean showTime);
 

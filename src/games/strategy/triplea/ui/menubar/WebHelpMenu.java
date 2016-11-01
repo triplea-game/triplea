@@ -1,51 +1,47 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.event.KeyEvent;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingComponents;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 
 public class WebHelpMenu {
   public WebHelpMenu(final TripleAMenuBar menuBar) {
-    final JMenu web = new JMenu("Web");
-    web.setMnemonic(KeyEvent.VK_W);
-    menuBar.add(web);
+    final Menu web = new Menu("_Web");
+    menuBar.getMenus().add(web);
     addWebMenu(web);
   }
 
-  private static void addWebMenu(final JMenu parentMenu) {
-    final JMenuItem hostingLink = new JMenuItem("How to Host");
-    hostingLink.setMnemonic(KeyEvent.VK_H);
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
-    parentMenu.add(hostingLink);
+  private static void addWebMenu(final Menu parentMenu) {
+    final MenuItem hostingLink = new MenuItem("How to _Host");
+    hostingLink.setMnemonicParsing(true);
+    hostingLink.setOnAction(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
+    parentMenu.getItems().add(hostingLink);
 
-    final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
-    lobbyRules.setMnemonic(KeyEvent.VK_L);
-    lobbyRules.addActionListener(
+    final MenuItem lobbyRules = new MenuItem("_Lobby Rules");
+    lobbyRules.setMnemonicParsing(true);
+    lobbyRules.setOnAction(
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES));
-    parentMenu.add(lobbyRules);
+    parentMenu.getItems().add(lobbyRules);
 
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder");
-    warClub.setMnemonic(KeyEvent.VK_W);
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
-    parentMenu.add(warClub);
+    final MenuItem warClub = new MenuItem("_War Club & Ladder");
+    warClub.setMnemonicParsing(true);
+    warClub.setOnAction(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    parentMenu.getItems().add(warClub);
 
-    final JMenuItem donateLink = new JMenuItem("Donate");
-    donateLink.setMnemonic(KeyEvent.VK_O);
-    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
-    parentMenu.add(donateLink);
+    final MenuItem donateLink = new MenuItem("_Donate");
+    donateLink.setMnemonicParsing(true);
+    donateLink.setOnAction(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
+    parentMenu.getItems().add(donateLink);
 
-    final JMenuItem helpLink = new JMenuItem("Help");
-    helpLink.setMnemonic(KeyEvent.VK_G);
-    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
-    parentMenu.add(helpLink);
+    final MenuItem helpLink = new MenuItem("H_elp");
+    helpLink.setMnemonicParsing(true);
+    helpLink.setOnAction(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
+    parentMenu.getItems().add(helpLink);
 
-    final JMenuItem ruleBookLink = new JMenuItem("Rule Book");
-    ruleBookLink.setMnemonic(KeyEvent.VK_K);
-    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
-    parentMenu.add(ruleBookLink);
+    final MenuItem ruleBookLink = new MenuItem("_Rule Book");
+    ruleBookLink.setMnemonicParsing(true);
+    ruleBookLink.setOnAction(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
+    parentMenu.getItems().add(ruleBookLink);
   }
 }

@@ -1,10 +1,6 @@
 package games.strategy.triplea.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,17 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Sets;
@@ -33,18 +19,29 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
+import games.strategy.triplea.util.JFXUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-abstract public class AbstractUndoableMovesPanel extends JPanel {
-  private static final long serialVersionUID = 1910945925958952416L;
+abstract public class AbstractUndoableMovesPanel extends BorderPane {
   protected List<AbstractUndoableMove> m_moves;
   protected final GameData m_data;
   protected final AbstractMovePanel m_movePanel;
-  protected JScrollPane scroll;
-  protected Integer scrollBarPreviousValue = null;// TODO replace this Integer with a int primitive... Using null as
-                                                  // toggle switch is bad code
-  protected Integer previousVisibleIndex = null;
+  protected ScrollPane scroll;
+  protected double scrollBarPreviousValue = -1;
+  protected int previousVisibleIndex = -1;
 
   public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
     m_data = data;
@@ -67,96 +64,91 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
 
 
   private void initLayout() {
-    removeAll();
-    setLayout(new BorderLayout());
-    final JPanel items = new JPanel();
-    items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
+    getChildren().clear();
+    final VBox items = new VBox();
     // we want the newest move at the top
     m_moves = new ArrayList<>(m_moves);
     Collections.reverse(m_moves);
     final Iterator<AbstractUndoableMove> iter = m_moves.iterator();
-    if (iter.hasNext()) {
-      add(new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"), BorderLayout.NORTH);
+    if (m_moves.size() > 0) {
+      setTop(new Label((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"));
     }
-    int scrollIncrement = 10;
-    final Dimension seperatorSize = new Dimension(150, 20);
+    double scrollIncrement = 10;
+    final int seperatorWidth = 150;
+    final int seperatorHeight = 20;
     while (iter.hasNext()) {
       final AbstractUndoableMove item = iter.next();
-      final JComponent moveComponent = createComponentForMove(item);
-      scrollIncrement = moveComponent.getPreferredSize().height;
-      items.add(moveComponent);
+      final VBox moveComponent = createComponentForMove(item);
+      scrollIncrement = moveComponent.getPrefHeight();
+      items.getChildren().add(moveComponent);
       if (iter.hasNext()) {
-        final JSeparator seperator = new JSeparator(SwingConstants.HORIZONTAL);
-        seperator.setPreferredSize(seperatorSize);
-        seperator.setMaximumSize(seperatorSize);
-        items.add(seperator);
+        final Separator seperator = new Separator(Orientation.HORIZONTAL);
+        seperator.setPrefSize(seperatorWidth, seperatorHeight);
+        seperator.setMaxSize(seperatorWidth, seperatorHeight);
+        items.getChildren().add(seperator);
       }
     }
     if (m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1) {
-      final JButton undoAllButton = new JButton("Undo All");
-      undoAllButton.addActionListener(new UndoAllMovesActionListener());
-      items.add(undoAllButton);
+      final Button undoAllButton = new Button("Undo All");
+      undoAllButton.setOnAction(new UndoAllMovesActionListener());
+      items.getChildren().add(undoAllButton);
     }
 
-    final int scrollIncrementFinal = scrollIncrement + seperatorSize.height;
+    final double scrollIncrementFinal = scrollIncrement + seperatorHeight;
     // JScrollPane scroll = new JScrollPane(items);
-    scroll = new JScrollPane(items) {
-      private static final long serialVersionUID = -1064967105431785533L;
-
+    scroll = new ScrollPane(items);
+    new AnimationTimer() {
       @Override
-      public void paint(final Graphics g) {
-        if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex),
-              1, scrollIncrementFinal));
-          previousVisibleIndex = null;
+      public void handle(long now) {
+        if (previousVisibleIndex != -1) {
+          scroll.setVvalue(0);
+          scroll.setHvalue(scrollIncrementFinal * (m_moves.size() - previousVisibleIndex));
+          previousVisibleIndex = -1;
         }
-        super.paint(g);
       }
-    };
+    }.start();
     scroll.setBorder(null);
-    scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrementFinal);
-    if (scrollBarPreviousValue != null) {
-      scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
-      scrollBarPreviousValue = null;
+    // scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrementFinal);TODO CSS
+    if (scrollBarPreviousValue != -1) {
+      scroll.setVvalue(scrollBarPreviousValue);
+      scrollBarPreviousValue = -1;
     }
-    add(scroll, BorderLayout.CENTER);
-    SwingUtilities.invokeLater(() -> validate());
+    setCenter(scroll);
   }
 
-  private JComponent createComponentForMove(final AbstractUndoableMove move) {
-    final Box unitsBox = new Box(BoxLayout.X_AXIS);
-    unitsBox.add(new JLabel((move.getIndex() + 1) + ") "));
+  private VBox createComponentForMove(final AbstractUndoableMove move) {
+    final HBox unitsBox = new HBox();
+    unitsBox.getChildren().add(new Label((move.getIndex() + 1) + ") "));
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(move.getUnits());
     final Iterator<UnitCategory> iter = unitCategories.iterator();
-    final Dimension buttonSize = new Dimension(80, 22);
+    final int buttonWidth = 80;
+    final int buttonHeight = 22;
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
       final Optional<ImageIcon> icon =
           m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
               category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       if (icon.isPresent()) {
-        final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
-        unitsBox.add(label);
+        final Label label = new Label("x" + category.getUnits().size() + " ");
+        label.setGraphic(new ImageView(JFXUtils.convertToFx((BufferedImage) icon.get().getImage())));
+        unitsBox.getChildren().add(label);
       }
     }
-    unitsBox.add(Box.createHorizontalGlue());
-    final JLabel text = new JLabel(move.getMoveLabel());
-    final Box textBox = new Box(BoxLayout.X_AXIS);
-    textBox.add(text);
-    textBox.add(Box.createHorizontalGlue());
-    final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
-    setSize(buttonSize, cancelButton);
-    final JButton viewbutton = new JButton(new ViewAction(move));
-    setSize(buttonSize, viewbutton);
-    final Box buttonsBox = new Box(BoxLayout.X_AXIS);
-    buttonsBox.add(viewbutton);
-    buttonsBox.add(cancelButton);
-    buttonsBox.add(Box.createHorizontalGlue());
-    final Box rVal = new Box(BoxLayout.Y_AXIS);
-    rVal.add(unitsBox);
-    rVal.add(textBox);
-    rVal.add(buttonsBox);
-    rVal.add(new JLabel(" "));
+    final Label text = new Label(move.getMoveLabel());
+    final HBox textBox = new HBox();
+    textBox.getChildren().add(text);
+    final Button cancelButton = JFXUtils.getButtonWithAction(new UndoMoveActionListener(move.getIndex()));
+    setSize(buttonWidth, buttonHeight, cancelButton);
+    final Button viewbutton = JFXUtils.getButtonWithAction(new ViewAction(move));
+    setSize(buttonWidth, buttonHeight, viewbutton);
+    final HBox buttonsBox = new HBox();
+    buttonsBox.getChildren().add(viewbutton);
+    buttonsBox.getChildren().add(cancelButton);
+    final VBox rVal = new VBox();
+    rVal.getChildren().add(unitsBox);
+    rVal.getChildren().add(textBox);
+    rVal.getChildren().add(buttonsBox);
+    rVal.getChildren().add(new Label(" "));
     return rVal;
   }
 
@@ -164,44 +156,37 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     return m_moves.size();
   }
 
-  protected void setSize(final Dimension buttonSize, final JButton cancelButton) {
-    cancelButton.setMinimumSize(buttonSize);
-    cancelButton.setPreferredSize(buttonSize);
-    cancelButton.setMaximumSize(buttonSize);
+  protected void setSize(double width, double height, final Button cancelButton) {
+    cancelButton.setMinSize(width, height);
+    cancelButton.setPrefSize(width, height);
+    cancelButton.setMaxSize(width, height);
   }
 
 
-  class UndoMoveActionListener extends AbstractAction {
-    private static final long serialVersionUID = -397312652244693138L;
+  class UndoMoveActionListener implements EventHandler<ActionEvent> {
     private final int m_moveIndex;
 
     public UndoMoveActionListener(final int index) {
-      super("Undo");
       m_moveIndex = index;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void handle(ActionEvent event) {
       // Record position of scroll bar as percentage.
-      scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
+      scrollBarPreviousValue = scroll.getVvalue();
       final String error = m_movePanel.undoMove(m_moveIndex);
       if (error == null) {
         previousVisibleIndex = Math.max(0, m_moveIndex - 1);
       } else {
-        previousVisibleIndex = null;
+        previousVisibleIndex = -1;
       }
     }
   }
 
-  class UndoAllMovesActionListener extends AbstractAction {
-    private static final long serialVersionUID = 7908136093303143896L;
-
-    public UndoAllMovesActionListener() {
-      super("UndoAllMoves");
-    }
+  class UndoAllMovesActionListener implements EventHandler<ActionEvent> {
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void handle(ActionEvent event) {
       final int moveCount = m_movePanel.getUndoableMoves().size();
       final boolean suppressErrorMsgToUser = true;
       for (int i = moveCount - 1; i >= 0; i--) {
@@ -211,17 +196,15 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
   }
 
 
-  class ViewAction extends AbstractAction {
-    private static final long serialVersionUID = -6999284663802575467L;
+  class ViewAction implements EventHandler<ActionEvent> {
     private final AbstractUndoableMove m_move;
 
     public ViewAction(final AbstractUndoableMove move) {
-      super("Show");
       m_move = move;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void handle(ActionEvent event) {
       m_movePanel.cancelMove();
       if (!m_movePanel.getMap().isShowing(m_move.getEnd())) {
         m_movePanel.getMap().centerOn(m_move.getEnd());

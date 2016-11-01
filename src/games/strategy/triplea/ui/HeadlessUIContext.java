@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
 import java.util.logging.Level;
-
-import javax.swing.JLabel;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -19,6 +16,8 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.
@@ -58,7 +57,7 @@ public class HeadlessUIContext extends AbstractUIContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+  public Label createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
       final UnitDamage damaged, final UnitEnable disabled) {
     return null;
   }
