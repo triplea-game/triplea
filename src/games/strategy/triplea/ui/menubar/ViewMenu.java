@@ -281,7 +281,7 @@ public class ViewMenu {
     menuGame.add(mapSubMenu);
     final Map<String, String> skins = AbstractUIContext.getSkins(frame.getGame().getData());
     for (final String key : skins.keySet()) {
-      mapMenuItem = new JRadioButtonMenuItem(key);
+      mapMenuItem = new JRadioButtonMenuItem(skins.get(key).replace(key + "-", "").replace("-master.zip", ""));
       // menu key navigation with ALT+first character (multiple hits for same character possible)
       // mapMenuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
       mapButtonGroup.add(mapMenuItem);
