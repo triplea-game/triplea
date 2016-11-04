@@ -915,6 +915,20 @@
     <div style="text-align: left;">
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
+- mapName: New World Order-skin gudkarma 1
+  mapType: MAP_SKIN
+  url: https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/archive/master.zip
+  img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_gudkarmaSkin_mini.png
+  description: |
+    <div style="text-align: left;">
+    <br>
+    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
+    <br>Alternative Relief Tiles for NWO
+    <br>by gudkarma
+    <br>
+    <div style="text-align: left;">
+    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+  version: 1
 - mapName: Diplomacy-Map Skin1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
