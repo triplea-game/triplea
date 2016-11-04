@@ -938,7 +938,7 @@
   description: |
     <br>This is a MAP SKIN for "Diplomacy"
     <br>A very basic style.  I made this one for people who hate the cursive writing of the other 3 skins.  It has a simple font, no textures, and no cursive.
-  version: 1.7
+  version: 1
 - mapName: World At War Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_at_war_variants/archive/master.zip
@@ -990,7 +990,7 @@
     <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely. 
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
     <br>
-  version: 1
+  version: 2
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
