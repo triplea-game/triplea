@@ -297,33 +297,24 @@ public abstract class AbstractUIContext implements IUIContext {
     return rVal;
   }
 
-  private static Map<String,String> getSkins(final String mapName) {
+  private static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> rVal = new HashMap<>();
     final File[] files = ClientFileSystemHelper.getUserMapsFolder().listFiles();
     if (files == null) {
       return rVal;
     }
-
     for (final File f : files) {
-      if (!f.isDirectory()) {
-        if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
-          final String skinName = f.getName().substring(0, f.getName().indexOf('-'));
-          if (f.getName().endsWith(".zip")) {
-            rVal.put(skinName, f.getName());
-          } else {
-            rVal.put(f.getName().substring(f.getName().indexOf('-') + 1), f.getName());
-          }
-        }
+      if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
+        final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
+        rVal.put(displayName, f.getName());
       }
     }
     return rVal;
   }
 
-  private static boolean mapSkinNameMatchesMapName(String mapSkin, String mapName) {
-    return mapSkin.startsWith(mapName) &&
-        mapSkin.toLowerCase().contains("skin") &&
-        mapSkin.contains("-") &&
-        !mapSkin.endsWith("properties");
+  private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {
+    return mapSkin.startsWith(mapName) && mapSkin.toLowerCase().contains("skin") && mapSkin.contains("-")
+        && !mapSkin.endsWith("properties");
   }
 
   private static void closeActor(final Active actor) {
