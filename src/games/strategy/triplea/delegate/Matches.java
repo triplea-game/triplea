@@ -561,6 +561,10 @@ public class Matches {
         if (!attack && ua.getDefense(player) > 0) {
           return true;
         }
+        // Or, if the unit has multiple hit points (to abosrb hits in combat even with 0 attack or defense)
+        if (ua.getHitPoints() > 1) {
+        	return true;
+        }
         // if unit can support other units, return true
         return !UnitSupportAttachment.get(ut).isEmpty();
       }
@@ -639,7 +643,8 @@ public class Matches {
       public boolean match(final Unit obj) {
         final Unit unit = obj;
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
-        return !ua.getIsInfrastructure()
+        // Ensure unit is "attackable" when they have more than one hit point (even if it is infrastructure)
+        return (!ua.getIsInfrastructure() || ua.getHitPoints() > 1)
             && !UnitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).match(unit);
       }
     };
