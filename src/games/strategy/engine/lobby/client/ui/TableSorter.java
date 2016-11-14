@@ -264,7 +264,19 @@ class TableSorter extends AbstractTableModel {
 
   @Override
   public Object getValueAt(final int row, final int column) {
-    return tableModel.getValueAt(modelIndex(row), column);
+    if (column > tableModel.getColumnCount() || row > tableModel.getRowCount()) {
+      // hack fix for https://github.com/triplea-game/triplea/issues/1328
+      // java.lang.ArrayIndexOutOfBoundsException: 13
+      // at games.strategy.engine.lobby.client.ui.TableSorter.modelIndex(TableSorter.java)
+      // at games.strategy.engine.lobby.client.ui.TableSorter.getValueAt(TableSorter.java)
+      // at javax.swing.JTable.getValueAt(Unknown Source)
+      //
+      // Essentially if the index is out of bounds, then we'll return an empty JLabel which will
+      // hopefully get us by until the next table rendering pass.
+      return new JLabel();
+    } else {
+      return tableModel.getValueAt(modelIndex(row), column);
+    }
   }
 
   @Override
@@ -425,7 +437,7 @@ class TableSorter extends AbstractTableModel {
   private class SortableHeaderRenderer implements TableCellRenderer {
     private final TableCellRenderer tableCellRenderer;
 
-    public SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
+    SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
       this.tableCellRenderer = tableCellRenderer;
     }
 
