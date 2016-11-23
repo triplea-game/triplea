@@ -58,9 +58,9 @@
   version: 1
   description: |
     <br>Lord of the Rings
-- mapName: Napoleonic Empire
+- mapName: Napoleonic Empires
   mapCategory: BEST
-  url: https://github.com/triplea-maps/napoleonic_empire/archive/master.zip
+  url: https://github.com/triplea-maps/napoleonic_empires/archive/master.zip
   version: 1
   description: |
     <br>Preindustrial Napoleonic era European conquest
@@ -405,32 +405,6 @@
     <br>
     <br>
   version: 1
-- mapName: Big World 1939
-  mapCategory: GOOD
-  url: https://github.com/triplea-maps/big_world_1939/archive/master.zip
-  img: https://github.com/KaiMAD/big_world_1939/blob/master/screenshot.png
-  description: |
-    <br>Version 1.0, created ~2016.2
-    <br>Mod by KaiMAD
-    <br>Please post suggestions/comments at "https://github.com/KaiMAD/big_world_1939/issues"
-    <br>
-    <br> Description:
-    <br> This map is based on the original TripleA map Big World 1942, but set instead in 1939.
-    <br> It has the same layout, but includes:
-    <br> Germany,
-    <br> America,
-    <br> Britain,
-    <br> Slovakia,
-    <br> Finland,
-    <br> Russia,
-    <br> China,
-    <br> Japan,
-    <br> Italy,
-    <br> Canada,
-    <br> Romania, and 
-    <br> France (12 players total). 
-    <br> Note: This map is set in late 1939; America was not yet part of the war. 
-    <br> However, it was entirely an option for them to begin fighting, so they are included as a player.
 - url: https://github.com/triplea-maps/big_world_2/archive/master.zip
   mapCategory: GOOD
   mapName: Big World 2
@@ -892,9 +866,9 @@
     <br>Four If By Sea
     <br>
   version: 1
-- mapName: Napoleonic Empire-Political Map Skin
+- mapName: Napoleonic Empires-Topographical Map Skin
   mapType: MAP_SKIN
-  url: https://github.com/triplea-maps/napoleonic_empire-political_map_skin/archive/master.zip
+  url: https://github.com/triplea-maps/napoleonic_empires-topographical_map_skin/archive/master.zip
   description: |
      <br>
   version: 1
@@ -941,6 +915,20 @@
     <div style="text-align: left;">
     <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
   version: 1
+- mapName: New World Order-skin gudkarma 1
+  mapType: MAP_SKIN
+  url: https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/archive/master.zip
+  img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_gudkarmaSkin_mini.png
+  description: |
+    <div style="text-align: left;">
+    <br>
+    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
+    <br>Alternative Relief Tiles for NWO
+    <br>by gudkarma
+    <br>
+    <div style="text-align: left;">
+    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+  version: 1
 - mapName: Diplomacy-Map Skin1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
@@ -972,20 +960,21 @@
   description: |
     <br>
     <br>v3 Variants of World At War (original map by Sieg) 
-    <br>Version 1.4.9, last update 2014.12.20 for engine 1.8.0.3 
+    <br>Version 1.7.0, last update 2016.10.29 for engine 1.9.0.0 
     <br>Mod done by sneakingcoward. 
     <br>Suggestions to wgbt@gmx.at 
     <br>Game is continuously played by PBEM. Gamers state, that it is one of the best games listed at the depot. 
     <br>
     <br>a.) Content: 
-    <br>Includes 2 Mods of WAW. 
-    <br>World at War - v3 Variant ... (with Japan as 2 parties Yamamoto and Hisaichi) 
-    <br>World at War - v3 Variant FUEL-AA-Range ... (with Japanese as only 1 combined party) 
+    <br>Includes 3 Mods of WAW. 
+    <br>World at War Variant - v3 ... (with Japan as 2 parties Yamamoto and Hisaichi) 
+    <br>World at War Variant - FUEL-AA-Range ... (with Japanese as only 1 combined party)
+    <br>World at War Variant - vXXX ... (with Japanese as only 1 combined party)
     <br>
     <br>b.) Rough overview: 
     <br>Detailed description inside game notes, following is a rough overview. 
     <br>
-    <br>Both v3 Variants use v3 rules and include: 
+    <br>All Variants use v3 rules and include: 
     <br>- paratroopers 
     <br>- air+sea+land transports, also landing boats, generally proper transport concept 
     <br>- construction unit 
@@ -1002,7 +991,11 @@
     <br>- Fighter can also do SBR to train, radar, construction and not intercepted planes 
     <br>- Fuel consumption for production+movement, incl. refineries 
     <br>- AntiAir (AA) separated to combat- (hit 1 of 6) and bombing raid- (hit 1 of 12) AA 
-    <br>- Airbase enables full range for planes 
+    <br>- Airbase enables full range for planes
+    <br>
+    <br>The vXXX mod uses additional:
+    <br>- Recruits
+    <br>- Slightly modified setup for this variant 
     <br>
     <br>c.) General tips: 
     <br>Due to the wide range of possibilities its more a game for experienced players (typical rounds 30). 
@@ -1011,7 +1004,7 @@
     <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely. 
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
     <br>
-  version: 1
+  version: 2
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
@@ -1709,7 +1702,16 @@
     <br>
     <br>by Gregorek
   version: 1
-
+- mapName: Ultimate World Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ultimate_world_variants/archive/master.zip
+  img: http://tripleamaps.sourceforge.net/images/TripleA_ultimate_world_mini.png
+  description: |
+    <br>
+    Ultimate World Variants
+    <br>Includes several Ultimate World Variants including FFAs
+  version: 1
+  
 - mapName: TripleA Map Creator
   url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip
   mapType: MAP_TOOL

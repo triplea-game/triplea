@@ -272,21 +272,16 @@ public class ViewMenu {
   }
 
   private void addMapSkinsMenu(final JMenu menuGame) {
-    // beagles Mapskin code
-    // creates a sub menu of radiobuttons for each available mapdir
-    JMenuItem mapMenuItem;
     final JMenu mapSubMenu = new JMenu("Map Skins");
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
-    final ButtonGroup mapButtonGroup = new ButtonGroup();
     menuGame.add(mapSubMenu);
+    final ButtonGroup mapButtonGroup = new ButtonGroup();
     final Map<String, String> skins = AbstractUIContext.getSkins(frame.getGame().getData());
+    mapSubMenu.setEnabled(skins.size() > 1);
     for (final String key : skins.keySet()) {
-      mapMenuItem = new JRadioButtonMenuItem(key);
-      // menu key navigation with ALT+first character (multiple hits for same character possible)
-      // mapMenuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
+      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
       mapButtonGroup.add(mapMenuItem);
       mapSubMenu.add(mapMenuItem);
-      mapSubMenu.setEnabled(skins.size() > 1);
       if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }

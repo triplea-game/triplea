@@ -210,6 +210,10 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
     final Runnable runner = () -> {
+      if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
+        // someone likely disconnected from the game.
+        return;
+      }
       if (from.equals(chat.getServerNode().getName())) {
         if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
           addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
