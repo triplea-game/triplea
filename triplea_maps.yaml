@@ -284,7 +284,7 @@
     <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1942_mini.png" />
     <br>
     <br>A new edition of World War II with new tech and units. Includes the two starting scenarios 1941 and 1942.
-  version: 1
+  version: 2
 - mapName: World War II v4
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v4/archive/master.zip
@@ -295,7 +295,7 @@
     <br>
     <br>The latest edition of World War II. Starting in 1942 with the World War II v3 rule set and a map similar to World War II v2 Revised.
     <br>Includes two 6-Army-Free-For-All variants.
-  version: 1
+  version: 2
 - mapName: World War II Pacific
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_pacific/archive/master.zip
@@ -370,7 +370,7 @@
     <br>5. Factories now have their own AA to defend during strategic bombing.
     <br>6. Honolulu is now a Victory City.
     <br>
-  version: 1
+  version: 2
 - mapName: World War II v6 1941
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v6_1941/archive/master.zip
