@@ -342,9 +342,10 @@
     <br>
     <br>World War II Global 1940
     <br>
-    <br>Includes: Original/OOB and Alpha+3 and Second Edition and a Global 1942 mod.
+    <br>Includes: Original/OOB and Second Edition and a Global 1942 mod.
+    <br>Now also includes Balanced Mod and variants of Balanced Mod and 2nd ed with Combat Move first
     <br>
-    <br>Now working fully according to official rules.
+    <br>Now working fully according to official rules except as noted.
     <br>
     <br>Map and XML by Bung, XML conditions, objectives, triggers and special code by Veqryn
     <br>Engine code to get this game to work by Veqryn
@@ -354,7 +355,7 @@
     <br>http://tripleadev.1671093.n2.nabble.com/World-War-II-Global-1940-Alpha-3-tp7399456p7399456.html
     <br>http://tripleadev.1671093.n2.nabble.com/World-War-II-Global-1940-Original-tp7314662p7314662.html
     <br>
-  version: 1
+  version: 2
 - mapName: World War II v5 1942
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v5_1942/archive/master.zip
