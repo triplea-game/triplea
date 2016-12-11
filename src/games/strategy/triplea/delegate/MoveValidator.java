@@ -694,7 +694,7 @@ public class MoveValidator {
    */
   private static int getMechanizedSupportAvail(final Route route, final Collection<Unit> units, final PlayerID player) {
     int mechanizedSupportAvailable = 0;
-    if (TechAttachment.isInfantryInfantry(player)) {
+    if (TechAttachment.isMechanizedInfantry(player)) {
       final CompositeMatch<Unit> transportLand =
           new CompositeMatchAnd<>(Matches.UnitIsLandTransport, Matches.unitIsOwnedBy(player));
       mechanizedSupportAvailable = Match.countMatches(units, transportLand);
