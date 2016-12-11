@@ -4,13 +4,11 @@
   message: |
     Welcome to TripleA 1.9
     
-    1.8 Migration Notes:
-      Bots are unable to host 1.8 save games.
-      It is recommended to simply use the 1.8 game engine to play any 1.8.0.9 game saves
-      You can download the 1.8 game engine here: http://www.triplea-game.org/old_downloads/
-      Otherwise 1.8 games can be played with the 1.9 game engine if you move all of the 1.8 maps into /users/YourUser/triplea/maps
-      1.9 maps are stored in /users/YourUser/triplea/downloadedMaps
+    Patch version 1.9.0.0.3345 is out with a few bug fixes: http://www.triplea-game.org/download
+    Also check for updated maps with technology bug fixes.
     
+    Legacy 1.8 games can be played out on the 1.8 game engine: http://www.triplea-game.org/old_downloads/
+
     FAQ/Help: http://www.triplea-game.org/docs/
     Hosting Help: http://tinyurl.com/gnkrxx5
     Forum/Ladder: Warclub: www.tripleawarclub.org
