@@ -72,7 +72,6 @@ class TableSorter extends AbstractTableModel {
   private TableModel tableModel;
   static final int DESCENDING = -1;
   private static final int NOT_SORTED = 0;
-  public static final int ASCENDING = 1;
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
   // TODO needs to be rewritten in order to remove the warning
   @SuppressWarnings("unchecked")
@@ -181,14 +180,6 @@ class TableSorter extends AbstractTableModel {
   private void cancelSorting() {
     sortingColumns.clear();
     sortingStatusChanged();
-  }
-
-  public void setColumnComparator(final Class<?> type, final Comparator<Object> comparator) {
-    if (comparator == null) {
-      columnComparators.remove(type);
-    } else {
-      columnComparators.put(type, comparator);
-    }
   }
 
   private Comparator<Object> getComparator(final int column) {
