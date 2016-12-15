@@ -26,7 +26,7 @@ public class FolderSettings implements HasDefaults {
       SystemPreferences.get(SystemPreferenceKey.USER_MAPS_FOLDER_PATH, DEFAULT_DOWNLOADED_MAPS_PATH.toString()));
   }
 
-  public void setDownloadedMapPath(final String downloadedMapPath) {
+  void setDownloadedMapPath(final String downloadedMapPath) {
     SystemPreferences.put(SystemPreferenceKey.USER_MAPS_FOLDER_PATH, downloadedMapPath);
   }
 
@@ -34,7 +34,7 @@ public class FolderSettings implements HasDefaults {
     return SystemPreferences.get(SystemPreferenceKey.SAVE_GAMES_FOLDER_PATH, DEFAULT_SAVE_PATH.toString());
   }
 
-  public void setSaveGamePath(final String saveGamePath) {
+  void setSaveGamePath(final String saveGamePath) {
     SystemPreferences.put(SystemPreferenceKey.SAVE_GAMES_FOLDER_PATH, saveGamePath);
   }
 
