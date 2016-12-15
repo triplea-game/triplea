@@ -39,8 +39,6 @@ public interface Constants {
   String PUS = "PUs";
   String TECH_TOKENS = "techTokens";
   String VPS = "VPs";
-  // public static final String SUICIDE_ATTACK_TOKENS = "SuicideAttackTokens";
-  // public static final int MAX_DICE = 6; now please use data.getDiceSides()
   String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
   String FACTORIES_PER_COUNTRY_PROPERTY = "maxFactoriesPerTerritory";
   String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
@@ -111,7 +109,6 @@ public interface Constants {
   String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
   String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
   String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";
-  // public static final String HARI_KARI_UNITS = "Hari-Kari Units";
   String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
   /**
    * End individual rules for TripleA WW2V3 (All default to FALSE)
@@ -160,14 +157,14 @@ public interface Constants {
   String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
   String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
   String SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT = "Scramble To Any Amphibious Assault";
-  // squid
+
   String OLD_ART_RULE_NAME = "ArtyOld";
   String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
   String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
       SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
   String TRIGGERS = "Use Triggers";
   String PU_MULTIPLIER = "Multiply PUs";
-  // Veqryn (Mark Christopher Duncan)
+
   String LL_AA_ONLY = "Low Luck for AntiAircraft";
   String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
   String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
@@ -237,7 +234,8 @@ public interface Constants {
   String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
   String CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS =
       "Control All Canals Between Territories To Pass";
-  // relationships stuff (Edwin, with help from Veqryn and Frig)
+
+  // relationships stuff
   String RELATIONSHIP_TYPE_SELF = "self_relation";
   String RELATIONSHIP_TYPE_NULL = "null_relation";
   String RELATIONSHIP_TYPE_DEFAULT_ALLIED = "default_allied_relation";
