@@ -1220,7 +1220,6 @@ public class TripleAFrame extends MainGameFrame {
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLocationRelativeTo(getParent());
-        dialog.setAlwaysOnTop(true);
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
