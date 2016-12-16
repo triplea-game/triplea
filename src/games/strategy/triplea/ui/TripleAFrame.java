@@ -1103,16 +1103,14 @@ public class TripleAFrame extends MainGameFrame {
         unitPanels.add(unitPanel);
         final String optionAttack = "Attack";
         final String optionNone = "None";
-        final String optionWait = "Wait";
-        final Object[] options = {optionAttack, optionNone, optionWait};
+        final Object[] options = {optionAttack, optionNone};
         final JOptionPane optionPane = new JOptionPane(unitPanel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
         final JDialog dialog =
             new JDialog((Frame) getParent(), "Select units to Suicide Attack using " + attackResourceToken.getName());
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLocationRelativeTo(getParent());
-        dialog.setAlwaysOnTop(true);
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
@@ -1141,16 +1139,9 @@ public class TripleAFrame extends MainGameFrame {
             dialog.removeAll();
             dialog.dispose();
             continueLatch.countDown();
-          } else {
-            unitPanels.clear();
-            selection.clear();
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            ThreadUtil.sleep(500);
-            run();
           }
         });
+
       }
     });
     mapPanel.getUIContext().addShutdownLatch(continueLatch);
@@ -1212,10 +1203,9 @@ public class TripleAFrame extends MainGameFrame {
         panel.add(panel2, BorderLayout.CENTER);
         final String optionScramble = "Scramble";
         final String optionNone = "None";
-        final String optionWait = "Wait";
-        final Object[] options = {optionScramble, optionNone, optionWait};
+        final Object[] options = {optionScramble, optionNone};
         final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
         final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1243,14 +1233,6 @@ public class TripleAFrame extends MainGameFrame {
             dialog.removeAll();
             dialog.dispose();
             continueLatch.countDown();
-          } else {
-            choosers.clear();
-            selection.clear();
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            ThreadUtil.sleep(500);
-            run();
           }
         });
       }
@@ -1304,15 +1286,13 @@ public class TripleAFrame extends MainGameFrame {
         panel.add(chooserScrollPane, BorderLayout.CENTER);
         final String optionSelect = "Select";
         final String optionNone = "None";
-        final String optionWait = "Wait";
-        final Object[] options = {optionSelect, optionNone, optionWait};
+        final Object[] options = {optionSelect, optionNone};
         final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
         final JDialog dialog = new JDialog((Frame) getParent(), message);
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLocationRelativeTo(getParent());
-        dialog.setAlwaysOnTop(true);
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
@@ -1333,13 +1313,6 @@ public class TripleAFrame extends MainGameFrame {
             dialog.removeAll();
             dialog.dispose();
             continueLatch.countDown();
-          } else {
-            selection.clear();
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            ThreadUtil.sleep(500);
-            run();
           }
         });
       }
