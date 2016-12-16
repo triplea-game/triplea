@@ -29,8 +29,8 @@ public class ClientLogin implements IConnectionLogin {
     if (challengProperties.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
       final JPasswordField passwordField = new JPasswordField();
       passwordField.setColumns(15);
-      EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField,
-          "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE, new CountDownLatchHandler(true));
+      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField,
+          "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
     }
