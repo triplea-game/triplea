@@ -135,32 +135,6 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 	}
 }
 
-task bots(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
-	classifier 'bots'
-	from('assets') {
-		exclude('resources')
-		exclude('sounds')
-		exclude('territoryEffects')
-	}
-	from("${assetsDirectory}/icons") {
-		into('icons')
-		exclude("icon.icns")
-	}
-	['license'].each { folder ->
-		from(folder) {
-			into(folder)
-		}
-	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
-	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
-	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
-		from(fileName)
-	}
-	from(renameShadowJar.output) {
-		into('bin')
-	}
-}
-
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	classifier 'server'
 	['license'].each { folder ->
@@ -179,7 +153,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	}
 }
 
-task generateZipReleases(group: 'release', dependsOn: [allPlatform, bots, lobbyServer]) {}
+task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
 
 apply plugin: 'install4j'
 
