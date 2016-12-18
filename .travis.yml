@@ -55,7 +55,6 @@ deploy:
     - build/releases/TripleA_${TAGGED_VERSION}_macos.dmg
     - build/releases/TripleA_${TAGGED_VERSION}_unix.sh
     - build/distributions/triplea-${TAGGED_VERSION}-all_platforms.zip
-    - build/distributions/triplea-${TAGGED_VERSION}-bots.zip
     - build/distributions/triplea-${TAGGED_VERSION}-server.zip
   skip_cleanup: true
   prerelease: true
