@@ -2,13 +2,10 @@
   host: 45.79.144.53
   port: 3304
   message: |
-    Welcome to TripleA 1.9 - Latest version is: 1.9.0.0.3393
-    Additional Help/FAQ: http://www.triplea-game.org/docs/
-    Forum/Ladder: Warclub: www.tripleawarclub.org
-    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
+    Welcome to TripleA 1.9 - Help/FAQ: http://www.triplea-game.org/help/
+    Warclub Forum/Ladder: www.tripleawarclub.org
     Bug Reports: https://github.com/triplea-game/triplea/issues
-
-    Trouble downloading maps? See: https://github.com/triplea-game/triplea/issues/1376
+    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
     
     No talking politics in the lobby! Take your political comments to a private game!
   error_message:
