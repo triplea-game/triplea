@@ -2,23 +2,14 @@
   host: 45.79.144.53
   port: 3304
   message: |
-    Welcome to TripleA 1.9
-    
-    1.9.0.0.3393 is now out with some additional bug fixes - http://www.triplea-game.org/download
-    Also check for updated maps with technology bug fixes.
-    
-    Legacy 1.8 games can be played out on the 1.8 game engine: http://www.triplea-game.org/old_downloads/
-    FAQ/Help: http://www.triplea-game.org/docs/
-    Hosting Help: http://tinyurl.com/gnkrxx5
+    Welcome to TripleA 1.9 - Latest version is: 1.9.0.0.3393
+    Additional Help/FAQ: http://www.triplea-game.org/docs/
     Forum/Ladder: Warclub: www.tripleawarclub.org
     Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
     Bug Reports: https://github.com/triplea-game/triplea/issues
 
-    Some players are reporting trouble downloading maps. For manual map download instructions, please see:
-    https://github.com/triplea-game/triplea/issues/1376. If you are also seeing the same problem
-    please add any error messages that you getting to that ticket.
+    Trouble downloading maps? See: https://github.com/triplea-game/triplea/issues/1376
     
     No talking politics in the lobby! Take your political comments to a private game!
-    Try out the automated hosts (bots) by joining one then selecting a map. Game starts when all players are taken.
   error_message:
   
