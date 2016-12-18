@@ -1268,12 +1268,12 @@ public class GameParser {
       final String className = current.getAttribute("javaClass");
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
+      final List<Element> options = getChildren("option", current);
       IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
           .orElseThrow(
               () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 
-      final List<Element> options = getChildren("option", current);
       final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
       // keep a list of attachment references in the order they were added
       data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));

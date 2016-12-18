@@ -72,7 +72,6 @@ class TableSorter extends AbstractTableModel {
   private TableModel tableModel;
   static final int DESCENDING = -1;
   private static final int NOT_SORTED = 0;
-  public static final int ASCENDING = 1;
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
   // TODO needs to be rewritten in order to remove the warning
   @SuppressWarnings("unchecked")
@@ -183,14 +182,6 @@ class TableSorter extends AbstractTableModel {
     sortingStatusChanged();
   }
 
-  public void setColumnComparator(final Class<?> type, final Comparator<Object> comparator) {
-    if (comparator == null) {
-      columnComparators.remove(type);
-    } else {
-      columnComparators.put(type, comparator);
-    }
-  }
-
   private Comparator<Object> getComparator(final int column) {
     final Class<?> columnType = tableModel.getColumnClass(column);
     final Comparator<Object> comparator = columnComparators.get(columnType);
@@ -204,17 +195,15 @@ class TableSorter extends AbstractTableModel {
   }
 
   private Row[] getViewToModel() {
-    if (viewToModel == null) {
       final int tableModelRowCount = tableModel.getRowCount();
-      viewToModel = new Row[tableModelRowCount];
+      Row[] viewToModelRows = new Row[tableModelRowCount];
       for (int row = 0; row < tableModelRowCount; row++) {
-        viewToModel[row] = new Row(row);
+        viewToModelRows[row] = new Row(row);
       }
       if (isSorting()) {
-        Arrays.sort(viewToModel);
+        Arrays.sort(viewToModelRows);
       }
-    }
-    return viewToModel;
+      return viewToModelRows;
   }
 
   int modelIndex(final int viewIndex) {
@@ -222,14 +211,13 @@ class TableSorter extends AbstractTableModel {
   }
 
   private int[] getModelToView() {
-    if (modelToView == null) {
-      final int n = getViewToModel().length;
-      modelToView = new int[n];
-      for (int i = 0; i < n; i++) {
-        modelToView[modelIndex(i)] = i;
-      }
+    Row[] viewToModel = getViewToModel();
+
+    int[] modelToViewRows = new int[viewToModel.length];
+    for (int i = 0; i < viewToModel.length; i++) {
+      modelToViewRows[viewToModel[i].modelIndex] = i;
     }
-    return modelToView;
+    return modelToViewRows;
   }
 
   // TableModel interface methods

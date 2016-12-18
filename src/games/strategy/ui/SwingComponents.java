@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -89,7 +87,7 @@ public class SwingComponents {
   public static class ModalJDialog extends JDialog {
     private static final long serialVersionUID = -3953716954531215173L;
 
-    public ModalJDialog() {
+    protected ModalJDialog() {
       super((Frame) null, true);
       setLocationByPlatform(true);
     }
@@ -99,11 +97,6 @@ public class SwingComponents {
     window.pack();
     window.setLocationByPlatform(true);
     window.setVisible(true);
-  }
-
-  public static JComponent newJTextField(final int initialValue, final int fieldSize) {
-    final JTextField textField = new JTextField(String.valueOf(initialValue), fieldSize);
-    return textField;
   }
 
   public static JPanel newJPanelWithGridLayout(final int rows, final int columns) {
@@ -135,22 +128,9 @@ public class SwingComponents {
    * Creates a JPanel with BorderLayout and adds a west component and an east component
    */
   public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
-    return horizontalJPanel(westComponent, Optional.empty(), eastComponent);
-  }
-
-  public static JPanel horizontalJPanel(final Component westComponent, final Component centerComponent,
-      final Component eastComponent) {
-    return horizontalJPanel(westComponent, Optional.of(centerComponent), eastComponent);
-  }
-
-  private static JPanel horizontalJPanel(final Component westComponent, final Optional<Component> centerComponent,
-      final Component eastComponent) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(westComponent, BorderLayout.WEST);
-    if (centerComponent.isPresent()) {
-      panel.add(centerComponent.get(), BorderLayout.CENTER);
-    }
     panel.add(eastComponent, BorderLayout.EAST);
     return panel;
   }
@@ -187,13 +167,6 @@ public class SwingComponents {
   }
 
   public static void promptUser(final String title, final String message, final Runnable confirmedAction) {
-    promptUser(title, message, confirmedAction, () -> {
-    });
-  }
-
-  public static void promptUser(final String title, final String message, final Runnable confirmedAction,
-      final Runnable cancelAction) {
-
     boolean showMessage = false;
     synchronized (visiblePrompts) {
       if (!visiblePrompts.contains(message)) {
@@ -212,8 +185,6 @@ public class SwingComponents {
         visiblePrompts.remove(message);
         if (response == JOptionPane.YES_OPTION) {
           confirmedAction.run();
-        } else {
-          cancelAction.run();
         }
       });
     }
@@ -242,11 +213,11 @@ public class SwingComponents {
   public static <T> DefaultListModel<String> newJListModel(final List<T> maps, final Function<T, String> mapper) {
     final List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
     final DefaultListModel<String> model = new DefaultListModel<>();
-    mapList.forEach(e -> model.addElement(e));
+    mapList.forEach(model::addElement);
     return model;
   }
 
-  public static <T> JList<String> newJList(final DefaultListModel<String> listModel) {
+  public static JList<String> newJList(final DefaultListModel<String> listModel) {
     return new JList<>(listModel);
   }
 
@@ -266,8 +237,7 @@ public class SwingComponents {
   }
 
   public static Border newEmptyBorder(final int borderWidth) {
-    final int w = borderWidth;
-    return new EmptyBorder(w, w, w, w);
+    return new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);
   }
 
   public static void newOpenUrlConfirmationDialog(final UrlConstants url) {
