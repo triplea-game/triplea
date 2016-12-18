@@ -33,6 +33,10 @@ Map Making
 Instructions and more: https://github.com/triplea-game/triplea/tree/master/docs/map_making
 Beyond experimental maps:  https://github.com/triplea-game/triplea/wiki/Broken-Maps
 
+Lobby Game Bot Hosting
+======================
+- Please see: https://github.com/triplea-game/lobby#run-hosted-bots
+
 
 Development 
 ===========
