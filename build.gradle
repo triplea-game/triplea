@@ -113,7 +113,7 @@ task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 
 task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
 	classifier 'all_platforms'
-	['assets', 'dice_servers', 'license', 'maps', 'old'].each { folder ->
+	['assets', 'dice_servers', 'maps', 'old'].each { folder ->
 		from(folder) {
 			into(folder)
 		}
@@ -137,11 +137,6 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 	classifier 'server'
-	['license'].each { folder ->
-		from(folder) {
-			into(folder)
-		}
-	}
 	['run-headless-game-host.sh', 'run-server.sh'].each { fileName ->
 		from(fileName)
 	}
