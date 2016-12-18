@@ -349,6 +349,8 @@ public class LobbyFrame extends JFrame {
   }
 
   public void shutdown() {
+    setVisible(false);
+    dispose();
     MainFrame.getInstance().setVisible(true);
     m_client.getMessenger().shutDown();
     GameRunner.exitGameIfFinished();
