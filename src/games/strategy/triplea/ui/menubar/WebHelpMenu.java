@@ -19,7 +19,7 @@ public class WebHelpMenu {
   private static void addWebMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to Host");
     hostingLink.setMnemonic(KeyEvent.VK_H);
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.SF_HOSTING_MAPS));
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     parentMenu.add(hostingLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
