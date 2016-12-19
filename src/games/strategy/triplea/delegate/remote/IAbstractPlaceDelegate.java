@@ -16,6 +16,11 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
    */
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
+  default String placeUnits(Collection<Unit> units, Territory at) {
+    return placeUnits(units, at, BidMode.NOT_BID);
+  }
+
+
   public enum BidMode {
     BID, NOT_BID
   }

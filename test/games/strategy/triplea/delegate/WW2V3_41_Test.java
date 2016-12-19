@@ -512,7 +512,7 @@ public class WW2V3_41_Test {
     placeDelegate.setDelegateBridgeAndPlayer(getDelegateBridge(germans(m_data)));
     placeDelegate.start();
     addTo(germans(m_data), aaGun(m_data).create(1, germans(m_data)), m_data);
-    errorResults = placeDelegate.placeUnits(getUnits(map, germans), germany);
+    errorResults = placeDelegate.placeUnits(getUnits(map, germans), germany, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(errorResults);
     assertEquals(germany.getUnits().getUnitCount(), preCount + 3);
   }
