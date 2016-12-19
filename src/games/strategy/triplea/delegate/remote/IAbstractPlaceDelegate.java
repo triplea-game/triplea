@@ -20,8 +20,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 
-
-  public enum BidMode {
+  enum BidMode {
     BID, NOT_BID
   }
   /**
