@@ -40,7 +40,7 @@ public class WebHelpMenu {
 
     final JMenuItem helpLink = new JMenuItem("Help");
     helpLink.setMnemonic(KeyEvent.VK_G);
-    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP));
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     parentMenu.add(helpLink);
 
     final JMenuItem ruleBookLink = new JMenuItem("Rule Book");
