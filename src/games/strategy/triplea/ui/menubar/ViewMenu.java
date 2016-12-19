@@ -131,12 +131,14 @@ public class ViewMenu {
   }
 
   private void addSetLookAndFeel(final JMenu menuView) {
-    menuView.add(SwingAction.of("Set Look and Feel", e -> {
+    final String lookAndFeelTitle = "Set Look and Feel";
+    menuView.add(SwingAction.of(lookAndFeelTitle, e -> {
       final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(frame, list) == JOptionPane.OK_OPTION) {
+      if (JOptionPane.showConfirmDialog(frame, list, lookAndFeelTitle,
+          JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
         final String selectedValue = list.getSelectedValue();
         if (selectedValue == null) {
           return;
