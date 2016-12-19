@@ -65,7 +65,7 @@ public class HelpMenu {
   }
 
 
-  private void addMoveHelpMenu(final JMenu parentMenu) {
+  private static void addMoveHelpMenu(final JMenu parentMenu) {
     final String moveSelectionHelpTitle = "Movement/Selection Help";
     parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
@@ -109,7 +109,7 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_M);
   }
 
-  protected static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
+  static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
     // html formatted string
     int i = 0;
     final String color1 = "ABABAB";
@@ -217,7 +217,7 @@ public class HelpMenu {
 
   public static final JEditorPane gameNotesPane = new JEditorPane();
 
-  protected void addGameNotesMenu(final JMenu parentMenu) {
+  private void addGameNotesMenu(final JMenu parentMenu) {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
@@ -227,8 +227,7 @@ public class HelpMenu {
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
       parentMenu.add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
-        final JEditorPane pane = gameNotesPane;
-        final JScrollPane scroll = new JScrollPane(pane);
+        final JScrollPane scroll = new JScrollPane(gameNotesPane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
         final JDialog dialog = new JDialog();
         dialog.setModalityType(Dialog.ModalityType.MODELESS);
@@ -285,9 +284,8 @@ public class HelpMenu {
     scroll.setBorder(null);
     if (System.getProperty("mrj.version") == null) {
       parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About", e -> {
-        JOptionPane.showMessageDialog(null, editorPane, "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE);
-      })).setMnemonic(KeyEvent.VK_A);
+      parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
+          "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
     } else
     // On Mac OS X, put the About menu where Mac users expect it to be
     {
@@ -296,10 +294,9 @@ public class HelpMenu {
     }
   }
 
-  private void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Send Bug Report", e -> {
-      SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES);
-    })).setMnemonic(KeyEvent.VK_B);
+  private static void addReportBugsMenu(final JMenu parentMenu) {
+    parentMenu.add(SwingAction.of("Send Bug Report",
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
   }
 
 }
