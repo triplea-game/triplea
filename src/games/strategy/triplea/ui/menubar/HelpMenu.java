@@ -231,7 +231,6 @@ public class HelpMenu {
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
         final JDialog dialog = new JDialog();
         dialog.setModalityType(Dialog.ModalityType.MODELESS);
-        dialog.setAlwaysOnTop(true);
         dialog.add(scroll, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
         final JButton button = new JButton(SwingAction.of("OK", event -> {
