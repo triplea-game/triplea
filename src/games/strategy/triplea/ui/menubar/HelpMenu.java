@@ -162,7 +162,8 @@ public class HelpMenu {
 
 
   private void addUnitHelpMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Unit Help", e -> {
+    final String unitHelpTitle = "Unit Help";
+    parentMenu.add(SwingAction.of(unitHelpTitle, e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
@@ -184,11 +185,7 @@ public class HelpMenu {
                   : (scroll.getPreferredSize().width > availWidth
                       ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
                       : scroll.getPreferredSize().height))));
-      final JDialog dialog = new JDialog();
-      dialog.setModal(false);
-      // needs java 1.6 at least...
-      // dialog.setModalityType(ModalityType.MODELESS);
-      dialog.setAlwaysOnTop(true);
+      final JDialog dialog = SwingComponents.newJDialog(unitHelpTitle);
       dialog.add(scroll, BorderLayout.CENTER);
       final JPanel buttons = new JPanel();
       final JButton button = new JButton(SwingAction.of("OK", event -> {
@@ -226,11 +223,11 @@ public class HelpMenu {
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
-      parentMenu.add(SwingAction.of("Game Notes", e -> SwingUtilities.invokeLater(() -> {
+      final String gameNotesTitle = "Game Notes";
+      parentMenu.add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        final JDialog dialog = new JDialog();
-        dialog.setModalityType(Dialog.ModalityType.MODELESS);
+        final JDialog dialog = SwingComponents.newJDialog(gameNotesTitle);
         dialog.add(scroll, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
         final JButton button = new JButton(SwingAction.of("OK", event -> {
