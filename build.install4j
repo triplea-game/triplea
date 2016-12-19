@@ -22,7 +22,6 @@
       <mountPoint id="28" root="" location="assets" mode="755" />
       <mountPoint id="23" root="" location="bin" mode="755" />
       <mountPoint id="27" root="" location="dice_servers" mode="755" />
-      <mountPoint id="30" root="" location="doc" mode="755" />
       <mountPoint id="26" root="" location="icons" mode="755" />
       <mountPoint id="31" root="" location="maps" mode="755" />
       <mountPoint id="25" root="" location="old" mode="755" />
@@ -34,9 +33,6 @@
       </dirEntry>
       <fileEntry mountPoint="23" file="build/libs/all/triplea.jar" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <dirEntry mountPoint="27" file="dice_servers" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="dice_servers" excludeSuffixes="" dirMode="755" overrideDirMode="false">
-        <exclude />
-      </dirEntry>
-      <dirEntry mountPoint="30" file="./build/assets/doc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="doc" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
       <dirEntry mountPoint="26" file="./build/assets/icons" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="icons" excludeSuffixes="" dirMode="755" overrideDirMode="false">
