@@ -64,6 +64,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -276,7 +277,7 @@ public class WW2V3_41_Test {
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
     addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
-    final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data));
+    final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data), IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
   }
 
@@ -676,7 +677,7 @@ public class WW2V3_41_Test {
     // Get the number of units before placing
     int preCount = kiangsu.getUnits().getUnitCount();
     // Place the infantry
-    String response = placeDelegate.placeUnits(getUnits(map, chinese), kiangsu);
+    String response = placeDelegate.placeUnits(getUnits(map, chinese), kiangsu, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
     assertEquals(preCount + 1, kiangsu.getUnits().getUnitCount());
     /*
@@ -689,7 +690,7 @@ public class WW2V3_41_Test {
     // Get the number of units before placing
     preCount = yunnan.getUnits().getUnitCount();
     // Place the infantry
-    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);
+    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
     final int midCount = yunnan.getUnits().getUnitCount();
     // Make sure they were all placed
@@ -700,7 +701,7 @@ public class WW2V3_41_Test {
     map = new IntegerMap<>();
     map.add(infantryType, 1);
     addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)), m_data);
-    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);
+    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertError(response);
     // Make sure none were placed
     final int postCount = yunnan.getUnits().getUnitCount();

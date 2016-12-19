@@ -615,7 +615,7 @@ public class ProBidAI {
     for (final Unit unit : toPlace) {
       final List<Unit> unitList = new ArrayList<>();
       unitList.add(unit);
-      final String message = del.placeUnits(unitList, t);
+      final String message = del.placeUnits(unitList, t, IAbstractPlaceDelegate.BidMode.BID);
       if (message != null) {
         ProLogger.warn(message);
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);

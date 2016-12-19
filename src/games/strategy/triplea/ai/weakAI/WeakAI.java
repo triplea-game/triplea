@@ -1091,7 +1091,7 @@ public class WeakAI extends AbstractAI {
   }
 
   private void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
-    final String message = del.placeUnits(new ArrayList<>(toPlace), where);
+    final String message = del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
     if (message != null) {
       s_logger.fine(message);
       s_logger.fine("Attempt was at:" + where + " with:" + toPlace);
