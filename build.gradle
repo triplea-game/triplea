@@ -118,9 +118,6 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 			into(folder)
 		}
 	}
-	from("${assetsDirectory}/doc") {
-		into('doc')
-	}
 	from("${assetsDirectory}/icons") {
 		into('icons')
 		exclude("icon.icns")
