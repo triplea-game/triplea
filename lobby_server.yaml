@@ -2,6 +2,11 @@
   host: 45.79.144.53
   port: 3304
   message: |
+    LOBBY MAINTENANCE NOTICE
+    The lobby will be down for upgrades on Thursday 05:00 UTC (Wednesday 21:00 PST, Thursday 0:00 EST)
+    The lobby should be up after about an hour.
+    To follow the status of the upgrade, see: https://github.com/triplea-game/triplea/issues/1405
+    
     Welcome to TripleA 1.9 - Help menu has useful links for getting started
     Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
     
