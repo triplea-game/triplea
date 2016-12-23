@@ -22,9 +22,7 @@
       <mountPoint id="28" root="" location="assets" mode="755" />
       <mountPoint id="23" root="" location="bin" mode="755" />
       <mountPoint id="27" root="" location="dice_servers" mode="755" />
-      <mountPoint id="30" root="" location="doc" mode="755" />
       <mountPoint id="26" root="" location="icons" mode="755" />
-      <mountPoint id="29" root="" location="license" mode="755" />
       <mountPoint id="31" root="" location="maps" mode="755" />
       <mountPoint id="25" root="" location="old" mode="755" />
       <mountPoint id="22" root="" location="" mode="755" />
@@ -37,13 +35,7 @@
       <dirEntry mountPoint="27" file="dice_servers" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="dice_servers" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <dirEntry mountPoint="30" file="./build/assets/doc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="doc" excludeSuffixes="" dirMode="755" overrideDirMode="false">
-        <exclude />
-      </dirEntry>
       <dirEntry mountPoint="26" file="./build/assets/icons" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="icons" excludeSuffixes="" dirMode="755" overrideDirMode="false">
-        <exclude />
-      </dirEntry>
-      <dirEntry mountPoint="29" file="license" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="license" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
       <dirEntry mountPoint="31" file="maps" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="maps" excludeSuffixes="" dirMode="755" overrideDirMode="false">
@@ -52,8 +44,6 @@
       <dirEntry mountPoint="25" file="old" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="old" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <fileEntry mountPoint="22" file="changelog.txt" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
-      <fileEntry mountPoint="22" file="readme.html" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <fileEntry mountPoint="22" file="./game_engine.properties" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
     </entries>
     <components />
@@ -73,41 +63,6 @@
         <classPath>
           <archive location="bin/triplea.jar" failOnError="false" />
         </classPath>
-        <nativeLibraryDirectories />
-        <vmOptions />
-      </java>
-      <includedFiles />
-      <unextractableFiles />
-      <vmOptionsFile mode="template" overwriteMode="0" fileMode="644">
-        <content />
-      </vmOptionsFile>
-      <customScript mode="1" file="">
-        <content />
-      </customScript>
-      <infoPlist mode="1" file="">
-        <content />
-      </infoPlist>
-      <iconImageFiles>
-        <file path="./build/assets/icons/triplea_icon_16_16.png" />
-        <file path="./build/assets/icons/triplea_icon_32_32.png" />
-        <file path="./build/assets/icons/triplea_icon_48_48.png" />
-        <file path="./build/assets/icons/triplea_icon_64_64.png" />
-        <file path="./build/assets/icons/triplea_icon_128_128.png" />
-        <file path="./build/assets/icons/triplea_icon_256_256.png" />
-      </iconImageFiles>
-    </launcher>
-    <launcher name="triplea-headless" id="39" customizedId="" external="false" excludeFromMenu="false" unixMode="755" menuName="triplea-headless${compiler:sys.version}" icnsFile="" customMacBundleIdentifier="false" macBundleIdentifier="" swtApp="false" fileset="" macBundleBinary="JavaApplicationStub" addMacEntitlements="false" macEntitlementsFile="" useCustomMacosExecutableName="false" customMacosExecutableName="" useJavaMinVersionOverride="false" javaMinVersionOverride="" useJavaMaxVersionOverride="false" javaMaxVersionOverride="">
-      <executable name="triplea-headless" type="1" iconSet="true" iconFile="" executableDir="" redirectStderr="true" stderrFile="error_headless.log" stderrMode="append" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="2" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false">
-        <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" />
-      </executable>
-      <splashScreen show="false" width="0" height="0" bitmapFile="" windowsNative="false" textOverlay="false">
-        <text>
-          <statusLine x="20" y="20" text="" fontSize="8" fontColor="0,0,0" bold="false" />
-          <versionLine x="20" y="40" text="version ${compiler:sys.version}" fontSize="8" fontColor="0,0,0" bold="false" />
-        </text>
-      </splashScreen>
-      <java mainClass="games.strategy.engine.framework.headlessGameServer.HeadlessGameServer" vmParameters="-server -Xmx256m -Djava.awt.headless=true" arguments="triplea.game.host.console=true triplea.game.host.ui=false triplea.game= triplea.server=true triplea.port=3304 triplea.lobby.host=173.255.229.134 triplea.lobby.port=3303 triplea.name=Bot1_YourServerName triplea.lobby.game.hostedBy=Bot1_YourServerName triplea.lobby.game.supportEmail=yourEmailName(AT)emailProvider.com triplea.lobby.game.comments=&quot;automated_host&quot;" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
-        <classPath />
         <nativeLibraryDirectories />
         <vmOptions />
       </java>

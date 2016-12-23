@@ -33,6 +33,10 @@ Map Making
 Instructions and more: https://github.com/triplea-game/triplea/tree/master/docs/map_making
 Beyond experimental maps:  https://github.com/triplea-game/triplea/wiki/Broken-Maps
 
+Lobby Game Bot Hosting
+======================
+- Please see: https://github.com/triplea-game/lobby#run-hosted-bots
+
 
 Development 
 ===========
@@ -105,14 +109,8 @@ More documentation on how build system is configured can be found in  the [/docs
 Task and Issue Tracking
 ========================
 
-* Discussion - technical discussions, anything non-technical should be pushed to forum
-* Feature Backlog - prioritized list of potential features
-* Bug Backlog - prioritized list of bugs to fix
-* Infra/Code Backlog - prioritized list of build, infra, code improvement, process, misc issues
-* Next Release - what we are currently targeting for the next release (anything in progress should have an assignee)
+Github issues is used as a ticketing system. This includes task tracking, as well as communication and decision making.
 
-Every issue should get a tag identifying whether it is a discussion, feature, bug, infra/code (couple of tags here). We then have tags to categorize the portion of TripleA experience it affects such as UI, performance, AI, game play/rules, map support, etc.
+We use labels to keep issues categorized: https://github.com/triplea-game/triplea/wiki/Issue-Labelling
 
-For the most part each issue should end up with 2 tags with 1 from each list (sometimes it might not get a second tag or have multiple tags from the second list).
-
-For background and discussion, please see: See: https://github.com/triplea-game/triplea/issues/1059
+Labels have 'tiers'. We'll have one set of labels to broadly categorize issues, and then often more labels to help refine those categories. So we might have something like "Bug + UI related" to indicate there is a bug in the game graphics. Or we may have "Bug + Game Rules" to indicate there is a bug in how the game rules are played out. As yet another example, we may have "Feature Back Log + UI" to track an improvement to the UI (basically these would be ideas of how to make the UI better).

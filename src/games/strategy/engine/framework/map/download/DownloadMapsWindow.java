@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
@@ -296,7 +295,8 @@ public class DownloadMapsWindow extends JFrame {
     final String DOUBLE_SPACE = "&nbsp;&nbsp;";
 
     final long mapSize;
-    String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion() + DOUBLE_SPACE + " (";
+    String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion();
+    
     if (action == MapAction.INSTALL) {
       if(map.newURL() == null ) {
        mapSize = 0L;
@@ -306,7 +306,12 @@ public class DownloadMapsWindow extends JFrame {
     } else {
       mapSize = map.getInstallLocation().length();
     }
-    labelText += createSizeLabel(mapSize) + ")<br/>";
+
+    if (mapSize > 0) {
+      labelText += DOUBLE_SPACE + " (" + createSizeLabel(mapSize) + ")";
+    }
+    
+    labelText += "<br/>";
 
     if (action == MapAction.INSTALL) {
       labelText += map.getUrl();
