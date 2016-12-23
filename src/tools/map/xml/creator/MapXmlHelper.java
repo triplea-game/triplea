@@ -299,6 +299,10 @@ public class MapXmlHelper {
     MapXmlHelper.mapXmlData.setMapXMLFile(mapXMLFile);
   }
 
+  static void setMapXmlData(final MapXmlData mapXmlData) {
+    MapXmlHelper.mapXmlData = mapXmlData;
+  }
+
   private static MapXmlData mapXmlData = new MapXmlData();
 
   static void putXmlStrings(final String key, final String value) {
@@ -966,7 +970,7 @@ public class MapXmlHelper {
       final Element property = doc.createElement(XML_NODE_NAME_PROPERTY);
       property.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, XML_ATTR_VALUE_PROPERTY_NAME_NOTES);
       final Element propertyValue = doc.createElement(XML_NODE_NAME_VALUE);
-      propertyValue.setTextContent(getNotes());
+      propertyValue.appendChild(doc.createCDATASection(getNotes()));
       property.appendChild(propertyValue);
       propertyList.appendChild(property);
     }
