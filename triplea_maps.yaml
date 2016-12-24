@@ -277,7 +277,7 @@
 - mapName: World War II v3
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v3/archive/master.zip
-  version: 2
+  version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1941_mini.png
   description: |
     <br>
@@ -299,7 +299,7 @@
 - mapName: World War II Pacific
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_pacific/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2_pacific_1940_mini.png
   description: |
     <br>
@@ -319,7 +319,7 @@
 - mapName: World War II Europe
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_europe/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2_europe_1940_mini.png
   description: |
     <br>
@@ -375,7 +375,7 @@
 - mapName: World War II v6 1941
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_v6_1941/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v6_1941_mini.png
   description: |
     <br>Simplified version of the WWIIv5 1942 scenario, with fewer territories, starting units and income.
@@ -1069,7 +1069,7 @@
 - mapName: WW2v3_11N
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v3_11n/archive/master.zip
-  version: 2
+  version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png
   description: |
     <br>World War II v3 11 Nation Mod
