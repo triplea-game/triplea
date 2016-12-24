@@ -140,10 +140,10 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
-import games.strategy.triplea.ui.menubar.ExportMenu;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -1735,7 +1735,7 @@ public class TripleAFrame extends MainGameFrame {
 
       @Override
       public void actionPerformed(final ActionEvent ae) {
-        ExportMenu.saveScreenshot(historyPanel.getCurrentPopupNode(), TripleAFrame.this, data);
+        ScreenshotExporter.exportScreenshot(TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
         historyPanel.clearCurrentPopupNode();
       }
     });
