@@ -1,5 +1,7 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
@@ -9,10 +11,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -36,14 +44,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
+  private static final String PERIOD = ".";
 
   public static JTabbedPane newJTabbedPane() {
     return new JTabbedPaneWithFixedWidthTabs();
@@ -278,5 +293,125 @@ public class SwingComponents {
     final JMenu menu = new JMenu(menuTitle);
     menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
     return menu;
+  }
+
+  /**
+   * Displays a file chooser from which the user can select a file to save.
+   *
+   * <p>
+   * The user will be asked to confirm the save if the selected file already exists.
+   * </p>
+   *
+   * @param parent Determines the {@code Frame} in which the dialog is displayed; if {@code null}, or if {@code parent}
+   *        has no {@code Frame}, a default {@code Frame} is used.
+   * @param fileExtension The extension of the file to save, with or without a leading period; must not be {@code null}.
+   *        This extension will be automatically appended to the file name if not present.
+   * @param fileExtensionDescription The description of the file extension to be displayed in the file chooser; must not
+   *        be {@code null}.
+   *
+   * @return The file selected by the user or empty if the user aborted the save; never {@code null}.
+   */
+  public static Optional<File> promptSaveFile(final Component parent, final String fileExtension,
+      final String fileExtensionDescription) {
+    checkNotNull(fileExtension);
+    checkNotNull(fileExtensionDescription);
+
+    final JFileChooser fileChooser = new JFileChooser() {
+      private static final long serialVersionUID = -136588718021703367L;
+
+      @Override
+      public void approveSelection() {
+        final File file = appendExtensionIfAbsent(getSelectedFile(), fileExtension);
+        setSelectedFile(file);
+        if (file.exists()) {
+          final int result = JOptionPane.showConfirmDialog(
+              parent,
+              String.format("A file named \"%s\" already exists. Do you want to replace it?", file.getName()),
+              "Confirm Save",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
+          if (result != JOptionPane.YES_OPTION) {
+            return;
+          }
+        }
+
+        super.approveSelection();
+      }
+    };
+
+    final String fileExtensionWithoutLeadingPeriod = extensionWithoutLeadingPeriod(fileExtension);
+    final FileFilter fileFilter = new FileNameExtensionFilter(
+        String.format("%s, *.%s", fileExtensionDescription, fileExtensionWithoutLeadingPeriod),
+        fileExtensionWithoutLeadingPeriod);
+    fileChooser.setFileFilter(fileFilter);
+
+    final int result = fileChooser.showSaveDialog(parent);
+    return (result == JFileChooser.APPROVE_OPTION) ? Optional.of(fileChooser.getSelectedFile()) : Optional.empty();
+  }
+
+  @VisibleForTesting
+  static File appendExtensionIfAbsent(final File file, final String extension) {
+    final String extensionWithLeadingPeriod = extensionWithLeadingPeriod(extension);
+    if (file.getName().toLowerCase().endsWith(extensionWithLeadingPeriod.toLowerCase())) {
+      return file;
+    }
+
+    return new File(file.getParentFile(), file.getName() + extensionWithLeadingPeriod);
+  }
+
+  @VisibleForTesting
+  static String extensionWithLeadingPeriod(final String extension) {
+    return extension.isEmpty() || extension.startsWith(PERIOD) ? extension : PERIOD + extension;
+  }
+
+  @VisibleForTesting
+  static String extensionWithoutLeadingPeriod(final String extension) {
+    return extension.startsWith(PERIOD) ? extension.substring(PERIOD.length()) : extension;
+  }
+
+  /**
+   * Runs the specified task on a background thread while displaying a progress dialog.
+   *
+   * @param<T> The type of the task result.
+   *
+   * @param frame The {@code Frame} from which the progress dialog is displayed or {@code null} to use a shared, hidden
+   *        frame as the owner of the progress dialog.
+   * @param message The message to display in the progress dialog; must not be {@code null}.
+   * @param task The task to be executed; must not be {@code null}.
+   *
+   * @return A promise that resolves to the result of the task; never {@code null}.
+   */
+  public static <T> CompletableFuture<T> runWithProgressBar(
+      final Frame frame,
+      final String message,
+      final Callable<T> task) {
+    checkNotNull(message);
+    checkNotNull(task);
+
+    final CompletableFuture<T> promise = new CompletableFuture<>();
+    final SwingWorker<T, ?> worker = new SwingWorker<T, Void>() {
+      @Override
+      protected T doInBackground() throws Exception {
+        return task.call();
+      }
+
+      @Override
+      protected void done() {
+        try {
+          promise.complete(get());
+        } catch (final ExecutionException e) {
+          promise.completeExceptionally(e.getCause());
+        } catch (final InterruptedException e) {
+          promise.completeExceptionally(e);
+          // TODO: consider if re-interrupting the thread is the right thing to do when we can't throw
+          // InterruptedException (see https://www.ibm.com/developerworks/library/j-jtp05236/)
+          ClientLogger.logQuietly(e);
+        }
+      }
+    };
+    final ProgressDialog progressDialog = new ProgressDialog(frame, message);
+    worker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(progressDialog));
+    worker.execute();
+    return promise;
   }
 }

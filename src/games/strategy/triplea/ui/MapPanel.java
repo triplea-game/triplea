@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -461,11 +463,17 @@ public class MapPanel extends ImageScrollerLargeView {
     super.setTopLeft(x, y);
   }
 
-  // this one is useful for screenshots
-  @Override
-  public void print(final Graphics g) {
-    final Graphics2D g2d = (Graphics2D) g;
-    super.print(g2d);
+  /**
+   * Draws an image of the complete map to the specified graphics context.
+   *
+   * <p>
+   * This method is useful for capturing screenshots. This method can be called from a thread other than the EDT.
+   * </p>
+   *
+   * @param g The graphics context on which to draw the map; must not be {@code null}.
+   */
+  public void drawMapImage(final Graphics g) {
+    final Graphics2D g2d = (Graphics2D) checkNotNull(g);
     // make sure we use the same data for the entire print
     final GameData gameData = m_data;
     final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
