@@ -7,7 +7,7 @@ Installing TripleA and Playing
 
 TripleA Websites
 ================
-- HomePage: http://triplea-game.github.io/
+- HomePage: http://www.triplea-game.org/
 - Community Website: http://www.tripleawarclub.org/
 - Community Maps Repository: http://github.com/triplea-maps
 - Source Forge (legacy): https://sourceforge.net/projects/triplea/
