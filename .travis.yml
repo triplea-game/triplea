@@ -60,6 +60,7 @@ deploy:
   prerelease: true
   on:
     tags: false
+    repo: triplea-game/triplea
     branches:
       only:
         - master
