@@ -130,7 +130,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     } else if (name.endsWith("Battle")) {
       battle();
     } else if (name.endsWith("Place")) {
-      place(GameStepPropertiesHelper.isBid(getGameData()));
+      place();
     } else if (name.endsWith("Politics")) {
       politics(true);
     } else if (name.endsWith("UserActions")) {
@@ -489,7 +489,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
   }
 
-  private void place(final boolean bid) {
+  private void place() {
+    boolean bid = GameStepPropertiesHelper.isBid(getGameData());
     if (getPlayerBridge().isGameOver()) {
       return;
     }
@@ -520,7 +521,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           continue;
         }
       }
-      final String error = placeDel.placeUnits(placeData.getUnits(), placeData.getAt());
+      final String error = placeDel.placeUnits(placeData.getUnits(), placeData.getAt(),
+          bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID);
       if (error != null) {
         ui.notifyError(error);
       }

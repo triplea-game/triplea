@@ -126,7 +126,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static void helpPage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.WEBSITE_HELP);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
 
 

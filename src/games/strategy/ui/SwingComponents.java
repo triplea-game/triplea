@@ -39,6 +39,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
@@ -83,6 +84,11 @@ public class SwingComponents {
     return group;
   }
 
+  public static JDialog newJDialog(String title) {
+    JDialog dialog = new JDialog(MainFrame.getInstance(), title);
+    dialog.setModal(false);
+    return dialog;
+  }
 
   public static class ModalJDialog extends JDialog {
     private static final long serialVersionUID = -3953716954531215173L;
@@ -250,7 +256,8 @@ public class SwingComponents {
   }
 
   public static void showDialog(final String title, final String message) {
-    JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, title,
+        JOptionPane.INFORMATION_MESSAGE));
   }
 
 
