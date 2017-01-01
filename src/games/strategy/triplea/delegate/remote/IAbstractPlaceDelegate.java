@@ -14,8 +14,15 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
    *        territory to place
    * @return an error code if the placement was not successful
    */
-  String placeUnits(Collection<Unit> units, Territory at);
+  String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
+  default String placeUnits(Collection<Unit> units, Territory at) {
+    return placeUnits(units, at, BidMode.NOT_BID);
+  }
+
+  enum BidMode {
+    BID, NOT_BID
+  }
   /**
    * Query what units can be produced in a given territory.
    * ProductionResponse may indicate an error string that there

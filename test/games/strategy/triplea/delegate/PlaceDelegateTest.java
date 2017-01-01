@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,13 +55,13 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testValid() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = m_delegate.placeUnits(getUnits(map, british), uk);
+    final String response = m_delegate.placeUnits(getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
   }
 
   @Test
   public void testNotCorrectUnitsValid() {
-    final String response = m_delegate.placeUnits(infantry.create(3, british), uk);
+    final String response = m_delegate.placeUnits(infantry.create(3, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertError(response);
   }
 
@@ -84,7 +85,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testLandCanGoInLandZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = m_delegate.placeUnits(getUnits(map, british), uk);
+    final String response = m_delegate.placeUnits(getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
   }
 

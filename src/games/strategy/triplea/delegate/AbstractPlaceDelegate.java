@@ -31,11 +31,15 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 /**
  * Logic for placing units.
@@ -175,7 +179,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return null;
   }
 
-  protected void updateUndoablePlacementIndexes() {
+  private void updateUndoablePlacementIndexes() {
     for (int i = 0; i < m_placements.size(); i++) {
       m_placements.get(i).setIndex(i);
     }
@@ -193,7 +197,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   @Override
-  public String placeUnits(final Collection<Unit> units, final Territory at) {
+  public String placeUnits(final Collection<Unit> units, final Territory at, BidMode bidMode) {
     if (units == null || units.isEmpty()) {
       return null;
     }
@@ -201,20 +205,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (error != null) {
       return error;
     }
-    performPlace(new ArrayList<>(units), at, m_player);
-    return null;
-  }
-
-  protected void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player) {
     // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " +
     // player.getName());
-    final List<Territory> producers = getAllProducers(at, player, units);
-    Collections.sort(producers, getBestProducerComparator(at, units, player));
+    final List<Territory> producers = getAllProducers(at, m_player, units);
+    producers.sort(getBestProducerComparator(at, units, m_player));
     // System.out.println("Producers: " + producers);
-    final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, player, true);
+    final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, m_player, true);
     // System.out.println("Max Place Map: " + maxPlaceableMap);
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
-    Collections.sort(unitsLeftToPlace, getUnitConstructionComparator());
+    unitsLeftToPlace.sort(getUnitConstructionComparator());
     // sort both producers and units so that the "to/at" territory comes first, and so that all constructions come first
     // this is because the PRODUCER for ALL CONSTRUCTIONS must be the SAME as the TERRITORY they are going into
     for (final Territory producer : producers) {
@@ -222,45 +221,53 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         break;
       }
       // units may have special restrictions like RequiresUnits
-      final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
-          ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
-          : new ArrayList<>(unitsLeftToPlace));
-      Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions(true));
-      final int maxPlaceable = maxPlaceableMap.getInt(producer);
-      // System.out.println("Max Placeable: " + maxPlaceable + " for this producer: " + producer);
-      if (maxPlaceable == 0) {
-        continue;
+
+      final List<Unit> unitsCanBePlacedByThisProducer;
+      if(bidMode == BidMode.BID) {
+        unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
+      } else {
+        unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
+            ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
+            : new ArrayList<>(unitsLeftToPlace));
       }
-      final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
-      // System.out.println("Max Units to be placed from this producer: " + maxForThisProducer);
+
+      unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
+
+      int maxPlaceable = maxPlaceableMap.getInt(producer);
+      if (maxPlaceable == 0 && bidMode == BidMode.NOT_BID) {
+        continue;
+      } else if(maxPlaceable == 0) {
+        maxPlaceable = 1;
+      }
+
+      final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
       // don't forget that -1 == infinite
       if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size()) {
-        performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, player);
+        performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
         unitsLeftToPlace.removeAll(unitsCanBePlacedByThisProducer);
         continue;
       }
       final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
-      // System.out.println("Needs Extra: " + neededExtra);
       if (maxPlaceable > maxForThisProducer) {
-        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
+        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, m_player);
         final int newMaxForThisProducer =
-            getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
+            getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
           throw new IllegalStateException("getMaxUnitsToBePlaced originally returned: " + maxPlaceable
-              + ", \r\nWhich is not the same as it is returning after using freePlacementCapacity: "
-              + newMaxForThisProducer + ", \r\nFor territory: " + at.getName() + ", Current Producer: "
-              + producer.getName() + ", All Producers: " + producers + ", \r\nUnits Total: "
+              + ", \nWhich is not the same as it is returning after using freePlacementCapacity: "
+              + newMaxForThisProducer + ", \nFor territory: " + at.getName() + ", Current Producer: "
+              + producer.getName() + ", All Producers: " + producers + ", \nUnits Total: "
               + MyFormatter.unitsToTextNoOwner(units) + ", Units Left To Place By This Producer: "
               + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
         }
       }
       final Collection<Unit> placedUnits =
           Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.getAlwaysMatch());
-      performPlaceFrom(producer, placedUnits, at, player);
+      performPlaceFrom(producer, placedUnits, at, m_player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
     if (!unitsLeftToPlace.isEmpty()) {
-      throw new IllegalStateException("Not all units placed in: " + at.getName() + " units: " + unitsLeftToPlace);
+      SwingComponents.showDialog("Too many units placed", "Placed above max placement");
     }
     // play a sound
     if (Match.someMatch(units, Matches.UnitIsInfrastructure)) {
@@ -271,8 +278,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player);
     } else {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, m_player);
-      // System.out.println("");
     }
+    return null;
   }
 
   /**
@@ -827,10 +834,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Territory> listedTerrs = getListedTerritories(terrs);
       if (listedTerrs.contains(to)) {
         return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
-      }
-      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
-        return "Cannot place these units in " + to.getName()
-            + " as territory does not contain required units at start of turn";
       }
       if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
           && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {

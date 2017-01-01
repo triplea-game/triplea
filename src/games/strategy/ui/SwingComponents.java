@@ -256,7 +256,8 @@ public class SwingComponents {
   }
 
   public static void showDialog(final String title, final String message) {
-    JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, title,
+        JOptionPane.INFORMATION_MESSAGE));
   }
 
 
