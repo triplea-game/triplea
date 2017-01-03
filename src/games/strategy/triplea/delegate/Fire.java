@@ -55,12 +55,13 @@ public class Fire implements IExecutable {
       final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     /*
-     * This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
-     * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back
-     * to:
+     * This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing (unless they
+     * have more than one hit point). If, in the future, Infrastructure or other things could be taken casualty, then
+     * this will need to be changed back to:
      * m_attackableUnits = attackableUnits;
      */
-    m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsNotInfrastructure);
+    m_attackableUnits = Match.getMatches(attackableUnits,
+    	new CompositeMatchOr<Unit>(Matches.UnitIsNotInfrastructure, Matches.UnitHasMoreThanOneHitPointTotal));
     m_canReturnFire = canReturnFire;
     m_firingUnits = firingUnits;
     m_stepName = stepName;
