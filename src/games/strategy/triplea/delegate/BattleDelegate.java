@@ -100,17 +100,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       addBombardmentSources();
       m_needToAddBombardmentSources = false;
     }
-    raids();
-  }
-
-  private void raids() {
-    // Remove air raids - this adds all the bombing raids to the battle tracker
-    for( final Territory t : m_battleTracker.getPendingSBRSites() ) {
-      final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
-      if( airRaid != null ) {
-        airRaid.fight(m_bridge);        // Can't add it to the list of battles because the bombing raid wouldn't then be able to be added
-      }
-    }
+    m_battleTracker.raids(m_bridge);
   }
 
   /**

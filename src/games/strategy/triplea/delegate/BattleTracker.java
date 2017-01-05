@@ -1084,12 +1084,22 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
+  public void raids(final IDelegateBridge m_bridge) {
+    // Remove air raids - this adds all the bombing raids to the battle tracker
+    for( final Territory t : getPendingSBRSites() ) {
+      final IBattle airRaid = getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
+      if( airRaid != null ) {
+        airRaid.fight(m_bridge);
+      }
+    }
+  }
+
   @Override
   public String toString() {
     return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:"
         + m_foughBattles + "\n" + "Pending:" + m_pendingBattles;
   }
-  
+
   /**
    * @return a collection of territories where strategic bombing raid battles are pending
    */
