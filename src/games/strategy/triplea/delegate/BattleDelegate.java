@@ -103,6 +103,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     raids();
   }
 
+  private void raids() {
+    // Remove air raids - this adds all the bombing raids to the battle tracker
+    for( final Territory t : m_battleTracker.getPendingSBRSites() ) {
+      final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
+      if( airRaid != null ) {
+        airRaid.fight(m_bridge);        // Can't add it to the list of battles because the bombing raid wouldn't then be able to be added
+      }
+    }
+  }
+
   /**
    * Called before the delegate will stop running.
    */
@@ -1067,16 +1077,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (!change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Cleaning up after air battles");
       m_bridge.addChange(change);
-    }
-  }
-
-  private void raids() {
-    // Remove air raids - this adds all the bombing raids to the battle tracker
-    for( final Territory t : m_battleTracker.getPendingSBRSites() ) {
-      final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
-      if( airRaid != null ) {
-        airRaid.fight(m_bridge);        // Can't add it to the list of battles because the bombing raid wouldn't then be able to be added
-      }
     }
   }
 
