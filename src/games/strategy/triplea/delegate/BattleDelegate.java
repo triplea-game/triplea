@@ -1070,6 +1070,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
   }
 
+  private void raids() {
+    // Remove air raids - this adds all the bombing raids to the battle tracker
+    for( final Territory t : m_battleTracker.getPendingSBRSites() ) {
+      final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
+      if( airRaid != null ) {
+        airRaid.fight(m_bridge);        // Can't add it to the list of battles because the bombing raid wouldn't then be able to be added
+      }
+    }
+  }
+
   private void checkDefendingPlanesCanLand() {
     final GameData data = getData();
     final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = m_battleTracker.getDefendingAirThatCanNotLand();
@@ -1596,16 +1606,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public IBattle getCurrentBattle() {
     return m_currentBattle;
-  }
-
-  protected void raids() {
-    // Remove air raids - this adds all the bombing raids to the battle tracker
-    for( final Territory t : m_battleTracker.getPendingSBRSites() ) {
-      final IBattle airRaid = m_battleTracker.getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
-      if( airRaid != null ) {
-        airRaid.fight(m_bridge);        // Can't add it to the list of battles because the bombing raid wouldn't then be able to be added
-      }
-    }
   }
 }
 
