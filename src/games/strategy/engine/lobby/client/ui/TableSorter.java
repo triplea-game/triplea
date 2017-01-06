@@ -79,7 +79,6 @@ class TableSorter extends AbstractTableModel {
       (Comparator<Object>) (o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);
   private static final Comparator<Object> LEXICAL_COMPARATOR =
       (Comparator<Object>) (o1, o2) -> o1.toString().compareTo(o2.toString());
-  private Row[] viewToModel;
   private int[] modelToView;
   private JTableHeader tableHeader;
   private final MouseListener mouseListener;
@@ -98,7 +97,6 @@ class TableSorter extends AbstractTableModel {
   }
 
   private void clearSortingState() {
-    viewToModel = null;
     modelToView = null;
   }
 
@@ -195,15 +193,15 @@ class TableSorter extends AbstractTableModel {
   }
 
   private Row[] getViewToModel() {
-      final int tableModelRowCount = tableModel.getRowCount();
-      Row[] viewToModelRows = new Row[tableModelRowCount];
-      for (int row = 0; row < tableModelRowCount; row++) {
-        viewToModelRows[row] = new Row(row);
-      }
-      if (isSorting()) {
-        Arrays.sort(viewToModelRows);
-      }
-      return viewToModelRows;
+    final int tableModelRowCount = tableModel.getRowCount();
+    Row[] viewToModelRows = new Row[tableModelRowCount];
+    for (int row = 0; row < tableModelRowCount; row++) {
+      viewToModelRows[row] = new Row(row);
+    }
+    if (isSorting()) {
+      Arrays.sort(viewToModelRows);
+    }
+    return viewToModelRows;
   }
 
   int modelIndex(final int viewIndex) {

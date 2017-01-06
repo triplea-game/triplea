@@ -38,9 +38,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
 /**
  * Logic for placing units.
  * <p>
