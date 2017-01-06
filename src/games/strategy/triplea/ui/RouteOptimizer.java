@@ -64,7 +64,6 @@ public class RouteOptimizer {
       result.add(closestPoint);
       previousPoint = closestPoint;
     }
-    System.out.println("End");
     endPoint = result.get(result.size() - 1);
     return result.toArray(new Point[result.size()]);
   }
