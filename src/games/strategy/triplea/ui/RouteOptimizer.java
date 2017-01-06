@@ -18,10 +18,6 @@ public class RouteOptimizer {
 
   private final MapPanel mapPanel;
 
-  private static final int maxAdditionalScreens = 8;
-  private static final int commonAdditionalScreens = 2;
-  private static final int minAdditionalScreens = 0;
-
   private Point endPoint;
   private int mapWidth;
   private int mapHeight;
@@ -75,7 +71,7 @@ public class RouteOptimizer {
    * @param pool Point2D List with all possible options
    * @return the closest point in the Pool to the source
    */
-  private Point getClosestPoint(Point source, List<Point2D> pool) {
+  public static Point getClosestPoint(Point source, List<Point2D> pool) {
     double closestDistance = Double.MAX_VALUE;
     Point closestPoint = null;
     for (Point2D possibleClosestPoint : pool) {
@@ -101,7 +97,9 @@ public class RouteOptimizer {
    * @return A List of all possible Points depending in map Properties
    *         size may vary
    */
-  private List<Point2D> getPossiblePoints(Point2D point) {
+  public List<Point2D> getPossiblePoints(Point2D point) {
+    mapWidth = mapPanel.getImageWidth();
+    mapHeight = mapPanel.getImageHeight();
     List<Point2D> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {
@@ -141,67 +139,30 @@ public class RouteOptimizer {
   }
 
   /**
-   * Gives a List of Point arrays (Routes) which are the offset equivalent of the given points
-   * Size may vary depending on MapProperties
-   * 
-   * @param points A Point array
-   * @return Offset Point Arrays
-   */
-  private List<Point[]> getAlternativePoints(Point... points) {
-    List<Point[]> alternativePoints = new ArrayList<>();
-    if (isInfiniteX || isInfiniteY) {
-      int altArrayCount = getAlternativePointArrayCount();
-      for (int i = 0; i < altArrayCount; i++) {
-        alternativePoints.add(new Point[points.length]);
-      }
-      int counter = 0;
-      for (Point point : points) {
-        if (isInfiniteX) {
-          alternativePoints.get(0)[counter] = new Point(point.x - mapWidth, point.y);
-          alternativePoints.get(1)[counter] = new Point(point.x + mapWidth, point.y);
-        }
-        if (isInfiniteY) {
-          int index = altArrayCount == maxAdditionalScreens ? 2 : 0;
-          alternativePoints.get(index)[counter] = new Point(point.x, point.y - mapHeight);
-          alternativePoints.get(index + 1)[counter] = new Point(point.x, point.y + mapHeight);
-        }
-        if (isInfiniteX && isInfiniteY) {
-          alternativePoints.get(4)[counter] = new Point(point.x - mapWidth, point.y - mapHeight);
-          alternativePoints.get(5)[counter] = new Point(point.x - mapWidth, point.y + mapHeight);
-          alternativePoints.get(6)[counter] = new Point(point.x + mapWidth, point.y - mapHeight);
-          alternativePoints.get(7)[counter] = new Point(point.x + mapWidth, point.y + mapHeight);
-        }
-        counter++;
-      }
-    }
-    return alternativePoints;
-  }
-
-  /**
    * Same as getAlternativePoints, but adds the given Points in
    * 
    * @param points A Point array
    * @return Offset Point Arrays including points
    */
   public List<Point[]> getAllPoints(Point... points) {
-    List<Point[]> allPoints = getAlternativePoints(points);
-    allPoints.add(points);
-    return allPoints;
-  }
-
-  /**
-   * A helper Method to determine how many possible screens to render the Route on there are
-   * 
-   * @return InfiniteX or InfiniteY scrolling multiply 1 each by 3...
-   *         we are not counting the obligatory first screen in...
-   */
-  private int getAlternativePointArrayCount() {
-    if (isInfiniteX && isInfiniteY) {
-      return maxAdditionalScreens;
-    } else if (isInfiniteX || isInfiniteY) {
-      return commonAdditionalScreens;
+    if (points.length > 0) {
+      List<Point[]> allPoints = new ArrayList<>();
+      List<List<Point2D>> list = new ArrayList<>();
+      for (Point routePoint : points) {
+        list.add(getPossiblePoints(routePoint));
+      }
+      int innerListSize = list.get(0).size();
+      int outerListSize = list.size();
+      for (int i = 0; i < innerListSize; i++) {
+        Point[] pointArray = new Point[outerListSize];
+        for (int y = 0; y < outerListSize; y++) {
+          pointArray[y] = getPoint(list.get(y).get(i));
+        }
+        allPoints.add(pointArray);
+      }
+      return allPoints;
     }
-    return minAdditionalScreens;
+    return new ArrayList<>();
   }
 
   /**
