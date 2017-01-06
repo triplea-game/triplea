@@ -139,7 +139,7 @@ public class RouteOptimizer {
   }
 
   /**
-   * Same as getAlternativePoints, but adds the given Points in
+   * Matrix Transpose method to transpose the 2dimensional point list
    * 
    * @param points A Point array
    * @return Offset Point Arrays including points

@@ -68,14 +68,14 @@ public class TestRouteOptimizer {
     possiblePoints.add(p(1000, -1000));
     possiblePoints.add(p(1000, 0));
     possiblePoints.add(p(1000, 1000));
-    checkPoints(0, possiblePoints, new RouteOptimizer(mapData, mapPanel));
-    checkPoints(6, possiblePoints, new RouteOptimizer(mapData, mapPanel));
-    checkPoints(6, possiblePoints, new RouteOptimizer(mapData, mapPanel));
-    checkPoints(8, possiblePoints, new RouteOptimizer(mapData, mapPanel));
+    checkPoints(0, possiblePoints);
+    checkPoints(6, possiblePoints);
+    checkPoints(6, possiblePoints);
+    checkPoints(8, possiblePoints);
   }
   
-  private void checkPoints(int offset, List<Point2D> expected, RouteOptimizer optimizer){
-    List<Point2D> calculatedPoints = optimizer.getPossiblePoints(new Point());
+  private void checkPoints(int offset, List<Point2D> expected){
+    List<Point2D> calculatedPoints = new RouteOptimizer(mapData, mapPanel).getPossiblePoints(new Point());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
     for (Point2D point : calculatedPoints) {
       assertTrue(expected.contains(point));
