@@ -64,6 +64,7 @@ public class RouteOptimizer {
       result.add(closestPoint);
       previousPoint = closestPoint;
     }
+    System.out.println("End");
     endPoint = result.get(result.size() - 1);
     return result.toArray(new Point[result.size()]);
   }
@@ -81,7 +82,7 @@ public class RouteOptimizer {
     for (Point2D possibleClosestPoint : pool) {
       if (closestPoint == null) {
         closestDistance = source.distance(possibleClosestPoint);
-        closestPoint = normalizePoint(getPoint(possibleClosestPoint));
+        closestPoint = getPoint(possibleClosestPoint);
       } else {
         double distance = source.distance(possibleClosestPoint);
         if (closestDistance > distance) {
@@ -91,10 +92,6 @@ public class RouteOptimizer {
       }
     }
     return closestPoint;
-  }
-
-  private Point normalizePoint(Point point) {
-    return new Point(point.x % mapWidth, point.y % mapHeight);
   }
 
   /**
