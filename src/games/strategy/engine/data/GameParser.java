@@ -3,13 +3,11 @@ package games.strategy.engine.data;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +20,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,6 +30,7 @@ import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.ComboProperty;
@@ -58,7 +56,6 @@ public class GameParser {
   private GameData data;
   private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
-  private static HashMap<String, String> newClassesForOldNames;
   private final String mapName;
 
   public GameParser(final String mapName) {
@@ -460,17 +457,6 @@ public class GameParser {
       throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
     }
     return instance;
-  }
-
-  /**
-   * Loads a given class.
-   */
-  private Class<?> getClassByName(final String className) throws GameParseException {
-    try {
-      return Class.forName(className);
-    } catch (final ClassNotFoundException e) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found: " + e);
-    }
   }
 
   /**
