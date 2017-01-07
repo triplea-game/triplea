@@ -145,24 +145,17 @@ public class RouteOptimizer {
    * @return Offset Point Arrays including points
    */
   public List<Point[]> getAllPoints(Point... points) {
-    if (points.length > 0) {
-      List<Point[]> allPoints = new ArrayList<>();
-      List<List<Point2D>> list = new ArrayList<>();
-      for (Point routePoint : points) {
-        list.add(getPossiblePoints(routePoint));
-      }
-      int innerListSize = list.get(0).size();
-      int outerListSize = list.size();
-      for (int i = 0; i < innerListSize; i++) {
-        Point[] pointArray = new Point[outerListSize];
-        for (int y = 0; y < outerListSize; y++) {
-          pointArray[y] = getPoint(list.get(y).get(i));
+    List<Point[]> allPoints = new ArrayList<>();
+    for(int i = 0; i < points.length; i++){
+      List<Point2D> subPoints = getPossiblePoints(points[i]);
+      for(int y = 0; y < subPoints.size(); y++){
+        if(i == 0){
+          allPoints.add(new Point[points.length]);
         }
-        allPoints.add(pointArray);
+        allPoints.get(y)[i] = getPoint((subPoints.get(y)));
       }
-      return allPoints;
     }
-    return new ArrayList<>();
+    return allPoints;
   }
 
   /**
