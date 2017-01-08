@@ -40,7 +40,6 @@ public class RouteOptimizer {
     mapHeight = mapPanel.getImageHeight();
     if (route == null || route.length == 0) {
       // Or the array is too small
-
       return route;
     }
     if (!isInfiniteX && !isInfiniteY) {
@@ -146,10 +145,10 @@ public class RouteOptimizer {
    */
   public List<Point[]> getAllPoints(Point... points) {
     List<Point[]> allPoints = new ArrayList<>();
-    for(int i = 0; i < points.length; i++){
+    for (int i = 0; i < points.length; i++) {
       List<Point2D> subPoints = getPossiblePoints(points[i]);
-      for(int y = 0; y < subPoints.size(); y++){
-        if(i == 0){
+      for (int y = 0; y < subPoints.size(); y++) {
+        if (i == 0) {
           allPoints.add(new Point[points.length]);
         }
         allPoints.get(y)[i] = getPoint((subPoints.get(y)));

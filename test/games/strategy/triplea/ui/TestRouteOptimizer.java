@@ -34,9 +34,12 @@ public class TestRouteOptimizer {
   @Test
   public void testRouteTranslation() {
     Point[] inputArray = new Point[] {p(1, 4), p(1001, 1001), p(600, 600)};
-    assertArrayEquals(new Point[] {p(1, 4), p(1, 1), p(-400, -400)}, new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {p(1, 4), p(1, 1001), p(-400, 600)}, new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {p(1, 4), p(1001, 1), p(600, -400)}, new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+    assertArrayEquals(new Point[] {p(1, 4), p(1, 1), p(-400, -400)},
+        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+    assertArrayEquals(new Point[] {p(1, 4), p(1, 1001), p(-400, 600)},
+        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+    assertArrayEquals(new Point[] {p(1, 4), p(1001, 1), p(600, -400)},
+        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
     assertArrayEquals(inputArray, new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
   }
 
@@ -73,8 +76,8 @@ public class TestRouteOptimizer {
     checkPoints(6, possiblePoints);
     checkPoints(8, possiblePoints);
   }
-  
-  private void checkPoints(int offset, List<Point2D> expected){
+
+  private void checkPoints(int offset, List<Point2D> expected) {
     List<Point2D> calculatedPoints = new RouteOptimizer(mapData, mapPanel).getPossiblePoints(new Point());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
     for (Point2D point : calculatedPoints) {

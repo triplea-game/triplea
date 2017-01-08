@@ -180,16 +180,11 @@ public class MapRouteDrawer {
    * @param scale The scale-factor of the Map
    */
   private void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
-      final double yOffset,
-      final double scale) {
-    final Point2D point1 =
-        new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale);
-    final Point2D point2 =
-        new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale);
-    // Don't draw if won't be visible anyway
-    if (graphics.getClip().contains(point1) || graphics.getClip().contains(point2)) {
-      graphics.draw(new Line2D.Double(point1, point2));
-    }
+      final double yOffset, final double scale) {
+    graphics.draw(
+        new Line2D.Double(
+            new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale),
+            new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale)));
   }
 
   /**

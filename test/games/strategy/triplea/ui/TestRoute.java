@@ -41,7 +41,7 @@ public class TestRoute {
                                           // territory
     dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
-    when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000,1000));
+    when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
 
   @Test
