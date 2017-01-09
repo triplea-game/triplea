@@ -20,7 +20,7 @@ fi
 
 unzip -d $INSTALL_DIR $LOBBY_ARTIFACT
 cd $INSTALL_DIR
-nohup java -server  -Xmx192m -classpath bin/triplea.jar:lib/derby-10.10.1.1.jar -Dtriplea.lobby.port=33333 -Dtriplea.lobby.console=true games.strategy.engine.lobby.server.LobbyServer &
+nohup java -server  -Xmx192m -classpath bin/triplea.jar:lib/derby-10.10.1.1.jar -Dtriplea.lobby.port=33333 -Dtriplea.lobby.console=true org.triplea.lobby.server.LobbyServer &
 
 NEW_PID=$!
 if [ ! -z $NEW_PID ]; then

@@ -36,7 +36,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.lobby.server.GameDescription;
+import org.triplea.lobby.server.GameDescription;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;

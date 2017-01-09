@@ -46,7 +46,7 @@ import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.lobby.server.NullModeratorController;
+import org.triplea.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;

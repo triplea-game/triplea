@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.lobby.server.NullModeratorController;
+import org.triplea.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
