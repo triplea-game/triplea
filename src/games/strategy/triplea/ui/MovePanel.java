@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -741,6 +742,7 @@ public class MovePanel extends AbstractMovePanel {
         return;
       }
       final boolean rightMouse = me.isRightButton();
+      final boolean isMiddleMouseButton = me.getButton() == MouseEvent.BUTTON2;
       final boolean noSelectedTerritory = (firstSelectedTerritory == null);
       final boolean isFirstSelectedTerritory = (firstSelectedTerritory == t);
       // select units
@@ -750,11 +752,11 @@ public class MovePanel extends AbstractMovePanel {
         // de select units
         if (rightMouse && !noSelectedTerritory && !m_map.wasLastActionDraggingAndReset()) {
           deselectUnits(units, t, me);
-        } else if (!rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
+        } else if (!isMiddleMouseButton && !rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
           selectUnitsToMove(units, t, me);
         } else if (!rightMouse && me.isControlDown() && !isFirstSelectedTerritory) {
           selectWayPoint(t);
-        } else if (!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory) {
+        } else if (!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory && !isMiddleMouseButton) {
           selectEndPoint(t);
         }
       } finally {
