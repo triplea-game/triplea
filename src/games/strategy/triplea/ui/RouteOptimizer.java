@@ -16,17 +16,17 @@ public class RouteOptimizer {
   public final boolean isInfiniteY;
   public final boolean isInfiniteX;
 
-  private final MapPanel mapPanel;
-
   private Point endPoint;
-  private int mapWidth;
-  private int mapHeight;
+  private final int mapWidth;
+  private final int mapHeight;
 
   public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
     checkNotNull(mapData);
-    this.mapPanel = checkNotNull(mapPanel);
+    checkNotNull(mapPanel);
     isInfiniteY = mapData.scrollWrapY();
     isInfiniteX = mapData.scrollWrapX();
+    mapWidth = mapPanel.getImageWidth();
+    mapHeight = mapPanel.getImageHeight();
   }
 
   /**
@@ -36,8 +36,6 @@ public class RouteOptimizer {
    * @return A Point array which goes through Map Borders if necessary
    */
   public Point[] getTranslatedRoute(Point... route) {
-    mapWidth = mapPanel.getImageWidth();
-    mapHeight = mapPanel.getImageHeight();
     if (route == null || route.length == 0) {
       // Or the array is too small
       return route;
@@ -97,8 +95,6 @@ public class RouteOptimizer {
    *         size may vary
    */
   public List<Point2D> getPossiblePoints(Point2D point) {
-    mapWidth = mapPanel.getImageWidth();
-    mapHeight = mapPanel.getImageHeight();
     List<Point2D> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {

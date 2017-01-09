@@ -308,12 +308,16 @@ public class MapRouteDrawer {
       drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(RouteOptimizer.getPoint(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1])), points[points.length - 1]);
+    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(
+        RouteOptimizer.getPoint(new Point2D.Double(
+            xcoords[xcoords.length - 1],
+            ycoords[ycoords.length - 1])),
+        points[points.length - 1]);
     boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
-    for(Point[] finishingPointArray : finishingPoints){
-    drawLineWithTranslate(graphics,
-        new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
-        xOffset, yOffset, scale);
+    for (Point[] finishingPointArray : finishingPoints) {
+      drawLineWithTranslate(graphics,
+          new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
+          xOffset, yOffset, scale);
       if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
       }
