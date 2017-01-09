@@ -16,7 +16,7 @@ public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
   private final GameData m_data;
   private PlayerID m_currentPlayer;
-  private final MapPanel m_map;
+  protected final MapPanel m_map;
   private boolean m_active;
   private CountDownLatch m_latch;
   private final Object m_latchLock = new Object();

@@ -748,7 +748,7 @@ public class MovePanel extends AbstractMovePanel {
       data.acquireReadLock();
       try {
         // de select units
-        if (rightMouse && !noSelectedTerritory) {
+        if (rightMouse && !noSelectedTerritory && !m_map.wasLastActionDraggingAndReset()) {
           deselectUnits(units, t, me);
         } else if (!rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
           selectUnitsToMove(units, t, me);
