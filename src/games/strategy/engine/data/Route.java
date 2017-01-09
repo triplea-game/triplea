@@ -355,8 +355,8 @@ public class Route implements Serializable, Iterable<Territory> {
    *         the route consists of only a starting territory
    */
   public Territory getEnd() {
-    if (m_steps.size() == 0) {
-      return null;
+    if (m_steps.isEmpty()) {
+      return m_start;
     }
     return m_steps.get(m_steps.size() - 1);
   }

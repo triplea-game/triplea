@@ -10,7 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -62,6 +65,7 @@ public class BattleTracker implements java.io.Serializable {
   // blitzed territories
   private final Set<Territory> m_blitzed = new HashSet<>();
   // territories where a battle occurred
+  // TODO: fix typo in name, 'fough' -> 'fought'
   private final Set<Territory> m_foughBattles = new HashSet<>();
   // these territories have had battleships bombard during a naval invasion
   // used to make sure that the same battleship doesn't bombard twice
@@ -247,13 +251,25 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
+  void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID id,
+    final IDelegateBridge bridge, final UndoableMove changeTracker,
+    final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
+
+    this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
+  }
+
+  /**
+   * @deprecated 'bombing' boolean parameter removed. IF calling with false, call addBattle without the boolean arg,
+   * or if calling with 'bombing == true' call addBombingBattle()
+   */
+  @Deprecated
   public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     this.addBattle(route, units, bombing, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
 
-  public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
+  void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets,
       final boolean airBattleCompleted) {
@@ -1084,12 +1100,26 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  public void raids(final IDelegateBridge m_bridge) {
-    // Remove air raids - this finds  all the raids in the battle tracker
-    for( final Territory t : getPendingBattleSites(true) ) {
-      final IBattle airRaid = getPendingBattle(t, true, BattleType.AIR_RAID);   // Get air raid for current territory (if any)
+
+  void fightStrategicBombingRuns(final IDelegateBridge delegateBridge) {
+    boolean bombing = true;
+    fightStrategicBombingRuns(delegateBridge, () -> getPendingBattleSites(bombing),
+            (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
+  }
+
+  @VisibleForTesting
+  void fightStrategicBombingRuns(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+             BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+    // Fight all air and bombing fightStrategicBombingRuns without needing user to click on them.
+    // The rules say that bombing battles should be done first, so automatically do those combats.
+    for( final Territory t : pendingBattleSiteSupplier.get()) {
+      final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
       if( airRaid != null ) {
-        airRaid.fight(m_bridge);
+        airRaid.fight(delegateBridge);
+      }
+      final IBattle bombingRaid = pendingBattleFunction.apply(t, BattleType.BOMBING_RAID);
+      if( bombingRaid != null ) {
+        bombingRaid.fight(delegateBridge);
       }
     }
   }

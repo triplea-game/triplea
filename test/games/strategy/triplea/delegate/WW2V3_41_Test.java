@@ -1115,51 +1115,6 @@ public class WW2V3_41_Test {
     assertEquals(2, mfb.getBombardingUnits().size());
   }
 
-  // TODO this test needs work kev
-  @Test
-  public void testAAFireWithRadar() {
-    final PlayerID russians = russians(m_data);
-    final PlayerID germans = germans(m_data);
-    TechAttachment.get(russians).setAARadar("true");
-    final MoveDelegate move = moveDelegate(m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
-    final Territory poland = territory("Poland", m_data);
-    final Territory russia = territory("Russia", m_data);
-    // Add bomber to Poland and attack
-    addTo(poland, bomber(m_data).create(1, germans));
-    // The game will ask us if we want to move bomb, say yes.
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return true;
-      }
-    };
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
-    bridge.setRemote(player);
-    // Perform the combat movement
-    move.setDelegateBridgeAndPlayer(bridge);
-    move.start();
-    move(poland.getUnits().getMatches(Matches.UnitIsStrategicBomber), m_data.getMap().getRoute(poland, russia));
-    move.end();
-    // start the battle phase
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
-    // aa guns rolls 1, hits
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
-    final StrategicBombingRaidBattle battle =
-        (StrategicBombingRaidBattle) battleDelegate(m_data).getBattleTracker().getPendingBattle(russia, true, null);
-    // aa guns rolls 1, hits
-    // bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
-    final int PUsBeforeRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    battle.fight(bridge);
-    final int PUsAfterRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid, PUsAfterRaid);
-  }
-
   @Test
   public void testCarrierWithAlliedPlanes() {
     final Territory sz8 = territory("8 Sea Zone", m_data);

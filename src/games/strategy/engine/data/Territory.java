@@ -8,6 +8,10 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   // In a grid-based game, stores the coordinate of the Territory
   private final int[] m_coordinate;
 
+  public Territory(final String name, final GameData data) {
+    this(name, false, data);
+  }
+
   /** Creates new Territory */
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
