@@ -1106,14 +1106,14 @@ public class BattleTracker implements java.io.Serializable {
    * Auto fight means we automatically begin the fight without user action. This is to avoid clicks during the
    * air battle and SBR phase, and to enforce game rules that these phases are fought first before any other combat.
    */
-  void fightStrategicBombingRuns(final IDelegateBridge delegateBridge) {
+  void fightAirRaids(final IDelegateBridge delegateBridge) {
     boolean bombing = true;
-    fightStrategicBombingRuns(delegateBridge, () -> getPendingBattleSites(bombing),
+    fightAirRaids(delegateBridge, () -> getPendingBattleSites(bombing),
             (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
   }
 
   @VisibleForTesting
-  void fightStrategicBombingRuns(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+  void fightAirRaids(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
              BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
 
 

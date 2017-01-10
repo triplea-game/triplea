@@ -52,7 +52,7 @@ public class BattleTrackerTest {
 
 	@Test
 	public void verifyRaidsWithNoBattles() {
-		testObj.fightStrategicBombingRuns(mockDelegateBridge);
+		testObj.fightAirRaids(mockDelegateBridge);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class BattleTrackerTest {
 		// set up the testObj to have the bombing battle
 		testObj.addBombingBattle(route, attackers, playerId, mockDelegateBridge, null, null);
 
-		testObj.fightStrategicBombingRuns(mockDelegateBridge, () -> Collections.singleton(territory), mockGetBattleFunction);
+		testObj.fightAirRaids(mockDelegateBridge, () -> Collections.singleton(territory), mockGetBattleFunction);
 
 		verify(mockBattle, times(1)).fight(mockDelegateBridge);
 	}
