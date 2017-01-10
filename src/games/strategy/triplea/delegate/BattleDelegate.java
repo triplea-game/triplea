@@ -995,7 +995,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         String historyText = "";
         if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).match(originatedFrom)) {
           final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
-              m_battleTracker, carrierCostOfCurrentTerr, 1, true, !mustReturnToBase, true);
+              m_battleTracker, carrierCostOfCurrentTerr, 1, !mustReturnToBase);
           if (possible.size() > 1) {
             landingTerr = getRemotePlayer(u.getOwner()).selectTerritoryForAirToLand(possible, t,
                 "Select territory for air units to land. (Current territory is " + t.getName() + "): "
@@ -1464,8 +1464,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     this.getDisplay().reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
-  public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge,
-      final boolean addPreviousHits) {
+  static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
     if (damaged.size() == 0) {
       return;
     }
@@ -1473,7 +1472,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Unit u : damaged) {
       damagedMap.add(u, 1);
     }
-    markDamaged(damagedMap, bridge, addPreviousHits);
+    markDamaged(damagedMap, bridge, true);
   }
 
   public static void markDamaged(final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge,
@@ -1491,11 +1490,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr,
       final PlayerID alliedPlayer, final GameData data, final BattleTracker battleTracker,
-      final int carrierCostForCurrentTerr, final int allowedMovement, final boolean byMovementCost,
-      final boolean useMaxScrambleDistance, final boolean landInConquered) {
+      final int carrierCostForCurrentTerr, final int allowedMovement,
+      final boolean useMaxScrambleDistance) {
     final HashSet<Territory> whereCanLand = new HashSet<>();
     int maxDistance = allowedMovement;
-    if ((byMovementCost && maxDistance > 1) || useMaxScrambleDistance) {
+    if ((maxDistance > 1) || useMaxScrambleDistance) {
       UnitType ut = null;
       for (final Unit u : strandedAir) {
         if (ut == null) {
@@ -1518,12 +1517,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     canNotLand.addAll(battleTracker.getPendingBattleSites(false));
     canNotLand
         .addAll(Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
-    if (!landInConquered) {
-      canNotLand.addAll(battleTracker.getConquered());
-    }
     final Collection<Territory> possibleTerrs =
         new ArrayList<>(data.getMap().getNeighbors(currentTerr, maxDistance));
-    if (byMovementCost && maxDistance > 1) {
+    if (maxDistance > 1) {
       final Iterator<Territory> possibleIter = possibleTerrs.iterator();
       while (possibleIter.hasNext()) {
         final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(),
@@ -1603,15 +1599,15 @@ class BattleExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = 7899007486408723505L;
   Serializable superState;
   // add other variables here:
-  public BattleTracker m_battleTracker = new BattleTracker();
+  BattleTracker m_battleTracker = new BattleTracker();
   // public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
   public boolean m_needToInitialize;
-  public boolean m_needToScramble;
-  public boolean m_needToKamikazeSuicideAttacks;
-  public boolean m_needToClearEmptyAirBattleAttacks;
-  public boolean m_needToAddBombardmentSources;
-  public boolean m_needToRecordBattleStatistics;
-  public boolean m_needToCheckDefendingPlanesCanLand;
-  public boolean m_needToCleanup;
-  public IBattle m_currentBattle;
+  boolean m_needToScramble;
+  boolean m_needToKamikazeSuicideAttacks;
+  boolean m_needToClearEmptyAirBattleAttacks;
+  boolean m_needToAddBombardmentSources;
+  boolean m_needToRecordBattleStatistics;
+  boolean m_needToCheckDefendingPlanesCanLand;
+  boolean m_needToCleanup;
+  IBattle m_currentBattle;
 }

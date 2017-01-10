@@ -251,7 +251,7 @@ public class Fire implements IExecutable {
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         notifyCasualties(bridge);
         if (m_damaged != null) {
-          m_battle.markDamaged(m_damaged, bridge, true);
+          m_battle.markDamaged(m_damaged, bridge);
         }
         m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge, false);
       }

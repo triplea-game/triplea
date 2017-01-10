@@ -396,7 +396,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
               final CasualtyDetails details =
                   calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_dice, currentTypeAA);
-              markDamaged(details.getDamaged(), bridge, true);
+              markDamaged(details.getDamaged(), bridge);
               m_casualties = details;
               m_casualtiesSoFar.addAll(details.getKilled());
             }
