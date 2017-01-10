@@ -122,6 +122,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       // Now we load the post page, and find the hidden fields needed to post
       HttpGet httpGet =
           new HttpGet("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
+      HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
         String body = Util.getStringFromInputStream(response.getEntity().getContent());
@@ -176,6 +177,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           // the site has spam prevention which means you can't post until 15 seconds after login
           ThreadUtil.sleep(15 * 1000);
           httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
+          HttpProxy.addProxy(httpPost);
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
             status = response.getStatusLine().getStatusCode();
             body = Util.getStringFromInputStream(response.getEntity().getContent());

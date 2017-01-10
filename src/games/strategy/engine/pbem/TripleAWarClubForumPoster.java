@@ -147,6 +147,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       // now logout, this is just to be nice, so we don't care if this fails
       try {
         httpGet = new HttpGet("http://www.tripleawarclub.org/user.php?op=logout");
+        HttpProxy.addProxy(httpGet);
         client.execute(httpGet, httpContext);
       } catch (Exception e) {
         ClientLogger.logQuietly("Failed to log out", e);

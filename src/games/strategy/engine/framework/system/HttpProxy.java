@@ -171,8 +171,10 @@ public class HttpProxy {
     final String host = System.getProperty(HTTP_PROXYHOST);
     final String port = System.getProperty(HTTP_PROXYPORT, "-1");
     if (host != null && host.trim().length() > 0) {
-      RequestConfig config = RequestConfig.custom().setProxy(new HttpHost(host, Integer.parseInt(port))).build();
-      request.setConfig(config);
+      request.setConfig(RequestConfig
+          .copy(request.getConfig())
+          .setProxy(new HttpHost(host, Integer.parseInt(port)))
+          .build());
     }
   }
 
