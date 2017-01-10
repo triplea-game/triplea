@@ -303,8 +303,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return last territory in the route, this is the destination or null if
-   *         the route consists of only a starting territory
+   * @return last territory in the route
    */
   public Territory getEnd() {
     if (m_steps.isEmpty()) {
