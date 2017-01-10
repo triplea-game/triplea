@@ -12,8 +12,6 @@ import java.util.Set;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -243,34 +241,6 @@ public class Route implements Serializable, Iterable<Territory> {
   /**
    * @param aMatch
    *        referring match
-   * @return whether all territories in this route match the given match (start territory IS tested)
-   */
-  public boolean allMatchAllSteps(final Match<Territory> aMatch) {
-    for (final Territory t : getAllTerritories()) {
-      if (!aMatch.match(t)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * @param aMatch
-   *        referring match
-   * @return whether some territories in this route match the given match (start territory IS tested)
-   */
-  public boolean someMatchAllSteps(final Match<Territory> aMatch) {
-    for (final Territory t : getAllTerritories()) {
-      if (aMatch.match(t)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * @param aMatch
-   *        referring match
    * @return whether all territories in this route match the given match (start and end territories are not tested)
    */
   public boolean allMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps) {
@@ -284,24 +254,6 @@ public class Route implements Serializable, Iterable<Territory> {
       }
     }
     return true;
-  }
-
-  /**
-   * @param aMatch
-   *        referring match
-   * @return whether some territories in this route match the given match (start and end territories are not tested)
-   */
-  public boolean someMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps) {
-    final List<Territory> middle = getMiddleSteps();
-    if (middle.isEmpty()) {
-      return defaultWhenNoMiddleSteps;
-    }
-    for (final Territory t : middle) {
-      if (aMatch.match(t)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -359,26 +311,6 @@ public class Route implements Serializable, Iterable<Territory> {
       return m_start;
     }
     return m_steps.get(m_steps.size() - 1);
-  }
-
-  /**
-   * @param baseRoute
-   *        referring base route
-   * @return whether this route extend another route
-   */
-  public boolean extend(final Route baseRoute) {
-    if (!this.m_start.equals(baseRoute.m_start)) {
-      return false;
-    }
-    if (baseRoute.numberOfSteps() > this.numberOfSteps()) {
-      return false;
-    }
-    for (int i = 0; i < baseRoute.m_steps.size(); i++) {
-      if (!baseRoute.getTerritoryAtStep(i).equals(this.getTerritoryAtStep(i))) {
-        return false;
-      }
-    }
-    return true;
   }
 
   @Override
@@ -517,10 +449,7 @@ public class Route implements Serializable, Iterable<Territory> {
   public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> unitsAll, final Route route,
       final PlayerID currentPlayer, final GameData data /* , final boolean mustFight */) {
     final Set<Unit> units = new HashSet<>(unitsAll);
-    /*
-     * if (!mustFight)
-     * {units.removeAll(getOwnedAirMovingWithOwnedCarriers(unitsAll, currentPlayer, data));}
-     */
+
     units.removeAll(Match.getMatches(unitsAll,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
     final ResourceCollection movementCharge = new ResourceCollection(data);
@@ -528,28 +457,6 @@ public class Route implements Serializable, Iterable<Territory> {
       movementCharge.add(route.getMovementFuelCostCharge(unit, data));
     }
     return movementCharge;
-  }
-
-  protected static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll,
-      final PlayerID currentPlayer, final GameData data) {
-    final Collection<Unit> ownedFighters =
-        Match.getMatches(unitsAll, new CompositeMatchAnd<>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir,
-            Matches.unitIsOwnedBy(currentPlayer)));
-    if (ownedFighters.isEmpty()) {
-      return new HashSet<>();
-    }
-    final Collection<Unit> ownedCarriers = Match.getMatches(unitsAll,
-        new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.UnitIsSea, Matches.unitIsOwnedBy(currentPlayer)));
-    if (ownedCarriers.isEmpty()) {
-      return new HashSet<>();
-    }
-    final Set<Unit> ownedFightersOnOwnedCarriers = new HashSet<>();
-    for (final Unit carrier : ownedCarriers) {
-      final Collection<Unit> carrying = MoveValidator.getCanCarry(carrier, ownedFighters, currentPlayer, data);
-      ownedFighters.removeAll(carrying);
-      ownedFightersOnOwnedCarriers.addAll(carrying);
-    }
-    return ownedFightersOnOwnedCarriers;
   }
 
   public static Route create(final List<Route> routes) {
