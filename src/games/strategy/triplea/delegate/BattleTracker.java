@@ -1101,6 +1101,11 @@ public class BattleTracker implements java.io.Serializable {
   }
 
 
+  /**
+   * 'Auto-fight' all of the air battles. First doing the air-raids (air battles), then the strategic boming runs.
+   * Auto fight means we automatically begin the fight without user action. This is to avoid clicks during the
+   * air battle and SBR phase, and to enforce game rules that these phases are fought first before any other combat.
+   */
   void fightStrategicBombingRuns(final IDelegateBridge delegateBridge) {
     boolean bombing = true;
     fightStrategicBombingRuns(delegateBridge, () -> getPendingBattleSites(bombing),
@@ -1110,13 +1115,23 @@ public class BattleTracker implements java.io.Serializable {
   @VisibleForTesting
   void fightStrategicBombingRuns(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
              BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
-    // Fight all air and bombing fightStrategicBombingRuns without needing user to click on them.
-    // The rules say that bombing battles should be done first, so automatically do those combats.
+
+
+
+    // First we'll fight all of the air battles (air raids)
+    // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for damage.
+    // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor
+    // that out, in the meantime be aware there are mass side effects in these calls..
+
     for( final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
-      if( airRaid != null ) {
+      if (airRaid != null) {
         airRaid.fight(delegateBridge);
       }
+    }
+
+    // now that we've done all of the air battles, do all of the SBR's as a second wave.
+    for( final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle bombingRaid = pendingBattleFunction.apply(t, BattleType.BOMBING_RAID);
       if( bombingRaid != null ) {
         bombingRaid.fight(delegateBridge);
