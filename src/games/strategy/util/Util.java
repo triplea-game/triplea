@@ -1,10 +1,12 @@
 package games.strategy.util;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Some utility methods for dealing with collections.
@@ -154,6 +156,16 @@ public class Util {
         return -1;
       }
     });
+  }
+  
+  public static String getStringFromInputStream(InputStream in){
+    StringBuilder builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(in)){
+      while(scanner.hasNext()){
+        builder.append(scanner.next());
+      }
+    }
+    return builder.toString();
   }
 
 }

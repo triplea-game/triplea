@@ -1,21 +1,18 @@
 package games.strategy.engine.pbem;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -31,6 +28,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.help.HelpSupport;
+import games.strategy.util.Util;
 
 public class TripleAWebPoster implements IWebPoster {
   private static final long serialVersionUID = -3013355800798928625L;
@@ -77,22 +75,21 @@ public class TripleAWebPoster implements IWebPoster {
   public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player,
       final int round) {
     try {
-      final List<Part> parts = new ArrayList<>();
-      parts.add(createStringPart("siteid", m_siteId));
+      MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+          .addTextBody("siteid", m_siteId);
       if (gameData != null) {
-        parts.add(createStringPart("production", getProductionData(gameData)));
+        builder.addTextBody("production", getProductionData(gameData));
       }
-      parts.add(createStringPart("gamename", m_gameName));
-      parts.add(createStringPart("player", player));
-      parts.add(createStringPart("summary", turnSummary));
-      parts.add(createStringPart("round", "" + round));
-      parts.add(createStringPart("sendmail", m_mailSaveGame ? "true" : "false"));
+      builder
+          .addTextBody("gamename", m_gameName)
+          .addTextBody("player", player)
+          .addTextBody("summary", turnSummary)
+          .addTextBody("round", "" + round)
+          .addTextBody("sendmail", m_mailSaveGame ? "true" : "false");
       if (m_saveGameFile != null) {
-        final FilePart part = new FilePart("userfile", m_saveGameFileName, m_saveGameFile);
-        part.setContentType("application/octet-stream");
-        parts.add(part);
+        builder.addBinaryBody("userfile", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName);
       }
-      m_serverMessage = executePost(m_host, "upload.php", parts);
+      m_serverMessage = executePost(m_host, "upload.php", builder.build());
       if (!m_serverMessage.toLowerCase().contains("success")) {
         System.out.println("Unknown error, site response: " + m_serverMessage);
         return false;
@@ -105,28 +102,20 @@ public class TripleAWebPoster implements IWebPoster {
     return true;
   }
 
-  public static String executePost(final String host, final String path, final List<Part> parts) throws Exception {
-    final HttpClient client = new HttpClient();
-    client.getParams().setParameter("http.protocol.single-cookie-header", true);
-    client.getParams().setParameter("http.useragent",
-        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
-    final HttpState httpState = new HttpState();
-    final HostConfiguration hostConfiguration = new HostConfiguration();
-    // add the proxy
-    HttpProxy.addProxy(hostConfiguration);
-    hostConfiguration.setHost(host);
-    final MultipartRequestEntity entity =
-        new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
-    final PostMethod post = new PostMethod(getHostUrlPrefix(host) + path);
-    post.setRequestEntity(entity);
-    try {
-      final int status = client.executeMethod(hostConfiguration, post, httpState);
-      if (status != 200) {
-        throw new Exception("Post command to " + host + " failed, the server returned status: " + status);
+  public static String executePost(final String host, final String path, final HttpEntity entity) throws Exception {
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+      HttpPost httpPost = new HttpPost(getHostUrlPrefix(host) + path);
+      HttpHost hostConfig = new HttpHost(host);
+      HttpProxy.addProxy(httpPost);
+      httpPost.setEntity(entity);
+      try (CloseableHttpResponse response = client.execute(hostConfig, httpPost)) {
+
+        final int status = response.getStatusLine().getStatusCode();
+        if (status != 200) {
+          throw new Exception("Post command to " + host + " failed, the server returned status: " + status);
+        }
+        return Util.getStringFromInputStream(response.getEntity().getContent());
       }
-      return post.getResponseBodyAsString();
-    } finally {
-      post.releaseConnection();
     }
   }
 
@@ -154,23 +143,6 @@ public class TripleAWebPoster implements IWebPoster {
   @Override
   public boolean sameType(final IBean other) {
     return getClass() == other.getClass();
-  }
-
-  /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
-   * a browser
-   *
-   * @param name
-   *        the form field name
-   * @param value
-   *        the for field value
-   * @return return the created StringPart
-   */
-  public static StringPart createStringPart(final String name, final String value) {
-    final StringPart stringPart = new StringPart(name, value);
-    stringPart.setTransferEncoding(null);
-    stringPart.setContentType(null);
-    return stringPart;
   }
 
   @Override

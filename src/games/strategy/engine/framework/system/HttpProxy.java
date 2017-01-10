@@ -1,15 +1,18 @@
 package games.strategy.engine.framework.system;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.GameRunner;
-import org.apache.commons.httpclient.HostConfiguration;
-
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpRequestBase;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 
 public class HttpProxy {
   public enum ProxyChoice {
@@ -65,7 +68,6 @@ public class HttpProxy {
       }
     }
   }
-
 
 
 
@@ -165,11 +167,12 @@ public class HttpProxy {
     }
   }
 
-  public static void addProxy(final HostConfiguration config) {
+  public static void addProxy(final HttpRequestBase request) {
     final String host = System.getProperty(HTTP_PROXYHOST);
     final String port = System.getProperty(HTTP_PROXYPORT, "-1");
     if (host != null && host.trim().length() > 0) {
-      config.setProxy(host, Integer.valueOf(port));
+      RequestConfig config = RequestConfig.custom().setProxy(new HttpHost(host, Integer.parseInt(port))).build();
+      request.setConfig(config);
     }
   }
 
