@@ -33,6 +33,7 @@ import com.google.common.annotations.VisibleForTesting;
  * </pre>
  */
 public final class SwingWorkerCompletionWaiter implements PropertyChangeListener {
+  @VisibleForTesting
   static final String SWING_WORKER_STATE_PROPERTY_NAME = "state";
 
   private final ProgressWindow progressWindow;
