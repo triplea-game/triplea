@@ -670,6 +670,16 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return steps;
   }
 
+  /**
+   * @return true if the attacker can retreat one or more units
+   */
+  public boolean canAnyAttackersRetreat() {
+    return canAttackerRetreat() 
+        || ( m_battleSite.isWater() && Match.someMatch( m_attackingUnits, Matches.UnitIsAir ) ) 
+        || canAttackerRetreatPartialAmphib()
+        || canAttackerRetreatPlanes();
+  }
+
   private boolean defenderSubsFireFirst() {
     return returnFireAgainstAttackingSubs() == ReturnFire.ALL && returnFireAgainstDefendingSubs() == ReturnFire.NONE;
   }
