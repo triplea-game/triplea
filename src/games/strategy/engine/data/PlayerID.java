@@ -21,6 +21,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private final TechnologyFrontierList m_technologyFrontiers;
   private String m_whoAmI = "null:no_one";
 
+
+  public PlayerID(final String name, final GameData data) {
+    this(name, false, false, data);
+  }
+
   /** Creates new Player */
   public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final GameData data) {
     super(name, data);

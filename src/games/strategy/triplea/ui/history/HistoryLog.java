@@ -435,7 +435,7 @@ public class HistoryLog extends JFrame {
     for (final Territory t : territories) {
       final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
       // see if there's a flag
-      final TerritoryAttachment ta = TerritoryAttachment.get(t, true);
+      final TerritoryAttachment ta = TerritoryAttachment.get(t);
       boolean hasFlag = false;
       if (ta == null) {
         hasFlag = false;

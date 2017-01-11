@@ -10,7 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -62,6 +65,7 @@ public class BattleTracker implements java.io.Serializable {
   // blitzed territories
   private final Set<Territory> m_blitzed = new HashSet<>();
   // territories where a battle occurred
+  // TODO: fix typo in name, 'fough' -> 'fought'
   private final Set<Territory> m_foughBattles = new HashSet<>();
   // these territories have had battleships bombard during a naval invasion
   // used to make sure that the same battleship doesn't bombard twice
@@ -247,13 +251,25 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
+  void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID id,
+    final IDelegateBridge bridge, final UndoableMove changeTracker,
+    final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
+
+    this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
+  }
+
+  /**
+   * @deprecated 'bombing' boolean parameter removed. IF calling with false, call addBattle without the boolean arg,
+   * or if calling with 'bombing == true' call addBombingBattle()
+   */
+  @Deprecated
   public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     this.addBattle(route, units, bombing, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
 
-  public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
+  void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets,
       final boolean airBattleCompleted) {
@@ -1081,6 +1097,45 @@ public class BattleTracker implements java.io.Serializable {
     if (m_battleRecords != null && !m_battleRecords.isEmpty()) {
       aBridge.getHistoryWriter().startEvent("Recording Battle Statistics");
       aBridge.addChange(ChangeFactory.addBattleRecords(m_battleRecords, aBridge.getData()));
+    }
+  }
+
+
+  /**
+   * 'Auto-fight' all of the air battles and strategic bombing runs.
+   * Auto fight means we automatically begin the fight without user action. This is to avoid clicks during the
+   * air battle and SBR phase, and to enforce game rules that these phases are fought first before any other combat.
+   */
+  void fightBombingRaids(final IDelegateBridge delegateBridge) {
+    boolean bombing = true;
+    fightBombingRaids(delegateBridge, () -> getPendingBattleSites(bombing),
+            (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
+  }
+
+  @VisibleForTesting
+  void fightBombingRaids(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+             BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+
+
+
+    // First we'll fight all of the air battles (air raids)
+    // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for damage.
+    // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor
+    // that out, in the meantime be aware there are mass side effects in these calls..
+
+    for( final Territory t : pendingBattleSiteSupplier.get()) {
+      final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
+      if (airRaid != null) {
+        airRaid.fight(delegateBridge);
+      }
+    }
+
+    // now that we've done all of the air battles, do all of the SBR's as a second wave.
+    for( final Territory t : pendingBattleSiteSupplier.get()) {
+      final IBattle bombingRaid = pendingBattleFunction.apply(t, BattleType.BOMBING_RAID);
+      if( bombingRaid != null ) {
+        bombingRaid.fight(delegateBridge);
+      }
     }
   }
 
