@@ -16,6 +16,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -283,7 +284,7 @@ public class TripleAFrame extends MainGameFrame {
         uiContext.getMapData().getMapDimensions().height);
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model);
-    mapPanel = new MapPanel(data, smallView, uiContext, model);
+    mapPanel = new MapPanel(data, smallView, uiContext, model, this);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
     final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
@@ -1607,7 +1608,7 @@ public class TripleAFrame extends MainGameFrame {
     };
   }
 
-  private int computeScrollSpeed(final KeyEvent e) {
+  public int computeScrollSpeed(final InputEvent e) {
     int multiplier = 1;
 
     if (e.isControlDown()) {

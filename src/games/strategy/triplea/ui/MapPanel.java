@@ -63,6 +63,7 @@ import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -96,12 +97,14 @@ public class MapPanel extends ImageScrollerLargeView {
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
+  private final TripleAFrame tripleAFrame;
 
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model) {
+      final ImageScrollModel model, final TripleAFrame frame) {
     super(uiContext.getMapData().getMapDimensions(), model);
+    this.tripleAFrame = frame;
     this.uiContext = uiContext;
     setCursor(this.uiContext.getCursor());
     this.m_scale = this.uiContext.getScale();
@@ -147,6 +150,37 @@ public class MapPanel extends ImageScrollerLargeView {
           }
           notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
         }
+        if (is4Pressed && is5Pressed) {
+          lastActive = e.getButton() == 4 ? 5 : 4;
+        } else {
+          lastActive = -1;
+        }
+        is4Pressed = e.getButton() == 4 ? false : is4Pressed;
+        is5Pressed = e.getButton() == 5 ? false : is5Pressed;
+      }
+
+      private boolean is4Pressed = false;
+      private boolean is5Pressed = false;
+      private int lastActive = -1;
+
+      @Override
+      public void mousePressed(final MouseEvent e) {
+        is4Pressed = e.getButton() == 4 ? true : is4Pressed;
+        is5Pressed = e.getButton() == 5 ? true : is5Pressed;
+        if (lastActive == -1) {
+          new Thread(() -> {
+            while (lastActive != -1) {
+              final int diffPixel = tripleAFrame.computeScrollSpeed(e);
+              if (lastActive == 5) {
+                setTopLeft(getXOffset() + diffPixel, getYOffset());
+              } else if (lastActive == 4) {
+                setTopLeft(getXOffset() - diffPixel, getYOffset());
+              }
+              ThreadUtil.sleep(50);
+            }
+          }).start();
+        }
+        lastActive = e.getButton();
       }
     });
     this.addMouseMotionListener(new MouseMotionAdapter() {
