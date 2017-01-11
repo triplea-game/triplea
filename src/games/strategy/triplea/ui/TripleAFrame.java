@@ -1730,7 +1730,7 @@ public class TripleAFrame extends MainGameFrame {
         historyLog.setVisible(true);
       }
     });
-    popup.add(new AbstractAction("Save Screenshot") {
+    popup.add(new AbstractAction("Export Map Snapshot") {
       private static final long serialVersionUID = 1222760138263428443L;
 
       @Override
