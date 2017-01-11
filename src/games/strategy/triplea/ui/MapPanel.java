@@ -97,11 +97,14 @@ public class MapPanel extends ImageScrollerLargeView {
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
+  private final TripleAFrame tripleAFrame;
+
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model) {
+      final ImageScrollModel model, final TripleAFrame frame) {
     super(uiContext.getMapData().getMapDimensions(), model);
+    this.tripleAFrame = frame;
     this.uiContext = uiContext;
     setCursor(this.uiContext.getCursor());
     this.m_scale = this.uiContext.getScale();
@@ -140,7 +143,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (terr != null) {
           notifyTerritorySelected(terr, md);
         }
-        if (e.getButton() == 4 || e.getButton() == 5) {
+        if(e.getButton() == 4 || e.getButton() == 5){
           if (is4Pressed && is5Pressed) {
             lastActive = e.getButton() == 4 ? 5 : 4;
           } else {
@@ -169,7 +172,14 @@ public class MapPanel extends ImageScrollerLargeView {
         is5Pressed = e.getButton() == 5 ? true : is5Pressed;
         if (lastActive == -1) {
           new Thread(() -> {
+            while (lastActive != -1) {
+              final int diffPixel = tripleAFrame.computeScrollSpeed(e);
+              if (lastActive == 5) {
+                setTopLeft(getXOffset() + diffPixel, getYOffset());
+              } else if (lastActive == 4) {
+                setTopLeft(getXOffset() - diffPixel, getYOffset());
               }
+              ThreadUtil.sleep(50);
             }
           }).start();
         }
