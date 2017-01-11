@@ -276,7 +276,7 @@ class AAInMoveUtil implements Serializable {
         TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(),
         casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
-    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge, true);
+    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge);
     m_bridge.getHistoryWriter().addChildToEvent(
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),
         new ArrayList<>(casualties.getKilled()));

@@ -565,7 +565,7 @@ public class AirBattle extends AbstractBattle {
               m_attacker, m_attackingUnits, false, new ArrayList<>(), m_battleSite, null, bridge, ATTACKERS_FIRE,
               m_dice, true, m_battleID, false, m_dice.getHits(), true);
           m_defendingWaitingToDie.addAll(m_details.getKilled());
-          markDamaged(m_details.getDamaged(), bridge, true);
+          markDamaged(m_details.getDamaged(), bridge);
         }
       };
       final IExecutable notifyCasualties = new IExecutable() {
@@ -612,7 +612,7 @@ public class AirBattle extends AbstractBattle {
               m_defender, m_defendingUnits, false, new ArrayList<>(), m_battleSite, null, bridge, DEFENDERS_FIRE,
               m_dice, false, m_battleID, false, m_dice.getHits(), true);
           m_attackingWaitingToDie.addAll(m_details.getKilled());
-          markDamaged(m_details.getDamaged(), bridge, true);
+          markDamaged(m_details.getDamaged(), bridge);
         }
       };
       final IExecutable notifyCasualties = new IExecutable() {
