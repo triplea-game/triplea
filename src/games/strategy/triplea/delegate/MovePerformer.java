@@ -365,9 +365,9 @@ public class MovePerformer implements Serializable {
     paratroopNAirTransports.add(Matches.UnitIsAirTransport);
     paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
     final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports)
-        && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
+        && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
-        MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), data);
+        MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport));
     // add newly created dependents
     if (m_newDependents != null) {
       for (final Entry<Unit, Collection<Unit>> entry : m_newDependents.entrySet()) {
