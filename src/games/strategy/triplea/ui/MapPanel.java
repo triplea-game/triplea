@@ -143,6 +143,16 @@ public class MapPanel extends ImageScrollerLargeView {
         if (terr != null) {
           notifyTerritorySelected(terr, md);
         }
+        if(e.getButton() == 4 || e.getButton() == 5){
+          if (is4Pressed && is5Pressed) {
+            lastActive = e.getButton() == 4 ? 5 : 4;
+          } else {
+            lastActive = -1;
+          }
+          is4Pressed = e.getButton() == 4 ? false : is4Pressed;
+          is5Pressed = e.getButton() == 5 ? false : is5Pressed;
+          return;
+        }
         if (!unitSelectionListeners.isEmpty()) {
           Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
           if (tuple == null) {
@@ -150,13 +160,6 @@ public class MapPanel extends ImageScrollerLargeView {
           }
           notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
         }
-        if (is4Pressed && is5Pressed) {
-          lastActive = e.getButton() == 4 ? 5 : 4;
-        } else {
-          lastActive = -1;
-        }
-        is4Pressed = e.getButton() == 4 ? false : is4Pressed;
-        is5Pressed = e.getButton() == 5 ? false : is5Pressed;
       }
 
       private boolean is4Pressed = false;
