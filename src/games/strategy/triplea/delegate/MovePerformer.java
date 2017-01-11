@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
@@ -45,7 +44,7 @@ public class MovePerformer implements Serializable {
   private final ExecutionStack m_executionStack = new ExecutionStack();
   private UndoableMove m_currentMove;
   private Map<Unit, Collection<Unit>> m_newDependents;
-  private Optional<Collection<Unit>> arrivingUnits;
+  private Collection<Unit> arrivingUnits;
 
   MovePerformer() {}
 
@@ -86,7 +85,7 @@ public class MovePerformer implements Serializable {
   /**
    * We assume that the move is valid
    */
-  void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
+  private void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
       final Collection<Unit> transportsToLoad) {
     final IExecutable preAAFire = new IExecutable() {
       private static final long serialVersionUID = -7945930782650355037L;
@@ -129,7 +128,7 @@ public class MovePerformer implements Serializable {
             }
           }
         }
-        arrivingUnits = Optional.of(Util.difference(units, aaCasualtiesWithDependents));
+        arrivingUnits = Util.difference(units, aaCasualtiesWithDependents);
       }
     };
     final IExecutable postAAFire = new IExecutable() {
@@ -143,9 +142,9 @@ public class MovePerformer implements Serializable {
         // not owned)
         final GameData data = bridge.getData();
         final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
-        final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits.get()));
+        final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits));
         // Reset Optional
-        arrivingUnits = Optional.empty();
+        arrivingUnits = new ArrayList<>();
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
         final Map<Unit, Unit> transporting = TransportUtils.mapTransports(route, arrived, transportsToLoad);
         // If we have paratrooper land units being carried by air units, they should be dropped off in the last
@@ -265,12 +264,10 @@ public class MovePerformer implements Serializable {
         final Change moveChange = markMovementChange(arrived, route, id);
         change.add(moveChange);
         // actually move the units
-        Change remove = null;
-        Change add = null;
         if (route.getStart() != null && route.getEnd() != null) {
           // ChangeFactory.addUnits(route.getEnd(), arrived);
-          remove = ChangeFactory.removeUnits(route.getStart(), units);
-          add = ChangeFactory.addUnits(route.getEnd(), arrived);
+          Change remove = ChangeFactory.removeUnits(route.getStart(), units);
+          Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
           change.add(add, remove);
         }
         m_bridge.addChange(change);
@@ -390,9 +387,7 @@ public class MovePerformer implements Serializable {
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
-      final Iterator<Unit> units = transporting.keySet().iterator();
-      while (units.hasNext()) {
-        final Unit load = units.next();
+      for (Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
         if (!TransportTracker.transporting(transport).contains(load)) {
           final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
@@ -426,9 +421,7 @@ public class MovePerformer implements Serializable {
       // any pending battles in the unloading zone?
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
-      final Iterator<Unit> iter = units.iterator();
-      while (iter.hasNext()) {
-        final Unit unit = iter.next();
+      for (Unit unit : units) {
         if (Matches.UnitIsAir.match(unit)) {
           continue;
         }
