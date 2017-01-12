@@ -1163,7 +1163,7 @@ public class BattleTracker implements java.io.Serializable {
     for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
       final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
       if(getDependentOn(battle).isEmpty())  {
-        if(Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsTransportButNotCombatTransport)
+        if(Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport)
           || battle instanceof NonFightingBattle) {
           battle.fight( delegateBridge );           // Must be fought here to remove dependencies
         }
