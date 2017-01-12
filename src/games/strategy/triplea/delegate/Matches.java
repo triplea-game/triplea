@@ -121,6 +121,13 @@ public class Matches {
       return (ua.getIsCombatTransport() && ua.getIsSea());
     }
   };
+  public static final Match<Unit> UnitIsDefenselessTransport = new Match<Unit>() {
+    @Override
+    public boolean match(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return (ua.getTransportCapacity() != -1 && ua.getIsSea() && ua.getRawDefense() == 0);
+    }
+  };
   public static final Match<Unit> UnitIsNotCombatTransport = new InverseMatch<>(UnitIsCombatTransport);
   public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>() {
     @Override
