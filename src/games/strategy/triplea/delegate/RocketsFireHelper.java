@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class RocketsFireHelper {
   private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
-    final Set<Territory> attackingTerritories = new HashSet<>();
+    final LinkedHashMap<Territory,Territory> attackingTerritories = new LinkedHashMap<>();
     final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
     for (final Territory territory : rocketTerritories) {
       final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -102,12 +103,11 @@ public class RocketsFireHelper {
       final Territory target = getTarget(targets, player, bridge, territory);
       if (target != null) {
         attackedTerritories.add(target);
-        attackingTerritories.add(territory);
+        attackingTerritories.put(target,territory);
       }
     }
-    Iterator<Territory> attackers = attackingTerritories.iterator();
-    for( final Territory defender : attackedTerritories ) {
-			fireRocket(player, defender, bridge, attackers.next());
+    for( final Territory target : attackedTerritories ) {
+			fireRocket(player, target, bridge, attackingTerritories.get(target));
     }
   }
 
