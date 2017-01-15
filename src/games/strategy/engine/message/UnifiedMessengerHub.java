@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -19,6 +20,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.util.ThreadUtil;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
+  private static final int NODE_IMPLEMENTATION_TIMOUT = 200;
   private final UnifiedMessenger m_localUnified;
   // the messenger we are based on
   private final IMessenger m_messenger;
@@ -135,13 +137,12 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
   /**
    * Wait for the messenger to know about the given endpoint.
+   * @deprecated testing code smell, should not be dependent upon wall clock timing, try to remove this method.
    */
-  public void waitForNodesToImplement(final String endPointName, long timeoutMS) {
-    // dont use Long.MAX_VALUE since that will overflow
-    if (timeoutMS <= 0) {
-      timeoutMS = Integer.MAX_VALUE;
-    }
-    final long endTime = timeoutMS + System.currentTimeMillis();
+  @VisibleForTesting
+  @Deprecated
+  public void waitForNodesToImplement(final String endPointName) {
+    final long endTime = NODE_IMPLEMENTATION_TIMOUT + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
       ThreadUtil.sleep(50);
     }
