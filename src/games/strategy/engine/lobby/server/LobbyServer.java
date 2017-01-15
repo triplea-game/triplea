@@ -69,7 +69,6 @@ public class LobbyServer {
         .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
     controller.register(m_messengers.getRemoteMessenger());
     // now we are open for business
-    server.setAcceptNewConnections(true);
   }
 
   private static void setUpLogging() {

@@ -579,16 +579,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  @Override
-  public void setAcceptNewConnections(final boolean accept) {
-    acceptNewConnection = accept;
-  }
-
-  @Override
-  public boolean isAcceptNewConnections() {
-    return acceptNewConnection;
-  }
-
   /**
    * Get the local node
    */
