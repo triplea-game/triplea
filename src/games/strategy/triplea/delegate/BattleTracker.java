@@ -1144,7 +1144,7 @@ public class BattleTracker implements java.io.Serializable {
     for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
       final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
       if(Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport)) {
-        battle.fight( delegateBridge );           // Must be fought here to remove dependencies
+        battle.fight( delegateBridge );           // Must be fought here to prevent dependencies checking failing below
       }
     }
     // Remove defenseless amphibious assaults
