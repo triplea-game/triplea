@@ -4,11 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
@@ -53,11 +50,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (msg instanceof HasEndPointImplementor) {
       synchronized (m_endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
-        Collection<INode> nodes = m_endPoints.get(hasEndPoint.endPointName);
-        if (nodes == null) {
-          nodes = new ArrayList<>();
-          m_endPoints.put(hasEndPoint.endPointName, nodes);
-        }
+        Collection<INode> nodes = m_endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
           throw new IllegalStateException(
               "Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
@@ -110,7 +103,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     final boolean done = invocationInProgress.process(results, from);
     if (done) {
       m_invocations.remove(methodID);
-      final HubInvoke hubInvoke = invocationInProgress.getMethodCall();
       if (invocationInProgress.shouldSendResults()) {
         sendResultsToCaller(methodID, invocationInProgress);
       }
