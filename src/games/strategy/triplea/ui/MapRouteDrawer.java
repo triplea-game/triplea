@@ -180,16 +180,11 @@ public class MapRouteDrawer {
    * @param scale The scale-factor of the Map
    */
   private void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
-      final double yOffset,
-      final double scale) {
-    final Point2D point1 =
-        new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale);
-    final Point2D point2 =
-        new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale);
-    // Don't draw if won't be visible anyway
-    if (graphics.getClip().contains(point1) || graphics.getClip().contains(point2)) {
-      graphics.draw(new Line2D.Double(point1, point2));
-    }
+      final double yOffset, final double scale) {
+    graphics.draw(
+        new Line2D.Double(
+            new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale),
+            new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale)));
   }
 
   /**
@@ -313,12 +308,16 @@ public class MapRouteDrawer {
       drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(RouteOptimizer.getPoint(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1])), points[points.length - 1]);
+    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(
+        RouteOptimizer.getPoint(new Point2D.Double(
+            xcoords[xcoords.length - 1],
+            ycoords[ycoords.length - 1])),
+        points[points.length - 1]);
     boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
-    for(Point[] finishingPointArray : finishingPoints){
-    drawLineWithTranslate(graphics,
-        new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
-        xOffset, yOffset, scale);
+    for (Point[] finishingPointArray : finishingPoints) {
+      drawLineWithTranslate(graphics,
+          new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
+          xOffset, yOffset, scale);
       if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
       }
