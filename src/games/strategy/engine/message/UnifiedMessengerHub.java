@@ -22,7 +22,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.util.ThreadUtil;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
-  private final static Logger s_logger = Logger.getLogger(UnifiedMessengerHub.class.getName());
   private final UnifiedMessenger m_localUnified;
   // the messenger we are based on
   private final IMessenger m_messenger;
@@ -88,18 +87,14 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       }
       // the node will already have routed messages to local invokers
       endPointCols.remove(from);
-      if (s_logger.isLoggable(Level.FINEST)) {
-        s_logger.log(Level.FINEST, "Forwarding invocation:" + msg + " to:" + endPointCols);
-      }
       if (endPointCols.isEmpty()) {
         if (invoke.needReturnValues) {
           final RemoteMethodCallResults results =
               new RemoteMethodCallResults(new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
           send(new SpokeInvocationResults(results, invoke.methodCallID), from);
-        } else {
-          // no end points, this is ok, we
-          // we are a channel with no implementors
         }
+        // no end points, this is ok, we
+        // we are a channel with no implementors
       } else {
         invoke(invoke, endPointCols, from);
       }
@@ -116,10 +111,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (done) {
       m_invocations.remove(methodID);
       final HubInvoke hubInvoke = invocationInProgress.getMethodCall();
-      if (s_logger.isLoggable(Level.FINER)) {
-        s_logger.log(Level.FINER, "Method returned:" + hubInvoke.call.getMethodName() + " for remote name:"
-            + hubInvoke.call.getRemoteName() + " with id:" + hubInvoke.methodCallID);
-      }
       if (invocationInProgress.shouldSendResults()) {
         sendResultsToCaller(methodID, invocationInProgress);
       }
@@ -141,10 +132,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       final InvocationInProgress invocationInProgress =
           new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
       m_invocations.put(hubInvoke.methodCallID, invocationInProgress);
-      if (s_logger.isLoggable(Level.FINER)) {
-        s_logger.log(Level.FINER, "Waiting for method:" + hubInvoke.call.getMethodName() + " for remote name:"
-            + hubInvoke.call.getRemoteName() + " with id:" + hubInvoke.methodCallID);
-      }
     }
     // invoke remotely
     final SpokeInvoke invoke =
@@ -156,9 +143,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
   /**
    * Wait for the messenger to know about the given endpoint.
-   *
-   * @param endPointName
-   * @param timeout
    */
   public void waitForNodesToImplement(final String endPointName, long timeoutMS) {
     // dont use Long.MAX_VALUE since that will overflow
@@ -189,9 +173,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         nodes.remove(to);
       }
     }
-    final Iterator<InvocationInProgress> waitingIterator = m_invocations.values().iterator();
-    while (waitingIterator.hasNext()) {
-      final InvocationInProgress invocation = waitingIterator.next();
+    for (InvocationInProgress invocation : m_invocations.values()) {
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
             new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));
