@@ -101,7 +101,7 @@ public class RocketsFireHelper {
       if (targets.isEmpty()) {
         continue;
       }
-      // Ask the user where the rocket launch should target.
+      // Ask the user where each rocket launcher should target.
       final Territory target = getTarget(targets, player, bridge, territory);
       if (target != null) {
         attackedTerritories.add(target);
@@ -109,11 +109,12 @@ public class RocketsFireHelper {
       }
     }
     for( final Territory target : attackedTerritories ) {
-      // Roll dice for the rocket attack damage and apply it here.
+      // Roll dice for the rocket attack damage and apply it
       fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }
   }
 
+  /** In this rule set, each player only gets one rocket attack per turn. */
   private void fireWW2V1(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> targets = new HashSet<>();
