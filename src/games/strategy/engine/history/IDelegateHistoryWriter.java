@@ -14,5 +14,4 @@ public interface IDelegateHistoryWriter {
   void addChildToEvent(String child);
 
   void addChildToEvent(String child, Object renderingData);
-  // public void setRenderingData(Object renderingData);
 }
