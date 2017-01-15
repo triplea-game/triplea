@@ -21,38 +21,38 @@ import games.strategy.util.ThreadUtil;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private static final int NODE_IMPLEMENTATION_TIMOUT = 200;
-  private final UnifiedMessenger m_localUnified;
+  private final UnifiedMessenger localUnified;
   // the messenger we are based on
-  private final IMessenger m_messenger;
+  private final IMessenger messenger;
   // maps end points to a list of nodes with implementors
-  private final Map<String, Collection<INode>> m_endPoints = new HashMap<>();
+  private final Map<String, Collection<INode>> endPoints = new HashMap<>();
   // changes to the list of endpoints, or reads to it, should be made
   // only while holding this lock
-  private final Object m_endPointMutex = new Object();
+  private final Object endPointMutex = new Object();
   // the invocations that are currently in progress
-  private final Map<GUID, InvocationInProgress> m_invocations = new ConcurrentHashMap<>();
+  private final Map<GUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
 
   public UnifiedMessengerHub(final IMessenger messenger, final UnifiedMessenger localUnified) {
-    m_messenger = messenger;
-    m_localUnified = localUnified;
-    m_messenger.addMessageListener(this);
-    ((IServerMessenger) m_messenger).addConnectionChangeListener(this);
+    this.messenger = messenger;
+    this.localUnified = localUnified;
+    this.messenger.addMessageListener(this);
+    ((IServerMessenger) this.messenger).addConnectionChangeListener(this);
   }
 
   private void send(final Serializable msg, final INode to) {
-    if (m_messenger.getLocalNode().equals(to)) {
-      m_localUnified.messageReceived(msg, m_messenger.getLocalNode());
+    if (messenger.getLocalNode().equals(to)) {
+      localUnified.messageReceived(msg, messenger.getLocalNode());
     } else {
-      m_messenger.send(msg, to);
+      messenger.send(msg, to);
     }
   }
 
   @Override
   public void messageReceived(final Serializable msg, final INode from) {
     if (msg instanceof HasEndPointImplementor) {
-      synchronized (m_endPointMutex) {
+      synchronized (endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
-        Collection<INode> nodes = m_endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
+        Collection<INode> nodes = endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
           throw new IllegalStateException(
               "Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
@@ -60,24 +60,24 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         nodes.add(from);
       }
     } else if (msg instanceof NoLongerHasEndPointImplementor) {
-      synchronized (m_endPointMutex) {
+      synchronized (endPointMutex) {
         final NoLongerHasEndPointImplementor hasEndPoint = (NoLongerHasEndPointImplementor) msg;
-        final Collection<INode> nodes = m_endPoints.get(hasEndPoint.endPointName);
+        final Collection<INode> nodes = endPoints.get(hasEndPoint.endPointName);
         if (nodes != null) {
           if (!nodes.remove(from)) {
             throw new IllegalStateException("Not removed!");
           }
           if (nodes.isEmpty()) {
-            m_endPoints.remove(hasEndPoint.endPointName);
+            endPoints.remove(hasEndPoint.endPointName);
           }
         }
       }
     } else if (msg instanceof HubInvoke) {
       final HubInvoke invoke = (HubInvoke) msg;
       final Collection<INode> endPointCols = new ArrayList<>();
-      synchronized (m_endPointMutex) {
-        if (m_endPoints.containsKey(invoke.call.getRemoteName())) {
-          endPointCols.addAll(m_endPoints.get(invoke.call.getRemoteName()));
+      synchronized (endPointMutex) {
+        if (endPoints.containsKey(invoke.call.getRemoteName())) {
+          endPointCols.addAll(endPoints.get(invoke.call.getRemoteName()));
         }
       }
       // the node will already have routed messages to local invokers
@@ -101,10 +101,10 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
   private void results(final HubInvocationResults results, final INode from) {
     final GUID methodID = results.methodCallID;
-    final InvocationInProgress invocationInProgress = m_invocations.get(methodID);
+    final InvocationInProgress invocationInProgress = invocations.get(methodID);
     final boolean done = invocationInProgress.process(results, from);
     if (done) {
-      m_invocations.remove(methodID);
+      invocations.remove(methodID);
       if (invocationInProgress.shouldSendResults()) {
         sendResultsToCaller(methodID, invocationInProgress);
       }
@@ -125,7 +125,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       }
       final InvocationInProgress invocationInProgress =
           new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
-      m_invocations.put(hubInvoke.methodCallID, invocationInProgress);
+      invocations.put(hubInvoke.methodCallID, invocationInProgress);
     }
     // invoke remotely
     final SpokeInvoke invoke =
@@ -149,8 +149,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   }
 
   public boolean hasImplementors(final String endPointName) {
-    synchronized (m_endPointMutex) {
-      return m_endPoints.containsKey(endPointName) && !m_endPoints.get(endPointName).isEmpty();
+    synchronized (endPointMutex) {
+      return endPoints.containsKey(endPointName) && !endPoints.get(endPointName).isEmpty();
     }
   }
 
@@ -161,12 +161,12 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   public void connectionRemoved(final INode to) {
     // we lost a connection to a node
     // any pending results should return
-    synchronized (m_endPointMutex) {
-      for (final Collection<INode> nodes : m_endPoints.values()) {
+    synchronized (endPointMutex) {
+      for (final Collection<INode> nodes : endPoints.values()) {
         nodes.remove(to);
       }
     }
-    for (InvocationInProgress invocation : m_invocations.values()) {
+    for (InvocationInProgress invocation : invocations.values()) {
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
             new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));
