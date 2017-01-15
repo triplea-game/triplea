@@ -107,7 +107,7 @@ public class RocketsFireHelper {
       }
     }
     for( final Territory target : attackedTerritories ) {
-			fireRocket(player, target, bridge, attackingTerritories.get(target));
+      fireRocket(player, target, bridge, attackingTerritories.get(target));
     }
   }
 
