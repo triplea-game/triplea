@@ -1141,14 +1141,14 @@ public class BattleTracker implements java.io.Serializable {
 
   public void fightAutoKills(final IDelegateBridge delegateBridge) {
     // Kill undefended transports. Done here to remove potentially dependent sea battles below
-    for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
+    for( final Territory t : getPendingBattleSites(false) ) { // Loop through normal combats ie. not bombing or air raid
       final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
       if(Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport)) {
         battle.fight( delegateBridge );           // Must be fought here to prevent dependencies checking failing below
       }
     }
     // Remove defenseless amphibious assaults
-    for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
+    for( final Territory t : getPendingBattleSites(false) ) { // Loop through normal combats ie. not bombing or air raid
       final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
       if (getDependentOn(battle).isEmpty())  {
         if (battle instanceof NonFightingBattle) {
