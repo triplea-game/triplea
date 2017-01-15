@@ -91,7 +91,7 @@ public class RocketsFireHelper {
   private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
-    final Map<Territory,Territory> attackingTerritories = new LinkedHashMap<>();
+    final Map<Territory,Territory> attackingFromTerritories = new LinkedHashMap<>();
     final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
     for (final Territory territory : rocketTerritories) {
       final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -105,12 +105,12 @@ public class RocketsFireHelper {
       final Territory target = getTarget(targets, player, bridge, territory);
       if (target != null) {
         attackedTerritories.add(target);
-        attackingTerritories.put(target,territory);
+        attackingFromTerritories.put(target,territory);
       }
     }
     for( final Territory target : attackedTerritories ) {
       // Roll dice for the rocket attack damage and apply it here.
-      fireRocket(player, target, bridge, attackingTerritories.get(target));
+      fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }
   }
 
@@ -122,10 +122,10 @@ public class RocketsFireHelper {
     }
     if (targets.isEmpty()) {
       bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
-      // getRemote(bridge).reportMessage("No targets to attack with rockets", "No targets to attack with rockets");
       return;
     }
     final Territory attacked = getTarget(targets, player, bridge, null);
+
     if (attacked != null) {
       fireRocket(player, attacked, bridge, null);
     }
