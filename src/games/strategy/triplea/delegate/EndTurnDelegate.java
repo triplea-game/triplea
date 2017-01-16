@@ -164,10 +164,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return list.get(random);
   }
 
-  /**
-   * @param data
-   * @param bridge
-   */
   private String createResources(final IDelegateBridge bridge, final boolean negativeResources) {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = getData();
@@ -210,8 +206,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
   /**
    * Determine if National Objectives have been met, and then do them.
-   *
-   * @param data
    */
   private String determineNationalObjectives(final IDelegateBridge bridge) {
     final GameData data = getData();
@@ -327,9 +321,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   /**
    * Since territory resource may contain any resource except PUs (PUs use "getProduction" instead),
    * we will now figure out the total production of non-PUs resources.
-   *
-   * @param territories
-   * @param data
    */
   private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
       final GameData data) {
