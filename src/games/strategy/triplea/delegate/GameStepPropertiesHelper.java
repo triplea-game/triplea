@@ -83,7 +83,7 @@ public class GameStepPropertiesHelper {
   /**
    * For various things related to movement validation.
    */
-  public static boolean isCombatMove(final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
+  static boolean isCombatMove(final GameData data) {
     final boolean isCombatMove;
     data.acquireReadLock();
     try {
@@ -93,8 +93,6 @@ public class GameStepPropertiesHelper {
       } else if (isCombatDelegate(data)) {
         isCombatMove = true;
       } else if (isNonCombatDelegate(data)) {
-        isCombatMove = false;
-      } else if (doNotThrowErrorIfNotMoveDelegate) {
         isCombatMove = false;
       } else {
         throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
@@ -134,7 +132,7 @@ public class GameStepPropertiesHelper {
    * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat
    * move for WW2v1.
    */
-  public static boolean isFireRockets(final GameData data) {
+  static boolean isFireRockets(final GameData data) {
     final boolean isFireRockets;
     data.acquireReadLock();
     try {
@@ -155,7 +153,7 @@ public class GameStepPropertiesHelper {
   /**
    * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
    */
-  public static boolean isRepairUnits(final GameData data) {
+  static boolean isRepairUnits(final GameData data) {
     final boolean isRepairUnits;
     data.acquireReadLock();
     try {
@@ -169,11 +167,9 @@ public class GameStepPropertiesHelper {
         final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairUnits);
         if (prop != null) {
           isRepairUnits = Boolean.parseBoolean(prop);
-        } else if (isCombatDelegate(data) && repairAtStartAndOnlyOwn) {
-          isRepairUnits = true;
-        } else {
-          isRepairUnits = data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll;
-        }
+        } else
+          isRepairUnits = (isCombatDelegate(data) && repairAtStartAndOnlyOwn)
+            || (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll);
       }
     } finally {
       data.releaseReadLock();
@@ -184,7 +180,7 @@ public class GameStepPropertiesHelper {
   /**
    * Resets then gives bonus movement. Normally would occur at the start of combat movement phase.
    */
-  public static boolean isGiveBonusMovement(final GameData data) {
+  static boolean isGiveBonusMovement(final GameData data) {
     final boolean isBonus;
     data.acquireReadLock();
     try {
@@ -213,13 +209,10 @@ public class GameStepPropertiesHelper {
       if (prop != null) {
         isRemoveAir = Boolean.parseBoolean(prop);
       } else if (data.getSequence().getStep().getDelegate() != null
-          && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
+        && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
         isRemoveAir = false;
-      } else if (isNonCombatDelegate(data)) {
-        isRemoveAir = true;
-      } else {
-        isRemoveAir = data.getSequence().getStep().getName().endsWith("Place");
-      }
+      } else
+        isRemoveAir = isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place");
     } finally {
       data.releaseReadLock();
     }
@@ -264,17 +257,13 @@ public class GameStepPropertiesHelper {
   /**
    * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally does not occur.
    */
-  public static boolean isResetUnitStateAtStart(final GameData data) {
+  static boolean isResetUnitStateAtStart(final GameData data) {
     final boolean isReset;
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
-      if (prop != null) {
-        isReset = Boolean.parseBoolean(prop);
-      } else {
-        isReset = false;
-      }
+        data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
+      isReset = prop != null && Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();
     }
@@ -285,7 +274,7 @@ public class GameStepPropertiesHelper {
    * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of
    * noncombat move phase.
    */
-  public static boolean isResetUnitStateAtEnd(final GameData data) {
+  static boolean isResetUnitStateAtEnd(final GameData data) {
     final boolean isReset;
     data.acquireReadLock();
     try {
@@ -309,11 +298,8 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_bid);
       if (prop != null) {
         isBid = Boolean.parseBoolean(prop);
-      } else if (isBidPurchaseDelegate(data)) {
-        isBid = true;
-      } else {
-        isBid = isBidPlaceDelegate(data);
-      }
+      } else
+        isBid = isBidPurchaseDelegate(data) || isBidPlaceDelegate(data);
     } finally {
       data.releaseReadLock();
     }
