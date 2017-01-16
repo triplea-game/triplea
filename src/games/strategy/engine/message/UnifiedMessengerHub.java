@@ -20,7 +20,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.util.ThreadUtil;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
-  private static final int NODE_IMPLEMENTATION_TIMOUT = 200;
+  private static final int NODE_IMPLEMENTATION_TIMEOUT = 200;
   private final UnifiedMessenger localUnified;
   // the messenger we are based on
   private final IMessenger messenger;
@@ -142,7 +142,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   @VisibleForTesting
   @Deprecated
   public void waitForNodesToImplement(final String endPointName) {
-    final long endTime = NODE_IMPLEMENTATION_TIMOUT + System.currentTimeMillis();
+    final long endTime = NODE_IMPLEMENTATION_TIMEOUT + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
       ThreadUtil.sleep(50);
     }
