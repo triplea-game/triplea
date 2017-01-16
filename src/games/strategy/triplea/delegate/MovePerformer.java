@@ -193,7 +193,7 @@ public class MovePerformer implements Serializable {
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatch(arrived, Matches.unitCanEscort));
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
-          if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data, false)) {
+          if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
             bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             // if bombing and there's something to target- ask what to bomb
             if (bombing) {
@@ -233,7 +233,7 @@ public class MovePerformer implements Serializable {
               ignoreBattle = true;
             }
           }
-          if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data, false) && !targetedAttack) {
+          if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack) {
             // createdBattle = true;
             getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove,
                 dependentOnSomethingTilTheEndOfRoute);
@@ -329,7 +329,7 @@ public class MovePerformer implements Serializable {
     }
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non blitzed conquered territory, mark with 0 movement
-    if (GameStepPropertiesHelper.isCombatMove(data, false)
+    if (GameStepPropertiesHelper.isCombatMove(data)
         && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
       for (final Unit unit : Match.getMatches(units, Matches.UnitIsLand)) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
@@ -428,7 +428,7 @@ public class MovePerformer implements Serializable {
         final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
         if (paratroopsLanding && transportedBy != null && Matches.UnitIsAirTransport.match(transportedBy)
-            && GameStepPropertiesHelper.isCombatMove(data, false)
+            && GameStepPropertiesHelper.isCombatMove(data)
             && Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd())) {
           continue;
         }

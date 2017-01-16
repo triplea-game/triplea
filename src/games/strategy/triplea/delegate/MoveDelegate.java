@@ -85,7 +85,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
               new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.placeMatch()));
       final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = new CompositeMatchOr<>(
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
-      if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch, m_bridge);
         if (!toFirePossible.isEmpty()) {
@@ -137,7 +137,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
 
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
-      if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
         if (!toFireAfterBonus.isEmpty()) {
@@ -246,7 +246,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
 
     // if not non combat, cannot move aa units
-    if (GameStepPropertiesHelper.isCombatMove(getData(), false)) {
+    if (GameStepPropertiesHelper.isCombatMove(getData())) {
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     for (final Territory item : getData().getMap().getTerritories()) {
