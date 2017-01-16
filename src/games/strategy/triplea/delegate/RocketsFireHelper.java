@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -88,6 +91,7 @@ public class RocketsFireHelper {
   private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
+    final Map<Territory,Territory> attackingFromTerritories = new LinkedHashMap<>();
     final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
     for (final Territory territory : rocketTerritories) {
       final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -97,16 +101,20 @@ public class RocketsFireHelper {
       if (targets.isEmpty()) {
         continue;
       }
+      // Ask the user where each rocket launcher should target.
       final Territory target = getTarget(targets, player, bridge, territory);
       if (target != null) {
-        if (oneAttackPerTerritory) {
-          attackedTerritories.add(target);
-        }
-        fireRocket(player, target, bridge, territory);
+        attackedTerritories.add(target);
+        attackingFromTerritories.put(target,territory);
       }
+    }
+    for( final Territory target : attackedTerritories ) {
+      // Roll dice for the rocket attack damage and apply it
+      fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }
   }
 
+  /** In this rule set, each player only gets one rocket attack per turn. */
   private void fireWW2V1(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> targets = new HashSet<>();
@@ -115,10 +123,10 @@ public class RocketsFireHelper {
     }
     if (targets.isEmpty()) {
       bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
-      // getRemote(bridge).reportMessage("No targets to attack with rockets", "No targets to attack with rockets");
       return;
     }
     final Territory attacked = getTarget(targets, player, bridge, null);
+
     if (attacked != null) {
       fireRocket(player, attacked, bridge, null);
     }
