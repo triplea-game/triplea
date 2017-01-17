@@ -83,7 +83,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       int status = response.getStatusLine().getStatusCode();
-      if (status == 200) {
+      if (status == HttpURLConnection.HTTP_OK) {
         final String body = Util.getStringFromInputStream(response.getEntity().getContent());
         if (body.toLowerCase().contains("password incorrect")) {
           throw new Exception("Incorrect Password");
