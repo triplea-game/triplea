@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -129,7 +130,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       params.add(new BasicNameValuePair("roller", getToAddress()));
       params.add(new BasicNameValuePair("gm", getCcAddress()));
       params.add(new BasicNameValuePair("send", "true"));
-      httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+      httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
       // this is to allow a dice server to allow the user to request the emails for the game
       // rather than sending out email for each roll

@@ -1,5 +1,8 @@
 package games.strategy.engine.pbem;
 
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,7 +20,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -56,11 +60,11 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     pairs.add(new BasicNameValuePair("rememberme", "On"));
     pairs.add(new BasicNameValuePair("xoops_redirect", "/"));
     pairs.add(new BasicNameValuePair("op", "login"));
-    httpPost.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
+    httpPost.setEntity(new UrlEncodedFormEntity(pairs, StandardCharsets.UTF_8));
     HttpProxy.addProxy(httpPost);
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       final int status = response.getStatusLine().getStatusCode();
-      if (status != 200) {
+      if (status != HttpURLConnection.HTTP_OK) {
         throw new Exception("Login failed, server returned status: " + status);
       }
       final String body = Util.getStringFromInputStream(response.getEntity().getContent());
@@ -89,18 +93,18 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
    */
   @Override
   public boolean postTurnSummary(final String summary, final String subject) {
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
+    try (CloseableHttpClient client = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
       HttpContext httpContext = login(client);
       // load the reply page
       final String s_forumId = "20";
       final String url =
-          WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
+          WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
       String XOOPS_TOKEN_REQUEST;
       HttpGet httpGet = new HttpGet(url);
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         final int status = response.getStatusLine().getStatusCode();
-        if (status != 200) {
+        if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Could not load reply page: " + url + ". Site returned " + status);
         }
         final String body = Util.getStringFromInputStream(response.getEntity().getContent());
@@ -134,7 +138,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
 
       try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
         final int status = response.getStatusLine().getStatusCode();
-        if (status != 200) {
+        if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Posting summary failed, the server returned status: " + status);
         }
         final String body = Util.getStringFromInputStream(response.getEntity().getContent());

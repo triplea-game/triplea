@@ -161,8 +161,8 @@ public class Util {
   public static String getStringFromInputStream(InputStream in){
     StringBuilder builder = new StringBuilder();
     try(Scanner scanner = new Scanner(in)){
-      while(scanner.hasNext()){
-        builder.append(scanner.next());
+      while(scanner.hasNextLine()){
+        builder.append(scanner.nextLine()).append("\n");
       }
     }
     return builder.toString();

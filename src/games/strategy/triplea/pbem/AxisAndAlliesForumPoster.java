@@ -1,5 +1,7 @@
 package games.strategy.triplea.pbem;
 
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -78,7 +80,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     final List<NameValuePair> parameters = new ArrayList<>(2);
     parameters.add(new BasicNameValuePair("user", getUsername()));
     parameters.add(new BasicNameValuePair("passwrd", getPassword()));
-    httpPost.setEntity(new UrlEncodedFormEntity(parameters, "UTF-8"));
+    httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       int status = response.getStatusLine().getStatusCode();
       if (status == 200) {
@@ -181,7 +183,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
             status = response.getStatusLine().getStatusCode();
             body = Util.getStringFromInputStream(response.getEntity().getContent());
-            if (status == 302) {
+            if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
               // site responds with a 302 redirect back to the forum index (board=40)
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
               // given thread
