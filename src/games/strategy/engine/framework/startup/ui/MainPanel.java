@@ -38,12 +38,8 @@ public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private JScrollPane gameSetupPanelScroll;
-  private GameSelectorPanel gameSelectorPanel;
   private JButton playButton;
-  private JButton quitButton;
   private JButton cancelButton;
-  private final GameSelectorModel gameSelectorModel;
   private ISetupPanel gameSetupPanel;
   private JPanel gameSetupPanelHolder;
   private JPanel chatPanelHolder;
@@ -55,20 +51,20 @@ public class MainPanel extends JPanel implements Observer {
 
   public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
-    gameSelectorModel = typePanelModel.getGameSelectorModel();
+    GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
     playButton = new JButton("Play");
     playButton.setToolTipText(
         "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
-    quitButton = new JButton("Quit");
+    JButton quitButton = new JButton("Quit");
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
-    gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
+    JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
     gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
     chatPanelHolder = new JPanel();
     chatPanelHolder.setLayout(new BorderLayout());
