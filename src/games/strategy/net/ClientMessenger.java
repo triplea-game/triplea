@@ -84,7 +84,9 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
         if (m_socketChannel.finishConnect()) {
           break;
         }
-        ThreadUtil.sleep(50);
+        if(!ThreadUtil.sleep(50)) {
+          return;
+        }
         waitTimeMilliseconds += 50;
       }
     }

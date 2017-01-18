@@ -97,7 +97,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer)) {
         m_currentPickingPlayer = playersCanPick.get(0);
       }
-      ThreadUtil.sleep(250);
+      if(!ThreadUtil.sleep(250)) {
+        return;
+      }
       Territory picked;
       if (randomTerritories) {
         pos += hitRandom[i];

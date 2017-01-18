@@ -134,9 +134,7 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   private void waitThenWalk() {
-    final Thread t = new Thread("Walk single step started at:" + new Date()) {
-      @Override
-      public void run() {
+    new Thread(() -> {
         synchronized (m_mutex) {
           if (m_hasWalkThread) {
             return;
@@ -144,16 +142,15 @@ class BattleStepsPanel extends JPanel implements Active {
           m_hasWalkThread = true;
         }
         try {
-          ThreadUtil.sleep(330);
-          SwingUtilities.invokeLater(() -> walkStep());
+          if(ThreadUtil.sleep(330)) {
+            SwingUtilities.invokeLater(this::walkStep);
+          }
         } finally {
           synchronized (m_mutex) {
             m_hasWalkThread = false;
           }
         }
-      }
-    };
-    t.start();
+    }).start();
   }
 
   /**
