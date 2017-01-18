@@ -403,9 +403,7 @@ public class SwingComponents {
           promise.completeExceptionally(e.getCause());
         } catch (final InterruptedException e) {
           promise.completeExceptionally(e);
-          // TODO: consider if re-interrupting the thread is the right thing to do when we can't throw
-          // InterruptedException (see https://www.ibm.com/developerworks/library/j-jtp05236/)
-          ClientLogger.logQuietly(e);
+          Thread.currentThread().interrupt();
         }
       }
     };
