@@ -426,24 +426,6 @@ public class GameRunner {
     }
   }
 
-  // TODO: delete all this when we figure out the new casualty selection algorithm
-  public static boolean getCasualtySelectionSlow() {
-    if (s_checkedCasualtySelectionSlowPreference) {
-      return s_casualtySelectionSlow;
-    }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    s_casualtySelectionSlow = pref.getBoolean(CASUALTY_SELECTION_SLOW, false);
-    s_checkedCasualtySelectionSlowPreference = true;
-    return s_casualtySelectionSlow;
-  }
-
-  private static boolean s_casualtySelectionSlow = false;
-  private static boolean s_checkedCasualtySelectionSlowPreference = false;
-
-  public static void setCasualtySelectionSlow(final boolean casualtySelectionBeta) {
-    SystemPreferences.put(SystemPreferenceKey.CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
-  }
-
   public static int getServerStartGameSyncWaitTime() {
     return Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, Preferences.userNodeForPackage(GameRunner.class)
         .getInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME));
