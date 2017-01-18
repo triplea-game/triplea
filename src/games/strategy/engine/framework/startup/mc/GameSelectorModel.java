@@ -264,7 +264,7 @@ public class GameSelectorModel extends Observable {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAI.gameOverClearCache();
-    loadDefaultGame(ui, false);
+    new Thread(() -> loadDefaultGame(ui, false)).start();
   }
 
   /**
