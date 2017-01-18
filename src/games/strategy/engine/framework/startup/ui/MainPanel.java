@@ -92,7 +92,7 @@ public class MainPanel extends JPanel implements Observer {
     setPreferredSize(initialSize);
 
     gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
-    playButton.addActionListener(e -> play());
+    playButton.addActionListener(e -> play(gameSetupPanel, gameTypePanelModel, this));
     quitButton.addActionListener(e -> {
       try {
         gameSetupPanel.shutDown();
@@ -102,6 +102,7 @@ public class MainPanel extends JPanel implements Observer {
     });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
     gameSelectorModel.addObserver(this);
+
 
     setWidgetActivation();
     if (typePanelModel.getPanel() != null) {
@@ -154,7 +155,7 @@ public class MainPanel extends JPanel implements Observer {
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      createUserActionMenu(cancelPanel);
+      createUserActionMenu(gameSetupPanel, cancelPanel);
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
@@ -165,7 +166,7 @@ public class MainPanel extends JPanel implements Observer {
     revalidate();
   }
 
-  private void createUserActionMenu(final JPanel cancelPanel) {
+  private static void createUserActionMenu(ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
     if (gameSetupPanel.getUserActions().isEmpty()) {
       return;
     }
@@ -183,11 +184,11 @@ public class MainPanel extends JPanel implements Observer {
   }
 
 
-  private void play() {
+  private static void play(ISetupPanel gameSetupPanel, SetupPanelModel gameTypePanelModel, MainPanel mainPanel) {
     gameSetupPanel.preStartGame();
     final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
     if (launcher != null) {
-      launcher.launch(this);
+      launcher.launch(mainPanel);
     }
     gameSetupPanel.postStartGame();
   }
