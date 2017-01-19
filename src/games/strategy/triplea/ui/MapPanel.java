@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,14 +98,12 @@ public class MapPanel extends ImageScrollerLargeView {
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
-  private final TripleAFrame tripleAFrame;
 
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model, final TripleAFrame frame) {
+      final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);
-    this.tripleAFrame = frame;
     this.uiContext = uiContext;
     setCursor(this.uiContext.getCursor());
     this.m_scale = this.uiContext.getScale();
@@ -119,6 +118,11 @@ public class MapPanel extends ImageScrollerLargeView {
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
+      
+      private boolean is4Pressed = false;
+      private boolean is5Pressed = false;
+      private int lastActive = -1;
+      
       /**
        * Invoked when the mouse exits a component.
        */
@@ -143,14 +147,13 @@ public class MapPanel extends ImageScrollerLargeView {
         if (terr != null) {
           notifyTerritorySelected(terr, md);
         }
-        if(e.getButton() == 4 || e.getButton() == 5){
-          if (is4Pressed && is5Pressed) {
-            lastActive = e.getButton() == 4 ? 5 : 4;
-          } else {
-            lastActive = -1;
-          }
+        if (e.getButton() == 4 || e.getButton() == 5) {
+          //the numbers 4 and 5 stand for the corresponding mouse button
+          lastActive = is4Pressed && is5Pressed ? (e.getButton() == 4 ? 5 : 4) : -1;
+          //we only want to change the variables if the corresponding button was released
           is4Pressed = e.getButton() == 4 ? false : is4Pressed;
           is5Pressed = e.getButton() == 5 ? false : is5Pressed;
+          //we want to return here, because otherwise a menu might be opened
           return;
         }
         if (!unitSelectionListeners.isEmpty()) {
@@ -162,23 +165,25 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       }
 
-      private boolean is4Pressed = false;
-      private boolean is5Pressed = false;
-      private int lastActive = -1;
-
       @Override
       public void mousePressed(final MouseEvent e) {
         is4Pressed = e.getButton() == 4 ? true : is4Pressed;
         is5Pressed = e.getButton() == 5 ? true : is5Pressed;
         if (lastActive == -1) {
           new Thread(() -> {
+            //Mouse Events are different than key events
+            //Thats why we're "simulating" multiple
+            //clicks while the mouse button is held down
+            //so the map keeps scrolling
             while (lastActive != -1) {
-              final int diffPixel = tripleAFrame.computeScrollSpeed(e);
+              final int diffPixel = computeScrollSpeed.get();
               if (lastActive == 5) {
                 setTopLeft(getXOffset() + diffPixel, getYOffset());
               } else if (lastActive == 4) {
                 setTopLeft(getXOffset() - diffPixel, getYOffset());
               }
+              //50ms seems to be a good interval between "clicks"
+              //changing this number changes the scroll speed
               ThreadUtil.sleep(50);
             }
           }).start();

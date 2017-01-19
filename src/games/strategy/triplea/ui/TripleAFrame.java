@@ -16,7 +16,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -207,6 +206,7 @@ public class TripleAFrame extends MainGameFrame {
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenuBar menu;
   private final ScrollSettings scrollSettings;
+  private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
@@ -284,7 +284,7 @@ public class TripleAFrame extends MainGameFrame {
         uiContext.getMapData().getMapDimensions().height);
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model);
-    mapPanel = new MapPanel(data, smallView, uiContext, model, this);
+    mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
     final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
@@ -1543,9 +1543,9 @@ public class TripleAFrame extends MainGameFrame {
     return new KeyListener() {
       @Override
       public void keyPressed(final KeyEvent e) {
-
+        isCtrlPressed = e.isControlDown();
         // scroll map according to wasd/arrowkeys
-        final int diffPixel = computeScrollSpeed(e);
+        final int diffPixel = computeScrollSpeed();
         final int x = mapPanel.getXOffset();
         final int y = mapPanel.getYOffset();
         final int keyCode = e.getKeyCode();
@@ -1604,14 +1604,16 @@ public class TripleAFrame extends MainGameFrame {
       public void keyTyped(final KeyEvent e) {}
 
       @Override
-      public void keyReleased(final KeyEvent e) {}
+      public void keyReleased(final KeyEvent e) {
+        isCtrlPressed = e.isControlDown();
+      }
     };
   }
 
-  public int computeScrollSpeed(final InputEvent e) {
+  private int computeScrollSpeed() {
     int multiplier = 1;
 
-    if (e.isControlDown()) {
+    if (isCtrlPressed) {
       multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
     }
 
