@@ -257,17 +257,6 @@ public class BattleTracker implements java.io.Serializable {
 
     this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
-
-  /**
-   * @deprecated 'bombing' boolean parameter removed. IF calling with false, call addBattle without the boolean arg,
-   * or if calling with 'bombing == true' call addBombingBattle()
-   */
-  @Deprecated
-  public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
-      final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
-    this.addBattle(route, units, bombing, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
-  }
   
   public void addBattle(final Route route, final Collection<Unit> units, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
