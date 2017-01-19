@@ -268,6 +268,12 @@ public class BattleTracker implements java.io.Serializable {
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     this.addBattle(route, units, bombing, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
+  
+  public void addBattle(final Route route, final Collection<Unit> units, final PlayerID id,
+      final IDelegateBridge bridge, final UndoableMove changeTracker,
+      final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
+    this.addBattle(route, units, false, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
+  }
 
   void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,

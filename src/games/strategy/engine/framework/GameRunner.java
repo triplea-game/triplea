@@ -66,7 +66,6 @@ public class GameRunner {
   // not arguments:
   public static final int PORT = 3300;
   private static final String DELAYED_PARSING = "DelayedParsing";
-  private static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
