@@ -181,8 +181,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
           HttpProxy.addProxy(httpPost);
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
-            status = response.getStatusLine().getStatusCode();
-            body = Util.getStringFromInputStream(response.getEntity().getContent());
+            status = response2.getStatusLine().getStatusCode();
+            body = Util.getStringFromInputStream(response2.getEntity().getContent());
             if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
               // site responds with a 302 redirect back to the forum index (board=40)
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
@@ -208,7 +208,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
                   throw new Exception("The site gave an error: '" + matcher.group(1) + "'");
                 }
               }
-              final Header refreshHeader = response.getFirstHeader("Refresh");
+              final Header refreshHeader = response2.getFirstHeader("Refresh");
               if (refreshHeader != null) {
                 // sometimes the message will be flagged as spam, and a refresh url is given
                 // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
