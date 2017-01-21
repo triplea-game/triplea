@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.xml.LoadGameUtil;
 import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
@@ -84,11 +85,7 @@ public class DelegateTest {
 
   @Test
   public void setUp() throws Exception {
-    // get the xml file
-    final URL url = this.getClass().getResource("DelegateTest.xml");
-    final InputStream input = url.openStream();
-    m_data = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
-    input.close();
+    m_data = LoadGameUtil.TestMapXml.DELEGATE_TEST.getGameData();
     british = GameDataTestUtil.british(m_data);
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     japanese = GameDataTestUtil.japanese(m_data);

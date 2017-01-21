@@ -3,10 +3,13 @@ package games.strategy.engine.data;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.xml.LoadGameUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,10 +20,7 @@ public class AllianceTrackerTest {
 
   @Before
   public void setUp() throws Exception {
-    // get the xml file
-    final URL url = this.getClass().getResource("Test.xml");
-    final InputStream input = url.openStream();
-    m_data = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
+    m_data = LoadGameUtil.TestMapXml.TEST.getGameData();
   }
 
   @Test

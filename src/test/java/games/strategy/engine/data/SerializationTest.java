@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.xml.LoadGameUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,14 +23,8 @@ public class SerializationTest {
 
   @Before
   public void setUp() throws Exception {
-    // get the xml file
-    final URL url = this.getClass().getResource("Test.xml");
-    // get the source data
-    InputStream input = url.openStream();
-    m_dataSource = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
-    // get the sink data
-    input = url.openStream();
-    m_dataSink = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
+    m_dataSource = LoadGameUtil.TestMapXml.TEST.getGameData();
+    m_dataSink = LoadGameUtil.TestMapXml.TEST.getGameData();
   }
 
   private Object serialize(final Object anObject) throws Exception {

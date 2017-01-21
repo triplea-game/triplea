@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
+import games.strategy.triplea.xml.LoadGameUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,11 +31,7 @@ public class ParserTest {
 
   @Before
   public void setUp() throws Exception {
-    // get the xml file
-    final URL url = this.getClass().getResource("GameExample.xml");
-    // System.out.println(url);
-    final InputStream input = url.openStream();
-    gameData = (new GameParser(url.toString())).parse(input, new AtomicReference<>(), false);
+    gameData = LoadGameUtil.TestMapXml.GAME_EXAMPLE.getGameData();
   }
 
   @Test
