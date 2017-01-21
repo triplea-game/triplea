@@ -19,7 +19,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
 // public class PacificTest extends TestCase
@@ -58,7 +58,7 @@ public class PacificTest extends DelegateTest {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    m_data = LoadGameUtil.TestMapXml.PACIFIC_INCOMPLETE.getGameData();
+    m_data = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
     // Define units
     infantry = GameDataTestUtil.infantry(m_data);
     armor = GameDataTestUtil.armour(m_data);

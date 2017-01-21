@@ -23,7 +23,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 // Test Global 1940 feature of having AA for each individual facility firing at bombers which are attacking it
 
@@ -32,7 +32,7 @@ public class StratBombTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.GLOBAL1940.getGameData();
+    m_data = TestMapGameData.GLOBAL1940.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

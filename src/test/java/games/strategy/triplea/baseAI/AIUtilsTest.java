@@ -17,14 +17,14 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class AIUtilsTest {
   private GameData m_data;
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
+    m_data = TestMapGameData.REVISED.getGameData();
   }
 
   @Test

@@ -20,7 +20,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.RulesAttachment;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -29,7 +29,7 @@ public class Pact_of_Steel_2_Test {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.PACT_OF_STEEL_2.getGameData();
+    m_data = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

@@ -3,15 +3,10 @@ package games.strategy.triplea.delegate;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicReference;
-
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -85,7 +80,7 @@ public class DelegateTest {
 
   @Test
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.DELEGATE_TEST.getGameData();
+    m_data = TestMapGameData.DELEGATE_TEST.getGameData();
     british = GameDataTestUtil.british(m_data);
     british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
     japanese = GameDataTestUtil.japanese(m_data);

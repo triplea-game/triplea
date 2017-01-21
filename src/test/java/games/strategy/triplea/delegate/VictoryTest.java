@@ -16,7 +16,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -43,7 +43,7 @@ public class VictoryTest {
 
   @Before
   public void setUp() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.VICTORY_TEST.getGameData();
+    gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
     // we need to initialize the original owner

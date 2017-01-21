@@ -32,7 +32,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
 public class BattleCalculatorTest {
@@ -41,7 +41,7 @@ public class BattleCalculatorTest {
 
   @Before
   public void setUp() throws Exception {
-    final GameData data = LoadGameUtil.TestMapXml.REVISED.getGameData();
+    final GameData data = TestMapGameData.REVISED.getGameData();
     m_bridge = getDelegateBridge(british(data), data);
   }
 

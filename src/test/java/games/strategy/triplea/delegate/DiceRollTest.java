@@ -25,7 +25,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
 public class DiceRollTest {
@@ -33,7 +33,7 @@ public class DiceRollTest {
 
   @Before
   public void setUp() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.LHTR.getGameData();
+    gameData = TestMapGameData.LHTR.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
@@ -168,7 +168,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttackPlus1() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.IRON_BLITZ.getGameData();
+    gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
@@ -185,7 +185,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttackPlus1LowLuck() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.IRON_BLITZ.getGameData();
+    gameData = TestMapGameData.IRON_BLITZ.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
@@ -203,7 +203,7 @@ public class DiceRollTest {
 
   @Test
   public void testMarineAttacNormalIfNotAmphibious() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.IRON_BLITZ.getGameData();
+    gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerID americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
@@ -315,7 +315,7 @@ public class DiceRollTest {
 
   @Test
   public void testAALowLuckWithRadar() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.WW2V3_1941.getGameData();
+    gameData = TestMapGameData.WW2V3_1941.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -364,7 +364,7 @@ public class DiceRollTest {
 
   @Test
   public void testHeavyBombers() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.IRON_BLITZ.getGameData();
+    gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
@@ -381,7 +381,7 @@ public class DiceRollTest {
 
   @Test
   public void testHeavyBombersDefend() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.IRON_BLITZ.getGameData();
+    gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,

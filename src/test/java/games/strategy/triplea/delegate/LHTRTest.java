@@ -31,14 +31,14 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class LHTRTest {
   private GameData m_data;
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.LHTR.getGameData();
+    m_data = TestMapGameData.LHTR.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

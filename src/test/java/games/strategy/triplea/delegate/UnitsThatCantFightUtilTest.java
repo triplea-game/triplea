@@ -12,14 +12,14 @@ import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class UnitsThatCantFightUtilTest {
 
   @Test
   public void testNoSuicideAttacksAA50AtStart() throws Exception {
     // at the start of the game, there are no suicide attacks
-    final GameData data = LoadGameUtil.TestMapXml.WW2V3_1941.getGameData();
+    final GameData data = TestMapGameData.WW2V3_1941.getGameData();
     Collection<Territory> territories =
         new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
     assertTrue(territories.isEmpty());
@@ -33,7 +33,7 @@ public class UnitsThatCantFightUtilTest {
 
   @Test
   public void testSuicideAttackInRevised() throws Exception {
-    final GameData data = LoadGameUtil.TestMapXml.REVISED.getGameData();
+    final GameData data = TestMapGameData.REVISED.getGameData();
     final Territory sz15 = territory("15 Sea Zone", data);
     addTo(sz15, transport(data).create(1, germans(data)));
     final Collection<Territory> territories =

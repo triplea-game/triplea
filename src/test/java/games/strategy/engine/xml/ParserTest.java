@@ -3,19 +3,15 @@ package games.strategy.engine.xml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.DelegateList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.ProductionFrontier;
@@ -31,7 +27,7 @@ public class ParserTest {
 
   @Before
   public void setUp() throws Exception {
-    gameData = LoadGameUtil.TestMapXml.GAME_EXAMPLE.getGameData();
+    gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
   }
 
   @Test

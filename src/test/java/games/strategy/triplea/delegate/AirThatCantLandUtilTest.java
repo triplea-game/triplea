@@ -23,7 +23,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class AirThatCantLandUtilTest {
   private GameData m_data;
@@ -32,7 +32,7 @@ public class AirThatCantLandUtilTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
+    m_data = TestMapGameData.REVISED.getGameData();
     m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = GameDataTestUtil.fighter(m_data);
   }

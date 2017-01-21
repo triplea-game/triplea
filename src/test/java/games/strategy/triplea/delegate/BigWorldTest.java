@@ -13,14 +13,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class BigWorldTest {
   private GameData m_data;
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.BIG_WORLD_1942.getGameData();
+    m_data = TestMapGameData.BIG_WORLD_1942.getGameData();
   }
 
   @Test

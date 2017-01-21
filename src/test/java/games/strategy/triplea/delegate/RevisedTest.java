@@ -83,7 +83,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -105,7 +105,7 @@ public class RevisedTest {
             return null;
           }
         });
-    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
+    m_data = TestMapGameData.REVISED.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

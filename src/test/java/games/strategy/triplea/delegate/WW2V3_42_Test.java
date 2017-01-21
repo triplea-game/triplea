@@ -30,14 +30,14 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class WW2V3_42_Test {
   private GameData m_data;
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.WW2V3_1942.getGameData();
+    m_data = TestMapGameData.WW2V3_1942.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

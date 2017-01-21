@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class ChangeTripleATest {
   private GameData m_data;
@@ -22,7 +22,7 @@ public class ChangeTripleATest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.BIG_WORLD_1942.getGameData();
+    m_data = TestMapGameData.BIG_WORLD_1942.getGameData();
     can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
   }

@@ -6,19 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +25,7 @@ public class ChangeTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.TEST.getGameData();
+    m_data = TestMapGameData.TEST.getGameData();
   }
 
   private Change serialize(final Change aChange) throws Exception {

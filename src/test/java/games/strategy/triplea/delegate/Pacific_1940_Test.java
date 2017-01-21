@@ -14,7 +14,7 @@ import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
 public class Pacific_1940_Test {
@@ -22,7 +22,7 @@ public class Pacific_1940_Test {
 
   @Before
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.TestMapXml.WW2PAC40.getGameData();
+    m_data = TestMapGameData.WW2PAC40.getGameData();
   }
 
   @SuppressWarnings("unused")

@@ -95,7 +95,7 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -116,7 +116,7 @@ public class WW2V3_41_Test {
             return null;
           }
         });
-    m_data = LoadGameUtil.TestMapXml.WW2V3_1941.getGameData();
+    m_data = TestMapGameData.WW2V3_1941.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

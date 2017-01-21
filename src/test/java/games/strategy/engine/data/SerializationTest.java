@@ -7,10 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicReference;
 
-import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,8 +21,8 @@ public class SerializationTest {
 
   @Before
   public void setUp() throws Exception {
-    m_dataSource = LoadGameUtil.TestMapXml.TEST.getGameData();
-    m_dataSink = LoadGameUtil.TestMapXml.TEST.getGameData();
+    m_dataSource = TestMapGameData.TEST.getGameData();
+    m_dataSink = TestMapGameData.TEST.getGameData();
   }
 
   private Object serialize(final Object anObject) throws Exception {
