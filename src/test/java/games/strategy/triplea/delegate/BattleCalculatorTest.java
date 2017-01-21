@@ -41,7 +41,7 @@ public class BattleCalculatorTest {
 
   @Before
   public void setUp() throws Exception {
-    final GameData data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
+    final GameData data = LoadGameUtil.TestMapXml.REVISED.getGameData();
     m_bridge = getDelegateBridge(british(data), data);
   }
 

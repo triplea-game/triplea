@@ -24,7 +24,7 @@ public class AIUtilsTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
+    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
   }
 
   @Test

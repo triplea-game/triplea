@@ -116,7 +116,7 @@ public class WW2V3_41_Test {
             return null;
           }
         });
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.WW2V3_1941);
+    m_data = LoadGameUtil.TestMapXml.WW2V3_1941.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

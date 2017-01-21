@@ -29,7 +29,7 @@ public class Pact_of_Steel_2_Test {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.PACT_OF_STEEL_2);
+    m_data = LoadGameUtil.TestMapXml.PACT_OF_STEEL_2.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

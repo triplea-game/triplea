@@ -43,7 +43,7 @@ public class VictoryTest {
 
   @Before
   public void setUp() throws Exception {
-    gameData = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.VICTORY_TEST);
+    gameData = LoadGameUtil.TestMapXml.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
     // we need to initialize the original owner

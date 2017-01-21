@@ -105,7 +105,7 @@ public class RevisedTest {
             return null;
           }
         });
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
+    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {

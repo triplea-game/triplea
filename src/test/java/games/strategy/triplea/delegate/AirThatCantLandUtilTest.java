@@ -32,7 +32,7 @@ public class AirThatCantLandUtilTest {
 
   @Before
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadTestGame(LoadGameUtil.TestMapXml.REVISED);
+    m_data = LoadGameUtil.TestMapXml.REVISED.getGameData();
     m_americans = GameDataTestUtil.americans(m_data);
     m_fighter = GameDataTestUtil.fighter(m_data);
   }

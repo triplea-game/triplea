@@ -55,16 +55,6 @@ public class LoadGameUtil {
     }
   }
 
-  public static GameData loadTestGame(final TestMapXml game) {
-    File f = new File(TEST_MAP_XML_PATH + game.toString());
-    System.out.println("full file path: " + f.getAbsolutePath());
-    try (final InputStream is = new FileInputStream(f)) {
-      return (new GameParser(game.toString())).parse(is, new AtomicReference<>(), false);
-    } catch (final Exception e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
   /*
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
