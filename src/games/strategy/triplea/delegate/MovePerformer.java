@@ -235,8 +235,13 @@ public class MovePerformer implements Serializable {
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack) {
             // createdBattle = true;
-            getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove,
-                dependentOnSomethingTilTheEndOfRoute);
+            if (bombing) {
+              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, m_bridge, m_currentMove,
+                  dependentOnSomethingTilTheEndOfRoute);
+            } else {
+              getBattleTracker().addBattle(route, arrivedCopyForBattles, id, m_bridge, m_currentMove,
+                  dependentOnSomethingTilTheEndOfRoute);
+            }
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack) {
             // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This

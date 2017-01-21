@@ -1,5 +1,13 @@
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -15,15 +23,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.

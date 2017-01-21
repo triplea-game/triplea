@@ -52,7 +52,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;

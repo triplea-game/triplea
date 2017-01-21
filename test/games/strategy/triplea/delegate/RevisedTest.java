@@ -15,7 +15,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertMoveError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertValid;
-import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bidPlaceDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
@@ -57,8 +56,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import games.strategy.engine.random.IRandomSource;
-import games.strategy.engine.random.PlainRandomSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
