@@ -1113,8 +1113,9 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   @VisibleForTesting
-  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
-             BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
+                                        Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+                                        BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
 
 
 
@@ -1140,22 +1141,18 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public void fightAutoKills(final IDelegateBridge delegateBridge) {
-    // Kill undefended transports. Done here to remove potentially dependent sea battles below
-    for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
-      final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
-      if(Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport)) {
-        battle.fight( delegateBridge );           // Must be fought here to remove dependencies
-      }
-    }
+    // Kill undefended transports. Done first to remove potentially dependent sea battles 
+    // Which would block the amphibious assault below
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle( territory, false, BattleType.NORMAL) )
+      .filter( battle -> Match.allMatch(battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport) )
+      .forEach( battle -> battle.fight(delegateBridge) );
     // Remove defenseless amphibious assaults
-    for( final Territory t : getPendingBattleSites(false) ) {  // Loop through normal combats i.e. not bombing or air raid
-      final IBattle battle = getPendingBattle(t, false, BattleType.NORMAL);
-      if (getDependentOn(battle).isEmpty())  {
-        if (battle instanceof NonFightingBattle) {
-          battle.fight( delegateBridge );
-        }
-      }
-    }
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle( territory, false, BattleType.NORMAL) )
+      .forEach( battle -> {
+          if( battle instanceof NonFightingBattle ) {
+            battle.fight(delegateBridge);
+          }
+    });
   }
 
   @Override
