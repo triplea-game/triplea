@@ -247,15 +247,6 @@ public class GameParser {
 
   public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//    factory.setValidating(true);
-//    // get the dtd location
-//    final String dtdFile = "game.dtd";
-//    final URL url = GameParser.class.getResource(dtdFile);
-//    if (url == null) {
-//      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
-//    }
-//    final String dtdSystem = url.toExternalForm();
-//    final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
     final DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setErrorHandler(new ErrorHandler() {
       @Override

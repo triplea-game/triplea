@@ -57,7 +57,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   public static File getDefaultMapsDir() {
-    return new File(ClientFileSystemHelper.getRootFolder(), "maps");
+    return ClientFileSystemHelper.getRootFolder();
   }
 
   private static List<File> allMapFiles() {
