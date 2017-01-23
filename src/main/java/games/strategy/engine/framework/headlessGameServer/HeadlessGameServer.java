@@ -656,36 +656,12 @@ public class HeadlessGameServer {
   }
 
   public static void main(final String[] args) {
-    System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
-    handleCommandLineArgs(args);
-    // grab these before we override them with the loggers
-    final InputStream in = System.in;
-    final PrintStream out = System.out;
-    // after handling the command lines, because we use the triplea.game.name= property in our log file name
-    GameRunner.setupLogging(GameRunner.GameMode.HEADLESS_BOT);
-    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-    HeadlessGameServer server = null;
-    try {
-      server = new HeadlessGameServer();
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    if (Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false"))) {
-      startConsole(server, in, out);
-    }
-  }
-
-  private static void startConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
-    System.out.println("Starting console.");
-    s_console = new HeadlessGameServerConsole(server, in, out);
-    s_console.start();
-  }
-
-
-  /**
-   * Move command line arguments to System.properties
-   */
-  private static void handleCommandLineArgs(final String[] args) {
     GameRunner.handleCommandLineArgs(args, getProperties(), GameRunner.GameMode.HEADLESS_BOT);
+    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
+    try {
+      new HeadlessGameServer();
+    } catch (final Exception e) {
+      ClientLogger.logError("Failed to start game server: " + e);
+    }
   }
 }
