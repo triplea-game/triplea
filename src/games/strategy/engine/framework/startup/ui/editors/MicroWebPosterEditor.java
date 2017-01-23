@@ -26,7 +26,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
-import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.pbem.IWebPoster;
@@ -183,12 +184,13 @@ public class MicroWebPosterEditor extends EditorPanel {
         sb.append(comboBoxes.get(i).getSelectedItem());
         sb.append("\n");
       }
-      final List<Part> parts = new ArrayList<>();
-      parts.add(TripleAWebPoster.createStringPart("siteid", m_id.getText()));
-      parts.add(TripleAWebPoster.createStringPart("players", sb.toString()));
-      parts.add(TripleAWebPoster.createStringPart("gamename", m_gameName.getText()));
+      HttpEntity entity = MultipartEntityBuilder.create()
+          .addTextBody("siteid", m_id.getText())
+          .addTextBody("players", sb.toString())
+          .addTextBody("gamename", m_gameName.getText())
+          .build();
       try {
-        final String response = TripleAWebPoster.executePost(hostUrl, "create.php", parts);
+        final String response = TripleAWebPoster.executePost(hostUrl, "create.php", entity);
         if (response.toLowerCase().contains("success")) {
           JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized",
               JOptionPane.INFORMATION_MESSAGE);

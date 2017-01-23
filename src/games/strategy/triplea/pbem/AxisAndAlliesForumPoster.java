@@ -1,22 +1,29 @@
 package games.strategy.triplea.pbem;
 
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
@@ -24,6 +31,7 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.ThreadUtil;
+import games.strategy.util.Util;
 
 /**
  * Post turn summary to www.axisandallies.org to the thread identified by the forumId
@@ -50,9 +58,6 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       .compile(".*<tr\\s+class=\"windowbg\">\\s*<td[^>]*>([^<]*)</td>.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
   public static final Pattern ERROR_LIST_PATTERN =
       Pattern.compile(".*id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-  private transient HttpState m_httpState;
-  private transient HostConfiguration m_hostConfiguration;
-  private transient HttpClient m_client;
 
   /**
    * Logs into axisandallies.org
@@ -61,35 +66,30 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
    * @throws Exception
    *         if login fails
    */
-  private void login() throws Exception {
-    // creates and configures a new http client
-    m_client = new HttpClient();
-    m_client.getParams().setParameter("http.protocol.single-cookie-header", true);
-    m_client.getParams().setParameter("http.useragent",
-        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
-    m_httpState = new HttpState();
-    m_hostConfiguration = new HostConfiguration();
-    // add the proxy
-    HttpProxy.addProxy(m_hostConfiguration);
-    m_hostConfiguration.setHost("www.axisandallies.org");
-    final PostMethod post = new PostMethod("http://www.axisandallies.org/forums/index.php?action=login2");
-    try {
-      post.addRequestHeader("Accept", "*/*");
-      post.addRequestHeader("Accept-Language", "en-us");
-      post.addRequestHeader("Cache-Control", "no-cache");
-      post.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      final List<NameValuePair> parameters = new ArrayList<>();
-      parameters.add(new NameValuePair("user", getUsername()));
-      parameters.add(new NameValuePair("passwrd", getPassword()));
-      post.setRequestBody(parameters.toArray(new NameValuePair[parameters.size()]));
-      int status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
-      if (status == 200) {
-        final String body = post.getResponseBodyAsString();
+  private HttpContext login(CloseableHttpClient client) throws Exception {
+    HttpPost httpPost = new HttpPost("http://www.axisandallies.org/forums/index.php?action=login2");
+    CookieStore cookieStore = new BasicCookieStore();
+    HttpContext httpContext = new BasicHttpContext();
+    httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
+    HttpProxy.addProxy(httpPost);
+    httpPost.addHeader("Accept", "*/*");
+    httpPost.addHeader("Accept-Language", "en-us");
+    httpPost.addHeader("Cache-Control", "no-cache");
+    httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    final List<NameValuePair> parameters = new ArrayList<>(2);
+    parameters.add(new BasicNameValuePair("user", getUsername()));
+    parameters.add(new BasicNameValuePair("passwrd", getPassword()));
+    httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
+    try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
+      int status = response.getStatusLine().getStatusCode();
+      if (status == HttpURLConnection.HTTP_OK) {
+        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
         if (body.toLowerCase().contains("password incorrect")) {
           throw new Exception("Incorrect Password");
         }
         // site responds with 200, and a refresh header
-        final Header refreshHeader = post.getResponseHeader("Refresh");
+        final Header refreshHeader = response.getFirstHeader("Refresh");
         if (refreshHeader == null) {
           throw new Exception("Missing refresh header after login");
         }
@@ -99,14 +99,13 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         final Matcher m = p.matcher(value);
         if (m.matches()) {
           final String url = m.group(1);
-          final GetMethod getRefreshPage = new GetMethod(url);
-          try {
-            status = m_client.executeMethod(m_hostConfiguration, getRefreshPage, m_httpState);
+          HttpGet httpGet = new HttpGet(url);
+          HttpProxy.addProxy(httpGet);
+          try (CloseableHttpResponse response2 = client.execute(httpGet, httpContext)) {
+            status = response2.getStatusLine().getStatusCode();
             if (status != 200) {
               // something is probably wrong, but there is not much we can do about it, we handle errors when we post
             }
-          } finally {
-            getRefreshPage.releaseConnection();
           }
         } else {
           throw new Exception("The refresh header didn't contain a URL");
@@ -114,145 +113,126 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       } else {
         throw new Exception("Failed to login to forum, server responded with status code: " + status);
       }
-    } finally {
-      post.releaseConnection();
     }
+    return httpContext;
   }
 
   @Override
   public boolean postTurnSummary(final String message, final String subject) {
-    try {
-      login();
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+      HttpContext httpContext = login(client);
       // Now we load the post page, and find the hidden fields needed to post
-      final GetMethod get =
-          new GetMethod("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
-      int status = m_client.executeMethod(m_hostConfiguration, get, m_httpState);
-      String body = get.getResponseBodyAsString();
-      if (status == 200) {
-        String numReplies;
-        String seqNum;
-        String sc;
-        Matcher m = NUM_REPLIES_PATTERN.matcher(body);
-        if (m.matches()) {
-          numReplies = m.group(1);
-        } else {
-          throw new Exception("Hidden field 'num_replies' not found on page");
-        }
-        m = SEQ_NUM_PATTERN.matcher(body);
-        if (m.matches()) {
-          seqNum = m.group(1);
-        } else {
-          throw new Exception("Hidden field 'seqnum' not found on page");
-        }
-        m = SC_PATTERN.matcher(body);
-        if (m.matches()) {
-          sc = m.group(1);
-        } else {
-          throw new Exception("Hidden field 'sc' not found on page");
-        }
-        // now we have the required hidden fields to reply to
-        final PostMethod post =
-            new PostMethod("http://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
-        try {
-          // Construct the multi part post
-          final List<Part> parts = new ArrayList<>();
-          parts.add(createStringPart("topic", m_topicId));
-          parts.add(createStringPart("subject", subject));
-          parts.add(createStringPart("icon", "xx"));
-          parts.add(createStringPart("message", message));
-          // If the user has chosen to receive notifications, ensure this setting is passed on
-          parts.add(createStringPart("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0"));
-          if (m_includeSaveGame && m_saveGameFile != null) {
-            final FilePart part = new FilePart("attachment[]", m_saveGameFileName, m_saveGameFile);
-            part.setContentType("application/octet-stream");
-            part.setTransferEncoding(null);
-            part.setCharSet(null);
-            parts.add(part);
+      HttpGet httpGet =
+          new HttpGet("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
+      HttpProxy.addProxy(httpGet);
+      try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
+        int status = response.getStatusLine().getStatusCode();
+        String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        if (status == 200) {
+          String numReplies;
+          String seqNum;
+          String sc;
+          Matcher m = NUM_REPLIES_PATTERN.matcher(body);
+          if (m.matches()) {
+            numReplies = m.group(1);
+          } else {
+            throw new Exception("Hidden field 'num_replies' not found on page");
           }
-          parts.add(createStringPart("post", "Post"));
-          parts.add(createStringPart("num_replies", numReplies));
-          parts.add(createStringPart("additional_options", "1"));
-          parts.add(createStringPart("sc", sc));
-          parts.add(createStringPart("seqnum", seqNum));
-          final MultipartRequestEntity entity =
-              new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
-          post.setRequestEntity(entity);
+          m = SEQ_NUM_PATTERN.matcher(body);
+          if (m.matches()) {
+            seqNum = m.group(1);
+          } else {
+            throw new Exception("Hidden field 'seqnum' not found on page");
+          }
+          m = SC_PATTERN.matcher(body);
+          if (m.matches()) {
+            sc = m.group(1);
+          } else {
+            throw new Exception("Hidden field 'sc' not found on page");
+          }
+          // now we have the required hidden fields to reply to
+          HttpPost httpPost =
+              new HttpPost("http://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
+          // Construct the multi part post
+          MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+              .addTextBody("topic", m_topicId)
+              .addTextBody("subject", subject)
+              .addTextBody("icon", "xx")
+              .addTextBody("message", message)
+              // If the user has chosen to receive notifications, ensure this setting is passed on
+              .addTextBody("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0");
+          if (m_includeSaveGame && m_saveGameFile != null) {
+            builder.addBinaryBody("attachment[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
+                m_saveGameFileName);
+          }
+          builder
+              .addTextBody("post", "Post")
+              .addTextBody("num_replies", numReplies)
+              .addTextBody("additional_options", "1")
+              .addTextBody("sc", sc)
+              .addTextBody("seqnum", seqNum);
+          httpPost.setEntity(builder.build());
           // add headers
-          post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
+          httpPost.addHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
               + m_topicId + ".0;num_replies=" + numReplies);
-          post.addRequestHeader("Accept", "*/*");
+          httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
           ThreadUtil.sleep(15 * 1000);
-          post.setFollowRedirects(false);
-          status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
-          body = post.getResponseBodyAsString();
-          if (status == 302) {
-            // site responds with a 302 redirect back to the forum index (board=40)
-            // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
-            // given thread
-            // since the site is lenient we can just give a high post_number to go to the last post in the thread
-            m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-          } else {
-            // these two patterns find general errors, where the first pattern checks if the error text appears,
-            // the second pattern extracts the error message. This could be the "The last posting from your IP was less
-            // than 15 seconds
-            // ago.Please try again later"
-            // this patter finds errors that are marked in red (for instance "You are not allowed to post URLs", or
-            // "Some one else has posted while you vere reading"
-            Matcher matcher = ERROR_LIST_PATTERN.matcher(body);
-            if (matcher.matches()) {
-              throw new Exception("The site gave an error: '" + matcher.group(1) + "'");
-            }
-            matcher = AN_ERROR_OCCURRED_PATTERN.matcher(body);
-            if (matcher.matches()) {
-              matcher = ERROR_TEXT_PATTERN.matcher(body);
+          httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
+          HttpProxy.addProxy(httpPost);
+          try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
+            status = response2.getStatusLine().getStatusCode();
+            body = Util.getStringFromInputStream(response2.getEntity().getContent());
+            if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
+              // site responds with a 302 redirect back to the forum index (board=40)
+              // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
+              // given thread
+              // since the site is lenient we can just give a high post_number to go to the last post in the thread
+              m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
+            } else {
+              // these two patterns find general errors, where the first pattern checks if the error text appears,
+              // the second pattern extracts the error message. This could be the "The last posting from your IP was
+              // less
+              // than 15 seconds
+              // ago.Please try again later"
+              // this patter finds errors that are marked in red (for instance "You are not allowed to post URLs", or
+              // "Some one else has posted while you vere reading"
+              Matcher matcher = ERROR_LIST_PATTERN.matcher(body);
               if (matcher.matches()) {
                 throw new Exception("The site gave an error: '" + matcher.group(1) + "'");
               }
-            }
-            final Header refreshHeader = post.getResponseHeader("Refresh");
-            if (refreshHeader != null) {
-              // sometimes the message will be flagged as spam, and a refresh url is given
-              // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
-              final String value = refreshHeader.getValue();
-              final Pattern p =
-                  Pattern.compile("[^;]*;\\s*url=.*spam=true.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-              m = p.matcher(value);
-              if (m.matches()) {
-                throw new Exception("The summary was posted but was flagged as spam");
+              matcher = AN_ERROR_OCCURRED_PATTERN.matcher(body);
+              if (matcher.matches()) {
+                matcher = ERROR_TEXT_PATTERN.matcher(body);
+                if (matcher.matches()) {
+                  throw new Exception("The site gave an error: '" + matcher.group(1) + "'");
+                }
               }
+              final Header refreshHeader = response2.getFirstHeader("Refresh");
+              if (refreshHeader != null) {
+                // sometimes the message will be flagged as spam, and a refresh url is given
+                // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
+                final String value = refreshHeader.getValue();
+                final Pattern p =
+                    Pattern.compile("[^;]*;\\s*url=.*spam=true.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+                m = p.matcher(value);
+                if (m.matches()) {
+                  throw new Exception("The summary was posted but was flagged as spam");
+                }
+              }
+              throw new Exception(
+                  "Unknown error, please contact the forum owner and also post a bug to the tripleA development team");
             }
-            throw new Exception(
-                "Unknown error, please contact the forum owner and also post a bug to the tripleA development team");
           }
-        } finally {
-          post.releaseConnection();
+        } else {
+          throw new Exception("Unable to load forum post " + m_topicId);
         }
-      } else {
-        throw new Exception("Unable to load forum post " + m_topicId);
       }
     } catch (final Exception e) {
       m_turnSummaryRef = e.getMessage();
       return false;
     }
     return true;
-  }
-
-  /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
-   * a browser
-   *
-   * @param name
-   *        the form field name
-   * @param value
-   *        the for field value
-   * @return return the created StringPart
-   */
-  private StringPart createStringPart(final String name, final String value) {
-    final StringPart stringPart = new StringPart(name, value);
-    stringPart.setTransferEncoding(null);
-    stringPart.setContentType(null);
-    return stringPart;
   }
 
   @Override
