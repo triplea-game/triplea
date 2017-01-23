@@ -346,12 +346,6 @@ public class GameRunner {
 
   public static void setupLogging(GameMode gameMode) {
     if (gameMode == GameMode.SWING_CLIENT) {
-      // setup logging to read our logging.properties
-      try {
-        LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
-      } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
-      }
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
         protected void dispatchEvent(AWTEvent newEvent) {
@@ -364,17 +358,6 @@ public class GameRunner {
           }
         }
       });
-    } else {
-      // setup logging to read our logging.properties
-      try {
-        LogManager.getLogManager()
-            .readConfiguration(ClassLoader.getSystemResourceAsStream("headless-game-server-logging.properties"));
-        Logger.getAnonymousLogger().info("Redirecting std out");
-        System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
-        System.setOut(new LoggingPrintStream("OUT", Level.INFO));
-      } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
-      }
     }
   }
 
