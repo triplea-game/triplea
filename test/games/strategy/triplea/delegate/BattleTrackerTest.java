@@ -43,11 +43,13 @@ public class BattleTrackerTest {
 	@Mock
 	private IBattle mockBattle;
 
-	private BattleTracker testObj;
+	private BattleTracker testObj, testObj2, testObj3;
 
 	@Before
 	public void setup() {
 		testObj = new BattleTracker();
+		testObj2 = new BattleTracker();
+		testObj3 = new BattleTracker();
 	}
 
 	@Test
@@ -76,6 +78,55 @@ public class BattleTrackerTest {
 		testObj.addBombingBattle(route, attackers, playerId, mockDelegateBridge, null, null);
 
 		testObj.fightAirRaidsAndStrategicBombing(mockDelegateBridge, () -> Collections.singleton(territory), mockGetBattleFunction);
+
+		verify(mockBattle, times(1)).fight(mockDelegateBridge);
+	}
+
+	@Test
+	public void verifyAssault() {
+		Territory territory = new Territory("terrName", false, mockGameData);
+		Territory sz = new Territory("sz", true, mockGameData);
+		Route route = new Route(sz, territory);
+		PlayerID playerId = new PlayerID("name", mockGameData);
+
+		// need at least one attacker for there to be considered a battle.
+		Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
+		List<Unit> attackers = Collections.singletonList(unit);
+
+		when(mockDelegateBridge.getData()).thenReturn(mockGameData);
+		when(mockGameData.getProperties()).thenReturn(mockGameProperties);
+		when(mockGameData.getRelationshipTracker()).thenReturn(mockRelationshipTracker);
+		when(mockGetBattleFunction.apply(territory, IBattle.BattleType.NORMAL)).thenReturn(mockBattle);
+
+		// set up the testObj to have the amphib battle
+		testObj2.addBattle(route, attackers, false, playerId, mockDelegateBridge, null, null);
+
+		testObj2.fightAutoKills(mockDelegateBridge);
+
+		verify(mockBattle, times(1)).fight(mockDelegateBridge);
+	}
+
+	@Test
+	public void verifyXXX() {
+		Territory territory = new Territory("terrName", mockGameData);
+		Route route = new Route(territory);
+		PlayerID playerId = new PlayerID("name", mockGameData);
+
+		// need at least one attacker for there to be considered a battle.
+		Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
+		List<Unit> attackers = Collections.singletonList(unit);
+
+		when(mockDelegateBridge.getData()).thenReturn(mockGameData);
+		when(mockGameData.getProperties()).thenReturn(mockGameProperties);
+		when(mockGameData.getRelationshipTracker()).thenReturn(mockRelationshipTracker);
+		when(mockGameProperties.get(Constants.RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false))
+			.thenReturn(true);
+		when(mockGetBattleFunction.apply(territory, IBattle.BattleType.BOMBING_RAID)).thenReturn(mockBattle);
+
+		// set up the testObj to have the bombing battle
+		testObj3.addBombingBattle(route, attackers, playerId, mockDelegateBridge, null, null);
+
+		testObj3.fightAirRaidsAndStrategicBombing(mockDelegateBridge, () -> Collections.singleton(territory), mockGetBattleFunction);
 
 		verify(mockBattle, times(1)).fight(mockDelegateBridge);
 	}
