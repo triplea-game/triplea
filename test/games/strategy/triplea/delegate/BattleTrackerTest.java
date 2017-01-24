@@ -99,7 +99,7 @@ public class BattleTrackerTest {
 		when(mockGetBattleFunction.apply(territory, IBattle.BattleType.NORMAL)).thenReturn(mockBattle);
 
 		// set up the testObj to have the amphib battle
-		testObj2.addBattle(route, attackers, false, playerId, mockDelegateBridge, null, null);
+		testObj2.addBattle(route, attackers, false, playerId, mockDelegateBridge, null, attackers);
 
 		testObj2.fightAutoKills(mockDelegateBridge);
 
