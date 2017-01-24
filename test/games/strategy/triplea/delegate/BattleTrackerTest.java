@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
@@ -12,6 +13,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.UnitAttachment;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,9 +90,11 @@ public class BattleTrackerTest {
 		Territory sz = new Territory("sz", true, mockGameData);
 		Route route = new Route(sz, territory);
 		PlayerID playerId = new PlayerID("name", mockGameData);
+                UnitType ut = new UnitType("unit", mockGameData);
+            //ut.addAttachment("UnitAttachment", new UnitAttachment("UnitAttachment",new Attachable(),mockGameData));
 
 		// need at least one attacker for there to be considered a battle.
-		Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
+		Unit unit = new TripleAUnit(ut, playerId, mockGameData);
 		List<Unit> attackers = Collections.singletonList(unit);
 
 		when(mockDelegateBridge.getData()).thenReturn(mockGameData);
