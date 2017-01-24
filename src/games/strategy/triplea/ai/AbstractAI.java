@@ -39,11 +39,13 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.player.AbstractBaseAI;
+import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -63,7 +65,7 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * <p>
  */
-public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlayer {
+public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   /**
@@ -678,4 +680,12 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleAPlaye
     }
     return Tuple.of(picked, unitsToPlace);
   }
+
+  /**
+   * Pause the game to allow the human player to see what is going on.
+   */
+  protected void pause() {
+    ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
+  }
+
 }
