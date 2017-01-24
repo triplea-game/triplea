@@ -1,12 +1,3 @@
-- version: 1.9.0.1
-  host: 45.79.144.53
-  port: 3304
-  message: |
-    Welcome to TripleA 1.9 - For help: http://www.triplea-game.org/help/
-    
-    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
-    No talking politics in the lobby! Take your political comments to a private game!
-  error_message:  
 - version: 1.9.0.0
   host: 45.79.144.53
   port: 3304
@@ -18,3 +9,6 @@
       http://www.triplea-game.org/download/
     
     Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
+    No talking politics in the lobby! Take your political comments to a private game!
+  error_message:
+  
