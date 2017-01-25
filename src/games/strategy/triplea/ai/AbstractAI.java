@@ -49,16 +49,16 @@ import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
- * Base class for ais.
+ * Base class for AIs.
  * <p>
- * Control pausing with the AI pause menu option
- * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted.
- * We cannot save data with an AI, since the player may choose to restart the game with a different ai,
+ * Control pausing with the AI pause menu option.
+ * AIs should note that any data that is stored in the AI instance, will be lost when the game is restarted.
+ * We cannot save data with an AI, since the player may choose to restart the game with a different AI,
  * or with a human player.
  * <p>
- * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase,
+ * If an AI finds itself starting in the middle of a move phase, or the middle of a purchase phase,
  * (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable
- * for the ai to play badly for a turn, but the ai should recover, and play correctly when the next phase
+ * for the AI to play badly for a turn, but the AI should recover, and play correctly when the next phase
  * of the game starts.
  * <p>
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
@@ -66,20 +66,11 @@ import games.strategy.util.Tuple;
  * <p>
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
+
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
-  /**
-   * @param name
-   *        - the name of the player (the nation)
-   * @param type
-   *        - the type of player we are
-   */
   public AbstractAI(final String name, final String type) {
     super(name, type);
-  }
-
-  public final Class<ITripleAPlayer> getRemotePlayerType() {
-    return ITripleAPlayer.class;
   }
 
   /************************
@@ -143,10 +134,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
       PlayerID player);
 
-  /******************************************
-   * The following methods the AI may choose to implemenmt,
-   * but in general won't
-   *******************************************/
   @Override
   public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
@@ -376,12 +363,9 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
    * The following methods are more for the ui, and the
    * ai will generally not care
    *****************************************/
-  public void battleInfoMessage(final String shortMessage, final DiceRoll dice) {}
 
   @Override
   public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
-
-  public void retreatNotificationMessage(final Collection<Unit> units) {}
 
   @Override
   public void reportError(final String error) {}
@@ -407,12 +391,12 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   /*****************************************
    * Game Player Methods
    *****************************************/
+
   /**
-   * The given phase has started. We parse the phase name and call the apropiate method.
+   * The given phase has started. We parse the phase name and call the appropriate method.
    */
   @Override
   public final void start(final String name) {
-    // must call super.start
     super.start(name);
     final PlayerID id = getPlayerID();
     if (name.endsWith("Bid")) {
@@ -473,7 +457,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     // keep trying to fight every battle
     while (true) {
       final BattleListing listing = battleDelegate.getBattles();
-      // all fought
       if (listing.isEmpty()) {
         return;
       }
@@ -488,9 +471,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     }
   }
 
-  public void politicalActions() {
+  protected void politicalActions() {
     final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
-
     final GameData data = getGameData();
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
