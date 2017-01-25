@@ -126,6 +126,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    */
   boolean selectShoreBombard(Territory unitTerritory);
 
+  // TODO: this is only called from BattleCalculator.selectCasualties() and should probably be removed
   /**
    * Report an error to the user.
    *
@@ -141,13 +142,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
    */
   void reportMessage(String message, String title);
 
-  /*
-   * send a political notification to this player
-   *
-   * @param message
-   * the message sent
-   * public void reportPoliticalMessage(String message);
-   */
   /**
    * One or more bombers have just moved into a territory where a strategic bombing
    * raid can be conducted, should the bomber bomb?
