@@ -167,7 +167,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from);
 
   /**
-   * get the fighters to move to a newly produced carrier
+   * Get the fighters to move to a newly produced carrier
    *
    * @param fightersThatCanBeMoved
    *        - the fighters that can be moved
