@@ -146,9 +146,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
-    if (potentialTargets == null || potentialTargets.isEmpty()) {
-      return null;
-    }
     final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
     if (factories.isEmpty()) {
       return potentialTargets.iterator().next();
