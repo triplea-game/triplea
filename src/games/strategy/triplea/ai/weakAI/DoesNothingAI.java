@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.AbstractAI;
@@ -67,11 +66,6 @@ public class DoesNothingAI extends AbstractAI {
     // resourceCollection is not yet a valid renderingObject
     bridge.getHistoryWriter().startEvent(player.getName() + " removes resources: " + resourceCollection, null);
     bridge.addChange(removeChange);
-  }
-
-  @Override
-  public boolean shouldBomberBomb(final Territory territory) {
-    return false;
   }
 
   @Override
