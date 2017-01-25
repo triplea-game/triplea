@@ -57,8 +57,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - can units be hit more than one time if they have more than one hitpoints left?
    * @return CasualtyDetails
    */
-  CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,
-      int count, String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
+  CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
+      String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
       Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers,
       CasualtyList defaultCasualties, GUID battleID, Territory battlesite, boolean allowMultipleHitsPerUnit);
 
@@ -79,6 +79,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    */
   int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides);
 
+  // TODO: Remove noneAvailable as it is always passed as 'true'
   /**
    * Select the territory to bombard with the bombarding capable unit (eg battleship)
    *
@@ -88,7 +89,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - where the bombarding unit is
    * @param territories
    *        - territories where the unit can bombard
-   * @param noneAvailable
    * @return the Territory to bombard in, null if the unit should not bombard
    */
   Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories,
@@ -181,8 +181,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - the territory containing the factory
    * @return - the fighters to move
    */
-  Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved,
-      Territory from);
+  Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from);
 
   /**
    * Some carriers were lost while defending. We must select where to land
