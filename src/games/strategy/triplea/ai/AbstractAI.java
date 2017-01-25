@@ -128,15 +128,12 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
     }
-    // TODO: determine which planes we plan to fly to land afterwards (if we are the attacker or moving player)
     final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0;
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
-    // the list we receive should already be sorted
     final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
     final List<Unit> interleavedTargetList = new ArrayList<>(
         AdvancedUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
-    // TODO: if we are going to lose this battle by a wide margin, we may not want to interleave these units
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
