@@ -11,10 +11,9 @@ import games.strategy.util.ThreadUtil;
  * using a change).
  */
 public abstract class AbstractBasePlayer implements IGamePlayer {
-  // what nation are we playing? ex: "Americans"
-  private final String name;
-  // what are we? ex: "Human", or "Moore N. Able (AI)"
-  private final String type;
+
+  private final String name; // what nation are we playing? ex: "Americans"
+  private final String type; // what are we? ex: "Human" or "AI"
   private PlayerID playerID;
   private IPlayerBridge playerBridge;
   private boolean isStoppedGame = false;
@@ -72,8 +71,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public String toString() {
     return (playerID == null || playerID.getName() == null || !playerID.getName().equals(name))
-        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName()))
-        : (type + ":" + name);
+        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName())) : (type + ":" + name);
   }
 
   /**
@@ -92,8 +90,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
         i++;
         if (i > 30 && !shownErrorMessage) {
           System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
-              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
-              + getPlayerID().getName() + ", Game: " + getGameData().getGameName()
+              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName()
+              + ", Game: " + getGameData().getGameName()
               + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
           shownErrorMessage = true;
         }

@@ -101,13 +101,10 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * First string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)". Separate
-   * with a colon.
-   *
-   * @param humanOrAI_and_playerName
+   * First string is "Human" or "AI", while second string is the name of the player. Separated with a colon.
    */
   public void setWhoAmI(final String humanOrAI_colon_playerName) {
-    // so for example, it should be "AI:Moore N. Able (AI)".
+    // so for example, it should be "AI:Hard (AI)"
     final String[] s = humanOrAI_colon_playerName.split(":");
     if (s.length != 2) {
       throw new IllegalStateException("whoAmI must have two strings, separated by a colon");
@@ -150,8 +147,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
       if (t.getOwner().equals(this)) {
         ownsLand = true;
       }
-      if (t.getUnits()
-          .someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
+      if (t.getUnits().someMatch(new CompositeMatchAnd<>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
         hasFactory = true;
       }
       if (ownsLand && hasFactory) {
