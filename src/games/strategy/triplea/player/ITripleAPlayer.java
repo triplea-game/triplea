@@ -22,6 +22,7 @@ import games.strategy.util.Tuple;
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger
  */
 public interface ITripleAPlayer extends IRemotePlayer {
+
   /**
    * Select casualties
    *
@@ -137,8 +138,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
 
   /**
    * report a message to the user
-   *
-   * @param message
    */
   void reportMessage(String message, String title);
 
@@ -178,8 +177,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from);
 
   /**
-   * Some carriers were lost while defending. We must select where to land
-   * some air units.
+   * Some carriers were lost while defending. We must select where to land some air units.
    *
    * @param candidates
    *        - a list of territories - these are the places where air units can land
@@ -236,18 +234,11 @@ public interface ITripleAPlayer extends IRemotePlayer {
 
   /**
    * Ask the player which if any units they want to select.
-   *
-   * @param current
-   * @param possible
-   * @param message
    */
   Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
 
   /**
    * Allows the user to pause and confirm enemy casualties
-   *
-   * @param battleId
-   * @param message
    */
   void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
 
@@ -266,8 +257,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
 
   /**
    * Asks the player if they wish to perform any kamikaze suicide attacks
-   *
-   * @param possibleUnitsToAttack
    */
   HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
@@ -277,4 +266,5 @@ public interface ITripleAPlayer extends IRemotePlayer {
    */
   Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(List<Territory> territoryChoices, List<Unit> unitChoices,
       int unitsPerPick);
+
 }
