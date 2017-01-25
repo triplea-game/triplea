@@ -71,13 +71,7 @@ public class DoesNothingAI extends AbstractAI {
   @Override
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
-    // we are dead, just accept
-    if (!getPlayerID().amNotDeadYet(getGameData())) {
-      return true;
-    }
-    if (!politics) {
-      return true;
-    }
     return true;
   }
+
 }

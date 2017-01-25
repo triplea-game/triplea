@@ -199,6 +199,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     return false;
   }
 
+  // TODO: This really needs to be rewritten with some basic logic
   @Override
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
@@ -210,8 +211,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     if (!politics) {
       return true;
     }
-    // politics
-    // from ally? accept
+    // politics from ally? accept
     if (Matches.isAllied(getPlayerID(), getGameData()).match(playerSendingProposal)) {
       return true;
     }

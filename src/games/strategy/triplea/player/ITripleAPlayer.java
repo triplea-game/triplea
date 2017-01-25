@@ -260,7 +260,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        the question that should be asked to this player
    * @param politics
    *        is this from politics delegate?
-   * @return whether the player accepts the actionproposal
+   * @return whether the player accepts the action proposal
    */
   boolean acceptAction(PlayerID playerSendingProposal, String acceptanceQuestion, boolean politics);
 
