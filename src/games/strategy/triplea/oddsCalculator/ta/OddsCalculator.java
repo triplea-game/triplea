@@ -3,7 +3,6 @@ package games.strategy.triplea.oddsCalculator.ta;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -642,12 +641,6 @@ class DummyPlayer extends AbstractAI {
       }
       return null;
     }
-  }
-
-  @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
-    return null;
   }
 
   @Override
