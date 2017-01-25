@@ -643,12 +643,6 @@ class DummyPlayer extends AbstractAI {
     }
   }
 
-  @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
-      final String message) {
-    return null;
-  }
-
   // Added new collection autoKilled to handle killing units prior to casualty selection
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
