@@ -251,9 +251,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
         OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
     for (int i = 0; i < count && !m_cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
-      final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses,
-          defenderOrderOfLosses, m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft,
-          m_retreatWhenOnlyAirLeft);
+      final DummyDelegateBridge bridge1 =
+          new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
+              m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft, m_retreatWhenOnlyAirLeft);
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
       final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
       battle.setHeadless(true);
@@ -395,9 +395,8 @@ class DummyDelegateBridge implements IDelegateBridge {
       final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
       final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft) {
-    m_attackingPlayer =
-        new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses, attackerKeepOneLandUnit,
-            retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+    m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses,
+        attackerKeepOneLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
     m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
         retreatAfterRound, -1, false);
     m_data = data;
@@ -725,13 +724,4 @@ class DummyPlayer extends AbstractAI {
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
-      final int diceSides) {
-    final int[] dice = new int[numRolls];
-    for (int i = 0; i < numRolls; i++) {
-      dice[i] = (int) Math.ceil(Math.random() * diceSides);
-    }
-    return dice;
-  }
 }

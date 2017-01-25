@@ -161,8 +161,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           IllegalCharacterRemover.replaceIllegalCharacter(m_data.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
-      final Map<String, Map<ICondition, String>> statsObjectiveUnsorted =
-          new HashMap<>();
+      final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       // do sections first
       for (final Entry<Object, Object> entry : op.entrySet()) {
         final String fileKey = (String) entry.getKey();
@@ -219,8 +218,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         IAttachment attachment = null;
         try {
-          if (key[1].contains(Constants.RULES_OBJECTIVE_PREFIX)
-              || key[1].contains(Constants.RULES_CONDITION_PREFIX)) {
+          if (key[1].contains(Constants.RULES_OBJECTIVE_PREFIX) || key[1].contains(Constants.RULES_CONDITION_PREFIX)) {
             attachment = RulesAttachment.get(player, key[1], allPlayers, true);
           } else if (key[1].contains(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
             attachment = TriggerAttachment.get(player, key[1], allPlayers);
@@ -680,15 +678,6 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
-      final int diceSides) {
-    final int[] dice = new int[numRolls];
-    for (int i = 0; i < numRolls; i++) {
-      dice[i] = (int) Math.ceil(Math.random() * diceSides);
-    }
-    return dice;
-  }
 }
 
 
