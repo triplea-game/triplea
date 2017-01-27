@@ -49,16 +49,16 @@ import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
- * Base class for ais.
+ * Base class for AIs.
  * <p>
- * Control pausing with the AI pause menu option
- * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted.
- * We cannot save data with an AI, since the player may choose to restart the game with a different ai,
+ * Control pausing with the AI pause menu option.
+ * AIs should note that any data that is stored in the AI instance, will be lost when the game is restarted.
+ * We cannot save data with an AI, since the player may choose to restart the game with a different AI,
  * or with a human player.
  * <p>
- * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase,
+ * If an AI finds itself starting in the middle of a move phase, or the middle of a purchase phase,
  * (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable
- * for the ai to play badly for a turn, but the ai should recover, and play correctly when the next phase
+ * for the AI to play badly for a turn, but the AI should recover, and play correctly when the next phase
  * of the game starts.
  * <p>
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
@@ -66,91 +66,16 @@ import games.strategy.util.Tuple;
  * <p>
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
+
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
-  /**
-   * @param name
-   *        - the name of the player (the nation)
-   * @param type
-   *        - the type of player we are
-   */
   public AbstractAI(final String name, final String type) {
     super(name, type);
   }
 
-  public final Class<ITripleAPlayer> getRemotePlayerType() {
-    return ITripleAPlayer.class;
-  }
-
-  /************************
-   * The following methods are called when the AI starts a phase.
-   *************************/
-  /**
-   * It is the AI's turn to purchase units.
-   *
-   * @param purcahseForBid
-   *        - is this a bid purchase, or a normal purchase
-   * @param PUsToSpend
-   *        - how many PUs we have to spend
-   * @param purchaseDelegate
-   *        - the purchase delgate to buy things with
-   * @param data
-   *        - the GameData
-   * @param player
-   *        - the player to buy for
-   */
-  protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate,
-      GameData data, PlayerID player);
-
-  /**
-   * It is the AI's turn to roll for technology.
-   *
-   * @param techDelegate
-   *        - the tech delegate to roll for
-   * @param data
-   *        - the game data
-   * @param player
-   *        - the player to roll tech for
-   */
-  protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerID player);
-
-  /**
-   * It is the AI's turn to move. Make all moves before returning from this method.
-   *
-   * @param nonCombat
-   *        - are we moving in combat, or non combat
-   * @param moveDel
-   *        - the move delegate to make moves with
-   * @param data
-   *        - the current game data
-   * @param player
-   *        - the player to move with
-   */
-  protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
-
-  /**
-   * It is the AI's turn to place units. get the units available to place with player.getUnits()
-   *
-   * @param placeForBid
-   *        - is this a placement for bid
-   * @param placeDelegate
-   *        - the place delegate to place with
-   * @param data
-   *        - the current Game Data
-   * @param player
-   *        - the player to place for
-   */
-  protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
-      PlayerID player);
-
-  /******************************************
-   * The following methods the AI may choose to implemenmt,
-   * but in general won't
-   *******************************************/
   @Override
   public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    // return the first one
     return territories.iterator().next();
   }
 
@@ -186,7 +111,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
 
   @Override
   public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from) {
-    // just use the first one
     return candidates.iterator().next();
   }
 
@@ -277,7 +201,9 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public abstract boolean shouldBomberBomb(final Territory territory);
+  public boolean shouldBomberBomb(final Territory territory) {
+    return false;
+  }
 
   @Override
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
@@ -370,193 +296,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       }
     }
     return rVal;
-  }
-
-  /*****************************************
-   * The following methods are more for the ui, and the
-   * ai will generally not care
-   *****************************************/
-  public void battleInfoMessage(final String shortMessage, final DiceRoll dice) {}
-
-  @Override
-  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
-
-  public void retreatNotificationMessage(final Collection<Unit> units) {}
-
-  @Override
-  public void reportError(final String error) {}
-
-  @Override
-  public void reportMessage(final String message, final String title) {}
-
-  @Override
-  public void confirmOwnCasualties(final GUID battleId, final String message) {
-    pause();
-  }
-
-  @Override
-  public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
-      final int diceSides) {
-    final int[] dice = new int[numRolls];
-    for (int i = 0; i < numRolls; i++) {
-      dice[i] = (int) Math.ceil(Math.random() * diceSides);
-    }
-    return dice;
-  }
-
-  /*****************************************
-   * Game Player Methods
-   *****************************************/
-  /**
-   * The given phase has started. We parse the phase name and call the apropiate method.
-   */
-  @Override
-  public final void start(final String name) {
-    // must call super.start
-    super.start(name);
-    final PlayerID id = getPlayerID();
-    if (name.endsWith("Bid")) {
-      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      final String propertyName = id.getName() + " bid";
-      final int bidAmount = getGameData().getProperties().get(propertyName, 0);
-      purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
-    } else if (name.endsWith("Purchase")) {
-      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
-      final int leftToSpend = id.getResources().getQuantity(PUs);
-      purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
-    } else if (name.endsWith("Tech")) {
-      final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
-      tech(techDelegate, getGameData(), id);
-    } else if (name.endsWith("Move")) {
-      final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
-      if (name.endsWith("AirborneCombatMove")) {
-      } else {
-        move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
-      }
-    } else if (name.endsWith("Battle")) {
-      battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
-    } else if (name.endsWith("Politics")) {
-      politicalActions();
-    } else if (name.endsWith("Place")) {
-      final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
-    } else if (name.endsWith("EndTurn")) {
-      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
-    }
-  }
-
-  /**
-   * No need to override this.
-   */
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
-      final PlayerID player) {
-    // we should not override this...
-  }
-
-  /**
-   * It is the AI's turn to fight. Subclasses may override this if they want, but
-   * generally the AI does not need to worry about the order of fighting battles.
-   *
-   * @param battleDelegate
-   *        the battle delegate to query for battles not fought and the
-   * @param data
-   *        - the current GameData
-   * @param player
-   *        - the player to fight for
-   */
-  protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player) {
-    // generally all AI's will follow the same logic.
-    // loop until all battles are fought.
-    // rather than try to analyze battles to figure out which must be fought before others
-    // as in the case of a naval battle preceding an amphibious attack,
-    // keep trying to fight every battle
-    while (true) {
-      final BattleListing listing = battleDelegate.getBattles();
-      // all fought
-      if (listing.isEmpty()) {
-        return;
-      }
-      for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet()) {
-        for (final Territory current : entry.getValue()) {
-          final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
-          if (error != null) {
-            s_logger.fine(error);
-          }
-        }
-      }
-    }
-  }
-
-  public void politicalActions() {
-    final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
-
-    final GameData data = getGameData();
-    final PlayerID id = getPlayerID();
-    final float numPlayers = data.getPlayerList().getPlayers().size();
-    final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-    // We want to test the conditions each time to make sure they are still valid
-    if (Math.random() < .5) {
-      final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-          BasicPoliticalAI.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
-        Collections.shuffle(actionChoicesTowardsWar);
-        int i = 0;
-        // should we use bridge's random source here?
-        final double random = Math.random();
-        int MAX_WAR_ACTIONS_PER_TURN =
-            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
-        if ((MAX_WAR_ACTIONS_PER_TURN > 0)
-            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
-                / numPlayers < 0.4) {
-          if (Math.random() < .9) {
-            MAX_WAR_ACTIONS_PER_TURN = 0;
-          } else {
-            MAX_WAR_ACTIONS_PER_TURN = 1;
-          }
-        }
-        final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
-        while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0) {
-          final PoliticalActionAttachment action = actionWarIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
-            continue;
-          }
-          i++;
-          if (i > MAX_WAR_ACTIONS_PER_TURN) {
-            break;
-          }
-          iPoliticsDelegate.attemptAction(action);
-        }
-      }
-    } else {
-      final List<PoliticalActionAttachment> actionChoicesOther =
-          BasicPoliticalAI.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
-        Collections.shuffle(actionChoicesOther);
-        int i = 0;
-        // should we use bridge's random source here?
-        final double random = Math.random();
-        final int MAX_OTHER_ACTIONS_PER_TURN =
-            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
-        final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
-          final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
-            continue;
-          }
-          if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {
-            continue;
-          }
-          i++;
-          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
-            break;
-          }
-          iPoliticsDelegate.attemptAction(action);
-        }
-      }
-    }
   }
 
   @Override
@@ -679,6 +418,240 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       }
     }
     return Tuple.of(picked, unitsToPlace);
+  }
+
+  @Override
+  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
+
+  @Override
+  public void reportError(final String error) {}
+
+  @Override
+  public void reportMessage(final String message, final String title) {}
+
+  @Override
+  public void confirmOwnCasualties(final GUID battleId, final String message) {
+    pause();
+  }
+
+  @Override
+  public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
+      final int diceSides) {
+    final int[] dice = new int[numRolls];
+    for (int i = 0; i < numRolls; i++) {
+      dice[i] = (int) Math.ceil(Math.random() * diceSides);
+    }
+    return dice;
+  }
+
+  /**
+   * The given phase has started. We parse the phase name and call the appropriate method.
+   */
+  @Override
+  public final void start(final String name) {
+    super.start(name);
+    final PlayerID id = getPlayerID();
+    if (name.endsWith("Bid")) {
+      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final String propertyName = id.getName() + " bid";
+      final int bidAmount = getGameData().getProperties().get(propertyName, 0);
+      purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
+    } else if (name.endsWith("Purchase")) {
+      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
+      final int leftToSpend = id.getResources().getQuantity(PUs);
+      purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
+    } else if (name.endsWith("Tech")) {
+      final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
+      tech(techDelegate, getGameData(), id);
+    } else if (name.endsWith("Move")) {
+      final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
+      if (name.endsWith("AirborneCombatMove")) {
+      } else {
+        move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
+      }
+    } else if (name.endsWith("Battle")) {
+      battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
+    } else if (name.endsWith("Politics")) {
+      politicalActions();
+    } else if (name.endsWith("Place")) {
+      final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
+      place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
+    } else if (name.endsWith("EndTurn")) {
+      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
+    }
+  }
+
+  /************************
+   * The following methods are called when the AI starts a phase.
+   *************************/
+  /**
+   * It is the AI's turn to purchase units.
+   *
+   * @param purcahseForBid
+   *        - is this a bid purchase, or a normal purchase
+   * @param PUsToSpend
+   *        - how many PUs we have to spend
+   * @param purchaseDelegate
+   *        - the purchase delgate to buy things with
+   * @param data
+   *        - the GameData
+   * @param player
+   *        - the player to buy for
+   */
+  protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate,
+      GameData data, PlayerID player);
+
+  /**
+   * It is the AI's turn to roll for technology.
+   *
+   * @param techDelegate
+   *        - the tech delegate to roll for
+   * @param data
+   *        - the game data
+   * @param player
+   *        - the player to roll tech for
+   */
+  protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerID player);
+
+  /**
+   * It is the AI's turn to move. Make all moves before returning from this method.
+   *
+   * @param nonCombat
+   *        - are we moving in combat, or non combat
+   * @param moveDel
+   *        - the move delegate to make moves with
+   * @param data
+   *        - the current game data
+   * @param player
+   *        - the player to move with
+   */
+  protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
+
+  /**
+   * It is the AI's turn to place units. get the units available to place with player.getUnits()
+   *
+   * @param placeForBid
+   *        - is this a placement for bid
+   * @param placeDelegate
+   *        - the place delegate to place with
+   * @param data
+   *        - the current Game Data
+   * @param player
+   *        - the player to place for
+   */
+  protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
+      PlayerID player);
+
+  /**
+   * No need to override this.
+   */
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
+      final PlayerID player) {
+    // we should not override this...
+  }
+
+  /**
+   * It is the AI's turn to fight. Subclasses may override this if they want, but
+   * generally the AI does not need to worry about the order of fighting battles.
+   *
+   * @param battleDelegate
+   *        the battle delegate to query for battles not fought and the
+   * @param data
+   *        - the current GameData
+   * @param player
+   *        - the player to fight for
+   */
+  protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player) {
+    // generally all AI's will follow the same logic.
+    // loop until all battles are fought.
+    // rather than try to analyze battles to figure out which must be fought before others
+    // as in the case of a naval battle preceding an amphibious attack,
+    // keep trying to fight every battle
+    while (true) {
+      final BattleListing listing = battleDelegate.getBattles();
+      if (listing.isEmpty()) {
+        return;
+      }
+      for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet()) {
+        for (final Territory current : entry.getValue()) {
+          final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+          if (error != null) {
+            s_logger.fine(error);
+          }
+        }
+      }
+    }
+  }
+
+  protected void politicalActions() {
+    final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+    final GameData data = getGameData();
+    final PlayerID id = getPlayerID();
+    final float numPlayers = data.getPlayerList().getPlayers().size();
+    final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
+    // We want to test the conditions each time to make sure they are still valid
+    if (Math.random() < .5) {
+      final List<PoliticalActionAttachment> actionChoicesTowardsWar =
+          BasicPoliticalAI.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
+      if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
+        Collections.shuffle(actionChoicesTowardsWar);
+        int i = 0;
+        // should we use bridge's random source here?
+        final double random = Math.random();
+        int MAX_WAR_ACTIONS_PER_TURN =
+            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        if ((MAX_WAR_ACTIONS_PER_TURN > 0)
+            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
+                / numPlayers < 0.4) {
+          if (Math.random() < .9) {
+            MAX_WAR_ACTIONS_PER_TURN = 0;
+          } else {
+            MAX_WAR_ACTIONS_PER_TURN = 1;
+          }
+        }
+        final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
+        while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0) {
+          final PoliticalActionAttachment action = actionWarIter.next();
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
+            continue;
+          }
+          i++;
+          if (i > MAX_WAR_ACTIONS_PER_TURN) {
+            break;
+          }
+          iPoliticsDelegate.attemptAction(action);
+        }
+      }
+    } else {
+      final List<PoliticalActionAttachment> actionChoicesOther =
+          BasicPoliticalAI.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
+      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
+        Collections.shuffle(actionChoicesOther);
+        int i = 0;
+        // should we use bridge's random source here?
+        final double random = Math.random();
+        final int MAX_OTHER_ACTIONS_PER_TURN =
+            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+        final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
+        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
+          final PoliticalActionAttachment action = actionOtherIter.next();
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
+            continue;
+          }
+          if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {
+            continue;
+          }
+          i++;
+          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
+            break;
+          }
+          iPoliticsDelegate.attemptAction(action);
+        }
+      }
+    }
   }
 
   /**
