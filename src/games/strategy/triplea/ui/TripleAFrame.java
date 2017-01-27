@@ -1471,28 +1471,26 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void requiredTurnSeries(final PlayerID player) {
-    if (player == null) {
+    if (player == null || !ThreadUtil.sleep(300)) {
       return;
     }
-    if(ThreadUtil.sleep(300)) {
-      SwingAction.invokeAndWait(() -> {
-        final Boolean play = requiredTurnSeries.get(player);
-        if (play != null && play) {
-          ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
-          requiredTurnSeries.put(player, false);
+    SwingAction.invokeAndWait(() -> {
+      final Boolean play = requiredTurnSeries.get(player);
+      if (play != null && play) {
+        ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+        requiredTurnSeries.put(player, false);
+      }
+      // center on capital of player, if it is a new player
+      if (!player.equals(lastStepPlayer)) {
+        lastStepPlayer = player;
+        data.acquireReadLock();
+        try {
+          mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data));
+        } finally {
+          data.releaseReadLock();
         }
-        // center on capital of player, if it is a new player
-        if (!player.equals(lastStepPlayer)) {
-          lastStepPlayer = player;
-          data.acquireReadLock();
-          try {
-            mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data));
-          } finally {
-            data.releaseReadLock();
-          }
-        }
-      });
-    }
+      }
+    });
   }
 
   GameDataChangeListener m_dataChangeListener = new GameDataChangeListener() {
