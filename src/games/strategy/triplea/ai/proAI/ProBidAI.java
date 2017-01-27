@@ -369,7 +369,7 @@ public class ProBidAI {
     return amphibPlayer;
   }
 
-  // TODO: Rewrite this as its from the Moore AI
+  // TODO: Rewrite this as its from the old AI
   public void bidPlace(final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid place phase");
     // if we have purchased a factory, it will be a priority for placing units
