@@ -2,10 +2,13 @@
   host: 45.79.144.53
   port: 3304
   message: |
-    Welcome to TripleA 1.9 - Help menu has useful links for getting started
-    Help and documentation is on the website: http://www.triplea-game.org/help/
-    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
+    Welcome to TripleA 1.9 - For help: http://www.triplea-game.org/help/
     
+    Jan 21 - Some compatibility issues have been discovered
+    Please download the latest game engine to avoid this:
+      http://www.triplea-game.org/download/
+    
+    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
     No talking politics in the lobby! Take your political comments to a private game!
   error_message:
   

@@ -467,7 +467,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           landParatroopers(player, territory, data, aBridge);
         }
         aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
-        battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, aBridge, null, null);
+        battleTracker.addBattle(new RouteScripted(territory), attackingUnits, player, aBridge, null, null);
         battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
       }
       if (battle == null) {
@@ -871,7 +871,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
         // TODO: the attacking sea units do not remember where they came from, so they cannot retreat anywhere. Need to
         // fix.
-        m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
+        m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, m_player, m_bridge, null, null);
         battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           // this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and

@@ -61,14 +61,14 @@ jar {
 repositories {
 	jcenter()
 }
-
 dependencies {
 	compile 'com.github.insubstantial:substance:7.3'
 	compile 'com.google.guava:guava:19.0'
 	compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
 	compile 'com.sun.mail:mailapi:1.5.5'
 	compile 'com.sun.mail:smtp:1.5.5'
-	compile 'commons-httpclient:commons-httpclient:3.1'
+	compile 'org.apache.httpcomponents:httpclient:4.5.2'
+	compile 'org.apache.httpcomponents:httpmime:4.5.2'
 	compile 'org.apache.commons:commons-math3:3.6.1'
 	compile 'org.mindrot:jbcrypt:0.3m'
 	compile 'org.yaml:snakeyaml:1.17'
@@ -78,10 +78,8 @@ dependencies {
 
 	testCompile 'org.apache.derby:derby:10.10.1.1'
 	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-	testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-M1'
-	testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M1'
-	testCompile 'org.junit.vintage:junit-vintage-engine:4.12.0-M1'//JUnit Backwards compatibility
 	testCompile 'org.mockito:mockito-core:2.0.82-beta'
+	testCompile 'junit:junit:4.12'
 }
 
 test {

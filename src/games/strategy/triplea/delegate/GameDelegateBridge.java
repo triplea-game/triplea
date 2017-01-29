@@ -24,8 +24,6 @@ public class GameDelegateBridge implements IDelegateBridge {
    *
    * @param bridge
    *        delegate bridge
-   * @param data
-   *        GameData object
    */
   public GameDelegateBridge(final IDelegateBridge bridge) {
     m_bridge = bridge;

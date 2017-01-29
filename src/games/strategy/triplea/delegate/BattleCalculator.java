@@ -26,7 +26,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -694,23 +693,7 @@ public class BattleCalculator {
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
       final boolean bonus) {
-    if (!GameRunner.getCasualtySelectionSlow()) {
-      return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, defending, player,
-          enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
-          bonus);
-    } else {
-      return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, enemyUnits, amphibious,
-          amphibiousLandAttackers, battlesite, costs, territoryEffects, data,
-          allowMultipleHitsPerUnit, bonus);
-    }
-  }
 
-  private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom,
-      final boolean defending, final PlayerID player,
-      final Collection<Unit> enemyUnits, final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data,
-      final boolean bonus) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
     for (final Unit u : targetsToPickFrom) {
@@ -913,79 +896,6 @@ public class BattleCalculator {
           + "|" + amphibHashCode;
       it.remove();
     }
-    return sortedWellEnoughUnitsList;
-  }
-
-  private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final Collection<Unit> enemyUnits, final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
-      final boolean bonus) {
-    final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
-    Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-    // Select optimal units to kill
-    int numberOfUnitsWeMustSort = hits;
-    int extraHP = 0;
-    if (allowMultipleHitsPerUnit) {
-      for (final Unit unit : sortedUnitsList) {
-        extraHP += Math.max(0, UnitAttachment.get(unit.getType()).getHitPoints() - (1 + unit.getHits()));
-        if (extraHP >= hits) {
-          // no units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort
-          // when the UnitBattleComparator is good enough
-          return sortedUnitsList;
-        }
-      }
-      // if we have to take 6 hits, and we can damage 2 units, then we really
-      // only have to sort for the first 4 units to die (if we can damage 4
-      // units, then we still have to sort those first 4 in case one of them
-      // will have to die)
-      numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP);
-    }
-    if (hits > extraHP + sortedUnitsList.size()) {
-      // if we are going to lose all units, just return this list
-      return sortedUnitsList;
-    }
-    final UnitBattleComparator unitComparatorWithoutPrimaryPower =
-        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
-    final List<Unit> sortedWellEnoughUnitsList = new ArrayList<>();
-    for (int i = 0; i < numberOfUnitsWeMustSort; ++i) {
-      // Loop through all target units to find the best unit to take as casualty
-      Unit worstUnit = null;
-      int maxPowerDifference = Integer.MIN_VALUE;
-      final Set<UnitType> unitTypes = new HashSet<>();
-      for (final Unit u : sortedUnitsList) {
-        if (unitTypes.contains(u.getType())) {
-          // Only check each unit type once
-          continue;
-        }
-        unitTypes.add(u.getType());
-        // Find my power without current unit
-        final List<Unit> units = new ArrayList<>(sortedUnitsList);
-        units.remove(u);
-        final List<Unit> enemyUnitList = new ArrayList<>(enemyUnits);
-        Collections.reverse(units);
-        final int power = DiceRoll
-            .getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, enemyUnitList, defending,
-                false, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data);
-        // Find enemy power without current unit (need to consider this since supports can decrease enemy
-        // attack/defense)
-        final int enemyPower = DiceRoll
-            .getTotalPower(
-                DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, units, !defending, false,
-                    data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers),
-                data);
-        // Check if unit has higher power
-        final int powerDifference = power - enemyPower;
-        if (powerDifference > maxPowerDifference
-            || (powerDifference == maxPowerDifference && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0)) {
-          worstUnit = u;
-          maxPowerDifference = powerDifference;
-        }
-      }
-      sortedUnitsList.remove(worstUnit);
-      sortedWellEnoughUnitsList.add(worstUnit);
-    }
-    sortedWellEnoughUnitsList.addAll(sortedUnitsList);
     return sortedWellEnoughUnitsList;
   }
 

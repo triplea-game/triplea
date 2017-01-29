@@ -16,21 +16,17 @@ public class RouteOptimizer {
   public final boolean isInfiniteY;
   public final boolean isInfiniteX;
 
-  private final MapPanel mapPanel;
-
-  private static final int maxAdditionalScreens = 8;
-  private static final int commonAdditionalScreens = 2;
-  private static final int minAdditionalScreens = 0;
-
   private Point endPoint;
-  private int mapWidth;
-  private int mapHeight;
+  private final int mapWidth;
+  private final int mapHeight;
 
   public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
     checkNotNull(mapData);
-    this.mapPanel = checkNotNull(mapPanel);
+    checkNotNull(mapPanel);
     isInfiniteY = mapData.scrollWrapY();
     isInfiniteX = mapData.scrollWrapX();
+    mapWidth = mapPanel.getImageWidth();
+    mapHeight = mapPanel.getImageHeight();
   }
 
   /**
@@ -40,11 +36,8 @@ public class RouteOptimizer {
    * @return A Point array which goes through Map Borders if necessary
    */
   public Point[] getTranslatedRoute(Point... route) {
-    mapWidth = mapPanel.getImageWidth();
-    mapHeight = mapPanel.getImageHeight();
     if (route == null || route.length == 0) {
       // Or the array is too small
-
       return route;
     }
     if (!isInfiniteX && !isInfiniteY) {
@@ -75,13 +68,13 @@ public class RouteOptimizer {
    * @param pool Point2D List with all possible options
    * @return the closest point in the Pool to the source
    */
-  private Point getClosestPoint(Point source, List<Point2D> pool) {
+  public static Point getClosestPoint(Point source, List<Point2D> pool) {
     double closestDistance = Double.MAX_VALUE;
     Point closestPoint = null;
     for (Point2D possibleClosestPoint : pool) {
       if (closestPoint == null) {
         closestDistance = source.distance(possibleClosestPoint);
-        closestPoint = normalizePoint(getPoint(possibleClosestPoint));
+        closestPoint = getPoint(possibleClosestPoint);
       } else {
         double distance = source.distance(possibleClosestPoint);
         if (closestDistance > distance) {
@@ -93,10 +86,6 @@ public class RouteOptimizer {
     return closestPoint;
   }
 
-  private Point normalizePoint(Point point) {
-    return new Point(point.x % mapWidth, point.y % mapHeight);
-  }
-
   /**
    * Method for getting Points, which are a mapHeight/Width away from the actual Point
    * Used to display routes with higher offsets than the map width/height
@@ -105,7 +94,7 @@ public class RouteOptimizer {
    * @return A List of all possible Points depending in map Properties
    *         size may vary
    */
-  private List<Point2D> getPossiblePoints(Point2D point) {
+  public List<Point2D> getPossiblePoints(Point2D point) {
     List<Point2D> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {
@@ -145,67 +134,23 @@ public class RouteOptimizer {
   }
 
   /**
-   * Gives a List of Point arrays (Routes) which are the offset equivalent of the given points
-   * Size may vary depending on MapProperties
-   * 
-   * @param points A Point array
-   * @return Offset Point Arrays
-   */
-  private List<Point[]> getAlternativePoints(Point... points) {
-    List<Point[]> alternativePoints = new ArrayList<>();
-    if (isInfiniteX || isInfiniteY) {
-      int altArrayCount = getAlternativePointArrayCount();
-      for (int i = 0; i < altArrayCount; i++) {
-        alternativePoints.add(new Point[points.length]);
-      }
-      int counter = 0;
-      for (Point point : points) {
-        if (isInfiniteX) {
-          alternativePoints.get(0)[counter] = new Point(point.x - mapWidth, point.y);
-          alternativePoints.get(1)[counter] = new Point(point.x + mapWidth, point.y);
-        }
-        if (isInfiniteY) {
-          int index = altArrayCount == maxAdditionalScreens ? 2 : 0;
-          alternativePoints.get(index)[counter] = new Point(point.x, point.y - mapHeight);
-          alternativePoints.get(index + 1)[counter] = new Point(point.x, point.y + mapHeight);
-        }
-        if (isInfiniteX && isInfiniteY) {
-          alternativePoints.get(4)[counter] = new Point(point.x - mapWidth, point.y - mapHeight);
-          alternativePoints.get(5)[counter] = new Point(point.x - mapWidth, point.y + mapHeight);
-          alternativePoints.get(6)[counter] = new Point(point.x + mapWidth, point.y - mapHeight);
-          alternativePoints.get(7)[counter] = new Point(point.x + mapWidth, point.y + mapHeight);
-        }
-        counter++;
-      }
-    }
-    return alternativePoints;
-  }
-
-  /**
-   * Same as getAlternativePoints, but adds the given Points in
+   * Matrix Transpose method to transpose the 2dimensional point list
    * 
    * @param points A Point array
    * @return Offset Point Arrays including points
    */
   public List<Point[]> getAllPoints(Point... points) {
-    List<Point[]> allPoints = getAlternativePoints(points);
-    allPoints.add(points);
-    return allPoints;
-  }
-
-  /**
-   * A helper Method to determine how many possible screens to render the Route on there are
-   * 
-   * @return InfiniteX or InfiniteY scrolling multiply 1 each by 3...
-   *         we are not counting the obligatory first screen in...
-   */
-  private int getAlternativePointArrayCount() {
-    if (isInfiniteX && isInfiniteY) {
-      return maxAdditionalScreens;
-    } else if (isInfiniteX || isInfiniteY) {
-      return commonAdditionalScreens;
+    List<Point[]> allPoints = new ArrayList<>();
+    for (int i = 0; i < points.length; i++) {
+      List<Point2D> subPoints = getPossiblePoints(points[i]);
+      for (int y = 0; y < subPoints.size(); y++) {
+        if (i == 0) {
+          allPoints.add(new Point[points.length]);
+        }
+        allPoints.get(y)[i] = getPoint((subPoints.get(y)));
+      }
     }
-    return minAdditionalScreens;
+    return allPoints;
   }
 
   /**

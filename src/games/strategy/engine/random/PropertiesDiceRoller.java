@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,10 +12,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -23,6 +29,7 @@ import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.util.Util;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file
@@ -112,31 +119,33 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
     }
-    final PostMethod post = new PostMethod(m_props.getProperty("path"));
-    final NameValuePair[] data = {new NameValuePair("numdice", "" + numDice), new NameValuePair("numsides", "" + max),
-        new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1), new NameValuePair("subject", message),
-        new NameValuePair("roller", getToAddress()), new NameValuePair("gm", getCcAddress()),
-        new NameValuePair("send", "true"),};
-    post.setRequestHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
-    // this is to allow a dice server to allow the user to request the emails for the game
-    // rather than sending out email for each roll
-    post.setRequestHeader("X-Triplea-Game-UUID", gameUUID);
-    post.setRequestBody(data);
-    final HttpClient client = new HttpClient();
-    try {
+    try (CloseableHttpClient httpClient = HttpClients.createDefault();) {
+      HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
+      List<NameValuePair> params = new ArrayList<>(8);
+      params.add(new BasicNameValuePair("numdice", "" + numDice));
+      params.add(new BasicNameValuePair("numsides", "" + max));
+      params.add(new BasicNameValuePair("modroll", "No"));
+      params.add(new BasicNameValuePair("numroll", "" + 1));
+      params.add(new BasicNameValuePair("subject", message));
+      params.add(new BasicNameValuePair("roller", getToAddress()));
+      params.add(new BasicNameValuePair("gm", getCcAddress()));
+      params.add(new BasicNameValuePair("send", "true"));
+      httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
+      httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
+      // this is to allow a dice server to allow the user to request the emails for the game
+      // rather than sending out email for each roll
+      httpPost.addHeader("X-Triplea-Game-UUID", gameUUID);
       final String host = m_props.getProperty("host");
       int port = 80;
       if (m_props.getProperty("port") != null) {
         port = Integer.parseInt(m_props.getProperty("port"));
       }
-      final HostConfiguration config = client.getHostConfiguration();
-      config.setHost(host, port);
-      HttpProxy.addProxy(config);
-      client.executeMethod(post);
-      final String result = post.getResponseBodyAsString();
-      return result;
-    } finally {
-      post.releaseConnection();
+      HttpHost hostConfig = new HttpHost(host, port);
+      HttpProxy.addProxy(httpPost);
+      try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost);) {
+        HttpEntity entity = response.getEntity();
+        return Util.getStringFromInputStream(entity.getContent());
+      }
     }
   }
 

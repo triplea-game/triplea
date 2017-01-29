@@ -6,7 +6,7 @@ package games.strategy.triplea.delegate;
 public class Die implements java.io.Serializable {
   private static final long serialVersionUID = 8766753280669636980L;
 
-  public static enum DieType {
+  public enum DieType {
     MISS, HIT, IGNORED
   }
 
@@ -34,7 +34,7 @@ public class Die implements java.io.Serializable {
     return m_value;
   }
 
-  public int getRolledAt() {
+  int getRolledAt() {
     return m_rolledAt;
   }
 

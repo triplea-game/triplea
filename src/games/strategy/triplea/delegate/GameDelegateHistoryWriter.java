@@ -10,15 +10,15 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  * be used by the GameData
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
-  IDelegateHistoryWriter m_delegateHistoryWriter;
+  private IDelegateHistoryWriter m_delegateHistoryWriter;
   GameData m_data;
 
-  public GameDelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {
+  GameDelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {
     m_delegateHistoryWriter = delegateHistoryWriter;
     m_data = data;
   }
 
-  public String getEventPrefix() {
+  private String getEventPrefix() {
     if (BaseEditDelegate.getEditMode(m_data)) {
       return "EDIT: ";
     }
