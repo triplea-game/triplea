@@ -660,7 +660,7 @@
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png
   description: |  
     <br><b><em>by Frostion</em></b>
@@ -735,8 +735,6 @@
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/StarWarsTatooineWar_mini.png
   description: |
-    <br>
-    <br><b><em>Star Wars Tatooine War</em></b>
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This is an 8 player map with two alliances.
