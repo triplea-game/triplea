@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
-import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.MutedIpController;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
+import org.triplea.lobby.server.login.LobbyLoginValidator;
+import org.triplea.lobby.server.userDB.MutedIpController;
+import org.triplea.lobby.server.userDB.MutedMacController;
+import org.triplea.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;

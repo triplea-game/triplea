@@ -6,6 +6,6 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.lobby.server.LobbyServer"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.lobby.server.LobbyServer"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
 </launchConfiguration>

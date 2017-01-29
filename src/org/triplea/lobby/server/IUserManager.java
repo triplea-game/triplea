@@ -1,0 +1,14 @@
+package org.triplea.lobby.server;
+
+import org.triplea.lobby.server.userDB.DBUser;
+import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteName;
+
+public interface IUserManager extends IRemote {
+  RemoteName USER_MANAGER =
+      new RemoteName("org.triplea.lobby.server.USER_MANAGER", IUserManager.class);
+
+  String updateUser(String userName, String emailAddress, String hashedPassword);
+
+  DBUser getUserInfo(String userName);
+}

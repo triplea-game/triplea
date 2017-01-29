@@ -2,8 +2,8 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.GameDescription.GameStatus;
+import org.triplea.lobby.server.GameDescription;
+import org.triplea.lobby.server.GameDescription.GameStatus;
 
 public class InGameLobbyWatcherWrapper {
   private volatile InGameLobbyWatcher lobbyWatcher = null;
