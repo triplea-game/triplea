@@ -139,7 +139,7 @@ public final class LockUtil {
     }
   }
 
-  protected static final class WeakLockRef extends WeakReference<Lock> {
+  private static final class WeakLockRef extends WeakReference<Lock> {
     // cache the hash code to make sure it doesn't change if our reference
     // has been cleared
     private final int hashCode;
