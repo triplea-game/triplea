@@ -38,11 +38,11 @@ public final class LockUtil {
 
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
-  private final ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<>();
+  private final ThreadLocal<Map<Lock, Integer>> locksHeld = new ThreadLocal<>();
   // a map of all the locks ever held when a lock was acquired
   // store weak references to everything so that locks don't linger here forever
-  private final Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<>();
-  private final Object m_mutex = new Object();
+  private final Map<Lock, Set<WeakLockRef>> locksHeldWhenAcquired = new WeakHashMap<>();
+  private final Object mutex = new Object();
   private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
 
   private LockUtil() {
@@ -50,29 +50,29 @@ public final class LockUtil {
   }
 
   public void acquireLock(final Lock aLock) {
-    synchronized (m_mutex) {
-      if (m_locksHeld.get() == null) {
-        m_locksHeld.set(new HashMap<>());
+    synchronized (mutex) {
+      if (locksHeld.get() == null) {
+        locksHeld.set(new HashMap<>());
       }
       // we already have the lock, increaase the count
-      if (m_locksHeld.get().containsKey(aLock)) {
-        final int current = m_locksHeld.get().get(aLock);
-        m_locksHeld.get().put(aLock, current + 1);
+      if (locksHeld.get().containsKey(aLock)) {
+        final int current = locksHeld.get().get(aLock);
+        locksHeld.get().put(aLock, current + 1);
       }
       // we don't have it
       else {
         // all the locks currently held must be acquired before a lock
-        if (!m_locksHeldWhenAcquired.containsKey(aLock)) {
-          m_locksHeldWhenAcquired.put(aLock, new HashSet<>());
+        if (!locksHeldWhenAcquired.containsKey(aLock)) {
+          locksHeldWhenAcquired.put(aLock, new HashSet<>());
         }
-        for (final Lock l : m_locksHeld.get().keySet()) {
-          m_locksHeldWhenAcquired.get(aLock).add(new WeakLockRef(l));
+        for (final Lock l : locksHeld.get().keySet()) {
+          locksHeldWhenAcquired.get(aLock).add(new WeakLockRef(l));
         }
         // we are lock a, check to
         // see if any lock we hold (b)
         // has evern been acquired before a
-        for (final Lock l : m_locksHeld.get().keySet()) {
-          final Set<WeakLockRef> held = m_locksHeldWhenAcquired.get(l);
+        for (final Lock l : locksHeld.get().keySet()) {
+          final Set<WeakLockRef> held = locksHeldWhenAcquired.get(l);
           // clear out of date locks
           final Iterator<WeakLockRef> iter = held.iterator();
           while (iter.hasNext()) {
@@ -84,31 +84,31 @@ public final class LockUtil {
             errorReporterRef.get().reportError(aLock, l);
           }
         }
-        m_locksHeld.get().put(aLock, 1);
+        locksHeld.get().put(aLock, 1);
       }
     }
     aLock.lock();
   }
 
   public void releaseLock(final Lock aLock) {
-    synchronized (m_mutex) {
-      int count = m_locksHeld.get().get(aLock);
+    synchronized (mutex) {
+      int count = locksHeld.get().get(aLock);
       count--;
       if (count == 0) {
-        m_locksHeld.get().remove(aLock);
+        locksHeld.get().remove(aLock);
       } else {
-        m_locksHeld.get().put(aLock, count);
+        locksHeld.get().put(aLock, count);
       }
     }
     aLock.unlock();
   }
 
   public boolean isLockHeld(final Lock aLock) {
-    if (m_locksHeld.get() == null) {
+    if (locksHeld.get() == null) {
       return false;
     }
-    synchronized (m_mutex) {
-      return m_locksHeld.get().containsKey(aLock);
+    synchronized (mutex) {
+      return locksHeld.get().containsKey(aLock);
     }
   }
 
