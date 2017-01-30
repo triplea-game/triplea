@@ -44,6 +44,7 @@ public final class LockUtil {
   // store weak references to everything so that locks don't linger here forever
   private final Map<Lock, Set<WeakLockRef>> locksHeldWhenAcquired = new WeakHashMap<>();
   private final Object mutex = new Object();
+
   private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
 
   private LockUtil() {
@@ -51,14 +52,14 @@ public final class LockUtil {
   }
 
   public void acquireLock(final Lock aLock) {
-    synchronized (mutex) {
-      // we already have the lock, increaase the count
-      if (locksHeld.get().containsKey(aLock)) {
-        final int current = locksHeld.get().get(aLock);
-        locksHeld.get().put(aLock, current + 1);
-      }
-      // we don't have it
-      else {
+    // we already have the lock, increase the count
+    if (isLockHeld(aLock)) {
+      final int current = locksHeld.get().get(aLock);
+      locksHeld.get().put(aLock, current + 1);
+    }
+    // we don't have it
+    else {
+      synchronized (mutex) {
         // all the locks currently held must be acquired before a lock
         if (!locksHeldWhenAcquired.containsKey(aLock)) {
           locksHeldWhenAcquired.put(aLock, new HashSet<>());
@@ -68,7 +69,7 @@ public final class LockUtil {
         }
         // we are lock a, check to
         // see if any lock we hold (b)
-        // has evern been acquired before a
+        // has ever been acquired before a
         for (final Lock l : locksHeld.get().keySet()) {
           final Set<WeakLockRef> held = locksHeldWhenAcquired.get(l);
           // clear out of date locks
@@ -82,29 +83,27 @@ public final class LockUtil {
             errorReporterRef.get().reportError(aLock, l);
           }
         }
-        locksHeld.get().put(aLock, 1);
       }
+      locksHeld.get().put(aLock, 1);
     }
+
     aLock.lock();
   }
 
   public void releaseLock(final Lock aLock) {
-    synchronized (mutex) {
-      int count = locksHeld.get().get(aLock);
-      count--;
-      if (count == 0) {
-        locksHeld.get().remove(aLock);
-      } else {
-        locksHeld.get().put(aLock, count);
-      }
+    int count = locksHeld.get().get(aLock);
+    count--;
+    if (count == 0) {
+      locksHeld.get().remove(aLock);
+    } else {
+      locksHeld.get().put(aLock, count);
     }
+
     aLock.unlock();
   }
 
   public boolean isLockHeld(final Lock aLock) {
-    synchronized (mutex) {
-      return locksHeld.get().containsKey(aLock);
-    }
+    return locksHeld.get().containsKey(aLock);
   }
 
   @VisibleForTesting
