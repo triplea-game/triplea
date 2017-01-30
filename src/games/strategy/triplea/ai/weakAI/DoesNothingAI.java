@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.AbstractAI;
@@ -70,20 +69,9 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  public boolean shouldBomberBomb(final Territory territory) {
-    return false;
-  }
-
-  @Override
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
-    // we are dead, just accept
-    if (!getPlayerID().amNotDeadYet(getGameData())) {
-      return true;
-    }
-    if (!politics) {
-      return true;
-    }
     return true;
   }
+
 }
