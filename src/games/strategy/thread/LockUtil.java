@@ -38,7 +38,8 @@ public final class LockUtil {
 
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
-  private final ThreadLocal<Map<Lock, Integer>> locksHeld = new ThreadLocal<>();
+  private final ThreadLocal<Map<Lock, Integer>> locksHeld = ThreadLocal.withInitial(() -> new HashMap<>());
+
   // a map of all the locks ever held when a lock was acquired
   // store weak references to everything so that locks don't linger here forever
   private final Map<Lock, Set<WeakLockRef>> locksHeldWhenAcquired = new WeakHashMap<>();
@@ -51,9 +52,6 @@ public final class LockUtil {
 
   public void acquireLock(final Lock aLock) {
     synchronized (mutex) {
-      if (locksHeld.get() == null) {
-        locksHeld.set(new HashMap<>());
-      }
       // we already have the lock, increaase the count
       if (locksHeld.get().containsKey(aLock)) {
         final int current = locksHeld.get().get(aLock);
@@ -104,9 +102,6 @@ public final class LockUtil {
   }
 
   public boolean isLockHeld(final Lock aLock) {
-    if (locksHeld.get() == null) {
-      return false;
-    }
     synchronized (mutex) {
       return locksHeld.get().containsKey(aLock);
     }
