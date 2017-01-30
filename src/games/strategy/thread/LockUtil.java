@@ -7,7 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Utility class for ensuring that locks are acquired in a consistent order.
@@ -40,7 +43,7 @@ public final class LockUtil {
   // store weak references to everything so that locks don't linger here forever
   private final Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<>();
   private final Object m_mutex = new Object();
-  private ErrorReporter m_errorReporter = new ErrorReporter();
+  private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
 
   private LockUtil() {
     // do nothing
@@ -78,7 +81,7 @@ public final class LockUtil {
             }
           }
           if (held.contains(new WeakLockRef(aLock))) {
-            m_errorReporter.reportError(aLock, l);
+            errorReporterRef.get().reportError(aLock, l);
           }
         }
         m_locksHeld.get().put(aLock, 1);
@@ -109,16 +112,23 @@ public final class LockUtil {
     }
   }
 
-  public void setErrorReporter(final ErrorReporter reporter) {
-    m_errorReporter = reporter;
+  @VisibleForTesting
+  ErrorReporter setErrorReporter(final ErrorReporter errorReporter) {
+    return errorReporterRef.getAndSet(errorReporter);
   }
 
-  public static class ErrorReporter {
+  @VisibleForTesting
+  interface ErrorReporter {
+    void reportError(Lock from, Lock to);
+  }
+
+  private static final class DefaultErrorReporter implements ErrorReporter {
+    @Override
     public void reportError(final Lock from, final Lock to) {
       System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
     }
 
-    private String getStackTrace() {
+    private static String getStackTrace() {
       final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
       final StringBuilder builder = new StringBuilder();
       for (final StackTraceElement e : trace) {
@@ -128,6 +138,7 @@ public final class LockUtil {
       return builder.toString();
     }
   }
+
   protected static final class WeakLockRef extends WeakReference<Lock> {
     // cache the hash code to make sure it doesn't change if our reference
     // has been cleared
