@@ -21,17 +21,30 @@ import java.util.concurrent.locks.Lock;
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
  * <p>
  */
-public class LockUtil {
+public final class LockUtil {
+  private static final LockUtil instance = new LockUtil();
+
+  /**
+   * Gets the singleton {@code LockUtil} instance.
+   *
+   * @return The singleton {@code LockUtil} instance; never {@code null}.
+   */
+  public static LockUtil getInstance() {
+    return instance;
+  }
+
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
-  private final static ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<>();
+  private final ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<>();
   // a map of all the locks ever held when a lock was acquired
   // store weak references to everything so that locks don't linger here forever
-  private final static Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<>();
+  private final Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<>();
   private final Object m_mutex = new Object();
-  private static ErrorReporter m_errorReporter = new ErrorReporter();
+  private ErrorReporter m_errorReporter = new ErrorReporter();
 
-  public LockUtil() {}
+  private LockUtil() {
+    // do nothing
+  }
 
   public void acquireLock(final Lock aLock) {
     synchronized (m_mutex) {
