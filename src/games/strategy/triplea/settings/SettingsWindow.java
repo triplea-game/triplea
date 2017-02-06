@@ -139,9 +139,8 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   private static JTextArea createInputDescription(final SettingInputComponent<?> input) {
     final JTextArea description = new JTextArea(input.getDescription(), 2, 50);
-
-    // TODO: JTextArea.setLineWrap(boolean) does not wrap on word boundaries, instead it'll split words across lines
     description.setLineWrap(true);
+    description.setWrapStyleWord(true);
     description.setEditable(false);
     return description;
   }
