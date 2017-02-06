@@ -42,9 +42,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
@@ -292,6 +294,33 @@ public class SwingComponents {
     final JMenu menu = new JMenu(menuTitle);
     menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
     return menu;
+  }
+
+  /**
+   * Creates a new component that emulates a multiline label.
+   *
+   * <p>
+   * The multiline label will properly wrap text that has embedded newlines ({@code \n}).
+   * </p>
+   *
+   * @param text The text to be displayed; may be {@code null}.
+   * @param rows The number of rows; must be greater than or equal to zero.
+   * @param cols The number of columns; must be greater than or equal to zero.
+   *
+   * @return The new multiline label; never {@code null}.
+   *
+   * @throws IllegalArgumentException If {@code rows} or {@code cols} is negative.
+   */
+  public static JTextArea newMultilineLabel(final String text, final int rows, final int cols) {
+    final JTextArea textArea = new JTextArea(text, rows, cols);
+    textArea.setCursor(null);
+    textArea.setEditable(false);
+    textArea.setFocusable(false);
+    textArea.setFont(UIManager.getFont("Label.font"));
+    textArea.setLineWrap(true);
+    textArea.setOpaque(false);
+    textArea.setWrapStyleWord(true);
+    return textArea;
   }
 
   /**

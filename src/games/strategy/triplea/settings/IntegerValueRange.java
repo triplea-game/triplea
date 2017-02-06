@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-public class IntegerValueRange {
+public final class IntegerValueRange implements ValueRange {
 
   public final int lowerValue;
   public final int upperValue;
@@ -12,4 +12,8 @@ public class IntegerValueRange {
     this.defaultValue = defaultValue;
   }
 
+  @Override
+  public String getDescription() {
+    return String.format("%d - %d\ndefault: %d", lowerValue, upperValue, defaultValue);
+  }
 }

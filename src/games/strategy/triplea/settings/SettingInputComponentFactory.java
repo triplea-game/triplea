@@ -27,11 +27,14 @@ public final class SettingInputComponentFactory {
       final JTextComponent component,
       final BiConsumer<Z, String> writer,
       final Function<Z, String> reader) {
-
-    final String descriptionWithRange = "(" + valueRange.lowerValue + " - " + valueRange.upperValue
-        + ", default: " + valueRange.defaultValue + ")\n" + description;
-
-    return buildTextComponent(label, descriptionWithRange, component, reader, writer,
+    final JPanel panel = new JPanel();
+    panel.add(component);
+    return build(
+        panel,
+        new LabelDescription(label, description),
+        Optional.of(valueRange),
+        new SwingComponentReaderWriter(component::getText, component::setText),
+        new SettingsModelReaderWriter<>(reader, writer),
         InputValidator.inRange(valueRange.lowerValue, valueRange.upperValue));
   }
 
@@ -52,6 +55,7 @@ public final class SettingInputComponentFactory {
     return build(
         panel,
         new LabelDescription(label, description),
+        Optional.empty(),
         new SwingComponentReaderWriter(component::getText, component::setText),
         new SettingsModelReaderWriter<>(settingsModelReader, settingsModelWriter),
         validators);
@@ -83,6 +87,7 @@ public final class SettingInputComponentFactory {
     return build(
         createRadioButtonPanel(radioButtonYes, radioButtonNo, initialValue),
         new LabelDescription(label, description),
+        Optional.empty(),
         new SwingComponentReaderWriter(reader, writer),
         new SettingsModelReaderWriter<>(settingsObjectReader, settingsObjectWriter));
   }
@@ -139,6 +144,7 @@ public final class SettingInputComponentFactory {
   private static <T extends HasDefaults> SettingInputComponent<T> build(
       JPanel componentPanel,
       LabelDescription labelDescription,
+      final Optional<ValueRange> valueRange,
       SwingComponentReaderWriter swingReaderWriter,
       SettingsModelReaderWriter<T> modelReaderWriter,
       final InputValidator... validators) {
@@ -194,6 +200,11 @@ public final class SettingInputComponentFactory {
       @Override
       public String getValue(T settingsType) {
         return modelReaderWriter.settingsReader.apply(settingsType);
+      }
+
+      @Override
+      public Optional<ValueRange> getValueRange() {
+        return valueRange;
       }
 
       @Override
