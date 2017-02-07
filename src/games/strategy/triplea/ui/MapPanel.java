@@ -518,20 +518,25 @@ public class MapPanel extends ImageScrollerLargeView {
     final Graphics2D g2d = (Graphics2D) checkNotNull(g);
     // make sure we use the same data for the entire print
     final GameData gameData = m_data;
-    final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
-    final Collection<Tile> tileList = tileManager.getTiles(bounds);
-    for (final Tile tile : tileList) {
-      Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
-      try {
-        final Image img = tile.getImage(gameData, uiContext.getMapData());
-        if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
-          g2d.drawImage(img, t, this);
+    gameData.acquireReadLock();
+    try {
+      final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
+      final Collection<Tile> tileList = tileManager.getTiles(bounds);
+      for (final Tile tile : tileList) {
+        Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
+        try {
+          final Image img = tile.getImage(gameData, uiContext.getMapData());
+          if (img != null) {
+            final AffineTransform t = new AffineTransform();
+            t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
+            g2d.drawImage(img, t, this);
+          }
+        } finally {
+          Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
         }
-      } finally {
-        Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
       }
+    } finally {
+      gameData.releaseReadLock();
     }
   }
 
