@@ -25,7 +25,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
  * Draws a route on a map.
- * Could be static, is non-static for JUnit/Mockito testing purposes
  */
 public class MapRouteDrawer {
 
@@ -38,16 +37,20 @@ public class MapRouteDrawer {
   public static final double DETAIL_LEVEL = 1.0;
   private static final int arrowLength = 4;
 
-  private RouteOptimizer routeOptimizer;
+  private final RouteOptimizer routeOptimizer;
+  private final MapData mapData;
+  private final MapPanel mapPanel;
+
+  public MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
+    routeOptimizer = new RouteOptimizer(mapData, mapPanel);
+    this.mapData = mapData;
+    this.mapPanel = mapPanel;
+  }
 
   /**
    * Draws the route to the screen.
    */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel mapPanel,
-      final MapData mapData, final String maxMovement) {
-    if (routeOptimizer == null) {
-      routeOptimizer = new RouteOptimizer(mapData, mapPanel);
-    }
+  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final String maxMovement) {
     final Route route = routeDescription.getRoute();
     if (route == null) {
       return;
@@ -60,7 +63,7 @@ public class MapRouteDrawer {
     final int numTerritories = route.getAllTerritories().size();
     final int xOffset = mapPanel.getXOffset();
     final int yOffset = mapPanel.getYOffset();
-    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription, mapData));
+    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription));
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
@@ -195,7 +198,7 @@ public class MapRouteDrawer {
    * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */
-  protected Point[] getRoutePoints(final RouteDescription routeDescription, final MapData mapData) {
+  protected Point[] getRoutePoints(final RouteDescription routeDescription) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
