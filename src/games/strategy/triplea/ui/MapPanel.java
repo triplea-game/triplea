@@ -97,7 +97,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
-  private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
+  private final MapRouteDrawer routeDrawer;
 
 
   /** Creates new MapPanel */
@@ -105,6 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
+    routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(this.uiContext.getCursor());
     this.m_scale = this.uiContext.getScale();
     this.backgroundDrawer = new BackgroundDrawer(this);
@@ -591,7 +592,7 @@ public class MapPanel extends ImageScrollerLargeView {
       g2d.drawImage(mouseShadowImage, t, this);
     }
     if (routeDescription != null) {
-      routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+      routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits);
     }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
