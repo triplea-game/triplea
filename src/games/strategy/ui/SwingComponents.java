@@ -1,5 +1,6 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
@@ -312,6 +313,9 @@ public class SwingComponents {
    * @throws IllegalArgumentException If {@code rows} or {@code cols} is negative.
    */
   public static JTextArea newMultilineLabel(final String text, final int rows, final int cols) {
+    checkArgument(rows >= 0, "rows must not be negative");
+    checkArgument(cols >= 0, "cols must not be negative");
+
     final JTextArea textArea = new JTextArea(text, rows, cols);
     textArea.setCursor(null);
     textArea.setEditable(false);
