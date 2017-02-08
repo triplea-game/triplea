@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Optional;
-
 /**
  * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
  * each setting in the object, and to update the value.
@@ -19,6 +17,14 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    *         describing a specific setting, what it does, and which values they should change it to.
    */
   String getDescription();
+
+  /**
+   * Gets a description of the permissible range of values for the setting.
+   *
+   * @return A description of the permissible range of values for the setting or an empty string if the setting does not
+   *         enforce a value range; never {@code null}.
+   */
+  String getValueRangeDescription();
 
   /**
    * @return The settings input object used to read user input from a Swing component.
@@ -39,14 +45,6 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * @return An extracted value corresponding to the current setting from the 'settings' object.
    */
   String getValue(SettingsObjectType settingsType);
-
-  /**
-   * Gets the permissible range of values for the setting.
-   *
-   * @return The permissible range of values for the setting or empty if the setting does not enforce a value range;
-   *         never {@code null}.
-   */
-  Optional<ValueRange> getValueRange();
 
   /**
    * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid

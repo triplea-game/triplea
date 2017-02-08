@@ -133,8 +133,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
   private static JComponent createInputValueRangeDescription(final SettingInputComponent<?> input) {
-    final String valueRangeDescription = input.getValueRange().map(ValueRange::getDescription).orElse("");
-    return SwingComponents.newMultilineLabel(valueRangeDescription, 2, 10);
+    return SwingComponents.newMultilineLabel(input.getValueRangeDescription(), 2, 10);
   }
 
   private static JTextArea createInputDescription(final SettingInputComponent<?> input) {
