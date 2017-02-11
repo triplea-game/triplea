@@ -113,6 +113,7 @@ public class ForumPosterComponent extends JPanel {
       add(m_includeProductionCheckbox);
     }
     if (allowDiceBattleDetails) {
+      m_showDetailsCheckbox.setSelected(true);
       add(m_showDetailsCheckbox);
     }
     if (allowDiceStatistics) {
