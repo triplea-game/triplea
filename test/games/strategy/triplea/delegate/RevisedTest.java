@@ -15,7 +15,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertMoveError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertValid;
-import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bidPlaceDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
@@ -320,35 +319,6 @@ public class RevisedTest {
     assertNull(placeable.getErrorMessage());
     final String error = bidPlaceDelegate(m_data).placeUnits(units, uk);
     assertNull(error);
-  }
-
-  @Test
-  public void testBombingRaid() {
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
-    bridge.setStepName("CombatMove");
-    moveDelegate.setDelegateBridgeAndPlayer(bridge);
-    moveDelegate.start();
-    when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
-    final Territory uk = territory("United Kingdom", m_data);
-    final Territory germany = territory("Germany", m_data);
-    final Route route = new Route(uk, territory("6 Sea Zone", m_data), territory("5 Sea Zone", m_data), germany);
-    final String error = moveDelegate.move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
-    assertNull(error);
-    final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(m_data);
-    // there should be a bombing battle
-    assertTrue(tracker.hasPendingBattle(germany, true));
-    // there should not be a normal battle
-    assertFalse(tracker.hasPendingBattle(germany, false));
-    // start the battle phase, this should not add a new battle
-    moveDelegate.end();
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
-    // there should be a bombing battle
-    assertTrue(tracker.hasPendingBattle(germany, true));
-    // there should not be a normal battle
-    assertFalse(tracker.hasPendingBattle(germany, false));
   }
 
   @Test

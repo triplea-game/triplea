@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -25,7 +27,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
  * Draws a route on a map.
- * Could be static, is non-static for JUnit/Mockito testing purposes
  */
 public class MapRouteDrawer {
 
@@ -38,16 +39,20 @@ public class MapRouteDrawer {
   public static final double DETAIL_LEVEL = 1.0;
   private static final int arrowLength = 4;
 
-  private RouteOptimizer routeOptimizer;
+  private final RouteOptimizer routeOptimizer;
+  private final MapData mapData;
+  private final MapPanel mapPanel;
+
+  public MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
+    routeOptimizer = new RouteOptimizer(mapData, mapPanel);
+    this.mapData = checkNotNull(mapData);
+    this.mapPanel = checkNotNull(mapPanel);
+  }
 
   /**
    * Draws the route to the screen.
    */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel mapPanel,
-      final MapData mapData, final String maxMovement) {
-    if (routeOptimizer == null) {
-      routeOptimizer = new RouteOptimizer(mapData, mapPanel);
-    }
+  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final String maxMovement) {
     final Route route = routeDescription.getRoute();
     if (route == null) {
       return;
@@ -60,7 +65,7 @@ public class MapRouteDrawer {
     final int numTerritories = route.getAllTerritories().size();
     final int xOffset = mapPanel.getXOffset();
     final int yOffset = mapPanel.getYOffset();
-    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription, mapData));
+    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription));
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
@@ -180,16 +185,11 @@ public class MapRouteDrawer {
    * @param scale The scale-factor of the Map
    */
   private void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
-      final double yOffset,
-      final double scale) {
-    final Point2D point1 =
-        new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale);
-    final Point2D point2 =
-        new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale);
-    // Don't draw if won't be visible anyway
-    if (graphics.getClip().contains(point1) || graphics.getClip().contains(point2)) {
-      graphics.draw(new Line2D.Double(point1, point2));
-    }
+      final double yOffset, final double scale) {
+    graphics.draw(
+        new Line2D.Double(
+            new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale),
+            new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale)));
   }
 
   /**
@@ -200,7 +200,7 @@ public class MapRouteDrawer {
    * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */
-  protected Point[] getRoutePoints(final RouteDescription routeDescription, final MapData mapData) {
+  protected Point[] getRoutePoints(final RouteDescription routeDescription) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
@@ -313,12 +313,16 @@ public class MapRouteDrawer {
       drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(RouteOptimizer.getPoint(new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1])), points[points.length - 1]);
+    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(
+        RouteOptimizer.getPoint(new Point2D.Double(
+            xcoords[xcoords.length - 1],
+            ycoords[ycoords.length - 1])),
+        points[points.length - 1]);
     boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
-    for(Point[] finishingPointArray : finishingPoints){
-    drawLineWithTranslate(graphics,
-        new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
-        xOffset, yOffset, scale);
+    for (Point[] finishingPointArray : finishingPoints) {
+      drawLineWithTranslate(graphics,
+          new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
+          xOffset, yOffset, scale);
       if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
       }

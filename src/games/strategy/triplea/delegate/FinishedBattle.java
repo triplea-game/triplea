@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +35,9 @@ public class FinishedBattle extends AbstractBattle {
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
   private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
 
-  public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
-      final boolean isBombingRun, final BattleType battleType, final GameData data,
-      final BattleResultDescription battleResultDescription, final WhoWon whoWon) {
+  FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+    final boolean isBombingRun, final BattleType battleType, final GameData data,
+    final BattleResultDescription battleResultDescription, final WhoWon whoWon) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
     m_battleResultDescription = battleResultDescription;
     m_whoWon = whoWon;
@@ -120,9 +119,7 @@ public class FinishedBattle extends AbstractBattle {
         m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
       }
     }
-    final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
-    while (dependents.hasNext()) {
-      final Unit dependence = dependents.next();
+    for (Unit dependence : m_dependentUnits.keySet()) {
       final Collection<Unit> dependent = m_dependentUnits.get(dependence);
       dependent.removeAll(units);
     }
@@ -160,18 +157,7 @@ public class FinishedBattle extends AbstractBattle {
     }
   }
 
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
-
-  public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
-  }
-
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+  Map<Territory, Collection<Unit>> getAttackingFromMap() {
     return m_attackingFromMap;
   }
 }

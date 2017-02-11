@@ -292,7 +292,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
         new ArrayList<>();
     for (final Territory currTerritory : territories) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory, true);
+      final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
       // if ownership should change in this territory
       if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
         final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();

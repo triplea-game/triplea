@@ -1,11 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -30,7 +24,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import games.strategy.debug.ClientLogger;
@@ -41,7 +34,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -51,13 +43,11 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
 import games.strategy.triplea.ui.IUIContext;
-import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
-import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.Util;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
@@ -128,7 +118,7 @@ public class ExportMenu {
 
   private void addSaveScreenshot(final JMenu parentMenu) {
     final AbstractAction abstractAction = SwingAction.of("Export Map Snapshot", e -> {
-
+      // get current history node. if we are in history view, get the selected node.
       final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;
       if (historyPanel == null) {
@@ -136,130 +126,9 @@ public class ExportMenu {
       } else {
         curNode = historyPanel.getCurrentNode();
       }
-      saveScreenshot(curNode, frame, gameData);
+      ScreenshotExporter.exportScreenshot(frame, gameData, curNode);
     });
     parentMenu.add(abstractAction).setMnemonic(KeyEvent.VK_E);
-  }
-
-  public static void saveScreenshot(final HistoryNode node, final TripleAFrame frame, final GameData gameData) {
-    final FileFilter pngFilter = new FileFilter() {
-      @Override
-      public boolean accept(final File f) {
-        if (f.isDirectory()) {
-          return true;
-        } else {
-          return f.getName().endsWith(".png");
-        }
-      }
-
-      @Override
-      public String getDescription() {
-        return "Saved Screenshots, *.png";
-      }
-    };
-    final JFileChooser fileChooser = new SaveGameFileChooser();
-    fileChooser.setFileFilter(pngFilter);
-    final int rVal = fileChooser.showSaveDialog(null);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-      File f = fileChooser.getSelectedFile();
-      if (!f.getName().toLowerCase().endsWith(".png")) {
-        f = new File(f.getParent(), f.getName() + ".png");
-      }
-      // A small warning so users will not over-write a file,
-      if (f.exists()) {
-        final int choice =
-            JOptionPane.showConfirmDialog(null, "A file by that name already exists. Do you wish to over write it?",
-                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return;
-        }
-      }
-      final File file = f;
-      final Runnable t = () -> {
-        if (saveScreenshot(node, file, frame, gameData)) {
-          JOptionPane.showMessageDialog(null, "Map Snapshot Saved", "Map Snapshot Saved",
-              JOptionPane.INFORMATION_MESSAGE);
-        }
-      };
-      SwingAction.invokeAndWait(t);
-    }
-  }
-
-  private static boolean saveScreenshot(final HistoryNode node, final File file, final TripleAFrame frame,
-      final GameData gameData) {
-    // get current history node. if we are in history view, get the selected node.
-    boolean retval = true;
-    // get round/step/player from history tree
-    int round = 0;
-    final Object[] pathFromRoot = node.getPath();
-    for (final Object pathNode : pathFromRoot) {
-      final HistoryNode curNode = (HistoryNode) pathNode;
-      if (curNode instanceof Round) {
-        round = ((Round) curNode).getRoundNo();
-      }
-    }
-    final IUIContext iuiContext = frame.getUIContext();
-    final double scale = iuiContext.getScale();
-    // print map panel to image
-
-    final MapPanel mapPanel = frame.getMapPanel();
-    final BufferedImage mapImage =
-        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
-    final Graphics2D mapGraphics = mapImage.createGraphics();
-    try {
-      // workaround to get the whole map
-      // (otherwise the map is cut if current window is not on top of map)
-      final int xOffset = mapPanel.getXOffset();
-      final int yOffset = mapPanel.getYOffset();
-      mapPanel.setTopLeft(0, 0);
-      mapPanel.print(mapGraphics);
-      mapPanel.setTopLeft(xOffset, yOffset);
-      // overlay title
-      Color title_color = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
-      if (title_color == null) {
-        title_color = Color.BLACK;
-      }
-      final String s_title_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
-      final String s_title_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
-      final String s_title_size = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
-      int title_x;
-      int title_y;
-      int title_size;
-      try {
-        title_x = (int) (Integer.parseInt(s_title_x) * scale);
-        title_y = (int) (Integer.parseInt(s_title_y) * scale);
-        title_size = Integer.parseInt(s_title_size);
-      } catch (final NumberFormatException nfe) {
-        // choose safe defaults
-        title_x = (int) (15 * scale);
-        title_y = (int) (15 * scale);
-        title_size = 15;
-      }
-      // everything else should be scaled down onto map image
-      final AffineTransform transform = new AffineTransform();
-      transform.scale(scale, scale);
-      mapGraphics.setTransform(transform);
-      mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
-      mapGraphics.setColor(title_color);
-      if (iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(gameData.getGameName() + " Round " + round, title_x, title_y);
-      }
-
-      // save Image as .png
-      try {
-        ImageIO.write(mapImage, "png", file);
-      } catch (final Exception e2) {
-        e2.printStackTrace();
-        JOptionPane.showMessageDialog(frame, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
-        retval = false;
-      }
-      // Clean up objects. There might be some overkill here,
-      // but there were memory leaks that are fixed by some/all of these.
-    } finally {
-      mapImage.flush();
-      mapGraphics.dispose();
-    }
-    return retval;
   }
 
   private void addExportStatsFull(final JMenu parentMenu) {

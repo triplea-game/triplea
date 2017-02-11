@@ -7,7 +7,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.PropertyUtil;
 
-class ObjectPropertyChange extends Change {
+public class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
   private final Object m_object;
   private String m_property;

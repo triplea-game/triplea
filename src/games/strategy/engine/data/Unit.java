@@ -16,7 +16,7 @@ public class Unit extends GameDataComponent {
   /**
    * Creates new Unit. Should use a call to UnitType.create(). Owner can be null
    */
-  protected Unit(final UnitType type, final PlayerID owner, final GameData data) {
+  public Unit(final UnitType type, final PlayerID owner, final GameData data) {
     super(data);
     m_type = Preconditions.checkNotNull(type);
     m_uid = new GUID();

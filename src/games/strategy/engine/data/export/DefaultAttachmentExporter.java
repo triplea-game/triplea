@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -18,50 +17,6 @@ import games.strategy.util.IntegerMap;
  * is very standard you can use this one directly. Configure the same in AttachmentExporterFactory
  */
 public class DefaultAttachmentExporter {
-
-  private String printUnitTypeOption(final Field field, final String option, final IAttachment attachment)
-      throws AttachmentExportException {
-    try {
-      final UnitType value = (UnitType) field.get(attachment);
-      if (value == null) {
-        return "";
-      }
-      return printDefaultOption(option, value.getName());
-    } catch (final IllegalArgumentException | IllegalAccessException e) {
-      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
-          + option + " on Attachment: " + attachment.getName());
-    }
-  }
-
-  private String printPlayerIDOption(final Field field, final String option, final IAttachment attachment)
-      throws AttachmentExportException {
-    PlayerID value;
-    try {
-      value = (PlayerID) field.get(attachment);
-      if (value == null) {
-        return "";
-      }
-    } catch (final IllegalArgumentException | IllegalAccessException e) {
-      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
-          + option + " on Attachment: " + attachment.getName());
-    }
-    return printDefaultOption(option, value.getName());
-  }
-
-  private String printStringArrayOption(final Field field, final String option, final IAttachment attachment)
-      throws AttachmentExportException {
-    String[] valueArray;
-    try {
-      valueArray = (String[]) field.get(attachment);
-      if (valueArray == null) {
-        return "";
-      }
-      return printDefaultOption(option, Joiner.on(':').join(valueArray));
-    } catch (final IllegalArgumentException | IllegalAccessException e) {
-      throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: "
-          + option + " on Attachment: " + attachment.getName());
-    }
-  }
 
   protected String printIntegerOption(final Field field, final String option, final IAttachment attachment,
       final boolean printDefaultValue) throws AttachmentExportException {

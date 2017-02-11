@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -30,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +64,7 @@ import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -93,14 +97,15 @@ public class MapPanel extends ImageScrollerLargeView {
   private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
-  private final MapRouteDrawer routeDrawer = new MapRouteDrawer();
+  private final MapRouteDrawer routeDrawer;
 
 
   /** Creates new MapPanel */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
-      final ImageScrollModel model) {
+      final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
+    routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(this.uiContext.getCursor());
     this.m_scale = this.uiContext.getScale();
     this.backgroundDrawer = new BackgroundDrawer(this);
@@ -114,6 +119,11 @@ public class MapPanel extends ImageScrollerLargeView {
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
+      
+      private boolean is4Pressed = false;
+      private boolean is5Pressed = false;
+      private int lastActive = -1;
+      
       /**
        * Invoked when the mouse exits a component.
        */
@@ -138,6 +148,15 @@ public class MapPanel extends ImageScrollerLargeView {
         if (terr != null) {
           notifyTerritorySelected(terr, md);
         }
+        if (e.getButton() == 4 || e.getButton() == 5) {
+          //the numbers 4 and 5 stand for the corresponding mouse button
+          lastActive = is4Pressed && is5Pressed ? (e.getButton() == 4 ? 5 : 4) : -1;
+          //we only want to change the variables if the corresponding button was released
+          is4Pressed = e.getButton() == 4 ? false : is4Pressed;
+          is5Pressed = e.getButton() == 5 ? false : is5Pressed;
+          //we want to return here, because otherwise a menu might be opened
+          return;
+        }
         if (!unitSelectionListeners.isEmpty()) {
           Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, m_data);
           if (tuple == null) {
@@ -145,6 +164,32 @@ public class MapPanel extends ImageScrollerLargeView {
           }
           notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
         }
+      }
+
+      @Override
+      public void mousePressed(final MouseEvent e) {
+        is4Pressed = e.getButton() == 4 ? true : is4Pressed;
+        is5Pressed = e.getButton() == 5 ? true : is5Pressed;
+        if (lastActive == -1) {
+          new Thread(() -> {
+            //Mouse Events are different than key events
+            //Thats why we're "simulating" multiple
+            //clicks while the mouse button is held down
+            //so the map keeps scrolling
+            while (lastActive != -1) {
+              final int diffPixel = computeScrollSpeed.get();
+              if (lastActive == 5) {
+                setTopLeft(getXOffset() + diffPixel, getYOffset());
+              } else if (lastActive == 4) {
+                setTopLeft(getXOffset() - diffPixel, getYOffset());
+              }
+              //50ms seems to be a good interval between "clicks"
+              //changing this number changes the scroll speed
+              ThreadUtil.sleep(50);
+            }
+          }).start();
+        }
+        lastActive = e.getButton();
       }
     });
     this.addMouseMotionListener(new MouseMotionAdapter() {
@@ -461,27 +506,38 @@ public class MapPanel extends ImageScrollerLargeView {
     super.setTopLeft(x, y);
   }
 
-  // this one is useful for screenshots
-  @Override
-  public void print(final Graphics g) {
-    final Graphics2D g2d = (Graphics2D) g;
-    super.print(g2d);
+  /**
+   * Draws an image of the complete map to the specified graphics context.
+   *
+   * <p>
+   * This method is useful for capturing screenshots. This method can be called from a thread other than the EDT.
+   * </p>
+   *
+   * @param g The graphics context on which to draw the map; must not be {@code null}.
+   */
+  public void drawMapImage(final Graphics g) {
+    final Graphics2D g2d = (Graphics2D) checkNotNull(g);
     // make sure we use the same data for the entire print
     final GameData gameData = m_data;
-    final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
-    final Collection<Tile> tileList = tileManager.getTiles(bounds);
-    for (final Tile tile : tileList) {
-      Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
-      try {
-        final Image img = tile.getImage(gameData, uiContext.getMapData());
-        if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
-          g2d.drawImage(img, t, this);
+    gameData.acquireReadLock();
+    try {
+      final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
+      final Collection<Tile> tileList = tileManager.getTiles(bounds);
+      for (final Tile tile : tileList) {
+        Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
+        try {
+          final Image img = tile.getImage(gameData, uiContext.getMapData());
+          if (img != null) {
+            final AffineTransform t = new AffineTransform();
+            t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
+            g2d.drawImage(img, t, this);
+          }
+        } finally {
+          Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
         }
-      } finally {
-        Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
       }
+    } finally {
+      gameData.releaseReadLock();
     }
   }
 
@@ -536,7 +592,7 @@ public class MapPanel extends ImageScrollerLargeView {
       g2d.drawImage(mouseShadowImage, t, this);
     }
     if (routeDescription != null) {
-      routeDrawer.drawRoute(g2d, routeDescription, this, uiContext.getMapData(), movementLeftForCurrentUnits);
+      routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits);
     }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references

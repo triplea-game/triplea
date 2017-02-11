@@ -140,10 +140,10 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
-import games.strategy.triplea.ui.menubar.ExportMenu;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -206,6 +206,7 @@ public class TripleAFrame extends MainGameFrame {
   private ThreadPool messageAndDialogThreadPool;
   private TripleAMenuBar menu;
   private final ScrollSettings scrollSettings;
+  private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
@@ -283,7 +284,7 @@ public class TripleAFrame extends MainGameFrame {
         uiContext.getMapData().getMapDimensions().height);
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model);
-    mapPanel = new MapPanel(data, smallView, uiContext, model);
+    mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
     final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
@@ -425,8 +426,8 @@ public class TripleAFrame extends MainGameFrame {
         editPanel.setActive(false);
       }
     });
-    rightHandSidePanel.setPreferredSize(new Dimension((int) smallView.getPreferredSize().getWidth(),
-        (int) mapPanel.getPreferredSize().getHeight()));
+    rightHandSidePanel.setPreferredSize(
+        new Dimension((int) smallView.getPreferredSize().getWidth(), (int) mapPanel.getPreferredSize().getHeight()));
     gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
     gameCenterPanel.setDividerSize(8);
@@ -587,8 +588,7 @@ public class TripleAFrame extends MainGameFrame {
   public void shutdown() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
-        JOptionPane.YES_NO_OPTION,
-        getUIContext().getCountDownLatchHandler());
+        JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -600,8 +600,7 @@ public class TripleAFrame extends MainGameFrame {
   public void leaveGame() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
-        JOptionPane.YES_NO_OPTION,
-        getUIContext().getCountDownLatchHandler());
+        JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -779,10 +778,8 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(
-        () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error",
-            JOptionPane.ERROR_MESSAGE,
-            true, getUIContext().getCountDownLatchHandler()));
+    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage,
+        "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
   }
 
   /**
@@ -815,9 +812,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
     if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.runTask(
-          () -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title,
-              JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
+      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this,
+          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
     }
   }
 
@@ -932,9 +928,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
-    if (potentialTargets == null || potentialTargets.size() == 0) {
-      return null;
-    }
     if (potentialTargets.size() == 1 || messageAndDialogThreadPool == null) {
       return potentialTargets.iterator().next();
     }
@@ -971,8 +964,8 @@ public class TripleAFrame extends MainGameFrame {
       return new int[numDice];
     }
     messageAndDialogThreadPool.waitForAll();
-    final DiceChooser chooser = Util.runInSwingEventThread(
-        () -> new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
+    final DiceChooser chooser =
+        Util.runInSwingEventThread(() -> new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
     do {
       EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
           getUIContext().getCountDownLatchHandler());
@@ -989,23 +982,22 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    final Tuple<JPanel, JList<Territory>> comps =
-        Util.runInSwingEventThread(() -> {
-          mapPanel.centerOn(currentTerritory);
-          final JList<Territory> list = new JList<>(new Vector<>(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-          list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          final JTextArea text = new JTextArea(unitMessage, 8, 30);
-          text.setLineWrap(true);
-          text.setEditable(false);
-          text.setWrapStyleWord(true);
-          panel.add(text, BorderLayout.NORTH);
-          panel.add(scroll, BorderLayout.CENTER);
-          return Tuple.of(panel, list);
-        });
+    final Tuple<JPanel, JList<Territory>> comps = Util.runInSwingEventThread(() -> {
+      mapPanel.centerOn(currentTerritory);
+      final JList<Territory> list = new JList<>(new Vector<>(candidates));
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      list.setSelectedIndex(0);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      final JScrollPane scroll = new JScrollPane(list);
+      final JTextArea text = new JTextArea(unitMessage, 8, 30);
+      text.setLineWrap(true);
+      text.setEditable(false);
+      text.setWrapStyleWord(true);
+      panel.add(text, BorderLayout.NORTH);
+      panel.add(scroll, BorderLayout.CENTER);
+      return Tuple.of(panel, list);
+    });
     final JPanel panel = comps.getFirst();
     final JList<?> list = comps.getSecond();
     final String[] options = {"OK"};
@@ -1085,8 +1077,7 @@ public class TripleAFrame extends MainGameFrame {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm =
-            new HashMap<>();
+        final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
         for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
           final List<Unit> units = new ArrayList<>(entry.getValue());
           Collections.sort(units,
@@ -1192,8 +1183,7 @@ public class TripleAFrame extends MainGameFrame {
           final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
           final int maxAllowed =
               Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
-          final UnitChooser chooser =
-              new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
@@ -1279,8 +1269,7 @@ public class TripleAFrame extends MainGameFrame {
         panelChooser.add(whereFrom);
         panelChooser.add(new JLabel(" "));
         final int maxAllowed = possible.size();
-        final UnitChooser chooser =
-            new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
         chooserScrollPane = new JScrollPane(panelChooser);
@@ -1393,8 +1382,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public static int save(final String filename, final GameData m_data) {
-    try (FileOutputStream fos = new FileOutputStream(filename);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);) {
+    try (FileOutputStream fos = new FileOutputStream(filename); ObjectOutputStream oos = new ObjectOutputStream(fos);) {
       oos.writeObject(m_data);
       return 0;
     } catch (final Throwable t) {
@@ -1542,9 +1530,9 @@ public class TripleAFrame extends MainGameFrame {
     return new KeyListener() {
       @Override
       public void keyPressed(final KeyEvent e) {
-
+        isCtrlPressed = e.isControlDown();
         // scroll map according to wasd/arrowkeys
-        final int diffPixel = computeScrollSpeed(e);
+        final int diffPixel = computeScrollSpeed();
         final int x = mapPanel.getXOffset();
         final int y = mapPanel.getYOffset();
         final int keyCode = e.getKeyCode();
@@ -1603,14 +1591,16 @@ public class TripleAFrame extends MainGameFrame {
       public void keyTyped(final KeyEvent e) {}
 
       @Override
-      public void keyReleased(final KeyEvent e) {}
+      public void keyReleased(final KeyEvent e) {
+        isCtrlPressed = e.isControlDown();
+      }
     };
   }
 
-  private int computeScrollSpeed(final KeyEvent e) {
+  private int computeScrollSpeed() {
     int multiplier = 1;
 
-    if (e.isControlDown()) {
+    if (isCtrlPressed) {
       multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
     }
 
@@ -1730,12 +1720,12 @@ public class TripleAFrame extends MainGameFrame {
         historyLog.setVisible(true);
       }
     });
-    popup.add(new AbstractAction("Save Screenshot") {
+    popup.add(new AbstractAction("Export Map Snapshot") {
       private static final long serialVersionUID = 1222760138263428443L;
 
       @Override
       public void actionPerformed(final ActionEvent ae) {
-        ExportMenu.saveScreenshot(historyPanel.getCurrentPopupNode(), TripleAFrame.this, data);
+        ScreenshotExporter.exportScreenshot(TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
         historyPanel.clearCurrentPopupNode();
       }
     });

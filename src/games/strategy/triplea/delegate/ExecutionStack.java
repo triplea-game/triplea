@@ -47,7 +47,7 @@ public class ExecutionStack implements Serializable {
     m_stack.push(executable);
   }
 
-  public boolean isExecuting() {
+  boolean isExecuting() {
     return m_current != null;
   }
 

@@ -52,9 +52,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,7 +61,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -85,7 +81,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -97,6 +92,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.xml.LoadGameUtil;
@@ -1113,51 +1109,6 @@ public class WW2V3_41_Test {
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
     // only 2 battleships are allowed to bombard
     assertEquals(2, mfb.getBombardingUnits().size());
-  }
-
-  // TODO this test needs work kev
-  @Test
-  public void testAAFireWithRadar() {
-    final PlayerID russians = russians(m_data);
-    final PlayerID germans = germans(m_data);
-    TechAttachment.get(russians).setAARadar("true");
-    final MoveDelegate move = moveDelegate(m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
-    final Territory poland = territory("Poland", m_data);
-    final Territory russia = territory("Russia", m_data);
-    // Add bomber to Poland and attack
-    addTo(poland, bomber(m_data).create(1, germans));
-    // The game will ask us if we want to move bomb, say yes.
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return true;
-      }
-    };
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
-    bridge.setRemote(player);
-    // Perform the combat movement
-    move.setDelegateBridgeAndPlayer(bridge);
-    move.start();
-    move(poland.getUnits().getMatches(Matches.UnitIsStrategicBomber), m_data.getMap().getRoute(poland, russia));
-    move.end();
-    // start the battle phase
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
-    // aa guns rolls 1, hits
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
-    final StrategicBombingRaidBattle battle =
-        (StrategicBombingRaidBattle) battleDelegate(m_data).getBattleTracker().getPendingBattle(russia, true, null);
-    // aa guns rolls 1, hits
-    // bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
-    final int PUsBeforeRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    battle.fight(bridge);
-    final int PUsAfterRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid, PUsAfterRaid);
   }
 
   @Test

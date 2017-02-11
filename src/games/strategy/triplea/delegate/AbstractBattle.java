@@ -27,39 +27,40 @@ import games.strategy.util.IntegerMap;
 
 abstract public class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
-  protected final GUID m_battleID = new GUID();
+  final GUID m_battleID = new GUID();
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
    * for an odds
    * calculator so we can skip some steps for efficiency.
    */
-  protected boolean m_headless = false;
-  protected final Territory m_battleSite;
-  protected final PlayerID m_attacker;
-  protected PlayerID m_defender;
-  protected final BattleTracker m_battleTracker;
-  protected final GameData m_data;
-  protected int m_round = 1;
-  protected final boolean m_isBombingRun;
-  protected boolean m_isAmphibious = false;
-  protected BattleType m_battleType;
-  protected boolean m_isOver = false;
+  boolean m_headless = false;
+  final Territory m_battleSite;
+  final PlayerID m_attacker;
+  PlayerID m_defender;
+  final BattleTracker m_battleTracker;
+  int m_round = 1;
+  final boolean m_isBombingRun;
+  boolean m_isAmphibious = false;
+  BattleType m_battleType;
+  boolean m_isOver = false;
   /**
    * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
    * then we lose the corresponding collection of units.
    */
-  protected final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<>();
-  protected List<Unit> m_attackingUnits = new ArrayList<>();
-  protected List<Unit> m_defendingUnits = new ArrayList<>();
-  protected List<Unit> m_amphibiousLandAttackers = new ArrayList<>();
-  protected List<Unit> m_bombardingUnits = new ArrayList<>();
-  protected Collection<TerritoryEffect> m_territoryEffects;
-  protected BattleResultDescription m_battleResultDescription;
-  protected WhoWon m_whoWon = WhoWon.NOTFINISHED;
-  protected int m_attackerLostTUV = 0;
-  protected int m_defenderLostTUV = 0;
+  final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<>();
+  List<Unit> m_attackingUnits = new ArrayList<>();
+  List<Unit> m_defendingUnits = new ArrayList<>();
+  List<Unit> m_amphibiousLandAttackers = new ArrayList<>();
+  List<Unit> m_bombardingUnits = new ArrayList<>();
+  Collection<TerritoryEffect> m_territoryEffects;
+  BattleResultDescription m_battleResultDescription;
+  WhoWon m_whoWon = WhoWon.NOTFINISHED;
+  int m_attackerLostTUV = 0;
+  int m_defenderLostTUV = 0;
 
-  public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+  protected final GameData m_data;
+
+  AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data) {
     m_battleTracker = battleTracker;
     m_attacker = attacker;
@@ -242,7 +243,7 @@ abstract public class AbstractBattle implements IBattle {
         + " attacked by:" + m_attacker.getName() + " attacking with: " + m_attackingUnits;
   }
 
-  public static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data) {
+  static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data) {
     if (battleSite == null) {
       return PlayerID.NULL_PLAYERID;
     }
@@ -278,7 +279,7 @@ abstract public class AbstractBattle implements IBattle {
     return defender;
   }
 
-  public static PlayerID findPlayerWithMostUnits(final Collection<Unit> units) {
+  static PlayerID findPlayerWithMostUnits(final Collection<Unit> units) {
     final IntegerMap<PlayerID> playerUnitCount = new IntegerMap<>();
     for (final Unit unit : units) {
       playerUnitCount.add(unit.getOwner(), 1);
@@ -299,7 +300,7 @@ abstract public class AbstractBattle implements IBattle {
    * The maximum number of hits that this collection of units can sustain, taking into account units
    * with two hits, and accounting for existing damage.
    */
-  public static int getMaxHits(final Collection<Unit> units) {
+  static int getMaxHits(final Collection<Unit> units) {
     int count = 0;
     for (final Unit unit : units) {
       count += UnitAttachment.get(unit.getUnitType()).getHitPoints();
@@ -308,14 +309,15 @@ abstract public class AbstractBattle implements IBattle {
     return count;
   }
 
-  void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge, final boolean addPreviousHits) {
-    BattleDelegate.markDamaged(damaged, bridge, addPreviousHits);
+  void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
+    BattleDelegate.markDamaged(damaged, bridge);
   }
 
   protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
     return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
   }
 
+  // TODO: is this called via reflection? If not, can be removed since it is unused.
   protected static ISound getSoundChannel(final IDelegateBridge bridge) {
     return bridge.getSoundChannelBroadcaster();
   }

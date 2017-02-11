@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;

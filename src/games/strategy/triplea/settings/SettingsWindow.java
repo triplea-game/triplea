@@ -86,13 +86,16 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
   private static JPanel createInputElementRow(final SettingInputComponent<?> input) {
-    final JPanel contentRow = createContentRow(createTextAndInputPanel(input), createInputDescription(input));
+    final JPanel contentRow = createContentRow(
+        createTextAndInputPanel(input),
+        createInputValueRangeDescription(input),
+        createInputDescription(input));
     return SwingComponents.createRowWithTopAndBottomPadding(contentRow, 3, 5);
   }
 
 
   private static JPanel createContentRow(final JComponent textAndInputComponent,
-      final JComponent descriptionComponent) {
+      final JComponent valueRangeDescriptionComponent, final JComponent descriptionComponent) {
     final JPanel contentRow = SwingComponents.newJPanelWithHorizontalBoxLayout();
     contentRow.setMaximumSize(new Dimension(MAX_WIDTH, ROW_HEIGHT));
 
@@ -103,6 +106,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
     // the vertical struct gives the row height
     contentRow.add(Box.createVerticalStrut(ROW_HEIGHT));
 
+    contentRow.add(valueRangeDescriptionComponent);
     contentRow.add(SwingComponents.newJScrollPane(descriptionComponent));
     contentRow.setBorder(new BevelBorder(BevelBorder.LOWERED));
     return contentRow;
@@ -128,11 +132,14 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
 
   }
 
+  private static JComponent createInputValueRangeDescription(final SettingInputComponent<?> input) {
+    return SwingComponents.newMultilineLabel(input.getValueRangeDescription(), 2, 10);
+  }
+
   private static JTextArea createInputDescription(final SettingInputComponent<?> input) {
     final JTextArea description = new JTextArea(input.getDescription(), 2, 50);
-
-    // TODO: JTextArea.setLineWrap(boolean) does not wrap on word boundaries, instead it'll split words across lines
     description.setLineWrap(true);
+    description.setWrapStyleWord(true);
     description.setEditable(false);
     return description;
   }

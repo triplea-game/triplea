@@ -66,7 +66,6 @@ public class GameRunner {
   // not arguments:
   public static final int PORT = 3300;
   private static final String DELAYED_PARSING = "DelayedParsing";
-  private static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -424,24 +423,6 @@ public class GameRunner {
     } catch (final BackingStoreException e) {
       ClientLogger.logQuietly(e);
     }
-  }
-
-  // TODO: delete all this when we figure out the new casualty selection algorithm
-  public static boolean getCasualtySelectionSlow() {
-    if (s_checkedCasualtySelectionSlowPreference) {
-      return s_casualtySelectionSlow;
-    }
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    s_casualtySelectionSlow = pref.getBoolean(CASUALTY_SELECTION_SLOW, false);
-    s_checkedCasualtySelectionSlowPreference = true;
-    return s_casualtySelectionSlow;
-  }
-
-  private static boolean s_casualtySelectionSlow = false;
-  private static boolean s_checkedCasualtySelectionSlowPreference = false;
-
-  public static void setCasualtySelectionSlow(final boolean casualtySelectionBeta) {
-    SystemPreferences.put(SystemPreferenceKey.CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
   }
 
   public static int getServerStartGameSyncWaitTime() {

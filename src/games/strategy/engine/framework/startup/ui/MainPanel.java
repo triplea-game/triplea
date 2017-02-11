@@ -38,12 +38,8 @@ public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private JScrollPane gameSetupPanelScroll;
-  private GameSelectorPanel gameSelectorPanel;
   private JButton playButton;
-  private JButton quitButton;
   private JButton cancelButton;
-  private final GameSelectorModel gameSelectorModel;
   private ISetupPanel gameSetupPanel;
   private JPanel gameSetupPanelHolder;
   private JPanel chatPanelHolder;
@@ -55,29 +51,20 @@ public class MainPanel extends JPanel implements Observer {
 
   public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
-    gameSelectorModel = typePanelModel.getGameSelectorModel();
-    createComponents();
-    layoutComponents();
-    setupListeners();
-    setWidgetActivation();
-    if (typePanelModel.getPanel() != null) {
-      setGameSetupPanel(typePanelModel.getPanel());
-    }
-  }
+    GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
-  private void createComponents() {
     playButton = new JButton("Play");
     playButton.setToolTipText(
         "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
-    quitButton = new JButton("Quit");
+    JButton quitButton = new JButton("Quit");
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
-    gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
+    JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
     gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
     chatPanelHolder = new JPanel();
     chatPanelHolder.setLayout(new BorderLayout());
@@ -86,9 +73,7 @@ public class MainPanel extends JPanel implements Observer {
     chatSplit.setResizeWeight(0.8);
     chatSplit.setOneTouchExpandable(false);
     chatSplit.setDividerSize(5);
-  }
 
-  private void layoutComponents() {
     final JPanel buttonsPanel = new JPanel();
     buttonsPanel.setBorder(new EtchedBorder());
     buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -105,11 +90,9 @@ public class MainPanel extends JPanel implements Observer {
     addChat();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
-  }
 
-  private void setupListeners() {
     gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
-    playButton.addActionListener(e -> play());
+    playButton.addActionListener(e -> play(gameSetupPanel, gameTypePanelModel, this));
     quitButton.addActionListener(e -> {
       try {
         gameSetupPanel.shutDown();
@@ -119,6 +102,12 @@ public class MainPanel extends JPanel implements Observer {
     });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
     gameSelectorModel.addObserver(this);
+
+
+    setWidgetActivation();
+    if (typePanelModel.getPanel() != null) {
+      setGameSetupPanel(typePanelModel.getPanel());
+    }
   }
 
   private void addChat() {
@@ -143,7 +132,7 @@ public class MainPanel extends JPanel implements Observer {
     isChatShowing = chat != null;
   }
 
-  public void setGameSetupPanel(final ISetupPanel panel) {
+  private void setGameSetupPanel(final ISetupPanel panel) {
     SetupPanel setupPanel = null;
     if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
       setupPanel = (SetupPanel) panel;
@@ -166,7 +155,7 @@ public class MainPanel extends JPanel implements Observer {
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      createUserActionMenu(cancelPanel);
+      createUserActionMenu(gameSetupPanel, cancelPanel);
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
@@ -177,7 +166,7 @@ public class MainPanel extends JPanel implements Observer {
     revalidate();
   }
 
-  private void createUserActionMenu(final JPanel cancelPanel) {
+  private static void createUserActionMenu(ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
     if (gameSetupPanel.getUserActions().isEmpty()) {
       return;
     }
@@ -195,11 +184,11 @@ public class MainPanel extends JPanel implements Observer {
   }
 
 
-  private void play() {
+  private static void play(ISetupPanel gameSetupPanel, SetupPanelModel gameTypePanelModel, MainPanel mainPanel) {
     gameSetupPanel.preStartGame();
     final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
     if (launcher != null) {
-      launcher.launch(this);
+      launcher.launch(mainPanel);
     }
     gameSetupPanel.postStartGame();
   }

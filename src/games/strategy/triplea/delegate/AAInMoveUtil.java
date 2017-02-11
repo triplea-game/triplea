@@ -1,16 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -27,6 +16,16 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Code to fire AA guns while in combat and non combat move.
@@ -82,11 +81,9 @@ class AAInMoveUtil implements Serializable {
       final Comparator<Unit> decreasingMovement, final UndoableMove currentMove) {
     final List<Unit> targets = new ArrayList<>(units);
     // select units with lowest movement first
-    Collections.sort(targets, decreasingMovement);
+    targets.sort(decreasingMovement);
     final List<IExecutable> executables = new ArrayList<>();
-    final Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
-    while (iter.hasNext()) {
-      final Territory location = iter.next();
+    for (Territory location : getTerritoriesWhereAAWillFire(route, units)) {
       executables.add(new IExecutable() {
         private static final long serialVersionUID = -1545771595683434276L;
 
@@ -276,7 +273,7 @@ class AAInMoveUtil implements Serializable {
         TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(),
         casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
-    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge, true);
+    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge);
     m_bridge.getHistoryWriter().addChildToEvent(
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),
         new ArrayList<>(casualties.getKilled()));

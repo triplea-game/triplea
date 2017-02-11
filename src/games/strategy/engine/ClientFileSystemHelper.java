@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public final class ClientFileSystemHelper {
 
     try {
       // Deal with spaces in the file name which would be url encoded
-      fileName = URLDecoder.decode(fileName, "UTF-8");
+      fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
     } catch (final UnsupportedEncodingException e) {
       ClientLogger.logError("Unsupported encoding of fileName: " + fileName + ", error: " + e.getMessage());
     }
@@ -107,7 +108,7 @@ public final class ClientFileSystemHelper {
     final URL url = GameRunner.class.getResource(GameRunner.class.getSimpleName() + ".class");
     String fileName = url.getFile();
     try {
-      fileName = URLDecoder.decode(fileName, "UTF-8");
+      fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
     } catch (final UnsupportedEncodingException e) {
       ClientLogger.logQuietly(e);
     }

@@ -270,9 +270,8 @@ public class ProLogWindow extends javax.swing.JDialog {
   }
 
   private void v_restoreDefaultsButtonActionPerformed(final java.awt.event.ActionEvent evt) {
-    final int result =
-        JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?",
-            "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    final int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all AI settings?",
+        "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
       final ProLogSettings defaultSettings = new ProLogSettings(); // Default settings are already contained in a new
                                                                    // DSettings instance
@@ -321,7 +320,7 @@ public class ProLogWindow extends javax.swing.JDialog {
           + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
           + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
           + "\r\n"
-          + "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
+          + "Pause AI's: This checkbox pauses all the AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
           + "\r\n"
           + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
     }

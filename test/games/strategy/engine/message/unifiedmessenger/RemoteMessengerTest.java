@@ -245,7 +245,7 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUM = new UnifiedMessenger(server);
       final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
       clientRM.registerRemote(new TestRemote(), test);
-      serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
+      serverUM.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUM.getHub().hasImplementors(test.getName()));
       client.shutDown();
       ThreadUtil.sleep(200);
@@ -286,7 +286,7 @@ public class RemoteMessengerTest {
         }
       };
       clientRM.registerRemote(foo, test);
-      serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
+      serverUM.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUM.getHub().hasImplementors(test.getName()));
       final AtomicReference<ConnectionLostException> rme = new AtomicReference<>(null);
       final Runnable r = new Runnable() {

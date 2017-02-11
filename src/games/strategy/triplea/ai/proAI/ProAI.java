@@ -314,12 +314,11 @@ public class ProAI extends AbstractAI {
     return combatMoveAI.isBombing();
   }
 
+  // TODO: Consider supporting this functionality
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
-    final List<Unit> rVal = new ArrayList<>();
-
-    return rVal;
+    return new ArrayList<>();
   }
 
   @Override

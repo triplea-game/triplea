@@ -337,14 +337,14 @@
 - mapName: World War II Global
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_global/archive/master.zip
-  version: 4
+  version: 7
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png
   description: |
     <br>
     <br>World War II Global 1940
     <br>
     <br>Includes: Original/OOB and Second Edition and a Global 1942 mod.
-    <br>Now also includes Balanced Mod and variants of Balanced Mod and 2nd ed with Combat Move first
+    <br>Now also includes Balanced Mod and variants of Balanced Mod and 2nd ed with Combat Move first. Ozteas 1941 setup is now included.
     <br>
     <br>Now working fully according to official rules except as noted.
     <br>
@@ -392,7 +392,7 @@
 - mapName: Age of Tribes
   mapCategory: GOOD
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/AoT_mini.png
   description: |  
     <br><b><em>by Frostion</em></b>
@@ -660,7 +660,7 @@
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png
   description: |  
     <br><b><em>by Frostion</em></b>
@@ -735,8 +735,6 @@
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/StarWarsTatooineWar_mini.png
   description: |
-    <br>
-    <br><b><em>Star Wars Tatooine War</em></b>
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This is an 8 player map with two alliances.
@@ -1314,18 +1312,14 @@
 - mapName: Large Middle Earth
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/large_middle_earth/archive/master.zip
-  version: 1
-  img: http://tripleamaps.sourceforge.net/images/TripleA_large_middle_earth_mini.png
+  version: 2
+  img: https://cloud.githubusercontent.com/assets/15109713/22105137/fbb2629a-de42-11e6-901e-4d286c89bae9.png
   description: |
-    <br>Version 1.0, last update 2014.12.29 for engine 1.8.0.3 
-    <br>Game done by alkexr 
-    <br>Suggestions to kovvaszilij@gmail.com 
+    <br>Version 1.2, last update 2017.01.13. for engine 1.9
+    <br>Game done by alkexr
+    <br>Contributions by Frostion
+    <br>If you have any suggestions, find alkexr on the triplea dev forum.
     <br>
-    <br>a.) Content: 
-    <br>1 Game 
-    <br>Large_Middle_Earth 
-    <br>
-    <br>b.) Rough overview: 
     <br>A game about a war in Tolkien's Middle Earth where the mightiest realms of the Third Age fight for the victory in the struggle between Good and Evil. 
     <br>
     <br>The game features 
@@ -1334,7 +1328,6 @@
     <br>- various unit abilities: there is more difference between units than just attack/defense/movement stats 
     <br>- Free For All game option 
     <br>
-    <br>c.) General tips: 
     <br>Read game notes before playing, unless you want to have your strongest units killed by some unexpected enemy ability.
 - mapName: 1914-COW-Empires
   mapCategory: EXPERIMENTAL
