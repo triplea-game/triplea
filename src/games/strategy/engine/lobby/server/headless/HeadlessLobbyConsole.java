@@ -60,16 +60,12 @@ public class HeadlessLobbyConsole {
 
   private void printEvalLoop() {
     out.println();
-    while (true) {
+    while (in.hasNextLine()) {
       out.print(">>>>");
       out.flush();
       try {
-        if (in.hasNextLine()) {
-          final String command = in.nextLine();
-          process(command.trim());
-        } else {
-          break;
-        }
+        final String command = in.nextLine();
+        process(command.trim());
       } catch (final Throwable t) {
         t.printStackTrace();
         t.printStackTrace(out);
