@@ -60,9 +60,9 @@ public class HeadlessLobbyConsole {
 
   private void printEvalLoop() {
     out.println();
+    out.print(">>>>");
+    out.flush();
     while (in.hasNextLine()) {
-      out.print(">>>>");
-      out.flush();
       try {
         final String command = in.nextLine();
         process(command.trim());
@@ -70,6 +70,8 @@ public class HeadlessLobbyConsole {
         t.printStackTrace();
         t.printStackTrace(out);
       }
+      out.print(">>>>");
+      out.flush();
     }
   }
 
