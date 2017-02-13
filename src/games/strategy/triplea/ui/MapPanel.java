@@ -524,7 +524,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
-        Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
+        tile.acquireLock();
         try {
           final Image img = tile.getImage(gameData, uiContext.getMapData());
           if (img != null) {
@@ -533,7 +533,7 @@ public class MapPanel extends ImageScrollerLargeView {
             g2d.drawImage(img, t, this);
           }
         } finally {
-          Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
+          tile.releaseLock();
         }
       }
     } finally {
@@ -691,7 +691,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     for (final Tile tile : tileList) {
       Image img = null;
-      Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
+      tile.acquireLock();
       try {
         if (tile.isDirty()) {
           // take what we can get to avoid screen flicker
@@ -707,7 +707,7 @@ public class MapPanel extends ImageScrollerLargeView {
           g.drawImage(img, t, this);
         }
       } finally {
-        Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
+        tile.releaseLock();
       }
     }
   }
