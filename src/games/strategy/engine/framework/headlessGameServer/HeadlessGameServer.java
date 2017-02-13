@@ -179,7 +179,6 @@ public class HeadlessGameServer {
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         System.out.println("Remote Shutdown Initiated.");
-        ThreadUtil.sleep(1000);
         System.exit(0);
       })).start();
       return null;
@@ -561,7 +560,10 @@ public class HeadlessGameServer {
 
     final Runnable r = () -> {
       while (!m_shutDown) {
-        ThreadUtil.sleep(8000);
+        if(!ThreadUtil.sleep(8000)) {
+          m_shutDown = true;
+          break;
+        }
         if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null
             && m_setupPanelModel.getPanel().canGameStart()) {
           final boolean started = startHeadlessGame(m_setupPanelModel);

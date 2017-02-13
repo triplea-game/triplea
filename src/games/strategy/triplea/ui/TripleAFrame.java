@@ -1459,10 +1459,9 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void requiredTurnSeries(final PlayerID player) {
-    if (player == null) {
+    if (player == null || !ThreadUtil.sleep(300)) {
       return;
     }
-    ThreadUtil.sleep(300);
     SwingAction.invokeAndWait(() -> {
       final Boolean play = requiredTurnSeries.get(player);
       if (play != null && play) {
