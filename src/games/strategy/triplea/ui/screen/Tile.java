@@ -29,7 +29,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public class Tile {
-  public static final LockUtil S_TILE_LOCKUTIL = LockUtil.getInstance();
+  public static final LockUtil S_TILE_LOCKUTIL = LockUtil.INSTANCE;
   private static final boolean DRAW_DEBUG = false;
   private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
   // allow the gc to implement memory management

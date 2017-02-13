@@ -21,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class LockUtilTest {
-  private final LockUtil lockUtil = LockUtil.getInstance();
+  private final LockUtil lockUtil = LockUtil.INSTANCE;
 
   @Mock
   private LockUtil.ErrorReporter errorReporter;

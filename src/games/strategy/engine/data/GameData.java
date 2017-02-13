@@ -61,7 +61,7 @@ public class GameData implements java.io.Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-  private transient LockUtil lockUtil = LockUtil.getInstance();
+  private transient LockUtil lockUtil = LockUtil.INSTANCE;
   private volatile transient boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
@@ -107,7 +107,7 @@ public class GameData implements java.io.Serializable {
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    lockUtil = LockUtil.getInstance();
+    lockUtil = LockUtil.INSTANCE;
   }
 
   /**

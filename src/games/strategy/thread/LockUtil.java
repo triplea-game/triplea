@@ -24,17 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
  * <p>
  */
-public final class LockUtil {
-  private static final LockUtil instance = new LockUtil();
-
-  /**
-   * Gets the singleton {@code LockUtil} instance.
-   *
-   * @return The singleton {@code LockUtil} instance; never {@code null}.
-   */
-  public static LockUtil getInstance() {
-    return instance;
-  }
+public enum LockUtil {
+  INSTANCE;
 
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
@@ -46,10 +37,6 @@ public final class LockUtil {
   private final Object mutex = new Object();
 
   private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
-
-  private LockUtil() {
-    // do nothing
-  }
 
   public void acquireLock(final Lock aLock) {
     // we already have the lock, increase the count
