@@ -1,9 +1,6 @@
 package games.strategy.engine.lobby.server.headless;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import games.strategy.debug.ClientLogger;
@@ -29,7 +27,7 @@ import games.strategy.util.TimeManager;
 public class HeadlessLobbyConsole {
   private final LobbyServer server;
   private final PrintStream out;
-  private final BufferedReader in;
+  private final Scanner in;
   private final String startDate = TimeManager.getGMTString(new Date());
   private final AtomicInteger totalLogins = new AtomicInteger();
   private final AtomicInteger currentConnections = new AtomicInteger();
@@ -37,7 +35,7 @@ public class HeadlessLobbyConsole {
 
   public HeadlessLobbyConsole(final LobbyServer server, final InputStream in, final PrintStream out) {
     this.out = out;
-    this.in = new BufferedReader(new InputStreamReader(in));
+    this.in = new Scanner(in);
     this.server = server;
     server.getMessenger().addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
@@ -62,16 +60,18 @@ public class HeadlessLobbyConsole {
 
   private void printEvalLoop() {
     out.println();
-    while (true) {
-      out.print(">>>>");
-      out.flush();
+    out.print(">>>>");
+    out.flush();
+    while (in.hasNextLine()) {
       try {
-        final String command = in.readLine();
+        final String command = in.nextLine();
         process(command.trim());
       } catch (final Throwable t) {
         t.printStackTrace();
         t.printStackTrace(out);
       }
+      out.print(">>>>");
+      out.flush();
     }
   }
 
@@ -114,13 +114,9 @@ public class HeadlessLobbyConsole {
 
   private void quit() {
     out.println("Are you sure? (y/n)");
-    try {
-      final String readin = in.readLine();
-      if (readin != null && readin.toLowerCase().startsWith("y")) {
-        System.exit(0);
-      }
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+    final String readin = in.nextLine();
+    if (readin != null && readin.toLowerCase().startsWith("y")) {
+      System.exit(0);
     }
   }
 
