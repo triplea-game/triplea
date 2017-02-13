@@ -54,7 +54,6 @@ public class MessengerLoginTest {
     final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
     try {
       server.setLoginValidator(validator);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger client =
           new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
@@ -91,7 +90,6 @@ public class MessengerLoginTest {
     final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
     try {
       server.setLoginValidator(validator);
-      server.setAcceptNewConnections(true);
       try {
         final String mac = MacFinder.getHashedMacAddress();
         new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
@@ -134,7 +132,6 @@ public class MessengerLoginTest {
     final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
     try {
       server.setLoginValidator(validator);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger client =
           new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);

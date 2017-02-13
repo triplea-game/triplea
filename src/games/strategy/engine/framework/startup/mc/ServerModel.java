@@ -258,7 +258,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
       }
 
-      serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
       return true;
     } catch (final IOException ioe) {
@@ -673,7 +672,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   public void newGame() {
-    serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
         (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
     notifyChanellPlayersChanged();

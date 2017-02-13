@@ -169,7 +169,6 @@ public class RemoteMessengerTest {
     ClientMessenger client = null;
     try {
       server = new ServerMessenger("server", SERVER_PORT);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", SERVER_PORT, "client", mac);
       final UnifiedMessenger serverUM = new UnifiedMessenger(server);
@@ -212,7 +211,6 @@ public class RemoteMessengerTest {
     ClientMessenger client = null;
     try {
       server = new ServerMessenger("server", SERVER_PORT);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", SERVER_PORT, "client", mac);
       final RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger(server));
@@ -239,7 +237,6 @@ public class RemoteMessengerTest {
     ClientMessenger client = null;
     try {
       server = new ServerMessenger("server", SERVER_PORT);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", SERVER_PORT, "client", mac);
       final UnifiedMessenger serverUM = new UnifiedMessenger(server);
@@ -264,7 +261,6 @@ public class RemoteMessengerTest {
     ClientMessenger client = null;
     try {
       server = new ServerMessenger("server", SERVER_PORT);
-      server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", SERVER_PORT, "client", mac);
       final UnifiedMessenger serverUM = new UnifiedMessenger(server);

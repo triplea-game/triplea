@@ -49,7 +49,6 @@ public class ChatTest {
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
     m_server = new ServerMessenger("Server", SERVER_PORT);
-    m_server.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
     m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
     m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
