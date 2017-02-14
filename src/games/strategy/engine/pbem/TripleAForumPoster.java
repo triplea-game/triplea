@@ -119,6 +119,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
       throws ClientProtocolException, IOException {
     HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/post/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
+        // the content type affects file extension server side causing the file extension to be renamed into .bin
         .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
         .addTextBody("cid", "6")
         .build());
