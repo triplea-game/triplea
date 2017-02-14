@@ -3,11 +3,11 @@ package games.strategy.engine.pbem;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -41,115 +41,169 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   public static final String tripleAForumURL = "https://forums.triplea-game.org";
 
+  private NameValuePair username;
+  private NameValuePair password;
+
 
   @Override
-  public boolean postTurnSummary(String summary, String subject) {
+  public boolean postTurnSummary(String summary, String title) {
+    username = new BasicNameValuePair("username", getUsername());
+    password = new BasicNameValuePair("password", getPassword());
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      HttpPost post = new HttpPost("https://forums.triplea-game.org/api/ns/login");
-      List<NameValuePair> entity = new ArrayList<>(2);
-      entity.add(new BasicNameValuePair("username", getUsername()));
-      entity.add(new BasicNameValuePair("password", getPassword()));
-      post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
-      HttpProxy.addProxy(post);
-      try (CloseableHttpResponse response = client.execute(post)) {
-        String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
-        JSONObject jsonObject = new JSONObject(rawJSON);
-        if (jsonObject.has("message")) {
-          throw new Exception(jsonObject.getString("message"));
-        }
-        if (jsonObject.getInt("banned") != 0) {
-          throw new Exception("Your account is banned from the forum");
-        }
-        // TEMPORARY, until the login plugin implements such a feature
-        HttpGet get = new HttpGet(tripleAForumURL + "/api/user/" + jsonObject.getString("userslug"));
-        HttpProxy.addProxy(get);
-        try (CloseableHttpResponse getResponse = client.execute(get)) {
-          rawJSON = Util.getStringFromInputStream(getResponse.getEntity().getContent());
-          if (!new JSONObject(rawJSON).getBoolean("email:confirmed")) {
-            throw new Exception("Your email isn't confirmed yet!");
-          }
-        }
-        int id = jsonObject.getInt("uid");
-        post = new HttpPost(tripleAForumURL + "/api/v1/users/" + id + "/tokens");
-        entity.remove(0);
-        post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
-        HttpProxy.addProxy(post);
-        try (CloseableHttpResponse response2 = client.execute(post)) {
-          rawJSON = Util.getStringFromInputStream(response2.getEntity().getContent());
-          jsonObject = new JSONObject(rawJSON);
-          if (jsonObject.has("code") && jsonObject.getString("code").equalsIgnoreCase("ok")) {
-            String token = jsonObject.getJSONObject("payload").getString("token");
-            try {
-              post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
-              post.addHeader("Authorization", "Bearer " + token);
-              summary = "# " + subject + "\n" + summary;
-              if (m_includeSaveGame && m_saveGameFile != null) {
-                try (CloseableHttpClient loginClient = HttpClients.custom()
-                    .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
-                    .build()) {// TODO hide the warning messages
-                  // TODO we change this once the write API recieves an update
-                  CookieStore cookieStore = new BasicCookieStore();
-                  HttpContext httpContext = new BasicHttpContext();
-                  httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
-                  HttpGet tokenGET = new HttpGet(tripleAForumURL + "/api/config");
-                  HttpProxy.addProxy(tokenGET);
-                  try (CloseableHttpResponse tokenResponse = loginClient.execute(tokenGET, httpContext)) {
-                    String csrfToken =
-                        new JSONObject(Util.getStringFromInputStream(tokenResponse.getEntity().getContent()))
-                            .getString("csrf_token");
-                    HttpPost login = new HttpPost(tripleAForumURL + "/login");
-                    HttpProxy.addProxy(login);
-                    login.setEntity(new UrlEncodedFormEntity(Arrays.asList(
-                        new BasicNameValuePair("username", getUsername()),
-                        new BasicNameValuePair("password", getPassword()))));
-                    login.addHeader("x-csrf-token", csrfToken);
-                    try (CloseableHttpResponse loginResponse = loginClient.execute(login, httpContext)) {
-                      HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/post/upload");
-                      fileUpload.setEntity(MultipartEntityBuilder.create()
-                          .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
-                              m_saveGameFileName)
-                          .addTextBody("cid", "6")
-                          .build());
-                      HttpProxy.addProxy(fileUpload);
-                      fileUpload.addHeader("x-csrf-token", csrfToken);
-                      try (CloseableHttpResponse response3 = loginClient.execute(fileUpload, httpContext)) {
-                        int status = response3.getStatusLine().getStatusCode();
-                        if (status == HttpURLConnection.HTTP_OK) {
-                          rawJSON = Util.getStringFromInputStream(response3.getEntity().getContent());
-                          jsonObject = new JSONArray(rawJSON).getJSONObject(0);
-                          summary += "\n[Savegame](" + jsonObject.getString("url") + ")";
-                        } else {
-                          throw new Exception("Failed to upload savegame, server returned Error Code " + status);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-              post.setEntity(new UrlEncodedFormEntity(Arrays.asList(new BasicNameValuePair("content", summary)),
-                  StandardCharsets.UTF_8));
-              HttpProxy.addProxy(post);
-              client.execute(post);
-              m_turnSummaryRef = "Sucessfully posted!";
-              return true;
-            } finally {
-              HttpDelete delete =
-                  new HttpDelete(tripleAForumURL + "/api/v1/users/" + id + "/tokens/" + token);
-              delete.addHeader("Authorization", "Bearer " + token);
-              client.execute(delete);
-            }
-          }
-        }
-      } catch (JSONException e) {
-        ClientLogger.logError("Invalid JSON", e);
-      } catch (Exception e) {
-        m_turnSummaryRef = e.getMessage();
-        ClientLogger.logQuietly(e);
+      int userID = getUserId(client);
+      String token = getToken(client, userID);
+      try {
+        post(client, token, "### " + title + "\n" + summary);
+        display("Sucessfully posted!");
+        return true;
+      } finally {
+        deleteToken(client, userID, token);
       }
+    } catch (JSONException e) {
+      ClientLogger.logError("Invalid JSON", e);
+      display(e);
     } catch (IOException e) {
-      ClientLogger.logQuietly("An error occured while trying to post", e);
+      ClientLogger.logQuietly("A network error occured while trying to post", e);
+      display(e);
+    } catch (Exception e) {
+      ClientLogger.logQuietly(e);
+      display(e);
     }
     return false;
+  }
+
+  private void display(String message) {
+    m_turnSummaryRef = message;
+  }
+
+  private void display(Exception e) {
+    display(e.getMessage());
+  }
+
+  private void post(CloseableHttpClient client, String token, String text) throws Exception {
+    HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
+    post.addHeader("Authorization", "Bearer " + token);
+    if (m_includeSaveGame && m_saveGameFile != null) {
+      text += uploadSavegame();
+    }
+    post.setEntity(new UrlEncodedFormEntity(
+        Arrays.asList(new BasicNameValuePair("content", text)),
+        StandardCharsets.UTF_8));
+    HttpProxy.addProxy(post);
+    client.execute(post);
+  }
+
+  private String uploadSavegame() throws Exception {
+    try (CloseableHttpClient loginClient = HttpClients.custom().setDefaultRequestConfig(
+        RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
+      // TODO hide the warning messages
+      // TODO we change this once the write API receives an update
+      CookieStore cookieStore = new BasicCookieStore();
+      HttpContext httpContext = new BasicHttpContext();
+      httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
+      String csrfToken = getCSRFToken(loginClient, httpContext);
+      sendLoginPOST(loginClient, httpContext, csrfToken);
+
+      try (CloseableHttpResponse response = upload(loginClient, httpContext, csrfToken)) {
+        int status = response.getStatusLine().getStatusCode();
+        if (status == HttpURLConnection.HTTP_OK) {
+          String json = Util.getStringFromInputStream(response.getEntity().getContent());
+          return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
+        }
+        throw new Exception("Failed to upload savegame, server returned Error Code " + status);
+      }
+    }
+  }
+
+  private CloseableHttpResponse upload(CloseableHttpClient client, HttpContext context, String csrfToken)
+      throws ClientProtocolException, IOException {
+    HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/post/upload");
+    fileUpload.setEntity(MultipartEntityBuilder.create()
+        .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
+        .addTextBody("cid", "6")
+        .build());
+    HttpProxy.addProxy(fileUpload);
+    fileUpload.addHeader("x-csrf-token", csrfToken);
+    return client.execute(fileUpload, context);
+  }
+
+  private void sendLoginPOST(CloseableHttpClient client, HttpContext context, String csrfToken)
+      throws ClientProtocolException, IOException {
+    HttpPost login = new HttpPost(tripleAForumURL + "/login");
+    HttpProxy.addProxy(login);
+    login.setEntity(new UrlEncodedFormEntity(Arrays.asList(username, password)));
+    login.addHeader("x-csrf-token", csrfToken);
+    client.execute(login, context);
+  }
+
+  private String getCSRFToken(CloseableHttpClient client, HttpContext context)
+      throws ClientProtocolException, IOException {
+    HttpGet tokenGET = new HttpGet(tripleAForumURL + "/api/config");
+    HttpProxy.addProxy(tokenGET);
+    try (CloseableHttpResponse tokenResponse = client.execute(tokenGET, context)) {
+      return new JSONObject(Util.getStringFromInputStream(tokenResponse.getEntity().getContent()))
+          .getString("csrf_token");
+    }
+  }
+
+  private void deleteToken(CloseableHttpClient client, int userID, String token)
+      throws ClientProtocolException, IOException {
+    HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userID + "/tokens/" + token);
+    httpDelete.addHeader("Authorization", "Bearer " + token);
+    client.execute(httpDelete);
+  }
+
+  private int getUserId(CloseableHttpClient client) throws Exception {
+    JSONObject jsonObject = login(client, Arrays.asList(username, password));
+    checkUser(client, jsonObject);
+    return jsonObject.getInt("uid");
+  }
+
+  private void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws Exception {
+    if (jsonObject.has("message")) {
+      throw new Exception(jsonObject.getString("message"));
+    }
+    if (jsonObject.getInt("banned") != 0) {
+      throw new Exception("Your account is banned from the forum");
+    }
+    // TEMPORARY, until the login plugin implements such a feature
+    HttpGet httpGet = new HttpGet(tripleAForumURL + "/api/user/" + jsonObject.getString("userslug"));
+    HttpProxy.addProxy(httpGet);
+    try (CloseableHttpResponse getResponse = client.execute(httpGet)) {
+      String rawJSON = Util.getStringFromInputStream(getResponse.getEntity().getContent());
+      if (!new JSONObject(rawJSON).getBoolean("email:confirmed")) {
+        throw new Exception("Your email isn't confirmed yet!");
+      }
+    }
+  }
+
+  private JSONObject login(CloseableHttpClient client, List<NameValuePair> entity)
+      throws ClientProtocolException, IOException {
+    HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
+    post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
+    HttpProxy.addProxy(post);
+    try (CloseableHttpResponse response = client.execute(post)) {
+      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
+      return new JSONObject(rawJSON);
+    }
+  }
+
+  private String getToken(CloseableHttpClient client, int userId) throws Exception {
+    HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
+    post.setEntity(new UrlEncodedFormEntity(Arrays.asList(password), StandardCharsets.UTF_8));
+    HttpProxy.addProxy(post);
+    try (CloseableHttpResponse response = client.execute(post)) {
+      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
+      JSONObject jsonObject = new JSONObject(rawJSON);
+      if (jsonObject.has("code")) {
+        String code = jsonObject.getString("code");
+        if (code.equalsIgnoreCase("ok")) {
+          return jsonObject.getJSONObject("payload").getString("token");
+        }
+        throw new Exception("Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
+      }
+      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJSON);
+    }
   }
 
   @Override
@@ -189,5 +243,4 @@ public class TripleAForumPoster extends AbstractForumPoster {
   public String getHelpText() {
     return HelpSupport.loadHelp("tripleaForum.html");
   }
-
 }
