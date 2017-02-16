@@ -1108,8 +1108,9 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   @VisibleForTesting
-  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
-             BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
+                                        Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+                                        BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
 
 
 
@@ -1132,6 +1133,21 @@ public class BattleTracker implements java.io.Serializable {
         bombingRaid.fight(delegateBridge);
       }
     }
+  }
+
+  public void fightAutoKills(final IDelegateBridge delegateBridge) {
+    // Kill undefended transports. Done first to remove potentially dependent sea battles 
+    // Which would block the amphibious assault below
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle( territory, false, BattleType.NORMAL) )
+      .filter( battle -> Match.allMatch(battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport) )
+      .forEach( battle -> battle.fight(delegateBridge) );
+    // Remove defenseless amphibious assaults
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle( territory, false, BattleType.NORMAL) )
+      .forEach( battle -> {
+          if( battle instanceof NonFightingBattle ) {
+            battle.fight(delegateBridge);
+          }
+    });
   }
 
   @Override
