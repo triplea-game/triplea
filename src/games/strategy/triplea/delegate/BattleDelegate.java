@@ -60,6 +60,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToRecordBattleStatistics = true;
   private boolean m_needToCheckDefendingPlanesCanLand = true;
   private boolean m_needToCleanup = true;
+  private boolean m_needToDoRockets = true;
+  private RocketsFireHelper rocketHelper = null;
   protected IBattle m_currentBattle = null;
 
   /**
@@ -80,8 +82,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // only initialize once
     if (m_needToInitialize) {
       doInitialize(m_battleTracker, m_bridge);
+      m_needToDoRockets = true;
       m_needToInitialize = false;
     }
+    // WW2V2/WW2V3, fires at end of combat move - now moved to the start of the BattleDelegate
+    // WW2V1, fires at end of non combat move
+    if (GameStepPropertiesHelper.isFireRockets(getData(),false)) {
+      if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID())) {
+        rocketHelper = new RocketsFireHelper();
+        rocketHelper.findRocketTargets(m_bridge, m_bridge.getPlayerID());
+        m_needToDoRockets = false;
+      }
+    }
+
     // do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
     // the order of all of this stuff matters quite a bit.
     if (m_needToScramble) {
@@ -100,7 +113,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       addBombardmentSources();
       m_needToAddBombardmentSources = false;
     }
+    fightCurrentBattle();
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
+    if (rocketHelper != null) {
+      rocketHelper.fireRockets(m_bridge, m_bridge.getPlayerID());
+      rocketHelper = null;
+    }
   }
 
   /**
@@ -131,6 +149,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_needToRecordBattleStatistics = true;
     m_needToCleanup = true;
     m_needToCheckDefendingPlanesCanLand = true;
+    m_needToDoRockets = true;
   }
 
   @Override
@@ -149,6 +168,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     state.m_needToCheckDefendingPlanesCanLand = m_needToCheckDefendingPlanesCanLand;
     state.m_needToCleanup = m_needToCleanup;
     state.m_currentBattle = m_currentBattle;
+    state.m_needToDoRockets = m_needToDoRockets;
     return state;
   }
 
@@ -165,6 +185,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_needToRecordBattleStatistics = s.m_needToRecordBattleStatistics;
     m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
     m_needToCleanup = s.m_needToCleanup;
+    m_needToDoRockets = s.m_needToDoRockets;
     m_currentBattle = s.m_currentBattle;
   }
 
@@ -1610,5 +1631,7 @@ class BattleExtendedDelegateState implements Serializable {
   boolean m_needToRecordBattleStatistics;
   boolean m_needToCheckDefendingPlanesCanLand;
   boolean m_needToCleanup;
+  boolean m_needToDoRockets;
+  RocketsFireHelper rocketHelper;
   IBattle m_currentBattle;
 }
