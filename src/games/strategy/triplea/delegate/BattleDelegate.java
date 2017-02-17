@@ -114,6 +114,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       m_needToAddBombardmentSources = false;
     }
     fightCurrentBattle();
+    if (rocketHelper != null && !games.strategy.triplea.Properties.getRollRocketsAfterSBR(getData())) {
+      rocketHelper.fireRockets(m_bridge, m_bridge.getPlayerID());
+      rocketHelper = null;
+    }
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
     if (rocketHelper != null) {
       rocketHelper.fireRockets(m_bridge, m_bridge.getPlayerID());
