@@ -38,7 +38,7 @@ import games.strategy.util.Match;
  * Logic to fire rockets.
  */
 public class RocketsFireHelper {
-  private Set<Territory> attackingTerritories = new HashSet<>();
+  private Set<Territory> attackingFromTerritories = new HashSet<>();
   private Map<Territory,Territory> attackedTerritories = new LinkedHashMap<>();
   private Map<Territory,Unit> attackedUnits = new LinkedHashMap<>();
 
@@ -94,7 +94,7 @@ public class RocketsFireHelper {
 
   public void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(bridge.getData());
-    for( final Territory attacker : attackingTerritories ) {
+    for( final Territory attacker : attackingFromTerritories ) {
       // Roll dice for the rocket attack damage and apply it
       fireRocket(player, attackedTerritories.get(attacker), bridge, attacker,
         DamageFromBombingDoneToUnits ? attackedUnits.get(attacker) : null);
@@ -119,7 +119,7 @@ public class RocketsFireHelper {
             new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
         final Collection<Unit> enemyTargetsTotal =
             Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(target).invert());
-        attackingTerritories.add(territory);
+        attackingFromTerritories.add(territory);
         attackedTerritories.put(territory, target);
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
@@ -171,7 +171,7 @@ public class RocketsFireHelper {
     final Territory attacked = getTarget(targets, player, bridge, null);
 
     if (attacked != null) {
-      attackingTerritories.add(null);
+      attackingFromTerritories.add(null);
       attackedTerritories.put(null,attacked);
     }
   }
