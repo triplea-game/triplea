@@ -160,4 +160,8 @@ public class ForumPosterComponent extends JPanel {
     }
     m_historyLog.requestFocus();
   }
+  
+  public boolean getHasPostedTurnSummary() {
+    return m_forumPosterDelegate.getHasPostedTurnSummary();
+  }
 }
