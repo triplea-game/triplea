@@ -1,6 +1,11 @@
 package games.strategy.triplea.ui;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
@@ -20,10 +25,23 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   protected PBEMMessagePoster m_poster;
   protected TripleAFrame m_frame;
   protected ForumPosterComponent m_forumPosterComponent;
+  protected AbstractAction m_doneAction = new AbstractAction("Done") {
+    private static final long serialVersionUID = -5084680807785728744L;
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      if (m_forumPosterComponent.getHasPostedTurnSummary() || JOptionPane.YES_OPTION ==
+          JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(AbstractForumPosterPanel.this),
+          "Are you sure you dont want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
+        release();
+      }
+    }
+  };
 
   public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_actionLabel = new JLabel();
+    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
   }
 
   private int getRound() {
