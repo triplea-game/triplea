@@ -25,14 +25,6 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   protected PBEMMessagePoster m_poster;
   protected TripleAFrame m_frame;
   protected ForumPosterComponent m_forumPosterComponent;
-  protected AbstractAction m_doneAction = SwingAction.of("Done", e -> {
-
-    if (m_forumPosterComponent.getHasPostedTurnSummary() || JOptionPane.YES_OPTION ==
-        JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(AbstractForumPosterPanel.this),
-        "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
-        release();
-    }
-  });
 
   public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
