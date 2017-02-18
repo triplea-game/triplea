@@ -1139,4 +1139,18 @@ public class BattleTracker implements java.io.Serializable {
     return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:"
         + m_foughBattles + "\n" + "Pending:" + m_pendingBattles;
   }
+  
+  /**
+   * @return a collection of territories where strategic bombing raid battles are pending
+   */
+  public Collection<Territory> getPendingSBRSites() {
+    return getPendingBattleSites(true);
+  }
+
+  /**
+   * @return a collection of territories where non strategic bombing raid battles are pending
+   */
+  public Collection<Territory> getPendingNonSBRSites() {
+    return getPendingBattleSites(false);
+  }
 }
