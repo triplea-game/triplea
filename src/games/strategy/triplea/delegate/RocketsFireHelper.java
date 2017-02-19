@@ -113,14 +113,15 @@ public class RocketsFireHelper {
         continue;
       }
       // Ask the user where each rocket launcher should target.
-      final Territory target = getTarget(targets, player, bridge, territory);
-      if (target != null) {
+      while (true) {
+        final Territory target = getTarget(targets, player, bridge, territory);
+        if (target == null) {
+          break;
+        }
         final Collection<Unit> enemyUnits = target.getUnits().getMatches(
             new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
         final Collection<Unit> enemyTargetsTotal =
             Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(target).invert());
-        attackingFromTerritories.add(territory);
-        attackedTerritories.put(territory, target);
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
           final Collection<Unit> rockets = new ArrayList<>(
@@ -143,16 +144,17 @@ public class RocketsFireHelper {
           if (enemyTargets.size() == 1) {
             unitTarget = enemyTargets.iterator().next();
           } else {
-            while (unitTarget == null) {
-              final ITripleAPlayer iplayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
-              unitTarget = iplayer.whatShouldBomberBomb(target, enemyTargets, rockets);
-            }
+            final ITripleAPlayer iplayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
+            unitTarget = iplayer.whatShouldBomberBomb(target, enemyTargets, rockets);
           }
           if (unitTarget == null) {
-            throw new IllegalStateException("No Targets in " + target.getName());
+            continue;
           }
           attackedUnits.put(territory,unitTarget);
         }
+        attackingFromTerritories.add(territory);
+        attackedTerritories.put(territory, target);
+        break;
       }
     }
   }
