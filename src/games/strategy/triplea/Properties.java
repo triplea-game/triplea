@@ -677,5 +677,9 @@ public class Properties implements Constants {
     return data.getProperties().get(CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS, false);
   }
 
+  public static boolean getRollRocketsAfterSBR(final GameData data) {
+    return data.getProperties().get("Roll rocket damage after processing SBR", false);
+  }
+
   private Properties() {}
 }

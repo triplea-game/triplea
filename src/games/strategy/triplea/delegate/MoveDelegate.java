@@ -189,11 +189,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
       removeAirThatCantLand();
     }
 
-    // WW2V2/WW2V3, fires at end of combat move
+    // WW2V2/WW2V3, fires at end of combat move - now moved to the start of the BattleDelegate
     // WW2V1, fires at end of non combat move
-    if (GameStepPropertiesHelper.isFireRockets(data)) {
+    if (GameStepPropertiesHelper.isFireRockets(data,true)) {
       if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID())) {
         final RocketsFireHelper helper = new RocketsFireHelper();
+        helper.findRocketTargets(m_bridge, m_bridge.getPlayerID());
         helper.fireRockets(m_bridge, m_bridge.getPlayerID());
         m_needToDoRockets = false;
       }
