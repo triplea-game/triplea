@@ -32,7 +32,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent e) {
       if (m_forumPosterComponent.getHasPostedTurnSummary() || JOptionPane.YES_OPTION ==
           JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(AbstractForumPosterPanel.this),
-          "Are you sure you dont want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
+          "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
         release();
       }
     }
