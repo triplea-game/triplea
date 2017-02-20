@@ -1458,17 +1458,17 @@
   description: |
     UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
     <br />Objective:
-    <br />	Americans maintain 13 Victory Cities through 12 rounds.
-    <br />	Invader capture and control 18 or more Victory Cities before the end of round 12.
+    <br />  Americans maintain 13 Victory Cities through 12 rounds.
+    <br />  Invader capture and control 18 or more Victory Cities before the end of round 12.
     <br />
     <br />Units:
-    <br />	Militia			(3)5/3/1/-(-)  Americans only. Attacks at 5 unless stacked with no militia units.
-    <br />	Infantry		 3/3/1/3 (24)
-    <br />	Mechanized		 3/3/2/4  (9)
-    <br />	Armor			 5/5/2/5 (12)
-    <br />	Helicopter       5/5/4/8  (9)
-    <br />	Bomber			 7/7/6/12 (6)
-    <br />	Strike			 7/0/99/-/-		Americans only.
+    <br />  Militia      (3)5/3/1/-(-)  Americans only. Attacks at 5 unless stacked with no militia units.
+    <br />  Infantry     3/3/1/3 (24)
+    <br />  Mechanized     3/3/2/4  (9)
+    <br />  Armor       5/5/2/5 (12)
+    <br />  Helicopter       5/5/4/8  (9)
+    <br />  Bomber       7/7/6/12 (6)
+    <br />  Strike       7/0/99/-/-    Americans only.
 - mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
