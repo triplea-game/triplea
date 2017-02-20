@@ -36,18 +36,9 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-sourceSets {
-	main {
-		java { srcDir 'src' }
-		resources { srcDir 'data' }
-	}
-	test {
-		java { srcDirs 'test' }
-	}
-}
 
 checkstyle{
-	configFile = rootProject.file('google_checks.xml')
+	configFile = rootProject.file('gradle/google_checks.xml')
 	toolVersion = "7.1"
 	showViolations = false
 }
