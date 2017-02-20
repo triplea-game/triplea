@@ -23,10 +23,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 
@@ -128,6 +133,13 @@ public class UserActionPanel extends ActionPanel {
                   + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
+
+      final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
+          getResourcesSpendableOnUserActionsForPlayer(getCurrentPlayer())));
+      userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      ++row;
+
       final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
         private static final long serialVersionUID = -807175594221278068L;
 
@@ -147,6 +159,20 @@ public class UserActionPanel extends ActionPanel {
       userChoiceDialog.dispose();
     }
   };
+
+  @VisibleForTesting
+  static ResourceCollection getResourcesSpendableOnUserActionsForPlayer(final PlayerID player) {
+    final GameData data = player.getData();
+    data.acquireReadLock();
+    try {
+      final ResourceCollection resources = new ResourceCollection(data);
+      final Resource pus = data.getResourceList().getResource(Constants.PUS);
+      resources.addResource(pus, player.getResources().getQuantity(pus));
+      return resources;
+    } finally {
+      data.releaseReadLock();
+    }
+  }
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
     final JPanel userActionButtonPanel = new JPanel();
