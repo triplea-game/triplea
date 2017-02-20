@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +47,7 @@ public class UserActionPanel extends ActionPanel {
   private UserActionAttachment m_choice = null;
   private final TripleAFrame m_parent;
   private boolean m_firstRun = true;
-  protected List<UserActionAttachment> m_validUserActions = null;
+  private List<UserActionAttachment> m_validUserActions = Collections.emptyList();
 
   public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
@@ -134,11 +135,13 @@ public class UserActionPanel extends ActionPanel {
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
 
-      final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
-          getResourcesSpendableOnUserActionsForPlayer(getCurrentPlayer())));
-      userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.HORIZONTAL, insets, 0, 0));
-      ++row;
+      if (canSpendResourcesOnUserActions(m_validUserActions)) {
+        final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
+            getResourcesSpendableOnUserActionsForPlayer(getCurrentPlayer())));
+        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, insets, 0, 0));
+        ++row;
+      }
 
       final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
         private static final long serialVersionUID = -807175594221278068L;
@@ -159,6 +162,11 @@ public class UserActionPanel extends ActionPanel {
       userChoiceDialog.dispose();
     }
   };
+
+  @VisibleForTesting
+  static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
+    return userActions.stream().anyMatch(userAction -> userAction.getCostPU() > 0);
+  }
 
   @VisibleForTesting
   static ResourceCollection getResourcesSpendableOnUserActionsForPlayer(final PlayerID player) {
@@ -186,7 +194,7 @@ public class UserActionPanel extends ActionPanel {
       button.addActionListener(ae -> {
         m_selectUserActionButton.setEnabled(false);
         m_doneButton.setEnabled(false);
-        m_validUserActions = null;
+        m_validUserActions = Collections.emptyList();
         m_choice = uaa;
         parent.setVisible(false);
         release();
