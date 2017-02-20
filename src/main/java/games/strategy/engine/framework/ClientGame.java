@@ -129,7 +129,9 @@ public class ClientGame extends AbstractGame {
           } finally {
             m_data.releaseReadLock();
           }
-          ThreadUtil.sleep(100);
+          if(!ThreadUtil.sleep(100)) {
+            break;
+          }
           i++;
           if (i > 300 && !shownErrorMessage) {
             System.err.println("Waited more than 30 seconds for step to update. Something wrong.");

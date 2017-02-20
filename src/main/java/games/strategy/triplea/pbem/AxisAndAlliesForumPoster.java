@@ -177,7 +177,9 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               + m_topicId + ".0;num_replies=" + numReplies);
           httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
-          ThreadUtil.sleep(15 * 1000);
+          if(!ThreadUtil.sleep(15 * 1000)) {
+            return false;
+          }
           httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
           HttpProxy.addProxy(httpPost);
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {

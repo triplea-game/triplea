@@ -1,30 +1,46 @@
 package games.strategy.thread;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import games.strategy.thread.LockUtil.ErrorReporter;
+@RunWith(MockitoJUnitRunner.class)
+public final class LockUtilTest {
+  private final LockUtil lockUtil = LockUtil.INSTANCE;
 
-public class LockUtilTest {
-  private static final LockUtil S_LOCKUTIL = new LockUtil();
-  private final TestErrorReporter m_reporter = new TestErrorReporter();
+  @Mock
+  private LockUtil.ErrorReporter errorReporter;
+
+  private LockUtil.ErrorReporter oldErrorReporter;
 
   @Before
   public void setUp() {
-    S_LOCKUTIL.setErrorReporter(m_reporter);
+    oldErrorReporter = lockUtil.setErrorReporter(errorReporter);
+  }
+
+  @After
+  public void tearDown() {
+    lockUtil.setErrorReporter(oldErrorReporter);
   }
 
   @Test
   public void testEmpty() {
-    assertFalse(S_LOCKUTIL.isLockHeld(new ReentrantLock()));
+    assertFalse(lockUtil.isLockHeld(new ReentrantLock()));
   }
 
   @Test
@@ -34,19 +50,19 @@ public class LockUtilTest {
       locks.add(new ReentrantLock());
     }
     for (final Lock l : locks) {
-      S_LOCKUTIL.acquireLock(l);
-      assertTrue(S_LOCKUTIL.isLockHeld(l));
+      lockUtil.acquireLock(l);
+      assertTrue(lockUtil.isLockHeld(l));
     }
     for (final Lock l : locks) {
-      S_LOCKUTIL.releaseLock(l);
-      assertFalse(S_LOCKUTIL.isLockHeld(l));
+      lockUtil.releaseLock(l);
+      assertFalse(lockUtil.isLockHeld(l));
     }
-    assertFalse(m_reporter.errorOccured());
+    assertNoErrorOccurred();
     // repeat the sequence, make sure no errors
     for (final Lock l : locks) {
-      S_LOCKUTIL.acquireLock(l);
+      lockUtil.acquireLock(l);
     }
-    assertFalse(m_reporter.errorOccured());
+    assertNoErrorOccurred();
   }
 
   @Test
@@ -54,40 +70,34 @@ public class LockUtilTest {
     final Lock l1 = new ReentrantLock();
     final Lock l2 = new ReentrantLock();
     // acquire in the correct order
-    S_LOCKUTIL.acquireLock(l1);
-    S_LOCKUTIL.acquireLock(l2);
+    lockUtil.acquireLock(l1);
+    lockUtil.acquireLock(l2);
     // release
-    S_LOCKUTIL.releaseLock(l2);
-    S_LOCKUTIL.releaseLock(l1);
-    assertFalse(m_reporter.errorOccured());
+    lockUtil.releaseLock(l2);
+    lockUtil.releaseLock(l1);
+    assertNoErrorOccurred();
     // acquire locks in the wrong order
-    S_LOCKUTIL.acquireLock(l2);
-    S_LOCKUTIL.acquireLock(l1);
-    assertTrue(m_reporter.errorOccured());
+    lockUtil.acquireLock(l2);
+    lockUtil.acquireLock(l1);
+    assertErrorOccurred();
   }
 
   @Test
   public void testAcquireTwice() {
     final ReentrantLock l1 = new ReentrantLock();
-    S_LOCKUTIL.acquireLock(l1);
-    S_LOCKUTIL.acquireLock(l1);
-    S_LOCKUTIL.releaseLock(l1);
-    S_LOCKUTIL.releaseLock(l1);
-    assertTrue(l1.getHoldCount() == 0);
-    assertFalse(S_LOCKUTIL.isLockHeld(l1));
-  }
-}
-
-
-class TestErrorReporter extends ErrorReporter {
-  private boolean m_errorOccured = false;
-
-  @Override
-  public void reportError(final Lock from, final Lock to) {
-    m_errorOccured = true;
+    lockUtil.acquireLock(l1);
+    lockUtil.acquireLock(l1);
+    lockUtil.releaseLock(l1);
+    lockUtil.releaseLock(l1);
+    assertEquals(0, l1.getHoldCount());
+    assertFalse(lockUtil.isLockHeld(l1));
   }
 
-  public boolean errorOccured() {
-    return m_errorOccured;
+  private void assertErrorOccurred() {
+    verify(errorReporter).reportError(isA(Lock.class), isA(Lock.class));
+  }
+
+  private void assertNoErrorOccurred() {
+    verify(errorReporter, never()).reportError(isA(Lock.class), isA(Lock.class));
   }
 }

@@ -27,11 +27,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TestRoute {
-  private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer());
   private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
+  private final MapData dummyMapData = mock(MapData.class);
+  private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
   private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
   private final Route dummyRoute = spy(new Route());
-  private final MapData dummyMapData = mock(MapData.class);
   private final RouteDescription dummyRouteDescription =
       spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
 
@@ -78,6 +78,7 @@ public class TestRoute {
   @Test
   public void testCorrectParameterHandling() {
     final MapPanel mockedMapPanel = mock(MapPanel.class);
+    MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);
@@ -87,7 +88,7 @@ public class TestRoute {
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
     when(mockGraphics.getClip()).thenReturn(mockShape);
-    spyRouteDrawer.drawRoute(mockGraphics, dummyRouteDescription, mockedMapPanel, dummyMapData, "2");
+    routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2");
     verify(mockGraphics, atLeastOnce()).draw(any(Line2D.class));
     verify(mockedMapPanel).getXOffset();// Those methods are needed
     verify(mockedMapPanel).getYOffset();

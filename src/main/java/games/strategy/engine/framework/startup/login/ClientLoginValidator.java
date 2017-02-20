@@ -99,7 +99,8 @@ public class ClientLoginValidator implements ILoginValidator {
       if (!readPassword.equals(MD5Crypt.crypt(m_password, propertiesSentToClient.get(SALT_PROPERTY)))) {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
-        ThreadUtil.sleep((int) (4000 * Math.random()));
+        // TODO: verify this prevention, does this protect against parallel connections?
+        ThreadUtil.sleep(4000 * Math.random()); // usage of sleep is okay.
         return "Invalid password";
       }
     }

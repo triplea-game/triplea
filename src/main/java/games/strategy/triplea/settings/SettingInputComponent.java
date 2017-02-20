@@ -19,6 +19,14 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
   String getDescription();
 
   /**
+   * Gets a description of the permissible range of values for the setting.
+   *
+   * @return A description of the permissible range of values for the setting or an empty string if the setting does not
+   *         enforce a value range; never {@code null}.
+   */
+  String getValueRangeDescription();
+
+  /**
    * @return The settings input object used to read user input from a Swing component.
    */
   SettingsInput getInputElement();
