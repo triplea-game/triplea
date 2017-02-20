@@ -50,14 +50,6 @@ public class ProLogger {
    * Just keep these things in mind while adding new logging code.
    */
   public static void log(final Level level, final String message, final Throwable t) {
-
-    // We always log to the AI logger, though it only shows up if the developer has the logger enabled in
-    // logging.properties
-    if (t == null) {
-      ProAI.getLogger().log(level, addIndentationCompensation(message, level));
-    } else {
-      ProAI.getLogger().log(level, addIndentationCompensation(message, level), t);
-    }
     if (!ProLogSettings.loadSettings().EnableAILogging) {
       return; // Skip displaying to settings window if settings window option is turned off
     }

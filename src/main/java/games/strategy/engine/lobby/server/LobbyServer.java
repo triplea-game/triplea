@@ -73,7 +73,7 @@ public class LobbyServer {
   }
 
   private static void setUpLogging() {
-    // setup logging to read our logging.properties
+    // setup logging to read our server-logging.properties
     try {
       LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("server-logging.properties"));
     } catch (final Exception e) {
