@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.Util;
