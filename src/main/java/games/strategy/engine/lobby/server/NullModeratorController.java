@@ -97,10 +97,6 @@ public class NullModeratorController extends AbstractModeratorController {
     // nothing
   }
 
-  void assertUserIsAdmin() {
-    throw new IllegalStateException("Not an admin");
-  }
-
   @Override
   public boolean isAdmin() {
     return false;

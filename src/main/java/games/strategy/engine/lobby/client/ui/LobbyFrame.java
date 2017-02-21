@@ -111,14 +111,9 @@ public class LobbyFrame extends JFrame {
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
       final List<String> banTypes = new ArrayList<>();
-      // too many choices is confusing our mods, just give them 3 choices: name, everything, or cancel.
-      // banTypes.add("IP Address");
-      // banTypes.add("Mac Address");
-      banTypes.add("Username only");
-      // banTypes.add("IP, Mac");
-      // banTypes.add("Name, IP");
-      // banTypes.add("Name, Mac");
-      banTypes.add("Name, IP, Mac");
+      banTypes.add("Name Only");
+      banTypes.add("Mac Address Only");
+      banTypes.add("Name and Mac");
       banTypes.add("Cancel");
       final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
@@ -154,9 +149,6 @@ public class LobbyFrame extends JFrame {
         if (selectedBanType.toLowerCase().contains("name")) {
           controller.banUsername(clickedOn, null);
         }
-        if (selectedBanType.toLowerCase().contains("ip")) {
-          controller.banIp(clickedOn, null);
-        }
         if (selectedBanType.toLowerCase().contains("mac")) {
           controller.banMac(clickedOn, null);
         }
@@ -191,9 +183,6 @@ public class LobbyFrame extends JFrame {
       if (selectedBanType.toLowerCase().contains("name")) {
         controller.banUsername(clickedOn, new Date(expire));
       }
-      if (selectedBanType.toLowerCase().contains("ip")) {
-        controller.banIp(clickedOn, new Date(expire));
-      }
       if (selectedBanType.toLowerCase().contains("mac")) {
         controller.banMac(clickedOn, new Date(expire));
       }
@@ -202,14 +191,9 @@ public class LobbyFrame extends JFrame {
     }));
     rVal.add(SwingAction.of("Mute Player", e -> {
       final List<String> muteTypes = new ArrayList<>();
-      // too many choices is confusing our mods, just give them 3 choices: name, everything, or cancel.
-      // muteTypes.add("IP Address");
-      // muteTypes.add("Mac Address");
+      muteTypes.add("Mac Address");
       muteTypes.add("Username only");
-      // muteTypes.add("IP, Mac");
-      // muteTypes.add("Name, IP");
-      // muteTypes.add("Name, Mac");
-      muteTypes.add("Name, IP, Mac");
+      muteTypes.add("Name + Mac");
       muteTypes.add("Cancel");
       final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
@@ -245,9 +229,6 @@ public class LobbyFrame extends JFrame {
         if (selectedMuteType.toLowerCase().contains("name")) {
           controller.muteUsername(clickedOn, null);
         }
-        if (selectedMuteType.toLowerCase().contains("ip")) {
-          controller.muteIp(clickedOn, null);
-        }
         if (selectedMuteType.toLowerCase().contains("mac")) {
           controller.muteMac(clickedOn, null);
         }
@@ -280,9 +261,6 @@ public class LobbyFrame extends JFrame {
       if (selectedMuteType.toLowerCase().contains("name")) {
         controller.muteUsername(clickedOn, new Date(expire));
       }
-      if (selectedMuteType.toLowerCase().contains("ip")) {
-        controller.muteIp(clickedOn, new Date(expire));
-      }
       if (selectedMuteType.toLowerCase().contains("mac")) {
         controller.muteMac(clickedOn, new Date(expire));
       }
@@ -307,7 +285,6 @@ public class LobbyFrame extends JFrame {
         final long ticks = resultML * 1000 * 60;
         final long expire = System.currentTimeMillis() + ticks;
         controller.muteUsername(clickedOn, new Date(expire));
-        controller.muteIp(clickedOn, new Date(expire));
         controller.muteMac(clickedOn, new Date(expire));
       }
     }));
@@ -317,16 +294,6 @@ public class LobbyFrame extends JFrame {
       textPane.setEditable(false);
       textPane.setText(text);
       JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
-    }));
-    rVal.add(SwingAction.of("Reset password", e -> {
-      final String newPassword =
-          JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
-      if (newPassword == null || newPassword.length() < 2) {
-        return;
-      }
-      final String error = controller.setPassword(clickedOn, MD5Crypt.crypt(newPassword));
-      final String msg = error == null ? "Password set" : error;
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), msg);
     }));
     return rVal;
 

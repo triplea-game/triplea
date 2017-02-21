@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
@@ -83,11 +82,6 @@ public class LobbyLoginValidator implements ILoginValidator {
       if (clientName.toLowerCase().contains(s.toLowerCase())) {
         return THATS_NOT_A_NICE_NAME;
       }
-    }
-    final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-    final Tuple<Boolean, Timestamp> ipBanned = new BannedIpController().isIpBanned(remoteIp);
-    if (ipBanned.getFirst()) {
-      return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(ipBanned.getSecond());
     }
     if (hashedMac == null) {
       return UNABLE_TO_OBTAIN_MAC;
