@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
