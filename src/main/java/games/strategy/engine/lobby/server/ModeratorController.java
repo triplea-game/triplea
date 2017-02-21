@@ -1,13 +1,9 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.Date;
-
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.lobby.server.userDB.MutedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.MessageContext;
@@ -16,6 +12,8 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.MD5Crypt;
+
+import java.util.Date;
 
 public class ModeratorController extends AbstractModeratorController {
   public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
@@ -40,18 +38,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public void banIp(final INode node, final Date banExpires) {
-    assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't ban an admin");
-    }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
-    final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
-    s_logger.info(String.format(
-        "User was banned from the lobby(IP ban). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+    // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
@@ -105,20 +92,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public void muteIp(final INode node, final Date muteExpires) {
-    assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't mute an admin");
-    }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    final String ip = node.getAddress().getHostAddress();
-    new MutedIpController().addMutedIp(ip, muteExpires);
-    m_serverMessenger.NotifyIPMutingOfPlayer(ip, muteExpires);
-    final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
-    s_logger.info(String.format(
-        "User was muted on the lobby(IP mute). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+    // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
@@ -141,11 +115,6 @@ public class ModeratorController extends AbstractModeratorController {
   @Override
   public void boot(final INode node) {
     assertUserIsAdmin();
-    /*
-     * if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby
-     * administrator boot admins
-     * throw new IllegalStateException("Can't boot an admin");
-     */
     // You can't boot the server node
     if (m_serverMessenger.getServerNode().equals(node)) {
       throw new IllegalStateException("Cannot boot server node");
@@ -360,17 +329,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public String setPassword(final INode node, final String hashedPassword) {
-    assertUserIsAdmin();
-    final DBUserController controller = new DBUserController();
-    final DBUser user = controller.getUser(getRealName(node));
-    if (user == null) {
-      return "Can't set the password of an anonymous player";
-    }
-    // Don't allow changing an admin password
-    if (user.isAdmin()) {
-      return "Can't set the password of an admin";
-    }
-    controller.updateUser(user.getName(), user.getEmail(), hashedPassword, user.isAdmin());
-    return null;
+    // TODO: remove once we confirm no backwards compat issues
+    return "";
   }
 }
