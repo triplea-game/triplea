@@ -28,8 +28,8 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.ResourceList;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -170,16 +170,19 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static ResourceCollection getResourcesSpendableOnUserActionsForPlayer(final PlayerID player) {
+    final ResourceCollection playerResources = new ResourceCollection(player.getResources());
+
     final GameData data = player.getData();
     data.acquireReadLock();
     try {
-      final ResourceCollection resources = new ResourceCollection(data);
-      final Resource pus = data.getResourceList().getResource(Constants.PUS);
-      resources.addResource(pus, player.getResources().getQuantity(pus));
-      return resources;
+      final ResourceList gameResources = data.getResourceList();
+      playerResources.removeAllOfResource(gameResources.getResource(Constants.TECH_TOKENS));
+      playerResources.removeAllOfResource(gameResources.getResource(Constants.VPS));
     } finally {
       data.releaseReadLock();
     }
+
+    return playerResources;
   }
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {

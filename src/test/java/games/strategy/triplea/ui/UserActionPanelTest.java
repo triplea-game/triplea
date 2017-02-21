@@ -61,19 +61,30 @@ public final class UserActionPanelTest {
   }
 
   @Test
-  public void testGetResourcesSpendableOnUserActionsForPlayer_ShouldReturnOnlyPUResources() throws Exception {
+  public void testGetResourcesSpendableOnUserActionsForPlayer_ShouldExcludeTechTokensAndVPs() {
     final GameData data = mock(GameData.class);
-    final ResourceList gameResources = mock(ResourceList.class);
-    when(data.getResourceList()).thenReturn(gameResources);
     final Resource gold = new Resource("gold", data);
     final Resource pus = new Resource(Constants.PUS, data);
-    when(gameResources.getResource(pus.getName())).thenReturn(pus);
+    final Resource techTokens = new Resource(Constants.TECH_TOKENS, data);
+    final Resource vps = new Resource(Constants.VPS, data);
+    final ResourceList gameResources = createGameResources(gold, pus, techTokens, vps);
+    when(data.getResourceList()).thenReturn(gameResources);
     final PlayerID player = new PlayerID("player", data);
-    player.getResources().add(new IntegerMap<>(Arrays.asList(gold, pus), 42));
+    player.getResources().add(new IntegerMap<>(Arrays.asList(gold, pus, techTokens, vps), 42));
 
     final ResourceCollection playerResources = UserActionPanel.getResourcesSpendableOnUserActionsForPlayer(player);
 
-    assertThat(playerResources.getQuantity(gold), is(0));
+    assertThat(playerResources.getQuantity(gold), is(42));
     assertThat(playerResources.getQuantity(pus), is(42));
+    assertThat(playerResources.getQuantity(techTokens), is(0));
+    assertThat(playerResources.getQuantity(vps), is(0));
+  }
+
+  private static ResourceList createGameResources(final Resource... resources) {
+    final ResourceList gameResources = mock(ResourceList.class);
+    for (final Resource resource : resources) {
+      when(gameResources.getResource(resource.getName())).thenReturn(resource);
+    }
+    return gameResources;
   }
 }
