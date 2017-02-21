@@ -1,25 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
-import javax.swing.SpinnerNumberModel;
-
+import com.google.common.collect.ImmutableList;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -35,10 +16,35 @@ import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.MD5Crypt;
+
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
+
+  private static final List<String> banOrMuteOptions = ImmutableList.of(
+    "Mac Address Only",
+    "User Name only",
+    "Name and Mac",
+    "Cancel");
+
   private final LobbyClient m_client;
   private final ChatMessagePanel m_chatMessagePanel;
 
@@ -49,7 +55,7 @@ public class LobbyFrame extends JFrame {
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
-        m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
+      m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(props);
     m_chatMessagePanel.setShowTime(true);
@@ -110,19 +116,14 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
-      final List<String> banTypes = new ArrayList<>();
-      banTypes.add("Name Only");
-      banTypes.add("Mac Address Only");
-      banTypes.add("Name and Mac");
-      banTypes.add("Cancel");
       final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
-          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(),
-          banTypes.toArray()[banTypes.size() - 1]);
+        "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
+        "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
+        banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultBT < 0) {
         return;
       }
-      final String selectedBanType = (String) banTypes.toArray()[resultBT];
+      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBT];
       if (selectedBanType.equals("Cancel")) {
         return;
       }
@@ -142,7 +143,7 @@ public class LobbyFrame extends JFrame {
         return;
       }
       final String selectedTimeUnit = (String) timeUnits.toArray()[resultTU];
-      if (selectedTimeUnit.equals("Cancel")) {
+      if (selectedTimeUnit.equalsIgnoreCase("Cancel")) {
         return;
       }
       if (selectedTimeUnit.equals("Forever")) {
@@ -189,20 +190,17 @@ public class LobbyFrame extends JFrame {
       // Should we keep this auto?
       controller.boot(clickedOn);
     }));
+
+
     rVal.add(SwingAction.of("Mute Player", e -> {
-      final List<String> muteTypes = new ArrayList<>();
-      muteTypes.add("Mac Address");
-      muteTypes.add("Username only");
-      muteTypes.add("Name + Mac");
-      muteTypes.add("Cancel");
       final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
-          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(),
-          muteTypes.toArray()[muteTypes.size() - 1]);
+          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
+          banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultMT < 0) {
         return;
       }
-      final String selectedMuteType = (String) muteTypes.toArray()[resultMT];
+      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMT];
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
