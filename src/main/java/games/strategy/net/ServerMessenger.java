@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.MutedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
@@ -217,24 +216,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private final List<String> m_liveMutedIpAddresses = new ArrayList<>();
-
-  public boolean IsIpMuted(final String ip) {
-    synchronized (m_cachedListLock) {
-      return m_liveMutedIpAddresses.contains(ip);
-    }
-  }
-
   @Override
   public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {
-    synchronized (m_cachedListLock) {
-      if (!m_liveMutedIpAddresses.contains(ip)) {
-        m_liveMutedIpAddresses.add(ip);
-      }
-      if (muteExpires != null) {
-        ScheduleIpUnmuteAt(ip, muteExpires.getTime());
-      }
-    }
+    // TODO: remove if no backwards compat issues
   }
 
   private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
@@ -262,16 +246,12 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), new Date(checkTime));
   }
 
-  private void ScheduleIpUnmuteAt(final String ip, final long checkTime) {
-    final Timer unmuteIpTimer = new Timer("IP unmute timer");
-    unmuteIpTimer.schedule(getIpUnmuteTask(ip), new Date(checkTime));
-  }
-
   private void ScheduleMacUnmuteAt(final String mac, final long checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
     unmuteMacTimer.schedule(getMacUnmuteTask(mac), new Date(checkTime));
   }
 
+  // TODO: remove 'ip' parameter if can confirm no backwards compat issues
   public void NotifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
     synchronized (m_cachedListLock) {
       m_cachedMacAddresses.put(uniquePlayerName, mac);
@@ -283,14 +263,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
             // Signal the player as muted
             m_liveMutedUsernames.add(realName);
             ScheduleUsernameUnmuteAt(realName, muteTill);
-          }
-        }
-        if (!m_liveMutedIpAddresses.contains(ip)) {
-          final long muteTill = new MutedIpController().getIpUnmuteTime(ip);
-          if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            // Signal the player as muted
-            m_liveMutedIpAddresses.add(ip);
-            ScheduleIpUnmuteAt(ip, muteTill);
           }
         }
         if (!m_liveMutedMacAddresses.contains(mac)) {
@@ -341,9 +313,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         if (IsUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
-        } else if (IsIpMuted(msg.getFrom().getAddress().getHostAddress())) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
-          return;
         } else if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
@@ -352,9 +321,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
         if (IsUsernameMuted(realName)) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
-          return;
-        } else if (IsIpMuted(msg.getFrom().getAddress().getHostAddress())) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
@@ -680,12 +646,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         }
       }
     };
-  }
-
-  private TimerTask getIpUnmuteTask(final String ip) {
-    return createUnmuteTimerTask(
-        () -> (isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame()),
-        () -> m_liveMutedIpAddresses.remove(ip));
   }
 
   private TimerTask getMacUnmuteTask(final String mac) {

@@ -20,7 +20,9 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Ban the ip of the given INode.
+   * @deprecated Remove usages of this, banUserName and banMac are sufficient
    */
+  @Deprecated
   void banIp(INode node, Date banExpires);
 
   /**
@@ -40,7 +42,9 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Mute the ip of the given INode.
+   * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
    */
+  @Deprecated
   void muteIp(INode node, Date muteExpires);
 
   /**
@@ -95,7 +99,10 @@ public interface IModeratorController extends IRemote {
    * <p>
    * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.
    * <p>
+   *   @deprecated Remove usages of this. Does not make sense for moderators to be able to reset passwords of logged
+   *   in users.
    */
+  @Deprecated
   String setPassword(INode node, String hashedPassword);
 
   String getInformationOn(INode node);

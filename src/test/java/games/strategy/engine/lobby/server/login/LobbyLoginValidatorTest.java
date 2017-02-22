@@ -1,26 +1,21 @@
 package games.strategy.engine.lobby.server.login;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
+import org.junit.Test;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class LobbyLoginValidatorTest {
 
@@ -110,19 +105,5 @@ public class LobbyLoginValidatorTest {
     // with a non existent user
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties,
         Util.createUniqueTimeStamp(), mac, address));
-  }
-
-  @Test
-  public void testAnonymousLoginBadIp() throws UnknownHostException {
-    final LobbyLoginValidator validator = new LobbyLoginValidator();
-    new BannedIpController().addBannedIp("1.1.1.1");
-    final SocketAddress address = new InetSocketAddress(InetAddress.getByAddress(new byte[] {1, 1, 1, 1}), 5000);
-    final String name = "name" + Util.createUniqueTimeStamp();
-    final String mac = MacFinder.getHashedMacAddress();
-    final Map<String, String> properties = new HashMap<>();
-    properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-    properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    assertTrue((new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,
-        name, mac, address)).indexOf(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED) != -1);
   }
 }

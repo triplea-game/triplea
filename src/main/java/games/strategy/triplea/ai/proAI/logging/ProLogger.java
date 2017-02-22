@@ -2,8 +2,6 @@ package games.strategy.triplea.ai.proAI.logging;
 
 import java.util.logging.Level;
 
-import games.strategy.triplea.ai.proAI.ProAI;
-
 /**
  * Class to log messages to log window and console.
  */
