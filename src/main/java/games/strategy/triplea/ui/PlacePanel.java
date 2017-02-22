@@ -88,9 +88,7 @@ public class PlacePanel extends AbstractMovePanel {
       final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), getData(),
           false, getMap().getUIContext());
       final String messageText = "Place units in " + territory.getName();
-      if (maxUnits[0] > 0) {
-        chooser.setMaxAndShowMaxButton(maxUnits[0]);
-      }
+      chooser.setMaxAndShowMaxButton(maxUnits[0]);
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 40;
