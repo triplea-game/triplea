@@ -20,7 +20,7 @@ import games.strategy.util.Match;
  * AI will not go through a different Neutral state to reach a War state. (ie go
  * from NAP to Peace to War)
  */
-public class BasicPoliticalAI {
+public class AIPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
