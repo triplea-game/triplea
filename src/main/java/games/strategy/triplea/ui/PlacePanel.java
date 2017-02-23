@@ -49,8 +49,8 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   private void refreshActionLabelText(final boolean bid) {
-    SwingUtilities.invokeLater(
-        () -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
+    SwingUtilities
+        .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
   public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
@@ -85,10 +85,10 @@ public class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return;
       }
-      final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), getData(),
-          false, getMap().getUIContext());
+      final UnitChooser chooser =
+          new UnitChooser(units, Collections.emptyMap(), getData(), false, getMap().getUIContext());
       final String messageText = "Place units in " + territory.getName();
-      if (maxUnits[0] > 0) {
+      if (maxUnits[0] >= 0) {
         chooser.setMaxAndShowMaxButton(maxUnits[0]);
       }
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
