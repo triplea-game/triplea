@@ -23,27 +23,6 @@ import games.strategy.util.Match;
  * Handy utility methods for the writers of an AI.
  */
 public class AIUtils {
-  /**
-   * How many PU's does it cost the given player to produce the given unit type.
-   * <p>
-   * If the player cannot produce the given unit, return Integer.MAX_VALUE
-   * <p>
-   */
-  public static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
-    if (unitType == null) {
-      throw new IllegalArgumentException("null unit type");
-    }
-    if (player == null) {
-      throw new IllegalArgumentException("null player id");
-    }
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final ProductionRule rule = getProductionRule(unitType, player, data);
-    if (rule == null) {
-      return Integer.MAX_VALUE;
-    } else {
-      return rule.getCosts().getInt(PUs);
-    }
-  }
 
   /**
    * @return a comparator that sorts cheaper units before expensive ones
@@ -54,17 +33,27 @@ public class AIUtils {
   }
 
   /**
+   * How many PU's does it cost the given player to produce the given unit type.
+   * <p>
+   * If the player cannot produce the given unit, return Integer.MAX_VALUE
+   * <p>
+   */
+  private static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
+    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+    final ProductionRule rule = getProductionRule(unitType, player, data);
+    if (rule == null) {
+      return Integer.MAX_VALUE;
+    } else {
+      return rule.getCosts().getInt(PUs);
+    }
+  }
+
+  /**
    * Get the production rule for the given player, for the given unit type.
    * <p>
    * If no such rule can be found, then return null.
    */
-  public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data) {
-    if (unitType == null) {
-      throw new IllegalArgumentException("null unit type");
-    }
-    if (player == null) {
-      throw new IllegalArgumentException("null player id");
-    }
+  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;
@@ -79,7 +68,6 @@ public class AIUtils {
 
   /**
    * Get a quick and dirty estimate of the strength of some units in a battle.
-   * <p>
    *
    * @param units
    *        - the units to measure
