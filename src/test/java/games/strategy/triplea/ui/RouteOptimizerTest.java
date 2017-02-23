@@ -19,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestRouteOptimizer {
+public class RouteOptimizerTest {
 
   @Mock
   private MapPanel mapPanel;
