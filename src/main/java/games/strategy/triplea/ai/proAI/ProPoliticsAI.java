@@ -11,7 +11,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ai.BasicPoliticalAI;
+import games.strategy.triplea.ai.AIPoliticalUtils;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritoryManager;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
@@ -48,7 +48,7 @@ public class ProPoliticsAI {
 
     // Find valid war actions
     final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-        BasicPoliticalAI.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
+        AIPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
         Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<>(
@@ -139,7 +139,7 @@ public class ProPoliticsAI {
     // Old code used for non-war actions
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
-          BasicPoliticalAI.getPoliticalActionsOther(player, politicsDelegate.getTestedConditions(), data);
+          AIPoliticalUtils.getPoliticalActionsOther(player, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
