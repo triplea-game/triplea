@@ -191,6 +191,7 @@ public class UserActionPanel extends ActionPanel {
     int row = 0;
     final Insets insets = new Insets(1, 1, 1, 1);
     for (final UserActionAttachment uaa : m_validUserActions) {
+      final boolean canPlayerAffordUserAction = canPlayerAffordUserAction(getCurrentPlayer(), uaa);
       userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(uaa));
@@ -202,13 +203,21 @@ public class UserActionPanel extends ActionPanel {
         parent.setVisible(false);
         release();
       });
+      button.setEnabled(canPlayerAffordUserAction);
       userActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, insets, 0, 0));
-      userActionButtonPanel.add(getActionDescriptionLabel(uaa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
+      final JLabel descriptionLabel = getActionDescriptionLabel(uaa);
+      descriptionLabel.setEnabled(canPlayerAffordUserAction);
+      userActionButtonPanel.add(descriptionLabel, new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       row++;
     }
     return userActionButtonPanel;
+  }
+
+  @VisibleForTesting
+  static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
+    return userAction.getCostPU() <= player.getResources().getQuantity(Constants.PUS);
   }
 
   /**
