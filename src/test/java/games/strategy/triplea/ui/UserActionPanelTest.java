@@ -20,7 +20,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -139,19 +138,5 @@ public final class UserActionPanelTest {
     final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
     assertThat(canSpendResources, is(true));
-  }
-
-  @Test
-  public void testGetResourcesSpendableOnUserActionsForPlayer_ShouldExcludeTechTokensAndVPs() {
-    final Resource gold = createResource("gold");
-    setGameResources(gold, pus, techTokens, vps);
-    final PlayerID player = createPlayerWithResources(gold, pus, techTokens, vps);
-
-    final ResourceCollection spendableResources = UserActionPanel.getResourcesSpendableOnUserActionsForPlayer(player);
-
-    assertThat(spendableResources.getQuantity(gold), is(player.getResources().getQuantity(gold)));
-    assertThat(spendableResources.getQuantity(pus), is(player.getResources().getQuantity(pus)));
-    assertThat(spendableResources.getQuantity(techTokens), is(0));
-    assertThat(spendableResources.getQuantity(vps), is(0));
   }
 }

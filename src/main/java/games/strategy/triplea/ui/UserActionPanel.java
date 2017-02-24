@@ -28,8 +28,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.ResourceList;
+import games.strategy.engine.data.ResourceCollections;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -137,7 +136,7 @@ public class UserActionPanel extends ActionPanel {
 
       if (canSpendResourcesOnUserActions(m_validUserActions)) {
         final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
-            getResourcesSpendableOnUserActionsForPlayer(getCurrentPlayer())));
+            ResourceCollections.pickProductionResources(getCurrentPlayer().getResources())));
         userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, insets, 0, 0));
         ++row;
@@ -166,23 +165,6 @@ public class UserActionPanel extends ActionPanel {
   @VisibleForTesting
   static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
     return userActions.stream().anyMatch(userAction -> userAction.getCostPU() > 0);
-  }
-
-  @VisibleForTesting
-  static ResourceCollection getResourcesSpendableOnUserActionsForPlayer(final PlayerID player) {
-    final ResourceCollection playerResources = new ResourceCollection(player.getResources());
-
-    final GameData data = player.getData();
-    data.acquireReadLock();
-    try {
-      final ResourceList gameResources = data.getResourceList();
-      playerResources.removeAllOfResource(gameResources.getResource(Constants.TECH_TOKENS));
-      playerResources.removeAllOfResource(gameResources.getResource(Constants.VPS));
-    } finally {
-      data.releaseReadLock();
-    }
-
-    return playerResources;
   }
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
