@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -6,13 +6,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Arrays;
 import java.util.Objects;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 
 /**
  * A collection of methods that operate on or return resource collections.
  */
-public final class ResourceCollections {
-  private ResourceCollections() {
+public final class ResourceCollectionUtils {
+  private ResourceCollectionUtils() {
     // do nothing
   }
 
@@ -26,7 +30,7 @@ public final class ResourceCollections {
    *
    * @throws IllegalArgumentException If {@code resources} contains a {@code null} element.
    */
-  public static ResourceCollection omit(final ResourceCollection unfiltered, final Resource... resources) {
+  public static ResourceCollection exclude(final ResourceCollection unfiltered, final Resource... resources) {
     checkNotNull(unfiltered);
     checkNotNull(resources);
     checkArgument(Arrays.stream(resources).noneMatch(Objects::isNull), "resources must not contain null");
@@ -47,12 +51,12 @@ public final class ResourceCollections {
    *
    * @throws IllegalArgumentException If {@code names} contains a {@code null} element.
    */
-  public static ResourceCollection omit(final ResourceCollection unfiltered, final String... names) {
+  public static ResourceCollection exclude(final ResourceCollection unfiltered, final String... names) {
     checkNotNull(unfiltered);
     checkNotNull(names);
     checkArgument(Arrays.stream(names).noneMatch(Objects::isNull), "names must not contain null");
 
-    return omit(unfiltered, mapNamesToResources(unfiltered.getData(), names));
+    return exclude(unfiltered, mapNamesToResources(unfiltered.getData(), names));
   }
 
   private static Resource[] mapNamesToResources(final GameData data, final String[] names) {
@@ -76,9 +80,9 @@ public final class ResourceCollections {
    *
    * @return The filtered resource collection; never {@code null}.
    */
-  public static ResourceCollection pickProductionResources(final ResourceCollection unfiltered) {
+  public static ResourceCollection getProductionResources(final ResourceCollection unfiltered) {
     checkNotNull(unfiltered);
 
-    return omit(unfiltered, Constants.TECH_TOKENS, Constants.VPS);
+    return exclude(unfiltered, Constants.TECH_TOKENS, Constants.VPS);
   }
 }

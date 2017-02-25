@@ -28,7 +28,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ResourceCollections;
+import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -136,7 +136,7 @@ public class UserActionPanel extends ActionPanel {
 
       if (canSpendResourcesOnUserActions(m_validUserActions)) {
         final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
-            ResourceCollections.pickProductionResources(getCurrentPlayer().getResources())));
+            ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources())));
         userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, insets, 0, 0));
         ++row;

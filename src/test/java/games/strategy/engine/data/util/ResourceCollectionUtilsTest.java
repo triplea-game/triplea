@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.engine.data.util;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
@@ -14,11 +14,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class ResourceCollectionsTest {
+public final class ResourceCollectionUtilsTest {
   @Mock
   private GameData data;
 
@@ -50,10 +54,10 @@ public final class ResourceCollectionsTest {
   }
 
   @Test
-  public void testOmitWithResources_ShouldOmitSpecifiedResources() {
+  public void testExcludeByResources_ShouldExcludeSpecifiedResources() {
     final ResourceCollection unfiltered = createResourceCollection(pus, techTokens, vps);
 
-    final ResourceCollection filtered = ResourceCollections.omit(unfiltered, pus, vps);
+    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus, vps);
 
     assertThat(filtered.getQuantity(pus), is(0));
     assertThat(filtered.getQuantity(techTokens), is(unfiltered.getQuantity(techTokens)));
@@ -67,20 +71,20 @@ public final class ResourceCollectionsTest {
   }
 
   @Test
-  public void testOmitWithResources_ShouldIgnoreUnregisteredResources() {
+  public void testExcludeByResources_ShouldIgnoreUnregisteredResources() {
     final Resource gold = createResource("gold");
     final ResourceCollection unfiltered = createResourceCollection(pus);
 
-    final ResourceCollection filtered = ResourceCollections.omit(unfiltered, gold);
+    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, gold);
 
     assertThat(filtered.getQuantity(pus), is(unfiltered.getQuantity(pus)));
   }
 
   @Test
-  public void testOmitWithNames_ShouldOmitSpecifiedResources() {
+  public void testExcludeByNames_ShouldExcludeSpecifiedResources() {
     final ResourceCollection unfiltered = createResourceCollection(pus, techTokens, vps);
 
-    final ResourceCollection filtered = ResourceCollections.omit(unfiltered, pus.getName(), vps.getName());
+    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
 
     assertThat(filtered.getQuantity(pus), is(0));
     assertThat(filtered.getQuantity(techTokens), is(unfiltered.getQuantity(techTokens)));
@@ -88,22 +92,22 @@ public final class ResourceCollectionsTest {
   }
 
   @Test
-  public void testOmitWithNames_ShouldIgnoreUnregisteredResourceNames() {
+  public void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
     final Resource gold = createResource("gold");
     final ResourceCollection unfiltered = createResourceCollection(pus);
 
-    final ResourceCollection filtered = ResourceCollections.omit(unfiltered, gold.getName());
+    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, gold.getName());
 
     assertThat(filtered.getQuantity(pus), is(unfiltered.getQuantity(pus)));
   }
 
   @Test
-  public void testPickProductionResources_ShouldPickAllResourcesExceptTechTokensAndVPs() {
+  public void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
     final Resource gold = createResource("gold");
     setGameResources(gold, pus, techTokens, vps);
     final ResourceCollection unfiltered = createResourceCollection(gold, pus, techTokens, vps);
 
-    final ResourceCollection filtered = ResourceCollections.pickProductionResources(unfiltered);
+    final ResourceCollection filtered = ResourceCollectionUtils.getProductionResources(unfiltered);
 
     assertThat(filtered.getQuantity(gold), is(unfiltered.getQuantity(gold)));
     assertThat(filtered.getQuantity(pus), is(unfiltered.getQuantity(pus)));

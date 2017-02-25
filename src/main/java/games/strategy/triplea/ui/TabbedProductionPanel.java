@@ -20,8 +20,8 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollections;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
@@ -48,7 +48,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     add(
         new JLabel(String.format(
             "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: %s)</html>",
-            ResourceCollections.pickProductionResources(getResources()))),
+            ResourceCollectionUtils.getProductionResources(getResources()))),
         new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
             new Insets(8, 8, 8, 0), 0, 0));
     final JTabbedPane tabs = new JTabbedPane();
