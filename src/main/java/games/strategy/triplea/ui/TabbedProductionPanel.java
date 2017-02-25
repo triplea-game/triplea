@@ -20,9 +20,8 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
+import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
@@ -46,17 +45,10 @@ public class TabbedProductionPanel extends ProductionPanel {
   protected void initLayout() {
     this.removeAll();
     this.setLayout(new GridBagLayout());
-    final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
-    m_data.acquireReadLock();
-    try {
-      totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
-      totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-    } finally {
-      m_data.releaseReadLock();
-    }
-    add(new JLabel(
-        "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: "
-            + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
+    add(
+        new JLabel(String.format(
+            "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: %s)</html>",
+            ResourceCollectionUtils.getProductionResources(getResources()))),
         new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
             new Insets(8, 8, 8, 0), 0, 0));
     final JTabbedPane tabs = new JTabbedPane();
