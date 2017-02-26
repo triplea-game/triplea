@@ -1,4 +1,4 @@
-[![Travis](https://img.shields.io/travis/ajoberstar/gradle-git.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea) [![tripleA license](https://img.shields.io/github/license/triplea-game/tripleA.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
+[![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
 TripleA is a free game engine that runs on open source and is community supported. 
 
 Installing TripleA and Playing
