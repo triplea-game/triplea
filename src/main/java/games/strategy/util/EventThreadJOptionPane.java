@@ -26,6 +26,11 @@ public class EventThreadJOptionPane {
 
   public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
       final int messageType, final boolean useJLabel, final CountDownLatchHandler latchHandler) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
+          title, messageType);
+      return;
+    }
     final CountDownLatch latch = new CountDownLatch(1);
     SwingUtilities.invokeLater(() -> {
       JOptionPane.showMessageDialog(parentComponent, useJLabel ? createJLabelInScrollPane((String) message) : message,
