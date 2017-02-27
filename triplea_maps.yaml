@@ -1667,6 +1667,16 @@
     <br>
     <br>WW1 mod of Domination map.
     <br>
+- mapName: Domination 1914-Weltpolitik
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/domination_1914-weltpolitik/archive/master.zip
+  version: 1
+  img: http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png
+  description: |
+    <br>by Surtur
+    <br>
+    <br>WW1 mod of Domination map, with focus on diplomacy and secondary theaters.
+    <br>
 - mapName: Jurassic
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/jurassic/archive/master.zip
