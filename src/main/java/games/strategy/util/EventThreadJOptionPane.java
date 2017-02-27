@@ -3,9 +3,11 @@ package games.strategy.util;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -38,23 +40,22 @@ public final class EventThreadJOptionPane {
   }
 
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
-    final int IGNORE = -1;
     invokeAndWait(latchHandler, () -> {
       runnable.run();
-      return IGNORE;
+      return Optional.empty();
     });
   }
 
   @VisibleForTesting
-  static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
+  static <T> Optional<T> invokeAndWait(final CountDownLatchHandler latchHandler, final Supplier<Optional<T>> supplier) {
     if (SwingUtilities.isEventDispatchThread()) {
-      return supplier.getAsInt();
+      return supplier.get();
     }
 
     final CountDownLatch latch = new CountDownLatch(1);
-    final AtomicInteger result = new AtomicInteger();
+    final AtomicReference<Optional<T>> result = new AtomicReference<>();
     SwingUtilities.invokeLater(() -> {
-      result.set(supplier.getAsInt());
+      result.set(supplier.get());
       latch.countDown();
     });
     if (latchHandler != null) {
@@ -111,6 +112,10 @@ public final class EventThreadJOptionPane {
         latchHandler,
         () -> JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
             initialValue));
+  }
+
+  private static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
+    return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
   public static int showConfirmDialog(final Component parentComponent, final Object message, final String title,

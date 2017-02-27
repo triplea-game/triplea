@@ -6,6 +6,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,7 +36,7 @@ public final class EventThreadJOptionPaneTest {
     new Thread(() -> {
       EventThreadJOptionPane.invokeAndWait(latchHandler, () -> {
         runOnEDT.set(SwingUtilities.isEventDispatchThread());
-        return 0;
+        return Optional.empty();
       });
       latch.countDown();
     }).start();
@@ -52,7 +53,7 @@ public final class EventThreadJOptionPaneTest {
     SwingUtilities.invokeLater(() -> {
       EventThreadJOptionPane.invokeAndWait(latchHandler, () -> {
         run.set(true);
-        return 0;
+        return Optional.empty();
       });
       latch.countDown();
     });
@@ -65,14 +66,14 @@ public final class EventThreadJOptionPaneTest {
   public void testInvokeAndWait_ShouldReturnSupplierResult() {
     final int expectedResult = 42;
 
-    final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
+    final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult)).get();
 
     assertThat(actualResult, is(expectedResult));
   }
 
   @Test
   public void testInvokeAndWait_ShouldRegisterAndUnregisterLatchWithLatchHandler() {
-    EventThreadJOptionPane.invokeAndWait(latchHandler, () -> 0);
+    EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
 
     verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
     verify(latchHandler, times(1)).removeShutdownLatch(any(CountDownLatch.class));
@@ -82,7 +83,7 @@ public final class EventThreadJOptionPaneTest {
   public void testInvokeAndWait_ShouldRunSuccessfullyWhenLatchHandlerIsNull() {
     final int expectedResult = 42;
 
-    final int actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> expectedResult);
+    final int actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> Optional.of(expectedResult)).get();
 
     assertThat(actualResult, is(expectedResult));
   }
