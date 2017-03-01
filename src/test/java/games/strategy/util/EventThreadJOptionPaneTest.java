@@ -29,7 +29,7 @@ public final class EventThreadJOptionPaneTest {
   private final CountDownLatchHandler latchHandler = new CountDownLatchHandler(true);
 
   @Test
-  public void testInvokeAndWait_ShouldRunSupplierOnEDTWhenNotCalledFromEDT() throws Exception {
+  public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEDTWhenNotCalledFromEDT() throws Exception {
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicBoolean runOnEDT = new AtomicBoolean(false);
 
@@ -46,7 +46,7 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldNotDeadlockWhenCalledFromEDT() throws Exception {
+  public void testInvokeAndWaitWithSupplier_ShouldNotDeadlockWhenCalledFromEDT() throws Exception {
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicBoolean run = new AtomicBoolean(false);
 
@@ -63,16 +63,17 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldReturnSupplierResult() {
-    final int expectedResult = 42;
+  public void testInvokeAndWaitWithSupplier_ShouldReturnSupplierResult() {
+    final Object expectedResult = new Object();
 
-    final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult)).get();
+    final Object actualResult =
+        EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult)).get();
 
     assertThat(actualResult, is(expectedResult));
   }
 
   @Test
-  public void testInvokeAndWait_ShouldRegisterAndUnregisterLatchWithLatchHandler() {
+  public void testInvokeAndWaitWithSupplier_ShouldRegisterAndUnregisterLatchWithLatchHandler() {
     EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
 
     verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
@@ -80,10 +81,19 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldRunSuccessfullyWhenLatchHandlerIsNull() {
+  public void testInvokeAndWaitWithSupplier_ShouldRunSuccessfullyWhenLatchHandlerIsNull() {
+    final Object expectedResult = new Object();
+
+    final Object actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> Optional.of(expectedResult)).get();
+
+    assertThat(actualResult, is(expectedResult));
+  }
+
+  @Test
+  public void testInvokeAndWaitWithIntSupplier_ShouldReturnIntSupplierResult() {
     final int expectedResult = 42;
 
-    final int actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> Optional.of(expectedResult)).get();
+    final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
 
     assertThat(actualResult, is(expectedResult));
   }

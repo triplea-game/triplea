@@ -114,7 +114,8 @@ public final class EventThreadJOptionPane {
             initialValue));
   }
 
-  private static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
+  @VisibleForTesting
+  static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
     return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
