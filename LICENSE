@@ -1,10 +1,7 @@
-TripleA is a free game engine that runs on open source and is community supported. 
-Copyright (C) 2002  The TripleA-Team
-
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 
- Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
+ Copyright (C) 1989, 1991 Free Software Foundation, Inc., <http://fsf.org/>
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
@@ -281,3 +278,6 @@ PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGES.
 
                      END OF TERMS AND CONDITIONS
+
+TripleA is a turn based strategy game and board game engine, similar to Axis & Allies or Risk
+Copyright (C) 2002-2017 triplea-game
