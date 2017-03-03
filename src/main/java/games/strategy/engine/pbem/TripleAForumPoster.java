@@ -31,7 +31,6 @@ import org.json.JSONObject;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.Util;
@@ -121,7 +120,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/post/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
         // the content type affects file extension server side causing the file extension to be renamed into .bin
-        .addBinaryBody("files[]", m_saveGameFile, ContentType.create("application/triplea-savegame"), m_saveGameFileName)
+        .addBinaryBody("files[]", m_saveGameFile, ContentType.create("application/triplea-savegame"),
+            m_saveGameFileName)
         .addTextBody("cid", "6")
         .build());
     HttpProxy.addProxy(fileUpload);
@@ -168,14 +168,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     if (jsonObject.getInt("banned") != 0) {
       throw new Exception("Your account is banned from the forum");
     }
-    // TEMPORARY, until the login plugin implements such a feature
-    HttpGet httpGet = new HttpGet(tripleAForumURL + "/api/user/" + jsonObject.getString("userslug"));
-    HttpProxy.addProxy(httpGet);
-    try (CloseableHttpResponse getResponse = client.execute(httpGet)) {
-      String rawJSON = Util.getStringFromInputStream(getResponse.getEntity().getContent());
-      if (!new JSONObject(rawJSON).getBoolean("email:confirmed")) {
-        throw new Exception("Your email isn't confirmed yet!");
-      }
+    if (jsonObject.getInt("email:confirmed") != 1) {
+      throw new Exception("Your email isn't confirmed yet!");
     }
   }
 
