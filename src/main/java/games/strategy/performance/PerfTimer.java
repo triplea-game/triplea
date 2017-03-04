@@ -30,8 +30,7 @@ public class PerfTimer implements Closeable {
   }
 
   private long stopTimer() {
-    final long end = System.nanoTime();
-    return end - startMillis;
+    return System.nanoTime() - startMillis;
   }
 
   @Override
@@ -58,11 +57,7 @@ public class PerfTimer implements Closeable {
   }
 
   public static PerfTimer startTimer(final String title) {
-    if (!enabled) {
-      return DISABLED_TIMER;
-    } else {
-      return new PerfTimer(title);
-    }
+    return enabled ? new PerfTimer(title) : DISABLED_TIMER;
   }
 
   private static void processResult(final long stopNanos, final PerfTimer perfTimer) {
