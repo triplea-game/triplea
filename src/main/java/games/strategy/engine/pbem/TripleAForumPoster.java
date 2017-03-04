@@ -8,23 +8,16 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,9 +75,9 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   private void post(CloseableHttpClient client, String token, String text) throws Exception {
     HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
-    post.addHeader("Authorization", "Bearer " + token);
+    addTokenHeader(post, token);
     if (m_includeSaveGame && m_saveGameFile != null) {
-      text += uploadSavegame();
+      text += uploadSavegame(client, token);
     }
     post.setEntity(new UrlEncodedFormEntity(
         Arrays.asList(new BasicNameValuePair("content", text)),
@@ -93,75 +86,38 @@ public class TripleAForumPoster extends AbstractForumPoster {
     client.execute(post);
   }
 
-  private String uploadSavegame() throws Exception {
-    try (CloseableHttpClient loginClient = HttpClients.custom().setDefaultRequestConfig(
-        RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
-      // TODO hide the warning messages
-      // TODO we change this once the write API receives an update
-      CookieStore cookieStore = new BasicCookieStore();
-      HttpContext httpContext = new BasicHttpContext();
-      httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
-      String csrfToken = getCSRFToken(loginClient, httpContext);
-      sendLoginPOST(loginClient, httpContext, csrfToken);
-
-      try (CloseableHttpResponse response = upload(loginClient, httpContext, csrfToken)) {
-        int status = response.getStatusLine().getStatusCode();
-        if (status == HttpURLConnection.HTTP_OK) {
-          String json = Util.getStringFromInputStream(response.getEntity().getContent());
-          return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
-        }
-        throw new Exception("Failed to upload savegame, server returned Error Code " + status);
-      }
-    }
-  }
-
-  private CloseableHttpResponse upload(CloseableHttpClient client, HttpContext context, String csrfToken)
-      throws ClientProtocolException, IOException {
-    HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/post/upload");
+  private String uploadSavegame(CloseableHttpClient client, String token) throws Exception {
+    HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        // the content type affects file extension server side causing the file extension to be renamed into .bin
         .addBinaryBody("files[]", m_saveGameFile, ContentType.create("application/triplea-savegame"),
             m_saveGameFileName)
-        .addTextBody("cid", "6")
         .build());
     HttpProxy.addProxy(fileUpload);
-    fileUpload.addHeader("x-csrf-token", csrfToken);
-    return client.execute(fileUpload, context);
-  }
-
-  private void sendLoginPOST(CloseableHttpClient client, HttpContext context, String csrfToken)
-      throws ClientProtocolException, IOException {
-    HttpPost login = new HttpPost(tripleAForumURL + "/login");
-    HttpProxy.addProxy(login);
-    login.setEntity(new UrlEncodedFormEntity(Arrays.asList(username, password)));
-    login.addHeader("x-csrf-token", csrfToken);
-    client.execute(login, context);
-  }
-
-  private String getCSRFToken(CloseableHttpClient client, HttpContext context)
-      throws ClientProtocolException, IOException {
-    HttpGet tokenGET = new HttpGet(tripleAForumURL + "/api/config");
-    HttpProxy.addProxy(tokenGET);
-    try (CloseableHttpResponse tokenResponse = client.execute(tokenGET, context)) {
-      return new JSONObject(Util.getStringFromInputStream(tokenResponse.getEntity().getContent()))
-          .getString("csrf_token");
+    addTokenHeader(fileUpload, token);
+    try (CloseableHttpResponse response = client.execute(fileUpload)) {
+      int status = response.getStatusLine().getStatusCode();
+      if (status == HttpURLConnection.HTTP_OK) {
+        String json = Util.getStringFromInputStream(response.getEntity().getContent());
+        return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
+      }
+      throw new Exception("Failed to upload savegame, server returned Error Code " + status);
     }
   }
 
   private void deleteToken(CloseableHttpClient client, int userID, String token)
       throws ClientProtocolException, IOException {
     HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userID + "/tokens/" + token);
-    httpDelete.addHeader("Authorization", "Bearer " + token);
+    addTokenHeader(httpDelete, token);
     client.execute(httpDelete);
   }
 
-  private int getUserId(CloseableHttpClient client) throws Exception {
+  private int getUserId(CloseableHttpClient client) throws JSONException, Exception  {
     JSONObject jsonObject = login(client, Arrays.asList(username, password));
     checkUser(client, jsonObject);
     return jsonObject.getInt("uid");
   }
 
-  private void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws Exception {
+  private void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws JSONException, Exception {
     if (jsonObject.has("message")) {
       throw new Exception(jsonObject.getString("message"));
     }
@@ -238,5 +194,9 @@ public class TripleAForumPoster extends AbstractForumPoster {
   @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("tripleaForum.html");
+  }
+  
+  private void addTokenHeader(HttpRequestBase request, String token){
+    request.addHeader("Authorization", "Bearer " + token);
   }
 }
