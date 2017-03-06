@@ -9,9 +9,9 @@ import java.util.logging.LogRecord;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
 public class AccessLogFileHandler extends FileHandler {
-  private static final String logFile;
+  private static final String logFile = getLogFilePath();
 
-  static {
+  private static String getLogFilePath() {
     final File rootDir = new File(System.getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY, "."));
     if (!rootDir.exists()) {
       throw new IllegalStateException("no dir called:" + rootDir.getAbsolutePath());
@@ -20,9 +20,10 @@ public class AccessLogFileHandler extends FileHandler {
     if (!logDir.exists()) {
       logDir.mkdir();
     }
-    logFile = new File(logDir, "access-log%g.txt").getAbsolutePath();
     System.out.print("logging to :" + logFile);
+    return new File(logDir, "access-log%g.txt").getAbsolutePath();
   }
+
 
   public AccessLogFileHandler() throws IOException, SecurityException {
     super(logFile, 20 * 1000 * 1000, 10, true);

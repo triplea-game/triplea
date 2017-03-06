@@ -587,7 +587,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-          BasicPoliticalAI.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
+          AIPoliticalUtils.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
@@ -620,7 +620,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       }
     } else {
       final List<PoliticalActionAttachment> actionChoicesOther =
-          BasicPoliticalAI.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
+          AIPoliticalUtils.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;

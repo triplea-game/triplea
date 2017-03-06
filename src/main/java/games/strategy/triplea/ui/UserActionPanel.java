@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,10 +24,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 
@@ -41,7 +46,7 @@ public class UserActionPanel extends ActionPanel {
   private UserActionAttachment m_choice = null;
   private final TripleAFrame m_parent;
   private boolean m_firstRun = true;
-  protected List<UserActionAttachment> m_validUserActions = null;
+  private List<UserActionAttachment> m_validUserActions = Collections.emptyList();
 
   public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
@@ -128,6 +133,15 @@ public class UserActionPanel extends ActionPanel {
                   + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
+
+      if (canSpendResourcesOnUserActions(m_validUserActions)) {
+        final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
+            ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources())));
+        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, insets, 0, 0));
+        ++row;
+      }
+
       final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
         private static final long serialVersionUID = -807175594221278068L;
 
@@ -148,30 +162,44 @@ public class UserActionPanel extends ActionPanel {
     }
   };
 
+  @VisibleForTesting
+  static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
+    return userActions.stream().anyMatch(userAction -> userAction.getCostPU() > 0);
+  }
+
   private JPanel getUserActionButtonPanel(final JDialog parent) {
     final JPanel userActionButtonPanel = new JPanel();
     userActionButtonPanel.setLayout(new GridBagLayout());
     int row = 0;
     final Insets insets = new Insets(1, 1, 1, 1);
     for (final UserActionAttachment uaa : m_validUserActions) {
+      final boolean canPlayerAffordUserAction = canPlayerAffordUserAction(getCurrentPlayer(), uaa);
       userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(uaa));
       button.addActionListener(ae -> {
         m_selectUserActionButton.setEnabled(false);
         m_doneButton.setEnabled(false);
-        m_validUserActions = null;
+        m_validUserActions = Collections.emptyList();
         m_choice = uaa;
         parent.setVisible(false);
         release();
       });
+      button.setEnabled(canPlayerAffordUserAction);
       userActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, insets, 0, 0));
-      userActionButtonPanel.add(getActionDescriptionLabel(uaa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
+      final JLabel descriptionLabel = getActionDescriptionLabel(uaa);
+      descriptionLabel.setEnabled(canPlayerAffordUserAction);
+      userActionButtonPanel.add(descriptionLabel, new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       row++;
     }
     return userActionButtonPanel;
+  }
+
+  @VisibleForTesting
+  static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
+    return userAction.getCostPU() <= player.getResources().getQuantity(Constants.PUS);
   }
 
   /**

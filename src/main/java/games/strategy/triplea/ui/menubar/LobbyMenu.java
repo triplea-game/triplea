@@ -81,10 +81,8 @@ public class LobbyMenu extends JMenuBar {
     final JMenu toolbox = new JMenu("Toolbox");
     menuBar.add(toolbox);
     addBanUsernameMenu(toolbox);
-    addBanIPAddressMenu(toolbox);
     addBanMacAddressMenu(toolbox);
     addUnbanUsernameMenu(toolbox);
-    addUnbanIPAddressMenu(toolbox);
     addUnbanMacAddressMenu(toolbox);
   }
 
@@ -169,29 +167,6 @@ public class LobbyMenu extends JMenuBar {
     parentMenu.add(item);
   }
 
-  private void addBanIPAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Ban IP Address");
-    item.addActionListener(e -> {
-      final String ip = JOptionPane.showInputDialog(null,
-          "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
-          "");
-      if (ip == null || ip.length() < 1) {
-        return;
-      }
-      final long ticks = requestTimespanSupplication();
-      final long expire = System.currentTimeMillis() + ticks;
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-      try {
-        controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0),
-            new Date(expire));
-      } catch (final UnknownHostException ex) {
-      }
-    });
-    item.setEnabled(true);
-    parentMenu.add(item);
-  }
-
   private void addBanMacAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
     item.addActionListener(e -> {
@@ -252,26 +227,6 @@ public class LobbyMenu extends JMenuBar {
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
-      } catch (final UnknownHostException ex) {
-      }
-    });
-    item.setEnabled(true);
-    parentMenu.add(item);
-  }
-
-  private void addUnbanIPAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Unban IP Address");
-    item.addActionListener(e -> {
-      final String ip = JOptionPane.showInputDialog(null,
-          "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
-          "");
-      if (ip == null || ip.length() < 1) {
-        return;
-      }
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-      try {
-        controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName(ip), 0), new Date(0));
       } catch (final UnknownHostException ex) {
       }
     });

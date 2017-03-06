@@ -1,4 +1,4 @@
-package games.strategy.triplea.baseAI;
+package games.strategy.triplea.ai;
 
 import static org.junit.Assert.assertEquals;
 

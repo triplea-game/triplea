@@ -33,6 +33,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
@@ -118,17 +119,9 @@ public class ProductionPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
-    final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
-    m_data.acquireReadLock();
-    try {
-      totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
-      totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-    } finally {
-      m_data.releaseReadLock();
-    }
-    final JLabel legendLabel = new JLabel(
-        "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: "
-            + totalWithoutTechTokensOrVPs.toString() + ")</html>");
+    final JLabel legendLabel = new JLabel(String.format(
+        "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: %s)</html>",
+        ResourceCollectionUtils.getProductionResources(getResources())));
     this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
     int rows = m_rules.size() / 7;
@@ -166,15 +159,9 @@ public class ProductionPanel extends JPanel {
 
   // This method can be overridden by subclasses
   protected void setLeft(final ResourceCollection left, final int totalUnits) {
-    final ResourceCollection leftWithoutTechTokensOrVPs = new ResourceCollection(left);
-    m_data.acquireReadLock();
-    try {
-      leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
-      leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-    } finally {
-      m_data.releaseReadLock();
-    }
-    m_left.setText(totalUnits + " total units purchased.  You have " + leftWithoutTechTokensOrVPs.toString() + " left");
+    m_left.setText(String.format(
+        "%d total units purchased.  You have %s left.",
+        totalUnits, ResourceCollectionUtils.getProductionResources(left)));
   }
 
   Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));

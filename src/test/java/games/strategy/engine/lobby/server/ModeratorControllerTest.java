@@ -1,23 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
@@ -26,6 +8,21 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ModeratorControllerTest {
   private final IServerMessenger m_messenger = mock(IServerMessenger.class);
@@ -60,30 +57,7 @@ public class ModeratorControllerTest {
     m_controller.boot(booted);
     assertTrue(m_listener.getRemoved().contains(booted));
   }
-
-  @Test
-  public void testBan() throws UnknownHostException {
-    final InetAddress bannedAddress = InetAddress.getByAddress(new byte[] {(byte) 10, (byte) 10, (byte) 10, (byte) 10});
-    new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
-    MessageContext.setSenderNodeForThread(m_adminNode);
-    final INode booted = new Node("foo", bannedAddress, 0);
-    // this test is failing because any kind of ban requires a mac address for the logging information,
-    // yet this node has no mac address. need to fix this somehow.
-    m_controller.banIp(booted, null);
-    assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()).getFirst());
-  }
-
-  @Test
-  public void testResetUserPassword() throws UnknownHostException {
-    MessageContext.setSenderNodeForThread(m_adminNode);
-    final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
-    final String userName = Util.createUniqueTimeStamp();
-    new DBUserController().createUser(userName, "n@n.n", newPassword, false);
-    final INode node = new Node(userName, InetAddress.getLocalHost(), 0);
-    assertNull(m_controller.setPassword(node, newPassword));
-    assertTrue(new DBUserController().login(node.getName(), newPassword));
-  }
-
+  
   @Test
   public void testCantResetAdminPassword() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);

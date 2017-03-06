@@ -26,7 +26,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-public class TestRoute {
+public class RouteTest {
   private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
   private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
