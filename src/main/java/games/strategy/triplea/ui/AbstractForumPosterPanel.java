@@ -1,7 +1,11 @@
 package games.strategy.triplea.ui;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
@@ -21,14 +25,11 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   protected IPlayerBridge m_bridge;
   protected PBEMMessagePoster m_poster;
   protected TripleAFrame m_frame;
-  protected Action m_doneAction;
   protected ForumPosterComponent m_forumPosterComponent;
 
   public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_actionLabel = new JLabel();
-    m_doneAction = SwingAction.of("Done", e -> release());
-    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
   }
 
   private int getRound() {

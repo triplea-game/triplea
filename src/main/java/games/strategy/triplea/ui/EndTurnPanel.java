@@ -1,15 +1,33 @@
 package games.strategy.triplea.ui;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.ui.SwingAction;
 
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
+  protected AbstractAction m_doneAction = SwingAction.of("Done", e -> {
+    if (m_forumPosterComponent.getHasPostedTurnSummary() || JOptionPane.YES_OPTION ==
+        JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
+        "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
+        release();
+    }
+  });
 
   public EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
+    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
   }
 
   @Override
