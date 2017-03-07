@@ -29,7 +29,6 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_actionLabel = new JLabel();
-    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
   }
 
   private int getRound() {
