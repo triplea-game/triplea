@@ -1,19 +1,30 @@
 package games.strategy.triplea.ui;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.ui.SwingAction;
 
 public class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 
   public MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
+    AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
+    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
+    
   }
 
   @Override
-  protected String getTitle() {
+  protected String getTitle() {                                                                       
     return "Move Summary";
   }
 
