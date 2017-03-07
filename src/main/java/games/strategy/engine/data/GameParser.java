@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -246,6 +247,15 @@ public class GameParser {
 
   public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setValidating(true);
+    // get the dtd location
+    final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
+    final URL url = GameParser.class.getResource(dtdFile);
+    if (url == null) {
+      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
+    }
+    final String dtdSystem = url.toExternalForm();
+    final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
     final DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setErrorHandler(new ErrorHandler() {
       @Override
@@ -263,7 +273,7 @@ public class GameParser {
         errorsSAX.add(exception);
       }
     });
-    return builder.parse(input);
+    return builder.parse(input, system);
   }
 
   /**
