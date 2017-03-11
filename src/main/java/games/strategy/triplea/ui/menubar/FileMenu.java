@@ -71,7 +71,7 @@ public class FileMenu {
             : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
         final int round = gameData.getSequence().getRound();
         final HistoryLog historyLog = new HistoryLog();
-        historyLog.printFullTurn(gameData, false, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
+        historyLog.printFullTurn(gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
         final PBEMMessagePoster poster = new PBEMMessagePoster(gameData, currentPlayer, round, title);
         PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
       } finally {
