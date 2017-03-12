@@ -2,12 +2,12 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="/triplea/eclipse/lau"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/triplea/src/games/strategy/engine/framework/headlessGameServer/HeadlessGameServer.java"/>
+<listEntry value="/triplea/src/main/java/games/strategy/engine/framework/headlessGameServer/HeadlessGameServer.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.framework.headlessGameServer.HeadlessGameServer"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="triplea.game.host.console=true &#10;triplea.game.host.ui=true&#10;triplea.game= triplea.server=true &#10;triplea.port=3300&#10;triplea.lobby.host=127.0.0.1&#10;triplea.lobby.port=3300&#10;triplea.name=Bot1_TestServer &#10;triplea.lobby.game.hostedBy=Bot1_TestServer&#10;triplea.lobby.game.supportEmail=developer@gmail.com&#10;triplea.lobby.game.comments=automated_host"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="triplea.game.host.console=true &#13;&#10;triplea.game.host.ui=true&#13;&#10;triplea.game= triplea.server=true &#13;&#10;triplea.port=3300&#13;&#10;triplea.lobby.host=127.0.0.1&#13;&#10;triplea.lobby.port=3300&#13;&#10;triplea.name=Bot1_TestServer &#13;&#10;triplea.lobby.game.hostedBy=Bot1_TestServer&#13;&#10;triplea.lobby.game.supportEmail=developer@gmail.com&#13;&#10;triplea.lobby.game.comments=automated_host"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
 </launchConfiguration>

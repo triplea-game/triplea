@@ -1,0 +1,91 @@
+package games.strategy.triplea.ui;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
+
+import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+
+import games.strategy.ui.SwingAction;
+import games.strategy.util.ThreadUtil;
+
+public class MemoryLabel extends JLabel {
+  private static final long serialVersionUID = -6011470050936617333L;
+
+  public MemoryLabel() {
+    update();
+    addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseReleased(final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          gc(e);
+        }
+      }
+
+      @Override
+      public void mousePressed(final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          gc(e);
+        }
+      }
+    });
+    final Thread t = new Thread(new Updater(this), "Memory Label Updater");
+    t.start();
+  }
+
+  protected void gc(final MouseEvent e) {
+    final JPopupMenu menu = new JPopupMenu();
+    menu.add(SwingAction.of("Garbage Collect", event -> {
+      System.gc();
+      System.runFinalization();
+      System.gc();
+      System.runFinalization();
+      System.gc();
+    }));
+    menu.show(this, e.getX(), e.getY());
+  }
+
+  public void update() {
+    final long free = Runtime.getRuntime().freeMemory();
+    final long total = Runtime.getRuntime().totalMemory();
+    final long used = total - free;
+    final DecimalFormat format = new DecimalFormat("###.##");
+    setText(format.format(used / 1000000.0) + "/" + format.format(total / 1000000.0) + " MB");
+  }
+}
+
+
+/**
+ * This thread will stop when the label is garbage collected
+ */
+class Updater implements Runnable {
+  private final WeakReference<MemoryLabel> m_label;
+
+  Updater(final MemoryLabel label) {
+    m_label = new WeakReference<>(label);
+  }
+
+  @Override
+  public void run() {
+    while (m_label.get() != null) {
+      if(!ThreadUtil.sleep(2000)) {
+        return;
+      }
+      update();
+    }
+  }
+
+  private void update() {
+    SwingUtilities.invokeLater(() -> {
+      final MemoryLabel label = m_label.get();
+      if (label == null || !label.isVisible()) {
+        return;
+      }
+      label.update();
+    });
+  }
+
+}
