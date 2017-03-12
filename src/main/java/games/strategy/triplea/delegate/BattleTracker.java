@@ -1162,8 +1162,9 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     if( count == 1 ) {
-      ((DependentBattle) lastAmphib).getAttackingFrom().stream().filter( t -> t != null )
+      ((DependentBattle) lastAmphib).getAttackingFrom().stream()
              .map( t -> getPendingBattle( t, false, BattleType.NORMAL ) )
+             .filter( battle -> battle != null )
              .forEach( battle -> battle.fight( aBridge ) );
       lastAmphib.fight( aBridge );
     }
