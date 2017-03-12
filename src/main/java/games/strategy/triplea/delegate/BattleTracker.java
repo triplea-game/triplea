@@ -1108,7 +1108,8 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   @VisibleForTesting
-  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
+             Supplier<Collection<Territory>> pendingBattleSiteSupplier,
              BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
 
 
@@ -1131,6 +1132,50 @@ public class BattleTracker implements java.io.Serializable {
       if( bombingRaid != null ) {
         bombingRaid.fight(delegateBridge);
       }
+    }
+  }
+
+  public void fightAutoKills(final IDelegateBridge aBridge) {
+    // Kill undefended transports. Done first to remove potentially dependent sea battles
+    // Which could block amphibious assaults below
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle(territory, false, BattleType.NORMAL) )
+          .filter( battle -> Match.allMatch( battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport) )
+          .forEach( battle -> battle.fight( aBridge ) );
+    getPendingBattleSites(false).stream().map( territory -> getPendingBattle(territory, false, BattleType.NORMAL) )
+          .forEach( battle -> {
+                 if( battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty() ) {
+                   battle.fight( aBridge );
+                 }
+          });
+    int count = 0;
+    IBattle lastAmphib = null;
+    for( final Territory t : getPendingBattleSites(false) ) {
+      final IBattle battle = getPendingBattle( t, false, BattleType.NORMAL );
+      if( t.isWater() ) continue;
+      for( final Territory sourceTerritory : ((DependentBattle) battle).getAttackingFrom() ) {
+        if( sourceTerritory.isWater()
+        && !Match.allMatch(((DependentBattle) battle).getAttackingFromMap().get(sourceTerritory),Matches.UnitIsAir) ) {
+          count++;
+          lastAmphib = battle;
+          break;
+        }
+      }
+    }
+    if( count == 1 ) {
+      ((DependentBattle) lastAmphib).getAttackingFrom().stream().filter( t -> t != null )
+             .map( t -> getPendingBattle( t, false, BattleType.NORMAL ) )
+             .forEach( battle -> battle.fight( aBridge ) );
+      lastAmphib.fight( aBridge );
+    }
+
+    Territory lastTerritory = null;
+    count = 0;
+    for( final Territory t : getPendingBattleSites(false) ) {
+      lastTerritory = t;
+      count++;
+    }
+    if( count == 1 ) {
+      getPendingBattle( lastTerritory, false, BattleType.NORMAL ).fight( aBridge );
     }
   }
 

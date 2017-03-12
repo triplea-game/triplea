@@ -31,7 +31,7 @@ import games.strategy.util.Util;
  * but the battle cannot be fought until a naval battle
  * occurs.
  */
-public class NonFightingBattle extends AbstractBattle {
+public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
   private final Set<Territory> m_attackingFrom = new HashSet<>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
