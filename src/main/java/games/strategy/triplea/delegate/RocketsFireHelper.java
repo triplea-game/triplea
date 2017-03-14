@@ -101,7 +101,7 @@ public class RocketsFireHelper {
         continue;
       }
       // Ask the user where each rocket launcher should target.
-      final Territory target = getTarget(targets, player, bridge, territory);
+      final Territory target = getTarget(targets, bridge, territory);
       if (target != null) {
         attackedTerritories.add(target);
         attackingFromTerritories.put(target,territory);
@@ -124,7 +124,7 @@ public class RocketsFireHelper {
       bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
       return;
     }
-    final Territory attacked = getTarget(targets, player, bridge, null);
+    final Territory attacked = getTarget(targets, bridge, null);
 
     if (attacked != null) {
       fireRocket(player, attacked, bridge, null);
@@ -174,7 +174,7 @@ public class RocketsFireHelper {
     return hasFactory;
   }
 
-  private Territory getTarget(final Collection<Territory> targets, final PlayerID player, final IDelegateBridge bridge,
+  private Territory getTarget(final Collection<Territory> targets, final IDelegateBridge bridge,
       final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);

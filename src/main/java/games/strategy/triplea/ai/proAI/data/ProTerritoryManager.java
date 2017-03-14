@@ -283,7 +283,7 @@ public class ProTerritoryManager {
         ProMatches.territoryHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld), enemyTerritories,
         alliedTerritories, true, isCheckingEnemyAttacks, isIgnoringRelationships);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
-        ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld), enemyTerritories, true,
+        ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld), true,
         isCheckingEnemyAttacks, isIgnoringRelationships);
     findBombardOptions(player, myUnitTerritories, moveMap, bombardMap, transportMapList, isCheckingEnemyAttacks);
   }
@@ -366,7 +366,7 @@ public class ProTerritoryManager {
         ProMatches.territoryHasPotentialEnemyUnits(player, data, otherPlayers), new ArrayList<>(), new ArrayList<>(),
         true, false, true);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
-        ProMatches.territoryIsPotentialEnemy(player, data, otherPlayers), new ArrayList<>(), true, false, true);
+        ProMatches.territoryIsPotentialEnemy(player, data, otherPlayers), true, false, true);
     findBombardOptions(player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
   }
 
@@ -387,7 +387,7 @@ public class ProTerritoryManager {
         ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<>(), new ArrayList<>(), false,
         isCheckingEnemyAttacks, false);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
-        Matches.isTerritoryAllied(player, data), new ArrayList<>(), false, isCheckingEnemyAttacks, false);
+        Matches.isTerritoryAllied(player, data), false, isCheckingEnemyAttacks, false);
   }
 
   private ProOtherMoveOptions findEnemyDefendOptions(final PlayerID player) {
@@ -730,8 +730,7 @@ public class ProTerritoryManager {
   private void findAmphibMoveOptions(final PlayerID player, final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap, final List<ProTransport> transportMapList,
       final Map<Territory, Set<Territory>> landRoutesMap, final Match<Territory> moveAmphibToTerritoryMatch,
-      final List<Territory> enemyTerritories, final boolean isCombatMove, final boolean isCheckingEnemyAttacks,
-      final boolean isIgnoringRelationships) {
+      final boolean isCombatMove, final boolean isCheckingEnemyAttacks, final boolean isIgnoringRelationships) {
     final GameData data = ProData.getData();
 
     for (final Territory myUnitTerritory : myUnitTerritories) {

@@ -33,11 +33,11 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
     return m_delegates.get(name);
   }
 
-  private void writeObject(final ObjectOutputStream out) {
+  private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream out) {
     // dont write since delegates should be handled seperatly.
   }
 
-  private void readObject(final ObjectInputStream in) {
+  private void readObject(@SuppressWarnings("unused") final ObjectInputStream in) {
     m_delegates = new HashMap<>();
   }
 }

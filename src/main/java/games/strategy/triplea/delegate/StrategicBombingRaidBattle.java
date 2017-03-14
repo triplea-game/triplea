@@ -418,7 +418,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              removeAAHits(bridge, m_dice, m_casualties, currentTypeAA);
+              removeAAHits(bridge, m_casualties, currentTypeAA);
             }
           }
         };
@@ -519,7 +519,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
   }
 
-  private void removeAAHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties,
+  private void removeAAHits(final IDelegateBridge bridge, final CasualtyDetails casualties,
       final String currentTypeAA) {
     final List<Unit> killed = casualties.getKilled();
     if (!killed.isEmpty()) {

@@ -232,14 +232,13 @@ public final class TileImageFactory {
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
       final boolean cache, final boolean scale) {
     if (s_showMapBlends && s_showReliefImages && transparent) {
-      return loadBlendedImage(imageLocation, fileName, transparent, cache, scale);
+      return loadBlendedImage(fileName, cache, scale);
     } else {
       return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
     }
   }
 
-  private Image loadBlendedImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scale) {
+  private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scale) {
     BufferedImage reliefFile = null;
     BufferedImage baseFile = null;
     // The relief tile

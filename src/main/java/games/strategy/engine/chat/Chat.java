@@ -364,14 +364,14 @@ public class Chat {
       }
       synchronized (mutexNodes) {
         if (to.equals(messengers.getChannelMessenger().getLocalNode().getName())) {
-          handleSlap("You were slapped by " + from.getName(), to, from);
+          handleSlap("You were slapped by " + from.getName(), from);
         } else if (from.equals(messengers.getChannelMessenger().getLocalNode())) {
-          handleSlap("You just slapped " + to, to, from);
+          handleSlap("You just slapped " + to, from);
         }
       }
     }
 
-    private void handleSlap(String message, String to, INode from) {
+    private void handleSlap(String message, INode from) {
       for (final IChatListener listener : listeners) {
         chatHistory.add(new ChatMessage(message, from.getName(), false));
         listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);

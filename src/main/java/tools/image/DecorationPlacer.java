@@ -265,7 +265,8 @@ public class DecorationPlacer extends JFrame {
     imagePanel.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+        final Point point = e.getPoint();
+        mouseEvent(e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
       }
     });
     // set up the image panel size dimensions ...etc
@@ -677,16 +678,14 @@ public class DecorationPlacer extends JFrame {
   }
 
   /**
-   * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
+   * mouseEvent(java.lang.boolean, java.lang.boolean)
    *
-   * @param java
-   *        .awt.Point point a point clicked by mouse
    * @param java
    *        .lang.boolean ctrlDown true if ctrl key was hit
    * @param java
    *        .lang.boolean rightMouse true if the right mouse button was hit
    */
-  private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
+  private void mouseEvent(final boolean ctrlDown, final boolean rightMouse) {
     if (s_cheapMutex) {
       return;
     }

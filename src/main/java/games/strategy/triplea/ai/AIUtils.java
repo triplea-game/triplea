@@ -40,7 +40,7 @@ public class AIUtils {
    */
   static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final ProductionRule rule = getProductionRule(unitType, player, data);
+    final ProductionRule rule = getProductionRule(unitType, player);
     if (rule == null) {
       return Integer.MAX_VALUE;
     } else {
@@ -53,7 +53,7 @@ public class AIUtils {
    * <p>
    * If no such rule can be found, then return null.
    */
-  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data) {
+  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;

@@ -115,7 +115,7 @@ public class WeakAI extends AbstractAI {
     final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
     // load the transports first
     // they may be able to move farther
-    populateTransportLoad(false, data, moveUnits, moveRoutes, transportsToLoad, player);
+    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
     doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
@@ -129,7 +129,7 @@ public class WeakAI extends AbstractAI {
     transportsToLoad.clear();
     // load the transports again if we can
     // they may be able to move farther
-    populateTransportLoad(false, data, moveUnits, moveRoutes, transportsToLoad, player);
+    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
     doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
@@ -145,7 +145,7 @@ public class WeakAI extends AbstractAI {
     final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
     // load the transports first
     // they may be able to take part in a battle
-    populateTransportLoad(true, data, moveUnits, moveRoutes, transportsToLoad, player);
+    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
     doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
@@ -166,9 +166,8 @@ public class WeakAI extends AbstractAI {
     doMove(moveUnits, moveRoutes, null, moveDel);
   }
 
-  private void populateTransportLoad(final boolean nonCombat, final GameData data,
-      final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad, final PlayerID player) {
+  private void populateTransportLoad(final GameData data, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final PlayerID player) {
     if (!isAmphibAttack(player, data)) {
       return;
     }
@@ -234,8 +233,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private List<Unit> load2Transports(final boolean reload, final GameData data, final List<Unit> transportsToLoad,
-      final Territory loadFrom, final PlayerID player) {
+  private List<Unit> load2Transports(final List<Unit> transportsToLoad) {
     final List<Unit> units = new ArrayList<>();
     for (final Unit transport : transportsToLoad) {
       final Collection<Unit> landunits = TransportTracker.transporting(transport);
@@ -289,7 +287,7 @@ public class WeakAI extends AbstractAI {
     } else {
       unitsToMove.addAll(transports.subList(0, maxTrans));
     }
-    final List<Unit> landUnits = load2Transports(true, data, unitsToMove, firstSeaZoneOnAmphib, player);
+    final List<Unit> landUnits = load2Transports(unitsToMove);
     final Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
     moveRoutes.add(r);
     unitsToMove.addAll(landUnits);
