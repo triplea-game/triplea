@@ -249,12 +249,12 @@ public class UserActionPanel extends ActionPanel {
     return panel;
   }
 
-  private String getActionButtonText(final UserActionAttachment paa) {
+  private static String getActionButtonText(final UserActionAttachment paa) {
     final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
     return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 
-  private JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
+  private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
     final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
