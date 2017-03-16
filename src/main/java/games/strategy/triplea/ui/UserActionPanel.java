@@ -87,7 +87,7 @@ public class UserActionPanel extends ActionPanel {
     m_firstRun = firstRun;
 
     m_validUserActions = new ArrayList<>(iUserActionsDelegate.getValidActions());
-    Collections.sort(m_validUserActions, new UserActionComparator(getCurrentPlayer(), getData()));
+    Collections.sort(m_validUserActions, new UserActionComparator());
     if (m_validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;
@@ -259,17 +259,14 @@ public class UserActionPanel extends ActionPanel {
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
   }
-}
 
-
-class UserActionComparator implements Comparator<UserActionAttachment> {
-  public UserActionComparator(final PlayerID currentPlayer, final GameData data) {}
-
-  @Override
-  public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2) {
-    if (uaa1.equals(uaa2)) {
-      return 0;
+  private static final class UserActionComparator implements Comparator<UserActionAttachment> {
+    @Override
+    public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2) {
+      if (uaa1.equals(uaa2)) {
+        return 0;
+      }
+      return uaa1.getName().compareTo(uaa2.getName());
     }
-    return uaa1.getName().compareTo(uaa2.getName());
   }
 }
