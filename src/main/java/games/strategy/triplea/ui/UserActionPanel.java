@@ -115,10 +115,6 @@ public class UserActionPanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 30;
-
       final JDialog userChoiceDialog = new JDialog(m_parent, "Actions and Operations", true);
 
       final JPanel userChoicePanel = new JPanel();
@@ -128,13 +124,7 @@ public class UserActionPanel extends ActionPanel {
 
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
-      choiceScroll.setPreferredSize(new Dimension(
-          (choiceScroll.getPreferredSize().width > availWidth ? availWidth
-              : (choiceScroll.getPreferredSize().width
-                  + (choiceScroll.getPreferredSize().height > availHeight ? 25 : 0))),
-          (choiceScroll.getPreferredSize().height > availHeight ? availHeight
-              : (choiceScroll.getPreferredSize().height)
-                  + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
+      choiceScroll.setPreferredSize(getUserActionScrollPanePreferredSize(choiceScroll));
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
@@ -206,6 +196,20 @@ public class UserActionPanel extends ActionPanel {
   @VisibleForTesting
   static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
     return userAction.getCostPU() <= player.getResources().getQuantity(Constants.PUS);
+  }
+
+  private static Dimension getUserActionScrollPanePreferredSize(final JScrollPane scrollPane) {
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final int availableHeight = screenSize.height - 120;
+    final int availableWidth = screenSize.width - 30;
+
+    return new Dimension(
+        (scrollPane.getPreferredSize().width > availableWidth ? availableWidth
+            : (scrollPane.getPreferredSize().width
+                + (scrollPane.getPreferredSize().height > availableHeight ? 25 : 0))),
+        (scrollPane.getPreferredSize().height > availableHeight ? availableHeight
+            : (scrollPane.getPreferredSize().height)
+                + (scrollPane.getPreferredSize().width > availableWidth ? 25 : 0)));
   }
 
   /**
