@@ -34,6 +34,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import games.strategy.ui.SwingAction;
 
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.
@@ -117,11 +118,14 @@ public class UserActionPanel extends ActionPanel {
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 30;
+
       final JDialog userChoiceDialog = new JDialog(m_parent, "Actions and Operations", true);
-      final Insets insets = new Insets(1, 1, 1, 1);
-      int row = 0;
+
       final JPanel userChoicePanel = new JPanel();
+      userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
       userChoicePanel.setLayout(new GridBagLayout());
+      int row = 0;
+
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
       choiceScroll.setPreferredSize(new Dimension(
@@ -131,29 +135,21 @@ public class UserActionPanel extends ActionPanel {
           (choiceScroll.getPreferredSize().height > availHeight ? availHeight
               : (choiceScroll.getPreferredSize().height)
                   + (choiceScroll.getPreferredSize().width > availWidth ? 25 : 0))));
-      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER,
-          GridBagConstraints.BOTH, insets, 0, 0));
+      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
       if (canSpendResourcesOnUserActions(m_validUserActions)) {
         final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
             ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources())));
-        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL, insets, 0, 0));
-        ++row;
+        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(8, 0, 0, 0), 0, 0));
       }
 
-      final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
-        private static final long serialVersionUID = -807175594221278068L;
-
-        @Override
-        public void actionPerformed(final ActionEvent arg0) {
-          userChoiceDialog.setVisible(false);
-        }
-      });
+      final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
       SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
-      userChoicePanel.add(noActionButton,
-          new GridBagConstraints(0, row, 20, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
-      userChoiceDialog.setMinimumSize(new Dimension(600, 300));
+      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+
       userChoiceDialog.add(userChoicePanel);
       userChoiceDialog.pack();
       userChoiceDialog.setLocationRelativeTo(m_parent);
@@ -169,13 +165,20 @@ public class UserActionPanel extends ActionPanel {
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
     final JPanel userActionButtonPanel = new JPanel();
+    userActionButtonPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
     userActionButtonPanel.setLayout(new GridBagLayout());
+
+    final int firstRow = 0;
+    final int lastRow = m_validUserActions.size() - 1;
     int row = 0;
-    final Insets insets = new Insets(1, 1, 1, 1);
     for (final UserActionAttachment uaa : m_validUserActions) {
+      final int topInset = (row == firstRow) ? 0 : 4;
+      final int bottomInset = (row == lastRow) ? 0 : 4;
       final boolean canPlayerAffordUserAction = canPlayerAffordUserAction(getCurrentPlayer(), uaa);
-      userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+      userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 0, bottomInset, 4), 0, 0));
+
       final JButton button = new JButton(getActionButtonText(uaa));
       button.addActionListener(ae -> {
         m_selectUserActionButton.setEnabled(false);
@@ -186,14 +189,17 @@ public class UserActionPanel extends ActionPanel {
         release();
       });
       button.setEnabled(canPlayerAffordUserAction);
-      userActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
-          GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      userActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 0.0, 0.0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 4, bottomInset, 4), 0, 0));
+
       final JLabel descriptionLabel = getActionDescriptionLabel(uaa);
       descriptionLabel.setEnabled(canPlayerAffordUserAction);
-      userActionButtonPanel.add(descriptionLabel, new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      userActionButtonPanel.add(descriptionLabel, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 4, bottomInset, 0), 0, 0));
+
       row++;
     }
+
     return userActionButtonPanel;
   }
 
