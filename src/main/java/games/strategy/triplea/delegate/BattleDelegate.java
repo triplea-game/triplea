@@ -100,7 +100,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       addBombardmentSources();
       m_needToAddBombardmentSources = false;
     }
+    fightCurrentBattle();
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
+    m_battleTracker.fightAutoKills(m_bridge);
   }
 
   /**

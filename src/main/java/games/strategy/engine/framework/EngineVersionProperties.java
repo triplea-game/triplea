@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -31,8 +30,8 @@ public class EngineVersionProperties {
   private static final String TRIPLEA_VERSION_LINK =
       "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
 
-  private EngineVersionProperties(final URL url) {
-    this(getProperties(url));
+  private EngineVersionProperties() {
+    this(getProperties());
   }
 
   private EngineVersionProperties(final Properties props) {
@@ -44,24 +43,13 @@ public class EngineVersionProperties {
   }
 
   public static EngineVersionProperties contactServerForEngineVersionProperties() {
-    final URL engineversionPropsURL;
-    try {
-      engineversionPropsURL = new URL(TRIPLEA_VERSION_LINK);
-    } catch (final MalformedURLException e) {
-      ClientLogger.logQuietly(e);
-      return new EngineVersionProperties(new Properties());
-    }
-    return contactServerForEngineVersionProperties(engineversionPropsURL);
-  }
-
-  private static EngineVersionProperties contactServerForEngineVersionProperties(final URL engineversionPropsURL) {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
     final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     for (int i = 0; i < 5; i++) {
       new Thread(() -> {
-        ref.set(new EngineVersionProperties(engineversionPropsURL));
+        ref.set(new EngineVersionProperties());
         latch.countDown();
       }).start();
       try {
@@ -80,7 +68,7 @@ public class EngineVersionProperties {
     return ref.get();
   }
 
-  private static Properties getProperties(final URL url) {
+  private static Properties getProperties() {
     final Properties props = new Properties();
     try {
       props.load(new URL(TRIPLEA_VERSION_LINK).openStream());

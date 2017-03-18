@@ -47,7 +47,7 @@ import games.strategy.util.Util;
 /**
  * Handles logic for battles in which fighting actually occurs.
  */
-public class MustFightBattle extends AbstractBattle implements BattleStepStrings {
+public class MustFightBattle extends DependentBattle implements BattleStepStrings {
   public static enum ReturnFire {
     ALL, SUBS, NONE
   }

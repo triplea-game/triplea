@@ -1487,7 +1487,7 @@ public class UnitAttachment extends DefaultAttachment {
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
   }
 
-  int getRawDefense() {
+  public int getRawDefense() {
     return m_defense;
   }
 

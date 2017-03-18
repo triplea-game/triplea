@@ -20,7 +20,6 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
     super(data, map);
     AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
     m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
-    
   }
 
   @Override
