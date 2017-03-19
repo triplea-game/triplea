@@ -304,10 +304,10 @@ public class ProPurchaseAI {
       }
     }
     // Place regular land units
-    placeLandUnits(placeNonConstructionTerritories, prioritizedLandTerritories, placeDelegate, false);
+    placeLandUnits(prioritizedLandTerritories, placeDelegate, false);
 
     // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle combined)
-    placeLandUnits(placeNonConstructionTerritories, prioritizedLandTerritories, placeDelegate, true);
+    placeLandUnits(prioritizedLandTerritories, placeDelegate, true);
   }
 
   private void findDefendersInPlaceTerritories(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
@@ -1772,9 +1772,8 @@ public class ProPurchaseAI {
     }
   }
 
-  private void placeLandUnits(final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories,
-      final List<ProPlaceTerritory> prioritizedLandTerritories, final IAbstractPlaceDelegate placeDelegate,
-      final boolean isConstruction) {
+  private void placeLandUnits(final List<ProPlaceTerritory> prioritizedLandTerritories,
+      final IAbstractPlaceDelegate placeDelegate, final boolean isConstruction) {
 
     ProLogger.info("Place land with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
 

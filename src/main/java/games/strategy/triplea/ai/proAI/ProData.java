@@ -66,7 +66,7 @@ public class ProData {
     unitTerritoryMap = ProUtils.createUnitTerritoryMap();
     unitValueMap = BattleCalculator.getCostsForTUV(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
-    minCostPerHitPoint = getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
+    minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
   public static ProAI getProAI() {
@@ -81,8 +81,7 @@ public class ProData {
     return player;
   }
 
-  private static double getMinCostPerHitPoint(final PlayerID player,
-      final List<ProPurchaseOption> landPurchaseOptions) {
+  private static double getMinCostPerHitPoint(final List<ProPurchaseOption> landPurchaseOptions) {
     double minCostPerHitPoint = Double.MAX_VALUE;
     for (final ProPurchaseOption ppo : landPurchaseOptions) {
       if (ppo.getCostPerHitPoint() < minCostPerHitPoint) {

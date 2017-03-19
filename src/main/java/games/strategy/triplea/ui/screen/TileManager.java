@@ -274,7 +274,7 @@ public class TileManager {
       drawing.add(m_territoryOverlays.get(territory.getName()));
     }
     if (m_uiContext.getShowTerritoryEffects()) {
-      drawTerritoryEffects(territory, data, mapData, drawnOn, drawing);
+      drawTerritoryEffects(territory, mapData, drawing);
     }
     if (m_uiContext.getShowUnits()) {
       drawUnits(territory, mapData, drawnOn, drawing);
@@ -327,8 +327,7 @@ public class TileManager {
     m_territoryTiles.put(territory.getName(), drawnOn);
   }
 
-  private void drawTerritoryEffects(final Territory territory, final GameData data, final MapData mapData,
-      final Set<Tile> drawnOn, final Set<IDrawable> drawing) {
+  private void drawTerritoryEffects(final Territory territory, final MapData mapData, final Set<IDrawable> drawing) {
     final Iterator<Point> effectPoints = mapData.getTerritoryEffectPoints(territory).iterator();
     Point drawingPoint = effectPoints.next();
     for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(territory)) {
