@@ -36,9 +36,7 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-
 checkstyle{
-	configFile = rootProject.file('gradle/google_checks.xml')
 	toolVersion = "7.1"
 	showViolations = false
 }
