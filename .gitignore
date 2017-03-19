@@ -86,6 +86,9 @@ classes.jar
 # PDT-specific
 .buildpath
 
+# Checkstyle plugin
+.checkstyle
+
 # sbteclipse plugin
 .target
 
