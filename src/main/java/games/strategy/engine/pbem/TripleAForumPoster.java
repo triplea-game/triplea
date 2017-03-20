@@ -42,7 +42,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   public boolean postTurnSummary(String summary, String title) {
     username = new BasicNameValuePair("username", getUsername());
     password = new BasicNameValuePair("password", getPassword());
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
+    try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       int userID = getUserId(client);
       String token = getToken(client, userID);
       try {
