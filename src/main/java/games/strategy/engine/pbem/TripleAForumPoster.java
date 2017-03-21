@@ -47,30 +47,16 @@ public class TripleAForumPoster extends AbstractForumPoster {
       String token = getToken(client, userID);
       try {
         post(client, token, "### " + title + "\n" + summary);
-        display("Sucessfully posted!");
+        m_turnSummaryRef = "Sucessfully posted!";
         return true;
       } finally {
         deleteToken(client, userID, token);
       }
-    } catch (JSONException e) {
-      ClientLogger.logError("Invalid JSON", e);
-      display(e);
-    } catch (IOException e) {
-      ClientLogger.logQuietly("A network error occured while trying to post", e);
-      display(e);
     } catch (Exception e) {
       ClientLogger.logQuietly(e);
-      display(e);
+      m_turnSummaryRef = e.getMessage();
     }
     return false;
-  }
-
-  private void display(String message) {
-    m_turnSummaryRef = message;
-  }
-
-  private void display(Exception e) {
-    display(e.getMessage());
   }
 
   private void post(CloseableHttpClient client, String token, String text) throws Exception {
@@ -111,7 +97,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     client.execute(httpDelete);
   }
 
-  private int getUserId(CloseableHttpClient client) throws JSONException, Exception  {
+  private int getUserId(CloseableHttpClient client) throws JSONException, Exception {
     JSONObject jsonObject = login(client, Arrays.asList(username, password));
     checkUser(client, jsonObject);
     return jsonObject.getInt("uid");
@@ -195,8 +181,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
   public String getHelpText() {
     return HelpSupport.loadHelp("tripleaForum.html");
   }
-  
-  private void addTokenHeader(HttpRequestBase request, String token){
+
+  private void addTokenHeader(HttpRequestBase request, String token) {
     request.addHeader("Authorization", "Bearer " + token);
   }
 }
