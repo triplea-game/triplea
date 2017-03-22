@@ -41,6 +41,14 @@ checkstyle{
 	showViolations = false
 }
 
+checkstyleMain {
+    source(sourceSets.main.output.resourcesDir)
+}
+
+checkstyleTest {
+    source(sourceSets.test.output.resourcesDir)
+}
+
 jar {
 	manifest {
 		attributes 'Main-Class': mainClassName, 'TripleA-Version': version
