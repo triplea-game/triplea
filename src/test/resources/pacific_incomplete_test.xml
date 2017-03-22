@@ -177,7 +177,7 @@ Coded by Iron__Cross
         <connection t1="Kiangsi" t2="Shantung"/>
         <connection t1="Shansi" t2="Sikang"/>
 
-		<connection t1="Shansi" t2="Kweichow"/>
+        <connection t1="Shansi" t2="Kweichow"/>
         <connection t1="Hopei" t2="Suiyuan"/>
         <connection t1="Hopei" t2="Kweichow"/>
         <connection t1="Hopei" t2="Anhwe"/>
@@ -372,8 +372,8 @@ Coded by Iron__Cross
         <connection t1="Hawaiian" t2="9 Sea Zone"/>
         <connection t1="Johnston" t2="10 Sea Zone"/>
         <connection t1="Line" t2="3 Sea Zone"/>
-		<connection t1="New Zealand" t2="13 Sea Zone"/>
-        
+        <connection t1="New Zealand" t2="13 Sea Zone"/>
+
         <!-- Shoreline Line connections -->
         
         <!-- Australia -->
@@ -530,11 +530,11 @@ Coded by Iron__Cross
                 maxRunCount="1"/>
             <step name="americanBidPlace" delegate="placeBid" player="Americans"
                 maxRunCount="1"/>
-            
-            		
-	    <!-- Japanese Game Sequence -->
-            
-            
+
+
+            <!-- Japanese Game Sequence -->
+
+
             <!--                        <step name="japaneseTech" delegate="tech" player="Japanese"/> -->
             <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
             <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
@@ -549,7 +549,7 @@ Coded by Iron__Cross
             
             <!--                        <step name="britishTech" delegate="tech" player="British"/>-->
             <step name="britishPurchase" delegate="purchase" player="British"/>
-			<!-- Added Australians -->
+            <!-- Added Australians -->
             <step name="australianPurchase" delegate="purchase" player="Australians"/>           
             <step name="britishCombatMove" delegate="move" player="British"/>
             <step name="britishBattle" delegate="battle" player="British"/>
@@ -563,8 +563,8 @@ Coded by Iron__Cross
 
             <!--Added Commonwealth PU transfer and end turn 
             <step name="commonwealthEndTurn" delegate="endTurn" player="Commonwealth"/>
-	    -->
-            
+            -->
+
             <!-- Chinese Game Sequence -->
             
             
@@ -777,8 +777,8 @@ Coded by Iron__Cross
         <playerProduction player="Americans" frontier="productionAmericans"/>
         
     </production>
-    
-		<!-- In order to accomodate Japanese DDs being able to transport a single Inf, 
+
+        <!-- In order to accomodate Japanese DDs being able to transport a single Inf,
         the transportCost of all land units will differ from other versions. -->    
     <attachmentList>
         
@@ -791,9 +791,9 @@ Coded by Iron__Cross
             <option name="defense" value="2"/>
             <option name="isMarine" value="true"/>
             <option name="artillerySupportable" value="true"/>
-			<!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners 
-				must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners
+                must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="infantry"
@@ -805,7 +805,7 @@ Coded by Iron__Cross
             <option name="defense" value="2"/>
             <option name="artillerySupportable" value="true"/>
             <option name="isInfantry" value="true"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="artillery"
@@ -816,7 +816,7 @@ Coded by Iron__Cross
             <option name="attack" value="2"/>
             <option name="defense" value="2"/>
             <option name="artillery" value="true"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="armour"
@@ -827,7 +827,7 @@ Coded by Iron__Cross
             <option name="canBlitz" value="true"/>
             <option name="attack" value="3"/>
             <option name="defense" value="2"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="fighter"
@@ -838,7 +838,7 @@ Coded by Iron__Cross
             <option name="isAir" value="true"/>
             <option name="attack" value="3"/>
             <option name="defense" value="4"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="bomber"
@@ -849,7 +849,7 @@ Coded by Iron__Cross
             <option name="attack" value="4"/>
             <option name="defense" value="1"/>
             <option name="isStrategicBomber" value="true"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="transport"
@@ -860,7 +860,7 @@ Coded by Iron__Cross
             <option name="transportCapacity" value="8"/>
             <option name="attack" value="0"/>
             <option name="defense" value="0"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="battleship"
@@ -872,7 +872,7 @@ Coded by Iron__Cross
             <option name="defense" value="4"/>
             <option name="canBombard" value="true"/>
             <option name="hitPoints" value="2"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="destroyer"
@@ -885,7 +885,7 @@ Coded by Iron__Cross
             <option name="defense" value="3"/>
             <option name="canBombard" value="true"/>
             <option name="isDestroyer" value="true"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="carrier"
@@ -896,7 +896,7 @@ Coded by Iron__Cross
             <option name="isSea" value="true"/>
             <option name="attack" value="1"/>
             <option name="defense" value="3"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="submarine"
@@ -907,7 +907,7 @@ Coded by Iron__Cross
             <option name="isSea" value="true"/>
             <option name="attack" value="2"/>
             <option name="defense" value="2"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="unitAttachment" attachTo="factory"
@@ -922,7 +922,7 @@ Coded by Iron__Cross
             <option name="isAA" value="true"/>
             <option name="transportCost" value="3"/>
             <option name="movement" value="1"/>
-			<option name="canBeGivenByTerritoryTo" value="British"/>
+            <option name="canBeGivenByTerritoryTo" value="British"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Canada"
@@ -985,7 +985,7 @@ Coded by Iron__Cross
             <!-- Added Australian capital-->
             <option name="capital" value="Australians"/>
             <option name="navalBase" value="true"/>
-			<option name="changeUnitOwners" value="British"/>
+            <option name="changeUnitOwners" value="British"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Queensland"
@@ -1127,14 +1127,14 @@ Coded by Iron__Cross
             <option name="production" value="3"/>
             <option name="ConvoyRoute" value="true"/>
             <option name="ConvoyAttached" value="37 Sea Zone"/>
-			<option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Manchuria"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
-			<option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Korea"
@@ -1143,7 +1143,7 @@ Coded by Iron__Cross
             <option name="production" value="2"/>
             <option name="ConvoyRoute" value="true"/>
             <option name="ConvoyAttached" value="36 Sea Zone"/>
-			<option name="originalOwner" value="Chinese"/>
+            <option name="originalOwner" value="Chinese"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Szechwan"
@@ -1355,7 +1355,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="5"/>
-        </attachment>		
+        </attachment>
         <attachment name="territoryAttachment" attachTo="3 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
@@ -1503,7 +1503,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-			<option name="changeUnitOwners" value="British"/>
+            <option name="changeUnitOwners" value="British"/>
         </attachment>        
         
         <attachment name="playerAttachment" attachTo="Japanese"
@@ -1525,27 +1525,27 @@ Coded by Iron__Cross
             <option name="giveUnitControl" value="British"/>
         </attachment>        
 
-		
-	<!--  Rules Restrictions -->
-	<attachment name="rulesAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-               	<option name="unlimitedProduction" value="true"/>
-		<option name="dominatingFirstRoundAttack" value="true"/>
-        </attachment>
-	<attachment name="rulesAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-               	<option name="unlimitedProduction" value="true"/>
-        </attachment>
-	<attachment name="rulesAttachment" attachTo="Australians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-               	<option name="unlimitedProduction" value="true"/>
-        </attachment>
-	<attachment name="rulesAttachment" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-               	<option name="unlimitedProduction" value="true"/>
-		<option name="placementInCapitalRestricted" value="true"/>	
-		<option name="negateDominatingFirstRoundAttack" value="true"/>
-        </attachment>
-	<attachment name="rulesAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-              	<option name="unlimitedProduction" value="true"/>
-        </attachment>			
-        
+
+    <!--  Rules Restrictions -->
+    <attachment name="rulesAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+        <option name="unlimitedProduction" value="true"/>
+        <option name="dominatingFirstRoundAttack" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+        <option name="unlimitedProduction" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="Australians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+        <option name="unlimitedProduction" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+        <option name="unlimitedProduction" value="true"/>
+        <option name="placementInCapitalRestricted" value="true"/>
+        <option name="negateDominatingFirstRoundAttack" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+        <option name="unlimitedProduction" value="true"/>
+    </attachment>
+
     </attachmentList>
     
     <initialize>
@@ -1568,13 +1568,13 @@ Coded by Iron__Cross
             <territoryOwner territory="Shantung" owner="Japanese"/>
             <territoryOwner territory="Manchuria" owner="Japanese"/>
             <territoryOwner territory="Korea" owner="Japanese"/>
-            
-        	<!-- Add Japanese Convoy Routes here-->        
+
+            <!-- Add Japanese Convoy Routes here-->
             <territoryOwner territory="36 Sea Zone" owner="Japanese"/>
             <territoryOwner territory="37 Sea Zone" owner="Japanese"/>
             <territoryOwner territory="45 Sea Zone" owner="Japanese"/>    
-            
-        	<!-- Add Japanese Kamikaze Zones here-->        
+
+            <!-- Add Japanese Kamikaze Zones here-->
             <territoryOwner territory="23 Sea Zone" owner="Japanese"/>
             <territoryOwner territory="24 Sea Zone" owner="Japanese"/>
             <territoryOwner territory="25 Sea Zone" owner="Japanese"/> 
@@ -1608,8 +1608,8 @@ Coded by Iron__Cross
             <territoryOwner territory="New Hebrides" owner="Australians"/>
             <territoryOwner territory="Solomon" owner="Australians"/>
             <territoryOwner territory="Gilbert" owner="Australians"/>
-   			<territoryOwner territory="Johnston" owner="Australians"/>          
-            
+            <territoryOwner territory="Johnston" owner="Australians"/>
+
             <!-- Commonwealth owned Convoy Centers -->
             <!-- Code Needed to determine how to add this functionality -->
             <territoryOwner territory="52 Sea Zone" owner="Commonwealth"/>
@@ -1621,8 +1621,8 @@ Coded by Iron__Cross
             <territoryOwner territory="43 Sea Zone" owner="Australians"/>
             <territoryOwner territory="39 Sea Zone" owner="Australians"/>
             <territoryOwner territory="13 Sea Zone" owner="Australians"/>
-             
-        	<!-- Add British Convoy Routes here-->
+
+            <!-- Add British Convoy Routes here-->
             <territoryOwner territory="46 Sea Zone" owner="British"/>
             <territoryOwner territory="44 Sea Zone" owner="British"/>
             
@@ -1685,7 +1685,7 @@ Coded by Iron__Cross
                 owner="British"/>
             <unitPlacement unitType="infantry" territory="Queensland" quantity="2"
                 owner="British"/>
-			<!-- Changed to Australian ownership-->
+            <!-- Changed to Australian ownership-->
             <unitPlacement unitType="infantry" territory="New South Wales"
                 quantity="2" owner="British"/>
             <unitPlacement unitType="infantry" territory="Western Australia"
@@ -1924,8 +1924,8 @@ Coded by Iron__Cross
             
             <unitPlacement unitType="factory" territory="Szechwan" quantity="1"
                 owner="Chinese"/>
-				
-			<unitPlacement unitType="fighter" territory="Szechwan" quantity="1"
+
+            <unitPlacement unitType="fighter" territory="Szechwan" quantity="1"
                 owner="Chinese"/>
             
             <!-- American Land Placements -->
@@ -2028,7 +2028,7 @@ Coded by Iron__Cross
     </initialize>
     
     <propertyList>
-		<!-- Bids -->
+        <!-- Bids -->
         <property name="Japanese bid" value="0" editable="true">
             <number min="0" max="1000"/>
         </property>
@@ -2044,7 +2044,7 @@ Coded by Iron__Cross
         <property name="British bid" value="0" editable="true">
             <number min="0" max="1000"/>
         </property>
-		
+
         <property name="Australians bid" value="0" editable="true">
             <number min="0" max="1000"/>
         </property>
@@ -2054,18 +2054,18 @@ Coded by Iron__Cross
             <boolean/>
         </property>
 
-		<property name="Low Luck for AntiAircraft" value="false" editable="true">
-				<boolean/>
-		</property>
+        <property name="Low Luck for AntiAircraft" value="false" editable="true">
+            <boolean/>
+        </property>
 
-		<property name="Low Luck for Technology" value="false" editable="true">
-				<boolean/>
-		</property>
+        <property name="Low Luck for Technology" value="false" editable="true">
+            <boolean/>
+        </property>
 
-		<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
-				<boolean/>
-		</property>
-        
+        <property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+            <boolean/>
+        </property>
+
         <!-- Use WW2V2 Rules -->
         <property name="WW2V2" value="true" editable="false">
             <boolean/>
@@ -2079,22 +2079,22 @@ Coded by Iron__Cross
             <boolean/>
         </property>
                 
-		<!--<property name="Choose AA Casualties" value="false" editable="false">
+        <!--<property name="Choose AA Casualties" value="false" editable="false">
             <boolean/>
         </property>
-				
-		<property name="Roll AA Individually" value="false" editable="false">
+
+        <property name="Roll AA Individually" value="false" editable="false">
             <boolean/>
         </property>-->
         
         <property name="Submersible Subs" value="true" editable="false">
             <boolean/>
         </property>
-        
-		<property name="Sub Control Sea Zone Restricted" value="false" editable="true">
+
+        <property name="Sub Control Sea Zone Restricted" value="false" editable="true">
              <boolean/>
         </property>
-		
+
         <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
             <number min="2" max="3"/>
         </property>
@@ -2110,113 +2110,113 @@ Coded by Iron__Cross
         <property name="Move existing fighters to new carriers" value="true" editable="false">
             <boolean/>
         </property>
-				
+
         <property name="Allied Air Dependents" value="true" editable="false">
-			<boolean/>
-		</property>
-        
+            <boolean/>
+        </property>
+
         <property name="Units Repair Hits End Turn" value="true" editable="true">
             <boolean/>
         </property>
 
-		<property name="Units Repair Hits Start Turn" value="false" editable="true">
-			<boolean/>
-		</property>
-        
+        <property name="Units Repair Hits Start Turn" value="false" editable="true">
+            <boolean/>
+        </property>
+
         <property name="neutralCharge" value="9999999"/>
         
         <property name="maxFactoriesPerTerritory" value="1"/>
         
         <property name="Production Per Valued Territory Restricted" value="true" editable="false">
-        	<boolean/>
+            <boolean/>
         </property>
 
-		<property name="Occupied Territories" value="true" editable="false">
-        	<boolean/>
-		</property>
+        <property name="Occupied Territories" value="true" editable="false">
+            <boolean/>
+        </property>
 
-				<!-- allows a player to give units to another player if true. units must have canBeGivenByTerritory and territories must have changeUnitOwners and the players must have the player attachment giveUnitControl -->
-		<property name="Give Units By Territory" value ="true" editable="false">
-				<boolean/>
-		</property>
-		
-		<property name="Blitz Through Factories And AA Restricted" value="false" editable="true">
-                	<boolean/>
-                </property>
-				
-		<property name="Produce new fighters on old carriers" value="false" editable="true">
+        <!-- allows a player to give units to another player if true. units must have canBeGivenByTerritory and territories must have changeUnitOwners and the players must have the player attachment giveUnitControl -->
+        <property name="Give Units By Territory" value ="true" editable="false">
+            <boolean/>
+        </property>
+
+        <property name="Blitz Through Factories And AA Restricted" value="false" editable="true">
+            <boolean/>
+        </property>
+
+        <property name="Produce new fighters on old carriers" value="false" editable="true">
                         <boolean/>
                 </property>
-				
-		<property name="LHTR Carrier production rules" value="false" editable="true">
+
+        <property name="LHTR Carrier production rules" value="false" editable="true">
                         <boolean/>
                 </property>
-		
-		<property name="Naval Bombard Casualties Return Fire" value="true" editable="true">
+
+        <property name="Naval Bombard Casualties Return Fire" value="true" editable="true">
                         <boolean/>
                 </property>
-		
-		<property name="Air Attack Sub Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-				
-		<property name="Neutrals Are Impassable" value="true" editable="false">
+
+        <property name="Air Attack Sub Restricted" value="true" editable="true">
+            <boolean/>
+        </property>
+
+        <property name="Neutrals Are Impassable" value="true" editable="false">
                         <boolean/>
                 </property>
-				
-		
+
+
         <!-- Map Name: also used for map utils when asked -->
         <property name="mapName" value="pacific test" editable="false"/>
-        
-		<!-- notes appear in the notes menu in the main screen, format as html -->
- 		
-		<property name="notes">
-			<value>
-			<![CDATA[  
-			
-				The original Pacific edition.
-			<br>
-			<br>
-			<br>At the beginning of the game, before the Japanese player purchases, the British and Australian players must allocate 12 pu between themselves.
-				Use the 'edit' function to give the British and Australian players some combination of PUs that add up to 12.
-			<br>These 12 PUs represent the Commonwealth Convoy Zones (there are 3 convoy zones, valued at 3, 4, and 5).
-			<br>Each round, at the end of the British/Australian turn, the British and Australian players must use the 'edit' function to give themselves some combination of PUs that
-				add up to the amount of Commonwealth Convoy Zones Production that the Allies control.
-			
-			<br>
-			<br>
 
-            
-				This current implementation of the WW2 Pacific conflict is still in alpha phase 
-				and has many features still to be supported as listed:  
-				<ul>
-					<li> CAP </li>
-					<li> (implemented) Airports/Seaports </li>
-					<li> (implemented) Convoy Centers  </li>
-					<li> (implemented) Convoy Routes </li>
-					<li> (implemented) Chinese purchase mechanics </li>
-					<li> (implemented) Marines </li>
-					<li> Chinese and USA same turn order (done on seperate turns for now) </li>
-					<li> (implemented) Seperate income for India and Australia </li>
-					<li> Commonwealth Convoy Center PU distribution</li>
-					<li> Special stratbombing rules (regular strat bombing rules applied) </li>
-					<li> (implemented) Japanese Victory Points</li>
-					<li> (implemented) Japanese special turn one attack</li>
-					<li> (implemented) Japanese DDs can transport a single Inf</li>
-					<li> (implemented) Special sub rules</li>
-					<li> Japanese Kamikazes</li>
-					<li> (implemented) Burma Road</li>
+        <!-- notes appear in the notes menu in the main screen, format as html -->
+
+        <property name="notes">
+            <value>
+            <![CDATA[
+
+                The original Pacific edition.
+            <br>
+            <br>
+            <br>At the beginning of the game, before the Japanese player purchases, the British and Australian players must allocate 12 pu between themselves.
+                Use the 'edit' function to give the British and Australian players some combination of PUs that add up to 12.
+            <br>These 12 PUs represent the Commonwealth Convoy Zones (there are 3 convoy zones, valued at 3, 4, and 5).
+            <br>Each round, at the end of the British/Australian turn, the British and Australian players must use the 'edit' function to give themselves some combination of PUs that
+                add up to the amount of Commonwealth Convoy Zones Production that the Allies control.
+
+            <br>
+            <br>
 
 
-				</ul>
-				
-				
-				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)
-				
-				
-									]]>	
-					</value>
-				</property>
-				
+                This current implementation of the WW2 Pacific conflict is still in alpha phase
+                and has many features still to be supported as listed:
+                <ul>
+                    <li> CAP </li>
+                    <li> (implemented) Airports/Seaports </li>
+                    <li> (implemented) Convoy Centers  </li>
+                    <li> (implemented) Convoy Routes </li>
+                    <li> (implemented) Chinese purchase mechanics </li>
+                    <li> (implemented) Marines </li>
+                    <li> Chinese and USA same turn order (done on seperate turns for now) </li>
+                    <li> (implemented) Seperate income for India and Australia </li>
+                    <li> Commonwealth Convoy Center PU distribution</li>
+                    <li> Special stratbombing rules (regular strat bombing rules applied) </li>
+                    <li> (implemented) Japanese Victory Points</li>
+                    <li> (implemented) Japanese special turn one attack</li>
+                    <li> (implemented) Japanese DDs can transport a single Inf</li>
+                    <li> (implemented) Special sub rules</li>
+                    <li> Japanese Kamikazes</li>
+                    <li> (implemented) Burma Road</li>
+
+
+                </ul>
+
+
+                Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)
+
+
+                                    ]]>
+                    </value>
+                </property>
+
     </propertyList>
 </game>
