@@ -560,7 +560,7 @@
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
                         
                         <!-- Bidding Phase -->
-			
+
                         <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
                         <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
                         
@@ -1282,30 +1282,30 @@
                   <attachment name="territoryAttachment" attachTo="Caroline Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                   </attachment>
-                  
-              	    <!-- canals -->
-    
-				    <attachment name="canalAttachment" attachTo="15 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Suez Canal"/>
-				    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
-				    </attachment>
-				    
-				    <attachment name="canalAttachment" attachTo="34 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Suez Canal"/>
-				    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
-				    </attachment>
-				    
-			   	    <attachment name="canalAttachment" attachTo="19 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Panama Canal"/>
-				    	<option name="landTerritories" value="Panama"/>
-				    </attachment>
-				    
-				    <attachment name="canalAttachment" attachTo="20 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Panama Canal"/>
-				    	<option name="landTerritories" value="Panama"/>
-				    </attachment>                  
+
+                    <!-- canals -->
+
+                    <attachment name="canalAttachment" attachTo="15 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Suez Canal"/>
+                        <option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="34 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Suez Canal"/>
+                        <option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="19 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Panama Canal"/>
+                        <option name="landTerritories" value="Panama"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="20 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Panama Canal"/>
+                        <option name="landTerritories" value="Panama"/>
+                    </attachment>
         </attachmentList>
-        
+
         <initialize>
                 <ownerInitialize>
                         <!-- German Owned Territories -->
@@ -1558,8 +1558,8 @@
                 <property name="Russians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				
-				<property name="Germans bid" value="0" editable="true">
+
+                <property name="Germans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
@@ -1574,107 +1574,107 @@
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				
-				<!-- Victory Conditions -->
+
+                <!-- Victory Conditions -->
                 <property name="Projection of Power" value="false" editable="true">
-					<boolean/>
-				</property> 
-                
-				<property name="Axis Projection of Power VCs" value="8" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<property name="Allies Projection of Power VCs" value="8" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<property name="Honorable Surrender" value="true" editable="true">
-					<boolean/>
-				</property> 
-                
-				<property name="Axis Honorable Victory VCs" value="10" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<property name="Allies Honorable Victory VCs" value="10" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<property name="Total Victory" value="false" editable="true">
-					<boolean/>
-				</property> 
-                
-				<property name="Axis Total Victory VCs" value="12" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<property name="Allies Total Victory VCs" value="12" editable="false">
-					<number min="8" max="12"/>
-				</property>
-				
-				<!-- Low Luck -->
-				<property name="Low Luck" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Axis Projection of Power VCs" value="8" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Projection of Power VCs" value="8" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Honorable Surrender" value="true" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Axis Honorable Victory VCs" value="10" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Honorable Victory VCs" value="10" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Total Victory" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Axis Total Victory VCs" value="12" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Total Victory VCs" value="12" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <!-- Low Luck -->
+                <property name="Low Luck" value="false" editable="true">
                         <boolean/>
                 </property>
 
-				<property name="Low Luck for AntiAircraft" value="false" editable="true">
-						<boolean/>
-				</property>
+                <property name="Low Luck for AntiAircraft" value="false" editable="true">
+                        <boolean/>
+                </property>
 
-				<property name="Low Luck for Technology" value="false" editable="true">
-						<boolean/>
-				</property>
+                <property name="Low Luck for Technology" value="false" editable="true">
+                        <boolean/>
+                </property>
 
-				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
-						<boolean/>
-				</property>
-                
+                <property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+                        <boolean/>
+                </property>
+
                 <property name="Tech Development" value="true" editable="true">
                         <boolean/>
                 </property>
 
-				<property name="Super Sub Defence Bonus" value="1" editable="false">
-						<number min="0" max="1"/>
-				</property>
-				
-				<property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+                <property name="Super Sub Defence Bonus" value="1" editable="false">
+                        <number min="0" max="1"/>
+                </property>
+
+                <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
                         <number min="2" max="3"/>
                 </property>
-                                
+
                 <property name="LHTR Heavy Bombers" value="true" editable="false">
-                	  <boolean/>
-                </property>
-				
-				<property name="Territory Turn Limit" value="true" editable="false">
                         <boolean/>
                 </property>
-				
-				<property name="Always on AA" value="false" editable="true">
+
+                <property name="Territory Turn Limit" value="true" editable="false">
                         <boolean/>
                 </property>
-                
-				<property name="Choose AA Casualties" value="false" editable="false">
+
+                <property name="Always on AA" value="false" editable="true">
                         <boolean/>
                 </property>
-				
-				<property name="Roll AA Individually" value="true" editable="false">
+
+                <property name="Choose AA Casualties" value="false" editable="false">
                         <boolean/>
                 </property>
-				
-				<property name="Kamikaze Airplanes" value="false" editable="true">
-					<boolean/>
-				</property>
-				
+
+                <property name="Roll AA Individually" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+                <property name="Kamikaze Airplanes" value="false" editable="true">
+                    <boolean/>
+                </property>
+
                 <property name="Units Repair Hits End Turn" value="true" editable="true">
                         <boolean/>
                 </property>
 
-				<property name="Units Repair Hits Start Turn" value="false" editable="true">
-						<boolean/>
-				</property>
+                <property name="Units Repair Hits Start Turn" value="false" editable="true">
+                        <boolean/>
+                </property>
 
                 <!-- Use WW2V2 Rules -->
-				<property name="WW2V2" value="true" editable="false">
+                <property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
                 
@@ -1689,10 +1689,10 @@
                 <property name="Produce fighters on carriers" value="true" editable="false">
                         <boolean/>
                 </property>
-				
-				<property name="Allied Air Dependents" value="true" editable="false">
-					<boolean/>
-				</property>
+
+                <property name="Allied Air Dependents" value="true" editable="false">
+                    <boolean/>
+                </property>
 
                 <property name="LHTR Carrier production rules" value="true" editable="false">
                         <boolean/>
@@ -1700,42 +1700,42 @@
                 
                 <property name="neutralCharge" value="9999999"/>
 
-				<property name="Neutrals Are Impassable" value="true" editable="false">
-					<boolean/>
-				</property>
+                <property name="Neutrals Are Impassable" value="true" editable="false">
+                    <boolean/>
+                </property>
 
-				<property name="Neutrals Are Blitzable" value="false" editable="false">
-					<boolean/>
-				</property>
-                
+                <property name="Neutrals Are Blitzable" value="false" editable="false">
+                    <boolean/>
+                </property>
+
                 <property name="maxFactoriesPerTerritory" value="1"/>
-				
+
                 <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
-                	<boolean/>
+                    <boolean/>
                 </property>
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="World War II Revised LHTR Test" editable="false"/>
                 
                 <property name="notes">
-	        	<value><![CDATA[   
-		        	   	
-						A WW2V2 Revised mod that follows the popular LHTR rules. (Larry Harris Tournament Rules)
-					<br>
-					<br>NOTE: If playing with tech, do NOT research "Industrial Technology", as technically that is not one of the techs for this game, and it is also considered an unbalanced tech.
-					<br>
-					<br>Summary of Major Changes from normal Revised to LHTR:
-					<br>* AA guns do not fire if moved over during non-combat movement phase.
-					<br>* Strategic Bombing Raids and Rockets can not do more damage per territory than the value of that territory, per turn.
-					<br>* You can no longer move air units from a territory to the carrier when you place a new carrier, 
-							instead you must move those air units to the territory where the carrier will be placed during one of the movement phases, then place the carrier under it during placement phase.
-					<br>* You may place purchased air units on already existing carriers in sea zones adjacent to the factory, (and also still on purchased carriers), during placement phase.
-					<br>* Technology is given to the player at the end of their turn, instead of immediately after it is researched at the beginning of the turn.
-					<br>* Super Subs gives +1 attack and +1 defense, instead of just attack, to submarines.
-					<br>* Heavy Bombers allows bombers to roll 2 dice, and select the best one (instead of counting both), and if a strategic bombing raid, +1 is added onto the best die in order to calculate total damage.
-					<br>* No Industrial Technology tech
-					<br>
-	        	]]></value>        	       
-        		</property>
+                <value><![CDATA[
+
+                        A WW2V2 Revised mod that follows the popular LHTR rules. (Larry Harris Tournament Rules)
+                    <br>
+                    <br>NOTE: If playing with tech, do NOT research "Industrial Technology", as technically that is not one of the techs for this game, and it is also considered an unbalanced tech.
+                    <br>
+                    <br>Summary of Major Changes from normal Revised to LHTR:
+                    <br>* AA guns do not fire if moved over during non-combat movement phase.
+                    <br>* Strategic Bombing Raids and Rockets can not do more damage per territory than the value of that territory, per turn.
+                    <br>* You can no longer move air units from a territory to the carrier when you place a new carrier,
+                            instead you must move those air units to the territory where the carrier will be placed during one of the movement phases, then place the carrier under it during placement phase.
+                    <br>* You may place purchased air units on already existing carriers in sea zones adjacent to the factory, (and also still on purchased carriers), during placement phase.
+                    <br>* Technology is given to the player at the end of their turn, instead of immediately after it is researched at the beginning of the turn.
+                    <br>* Super Subs gives +1 attack and +1 defense, instead of just attack, to submarines.
+                    <br>* Heavy Bombers allows bombers to roll 2 dice, and select the best one (instead of counting both), and if a strategic bombing raid, +1 is added onto the best die in order to calculate total damage.
+                    <br>* No Industrial Technology tech
+                    <br>
+                ]]></value>
+                </property>
         </propertyList>
 </game>

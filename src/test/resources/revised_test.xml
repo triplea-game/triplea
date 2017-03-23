@@ -560,7 +560,7 @@
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
                         
                         <!-- Bidding Phase -->
-			
+
                         <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
                         <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
                         
@@ -1282,29 +1282,29 @@
                   <attachment name="territoryAttachment" attachTo="Caroline Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                   </attachment>
-                  
-                  
-              	    <!-- canals -->
-    
-				    <attachment name="canalAttachment" attachTo="15 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Suez Canal"/>
-				    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
-				    </attachment>
-				    
-				    <attachment name="canalAttachment" attachTo="34 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Suez Canal"/>
-				    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
-				    </attachment>
-				    
-			   	    <attachment name="canalAttachment" attachTo="19 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Panama Canal"/>
-				    	<option name="landTerritories" value="Panama"/>
-				    </attachment>
-				    
-				    <attachment name="canalAttachment" attachTo="20 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
-				    	<option name="canalName" value="Panama Canal"/>
-				    	<option name="landTerritories" value="Panama"/>
-				    </attachment>                  
+
+
+                    <!-- canals -->
+
+                    <attachment name="canalAttachment" attachTo="15 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Suez Canal"/>
+                        <option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="34 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Suez Canal"/>
+                        <option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="19 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Panama Canal"/>
+                        <option name="landTerritories" value="Panama"/>
+                    </attachment>
+
+                    <attachment name="canalAttachment" attachTo="20 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+                        <option name="canalName" value="Panama Canal"/>
+                        <option name="landTerritories" value="Panama"/>
+                    </attachment>
         </attachmentList>
         
         <initialize>
@@ -1559,8 +1559,8 @@
                 <property name="Russians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				
-				<property name="Germans bid" value="0" editable="true">
+
+                <property name="Germans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
@@ -1575,73 +1575,73 @@
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				
-				<!-- Victory Conditions -->
-				<property name="Projection of Power" value="true" editable="true">
-					<boolean/>
-				</property>
 
-				<property name="Axis Projection of Power VCs" value="9" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<property name="Allies Projection of Power VCs" value="9" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<property name="Honorable Surrender" value="false" editable="true">
-					<boolean/>
-				</property>
-
-				<property name="Axis Honorable Victory VCs" value="10" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<property name="Allies Honorable Victory VCs" value="10" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<property name="Total Victory" value="false" editable="true">
-					<boolean/>
-				</property>
-
-				<property name="Axis Total Victory VCs" value="12" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<property name="Allies Total Victory VCs" value="12" editable="false">
-					<number min="8" max="12"/>
-				</property>
-
-				<!-- Low Luck -->
-				<property name="Low Luck" value="false" editable="true">
-					<boolean/>
-				</property>
-
-				<property name="Low Luck for AntiAircraft" value="false" editable="true">
-						<boolean/>
-				</property>
-
-				<property name="Low Luck for Technology" value="false" editable="true">
-						<boolean/>
-				</property>
-
-				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
-						<boolean/>
-				</property>
-				
-                <property name="Tech Development" value="true" editable="true">
-                	<boolean/>
+                <!-- Victory Conditions -->
+                <property name="Projection of Power" value="true" editable="true">
+                    <boolean/>
                 </property>
 
-				<property name="Super Sub Defence Bonus" value="0" editable="true">
-						<number min="0" max="1"/>
-				</property>
-				
-				<property name="LHTR Heavy Bombers" value="false" editable="true">
-					<boolean/>
-				</property>
-                
+                <property name="Axis Projection of Power VCs" value="9" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Projection of Power VCs" value="9" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Honorable Surrender" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Axis Honorable Victory VCs" value="10" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Honorable Victory VCs" value="10" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Total Victory" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Axis Total Victory VCs" value="12" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <property name="Allies Total Victory VCs" value="12" editable="false">
+                    <number min="8" max="12"/>
+                </property>
+
+                <!-- Low Luck -->
+                <property name="Low Luck" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Low Luck for AntiAircraft" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Low Luck for Technology" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Tech Development" value="true" editable="true">
+                    <boolean/>
+                </property>
+
+                <property name="Super Sub Defence Bonus" value="0" editable="true">
+                    <number min="0" max="1"/>
+                </property>
+
+                <property name="LHTR Heavy Bombers" value="false" editable="true">
+                    <boolean/>
+                </property>
+
                 <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
                         <number min="2" max="10"/>
                 </property>
@@ -1654,28 +1654,28 @@
                         <boolean/>
                 </property>
 
-				<property name="Choose AA Casualties" value="false" editable="true">
-					<boolean/>
-				</property>
+                <property name="Choose AA Casualties" value="false" editable="true">
+                    <boolean/>
+                </property>
 
-				<property name="Roll AA Individually" value="true" editable="false">
-					<boolean/>
-				</property>
-                
-				<property name="Kamikaze Airplanes" value="false" editable="true">
-					<boolean/>
-				</property>
-                
+                <property name="Roll AA Individually" value="true" editable="false">
+                    <boolean/>
+                </property>
+
+                <property name="Kamikaze Airplanes" value="false" editable="true">
+                    <boolean/>
+                </property>
+
                 <property name="Units Repair Hits End Turn" value="true" editable="true">
                         <boolean/>
                 </property>
 
-				<property name="Units Repair Hits Start Turn" value="false" editable="true">
-						<boolean/>
-				</property>
+                <property name="Units Repair Hits Start Turn" value="false" editable="true">
+                    <boolean/>
+                </property>
 
                 <!-- Use WW2V2 Rules -->
-				<property name="WW2V2" value="true" editable="false">
+                <property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
                 
@@ -1691,42 +1691,42 @@
                         <boolean/>
                 </property>
 
-				<property name="Move existing fighters to new carriers" value="true" editable="false">
-					<boolean/>
-				</property>
+                <property name="Move existing fighters to new carriers" value="true" editable="false">
+                    <boolean/>
+                </property>
 
                 <property name="LHTR Carrier production rules" value="false" editable="true">
                         <boolean/>
                 </property>
 
-				<property name="Allied Air Dependents" value="true" editable="false">
-					<boolean/>
-				</property>
+                <property name="Allied Air Dependents" value="true" editable="false">
+                    <boolean/>
+                </property>
 
                 <property name="neutralCharge" value="9999999"/>
 
-				<property name="Neutrals Are Impassable" value="true" editable="false">
-					<boolean/>
-				</property>
+                <property name="Neutrals Are Impassable" value="true" editable="false">
+                    <boolean/>
+                </property>
 
-				<property name="Neutrals Are Blitzable" value="false" editable="false">
-					<boolean/>
-				</property>
-                
+                <property name="Neutrals Are Blitzable" value="false" editable="false">
+                    <boolean/>
+                </property>
+
                 <property name="maxFactoriesPerTerritory" value="1"/>
-				
+
                 <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
-                	<boolean/>
+                    <boolean/>
                 </property>
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="World War II Revised Test" editable="false"/>
                 
                 <property name="notes">
-		        	<value><![CDATA[       
-		        	
-		        	A revised version of the basic rule set.
-		        	]]></value>        	       
-        		</property>	
-        </propertyList>        
+                    <value><![CDATA[
+
+                    A revised version of the basic rule set.
+                    ]]></value>
+                </property>
+        </propertyList>
 </game>
