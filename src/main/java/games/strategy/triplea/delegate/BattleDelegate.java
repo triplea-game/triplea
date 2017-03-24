@@ -384,7 +384,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return null;
   }
 
-  private static void landParatroopers(final PlayerID player, final Territory battleSite, final GameData data,
+  private static void landParatroopers(final PlayerID player, final Territory battleSite,
       final IDelegateBridge bridge) {
     if (TechTracker.hasParatroopers(player)) {
       final Collection<Unit> airTransports =
@@ -465,7 +465,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // separately, after aa
         // fires)
         if (enemyUnits.isEmpty() || Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
-          landParatroopers(player, territory, data, aBridge);
+          landParatroopers(player, territory, aBridge);
         }
         aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
         battleTracker.addBattle(new RouteScripted(territory), attackingUnits, player, aBridge, null, null);
@@ -1132,7 +1132,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             territory = canLandHere.iterator().next();
           }
           if (territory.isWater()) {
-            landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, canLandHere, alliedCarrier, alliedPlane,
+            landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, alliedCarrier, alliedPlane,
                 territory, battleSite);
           } else {
             moveAirAndLand(m_bridge, defendingAir, defendingAir, territory, battleSite);
@@ -1145,7 +1145,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (canLandHere.size() > 0 && defendingAir.size() > 0) {
           territory = canLandHere.iterator().next();
           if (territory.isWater()) {
-            landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, canLandHere, alliedCarrier, alliedPlane,
+            landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, alliedCarrier, alliedPlane,
                 territory, battleSite);
           } else {
             moveAirAndLand(m_bridge, defendingAir, defendingAir, territory, battleSite);
@@ -1174,9 +1174,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private static void landPlanesOnCarriers(final IDelegateBridge bridge, final CompositeMatch<Unit> alliedDefendingAir,
-      final Collection<Unit> defendingAir, final Collection<Territory> canLandHere,
-      final CompositeMatch<Unit> alliedCarrier, final CompositeMatch<Unit> alliedPlane, final Territory newTerritory,
-      final Territory battleSite) {
+      final Collection<Unit> defendingAir, final CompositeMatch<Unit> alliedCarrier,
+      final CompositeMatch<Unit> alliedPlane, final Territory newTerritory, final Territory battleSite) {
     // Get the capacity of the carriers in the selected zone
     final Collection<Unit> alliedCarriersSelected = newTerritory.getUnits().getMatches(alliedCarrier);
     final Collection<Unit> alliedPlanesSelected = newTerritory.getUnits().getMatches(alliedPlane);

@@ -38,9 +38,9 @@ public class Unit extends GameDataComponent {
   public PlayerID getOwner() {
     return m_owner;
   }
-  
+
   public UnitAttachment getUnitAttachment() {
-  	return (UnitAttachment) m_type.getAttachment("unitAttachment");
+    return (UnitAttachment) m_type.getAttachment("unitAttachment");
   }
 
   /**

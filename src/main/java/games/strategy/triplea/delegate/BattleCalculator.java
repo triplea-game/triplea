@@ -644,9 +644,9 @@ public class BattleCalculator {
       final boolean allowMultipleHitsPerUnit, final boolean bonus) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
-    final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, hits, defending, player,
+    final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, defending, player,
         enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
-        territoryEffects, data, allowMultipleHitsPerUnit, bonus);
+        territoryEffects, data, bonus);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
@@ -688,11 +688,10 @@ public class BattleCalculator {
    * provided.
    * (Veqryn)
    */
-  private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits,
+  private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom,
       final boolean defending, final PlayerID player, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
-      final boolean bonus) {
+      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus) {
 
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();

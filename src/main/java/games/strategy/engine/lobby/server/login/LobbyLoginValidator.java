@@ -53,7 +53,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac, remoteAddress);
+    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
       s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -65,7 +65,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient, final String clientName,
-      final String hashedMac, final SocketAddress remoteAddress) {
+      final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }

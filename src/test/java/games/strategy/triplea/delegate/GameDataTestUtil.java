@@ -82,23 +82,23 @@ public class GameDataTestUtil {
 
   // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request 1074
   public static UnitType tacBomber(final GameData data) {
-    return unitType("tactical_bomber", data);			
+    return unitType("tactical_bomber", data);
   }
 
   public static UnitType airbase(final GameData data) {
-    return unitType("airbase", data);			
+    return unitType("airbase", data);
   }
 
   public static UnitType harbour(final GameData data) {
-    return unitType("harbour", data);			
+    return unitType("harbour", data);
   }
 
   public static UnitType factoryMajor(final GameData data) {
-    return unitType("factory_major", data);			
+    return unitType("factory_major", data);
   }
 
   public static UnitType factoryMinor(final GameData data) {
-    return unitType("factory_minor", data);			
+    return unitType("factory_minor", data);
   }
 
   public static UnitType fighter(final GameData data) {

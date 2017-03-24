@@ -7,17 +7,17 @@
   <diceSides value="6"/>
   <map>
     <!-- Full europe list:
-				West Indies:Central United States:Central America:Greenland:Southeast Mexico:Eastern United States:West India:Belgian Congo:Iceland:Quebec:Alberta Saskatchewan Manitoba:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Egypt:Union of South Africa:Cyprus:British Guiana:Gold Coast:Rio de Oro:Ontario:Scotland:South West Africa:Nigeria:Kenya:Malta:United Kingdom:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:Normandy Bordeaux:French Central Africa:French Madagascar:French Guiana:Algeria:Southern France:Syria:French West Africa:France:Tunisia:Greater Southern Germany:Slovakia Hungary:Western Germany:Romania:Poland:Germany:Norway:Denmark:Holland Belgium:Tobruk:Albania:Northern Italy:Libya:Sicily:Italian Somaliland:Southern Italy:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Rostov:Nenetsia:Vyborg:Archangel:Eastern Poland:Bessarabia:Russia:Tambov:Ukraine:Western Ukraine:Vologda:Volgograd:Turkmenistan:Novgorod:Caucasus:Smolensk:Samara:Portugal:Portuguese Guinea:Ecuador:Chile:Afghanistan:Sierra Leone:Turkey:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Argentina:Bulgaria:Angola:Greece:Iraq:Eastern Persia:Uruguay:Brazil:Venezuela:Northwest Persia:Persia:Sweden:Yugoslavia:Spain:Colombia:Bolivia:Liberia:Peru:Finland:Suriname
-				-->
+                West Indies:Central United States:Central America:Greenland:Southeast Mexico:Eastern United States:West India:Belgian Congo:Iceland:Quebec:Alberta Saskatchewan Manitoba:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Egypt:Union of South Africa:Cyprus:British Guiana:Gold Coast:Rio de Oro:Ontario:Scotland:South West Africa:Nigeria:Kenya:Malta:United Kingdom:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:Normandy Bordeaux:French Central Africa:French Madagascar:French Guiana:Algeria:Southern France:Syria:French West Africa:France:Tunisia:Greater Southern Germany:Slovakia Hungary:Western Germany:Romania:Poland:Germany:Norway:Denmark:Holland Belgium:Tobruk:Albania:Northern Italy:Libya:Sicily:Italian Somaliland:Southern Italy:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Rostov:Nenetsia:Vyborg:Archangel:Eastern Poland:Bessarabia:Russia:Tambov:Ukraine:Western Ukraine:Vologda:Volgograd:Turkmenistan:Novgorod:Caucasus:Smolensk:Samara:Portugal:Portuguese Guinea:Ecuador:Chile:Afghanistan:Sierra Leone:Turkey:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Argentina:Bulgaria:Angola:Greece:Iraq:Eastern Persia:Uruguay:Brazil:Venezuela:Northwest Persia:Persia:Sweden:Yugoslavia:Spain:Colombia:Bolivia:Liberia:Peru:Finland:Suriname
+                -->
     <!-- Border territories:
-				Evenkiyskiy:Urals:Novosibirsk:Himalayas:Kazakhstan:Timguska:India:Sikang:Tsinghai:Kansu
-				-->
+                Evenkiyskiy:Urals:Novosibirsk:Himalayas:Kazakhstan:Timguska:India:Sikang:Tsinghai:Kansu
+                -->
     <!-- Full pacific list:
-				Caroline Islands:Iwo Jima:Paulau Island:Marshall Islands:Shantung:Formosa:Kwangsi:Korea:Kiangsu:Kiangsi:Japan:Jehol:Okinawa:Marianas:Siam:Manchuria:Hainan:Shensi:Yunnan:Suiyuyan:Kweichow:Hunan:Hopei:Szechwan:Chahar:Anhwe:Gilbert Islands:Fiji:Ceylon:Samoa:Shan State:Burma:British Columbia:Malaya:Borneo:Yukon Territory:Kwangtung:Queensland:Victoria:New Britain:Northern Territory:New Zealand:New South Wales:South Australia:Western Australia:Solomon Islands:New Guinea:Philippines:Line Islands:Mexico:Guam:Wake Island:Western United States:Alaska:Aleutian Islands:Johnston Island:Hawaiian Islands:Midway:Sakha:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Siberia:Buryatia:French Indo China:New Hebrides:Celebes:Java:Dutch New Guinea:Sumatra:Olgiy:Dzavhan:Central Mongolia:Buyant-Uhaa:Ulaanbaatar:Tsagaan Olom
-				-->
+                Caroline Islands:Iwo Jima:Paulau Island:Marshall Islands:Shantung:Formosa:Kwangsi:Korea:Kiangsu:Kiangsi:Japan:Jehol:Okinawa:Marianas:Siam:Manchuria:Hainan:Shensi:Yunnan:Suiyuyan:Kweichow:Hunan:Hopei:Szechwan:Chahar:Anhwe:Gilbert Islands:Fiji:Ceylon:Samoa:Shan State:Burma:British Columbia:Malaya:Borneo:Yukon Territory:Kwangtung:Queensland:Victoria:New Britain:Northern Territory:New Zealand:New South Wales:South Australia:Western Australia:Solomon Islands:New Guinea:Philippines:Line Islands:Mexico:Guam:Wake Island:Western United States:Alaska:Aleutian Islands:Johnston Island:Hawaiian Islands:Midway:Sakha:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Siberia:Buryatia:French Indo China:New Hebrides:Celebes:Java:Dutch New Guinea:Sumatra:Olgiy:Dzavhan:Central Mongolia:Buyant-Uhaa:Ulaanbaatar:Tsagaan Olom
+                -->
     <!-- Full sea zone list:
-				1 Sea Zone:2 Sea Zone:3 Sea Zone:4 Sea Zone:5 Sea Zone:6 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone:15 Sea Zone:16 Sea Zone:17 Sea Zone:18 Sea Zone:19 Sea Zone:20 Sea Zone:21 Sea Zone:22 Sea Zone:23 Sea Zone:24 Sea Zone:25 Sea Zone:26 Sea Zone:27 Sea Zone:28 Sea Zone:29 Sea Zone:30 Sea Zone:31 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:35 Sea Zone:36 Sea Zone:37 Sea Zone:38 Sea Zone:39 Sea Zone:40 Sea Zone:41 Sea Zone:42 Sea Zone:43 Sea Zone:44 Sea Zone:45 Sea Zone:46 Sea Zone:47 Sea Zone:48 Sea Zone:49 Sea Zone:50 Sea Zone:51 Sea Zone:52 Sea Zone:53 Sea Zone:54 Sea Zone:55 Sea Zone:56 Sea Zone:57 Sea Zone:58 Sea Zone:59 Sea Zone:60 Sea Zone:61 Sea Zone:62 Sea Zone:63 Sea Zone:64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone:128 Sea Zone
-				-->
+                1 Sea Zone:2 Sea Zone:3 Sea Zone:4 Sea Zone:5 Sea Zone:6 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone:15 Sea Zone:16 Sea Zone:17 Sea Zone:18 Sea Zone:19 Sea Zone:20 Sea Zone:21 Sea Zone:22 Sea Zone:23 Sea Zone:24 Sea Zone:25 Sea Zone:26 Sea Zone:27 Sea Zone:28 Sea Zone:29 Sea Zone:30 Sea Zone:31 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:35 Sea Zone:36 Sea Zone:37 Sea Zone:38 Sea Zone:39 Sea Zone:40 Sea Zone:41 Sea Zone:42 Sea Zone:43 Sea Zone:44 Sea Zone:45 Sea Zone:46 Sea Zone:47 Sea Zone:48 Sea Zone:49 Sea Zone:50 Sea Zone:51 Sea Zone:52 Sea Zone:53 Sea Zone:54 Sea Zone:55 Sea Zone:56 Sea Zone:57 Sea Zone:58 Sea Zone:59 Sea Zone:60 Sea Zone:61 Sea Zone:62 Sea Zone:63 Sea Zone:64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone:128 Sea Zone
+                -->
     <!-- Territory Definitions -->
     <!-- P40 -->
     <territory name="Caroline Islands"/>
@@ -1504,78 +1504,78 @@
                         <cost resource="PUs" quantity="3" />
                         <result resourceOrUnit="infantry" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyMech_InfantryIndustrialTechnology">
                         <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="mech_infantry" quantity="1"/>
                 </productionRule>
-                
-				<productionRule name="buyArtilleryIndustrialTechnology">
+
+                <productionRule name="buyArtilleryIndustrialTechnology">
                         <cost resource="PUs" quantity="4" />
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyArmourIndustrialTechnology">
                         <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyFighterIndustrialTechnology">
                         <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyTactical_BomberIndustrialTechnology">
                         <cost resource="PUs" quantity="11" />
                         <result resourceOrUnit="tactical_bomber" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyBomberIndustrialTechnology">
                         <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
-                
-				<productionRule name="buyTransportIndustrialTechnology">
+
+                <productionRule name="buyTransportIndustrialTechnology">
                         <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="transport" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyCarrierIndustrialTechnology">
                         <cost resource="PUs" quantity="13" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyDestroyerIndustrialTechnology">
                         <cost resource="PUs" quantity="7" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
-				
-				<productionRule name="buyCruiserIndustrialTechnology">
+
+                <productionRule name="buyCruiserIndustrialTechnology">
                         <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyBattleshipIndustrialTechnology">
                         <cost resource="PUs" quantity="17" />
                         <result resourceOrUnit="battleship" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buySubmarineIndustrialTechnology">
                         <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
-                
-                
-				<productionRule name="buyFactory_MinorIndustrialTechnology">
+
+
+                <productionRule name="buyFactory_MinorIndustrialTechnology">
                         <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="factory_minor" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyFactory_MajorIndustrialTechnology">
                         <cost resource="PUs" quantity="30" />
                         <result resourceOrUnit="factory_major" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyAirfieldIndustrialTechnology">
                         <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="airfield" quantity="1"/>
@@ -1585,7 +1585,7 @@
                         <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyAAGunIndustrialTechnology">
                         <cost resource="PUs" quantity="6" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
@@ -1702,20 +1702,20 @@
     <!--<productionFrontier name="productionIndustrialTechnology">
                         <frontierRules name="buyInfantryIndustrialTechnology"/>
                         <frontierRules name="buyMech_InfantryIndustrialTechnology"/>
-						<frontierRules name="buyArtilleryIndustrialTechnology"/>
+                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
                         <frontierRules name="buyArmourIndustrialTechnology"/>
                         <frontierRules name="buyFighterIndustrialTechnology"/>
-						<frontierRules name="buyTactical_BomberIndustrialTechnology"/>
+                        <frontierRules name="buyTactical_BomberIndustrialTechnology"/>
                         <frontierRules name="buyBomberIndustrialTechnology"/>
                         <frontierRules name="buyTransportIndustrialTechnology"/>
                         <frontierRules name="buySubmarineIndustrialTechnology"/>
                         <frontierRules name="buyCarrierIndustrialTechnology"/>
                         <frontierRules name="buyDestroyerIndustrialTechnology"/>
-						<frontierRules name="buyCruiserIndustrialTechnology"/>
+                        <frontierRules name="buyCruiserIndustrialTechnology"/>
                         <frontierRules name="buyBattleshipIndustrialTechnology"/>
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
-						<frontierRules name="buyFactory_MinorIndustrialTechnology"/>
-						<frontierRules name="buyFactory_MajorIndustrialTechnology"/>
+                        <frontierRules name="buyFactory_MinorIndustrialTechnology"/>
+                        <frontierRules name="buyFactory_MajorIndustrialTechnology"/>
                         <frontierRules name="buyAirfieldIndustrialTechnology"/>
                         <frontierRules name="buyHarbourIndustrialTechnology"/>
                 </productionFrontier>-->
@@ -1739,7 +1739,7 @@
     <playerProduction player="ANZAC" frontier="production"/>
     <playerRepair player="Americans" frontier="repair"/>
     <!-- Chinese are not allowed to repair
-				<playerRepair player="Chinese" frontier="repair"/> -->
+                <playerRepair player="Chinese" frontier="repair"/> -->
     <playerRepair player="British" frontier="repair"/>
     <playerRepair player="UK_Pacific" frontier="repair"/>
     <playerRepair player="ANZAC" frontier="repair"/>
@@ -1970,14 +1970,14 @@
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Friendly" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
       <!--<option name="archeType" value="neutral"/>
-						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
-						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
-						<option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
+                        <option name="canMoveLandUnitsOverOwnedLand" value="true"/>
+                        <option name="canMoveAirUnitsOverOwnedLand" value="true"/>
+                        <option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
       <option name="archeType" value="allied"/>
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Custodianship" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
       <!--<option name="archeType" value="war"/>
-						<option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
+                        <option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
       <option name="archeType" value="allied"/>
       <option name="canTakeOverOwnedTerritory" value="true"/>
     </attachment>
@@ -1994,12 +1994,12 @@
       <option name="canMoveIntoDuringCombatMove" value="false"/>
       <option name="rocketsCanFlyOver" value="false"/>
       <!-- How Friendly Neutrals work:
-								They may not be attacked. (IE: can not move into during combat move phase) (DONE)
-								They can not be flown over. (Done)
-								They can not be moved through, or blitzed. (TODO)
-								During non-combat move, you may move land units into them to capture them and all their units. (Done)
-								May only capture with units that have attack power (no aa guns). (TODO)
-						-->
+                                They may not be attacked. (IE: can not move into during combat move phase) (DONE)
+                                They can not be flown over. (Done)
+                                They can not be moved through, or blitzed. (TODO)
+                                During non-combat move, you may move land units into them to capture them and all their units. (Done)
+                                May only capture with units that have attack power (no aa guns). (TODO)
+                        -->
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Unfriendly_Neutral" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
       <option name="archeType" value="war"/>
@@ -2360,14 +2360,14 @@
       <option name="defense" value="1"/>
       <option name="blockade" value="2"/>
       <!-- stuff for targeting unescorted transports (we are using the new-fangled aa-gun code)
-						 <option name="isAAforFlyOverOnly" value="true"/>
-						 <option name="targetsAA" value="transport"/>
-						 <option name="willNotFireIfPresent" value="destroyer:cruiser:battleship:carrier"/>
-						 <option name="mayOverStackAA" value="true"/>
-						 <option name="maxAAattacks" value="1"/>
-						 <option name="attackAA" value="2"/>
-						 <option name="attackAAmaxDieSides" value="6"/>
-						 <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>-->
+                         <option name="isAAforFlyOverOnly" value="true"/>
+                         <option name="targetsAA" value="transport"/>
+                         <option name="willNotFireIfPresent" value="destroyer:cruiser:battleship:carrier"/>
+                         <option name="mayOverStackAA" value="true"/>
+                         <option name="maxAAattacks" value="1"/>
+                         <option name="attackAA" value="2"/>
+                         <option name="attackAAmaxDieSides" value="6"/>
+                         <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>-->
       <option name="canBeGivenByTerritoryTo" value="British"/>
       <!-- TODO: submarines now prevent amphibious assaults unless there is an owned warship present -->
     </attachment>
@@ -2459,7 +2459,7 @@
       <!--<option name="isRocket" value="true"/>-->
       <option name="canNotMoveDuringCombatMove" value="true"/>
       <!--<option name="isInfrastructure" value="true"/>
-						 <option name="canBeDamaged" value="false"/>-->
+                         <option name="canBeDamaged" value="false"/>-->
       <option name="movement" value="1"/>
       <option name="transportCost" value="6"/>
       <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2675,7 +2675,7 @@
                     <attachment name="territoryAttachment" attachTo="Yukon Territory" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                    </attachment>
-				   -->
+                   -->
     <attachment name="territoryAttachment" attachTo="Kwangtung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="3"/>
       <option name="victoryCity" value="1"/>
@@ -4502,18 +4502,18 @@
       <option name="relationship" value="British:Japanese:anyNeutral"/>
     </attachment>
     <!-- Russian Territories next to Mongolian Territories:
-						Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur
-						
-					 Mongolian Territories:
-						Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar
-						
-					 Japanese Territories next to Mongolian Territories:
-						Manchuria:Jehol
-						and Korea
-						
-					 Chinese Territories next to Mongolian Territories (could possibly be controlled by Japan):
-						Chahar:Suiyuyan:Kansu
-				-->
+                        Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur
+
+                     Mongolian Territories:
+                        Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar
+
+                     Japanese Territories next to Mongolian Territories:
+                        Manchuria:Jehol
+                        and Korea
+
+                     Chinese Territories next to Mongolian Territories (could possibly be controlled by Japan):
+                        Chahar:Suiyuyan:Kansu
+                -->
     <attachment name="conditionAttachment_Mongolia_Not_At_War_With_Allies" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
       <option name="relationship" value="British:Mongolians:anyWar"/>
       <option name="invert" value="true"/>
@@ -4601,86 +4601,86 @@
     </attachment>
     <!-- Japanese Triggers -->
     <!-- OLD Kamikaze trigger:
-				<attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-					<option name="conditionType" value="OR"/>
-					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-					<option name="territoryProperty" value="kamikazeZone" count="true"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:britishEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Takes_the_Philippines" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots"/>
-					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:japaneseEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-					<option name="conditionType" value="OR"/>
-					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-					<option name="territoryProperty" value="kamikazeZone" count="true"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:americansEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Takes_the_Philippines2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2"/>
-					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:japaneseEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-					<option name="conditionType" value="OR"/>
-					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-					<option name="territoryProperty" value="kamikazeZone" count="true"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:anzacEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Takes_the_Philippines3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
-					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:japaneseEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots4" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-					<option name="conditionType" value="OR"/>
-					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-					<option name="territoryProperty" value="kamikazeZone" count="true"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:frenchEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Takes_the_Philippines4" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
-					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:japaneseEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots5" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-					<option name="conditionType" value="OR"/>
-					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-					<option name="territoryProperty" value="kamikazeZone" count="true"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:russiansEndTurn"/>
-				</attachment>
-				<attachment name="triggerAttachment_Japanese_Takes_the_Philippines5" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
-					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-					<option name="uses" value="1"/>
-					<option name="when" value="after:japaneseEndTurn"/>
-				</attachment>-->
+                <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+                    <option name="conditionType" value="OR"/>
+                    <option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+                    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+                    <option name="territoryProperty" value="kamikazeZone" count="true"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:britishEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Takes_the_Philippines" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+                    <option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots"/>
+                    <option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:japaneseEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+                    <option name="conditionType" value="OR"/>
+                    <option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+                    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+                    <option name="territoryProperty" value="kamikazeZone" count="true"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:americansEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Takes_the_Philippines2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+                    <option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2"/>
+                    <option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:japaneseEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+                    <option name="conditionType" value="OR"/>
+                    <option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+                    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+                    <option name="territoryProperty" value="kamikazeZone" count="true"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:anzacEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Takes_the_Philippines3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+                    <option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+                    <option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:japaneseEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots4" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+                    <option name="conditionType" value="OR"/>
+                    <option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+                    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+                    <option name="territoryProperty" value="kamikazeZone" count="true"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:frenchEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Takes_the_Philippines4" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+                    <option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+                    <option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:japaneseEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots5" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+                    <option name="conditionType" value="OR"/>
+                    <option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+                    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+                    <option name="territoryProperty" value="kamikazeZone" count="true"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:russiansEndTurn"/>
+                </attachment>
+                <attachment name="triggerAttachment_Japanese_Takes_the_Philippines5" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+                    <option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+                    <option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+                    <option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+                    <option name="uses" value="1"/>
+                    <option name="when" value="after:japaneseEndTurn"/>
+                </attachment>-->
     <!-- New Kamikaze Trigger: -->
     <attachment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots_alpha" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
       <option name="conditions" value="conditionAttachmentAxisVictory3"/>
@@ -13381,13 +13381,13 @@
       <option name="relationshipChange" value="Americans:Neutral_Allies:anyNeutral:Friendly_Neutral"/>
       <option name="relationshipChange" value="Americans:Neutral_Axis:anyNeutral:Unfriendly_Neutral"/>
       <!--<option name="relationshipChange" value="Japanese:British:anyNeutral:War"/>
-					<option name="relationshipChange" value="Japanese:UK_Pacific:anyNeutral:War"/>
-					<option name="relationshipChange" value="Japanese:ANZAC:anyNeutral:War"/>
-					<option name="relationshipChange" value="Japanese:Dutch:anyNeutral:War"/>
-					<option name="relationshipChange" value="Chinese:British:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Chinese:UK_Pacific:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Chinese:ANZAC:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Chinese:Dutch:anyNeutral:Friendly"/>-->
+                    <option name="relationshipChange" value="Japanese:UK_Pacific:anyNeutral:War"/>
+                    <option name="relationshipChange" value="Japanese:ANZAC:anyNeutral:War"/>
+                    <option name="relationshipChange" value="Japanese:Dutch:anyNeutral:War"/>
+                    <option name="relationshipChange" value="Chinese:British:anyNeutral:Allied"/>
+                    <option name="relationshipChange" value="Chinese:UK_Pacific:anyNeutral:Allied"/>
+                    <option name="relationshipChange" value="Chinese:ANZAC:anyNeutral:Allied"/>
+                    <option name="relationshipChange" value="Chinese:Dutch:anyNeutral:Friendly"/>-->
       <option name="notification" value="Americans_War_Axis"/>
       <option name="when" value="after:americansPlace"/>
       <option name="uses" value="1"/>
@@ -13541,8 +13541,8 @@
       <!--<option name="suicideAttackTargets" value="battleship:carrier:cruiser:destroyer"/>-->
     </attachment>
     <attachment name="playerAttachment" attachTo="UK_Pacific" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
-      <!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory 
-							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
+      <!-- giveUnitControl allow multiple players to give units to multiple other players, if those units are in a designated territory
+                            must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"-->
       <option name="giveUnitControl" value="British"/>
     </attachment>
     <attachment name="playerAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
@@ -13584,27 +13584,27 @@
       <option name="unlimitedProduction" value="true"/>
     </attachment>
     <!-- Americans in OOB are not allowed to move to or through these sea zones:
-						125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
-					
-					 Americans in Alpha +3 are not allowed to end their movement in:
-						Europe board: any sea zone not touching an American territory, plus 102 sz
-						TODO: We need to disallow a movement ending in a territory
-						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
-							65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
-						Pacific board: any sea zone touching a Japanese controlled territory
-						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 17, 22, 32, 33, 34, and 37 could all be moved through on the way to another territory.
-						TODO: Currently we have a "set list" of territories. Obviously if Japan conquers more territories, then this list should expand, but it doesn't yet.
-							6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
-				-->
+                        125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
+
+                     Americans in Alpha +3 are not allowed to end their movement in:
+                        Europe board: any sea zone not touching an American territory, plus 102 sz
+                        TODO: We need to disallow a movement ending in a territory
+                        TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
+                            65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
+                        Pacific board: any sea zone touching a Japanese controlled territory
+                        TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 17, 22, 32, 33, 34, and 37 could all be moved through on the way to another territory.
+                        TODO: Currently we have a "set list" of territories. Obviously if Japan conquers more territories, then this list should expand, but it doesn't yet.
+                            6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
+                -->
     <attachment name="rulesAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
       <option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
       <!-- :6 Sea Zone:17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
       <option name="movementRestrictionType" value="disallowed"/>
     </attachment>
     <!-- Japanese in Alpha +3 are not allowed to end their movement in:
-						Any Sea zone within 2 spaces of Alaska or Western United States
-							1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone
-				-->
+                        Any Sea zone within 2 spaces of Alaska or Western United States
+                            1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone
+                -->
     <attachment name="rulesAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
       <option name="movementRestrictionTerritories" value="1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone"/>
       <option name="movementRestrictionType" value="disallowed"/>
@@ -15168,7 +15168,7 @@
     </property>
     <property name="mapName" value="world_war_ii_g40_balanced" editable="false"/>
     <property name="notes">
-      <value><![CDATA[  
+      <value><![CDATA[
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
 <b>G40 Balanced - Balance Mod 2.0</b><br>
 <br>
@@ -15185,7 +15185,7 @@
 
 <b>Revised Capital Capture Rules:</b> The capture of a player's capital results in the plunder of that player's PUs only the <b>first</b> time the capital is taken. Subsequent recapture of the same capital results in the player's PUs being destroyed.<br><br>
 
-<b>Revised Victory Conditions:</b> If Germany is Allied controlled, an Axis victory in the Pacific requires 7 (rather than 6) Pacific VCs. If Japan is Allied controlled, an Axis victory in Europe requires 9 (rather than 8) Europe VCs. 
+<b>Revised Victory Conditions:</b> If Germany is Allied controlled, an Axis victory in the Pacific requires 7 (rather than 6) Pacific VCs. If Japan is Allied controlled, an Axis victory in Europe requires 9 (rather than 8) Europe VCs.
 
 <br><br>
 
@@ -15207,9 +15207,9 @@
 <li>3 PUs if Russia is at war with European Axis, and there are no non-Russian Allied units in any originally Russian territory.</li>
 <li>3 PUs for each originally German, Italian, or Pro-Axis neutral territory that Russia controls <b>in mainland Europe.</b> (This modifies Russia's "Spread of Communism" objective). </li>
 <li>2 PUs for each of the following Lend-Lease lanes that is "open" (i.e., the specified Sea Zone has no enemy warships and the specified territory is Allied controlled) when Russia is at war with European Axis: (1) sz 125, Archangel ; (2) sz 80, Persia; (3) sz 5, Amur (This modifies Russia's "Lend Lease" objective).</li>
-<li>An additional 2 PUs per each "open" Lend-Lease lane, when Russia is at war with European Axis, if Japan has also declared war on Russia.</li> 
+<li>An additional 2 PUs per each "open" Lend-Lease lane, when Russia is at war with European Axis, if Japan has also declared war on Russia.</li>
 <br>
-<b>Note:</b> An Axis power may not move its units into originally Russian territory unless that Axis power is at war with Russia. Also, when not at war with Japan, Russia may not move its units into any non-Russian Allied territory in Asia, other than Syria, Trans-Jordan, Iraq, Persia, NorthWest Persia, and East Persia. 
+<b>Note:</b> An Axis power may not move its units into originally Russian territory unless that Axis power is at war with Russia. Also, when not at war with Japan, Russia may not move its units into any non-Russian Allied territory in Asia, other than Syria, Trans-Jordan, Iraq, Persia, NorthWest Persia, and East Persia.
 </ul>
 
 <b>Japan</b>
@@ -15262,7 +15262,7 @@
 <br><br>
 The following rule-set simulates the circumstances and strategic consequences of the Franco-German Armistice, and is intended for play with the G40 Balance Mod.
 <br><br>
-<b>Game Conditions for Franco-German Armistice</b> 
+<b>Game Conditions for Franco-German Armistice</b>
 <br><br>
 At the beginning of France's turn, if the following conditions are met, the Franco-German Armistice will occur:
 <br><br>
@@ -15280,13 +15280,13 @@ With the exception of Southern France (see discussion of "Zone Libere" below), V
 <br><br>
 Fly-over restrictions applicable to other Neutral territories do not apply to Vichy French territory.
 <br><br>
-<b>Fleet at Toulon:</b> In addition to the change in French territorial control, the Armistice changes control of the the French fleet in sz 93, from French to Pro-Axis neutral. The Vichy French fleet maintains a strictly defensive posture. It may not be moved. It may not be captured by the Axis. The fleet is immediately destroyed if any power, other than the Free French, occupies Southern France 
+<b>Fleet at Toulon:</b> In addition to the change in French territorial control, the Armistice changes control of the the French fleet in sz 93, from French to Pro-Axis neutral. The Vichy French fleet maintains a strictly defensive posture. It may not be moved. It may not be captured by the Axis. The fleet is immediately destroyed if any power, other than the Free French, occupies Southern France
 <br><br>
 <b>"Zone Libre":</b> Any Axis occupation of Southern France following the Armistice results in the scuttling of the Vichy French Fleet at Toulon and the disbandment of all remaining Vichy French forces. These forces are removed at the end of the Axis player's turn in which the occupation of Southern France takes place. Any formerly Vichy French forces that were previously commandeered by the Axis are unaffected by this change.
 <br><br>
-<b>Armistice's Effect on National Objectives:</b> Following the armistice, Southern France is considered Axis-controlled for purposes of Italy's "Roman Empire" objective. Otherwise, the Vichy France arrangement has no impact on National Objectives. Tunisia, Algeria and Morocco must still be directly occupied by Germany or Italy to achieve Italy's "North Africa" objective. Japanese occupation of French Indo China still negates Japan's "Trade With America" objective. 
+<b>Armistice's Effect on National Objectives:</b> Following the armistice, Southern France is considered Axis-controlled for purposes of Italy's "Roman Empire" objective. Otherwise, the Vichy France arrangement has no impact on National Objectives. Tunisia, Algeria and Morocco must still be directly occupied by Germany or Italy to achieve Italy's "North Africa" objective. Japanese occupation of French Indo China still negates Japan's "Trade With America" objective.
 <br><br>
-<b>Liberation of France:</b> The Allied liberation of France effectively terminates the Armistice. Any territory and forces still under Vichy French control (including any surviving fleet in sz 93) revert back to Free French control. The Vichy French forces in the Southern France and sz 93 will also revert back if Southern France is liberated by the Free French. 
+<b>Liberation of France:</b> The Allied liberation of France effectively terminates the Armistice. Any territory and forces still under Vichy French control (including any surviving fleet in sz 93) revert back to Free French control. The Vichy French forces in the Southern France and sz 93 will also revert back if Southern France is liberated by the Free French.
 
 
 <br><br>
@@ -15304,8 +15304,8 @@ Paratroopers tech enables a second combat movement phase which happens right aft
 <br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
-It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. 
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks.
+It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game.
 Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br>
 You must always validate your own movement, especially air movement at sea.  The engine is not perfect.<br>
 <br>
@@ -15436,7 +15436,7 @@ At the start of the game Germany and Italy are at war with the UK and ANZAC and 
 <li>Once at war, the Minor Factories in continental USA upgrade to Major Factories automatically for free, and may be used immediately.</li>
 </ul>
 <br><b>Neutrals</b><br>
-There are three types of neutrals: 
+There are three types of neutrals:
 <ul>
 <li>pro-Axis: When an Axis unit moves into one of these zones for the first time, that country gets a one-time bonus number of infantry, specified on the map, and control of the territory. The new infantry cannot be moved until the next turn.</li>
 <li>pro-Allies: When an Allied unit moves into one of these zones for the first time, that country gets a one-time bonus number of infantry, specified on the map, and control of the territory. The new infantry cannot be moved until the next turn.</li>
@@ -15457,7 +15457,7 @@ For each attack, a die is rolled, and a 2 or less is considered a hit. Casualtie
 <br><br><hr><br>
 
 <b>Submarines Prevent Unescorted Transports From Making Amphibious Assaults</b><br>
-In any Sea Zone containing an enemy submarine, but not containing an owned warship, the submarine will prevent the offloading of troops for an amphibious assault. 
+In any Sea Zone containing an enemy submarine, but not containing an owned warship, the submarine will prevent the offloading of troops for an amphibious assault.
 <br><br><hr><br>
 
 
@@ -15640,8 +15640,8 @@ These changes to units are things other than price/movement which you can see in
 <br>
 <br><br><hr><br>
 </div>
-						
-						]]></value>
+
+                        ]]></value>
     </property>
   </propertyList>
 </game>

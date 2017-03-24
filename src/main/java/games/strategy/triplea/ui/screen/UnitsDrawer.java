@@ -111,10 +111,10 @@ public class UnitsDrawer implements IDrawable {
             graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
                 null);
           }
-          drawUnit(graphics, img.get(), placementPoint, bounds);
+          drawUnit(graphics, img.get(), bounds);
           break;
         case NEXT_TO:
-          drawUnit(graphics, img.get(), placementPoint, bounds);
+          drawUnit(graphics, img.get(), bounds);
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
@@ -133,7 +133,7 @@ public class UnitsDrawer implements IDrawable {
       }
     } else {
       if (img.isPresent()) {
-        drawUnit(graphics, img.get(), placementPoint, bounds);
+        drawUnit(graphics, img.get(), bounds);
       }
     }
     // more then 1 unit of this category
@@ -190,8 +190,7 @@ public class UnitsDrawer implements IDrawable {
   /**
    * This draws the given image onto the given graphics object
    */
-  private void drawUnit(final Graphics2D graphics, final Image image, final Point placementPoint2,
-      final Rectangle bounds) {
+  private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
   }
 

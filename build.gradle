@@ -36,11 +36,17 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-
 checkstyle{
-	configFile = rootProject.file('gradle/google_checks.xml')
 	toolVersion = "7.1"
 	showViolations = false
+}
+
+checkstyleMain {
+    source(sourceSets.main.output.resourcesDir)
+}
+
+checkstyleTest {
+    source(sourceSets.test.output.resourcesDir)
 }
 
 jar {

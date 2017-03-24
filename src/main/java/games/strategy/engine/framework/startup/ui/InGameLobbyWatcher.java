@@ -57,7 +57,7 @@ public class InGameLobbyWatcher {
   private final Observer m_gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame m_game;
   private final GameStepListener m_gameStepListener =
-      (stepName, delegateName, player, round, displayName) -> InGameLobbyWatcher.this.gameStepChanged(stepName, round);
+      (stepName, delegateName, player, round, displayName) -> InGameLobbyWatcher.this.gameStepChanged(round);
   // we create this messenger, and use it to connect to the
   // game lobby
   private final IMessenger m_messenger;
@@ -135,11 +135,12 @@ public class InGameLobbyWatcher {
     m_game = game;
     if (game != null) {
       game.addGameStepListener(m_gameStepListener);
-      gameStepChanged(game.getData().getSequence().getStep().getName(), game.getData().getSequence().getRound());
+      final String stepName = game.getData().getSequence().getStep().getName();
+      gameStepChanged(game.getData().getSequence().getRound());
     }
   }
 
-  private void gameStepChanged(final String stepName, final int round) {
+  private void gameStepChanged(final int round) {
     synchronized (m_mutex) {
       if (!m_gameDescription.getRound().equals(Integer.toString(round))) {
         m_gameDescription.setRound(round + "");
