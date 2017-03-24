@@ -681,45 +681,22 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
       // do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite
       // it.
-      if (battle != null && battle.isAmphibious()) {
-        if (battle instanceof MustFightBattle) {
-          final MustFightBattle mfb = (MustFightBattle) battle;
-          final Collection<Territory> amphibFromTerrs = mfb.getAmphibiousAttackTerritories();
-          amphibFromTerrs.removeAll(territoriesWithBattlesWater);
-          for (final Territory amphibFrom : amphibFromTerrs) {
-            HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
-            if (canScrambleFrom == null) {
-              canScrambleFrom = new HashSet<>();
-            }
-            if (toAnyAmphibious) {
-              canScrambleFrom
-                  .addAll(Match.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
-            } else if (canScramble.match(battleTerr)) {
-              canScrambleFrom.add(battleTerr);
-            }
-            if (!canScrambleFrom.isEmpty()) {
-              scrambleTerrs.put(amphibFrom, canScrambleFrom);
-            }
+      if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {
+        final Collection<Territory> amphibFromTerrs = ( (DependentBattle) battle).getAmphibiousAttackTerritories();
+        amphibFromTerrs.removeAll(territoriesWithBattlesWater);
+        for (final Territory amphibFrom : amphibFromTerrs) {
+          HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
+          if (canScrambleFrom == null) {
+            canScrambleFrom = new HashSet<>();
           }
-        }
-        if (battle instanceof NonFightingBattle) {
-          final NonFightingBattle nfb = (NonFightingBattle) battle;
-          final Collection<Territory> amphibFromTerrs = nfb.getAmphibiousAttackTerritories();
-          amphibFromTerrs.removeAll(territoriesWithBattlesWater);
-          for (final Territory amphibFrom : amphibFromTerrs) {
-            HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
-            if (canScrambleFrom == null) {
-              canScrambleFrom = new HashSet<>();
-            }
-            if (toAnyAmphibious) {
-              canScrambleFrom
-                  .addAll(Match.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
-            } else if (canScramble.match(battleTerr)) {
-              canScrambleFrom.add(battleTerr);
-            }
-            if (!canScrambleFrom.isEmpty()) {
-              scrambleTerrs.put(amphibFrom, canScrambleFrom);
-            }
+          if (toAnyAmphibious) {
+            canScrambleFrom
+                .addAll(Match.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
+          } else if (canScramble.match(battleTerr)) {
+            canScrambleFrom.add(battleTerr);
+          }
+          if (!canScrambleFrom.isEmpty()) {
+            scrambleTerrs.put(amphibFrom, canScrambleFrom);
           }
         }
       }
