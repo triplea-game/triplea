@@ -47,7 +47,7 @@ import games.strategy.util.Util;
 /**
  * Handles logic for battles in which fighting actually occurs.
  */
-public class MustFightBattle extends AbstractBattle implements BattleStepStrings {
+public class MustFightBattle extends DependentBattle implements BattleStepStrings {
   public static enum ReturnFire {
     ALL, SUBS, NONE
   }
@@ -64,10 +64,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private static final long serialVersionUID = 5879502298361231540L;
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
-  private Set<Territory> m_attackingFrom = new HashSet<>();
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
@@ -2141,13 +2138,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
   }
 
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
-
   private void fireOffensiveAAGuns() {
     m_stack.push(new FireAA(false));
   }
@@ -2730,14 +2720,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();
     final int m2 = UnitAttachment.get(u2.getType()).getIsMarine();
     return m2 - m1;
-  }
-
-  public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
-  }
-
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
   }
 
   // used for setting stuff when we make a scrambling battle when there was no previous battle there, and we need
