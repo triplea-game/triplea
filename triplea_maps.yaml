@@ -28,6 +28,12 @@
 # img: A URL to a thumbnail of the map. This image is shown as part of the map download description
 # 
 #
+- mapName: Tutorial
+  mapCategory: BEST
+  url: https://github.com/triplea-maps/tutorial/archive/master.zip
+  version: 1
+  description: |
+    <br>This is a tutorial for players new to TripleA and its game engine.
 - mapName: MiniMap
   mapCategory: BEST
   url: https://github.com/triplea-maps/minimap/archive/master.zip
