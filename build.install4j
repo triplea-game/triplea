@@ -18,7 +18,7 @@
   <files keepModificationTimes="false" missingFilesStrategy="warn" globalExcludeSuffixes="" defaultOverwriteMode="4" defaultUninstallMode="0" launcherOverwriteMode="3" defaultFileMode="644" defaultDirMode="755">
     <filesets />
     <roots>
-      <root id="171" fileset="" location="${installer:sys.userHome}" />
+      <root id="171" fileset="" location="${installer:userMapsDir}" />
     </roots>
     <mountPoints>
       <mountPoint id="28" root="" location="assets" mode="755" />
@@ -27,8 +27,7 @@
       <mountPoint id="26" root="" location="icons" mode="755" />
       <mountPoint id="25" root="" location="old" mode="755" />
       <mountPoint id="22" root="" location="" mode="755" />
-      <mountPoint id="172" root="171" location="triplea" mode="755" />
-      <mountPoint id="173" root="171" location="triplea/downloadedMaps" mode="755" />
+      <mountPoint id="232" root="171" location="" mode="755" />
     </mountPoints>
     <entries>
       <dirEntry mountPoint="28" file="assets" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="assets" excludeSuffixes="" dirMode="755" overrideDirMode="false">
@@ -45,7 +44,7 @@
         <exclude />
       </dirEntry>
       <fileEntry mountPoint="22" file="./game_engine.properties" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
-      <dirEntry mountPoint="173" file="build/maps" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="" excludeSuffixes="" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="232" file="build/maps" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
     </entries>
@@ -155,7 +154,9 @@
           </java>
         </serializedBean>
         <launcherIds />
-        <variables />
+        <variables>
+          <variable name="userMapsDir" value="" description="The directory in which user maps are stored." category="" valueClass="string" registerForResponseFile="false" responseFileComment="" hidden="false" />
+        </variables>
         <startup>
           <screen name="" id="1" customizedId="" beanClass="com.install4j.runtime.beans.screens.StartupScreen" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" backButton="2" finishScreen="false" wizardIndexChangeType="unchanged" wizardIndexKey="">
             <serializedBean>
@@ -303,7 +304,13 @@
             </serializedBean>
             <condition />
             <validation />
-            <preActivation />
+            <preActivation>import java.util.prefs.Preferences;
+
+final Preferences tripleaSettings = Preferences.userRoot().node("/games/strategy/triplea/settings");
+final String defaultUserMapsDir = "${installer:sys.userHome}/triplea/downloadedMaps";
+final String userMapsDir = tripleaSettings.get("USER_MAPS_FOLDER_PATH", defaultUserMapsDir);
+context.setVariable("userMapsDir", userMapsDir);
+</preActivation>
             <postActivation />
             <actions>
               <action name="" id="96" customizedId="" beanClass="com.install4j.runtime.beans.actions.UninstallPreviousAction" enabled="true" commentSet="false" comment="" actionElevationType="none" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
