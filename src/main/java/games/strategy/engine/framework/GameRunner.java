@@ -29,6 +29,7 @@ import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.system.HttpProxy;
@@ -38,6 +39,7 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Util;
@@ -461,7 +463,10 @@ public class GameRunner {
       }
 
       boolean busy = false;
-      busy = checkForLatestEngineVersionOut();
+      busy = checkForTutorialMap();
+      if (!busy) {
+        busy = checkForLatestEngineVersionOut();
+      }
       if (!busy) {
         busy = checkForUpdatedMaps();
       }
@@ -504,6 +509,27 @@ public class GameRunner {
       System.out.println("Error while checking for engine updates: " + e.getMessage());
     }
     return false;
+  }
+
+  private static boolean checkForTutorialMap() {
+    final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
+    final boolean promptToDownloadTutorialMap = mapDownloadController.shouldPromptToDownloadTutorialMap();
+    mapDownloadController.preventPromptToDownloadTutorialMap();
+    if (!promptToDownloadTutorialMap) {
+      return false;
+    }
+
+    final StringBuilder messageBuilder = new StringBuilder();
+    messageBuilder.append("<html>");
+    messageBuilder.append("Would you like to download the tutorial map?<br>");
+    messageBuilder.append("<br>");
+    messageBuilder.append("(You can always download it later using the Download Maps<br>");
+    messageBuilder.append("command if you don't want to do it now.)");
+    messageBuilder.append("</html>");
+    SwingComponents.promptUser("Welcome to TripleA", messageBuilder.toString(), () -> {
+      DownloadMapsWindow.showDownloadMapsWindow("Tutorial");
+    });
+    return true;
   }
 
   /**
