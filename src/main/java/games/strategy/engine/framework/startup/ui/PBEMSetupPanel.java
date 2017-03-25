@@ -56,6 +56,7 @@ import games.strategy.engine.pbem.NullEmailSender;
 import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.engine.pbem.NullWebPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.engine.pbem.TripleAWarClubForumPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
@@ -204,6 +205,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     forumPosters.add((IForumPoster) findCachedOrCreateNew(NullForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAWarClubForumPoster.class));
+    forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAForumPoster.class));
     m_forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
