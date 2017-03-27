@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import games.strategy.debug.ClientLogger;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,6 +11,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import games.strategy.debug.ClientLogger;
 
 public class DownloadUtils {
 

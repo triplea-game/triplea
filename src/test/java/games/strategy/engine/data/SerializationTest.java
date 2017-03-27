@@ -8,12 +8,12 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class SerializationTest {
   private GameData m_dataSource;

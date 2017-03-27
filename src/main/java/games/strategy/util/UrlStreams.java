@@ -1,6 +1,5 @@
 package games.strategy.util;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.common.base.Throwables;
-
 
 /**
  * Utility class for opening input streams from URL and URI objects.

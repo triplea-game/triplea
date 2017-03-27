@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.server;
 
+import java.util.Date;
+
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -12,8 +14,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.MD5Crypt;
-
-import java.util.Date;
 
 public class ModeratorController extends AbstractModeratorController {
   public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
