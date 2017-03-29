@@ -256,7 +256,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   /**
    * Add bombardment units to battles.
    */
-  private void addBombardmentSources() {
+  public void addBombardmentSources() {
     final PlayerID attacker = m_bridge.getPlayerID();
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     final Match<Unit> ownedAndCanBombard =
