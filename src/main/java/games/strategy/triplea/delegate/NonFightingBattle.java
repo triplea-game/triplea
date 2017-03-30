@@ -33,7 +33,6 @@ import games.strategy.util.Util;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
-  // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
 
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
