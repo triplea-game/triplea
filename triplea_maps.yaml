@@ -1476,6 +1476,28 @@
     <br />	Helicopter       5/5/4/8  (9)
     <br />	Bomber			 7/7/6/12 (6)
     <br />	Strike			 7/0/99/-/-		Americans only.
+- mapName: Iron War (BETA)
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/iron_war/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
+  description: |  
+    <br><b><em>by Frostion</em></b>
+    <br>
+    <br>This map features 3 major Axis players and 6 major Allied.
+    <br>There are also 15 minor players that take part in the world war.
+    <br>
+    <br>Play through WW2 as one or more Axis or Allied powers.
+    <br>Be free of restricting politics and non-aggression pacts.
+    <br>Purchase special units like SS, Colonial troops, Kamikaze plans etc.
+    <br>Keep track of Steel and Fuel income and availability on the map.
+    <br>Make use of the 25 different units this map has to offer.
+    <br>Enjoy custom map sounds and nation specific music.
+    <br>
+    <br>Don’t forget to give your feedback on this BETA-stage map.
+    <br>Visit the TripleA forum and find the Iron War thread.    
+    <br>
+    <br>
 - mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
