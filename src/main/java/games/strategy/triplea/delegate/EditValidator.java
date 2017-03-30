@@ -134,7 +134,6 @@ public class EditValidator {
     if (units.isEmpty()) {
       return "No units selected";
     }
-    final PlayerID player = units.iterator().next().getOwner();
     /*
      * all units should be same owner
      * if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))

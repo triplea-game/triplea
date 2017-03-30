@@ -2445,7 +2445,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));

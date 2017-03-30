@@ -265,7 +265,6 @@ public class DecorationPlacer extends JFrame {
     imagePanel.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        final Point point = e.getPoint();
         mouseEvent(e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
       }
     });

@@ -135,7 +135,6 @@ public class InGameLobbyWatcher {
     m_game = game;
     if (game != null) {
       game.addGameStepListener(m_gameStepListener);
-      final String stepName = game.getData().getSequence().getStep().getName();
       gameStepChanged(game.getData().getSequence().getRound());
     }
   }
