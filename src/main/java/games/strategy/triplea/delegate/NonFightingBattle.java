@@ -33,10 +33,7 @@ import games.strategy.util.Util;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
-  private final Set<Territory> m_attackingFrom = new HashSet<>();
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
 
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
@@ -96,21 +93,6 @@ public class NonFightingBattle extends DependentBattle {
   private void end() {
     m_battleTracker.removeBattle(this);
     m_isOver = true;
-  }
-
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
-
-  public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
-  }
-
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
   }
 
   boolean hasAttackingUnits() {

@@ -64,9 +64,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private static final long serialVersionUID = 5879502298361231540L;
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
-  private Set<Territory> m_attackingFrom = new HashSet<>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
@@ -2139,13 +2137,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean isTransportCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
-  }
-
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
   }
 
   private void fireOffensiveAAGuns() {
