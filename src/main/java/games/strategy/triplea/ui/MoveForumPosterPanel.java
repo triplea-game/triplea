@@ -1,6 +1,10 @@
 package games.strategy.triplea.ui;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -16,11 +20,10 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
     super(data, map);
     AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
     m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
-
   }
 
   @Override
-  protected String getTitle() {
+  protected String getTitle() {                                                                       
     return "Move Summary";
   }
 

@@ -215,11 +215,9 @@ public class RevisedTest {
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
-    // fight the battle
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(dummyPlayer);
-    fight(battle, sinkiang, false);
+    battle.start();                     // fights the battle in sinkiang
     battle.end();
     assertEquals(sinkiang.getOwner(), americans);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
@@ -277,7 +275,8 @@ public class RevisedTest {
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
+    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
+    BattleDelegate.doInitialize(battle.getBattleTracker(),bridge);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(m_data);
     // The battle should NOT be empty
     assertTrue(tracker.hasPendingBattle(sz5, false));
