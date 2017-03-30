@@ -51,7 +51,7 @@ public class RouteCalculatorTest {
 
   @Test
   public void testClosestPoint() {
-    Point origin = new Point(0, 0);
+    Point origin = new Point();
     Point closestPoint = new Point(1, 1);
     List<Point> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
