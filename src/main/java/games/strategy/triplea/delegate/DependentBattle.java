@@ -27,13 +27,6 @@ public abstract class DependentBattle extends AbstractBattle {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
   }
 
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
-
   public Collection<Territory> getAttackingFrom() {
     return m_attackingFrom;
   }
@@ -42,4 +35,10 @@ public abstract class DependentBattle extends AbstractBattle {
     return m_attackingFromMap;
   }
 
+  /**
+   * @return territories where there are amphibious attacks
+   */
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return m_amphibiousAttackFrom;
+  }
 }
