@@ -12,7 +12,7 @@ import games.strategy.engine.data.Unit;
  * Battle with possible dependencies
  * Includes MustFightBattle and NonFightingBattle
  */
-abstract public class DependentBattle extends AbstractBattle {
+public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
 
   DependentBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
