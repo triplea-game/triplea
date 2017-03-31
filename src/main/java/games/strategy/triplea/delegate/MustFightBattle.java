@@ -833,24 +833,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        if( Match.someMatch( m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1) ) 
+            && Match.allMatch( m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert() ) ) {
+          remove( m_defendingUnits, bridge, m_battleSite, true);
+        }
         clearWaitingToDie(bridge);
       }
     });
-    /** Remove undefended trns */
-    if (isTransportCasualtiesRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99989L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          checkUndefendedTransports(bridge, m_attacker);
-          checkUndefendedTransports(bridge, m_defender);
-          checkForUnitsThatCanRollLeft(bridge, true);
-          checkForUnitsThatCanRollLeft(bridge, false);
-          clearWaitingToDie(bridge);
-        }
-      });
-    }
     steps.add(new IExecutable() {
       // not compatible with 0.9.0.2 saved games. this is new for 1.2.6.0
       private static final long serialVersionUID = 6387198382888361848L;
