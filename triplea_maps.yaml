@@ -1476,10 +1476,10 @@
     <br />	Helicopter       5/5/4/8  (9)
     <br />	Bomber			 7/7/6/12 (6)
     <br />	Strike			 7/0/99/-/-		Americans only.
-- mapName: Iron War (BETA)
+- mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
   description: |  
     <br><b><em>by Frostion</em></b>
