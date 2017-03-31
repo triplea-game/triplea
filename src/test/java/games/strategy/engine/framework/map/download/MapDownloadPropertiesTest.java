@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -12,7 +11,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.PropertyReader;
-
 
 /**
  * Basic test of map listing source, make sure that the test object requests a specific property key,

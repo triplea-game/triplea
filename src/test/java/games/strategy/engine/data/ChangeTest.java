@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class ChangeTest {
   private GameData m_data;

@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.systemcheck;
 
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 

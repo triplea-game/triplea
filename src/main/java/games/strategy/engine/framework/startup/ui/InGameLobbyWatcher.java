@@ -28,7 +28,6 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
-import games.strategy.net.OpenFileUtility;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IConnectionLogin;
@@ -37,6 +36,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.OpenFileUtility;
 import games.strategy.net.UniversalPlugAndPlayHelper;
 
 /**

@@ -1,21 +1,22 @@
 package games.strategy.engine.lobby.server.login;
 
-import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.net.MacFinder;
-import games.strategy.util.MD5Crypt;
-import games.strategy.util.Util;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
+
+import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.userDB.BadWordController;
+import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.net.MacFinder;
+import games.strategy.util.MD5Crypt;
+import games.strategy.util.Util;
 
 public class LobbyLoginValidatorTest {
 

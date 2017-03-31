@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-
 import java.awt.Window;
 import java.io.IOException;
 import java.util.HashMap;

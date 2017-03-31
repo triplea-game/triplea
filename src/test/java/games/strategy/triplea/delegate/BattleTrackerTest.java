@@ -1,5 +1,18 @@
 package games.strategy.triplea.delegate;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -12,19 +25,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BattleTrackerTest {

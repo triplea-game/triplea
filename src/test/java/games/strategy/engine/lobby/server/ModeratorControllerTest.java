@@ -1,5 +1,21 @@
 package games.strategy.engine.lobby.server;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
@@ -8,21 +24,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ModeratorControllerTest {
   private final IServerMessenger m_messenger = mock(IServerMessenger.class);

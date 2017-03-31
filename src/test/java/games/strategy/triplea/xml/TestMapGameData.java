@@ -1,13 +1,13 @@
 package games.strategy.triplea.xml;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicReference;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
 
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),

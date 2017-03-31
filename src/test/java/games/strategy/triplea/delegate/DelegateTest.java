@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
@@ -14,6 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class DelegateTest {
   protected GameData m_data;

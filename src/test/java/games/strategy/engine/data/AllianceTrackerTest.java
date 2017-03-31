@@ -3,11 +3,11 @@ package games.strategy.engine.data;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class AllianceTrackerTest {
   private GameData m_data;

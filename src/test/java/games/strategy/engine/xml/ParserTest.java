@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
 
-import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +20,7 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.xml.TestMapGameData;
 
 public class ParserTest {
   private GameData gameData;

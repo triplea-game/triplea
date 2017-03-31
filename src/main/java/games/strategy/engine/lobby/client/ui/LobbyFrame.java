@@ -1,6 +1,27 @@
 package games.strategy.engine.lobby.client.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
+
 import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -16,25 +37,6 @@ import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
-
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
-import javax.swing.SpinnerNumberModel;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
