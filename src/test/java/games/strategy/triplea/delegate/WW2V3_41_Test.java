@@ -1007,7 +1007,7 @@ public class WW2V3_41_Test {
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
     // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return
     // fire on 1.
-    bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
+    bridge.setRandomSource(new ScriptedRandomSource(2, 2, 5, 5, 5, 5, 0, 0));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
     fight(battleDelegate(m_data), eg);
