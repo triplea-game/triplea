@@ -840,6 +840,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         clearWaitingToDie(bridge);
       }
     });
+    /** Submerge subs if -vs air only & air restricted from attacking subs */
+    if (isAirAttackSubRestricted()) {
+      steps.add(new IExecutable() {
+        private static final long serialVersionUID = 99990L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          submergeSubsVsOnlyAir(bridge);
+        }
+      });
+    }
     steps.add(new IExecutable() {
       // not compatible with 0.9.0.2 saved games. this is new for 1.2.6.0
       private static final long serialVersionUID = 6387198382888361848L;
@@ -1000,17 +1011,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void addFightStepsNonEditMode(final List<IExecutable> steps) {
-    /** Submerge subs if -vs air only & air restricted from attacking subs */
-    if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99990L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          submergeSubsVsOnlyAir(bridge);
-        }
-      });
-    }
     /** Ask to retreat defending subs before battle */
     if (isSubRetreatBeforeBattle()) {
       steps.add(new IExecutable() {
