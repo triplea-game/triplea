@@ -717,6 +717,22 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       });
     }
     if (firstRun) {
+      /** Remove undefended trns */
+      if (isTransportCasualtiesRestricted()) {
+        steps.add(new IExecutable() {
+          private static final long serialVersionUID = 99989L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            checkUndefendedTransports(bridge, m_defender);
+            checkUndefendedTransports(bridge, m_attacker);
+            checkForUnitsThatCanRollLeft(bridge, true);
+            checkForUnitsThatCanRollLeft(bridge, false);
+            clearWaitingToDie(bridge);
+            // ?? This appears to remove both sides undefended transports twice
+          }
+        });
+      }
       steps.add(new IExecutable() {
         private static final long serialVersionUID = -2255284529092427441L;
 
@@ -765,22 +781,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           markNoMovementLeft(bridge);
         }
       });
-      /** Remove undefended trns */
-      if (isTransportCasualtiesRestricted()) {
-        steps.add(new IExecutable() {
-          private static final long serialVersionUID = 99989L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            checkUndefendedTransports(bridge, m_defender);
-            checkUndefendedTransports(bridge, m_attacker);
-            checkForUnitsThatCanRollLeft(bridge, true);
-            checkForUnitsThatCanRollLeft(bridge, false);
-            clearWaitingToDie(bridge);
-            // ?? This appears to remove both sides undefended transports twice
-          }
-        });
-      }
     }
   }
 
