@@ -11,7 +11,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
@@ -76,10 +75,7 @@ public class MapDownloadController {
 
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
       if (d != null) {
-        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (!installed.exists()) {
-          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
-        }
+        final File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
         if (installed.exists()) {
           if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
             listingToBeAddedTo.add(d.getMapName());

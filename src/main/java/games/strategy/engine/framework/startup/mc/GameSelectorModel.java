@@ -30,8 +30,6 @@ public class GameSelectorModel extends Observable {
    * Example: returns "games" which would be the games folder of "triplea/maps/someMapFooBar/games"
    */
   public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
-  /** Returns the folder where maps are held, example: "/maps" */
-  public static final File DEFAULT_MAP_DIRECTORY = new File(ClientFileSystemHelper.getRootFolder(), "maps");
   private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
   private static final String DEFAULT_GAME_NAME = "Big World : 1942";
   private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
@@ -290,9 +288,8 @@ public class GameSelectorModel extends Observable {
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
-    final String root = ClientFileSystemHelper.getRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
-        && (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user))) {
+        && userPreferredDefaultGameURI.contains(user)) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
       try {
