@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/**
- * A collection of Relationship types
- */
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
+/**
+ * A collection of Relationship types
+ */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
   private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();

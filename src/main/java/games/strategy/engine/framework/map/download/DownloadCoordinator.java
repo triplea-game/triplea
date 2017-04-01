@@ -8,11 +8,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.util.ThreadUtil;
-
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background

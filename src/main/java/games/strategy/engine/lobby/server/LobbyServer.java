@@ -1,5 +1,9 @@
 package games.strategy.engine.lobby.server;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.framework.GameRunner;
@@ -10,10 +14,6 @@ import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.util.Version;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class LobbyServer {
   private final static Logger logger = Logger.getLogger(LobbyServer.class.getName());

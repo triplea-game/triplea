@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;

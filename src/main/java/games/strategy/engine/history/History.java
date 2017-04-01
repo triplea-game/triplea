@@ -10,6 +10,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.history.HistoryPanel;
+
 /**
  * A history of the game.
  * Stored as a tree, the data is organized as
@@ -22,11 +27,6 @@ import javax.swing.tree.DefaultTreeModel;
  * Step - the current step, eg Britian Combat Move
  * Event - an event that happened in the game, eg Russia buys 8 inf.
  */
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
-import games.strategy.triplea.ui.history.HistoryPanel;
-
 public class History extends DefaultTreeModel {
   private static final long serialVersionUID = -1769876896869L;
 

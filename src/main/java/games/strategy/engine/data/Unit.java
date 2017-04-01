@@ -3,8 +3,8 @@ package games.strategy.engine.data;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.annotations.GameProperty;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attachments.UnitAttachment;
 
 public class Unit extends GameDataComponent {
   private static final long serialVersionUID = -7906193079642776282L;

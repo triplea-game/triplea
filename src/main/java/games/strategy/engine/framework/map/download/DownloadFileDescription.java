@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-
 import java.io.File;
 import java.net.URL;
 
