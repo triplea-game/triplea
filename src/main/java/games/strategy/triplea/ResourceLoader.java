@@ -92,8 +92,6 @@ public class ResourceLoader implements Closeable {
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName + File.separator + "map"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
-    candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", dirName));
-    candidates.add(new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps", zipName));
 
     final String normalizedZipName = normalizeMapZipName(zipName);
 

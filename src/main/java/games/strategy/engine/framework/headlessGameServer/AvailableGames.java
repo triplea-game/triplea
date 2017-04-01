@@ -25,7 +25,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 
@@ -58,12 +57,19 @@ public class AvailableGames {
     return getGameDataFromXML(m_availableGames.get(gameName));
   }
 
-  public URI getGameURI(final String gameName) {
-    return m_availableGames.get(gameName);
-  }
-
+  /**
+   * Returns the path to the file associated with the specified game.
+   *
+   * <p>
+   * The "path" is actually a URI in string form.
+   * </p>
+   *
+   * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
+   *
+   * @return The path to the game file; or {@code null} if the game is not available.
+   */
   public String getGameFilePath(final String gameName) {
-    return getGameXMLLocation(m_availableGames.get(gameName));
+    return Optional.ofNullable(m_availableGames.get(gameName)).map(Object::toString).orElse(null);
   }
 
   private static void populateAvailableGames(final Map<String, URI> availableGames,
@@ -81,9 +87,7 @@ public class AvailableGames {
 
   private static List<File> allMapFiles() {
     final List<File> rVal = new ArrayList<>();
-    // prioritize user maps folder over root folder
     rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
-    rVal.addAll(safeListFiles(NewGameChooserModel.getDefaultMapsDir()));
     return rVal;
   }
 
@@ -169,21 +173,6 @@ public class AvailableGames {
       }
     }
     return false;
-  }
-
-  private static String getGameXMLLocation(final URI uri) {
-    if (uri == null) {
-      return null;
-    }
-    final String raw = uri.toString();
-    final String base = ClientFileSystemHelper.getRootFolder().toURI().toString() + "maps";
-    if (raw.startsWith(base)) {
-      return raw.substring(base.length());
-    }
-    if (raw.startsWith("jar:" + base)) {
-      return raw.substring("jar:".length() + base.length());
-    }
-    return raw;
   }
 
   private static GameData getGameDataFromXML(final URI uri) {
