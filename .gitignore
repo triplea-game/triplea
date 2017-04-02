@@ -65,6 +65,9 @@ local.properties
 temp_eclipse/
 classes.jar
 
+# Vi tmp files
+*~
+
 # Eclipse Core
 .project
 
