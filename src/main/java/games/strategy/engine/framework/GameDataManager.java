@@ -36,9 +36,9 @@ import games.strategy.util.Version;
  * </p>
  */
 public class GameDataManager {
-  private final static String DELEGATE_START = "<DelegateStart>";
-  private final static String DELEGATE_DATA_NEXT = "<DelegateData>";
-  private final static String DELEGATE_LIST_END = "<EndDelegateList>";
+  private static final String DELEGATE_START = "<DelegateStart>";
+  private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
+  private static final String DELEGATE_LIST_END = "<EndDelegateList>";
 
   public GameDataManager() {}
 

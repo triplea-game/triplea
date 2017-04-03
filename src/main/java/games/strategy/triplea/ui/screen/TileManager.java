@@ -59,7 +59,7 @@ import games.strategy.util.Tuple;
 
 public class TileManager {
   private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
-  public final static int TILE_SIZE = 256;
+  public static final int TILE_SIZE = 256;
   private List<Tile> m_tiles = new ArrayList<>();
   private final Lock m_lock = new ReentrantLock();
   private final Map<String, IDrawable> m_territoryOverlays = new HashMap<>();

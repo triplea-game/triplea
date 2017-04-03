@@ -41,7 +41,7 @@ public class PBEMMessagePoster implements Serializable {
   private transient String m_emailSendStatus;
   private transient String m_webPostStatus;
   private transient PlayerID m_currentPlayer;
-  private transient final GameData m_gameData;
+  private final transient GameData m_gameData;
   private transient int m_roundNumber;
   private transient String m_gameNameAndInfo;
 

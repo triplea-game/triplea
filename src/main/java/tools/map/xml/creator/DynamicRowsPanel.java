@@ -153,13 +153,13 @@ public abstract class DynamicRowsPanel {
     return rows;
   }
 
-  abstract protected ActionListener getAutoFillAction();
+  protected abstract ActionListener getAutoFillAction();
 
-  abstract protected void layoutComponents();
+  protected abstract void layoutComponents();
 
-  abstract protected void initializeSpecifics();
+  protected abstract void initializeSpecifics();
 
-  abstract protected void setColumns(GridBagLayout gblPanel);
+  protected abstract void setColumns(GridBagLayout gblPanel);
 
   protected void repaintOwnPanel() {
     SwingUtilities.invokeLater(() -> {

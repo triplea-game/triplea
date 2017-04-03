@@ -31,7 +31,7 @@ import games.strategy.ui.Util;
 
 public class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
-  private final static Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
+  private static final Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
 
   public static enum ReturnValue {
     CANCEL, LOGON, CREATE_ACCOUNT

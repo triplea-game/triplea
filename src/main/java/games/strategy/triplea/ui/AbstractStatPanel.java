@@ -34,9 +34,9 @@ public abstract class AbstractStatPanel extends JPanel {
   /**
    * You will need to call this yourself.
    */
-  abstract protected void initLayout();
+  protected abstract void initLayout();
 
-  abstract public void setGameData(final GameData data);
+  public abstract void setGameData(final GameData data);
 
   /**
    * @return all the alliances with more than one player.

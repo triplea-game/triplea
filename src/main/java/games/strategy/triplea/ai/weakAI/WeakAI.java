@@ -48,7 +48,7 @@ import games.strategy.util.Util;
  * A very weak ai, based on some simple rules.<p>
  */
 public class WeakAI extends AbstractAI {
-  private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
+  private static final Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 
   /** Creates new TripleAPlayer */
   public WeakAI(final String name, final String type) {

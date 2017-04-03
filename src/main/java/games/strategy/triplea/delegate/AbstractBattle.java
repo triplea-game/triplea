@@ -25,7 +25,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 
-abstract public class AbstractBattle implements IBattle {
+public abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
   final GUID m_battleID = new GUID();
   /**
@@ -137,7 +137,7 @@ abstract public class AbstractBattle implements IBattle {
   }
 
   @Override
-  abstract public boolean isEmpty();
+  public abstract boolean isEmpty();
 
   @Override
   public final boolean isOver() {
@@ -201,17 +201,17 @@ abstract public class AbstractBattle implements IBattle {
   }
 
   @Override
-  abstract public void fight(IDelegateBridge bridge);
+  public abstract void fight(IDelegateBridge bridge);
 
   @Override
-  abstract public Change addAttackChange(final Route route, final Collection<Unit> units,
+  public abstract Change addAttackChange(final Route route, final Collection<Unit> units,
       final HashMap<Unit, HashSet<Unit>> targets);
 
   @Override
-  abstract public void removeAttack(Route route, Collection<Unit> units);
+  public abstract void removeAttack(Route route, Collection<Unit> units);
 
   @Override
-  abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
+  public abstract void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
       boolean withdrawn);
 
   @Override

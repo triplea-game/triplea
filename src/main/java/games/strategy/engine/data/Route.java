@@ -28,7 +28,7 @@ import games.strategy.util.Util;
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
-  final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<>());
+  static final List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<>());
   private final List<Territory> m_steps = new ArrayList<>();
   private Territory m_start;
 

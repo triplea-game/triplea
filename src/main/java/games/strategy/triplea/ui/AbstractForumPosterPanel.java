@@ -56,30 +56,30 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
     });
   }
 
-  abstract protected boolean allowIncludeTerritorySummary();
+  protected abstract boolean allowIncludeTerritorySummary();
 
-  abstract protected boolean allowIncludeTerritoryAllPlayersSummary();
+  protected abstract boolean allowIncludeTerritoryAllPlayersSummary();
 
-  abstract protected boolean allowIncludeProductionSummary();
+  protected abstract boolean allowIncludeProductionSummary();
 
-  abstract protected boolean allowDiceBattleDetails();
+  protected abstract boolean allowDiceBattleDetails();
 
-  abstract protected boolean allowDiceStatistics();
+  protected abstract boolean allowDiceStatistics();
 
-  abstract protected IAbstractForumPosterDelegate getForumPosterDelegate();
+  protected abstract IAbstractForumPosterDelegate getForumPosterDelegate();
 
-  abstract protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame);
+  protected abstract boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame);
 
-  abstract protected boolean getHasPostedTurnSummary();
+  protected abstract boolean getHasPostedTurnSummary();
 
-  abstract protected void setHasPostedTurnSummary(boolean posted);
+  protected abstract void setHasPostedTurnSummary(boolean posted);
 
-  abstract protected boolean skipPosting();
+  protected abstract boolean skipPosting();
 
-  abstract protected String getTitle();
+  protected abstract String getTitle();
 
   @Override
-  abstract public String toString();
+  public abstract String toString();
 
   protected void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
     m_frame = frame;

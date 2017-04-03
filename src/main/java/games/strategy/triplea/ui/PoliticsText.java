@@ -20,12 +20,12 @@ public class PoliticsText {
   private static PoliticsText s_pt = null;
   private static long s_timestamp = 0;
   private final Properties m_properties = new Properties();
-  private final static String BUTTON = "BUTTON";
-  private final static String DESCRIPTION = "DESCRIPTION";
-  private final static String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
-  private final static String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
-  private final static String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
-  private final static String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
+  private static final String BUTTON = "BUTTON";
+  private static final String DESCRIPTION = "DESCRIPTION";
+  private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
+  private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
+  private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
+  private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   protected PoliticsText() {

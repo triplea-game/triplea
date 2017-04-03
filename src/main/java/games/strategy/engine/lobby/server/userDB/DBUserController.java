@@ -13,7 +13,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class DBUserController {
-  private final static Logger s_logger = Logger.getLogger(DBUserController.class.getName());
+  private static final Logger s_logger = Logger.getLogger(DBUserController.class.getName());
 
   /**
    * @return if this user is valid

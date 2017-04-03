@@ -13,7 +13,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class CompositeRouteFinder {
-  private final static Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
+  private static final Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
 
   private final GameMap m_map;
   private final HashMap<Match<Territory>, Integer> m_matches;

@@ -33,7 +33,7 @@ import games.strategy.util.Triple;
  */
 public class PoliticalStateOverview extends JPanel {
   private static final long serialVersionUID = -8445782272897831080L;
-  public final static String LABEL_SELF = "----";
+  public static final String LABEL_SELF = "----";
   private final IUIContext m_uic;
   private final GameData m_data;
   private final boolean m_editable;

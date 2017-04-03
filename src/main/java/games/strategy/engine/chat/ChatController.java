@@ -22,7 +22,7 @@ import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 
 public class ChatController implements IChatController {
-  private final static Logger logger = Logger.getLogger(ChatController.class.getName());
+  private static final Logger logger = Logger.getLogger(ChatController.class.getName());
   private static final String CHAT_REMOTE = "_ChatRmt";
   private static final String CHAT_CHANNEL = "_ChatCtrl";
   private final IMessenger messenger;

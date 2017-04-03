@@ -29,7 +29,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
-  public final static String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
+  public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
   // all we have is static methods
   private Util() {}

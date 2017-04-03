@@ -31,8 +31,8 @@ import games.strategy.util.Match;
  */
 public class ProBattleUtils {
 
-  public final static int SHORT_RANGE = 2;
-  public final static int MEDIUM_RANGE = 3;
+  public static final int SHORT_RANGE = 2;
+  public static final int MEDIUM_RANGE = 3;
 
   public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits) {

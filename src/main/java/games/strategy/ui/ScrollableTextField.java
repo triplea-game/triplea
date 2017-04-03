@@ -114,7 +114,7 @@ public class ScrollableTextField extends JPanel {
     setWidgetActivation();
   }
 
-  private synchronized static void loadImages() {
+  private static synchronized void loadImages() {
     if (s_imagesLoaded) {
       return;
     }

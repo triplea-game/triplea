@@ -80,9 +80,9 @@ public class MapXmlUIHelper {
         messageType, null, null, initialValue);
   }
 
-  final public static Font defaultMapXMLCreatorFont = MapXmlUIHelper.getDefaultMapXMLCreatorFont();
-  final public static String defaultMapXMLCreatorFontName = MapXmlUIHelper.getDefaultMapXMLCreatorFontName();
-  final public static String preferredMapXMLCreatorFontName = "Tahoma";
+  public static final Font defaultMapXMLCreatorFont = MapXmlUIHelper.getDefaultMapXMLCreatorFont();
+  public static final String defaultMapXMLCreatorFontName = MapXmlUIHelper.getDefaultMapXMLCreatorFontName();
+  public static final String preferredMapXMLCreatorFontName = "Tahoma";
 
   public static Font getDefaultMapXMLCreatorFont() {
     return defaultMapXMLCreatorFont;
@@ -180,7 +180,7 @@ public class MapXmlUIHelper {
    * @param gridy - gridx value for new GridBagConstraints object
    * @return new GridBagConstraints based on gbcTemplate and provided data
    */
-  static public GridBagConstraints getGbcDefaultTemplateWith(final int gridx, final int gridy) {
+  public static GridBagConstraints getGbcDefaultTemplateWith(final int gridx, final int gridy) {
     return getGBCCloneWith(MapXmlUIHelper.gbcTemplate, gridx, gridy);
   }
 

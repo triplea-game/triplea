@@ -67,7 +67,7 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
 
-  private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
+  private static final Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   public AbstractAI(final String name, final String type) {
     super(name, type);

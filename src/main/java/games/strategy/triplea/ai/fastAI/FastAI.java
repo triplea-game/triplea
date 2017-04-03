@@ -10,7 +10,7 @@ import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 public class FastAI extends ProAI {
 
   // Odds estimator
-  private final static IOddsCalculator estimator = new FastOddsEstimator();
+  private static final IOddsCalculator estimator = new FastOddsEstimator();
 
   public FastAI(final String name, final String type) {
     super(name, type);

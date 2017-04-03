@@ -36,7 +36,7 @@ import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
-abstract public class AbstractUndoableMovesPanel extends JPanel {
+public abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
   protected List<AbstractUndoableMove> m_moves;
   protected final GameData m_data;

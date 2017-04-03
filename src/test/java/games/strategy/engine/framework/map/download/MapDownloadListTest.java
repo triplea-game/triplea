@@ -22,11 +22,11 @@ import games.strategy.util.Version;
 public class MapDownloadListTest {
 
 
-  private final static String MAP_NAME = "new_test_order";
-  private final static Version MAP_VERSION = new Version(10, 10);
-  private final static Version lowVersion = new Version(0, 0);
+  private static final String MAP_NAME = "new_test_order";
+  private static final Version MAP_VERSION = new Version(10, 10);
+  private static final Version lowVersion = new Version(0, 0);
 
-  private final static DownloadFileDescription TEST_MAP =
+  private static final DownloadFileDescription TEST_MAP =
       new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION, DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
   @Mock

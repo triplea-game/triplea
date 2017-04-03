@@ -41,7 +41,7 @@ import games.strategy.util.TimeManager;
  */
 public class HeadlessGameServer {
 
-  final static Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
+  static final Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
   static HeadlessGameServerConsole s_console = null;
   private static HeadlessGameServer s_instance = null;
   private final AvailableGames m_availableGames;
@@ -579,7 +579,7 @@ public class HeadlessGameServer {
     t.start();
   }
 
-  private synchronized static boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
+  private static synchronized boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
     try {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
