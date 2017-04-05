@@ -833,7 +833,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if( Match.someMatch( m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1) ) 
+        if( Match.someMatch( m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1) )
             && Match.allMatch( m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert() ) ) {
           remove( m_defendingUnits, bridge, m_battleSite, true);
         }
