@@ -24,9 +24,9 @@ import java.security.NoSuchAlgorithmException;
 public class MD5Crypt {
   public static final String MAGIC = "$1$";
   // Character set allowed for the salt string
-  static private final String SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  private static final String SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   // Character set of the encrypted password: A-Za-z0-9./
-  static private final String itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  private static final String itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
   /**
    * Function to return a string from the set: A-Za-z0-9./
@@ -37,7 +37,7 @@ public class MD5Crypt {
    * @param v
    *        value to be converted
    */
-  static private String to64(long v, int size) {
+  private static String to64(long v, int size) {
     final StringBuffer result = new StringBuffer();
     while (--size >= 0) {
       result.append(itoa64.charAt((int) (v & 0x3f)));
@@ -46,7 +46,7 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  static private void clearbits(final byte bits[]) {
+  private static void clearbits(final byte bits[]) {
     for (int i = 0; i < bits.length; i++) {
       bits[i] = 0;
     }
@@ -56,7 +56,7 @@ public class MD5Crypt {
    * convert an encoded unsigned byte value
    * into a int with the unsigned value.
    */
-  static private int bytes2u(final byte inp) {
+  private static int bytes2u(final byte inp) {
     return inp & 0xff;
   }
 
@@ -67,7 +67,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public String crypt(final String password) {
+  public static String crypt(final String password) {
     final StringBuffer salt = new StringBuffer();
     final java.util.Random rnd = new java.util.Random();
     // build a random 8 chars salt
@@ -88,7 +88,7 @@ public class MD5Crypt {
    * @param password
    *        Password to be encrypted
    */
-  static public String crypt(final String password, final String salt) {
+  public static String crypt(final String password, final String salt) {
     return crypt(password, salt, MAGIC);
   }
 
@@ -104,7 +104,7 @@ public class MD5Crypt {
    * @param password
    *        user password
    */
-  static public String crypt(final String password, String salt, final String magic) {
+  public static String crypt(final String password, String salt, final String magic) {
     if (password == null) {
       throw new IllegalArgumentException("Null password!");
     }

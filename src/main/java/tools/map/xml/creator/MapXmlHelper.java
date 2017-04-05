@@ -457,7 +457,7 @@ public class MapXmlHelper {
   ///////////////////////////////////////////
   // Start of XML parsing methods
   ///////////////////////////////////////////
-  static public GameStep parseValuesFromXML(final Document dom) {
+  public static GameStep parseValuesFromXML(final Document dom) {
     initializeAll();
 
     final Node mainlastChild = dom.getLastChild();
@@ -1413,7 +1413,7 @@ public class MapXmlHelper {
     }
   }
 
-  public final static String playerNeutral = "<Neutral>";
+  public static final String playerNeutral = "<Neutral>";
 
   public static String[] getPlayersListInclNeutral() {
     getPlayerNames().add(playerNeutral);

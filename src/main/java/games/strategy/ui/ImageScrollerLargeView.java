@@ -33,11 +33,11 @@ public class ImageScrollerLargeView extends JComponent {
   private static final long serialVersionUID = -7212817233833868483L;
 
   // bit flags for determining which way we are scrolling
-  final static int NONE = 0;
-  final static int LEFT = 1;
-  final static int RIGHT = 2;
-  final static int TOP = 4;
-  final static int BOTTOM = 8;
+  static final int NONE = 0;
+  static final int LEFT = 1;
+  static final int RIGHT = 2;
+  static final int TOP = 4;
+  static final int BOTTOM = 8;
 
   private final ScrollSettings scrollSettings;
 

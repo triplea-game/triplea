@@ -214,7 +214,7 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   @Override
-  final protected void addAdditionalButtons() {
+  protected final void addAdditionalButtons() {
     add(leftBox(m_leftToPlaceLabel));
     add(m_unitsToPlace);
     updateUnits();

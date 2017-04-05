@@ -10,9 +10,9 @@ import com.google.common.collect.ImmutableSet;
 
 public class LocalSystemCheckerTest {
 
-  private final static SystemCheck PASSING_CHECK = new SystemCheck("no op", () -> {
+  private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", () -> {
   });
-  private final static SystemCheck FAILING_CHECK =
+  private static final SystemCheck FAILING_CHECK =
       new SystemCheck("throws exception", () -> Throwables.propagate(new Exception("test")));
 
   @Test

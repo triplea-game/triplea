@@ -53,7 +53,7 @@ import games.strategy.util.Match;
 @MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean m_needToInitialize = true;
-  public final static String NOT_ENOUGH_RESOURCES = "Not enough resources";
+  public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
 
   /**
    * Called before the delegate will run.

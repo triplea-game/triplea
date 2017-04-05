@@ -66,14 +66,14 @@ public abstract class ImageScrollPanePanel {
     stepActionPanel.setPreferredSize(size);
   }
 
-  abstract protected void paintPreparation(final Map<String, Point> centers);
+  protected abstract void paintPreparation(final Map<String, Point> centers);
 
-  abstract protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
+  protected abstract void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int x_text_start);
 
-  abstract protected void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers);
+  protected abstract void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers);
 
-  abstract protected void mouseClickedOnImage(final Map<String, Point> centers,
+  protected abstract void mouseClickedOnImage(final Map<String, Point> centers,
       final MouseEvent e);
 
   protected void repaint() {

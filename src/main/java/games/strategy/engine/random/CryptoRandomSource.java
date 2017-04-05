@@ -54,8 +54,8 @@ public class CryptoRandomSource implements IRandomSource {
 
   // the remote players who involved in rolling the dice
   // dice are rolled securly between us and her
-  final private PlayerID m_remotePlayer;
-  final private IGame m_game;
+  private final PlayerID m_remotePlayer;
+  private final IGame m_game;
 
   public CryptoRandomSource(final PlayerID remotePlayer, final IGame game) {
     m_remotePlayer = remotePlayer;

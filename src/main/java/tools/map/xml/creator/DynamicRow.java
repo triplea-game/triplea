@@ -21,9 +21,9 @@ import games.strategy.ui.SwingAction;
  */
 public abstract class DynamicRow {
 
-  final static int INPUT_FIELD_SIZE_LARGE = 150;
-  final static int INPUT_FIELD_SIZE_MEDIUM = 120;
-  final static int INPUT_FIELD_SIZE_SMALL = 55;
+  static final int INPUT_FIELD_SIZE_LARGE = 150;
+  static final int INPUT_FIELD_SIZE_MEDIUM = 120;
+  static final int INPUT_FIELD_SIZE_SMALL = 55;
 
   private final DynamicRowsPanel parentRowPanel;
   protected String currentRowName;
@@ -106,11 +106,11 @@ public abstract class DynamicRow {
     return currentRowName;
   }
 
-  abstract protected ArrayList<JComponent> getComponentList();
+  protected abstract ArrayList<JComponent> getComponentList();
 
-  abstract public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template);
+  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template);
 
-  abstract protected void adaptRowSpecifics(final DynamicRow newRow);
+  protected abstract void adaptRowSpecifics(final DynamicRow newRow);
 
-  abstract protected void removeRowAction();
+  protected abstract void removeRowAction();
 }

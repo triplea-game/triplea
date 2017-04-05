@@ -9,9 +9,9 @@ import games.strategy.triplea.settings.SystemPreferences;
 
 public class FolderSettings implements HasDefaults {
 
-  private final static File DEFAULT_DOWNLOADED_MAPS_PATH =
+  private static final File DEFAULT_DOWNLOADED_MAPS_PATH =
       new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps");
-  private final static File DEFAULT_SAVE_PATH = new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames");
+  private static final File DEFAULT_SAVE_PATH = new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames");
 
 
   @Override

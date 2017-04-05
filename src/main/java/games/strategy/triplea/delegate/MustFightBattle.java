@@ -55,10 +55,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
   // these class exist for testing
-  public static abstract class AttackSubs implements IExecutable {
+  public abstract static class AttackSubs implements IExecutable {
     private static final long serialVersionUID = 4872551667582174716L;
   }
-  public static abstract class DefendSubs implements IExecutable {
+  public abstract static class DefendSubs implements IExecutable {
     private static final long serialVersionUID = 3768066729336520095L;
   }
 

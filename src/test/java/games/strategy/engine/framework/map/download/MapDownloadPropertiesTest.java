@@ -19,7 +19,7 @@ import games.strategy.engine.config.PropertyReader;
 @RunWith(MockitoJUnitRunner.class)
 public class MapDownloadPropertiesTest {
 
-  private final static String SAMPLE_VALUE = "http://this is a test value.txt";
+  private static final String SAMPLE_VALUE = "http://this is a test value.txt";
 
   @Mock
   private PropertyReader mockReader;

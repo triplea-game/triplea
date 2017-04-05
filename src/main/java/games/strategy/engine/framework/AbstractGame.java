@@ -27,7 +27,7 @@ import games.strategy.util.ListenerList;
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  */
-abstract public class AbstractGame implements IGame {
+public abstract class AbstractGame implements IGame {
   protected static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
   protected static final String SOUND_CHANNEL = "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData m_data;

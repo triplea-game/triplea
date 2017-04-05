@@ -1480,7 +1480,7 @@ public class Matches {
       return t.getOwner().equals(PlayerID.NULL_PLAYERID);
     }
   };
-  public final static Match<Territory> TerritoryIsNotNeutralButCouldBeWater =
+  public static final Match<Territory> TerritoryIsNotNeutralButCouldBeWater =
       new InverseMatch<>(TerritoryIsNeutralButNotWater);
   public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>() {
     @Override
@@ -1492,7 +1492,7 @@ public class Matches {
       return ta != null && ta.getIsImpassable();
     }
   };
-  public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<>(TerritoryIsImpassable);
+  public static final Match<Territory> TerritoryIsNotImpassable = new InverseMatch<>(TerritoryIsImpassable);
 
   public static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
@@ -1713,7 +1713,7 @@ public class Matches {
   /**
    * Match units that have at least 1 movement left
    */
-  public final static Match<Unit> unitHasMovementLeft = new Match<Unit>() {
+  public static final Match<Unit> unitHasMovementLeft = new Match<Unit>() {
     @Override
     public boolean match(final Unit o) {
       return TripleAUnit.get(o).getMovementLeft() >= 1;
@@ -2329,10 +2329,10 @@ public class Matches {
     };
   }
 
-  public final static Match<Unit> UnitIsLand = new CompositeMatchAnd<>(UnitIsNotSea, UnitIsNotAir);
-  public final static Match<UnitType> UnitTypeIsLand =
+  public static final Match<Unit> UnitIsLand = new CompositeMatchAnd<>(UnitIsNotSea, UnitIsNotAir);
+  public static final Match<UnitType> UnitTypeIsLand =
       new CompositeMatchAnd<>(UnitTypeIsNotSea, UnitTypeIsNotAir);
-  public final static Match<Unit> UnitIsNotLand = new InverseMatch<>(UnitIsLand);
+  public static final Match<Unit> UnitIsNotLand = new InverseMatch<>(UnitIsLand);
 
   public static Match<Unit> unitIsOfType(final UnitType type) {
     return new Match<Unit>() {

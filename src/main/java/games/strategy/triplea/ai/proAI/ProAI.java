@@ -57,10 +57,10 @@ import games.strategy.util.Tuple;
  */
 public class ProAI extends AbstractAI {
 
-  private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
+  private static final Logger s_logger = Logger.getLogger(ProAI.class.getName());
 
   // Odds calculator
-  private final static IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
+  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
   protected ProOddsCalculator calc;
 
   // Phases

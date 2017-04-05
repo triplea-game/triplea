@@ -47,7 +47,7 @@ import games.strategy.util.Match;
  */
 public class ProBidAI {
 
-  private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
+  private static final int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
 
   private GameData data;
 

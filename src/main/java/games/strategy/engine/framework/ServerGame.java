@@ -59,7 +59,7 @@ public class ServerGame extends AbstractGame {
   public static final RemoteName SERVER_REMOTE =
       new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
 
-  public final static String GAME_HAS_BEEN_SAVED_PROPERTY =
+  public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
 
   // maps PlayerID->GamePlayer

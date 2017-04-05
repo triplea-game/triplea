@@ -26,7 +26,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
   static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
   static final String INVALID_MAC = "Invalid mac address.";
-  private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
+  private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";

@@ -14,7 +14,7 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 /**
  * Abstract class for launching a game.
  */
-abstract public class AbstractLauncher implements ILauncher {
+public abstract class AbstractLauncher implements ILauncher {
   protected final GameData m_gameData;
   protected final GameSelectorModel m_gameSelectorModel;
   protected final WaitWindow m_gameLoadingWindow;
@@ -53,5 +53,5 @@ abstract public class AbstractLauncher implements ILauncher {
     t.start();
   }
 
-  abstract protected void launchInNewThread(Component parent);
+  protected abstract void launchInNewThread(Component parent);
 }

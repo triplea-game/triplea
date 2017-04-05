@@ -20,7 +20,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
 public class LobbyGameController implements ILobbyGameController {
-  private final static Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
+  private static final Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
   private final Object m_mutex = new Object();
   private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
   private final ILobbyGameBroadcaster m_broadcaster;

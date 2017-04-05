@@ -101,7 +101,7 @@ public class MersenneTwister extends Random {
    * only uses the first 32 bits for its seed).
    */
   @Override
-  synchronized public void setSeed(final long seed) {
+  public synchronized void setSeed(final long seed) {
     // it's always good style to call super
     super.setSeed(seed);
     // Due to a bug in java.tools.Random clear up to 1.2, we're
@@ -129,7 +129,7 @@ public class MersenneTwister extends Random {
    * array of 624 ints, and they can be any value as long as
    * they're not *all* zero.
    */
-  synchronized public void setSeed(final int[] array) {
+  public synchronized void setSeed(final int[] array) {
     int i, j, k;
     setSeed(19650218);
     i = 1;
@@ -164,7 +164,7 @@ public class MersenneTwister extends Random {
    * Returns an integer with <i>bits</i> bits filled with a random number.
    */
   @Override
-  synchronized protected int next(final int bits) {
+  protected synchronized int next(final int bits) {
     int y;
     if (mti >= N) // generate N words at one time
     {
@@ -267,7 +267,7 @@ public class MersenneTwister extends Random {
    * http://developer.java.sun.com/developer/bugParade/bugs/4254501.html</a>
    */
   @Override
-  synchronized public double nextGaussian() {
+  public synchronized double nextGaussian() {
     if (haveNextNextGaussian) {
       haveNextNextGaussian = false;
       return nextNextGaussian;

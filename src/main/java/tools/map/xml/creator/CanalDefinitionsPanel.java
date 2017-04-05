@@ -28,7 +28,7 @@ import games.strategy.ui.Util;
 import tools.map.xml.creator.TerritoryDefinitionDialog.DEFINITION;
 
 
-final public class CanalDefinitionsPanel extends ImageScrollPanePanel {
+public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   private static final String MSG_TITLE_AUTO_FILL_RESULT = "Auto-Fill Result";
   // TODO: consider rework HTML strings for XML file creation and parsing
   static final String HTML_CANAL_KEY_POSTFIX = ": ";

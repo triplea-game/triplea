@@ -14,7 +14,7 @@ import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
 /**
  * Contains all the data to describe an abstract move (move or placement) and to undo it.
  */
-abstract public class AbstractUndoableMove implements Serializable {
+public abstract class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;
   /**
    * Stores the serialized state of the move and battle delegates (just
@@ -60,7 +60,7 @@ abstract public class AbstractUndoableMove implements Serializable {
     undoSpecific(delegateBridge);
   }
 
-  abstract protected void undoSpecific(IDelegateBridge bridge);
+  protected abstract void undoSpecific(IDelegateBridge bridge);
 
   public final CompositeChange getChange() {
     return m_change;
@@ -82,9 +82,9 @@ abstract public class AbstractUndoableMove implements Serializable {
     m_index = index;
   }
 
-  abstract public String getMoveLabel();
+  public abstract String getMoveLabel();
 
-  abstract public Territory getEnd();
+  public abstract Territory getEnd();
 
-  abstract protected AbstractMoveDescription getDescriptionObject();
+  protected abstract AbstractMoveDescription getDescriptionObject();
 }

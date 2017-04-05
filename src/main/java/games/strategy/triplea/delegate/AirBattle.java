@@ -36,12 +36,12 @@ import games.strategy.util.Match;
 
 public class AirBattle extends AbstractBattle {
   private static final long serialVersionUID = 4686241714027216395L;
-  protected final static String AIR_BATTLE = "Air Battle";
-  protected final static String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
-  protected final static String ATTACKERS_FIRE = "Attackers Fire";
-  protected final static String DEFENDERS_FIRE = "Defenders Fire";
-  protected final static String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
-  protected final static String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
+  protected static final String AIR_BATTLE = "Air Battle";
+  protected static final String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
+  protected static final String ATTACKERS_FIRE = "Attackers Fire";
+  protected static final String DEFENDERS_FIRE = "Defenders Fire";
+  protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
+  protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
   // protected final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
   protected final ExecutionStack m_stack = new ExecutionStack();
   protected List<String> m_steps;
