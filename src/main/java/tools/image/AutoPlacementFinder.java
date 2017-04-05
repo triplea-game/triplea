@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.LineNumberReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -81,8 +82,7 @@ public class AutoPlacementFinder {
       System.out.println("Shutting down");
       System.exit(0);
     }
-    final File file = new File(
-        ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+    final File file = getMapPropertiesFile(mapDir);
     if (file.exists() && s_mapFolderLocation == null) {
       s_mapFolderLocation = file.getParentFile();
     }
@@ -247,6 +247,23 @@ public class AutoPlacementFinder {
     } else {
       return null;
     }
+  }
+
+  private static File getMapPropertiesFile(final String mapDir) {
+    final File file = getMapPropertiesFileForCurrentFolderStructure(mapDir);
+    if (file.exists()) {
+      return file;
+    }
+
+    return getMapPropertiesFileForLegacyFolderStructure(mapDir);
+  }
+
+  private static File getMapPropertiesFileForCurrentFolderStructure(final String mapDir) {
+    return new File(ClientFileSystemHelper.getUserMapsFolder(), Paths.get(mapDir, "map", "map.properties").toString());
+  }
+
+  private static File getMapPropertiesFileForLegacyFolderStructure(final String mapDir) {
+    return new File(ClientFileSystemHelper.getUserMapsFolder(), Paths.get(mapDir, "map.properties").toString());
   }
 
   private static String getUnitsScale() {
