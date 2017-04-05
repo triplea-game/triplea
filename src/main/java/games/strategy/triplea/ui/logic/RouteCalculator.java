@@ -1,17 +1,10 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.logic;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.awt.Point;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import games.strategy.triplea.ui.mapdata.MapData;
-
-public class RouteOptimizer {
+public class RouteCalculator {
 
   public final boolean isInfiniteY;
   public final boolean isInfiniteX;
@@ -20,13 +13,11 @@ public class RouteOptimizer {
   private final int mapWidth;
   private final int mapHeight;
 
-  public RouteOptimizer(MapData mapData, MapPanel mapPanel) {
-    checkNotNull(mapData);
-    checkNotNull(mapPanel);
-    isInfiniteY = mapData.scrollWrapY();
-    isInfiniteX = mapData.scrollWrapX();
-    mapWidth = mapPanel.getImageWidth();
-    mapHeight = mapPanel.getImageHeight();
+  public RouteCalculator(boolean isInfiniteX, boolean isInfiniteY, int mapWidth, int mapHeight) {
+    this.isInfiniteX = isInfiniteX;
+    this.isInfiniteY = isInfiniteY;
+    this.mapWidth = mapWidth;
+    this.mapHeight = mapHeight;
   }
 
   /**
@@ -65,20 +56,20 @@ public class RouteOptimizer {
    * Returns the Closest Point out of the given Pool
    * 
    * @param source the reference Point
-   * @param pool Point2D List with all possible options
+   * @param pool Point List with all possible options
    * @return the closest point in the Pool to the source
    */
-  public static Point getClosestPoint(Point source, List<Point2D> pool) {
+  public static Point getClosestPoint(Point source, List<Point> pool) {
     double closestDistance = Double.MAX_VALUE;
     Point closestPoint = null;
-    for (Point2D possibleClosestPoint : pool) {
+    for (Point possibleClosestPoint : pool) {
       if (closestPoint == null) {
         closestDistance = source.distance(possibleClosestPoint);
-        closestPoint = getPoint(possibleClosestPoint);
+        closestPoint = possibleClosestPoint;
       } else {
         double distance = source.distance(possibleClosestPoint);
         if (closestDistance > distance) {
-          closestPoint = getPoint(possibleClosestPoint);
+          closestPoint = possibleClosestPoint;
           closestDistance = distance;
         }
       }
@@ -94,39 +85,29 @@ public class RouteOptimizer {
    * @return A List of all possible Points depending in map Properties
    *         size may vary
    */
-  public List<Point2D> getPossiblePoints(Point2D point) {
-    List<Point2D> result = new ArrayList<>();
+  public List<Point> getPossiblePoints(Point point) {
+    List<Point> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() - mapWidth, point.getY() + mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() + mapHeight)));
+          new Point(point.getX() - mapWidth, point.getY() - mapHeight),
+          new Point(point.getX() - mapWidth, point.getY() + mapHeight),
+          new Point(point.getX() + mapWidth, point.getY() - mapHeight),
+          new Point(point.getX() + mapWidth, point.getY() + mapHeight)));
     }
     if (isInfiniteX) {
       result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY()),
-          new Point2D.Double(point.getX() + mapWidth, point.getY())));
+          new Point(point.getX() - mapWidth, point.getY()),
+          new Point(point.getX() + mapWidth, point.getY())));
 
     }
     if (isInfiniteY) {
       result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX(), point.getY() - mapHeight),
-          new Point2D.Double(point.getX(), point.getY() + mapHeight)));
+          new Point(point.getX(), point.getY() - mapHeight),
+          new Point(point.getX(), point.getY() + mapHeight)));
 
     }
     return result;
-  }
-
-  /**
-   * Helper Method to convert a {@linkplain Point2D} to a {@linkplain Point}
-   * 
-   * @param point a {@linkplain Point2D} object
-   * @return a {@linkplain Point} object
-   */
-  public static Point getPoint(Point2D point) {
-    return new Point((int) point.getX(), (int) point.getY());
   }
 
   public Point getLastEndPoint() {
@@ -142,31 +123,31 @@ public class RouteOptimizer {
   public List<Point[]> getAllPoints(Point... points) {
     List<Point[]> allPoints = new ArrayList<>();
     for (int i = 0; i < points.length; i++) {
-      List<Point2D> subPoints = getPossiblePoints(points[i]);
+      List<Point> subPoints = getPossiblePoints(points[i]);
       for (int y = 0; y < subPoints.size(); y++) {
         if (i == 0) {
           allPoints.add(new Point[points.length]);
         }
-        allPoints.get(y)[i] = getPoint((subPoints.get(y)));
+        allPoints.get(y)[i] = (subPoints.get(y));
       }
     }
     return allPoints;
   }
 
   /**
-   * Generates a List of Line2Ds which represent "normalized forms" of the given arrays
+   * Generates a List of Lines which represent "normalized forms" of the given arrays
    * 
    * @param xcoords an array of xCoordinates
    * @param ycoords an array of yCoordinates
-   * @return a List of corresponding Line2Ds
+   * @return a List of corresponding Lines
    */
-  private List<Line2D> getNormalizedLines(double[] xcoords, double[] ycoords) {
-    List<Line2D> lines = new ArrayList<>();
-    Point2D previousPoint = null;
+  private List<Line> getNormalizedLines(double[] xcoords, double[] ycoords) {
+    List<Line> lines = new ArrayList<>();
+    Point previousPoint = null;
     for (int i = 0; i < xcoords.length; i++) {
-      Point2D trimmedPoint = new Point2D.Double(xcoords[i], ycoords[i]);
+      Point trimmedPoint = new Point(xcoords[i], ycoords[i]);
       if (previousPoint != null) {
-        lines.add(new Line2D.Double(previousPoint, trimmedPoint));
+        lines.add(new Line(previousPoint, trimmedPoint));
       }
       previousPoint = trimmedPoint;
     }
@@ -174,19 +155,19 @@ public class RouteOptimizer {
   }
 
   /**
-   * A List of Line2Ds which represent all possible lines on multiple screens size may vary
+   * A List of Lines which represent all possible lines on multiple screens size may vary
    * 
    * @param xcoords an array of xCoordinates
    * @param ycoords an array of yCoordinates
-   * @return a List of corresponding Line2Ds on every possible screen
+   * @return a List of corresponding Lines on every possible screen
    */
-  public List<Line2D> getAllNormalizedLines(double[] xcoords, double[] ycoords) {
-    List<Line2D> centerLines = getNormalizedLines(xcoords, ycoords);
-    List<Line2D> result = new ArrayList<>();
-    for (Line2D line : centerLines) {
-      List<Point[]> allPoints = getAllPoints(getPoint(line.getP1()), getPoint(line.getP2()));
+  public List<Line> getAllNormalizedLines(double[] xcoords, double[] ycoords) {
+    List<Line> centerLines = getNormalizedLines(xcoords, ycoords);
+    List<Line> result = new ArrayList<>();
+    for (Line line : centerLines) {
+      List<Point[]> allPoints = getAllPoints(line.getP1(), line.getP2());
       for (Point[] points : allPoints) {
-        result.add(new Line2D.Double(points[0], points[1]));
+        result.add(new Line(points[0], points[1]));
       }
     }
     return result;

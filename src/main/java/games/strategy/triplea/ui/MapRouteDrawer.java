@@ -6,7 +6,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -23,6 +22,9 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.logic.Line;
+import games.strategy.triplea.ui.logic.Point;
+import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
@@ -39,12 +41,13 @@ public class MapRouteDrawer {
   public static final double DETAIL_LEVEL = 1.0;
   private static final int arrowLength = 4;
 
-  private final RouteOptimizer routeOptimizer;
+  private final RouteCalculator routeCalculator;
   private final MapData mapData;
   private final MapPanel mapPanel;
 
   public MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
-    routeOptimizer = new RouteOptimizer(mapData, mapPanel);
+    routeCalculator = new RouteCalculator(mapData.scrollWrapX(), mapData.scrollWrapY(), mapPanel.getImageWidth(),
+        mapPanel.getImageHeight());
     this.mapData = checkNotNull(mapData);
     this.mapPanel = checkNotNull(mapPanel);
   }
@@ -65,13 +68,14 @@ public class MapRouteDrawer {
     final int numTerritories = route.getAllTerritories().size();
     final int xOffset = mapPanel.getXOffset();
     final int yOffset = mapPanel.getYOffset();
-    final Point[] points = routeOptimizer.getTranslatedRoute(getRoutePoints(routeDescription));
+    final Point[] points = routeCalculator.getTranslatedRoute(getRoutePoints(routeDescription));
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) {// AI has no End Point
-        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd(), xOffset, yOffset, scale);
+        drawDirectPath(graphics, new Point(routeDescription.getStart()), new Point(routeDescription.getEnd()), xOffset,
+            yOffset, scale);
       } else {
         drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
       }
@@ -101,10 +105,10 @@ public class MapRouteDrawer {
     final int jointsize = 10;
     // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
     final Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
-    for (Point[] joints : routeOptimizer.getAllPoints(newPoints)) {
+    for (Point[] joints : routeCalculator.getAllPoints(newPoints)) {
       for (final Point p : joints) {
-        graphics.fillOval((int) (((p.x - xOffset) - (jointsize / 2) / scale) * scale),
-            (int) (((p.y - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
+        graphics.fillOval((int) (((p.getX() - xOffset) - (jointsize / 2) / scale) * scale),
+            (int) (((p.getY() - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
       }
     }
   }
@@ -122,10 +126,10 @@ public class MapRouteDrawer {
       final int yOffset, final double scale) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
-      for (Point[] endPoint : routeOptimizer.getAllPoints(routeOptimizer.getLastEndPoint())) {
+      for (Point[] endPoint : routeCalculator.getAllPoints(routeCalculator.getLastEndPoint())) {
         graphics.drawImage(cursorImage,
-            (int) (((endPoint[0].x - xOffset) - (cursorImage.getWidth() / 2)) * scale),
-            (int) (((endPoint[0].y - yOffset) - (cursorImage.getHeight() / 2)) * scale), null);
+            (int) (((endPoint[0].getX() - xOffset) - (cursorImage.getWidth() / 2)) * scale),
+            (int) (((endPoint[0].getY() - yOffset) - (cursorImage.getHeight() / 2)) * scale), null);
       }
     }
 
@@ -145,12 +149,12 @@ public class MapRouteDrawer {
    */
   private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int xOffset,
       final int yOffset, final double scale) {
-    final Point[] points = routeOptimizer.getTranslatedRoute(start, end);
-    for (Point[] newPoints : routeOptimizer.getAllPoints(points)) {
-      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0], newPoints[1]), xOffset,
+    final Point[] points = routeCalculator.getTranslatedRoute(start, end);
+    for (Point[] newPoints : routeCalculator.getAllPoints(points)) {
+      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()), xOffset,
           yOffset, scale);
       if (newPoints[0].distance(newPoints[1]) > arrowLength) {
-        drawArrow(graphics, newPoints[0], newPoints[1], xOffset, yOffset, scale);
+        drawArrow(graphics, newPoints[0].toPoint(), newPoints[1].toPoint(), xOffset, yOffset, scale);
       }
     }
   }
@@ -205,13 +209,13 @@ public class MapRouteDrawer {
     final int numTerritories = territories.size();
     final Point[] points = new Point[numTerritories];
     for (int i = 0; i < numTerritories; i++) {
-      points[i] = mapData.getCenter(territories.get(i));
+      points[i] = new Point(mapData.getCenter(territories.get(i)));
     }
     if (routeDescription.getStart() != null) {
-      points[0] = routeDescription.getStart();
+      points[0] = new Point(routeDescription.getStart());
     }
     if (routeDescription.getEnd() != null && numTerritories > 1) {
-      points[numTerritories - 1] = routeDescription.getEnd();
+      points[numTerritories - 1] = new Point(routeDescription.getEnd());
     }
     return points;
   }
@@ -274,12 +278,12 @@ public class MapRouteDrawer {
     createMovementLeftImage(movementImage, String.valueOf(numTerritories - 1), unitMovementLeft);
 
     final int textXOffset = -movementImage.getWidth() / 2;
-    final int yDir = cursorPos.y - points[numTerritories - 2].y;
+    final double yDir = cursorPos.getY() - points[numTerritories - 2].getY();
     final int textYOffset = yDir > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
-    for (Point[] cursorPositions : routeOptimizer.getAllPoints(cursorPos)) {
+    for (Point[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
       graphics.drawImage(movementImage,
-          (int) ((cursorPositions[0].x + textXOffset - xOffset) * scale),
-          (int) ((cursorPositions[0].y + textYOffset - yOffset) * scale), null);
+          (int) ((cursorPositions[0].getX() + textXOffset - xOffset) * scale),
+          (int) ((cursorPositions[0].getY() + textYOffset - yOffset) * scale), null);
     }
   }
 
@@ -308,23 +312,21 @@ public class MapRouteDrawer {
     final PolynomialSplineFunction ycurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
-    List<Line2D> lines = routeOptimizer.getAllNormalizedLines(xcoords, ycoords);
-    for (Line2D line : lines) {
-      drawLineWithTranslate(graphics, line, xOffset, yOffset, scale);
+    List<Line> lines = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
+    for (Line line : lines) {
+      drawLineWithTranslate(graphics, line.toLine2D(), xOffset, yOffset, scale);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    List<Point[]> finishingPoints = routeOptimizer.getAllPoints(
-        RouteOptimizer.getPoint(new Point2D.Double(
-            xcoords[xcoords.length - 1],
-            ycoords[ycoords.length - 1])),
-        points[points.length - 1]);
+    List<Point[]> finishingPoints = routeCalculator.getAllPoints(
+        new Point(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]), points[points.length - 1]);
     boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
     for (Point[] finishingPointArray : finishingPoints) {
       drawLineWithTranslate(graphics,
-          new Line2D.Double(finishingPointArray[0], finishingPointArray[1]),
+          new Line(finishingPointArray[0], finishingPointArray[1]).toLine2D(),
           xOffset, yOffset, scale);
       if (hasArrowEnoughSpace) {
-        drawArrow(graphics, finishingPointArray[0], finishingPointArray[1], xOffset, yOffset, scale);
+        drawArrow(graphics, finishingPointArray[0].toPoint(), finishingPointArray[1].toPoint(), xOffset, yOffset,
+            scale);
       }
     }
   }

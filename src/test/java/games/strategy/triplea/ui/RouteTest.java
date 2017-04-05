@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -24,6 +23,7 @@ import org.junit.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.logic.Point;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class RouteTest {
@@ -33,14 +33,14 @@ public class RouteTest {
   private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
   private final Route dummyRoute = spy(new Route());
   private final RouteDescription dummyRouteDescription =
-      spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
+      spy(new RouteDescription(dummyRoute, dummyPoints[0].toPoint(), dummyPoints[2].toPoint(), null));
 
   @Before
   public void setUp() {
     dummyRoute.add(mock(Territory.class));// This will be overridden with the startPoint, since it's the origin
                                           // territory
     dummyRoute.add(mock(Territory.class));
-    when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
+    when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1].toPoint());
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
 
