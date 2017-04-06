@@ -36,17 +36,18 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-checkstyle{
+checkstyle {
 	toolVersion = "7.1"
-	showViolations = false
 }
 
 checkstyleMain {
-    source(sourceSets.main.output.resourcesDir)
+    maxWarnings = checkstyleMainMaxWarnings.toInteger()
+    source sourceSets.main.output.resourcesDir
 }
 
 checkstyleTest {
-    source(sourceSets.test.output.resourcesDir)
+    maxWarnings = checkstyleTestMaxWarnings.toInteger()
+    source sourceSets.test.output.resourcesDir
 }
 
 jar {
