@@ -18,7 +18,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 public class GameEnginePropertyFileReader implements PropertyReader {
 
   public static final String GAME_ENGINE_PROPERTY_FILE = "game_engine.properties";
-  public static final String GAME_ENGINE_VERSION = "1.9.0";
+  public static final String GAME_ENGINE_VERSION = "1.9.1";
   private final File propertyFile;
 
   public GameEnginePropertyFileReader() {

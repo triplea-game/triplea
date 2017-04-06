@@ -28,7 +28,7 @@ public class EngineVersionProperties {
   private final String linkAlt;
   private final String changelogLink;
   private static final String TRIPLEA_VERSION_LINK =
-      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
+      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version_new.properties";
 
   private EngineVersionProperties() {
     this(getProperties());
