@@ -37,7 +37,7 @@ tasks.withType(JavaCompile) {
 }
 
 checkstyle {
-	toolVersion = "7.1"
+    toolVersion = "7.6.1"
 }
 
 checkstyleMain {
