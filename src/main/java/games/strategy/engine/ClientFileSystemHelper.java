@@ -36,7 +36,7 @@ public final class ClientFileSystemHelper {
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     final int locn = fileName.indexOf("triplea_" + tripleaJarNameWithEngineVersion + ".jar!");
     if (locn >= 0) {
-      return new File(fileName.substring(0,locn-1));
+      return new File(fileName.substring(0, locn - 1));
     }
 
     return getRootRelativeToClassFile(fileName);
@@ -69,7 +69,8 @@ public final class ClientFileSystemHelper {
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
     final String subString =
-        fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+        fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
+            fileName.indexOf(tripleaJarName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);
