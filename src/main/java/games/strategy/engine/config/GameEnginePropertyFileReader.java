@@ -18,6 +18,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 public class GameEnginePropertyFileReader implements PropertyReader {
 
   public static final String GAME_ENGINE_PROPERTY_FILE = "game_engine.properties";
+  public static final String GAME_ENGINE_VERSION = "1.9.0";
   private final File propertyFile;
 
   public GameEnginePropertyFileReader() {
@@ -31,6 +32,9 @@ public class GameEnginePropertyFileReader implements PropertyReader {
 
   @Override
   public String readProperty(final GameEngineProperty propertyKey) {
+    if (propertyKey == GameEngineProperty.ENGINE_VERSION) {
+      return GAME_ENGINE_VERSION;
+    }
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
