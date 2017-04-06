@@ -1135,6 +1135,20 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
+  public void fightAutoKills(final IDelegateBridge aBridge) {
+    // Kill undefended transports. Done first to remove potentially dependent sea battles
+    // Which could block amphibious assaults below
+    getPendingBattleSites(false).stream().map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
+          .filter( battle -> Match.allMatch(battle.getDefendingUnits(), Matches.UnitIsDefenselessTransport))
+          .forEach( battle -> battle.fight(aBridge));
+    getPendingBattleSites(false).stream().map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
+          .forEach( battle -> {
+                 if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
+                   battle.fight( aBridge );
+                 }
+          });
+  }
+
   @Override
   public String toString() {
     return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:"
