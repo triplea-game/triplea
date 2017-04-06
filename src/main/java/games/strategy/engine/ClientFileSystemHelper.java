@@ -34,8 +34,9 @@ public final class ClientFileSystemHelper {
     }
 
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains("triplea_" + tripleaJarNameWithEngineVersion + ".jar!")) {
-      return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
+    final int locn = fileName.indexOf("triplea_" + tripleaJarNameWithEngineVersion + ".jar!");
+    if (locn >= 0) {
+      return new File(fileName.substring(0,locn-1));
     }
 
     return getRootRelativeToClassFile(fileName);
@@ -97,7 +98,10 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
-  private static boolean folderContainsGamePropsFile(final File folder) {
+  private static boolean folderContainsGamePropsFile(File folder) {
+    if (!folder.isDirectory()) {
+      folder = new File(folder.toString().substring(5));
+    }
     final File[] files = folder.listFiles();
     final List<String> fileNames =
         Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
