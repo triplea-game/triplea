@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
@@ -73,10 +75,7 @@ public class MapDownloadController {
 
     for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
       if (d != null) {
-        File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (!installed.exists()) {
-          installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
-        }
+        final File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
         if (installed.exists()) {
           if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
             listingToBeAddedTo.add(d.getMapName());
@@ -85,5 +84,70 @@ public class MapDownloadController {
       }
     }
     return listingToBeAddedTo;
+  }
+
+  /**
+   * Indicates the user should be prompted to download the tutorial map.
+   *
+   * @return {@code true} if the user should be prompted to download the tutorial map; otherwise {@code false}.
+   */
+  public boolean shouldPromptToDownloadTutorialMap() {
+    return shouldPromptToDownloadTutorialMap(getTutorialMapPreferences(), getUserMaps());
+  }
+
+  @VisibleForTesting
+  static boolean shouldPromptToDownloadTutorialMap(
+      final TutorialMapPreferences tutorialMapPreferences,
+      final UserMaps userMaps) {
+    return tutorialMapPreferences.canPromptToDownload() && userMaps.isEmpty();
+  }
+
+  @VisibleForTesting
+  interface TutorialMapPreferences {
+    boolean canPromptToDownload();
+
+    void preventPromptToDownload();
+  }
+
+  private static TutorialMapPreferences getTutorialMapPreferences() {
+    return new TutorialMapPreferences() {
+      @Override
+      public void preventPromptToDownload() {
+        SystemPreferences.put(SystemPreferenceKey.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP, false);
+      }
+
+      @Override
+      public boolean canPromptToDownload() {
+        return SystemPreferences.get(SystemPreferenceKey.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP, true);
+      }
+    };
+  }
+
+  @VisibleForTesting
+  interface UserMaps {
+    boolean isEmpty();
+  }
+
+  private static UserMaps getUserMaps() {
+    return new UserMaps() {
+      @Override
+      public boolean isEmpty() {
+        final String[] entries = ClientFileSystemHelper.getUserMapsFolder().list();
+        final int entryCount = Optional.ofNullable(entries).map(it -> it.length).orElse(0);
+        return entryCount == 0;
+      }
+    };
+  }
+
+  /**
+   * Prevents the user from being prompted to download the tutorial map.
+   */
+  public void preventPromptToDownloadTutorialMap() {
+    preventPromptToDownloadTutorialMap(getTutorialMapPreferences());
+  }
+
+  @VisibleForTesting
+  static void preventPromptToDownloadTutorialMap(final TutorialMapPreferences tutorialMapPreferences) {
+    tutorialMapPreferences.preventPromptToDownload();
   }
 }

@@ -62,7 +62,7 @@ public class GameData implements java.io.Serializable {
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient LockUtil lockUtil = LockUtil.INSTANCE;
-  private volatile transient boolean forceInSwingEventThread = false;
+  private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
   private int diceSides;
@@ -92,7 +92,7 @@ public class GameData implements java.io.Serializable {
   private transient ResourceLoader resourceLoader;
   private IGameLoader loader;
   private final History gameHistory = new History(this);
-  private volatile transient boolean testLockIsHeld = false;
+  private transient volatile boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
   private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();

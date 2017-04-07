@@ -120,7 +120,7 @@ public class EditPanel extends ActionPanel {
         m_currentAction = this;
         setWidgetActivation();
         final List<Unit> allUnits = new ArrayList<>(m_selectedTerritory.getUnits().getUnits());
-        sortUnitsToRemove(allUnits, m_selectedTerritory);
+        sortUnitsToRemove(allUnits);
         final MustMoveWithDetails mustMoveWithDetails;
         try {
           getData().acquireReadLock();
@@ -368,7 +368,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        sortUnitsToRemove(units, m_selectedTerritory);
+        sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
             BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
@@ -414,7 +414,7 @@ public class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        sortUnitsToRemove(units, m_selectedTerritory);
+        sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
             BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
@@ -530,8 +530,7 @@ public class EditPanel extends ActionPanel {
     setWidgetActivation();
   }
 
-  private void sortUnitsToRemove(final List<Unit> units,
-      /* final MustMoveWithDetails mustMoveWith, */final Territory territory) {
+  private void sortUnitsToRemove(final List<Unit> units) {
     if (units.isEmpty()) {
       return;
     }

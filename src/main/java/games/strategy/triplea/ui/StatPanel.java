@@ -45,8 +45,8 @@ import games.strategy.util.Match;
 
 public class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
-  final private StatTableModel m_dataModel;
-  final private TechTableModel m_techModel;
+  private final StatTableModel m_dataModel;
+  private final TechTableModel m_techModel;
   protected IStat[] m_stats;
   private JTable m_statsTable;
   private Image m_statsImage = null;

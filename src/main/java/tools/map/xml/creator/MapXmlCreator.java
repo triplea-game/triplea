@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -63,6 +62,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.xml.sax.SAXException;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -114,7 +114,7 @@ public class MapXmlCreator extends JFrame {
   private final JPanel actionPanel;
   private GameStep currentStep = GAME_STEP_FIRST;
 
-  final public static GameStep GAME_STEP_FIRST = GameStep.MAP_PROPERTIES;
+  public static final GameStep GAME_STEP_FIRST = GameStep.MAP_PROPERTIES;
   public static final String MAP_XML_CREATOR_LOGGER_NAME = "Logger for Map XML Creation";
 
   public static enum GameStep {
@@ -250,7 +250,7 @@ public class MapXmlCreator extends JFrame {
   }
 
 
-  final private static Logger logger = Logger.getLogger(MAP_XML_CREATOR_LOGGER_NAME);
+  private static final Logger logger = Logger.getLogger(MAP_XML_CREATOR_LOGGER_NAME);
 
   public static Logger getLogger() {
     return logger;
@@ -355,12 +355,8 @@ public class MapXmlCreator extends JFrame {
         + File.separator + "games" + File.separator + "new_world_order.xml");
   }
 
-  /**
-   * @return
-   */
-  public File getDefaultMapFolderLocation() {
-    // return new File(ClientFileSystemHelper.getRootFolder() + File.separator + "maps");
-    return new File(Paths.get("." + File.separator + "maps").toAbsolutePath().normalize().toString());
+  private static File getDefaultMapFolderLocation() {
+    return ClientFileSystemHelper.getUserMapsFolder();
   }
 
   /**
@@ -783,9 +779,9 @@ public class MapXmlCreator extends JFrame {
   }
 
 
-  final private String stepLabelFontName = MapXmlUIHelper.defaultMapXMLCreatorFontName;
-  final private Font stepLabelFontDefault = new Font(stepLabelFontName, Font.PLAIN, 13);
-  final private Font stepLabelFontHighlighted = new Font(stepLabelFontName, Font.BOLD, 13);
+  private final String stepLabelFontName = MapXmlUIHelper.defaultMapXMLCreatorFontName;
+  private final Font stepLabelFontDefault = new Font(stepLabelFontName, Font.PLAIN, 13);
+  private final Font stepLabelFontHighlighted = new Font(stepLabelFontName, Font.BOLD, 13);
 
   private void goToStep(final GameStep step) {
     if (currentStep != step) {
@@ -1073,7 +1069,7 @@ public class MapXmlCreator extends JFrame {
    * @param level One of the message level identifiers, e.g., SEVERE
    * @param msg The string message (or a key in the message catalog)
    */
-  static public void log(final Level level, final String msg) {
+  public static void log(final Level level, final String msg) {
     getLogger().log(level, msg);
   }
 

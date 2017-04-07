@@ -25,10 +25,6 @@ import games.strategy.util.Triple;
  */
 public class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
-    return validateTerritoryBasic(data, territory, null);
-  }
-
-  private static String validateTerritoryBasic(final GameData data, final Territory territory, final PlayerID player) {
     final String result = null;
     /*
      * // territory cannot contain enemy units
@@ -60,7 +56,7 @@ public class EditValidator {
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
-    if ((result = validateTerritoryBasic(data, territory, player)) != null) {
+    if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
     return result;
@@ -126,7 +122,7 @@ public class EditValidator {
         return "Can't add sea units to land";
       }
     }
-    if ((result = validateTerritoryBasic(data, territory, player)) != null) {
+    if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
     return result;
@@ -138,13 +134,12 @@ public class EditValidator {
     if (units.isEmpty()) {
       return "No units selected";
     }
-    final PlayerID player = units.iterator().next().getOwner();
     /*
      * all units should be same owner
      * if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
      * return "Not all units have the same owner";
      */
-    if ((result = validateTerritoryBasic(data, territory, player)) != null) {
+    if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
     // if transport selected, all transported units must be deleted too

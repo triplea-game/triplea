@@ -8,7 +8,7 @@ public class VaultID implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
   private static long s_currentID;
 
-  private synchronized static long getNextID() {
+  private static synchronized long getNextID() {
     return s_currentID++;
   }
 

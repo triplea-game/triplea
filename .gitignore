@@ -65,6 +65,9 @@ local.properties
 temp_eclipse/
 classes.jar
 
+# Vi tmp files
+*~
+
 # Eclipse Core
 .project
 
@@ -85,6 +88,9 @@ classes.jar
 
 # PDT-specific
 .buildpath
+
+# Checkstyle plugin
+.checkstyle
 
 # sbteclipse plugin
 .target

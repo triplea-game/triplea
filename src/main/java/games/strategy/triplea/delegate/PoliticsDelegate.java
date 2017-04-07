@@ -310,7 +310,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
     sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
-    notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
+    notifyOtherPlayers(PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
   }
 
   /**
@@ -321,14 +321,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private void notifySuccess(final PoliticalActionAttachment paa) {
     getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player);
     sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
-    notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
+    notifyOtherPlayers(PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
   }
 
   /**
    * Send a notification to the other players involved in this action (all
    * players except the player starting the action)
    */
-  private void notifyOtherPlayers(final PoliticalActionAttachment paa, final String notification) {
+  private void notifyOtherPlayers(final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just paa.getOtherPlayers(), or we can send it to all players. both are good options.
       final Collection<PlayerID> currentPlayer = new ArrayList<>();

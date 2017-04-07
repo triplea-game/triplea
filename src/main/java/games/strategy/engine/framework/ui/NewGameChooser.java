@@ -194,7 +194,7 @@ public class NewGameChooser extends JDialog {
   }
 
   /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
-  public synchronized static NewGameChooserModel getNewGameChooserModel() {
+  public static synchronized NewGameChooserModel getNewGameChooserModel() {
     return new NewGameChooserModel();
   }
 

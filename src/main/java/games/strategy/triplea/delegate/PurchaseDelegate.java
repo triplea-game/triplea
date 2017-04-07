@@ -53,7 +53,7 @@ import games.strategy.util.Match;
 @MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean m_needToInitialize = true;
-  public final static String NOT_ENOUGH_RESOURCES = "Not enough resources";
+  public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
 
   /**
    * Called before the delegate will run.
@@ -158,7 +158,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
    */
   @Override
   public String purchase(final IntegerMap<ProductionRule> productionRules) {
-    final IntegerMap<Resource> costs = getCosts(productionRules, m_player);
+    final IntegerMap<Resource> costs = getCosts(productionRules);
     final IntegerMap<NamedAttachable> results = getResults(productionRules);
     if (!(canAfford(costs, m_player))) {
       return NOT_ENOUGH_RESOURCES;
@@ -323,7 +323,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
   };
 
-  private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player) {
+  private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {

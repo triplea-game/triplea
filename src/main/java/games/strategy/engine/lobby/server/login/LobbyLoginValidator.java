@@ -26,7 +26,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
   static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
   static final String INVALID_MAC = "Invalid mac address.";
-  private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
+  private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
@@ -53,7 +53,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac, remoteAddress);
+    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
       s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -65,7 +65,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient, final String clientName,
-      final String hashedMac, final SocketAddress remoteAddress) {
+      final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }

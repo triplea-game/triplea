@@ -204,7 +204,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Destination Is Out Of Range");
     }
     final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
-    final Match<Unit> airborneBaseMatch = getAirborneMatch(player, airborneBases, alliesForBases);
+    final Match<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
     final Collection<Unit> basesAtStart = start.getUnits().getMatches(airborneBaseMatch);
@@ -287,12 +287,11 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
-    return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data),
+    return getAirborneMatch(TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  private static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types,
-      final Collection<PlayerID> unitOwners) {
+  private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
     return new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
@@ -334,7 +333,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final GameMap map = data.getMap();
     final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
     final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(),
-        Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
+        Matches.territoryHasUnitsThatMatch(getAirborneMatch(airborneBases, alliesForBases)));
 
     return !territoriesWeCanLaunchFrom.isEmpty();
   }

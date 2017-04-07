@@ -59,7 +59,7 @@ import games.strategy.util.Tuple;
 
 public class TileManager {
   private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
-  public final static int TILE_SIZE = 256;
+  public static final int TILE_SIZE = 256;
   private List<Tile> m_tiles = new ArrayList<>();
   private final Lock m_lock = new ReentrantLock();
   private final Map<String, IDrawable> m_territoryOverlays = new HashMap<>();
@@ -274,7 +274,7 @@ public class TileManager {
       drawing.add(m_territoryOverlays.get(territory.getName()));
     }
     if (m_uiContext.getShowTerritoryEffects()) {
-      drawTerritoryEffects(territory, data, mapData, drawnOn, drawing);
+      drawTerritoryEffects(territory, mapData, drawing);
     }
     if (m_uiContext.getShowUnits()) {
       drawUnits(territory, mapData, drawnOn, drawing);
@@ -327,8 +327,7 @@ public class TileManager {
     m_territoryTiles.put(territory.getName(), drawnOn);
   }
 
-  private void drawTerritoryEffects(final Territory territory, final GameData data, final MapData mapData,
-      final Set<Tile> drawnOn, final Set<IDrawable> drawing) {
+  private void drawTerritoryEffects(final Territory territory, final MapData mapData, final Set<IDrawable> drawing) {
     final Iterator<Point> effectPoints = mapData.getTerritoryEffectPoints(territory).iterator();
     Point drawingPoint = effectPoints.next();
     for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(territory)) {

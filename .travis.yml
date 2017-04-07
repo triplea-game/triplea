@@ -11,8 +11,7 @@ script:
 - ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
 - ruby -e "require 'yaml';puts YAML.load_file('./lobby_server.yaml')" > /dev/null || exit 1
 ## run the gradle build
-- ./gradlew --no-daemon test
-# Command with checkstyle run  - ./gradlew check --info
+- ./gradlew --no-daemon check
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
 - chmod +x ./.travis/setup && ./.travis/setup
@@ -21,8 +20,6 @@ before_deploy:
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
-## Download tutorial map
-- wget https://github.com/triplea-maps/tutorial/releases/download/0.125/tutorial.zip
 ## Run the gradle release build process - creates the installers
 - ./gradlew --no-daemon release
 ### Debug, show the artifacts that have been built

@@ -6,7 +6,7 @@ import java.awt.event.FocusListener;
 abstract class FocusListenerFocusLost implements FocusListener {
 
   @Override
-  abstract public void focusLost(final FocusEvent e);
+  public abstract void focusLost(final FocusEvent e);
 
   @Override
   public void focusGained(final FocusEvent e) {}

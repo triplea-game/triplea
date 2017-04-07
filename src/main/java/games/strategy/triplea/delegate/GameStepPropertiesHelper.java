@@ -167,9 +167,10 @@ public class GameStepPropertiesHelper {
         final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairUnits);
         if (prop != null) {
           isRepairUnits = Boolean.parseBoolean(prop);
-        } else
+        } else {
           isRepairUnits = (isCombatDelegate(data) && repairAtStartAndOnlyOwn)
             || (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll);
+        }
       }
     } finally {
       data.releaseReadLock();
@@ -211,8 +212,9 @@ public class GameStepPropertiesHelper {
       } else if (data.getSequence().getStep().getDelegate() != null
         && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
         isRemoveAir = false;
-      } else
+      } else {
         isRemoveAir = isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place");
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -298,8 +300,9 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_bid);
       if (prop != null) {
         isBid = Boolean.parseBoolean(prop);
-      } else
+      } else {
         isBid = isBidPurchaseDelegate(data) || isBidPlaceDelegate(data);
+      }
     } finally {
       data.releaseReadLock();
     }

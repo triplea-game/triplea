@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class ChatFloodControlTest {
-  private final static long INITIAL_CLEAR_TIME = 100;
+  private static final long INITIAL_CLEAR_TIME = 100;
   private final ChatFloodControl testObj = new ChatFloodControl(INITIAL_CLEAR_TIME);
 
   @Test

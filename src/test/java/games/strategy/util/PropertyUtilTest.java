@@ -1,13 +1,11 @@
 package games.strategy.util;
 
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 import games.strategy.triplea.attachments.RulesAttachment;
-
 
 /**
  * PropertyUtil test sets / gets variables via reflection.

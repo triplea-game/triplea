@@ -34,7 +34,7 @@ import games.strategy.util.ThreadUtil;
  * <p>
  */
 public class Database {
-  private final static Logger s_logger = Logger.getLogger(Database.class.getName());
+  private static final Logger s_logger = Logger.getLogger(Database.class.getName());
   private static final Object s_dbSetupLock = new Object();
   private static boolean s_isDbSetup = false;
   private static boolean s_areDBTablesCreated = false;

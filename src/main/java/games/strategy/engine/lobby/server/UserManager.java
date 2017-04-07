@@ -9,7 +9,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 
 public class UserManager implements IUserManager {
-  private final static Logger s_logger = Logger.getLogger(UserManager.class.getName());
+  private static final Logger s_logger = Logger.getLogger(UserManager.class.getName());
 
   public void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);

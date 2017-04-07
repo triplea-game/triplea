@@ -28,6 +28,12 @@
 # img: A URL to a thumbnail of the map. This image is shown as part of the map download description
 # 
 #
+- mapName: Tutorial
+  mapCategory: BEST
+  url: https://github.com/triplea-maps/tutorial/archive/master.zip
+  version: 1
+  description: |
+    <br>This is a tutorial for players new to TripleA and its game engine.
 - mapName: MiniMap
   mapCategory: BEST
   url: https://github.com/triplea-maps/minimap/archive/master.zip
@@ -337,7 +343,7 @@
 - mapName: World War II Global
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_global/archive/master.zip
-  version: 8
+  version: 9
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png
   description: |
     <br>
@@ -392,7 +398,7 @@
 - mapName: Age of Tribes
   mapCategory: GOOD
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/AoT_mini.png
   description: |  
     <br><b><em>by Frostion</em></b>
@@ -660,7 +666,7 @@
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png
   description: |  
     <br><b><em>by Frostion</em></b>
@@ -960,7 +966,7 @@
   description: |
     <br>
     <br>v3 Variants of World At War (original map by Sieg) 
-    <br>Version 1.7.0, last update 2016.10.29 for engine 1.9.0.0 
+    <br>Version 1.7.5, last update 2017.03.16 for engine 1.9.0.0 
     <br>Mod done by sneakingcoward. 
     <br>Suggestions to wgbt@gmx.at 
     <br>Game is continuously played by PBEM. Gamers state, that it is one of the best games listed at the depot. 
@@ -995,6 +1001,7 @@
     <br>
     <br>The vXXX mod uses additional:
     <br>- Recruits
+    <br>- SBR of ships
     <br>- Slightly modified setup for this variant 
     <br>
     <br>c.) General tips: 
@@ -1469,6 +1476,28 @@
     <br />	Helicopter       5/5/4/8  (9)
     <br />	Bomber			 7/7/6/12 (6)
     <br />	Strike			 7/0/99/-/-		Americans only.
+- mapName: Iron War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/iron_war/archive/master.zip
+  version: 2
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
+  description: |  
+    <br><b><em>by Frostion</em></b>
+    <br>
+    <br>This map features 3 major Axis players and 6 major Allied.
+    <br>There are also 15 minor players that take part in the world war.
+    <br>
+    <br>Play through WW2 as one or more Axis or Allied powers.
+    <br>Be free of restricting politics and non-aggression pacts.
+    <br>Purchase special units like SS, Colonial troops, Kamikaze plans etc.
+    <br>Keep track of Steel and Fuel income and availability on the map.
+    <br>Make use of the 25 different units this map has to offer.
+    <br>Enjoy custom map sounds and nation specific music.
+    <br>
+    <br>Don’t forget to give your feedback on this BETA-stage map.
+    <br>Visit the TripleA forum and find the Iron War thread.    
+    <br>
+    <br>
 - mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
@@ -1781,4 +1810,13 @@
         and it runs, then you better understand the development process for maps and go apply what you learned here to the map you always wanted to make.
     <br>
     <br>Created by Veqryn
+    <br>
+- mapName: Global 1940 Redesign HouseRules
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Global_1940_Redesign_HouseRules/archive/master.zip
+  version: 1
+  img: http://tripleamaps.sourceforge.net/images/TripleA_ww2_global_1940_mini.png
+  description: |
+    <br>
+    <br>World War II Global 1940 Redesign Maps. Imagine your own combination of house rules for Global!
     <br>

@@ -75,12 +75,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /*
    * sub-classes method for done handling
    */
-  abstract protected boolean doneMoveAction();
+  protected abstract boolean doneMoveAction();
 
   /*
    * sub-classes method for cancel handling
    */
-  abstract protected void cancelMoveAction();
+  protected abstract void cancelMoveAction();
 
   private final AbstractAction m_CANCEL_MOVE_ACTION = new WeakAction("Cancel", m_cancelMove);
   protected AbstractUndoableMovesPanel m_undoableMovesPanel;
@@ -219,7 +219,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /**
    * sub-classes method for undo handling
    */
-  abstract protected void undoMoveSpecific();
+  protected abstract void undoMoveSpecific();
 
   protected final void cleanUp() {
     SwingUtilities.invokeLater(() -> {
@@ -243,7 +243,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /*
    * sub-classes method for clean-up
    */
-  abstract protected void cleanUpSpecific();
+  protected abstract void cleanUpSpecific();
 
   @Override
   public final void setActive(final boolean active) {
@@ -271,7 +271,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected void addAdditionalButtons() {}
 
-  abstract protected boolean setCancelButton();
+  protected abstract boolean setCancelButton();
 
   protected static JComponent leftBox(final JComponent c) {
     final Box b = new Box(BoxLayout.X_AXIS);
@@ -302,7 +302,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /*
    * sub-classes method for set-up
    */
-  abstract protected void setUpSpecific();
+  protected abstract void setUpSpecific();
 
   protected void clearDependencies() {
     // used by some subclasses

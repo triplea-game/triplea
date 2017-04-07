@@ -11,7 +11,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -150,16 +149,17 @@ public class NewGameChooserEntry {
     return url;
   }
 
+  /**
+   * Returns the location of the game file.
+   *
+   * <p>
+   * The "location" is actually a URI in string form.
+   * </p>
+   *
+   * @return The location of the game file; never {@code null}.
+   */
   public String getLocation() {
-    final String raw = url.toString();
-    final String base = ClientFileSystemHelper.getRootFolder().toURI().toString() + "maps";
-    if (raw.startsWith(base)) {
-      return raw.substring(base.length());
-    }
-    if (raw.startsWith("jar:" + base)) {
-      return raw.substring("jar:".length() + base.length());
-    }
-    return raw;
+    return url.toString();
   }
 
   @Override

@@ -42,7 +42,7 @@ import games.strategy.util.Match;
 
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
-  private final static String RAID = "Strategic bombing raid";
+  private static final String RAID = "Strategic bombing raid";
   // these would be the factories or other targets. does not include aa.
   protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<>();
   protected final ExecutionStack m_stack = new ExecutionStack();
@@ -418,7 +418,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              removeAAHits(bridge, m_dice, m_casualties, currentTypeAA);
+              removeAAHits(bridge, m_casualties, currentTypeAA);
             }
           }
         };
@@ -519,7 +519,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
   }
 
-  private void removeAAHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties,
+  private void removeAAHits(final IDelegateBridge bridge, final CasualtyDetails casualties,
       final String currentTypeAA) {
     final List<Unit> killed = casualties.getKilled();
     if (!killed.isEmpty()) {

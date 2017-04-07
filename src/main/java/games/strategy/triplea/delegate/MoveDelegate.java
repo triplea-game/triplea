@@ -210,15 +210,6 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public Serializable saveState() {
-    return saveState(true);
-  }
-
-  /**
-   * Returns the state of the Delegate. We don't want to save the undoState if
-   * we are saving the state for an undo move (we don't need it, it will just
-   * take up extra space).
-   */
-  private Serializable saveState(final boolean saveUndo) {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
     state.m_needToInitialize = m_needToInitialize;

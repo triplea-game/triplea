@@ -1,12 +1,10 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.logic;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +14,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RouteOptimizerTest {
+public class RouteCalculatorTest {
 
   @Mock
   private MapPanel mapPanel;
@@ -38,15 +37,15 @@ public class RouteOptimizerTest {
   public void testRouteTranslation() {
     Point[] inputArray = new Point[] {p(1, 4), p(1001, 1001), p(600, 600)};
     assertArrayEquals(new Point[] {p(1, 4), p(1, 1), p(-400, -400)},
-        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+        new RouteCalculator(true, true, 1000, 1000).getTranslatedRoute(inputArray));
     assertArrayEquals(new Point[] {p(1, 4), p(1, 1001), p(-400, 600)},
-        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+        new RouteCalculator(true, false, 1000, 1000).getTranslatedRoute(inputArray));
     assertArrayEquals(new Point[] {p(1, 4), p(1001, 1), p(600, -400)},
-        new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
-    assertArrayEquals(inputArray, new RouteOptimizer(mapData, mapPanel).getTranslatedRoute(inputArray));
+        new RouteCalculator(false, true, 1000, 1000).getTranslatedRoute(inputArray));
+    assertArrayEquals(inputArray, new RouteCalculator(false, false, 1000, 1000).getTranslatedRoute(inputArray));
   }
 
-  private static Point p(int x, int y) {
+  private static Point p(double x, double y) {
     return new Point(x, y);
   }
 
@@ -54,17 +53,17 @@ public class RouteOptimizerTest {
   public void testClosestPoint() {
     Point origin = new Point();
     Point closestPoint = new Point(1, 1);
-    List<Point2D> pool = new ArrayList<>();
+    List<Point> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
       pool.add(p((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
     }
     pool.add(closestPoint);
-    assertEquals(closestPoint, RouteOptimizer.getClosestPoint(origin, pool));
+    assertEquals(closestPoint, RouteCalculator.getClosestPoint(origin, pool));
   }
 
   @Test
   public void testPossiblePoints() {
-    List<Point2D> possiblePoints = new ArrayList<>();
+    List<Point> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of
     // x and y values 0, -mapWidth/height, +mapWidth/Height
     possiblePoints.add(p(-1000, -1000));
@@ -76,16 +75,17 @@ public class RouteOptimizerTest {
     possiblePoints.add(p(1000, -1000));
     possiblePoints.add(p(1000, 0));
     possiblePoints.add(p(1000, 1000));
-    checkPoints(0, possiblePoints);
-    checkPoints(6, possiblePoints);
-    checkPoints(6, possiblePoints);
-    checkPoints(8, possiblePoints);
+    checkPoints(0, possiblePoints, true, true);
+    checkPoints(6, possiblePoints, true, false);
+    checkPoints(6, possiblePoints, false, true);
+    checkPoints(8, possiblePoints, false, false);
   }
 
-  private void checkPoints(int offset, List<Point2D> expected) {
-    List<Point2D> calculatedPoints = new RouteOptimizer(mapData, mapPanel).getPossiblePoints(new Point());
+  private void checkPoints(int offset, List<Point> expected, boolean isInfiniteX, boolean isInfiniteY) {
+    List<Point> calculatedPoints =
+        new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
-    for (Point2D point : calculatedPoints) {
+    for (Point point : calculatedPoints) {
       assertTrue(expected.contains(point));
     }
   }
@@ -102,7 +102,7 @@ public class RouteOptimizerTest {
     Point[] s = new Point[] {p(0, 1000), p(1, 1001)};
     Point[] se = new Point[] {p(1000, 1000), p(1001, 1001)};
 
-    List<Point[]> points = new RouteOptimizer(mapData, mapPanel).getAllPoints(input);
+    List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
     // This may be changed along with the RouteOptimizer#getPossiblePoints method
     assertArrayEquals(input, points.get(0));
     assertArrayEquals(nw, points.get(1));

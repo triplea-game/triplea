@@ -2,8 +2,6 @@ package games.strategy.engine.pbem;
 
 import java.io.File;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
@@ -64,11 +62,6 @@ public class NullForumPoster implements IForumPoster {
   public String getHelpText() {
     return "Will never be called";
   }
-
-  public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-      final String displayName) {}
-
-  public void gameDataChanged(final Change change) {}
 
   @Override
   public boolean postTurnSummary(final String summary, final String subject) {

@@ -1,13 +1,14 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.IGame;
-import games.strategy.ui.SwingComponents;
+import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.Component;
+
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.IGame;
+import games.strategy.ui.SwingComponents;
 
 /**
  * Panel to show who is playing which players

@@ -39,11 +39,11 @@ public class LocalizeHTML {
    * href # follow by "href" word
    * \s*=\s* # allows spaces on either side of the equal sign,
    * ( # start of group #1
-   * "([^"]*")						#						allow string with double quotes enclosed - "string"
+   * "([^"]*") # allow string with double quotes enclosed - "string"
    * | # ..or
    * '[^']*' # allow string with single quotes enclosed - 'string'
    * | # ..or
-   * ([^'">]+)		#						can't contains one single quotes, double quotes ">"
+   * ([^'">]+) # can't contains one single quotes, double quotes ">"
    * ) # end of group #1
    */
   public static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";

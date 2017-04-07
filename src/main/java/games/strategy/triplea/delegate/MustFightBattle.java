@@ -47,7 +47,7 @@ import games.strategy.util.Util;
 /**
  * Handles logic for battles in which fighting actually occurs.
  */
-public class MustFightBattle extends AbstractBattle implements BattleStepStrings {
+public class MustFightBattle extends DependentBattle implements BattleStepStrings {
   public static enum ReturnFire {
     ALL, SUBS, NONE
   }
@@ -55,19 +55,16 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
   // these class exist for testing
-  public static abstract class AttackSubs implements IExecutable {
+  public abstract static class AttackSubs implements IExecutable {
     private static final long serialVersionUID = 4872551667582174716L;
   }
-  public static abstract class DefendSubs implements IExecutable {
+  public abstract static class DefendSubs implements IExecutable {
     private static final long serialVersionUID = 3768066729336520095L;
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
-  private Set<Territory> m_attackingFrom = new HashSet<>();
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
@@ -321,8 +318,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     if (m_stack.isExecuting()) {
       final ITripleADisplay display = getDisplay(bridge);
       display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
-          removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
-          removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
+          removeNonCombatants(m_attackingUnits, true, false, false, false),
+          removeNonCombatants(m_defendingUnits, false, false, false, false), m_killed,
           m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
           getBattleType(), m_amphibiousLandAttackers);
       display.listBattleSteps(m_battleID, m_stepStrings);
@@ -357,8 +354,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     m_stepStrings = determineStepStrings(true, bridge);
     final ITripleADisplay display = getDisplay(bridge);
     display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
-        removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
-        removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed,
+        removeNonCombatants(m_attackingUnits, true, false, false, false),
+        removeNonCombatants(m_defendingUnits, false, false, false, false), m_killed,
         m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
         getBattleType(), m_amphibiousLandAttackers);
     display.listBattleSteps(m_battleID, m_stepStrings);
@@ -388,7 +385,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       }
     }
     // push on stack in opposite order of execution
-    pushFightLoopOnStack(true, bridge);
+    pushFightLoopOnStack(true);
     m_stack.execute(bridge);
   }
 
@@ -683,7 +680,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireOffensiveAAGuns(bridge);
+          fireOffensiveAAGuns();
         }
       });
     }
@@ -693,7 +690,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireDefensiveAAGuns(bridge);
+          fireDefensiveAAGuns();
         }
       });
     }
@@ -731,7 +728,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireSuicideUnitsAttack(bridge);
+          fireSuicideUnitsAttack();
         }
       });
       steps.add(new IExecutable() {
@@ -739,7 +736,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireSuicideUnitsDefend(bridge);
+          fireSuicideUnitsDefend();
         }
       });
       steps.add(new IExecutable() {
@@ -769,7 +766,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     }
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun, final IDelegateBridge bridge) {
+  private void pushFightLoopOnStack(final boolean firstRun) {
     if (m_isOver) {
       return;
     }
@@ -954,7 +951,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        pushFightLoopOnStack(false, bridge);
+        pushFightLoopOnStack(false);
       }
     };
     steps.add(new IExecutable() {
@@ -1054,7 +1051,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(bridge, returnFireAgainstDefendingSubs);
+          defendSubs(returnFireAgainstDefendingSubs);
         }
       });
     }
@@ -1063,7 +1060,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackSubs(bridge, returnFireAgainstAttackingSubs);
+        attackSubs(returnFireAgainstAttackingSubs);
       }
     });
     final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst()
@@ -1075,7 +1072,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(bridge, returnFireAgainstDefendingSubs);
+          defendSubs(returnFireAgainstDefendingSubs);
         }
       });
     }
@@ -1087,7 +1084,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          attackAirOnNonSubs(bridge);
+          attackAirOnNonSubs();
         }
       });
     }
@@ -1098,7 +1095,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackNonSubs(bridge);
+        attackNonSubs();
       }
     });
     if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack3() || defendingSubsFireWithAllDefenders)) {
@@ -1107,7 +1104,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(bridge, returnFireAgainstDefendingSubs);
+          defendSubs(returnFireAgainstDefendingSubs);
         }
       });
     }
@@ -1119,7 +1116,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendAirOnNonSubs(bridge);
+          defendAirOnNonSubs();
         }
       });
     }
@@ -1129,7 +1126,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        defendNonSubs(bridge);
+        defendNonSubs();
       }
     });
   }
@@ -1520,8 +1517,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return remaining;
   }
 
-  private Change retreatFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
-      final Territory retreatTo, final Collection<IBattle> dependentBattles) {
+  private Change retreatFromDependents(final Collection<Unit> units, final Territory retreatTo,
+      final Collection<IBattle> dependentBattles) {
     final CompositeChange change = new CompositeChange();
     for (final IBattle dependent : dependentBattles) {
       final Route route = new Route();
@@ -1536,7 +1533,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   // Retreat landed units from allied territory when their transport retreats
-  private Change retreatFromNonCombat(Collection<Unit> units, final IDelegateBridge bridge, final Territory retreatTo) {
+  private Change retreatFromNonCombat(Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
     units = Match.getMatches(units, Matches.UnitIsTransport);
     final Collection<Unit> retreated = getTransportDependents(units, m_data);
@@ -1625,10 +1622,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(this);
       // If there are no dependent battles, check landings in allied territories
       if (dependentBattles.isEmpty()) {
-        change.add(retreatFromNonCombat(retreating, bridge, to));
+        change.add(retreatFromNonCombat(retreating, to));
         // Else retreat the units from combat when their transport retreats
       } else {
-        change.add(retreatFromDependents(retreating, bridge, to, dependentBattles));
+        change.add(retreatFromDependents(retreating, to, dependentBattles));
       }
     }
     bridge.addChange(change);
@@ -1669,10 +1666,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(this);
       // If there are no dependent battles, check landings in allied territories
       if (dependentBattles.isEmpty()) {
-        change.add(retreatFromNonCombat(nonAirRetreating, bridge, to));
+        change.add(retreatFromNonCombat(nonAirRetreating, to));
         // Else retreat the units from combat when their transport retreats
       } else {
-        change.add(retreatFromDependents(nonAirRetreating, bridge, to, dependentBattles));
+        change.add(retreatFromDependents(nonAirRetreating, to, dependentBattles));
       }
     }
     bridge.addChange(change);
@@ -1692,7 +1689,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defender, final ReturnFire returnFire,
-      final IDelegateBridge bridge, final String text) {
+      final String text) {
     final PlayerID firing = defender ? m_defender : m_attacker;
     final PlayerID defending = !defender ? m_defender : m_attacker;
     if (firingUnits.isEmpty()) {
@@ -1713,14 +1710,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
       final List<Unit> deadUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
       getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
-      remove(deadUnits, bridge, m_battleSite, false, false);
+      remove(deadUnits, bridge, m_battleSite, false);
     } else {
       final List<Unit> deadUnits = new ArrayList<>();
       deadUnits.addAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
       deadUnits.addAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
       getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
       getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, deadUnits, m_dependentUnits);
-      remove(deadUnits, bridge, m_battleSite, false, null);
+      remove(deadUnits, bridge, m_battleSite, null);
     }
   }
 
@@ -1768,7 +1765,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         final Change change = ChangeFactory.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
         bridge.addChange(change);
         final boolean defender = player.equals(m_defender);
-        remove(alliedTransports, bridge, m_battleSite, false, defender);
+        remove(alliedTransports, bridge, m_battleSite, defender);
       }
     }
   }
@@ -1811,7 +1808,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy, m_data)));
     }
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
-      remove(unitsToKill, bridge, m_battleSite, false, !attacker);
+      remove(unitsToKill, bridge, m_battleSite, !attacker);
     }
   }
 
@@ -1839,7 +1836,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     }
   }
 
-  private void defendNonSubs(final IDelegateBridge bridge) {
+  private void defendNonSubs() {
     if (m_attackingUnits.size() == 0) {
       return;
     }
@@ -1858,11 +1855,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
     fire(m_attacker.getName() + SELECT_CASUALTIES, units, m_attackingUnits, allEnemyUnitsAliveOrWaitingToDie, true,
-        ReturnFire.ALL, bridge, "Defenders fire, ");
+        ReturnFire.ALL, "Defenders fire, ");
   }
 
   // If there are no attacking DDs but defending SUBs, fire AIR at non-SUB forces ONLY
-  private void attackAirOnNonSubs(final IDelegateBridge bridge) {
+  private void attackAirOnNonSubs() {
     if (m_defendingUnits.size() == 0) {
       return;
     }
@@ -1880,7 +1877,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
       fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, false,
-          ReturnFire.ALL, bridge, "Attacker's aircraft fire,");
+          ReturnFire.ALL, "Attacker's aircraft fire,");
     }
   }
 
@@ -1889,7 +1886,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         && Match.noneMatch(firing, Matches.UnitIsDestroyer));
   }
 
-  private void defendAirOnNonSubs(final IDelegateBridge bridge) {
+  private void defendAirOnNonSubs() {
     if (m_attackingUnits.size() == 0) {
       return;
     }
@@ -1907,13 +1904,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
       fire(m_attacker.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, true,
-          ReturnFire.ALL, bridge, "Defender's aircraft fire,");
+          ReturnFire.ALL, "Defender's aircraft fire,");
     }
   }
 
   // If there are no attacking DDs, but defending SUBs, remove attacking AIR as they've already fired- otherwise fire
   // all attackers.
-  private void attackNonSubs(final IDelegateBridge bridge) {
+  private void attackNonSubs() {
     if (m_defendingUnits.size() == 0) {
       return;
     }
@@ -1934,10 +1931,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
     fire(m_defender.getName() + SELECT_CASUALTIES, units, m_defendingUnits, allEnemyUnitsAliveOrWaitingToDie, false,
-        ReturnFire.ALL, bridge, "Attackers fire,");
+        ReturnFire.ALL, "Attackers fire,");
   }
 
-  private void attackSubs(final IDelegateBridge bridge, final ReturnFire returnFire) {
+  private void attackSubs(final ReturnFire returnFire) {
     final Collection<Unit> firing = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
     if (firing.isEmpty()) {
       return;
@@ -1948,10 +1945,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
     fire(m_defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, false,
-        returnFire, bridge, "Subs fire,");
+        returnFire, "Subs fire,");
   }
 
-  private void defendSubs(final IDelegateBridge bridge, final ReturnFire returnFire) {
+  private void defendSubs(final ReturnFire returnFire) {
     if (m_attackingUnits.size() == 0) {
       return;
     }
@@ -1970,7 +1967,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
     fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, true,
-        returnFire, bridge, "Subs defend, ");
+        returnFire, "Subs defend, ");
   }
 
   void removeCasualties(final Collection<Unit> killed, final ReturnFire returnFire, final boolean defender,
@@ -1992,9 +1989,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       } else {
         m_attackingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
       }
-      remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, isAA, defender);
+      remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, defender);
     } else if (returnFire == ReturnFire.NONE) {
-      remove(killed, bridge, m_battleSite, isAA, defender);
+      remove(killed, bridge, m_battleSite, defender);
     }
     // remove from the active fighting
     if (defender) {
@@ -2029,11 +2026,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
       fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, allEnemyUnitsAliveOrWaitingToDie, false,
-          canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
+          canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, "Bombard");
     }
   }
 
-  private void fireSuicideUnitsAttack(final IDelegateBridge bridge) {
+  private void fireSuicideUnitsAttack() {
     // TODO: add a global toggle for returning fire (Veqryn)
     final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<>(
         Matches.UnitIsNotInfrastructureAndNotCapturedOnEntering(m_attacker, m_battleSite, m_data),
@@ -2058,11 +2055,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
     fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders,
-        allEnemyUnitsAliveOrWaitingToDie, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge,
+        allEnemyUnitsAliveOrWaitingToDie, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
         SUICIDE_ATTACK);
   }
 
-  private void fireSuicideUnitsDefend(final IDelegateBridge bridge) {
+  private void fireSuicideUnitsDefend() {
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
       return;
     }
@@ -2089,7 +2086,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
     fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers,
-        allEnemyUnitsAliveOrWaitingToDie, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge,
+        allEnemyUnitsAliveOrWaitingToDie, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
         SUICIDE_DEFEND);
   }
 
@@ -2141,18 +2138,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
   }
 
-  /**
-   * @return territories where there are amphibious attacks
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
-
-  private void fireOffensiveAAGuns(final IDelegateBridge bridge) {
+  private void fireOffensiveAAGuns() {
     m_stack.push(new FireAA(false));
   }
 
-  private void fireDefensiveAAGuns(final IDelegateBridge bridge) {
+  private void fireDefensiveAAGuns() {
     m_stack.push(new FireAA(true));
   }
 
@@ -2318,7 +2308,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
    *         combatants include such things as factories, aaguns, land units
    *         in a water battle.
    */
-  private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player,
+  private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking,
       final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {
     final List<Unit> unitList = new ArrayList<>(units);
     if (m_battleSite.isWater()) {
@@ -2345,9 +2335,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
   private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAA,
       final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {
-    final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, m_defender, doNotIncludeAA,
+    final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, doNotIncludeAA,
         doNotIncludeSeaBombardmentUnits, removeForNextRound);
-    final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, m_attacker, doNotIncludeAA,
+    final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, doNotIncludeAA,
         doNotIncludeSeaBombardmentUnits, removeForNextRound);
     final Collection<Unit> toRemoveDefending = Util.difference(m_defendingUnits, notRemovedDefending);
     final Collection<Unit> toRemoveAttacking = Util.difference(m_attackingUnits, notRemovedAttacking);
@@ -2415,7 +2405,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite,
-      final boolean isAA, final Boolean defenderDying) {
+      final Boolean defenderDying) {
     if (killed.size() == 0) {
       return;
     }
@@ -2461,7 +2451,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       if (landedTerritory == null) {
         throw new IllegalStateException("not unloaded?:" + units);
       }
-      remove(lost, bridge, landedTerritory, false, false);
+      remove(lost, bridge, landedTerritory, false);
     }
   }
 
@@ -2469,7 +2459,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     final Collection<Unit> units = new ArrayList<>();
     units.addAll(m_attackingWaitingToDie);
     units.addAll(m_defendingWaitingToDie);
-    remove(units, bridge, m_battleSite, false, null);
+    remove(units, bridge, m_battleSite, null);
     m_defendingWaitingToDie.clear();
     m_attackingWaitingToDie.clear();
   }
@@ -2504,7 +2494,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
       m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
-    checkDefendingPlanesCanLand(bridge, m_defender);
+    checkDefendingPlanesCanLand();
     BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null);
     if (!m_headless) {
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker);
@@ -2523,7 +2513,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker);
     }
-    checkDefendingPlanesCanLand(bridge, m_defender);
+    checkDefendingPlanesCanLand();
   }
 
   private void attackerWins(final IDelegateBridge bridge) {
@@ -2589,7 +2579,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
    * The defender has won, but there may be defending fighters that cant stay
    * in the sea zone due to insufficient carriers.
    */
-  private void checkDefendingPlanesCanLand(final IDelegateBridge bridge, final PlayerID defender) {
+  private void checkDefendingPlanesCanLand() {
     if (m_headless) {
       return;
     }
@@ -2732,14 +2722,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return m2 - m1;
   }
 
-  public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
-  }
-
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
-  }
-
   // used for setting stuff when we make a scrambling battle when there was no previous battle there, and we need
   // retreat spaces
   public void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
@@ -2765,7 +2747,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // previous battle's remove method
     lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
     if (!withdrawn) {
-      remove(lost, bridge, m_battleSite, false, false);
+      remove(lost, bridge, m_battleSite, false);
     }
     if (m_attackingUnits.isEmpty()) {
       final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);

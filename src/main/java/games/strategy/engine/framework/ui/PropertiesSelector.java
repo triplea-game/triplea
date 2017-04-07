@@ -26,7 +26,7 @@ public class PropertiesSelector {
    *        button options. They will be displayed in a row on the bottom
    * @return pressed button
    */
-  static public Object getButton(final JComponent parent, final String title,
+  public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
     if (!SwingUtilities.isEventDispatchThread()) {
       // throw new IllegalStateException("Must run from EventDispatchThread");

@@ -33,7 +33,7 @@ import games.strategy.util.ThreadUtil;
  * based on it.
  */
 public class UnifiedMessenger {
-  private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
+  private static final Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
 
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on

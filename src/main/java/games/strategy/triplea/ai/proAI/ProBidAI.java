@@ -47,7 +47,7 @@ import games.strategy.util.Match;
  */
 public class ProBidAI {
 
-  private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
+  private static final int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
 
   private GameData data;
 
@@ -396,7 +396,7 @@ public class ProBidAI {
     // Matches.TerritoryIsLand);
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<Territory> factoryTerritories =
-        Match.getMatches(findUnitTerr(data, player, ourFactory), Matches.isTerritoryOwnedBy(player));
+        Match.getMatches(findUnitTerr(data, ourFactory), Matches.isTerritoryOwnedBy(player));
     factoryTerritories.removeAll(impassableTerrs);
     /**
      * Bid place with following criteria:
@@ -434,8 +434,8 @@ public class ProBidAI {
       // Matches.territoryHasEnemyUnits(player, data));
       final CompositeMatch<Territory> waterFactoryWaterTerr = new CompositeMatchAnd<>(Matches.TerritoryIsWater,
           Matches.territoryHasOwnedNeighborWithOwnedUnitMatching(data, player, Matches.UnitCanProduceUnits));
-      final List<Territory> enemySeaTerr = findUnitTerr(data, player, enemyAttackUnit);
-      final List<Territory> isWaterTerr = onlyWaterTerr(data, enemySeaTerr);
+      final List<Territory> enemySeaTerr = findUnitTerr(data, enemyAttackUnit);
+      final List<Territory> isWaterTerr = onlyWaterTerr(enemySeaTerr);
       enemySeaTerr.retainAll(isWaterTerr);
       Territory maxEnemySeaTerr = null;
       int maxUnits = 0;
@@ -484,7 +484,7 @@ public class ProBidAI {
           ourSemiRankedBidTerrs.remove(noRouteTerr);
         }
       }
-      final List<Territory> isWaterTerr = onlyWaterTerr(data, ourSemiRankedBidTerrs);
+      final List<Territory> isWaterTerr = onlyWaterTerr(ourSemiRankedBidTerrs);
       ourSemiRankedBidTerrs.removeAll(isWaterTerr);
       ourSemiRankedBidTerrs.removeAll(impassableTerrs);
       // This will bid a max of 5 units to ALL territories except for the capitol. The capitol gets units last, and gets
@@ -1106,8 +1106,7 @@ public class ProBidAI {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned
    */
-  private static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
-      final Match<Unit> unitCondition) {
+  private static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
@@ -1416,7 +1415,7 @@ public class ProBidAI {
           Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
       final CompositeMatch<Unit> aTransport =
           new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
-      final List<Territory> eFTerrs = findUnitTerr(data, ePlayer, enemyPlane);
+      final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0, maxBomberDistance = 0;
       // should change this to read production frontier and tech
       // reality is 99% of time units considered will have full move.
@@ -1435,7 +1434,7 @@ public class ProBidAI {
       if (maxBomberDistance < 0) {
         maxBomberDistance = 0;
       }
-      final List<Territory> eTTerrs = findUnitTerr(data, ePlayer, aTransport);
+      final List<Territory> eTTerrs = findUnitTerr(data, aTransport);
       int maxTransportDistance = 0;
       for (final Territory eTTerr : eTTerrs) {
         final List<Unit> eTUnits = eTTerr.getUnits().getMatches(aTransport);
@@ -1807,7 +1806,7 @@ public class ProBidAI {
       if (distance.getInt(current) == maxDistance) {
         break;
       }
-      for (final Territory neighbor : data.getMap().getNeighbors(current, TerritoryIsNotImpassableToAirUnits(data))) {
+      for (final Territory neighbor : data.getMap().getNeighbors(current, TerritoryIsNotImpassableToAirUnits())) {
         if (!distance.keySet().contains(neighbor)) {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
@@ -1999,7 +1998,7 @@ public class ProBidAI {
    * returns all territories that are water territories. used to remove convoy zones from places the ai will put a
    * factory
    */
-  private static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
+  private static List<Territory> onlyWaterTerr(final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<>(allTerr);
     final Iterator<Territory> wFIter = water.iterator();
     while (wFIter.hasNext()) {
@@ -2216,14 +2215,14 @@ public class ProBidAI {
     return sorted;
   }
 
-  private static Match<Territory> TerritoryIsNotImpassableToAirUnits(final GameData data) {
-    return new InverseMatch<>(TerritoryIsImpassableToAirUnits(data));
+  private static Match<Territory> TerritoryIsNotImpassableToAirUnits() {
+    return new InverseMatch<>(TerritoryIsImpassableToAirUnits());
   }
 
   /**
    * Assumes that water is passable to air units always
    */
-  private static Match<Territory> TerritoryIsImpassableToAirUnits(final GameData data) {
+  private static Match<Territory> TerritoryIsImpassableToAirUnits() {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -2242,7 +2241,7 @@ public class ProBidAI {
   private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
       final Territory check) {
     final ArrayList<Territory> rVal = new ArrayList<>();
-    final List<Territory> checkList = getExactNeighbors(check, 1, player, data, false);
+    final List<Territory> checkList = getExactNeighbors(check, 1, data, false);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player, data).match(t)
           && Matches.TerritoryIsNotImpassableToLandUnits(player, data).match(t)) {
@@ -2257,8 +2256,8 @@ public class ProBidAI {
    * Removes the inner circle neighbors
    * neutral - whether to include neutral countries
    */
-  private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final PlayerID player,
-      final GameData data, final boolean neutral) {
+  private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final GameData data,
+      final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
     final CompositeMatch<Territory> endCond = new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert());

@@ -25,7 +25,7 @@ class BattleStepsPanel extends JPanel implements Active {
   private static final long serialVersionUID = 911638924664810435L;
   private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
   // if this is the target step, we want to walk to the last step
-  private final static String LAST_STEP = "NULL MARKER FOR LAST STEP";
+  private static final String LAST_STEP = "NULL MARKER FOR LAST STEP";
   private final DefaultListModel<String> m_listModel = new DefaultListModel<>();
   private final JList<String> m_list = new JList<>(m_listModel);
   private final MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
