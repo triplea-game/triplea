@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+# This script updates the Checkstyle thresholds based on the most recent
+# Checkstyle run (therefore, this script must be run after the Gradle "check"
+# task has run).  If the thresholds have changed, the updated thresholds are
+# pushed back to the remote repository.
+#
+# NOTE: There is no danger in INCREASING the thresholds because the build will
+# have already failed at this point if the violation counts have increased.
+#
+
+readonly FALSE=1
+readonly GRADLE_PROPERTIES=gradle.properties
+readonly TRUE=0
+
+main() {
+  should_skip_build && exit 0
+
+  local -r old_hash=$(get_gradle_properties_hash)
+  update_local_thresholds
+  has_local_thresholds_changed $old_hash && update_remote_thresholds $old_hash
+}
+
+should_skip_build() {
+  echo "Checking if Checkstyle thresholds should be updated for this build..."
+  local skip=$FALSE
+  if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    echo "  ...skipping because pull requests are not permitted."
+    skip=$TRUE
+  fi
+  if [[ "$TRAVIS_BRANCH" != "master" ]]; then
+    echo "  ...skipping because this branch is not permitted."
+    skip=$TRUE
+  fi
+  if [[ "$TRAVIS_REPO_SLUG" != "triplea-game/triplea" ]]; then
+    echo "  ...skipping because this repo is not permitted."
+    skip=$TRUE
+  fi
+  return $skip
+}
+
+get_gradle_properties_hash() {
+  git hash-object "$GRADLE_PROPERTIES"
+}
+
+update_local_thresholds() {
+  echo "Updating Checkstyle thresholds..."
+  local -r checkstyle_reports_dir=build/reports/checkstyle
+  local -r checkstyle_warning_pattern='<error [^>]*severity="warning"'
+  local -r main_warning_count=$(grep -P "$checkstyle_warning_pattern" $checkstyle_reports_dir/main.xml | wc -l)
+  sed -i -r 's/(checkstyleMainMaxWarnings)=[[:digit:]]+/\1='"$main_warning_count"'/' $GRADLE_PROPERTIES
+  local -r test_warning_count=$(grep -P "$checkstyle_warning_pattern" $checkstyle_reports_dir/test.xml | wc -l)
+  sed -i -r 's/(checkstyleTestMaxWarnings)=[[:digit:]]+/\1='"$test_warning_count"'/' $GRADLE_PROPERTIES
+}
+
+has_local_thresholds_changed() {
+  echo "Checking for changes to '$GRADLE_PROPERTIES'..."
+  local -r old_hash=$1
+  local -r new_hash=$(get_gradle_properties_hash)
+  if [[ "$old_hash" != "$new_hash" ]]; then
+    echo "  ...changes detected."
+    return $TRUE
+  else
+    echo "  ...no changes detected."
+    return $FALSE
+  fi
+}
+
+update_remote_thresholds() {
+  echo "Pushing '$GRADLE_PROPERTIES' changes to '$TRAVIS_REPO_SLUG:$TRAVIS_BRANCH'..."
+  local -r old_hash=$1
+  local -r update_request="{ \
+    \"message\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\", \
+    \"committer\": { \
+      \"name\": \"tripleabuilderbot\", \
+      \"email\": \"tripleabuilderbot@gmail.com\" \
+    }, \
+    \"branch\": \"$TRAVIS_BRANCH\", \
+    \"content\": \"$(base64 -w 0 $GRADLE_PROPERTIES)\", \
+    \"sha\": \"$old_hash\" \
+  }"
+  curl \
+      -X PUT \
+      --header "Accept: application/vnd.github.v3+json" \
+      --data "$update_request" \
+      "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES" \
+    2>&1 | sed -r 's|https://[^@]+@|https://[secure]@|'
+}
+
+main
