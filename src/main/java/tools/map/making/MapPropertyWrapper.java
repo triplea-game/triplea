@@ -1,6 +1,7 @@
 package tools.map.making;
 
 import java.awt.Color;
+import java.beans.Introspector;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -192,11 +193,10 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         ClientLogger.logQuietly(e);
         continue;
       }
-      final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), propertyName, false);
+      final String fieldName = Introspector.decapitalize(propertyName);
+      final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), fieldName, false);
       final Object currentValue;
-      // final Type type;
       try {
-        // type = field.getGenericType();
         currentValue = field.get(object);
       } catch (final IllegalArgumentException e) {
         ClientLogger.logQuietly(e);

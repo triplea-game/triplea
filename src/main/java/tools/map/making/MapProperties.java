@@ -16,55 +16,55 @@ import games.strategy.util.Tuple;
  * An object to hold all the map.properties values.
  */
 public class MapProperties {
-  public Map<String, Color> COLOR_MAP = new TreeMap<>();
-  public String UNITS_SCALE = "0.75";
-  public int UNITS_WIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  public int UNITS_HEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  public int UNITS_COUNTER_OFFSET_WIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE / 4;
-  public int UNITS_COUNTER_OFFSET_HEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  public int UNITS_STACK_SIZE = 0;
-  public int MAP_WIDTH = 256;
-  public int MAP_HEIGHT = 256;
-  public boolean MAP_SCROLLWRAPX = true;
-  public boolean MAP_SCROLLWRAPY = false;
-  public boolean MAP_HASRELIEF = true;
-  public int MAP_CURSOR_HOTSPOT_X = 0;
-  public int MAP_CURSOR_HOTSPOT_Y = 0;
-  public boolean MAP_SHOWCAPITOLMARKERS = true;
-  public boolean MAP_USETERRITORYEFFECTMARKERS = false;
-  public boolean MAP_SHOWTERRITORYNAMES = true;
-  public boolean MAP_SHOWRESOURCES = true;
-  public boolean MAP_SHOWCOMMENTS = true;
-  public boolean MAP_SHOWSEAZONENAMES = false;
-  public boolean MAP_DRAWNAMESFROMTOPLEFT = false;
-  public boolean MAP_USENATION_CONVOYFLAGS = false;
-  public String DONT_DRAW_TERRITORY_NAMES = "";
-  public boolean MAP_MAPBLENDS = false;
+  public Map<String, Color> colorMap = new TreeMap<>();
+  public String unitsScale = "0.75";
+  public int unitsWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  public int unitsHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  public int unitsCounterOffsetWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE / 4;
+  public int unitsCounterOffsetHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  public int unitsStackSize = 0;
+  public int mapWidth = 256;
+  public int mapHeight = 256;
+  public boolean mapScrollWrapX = true;
+  public boolean mapScrollWrapY = false;
+  public boolean mapHasRelief = true;
+  public int mapCursorHotspotX = 0;
+  public int mapCursorHotspotY = 0;
+  public boolean mapShowCapitolMarkers = true;
+  public boolean mapUseTerritoryEffectMarkers = false;
+  public boolean mapShowTerritoryNames = true;
+  public boolean mapShowResources = true;
+  public boolean mapShowComments = true;
+  public boolean mapShowSeaZoneNames = false;
+  public boolean mapDrawNamesFromTopLeft = false;
+  public boolean mapUseNationConvoyFlags = false;
+  public String dontDrawTerritoryNames = "";
+  public boolean mapMapBlends = false;
   // options are: NORMAL, OVERLAY, LINEAR_LIGHT, DIFFERENCE, MULTIPLY
-  public String MAP_MAPBLENDMODE = "OVERLAY";
-  public String MAP_MAPBLENDALPHA = "0.3";
-  public boolean SCREENSHOT_TITLE_ENABLED = true;
-  public int SCREENSHOT_TITLE_X = 50;
-  public int SCREENSHOT_TITLE_Y = 50;
-  public Color SCREENSHOT_TITLE_COLOR = Color.black;
-  public int SCREENSHOT_TITLE_FONT_SIZE = 20;
+  public String mapMapBlendMode = "OVERLAY";
+  public String mapMapBlendAlpha = "0.3";
+  public boolean screenshotTitleEnabled = true;
+  public int screenshotTitleX = 50;
+  public int screenshotTitleY = 50;
+  public Color screenshotTitleColor = Color.black;
+  public int screenshotTitleFontSize = 20;
 
   public MapProperties() {
     super();
     // fill the color map
-    COLOR_MAP.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));
-    COLOR_MAP.put(Constants.PLAYER_NAME_AUSTRALIANS, new Color(0xCCCC00));
-    COLOR_MAP.put(Constants.PLAYER_NAME_BRITISH, new Color(0x916400));
-    COLOR_MAP.put(Constants.PLAYER_NAME_CANADIANS, new Color(0xDBBE7F));
-    COLOR_MAP.put(Constants.PLAYER_NAME_CHINESE, new Color(0x663E66));
-    COLOR_MAP.put(Constants.PLAYER_NAME_FRENCH, new Color(0x113A77));
-    COLOR_MAP.put(Constants.PLAYER_NAME_GERMANS, new Color(0x777777));
-    COLOR_MAP.put(Constants.PLAYER_NAME_ITALIANS, new Color(0x0B7282));
-    COLOR_MAP.put(Constants.PLAYER_NAME_JAPANESE, new Color(0xFFD400));
-    COLOR_MAP.put(Constants.PLAYER_NAME_PUPPET_STATES, new Color(0x1B5DA0));
-    COLOR_MAP.put(Constants.PLAYER_NAME_RUSSIANS, new Color(0xB23B00));
-    COLOR_MAP.put(Constants.PLAYER_NAME_NEUTRAL, new Color(0xE2A071));
-    COLOR_MAP.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
+    colorMap.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));
+    colorMap.put(Constants.PLAYER_NAME_AUSTRALIANS, new Color(0xCCCC00));
+    colorMap.put(Constants.PLAYER_NAME_BRITISH, new Color(0x916400));
+    colorMap.put(Constants.PLAYER_NAME_CANADIANS, new Color(0xDBBE7F));
+    colorMap.put(Constants.PLAYER_NAME_CHINESE, new Color(0x663E66));
+    colorMap.put(Constants.PLAYER_NAME_FRENCH, new Color(0x113A77));
+    colorMap.put(Constants.PLAYER_NAME_GERMANS, new Color(0x777777));
+    colorMap.put(Constants.PLAYER_NAME_ITALIANS, new Color(0x0B7282));
+    colorMap.put(Constants.PLAYER_NAME_JAPANESE, new Color(0xFFD400));
+    colorMap.put(Constants.PLAYER_NAME_PUPPET_STATES, new Color(0x1B5DA0));
+    colorMap.put(Constants.PLAYER_NAME_RUSSIANS, new Color(0xB23B00));
+    colorMap.put(Constants.PLAYER_NAME_NEUTRAL, new Color(0xE2A071));
+    colorMap.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
   }
 
   public Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUI(final boolean editable) {
@@ -75,17 +75,17 @@ public class MapProperties {
     MapPropertyWrapper.writePropertiesToObject(this, properties);
   }
 
-  public Map<String, Color> getCOLOR_MAP() {
-    return COLOR_MAP;
+  public Map<String, Color> getColorMap() {
+    return colorMap;
   }
 
-  public void setCOLOR_MAP(final Map<String, Color> value) {
-    COLOR_MAP = value;
+  public void setColorMap(final Map<String, Color> value) {
+    colorMap = value;
   }
 
-  public String outCOLOR_MAP() {
+  public String outColorMap() {
     final StringBuilder buf = new StringBuilder();
-    for (final Entry<String, Color> entry : COLOR_MAP.entrySet()) {
+    for (final Entry<String, Color> entry : colorMap.entrySet()) {
       buf.append(MapData.PROPERTY_COLOR_PREFIX).append(entry.getKey()).append("=").append(colorToHex(entry.getValue()))
           .append("\r\n");
     }
@@ -100,383 +100,383 @@ public class MapProperties {
     return hexString;
   }
 
-  public String getUNITS_SCALE() {
-    return UNITS_SCALE;
+  public String getUnitsScale() {
+    return unitsScale;
   }
 
-  public void setUNITS_SCALE(final String value) {
+  public void setUnitsScale(final String value) {
     final double dvalue = Math.max(0.0, Math.min(2.0, Double.parseDouble(value)));
     if (Math.abs(1.25 - dvalue) < 0.01) {
-      UNITS_SCALE = "1.25";
+      unitsScale = "1.25";
     } else if (Math.abs(1.0 - dvalue) < 0.01) {
-      UNITS_SCALE = "1.0";
+      unitsScale = "1.0";
     } else if (Math.abs(0.875 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.875";
+      unitsScale = "0.875";
     } else if (Math.abs(0.8333 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.8333";
+      unitsScale = "0.8333";
     } else if (Math.abs(0.75 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.75";
+      unitsScale = "0.75";
     } else if (Math.abs(0.6666 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.6666";
+      unitsScale = "0.6666";
     } else if (Math.abs(0.5625 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.5625";
+      unitsScale = "0.5625";
     } else if (Math.abs(0.5 - dvalue) < 0.01) {
-      UNITS_SCALE = "0.5";
+      unitsScale = "0.5";
     } else {
-      UNITS_SCALE = "" + dvalue;
+      unitsScale = "" + dvalue;
     }
   }
 
-  public String outUNITS_SCALE() {
-    return MapData.PROPERTY_UNITS_SCALE + "=" + UNITS_SCALE + "\r\n";
+  public String outUnitsScale() {
+    return MapData.PROPERTY_UNITS_SCALE + "=" + unitsScale + "\r\n";
   }
 
-  public int getUNITS_WIDTH() {
-    return UNITS_WIDTH;
+  public int getUnitsWidth() {
+    return unitsWidth;
   }
 
-  public void setUNITS_WIDTH(final int value) {
-    UNITS_WIDTH = value;
+  public void setUnitsWidth(final int value) {
+    unitsWidth = value;
   }
 
-  public String outUNITS_WIDTH() {
-    return MapData.PROPERTY_UNITS_WIDTH + "=" + UNITS_WIDTH + "\r\n";
+  public String outUnitsWidth() {
+    return MapData.PROPERTY_UNITS_WIDTH + "=" + unitsWidth + "\r\n";
   }
 
-  public int getUNITS_HEIGHT() {
-    return UNITS_HEIGHT;
+  public int getUnitsHeight() {
+    return unitsHeight;
   }
 
-  public void setUNITS_HEIGHT(final int value) {
-    UNITS_HEIGHT = value;
+  public void setUnitsHeight(final int value) {
+    unitsHeight = value;
   }
 
-  public String outUNITS_HEIGHT() {
-    return MapData.PROPERTY_UNITS_HEIGHT + "=" + UNITS_HEIGHT + "\r\n";
+  public String outUnitsHeight() {
+    return MapData.PROPERTY_UNITS_HEIGHT + "=" + unitsHeight + "\r\n";
   }
 
-  public int getUNITS_COUNTER_OFFSET_WIDTH() {
-    return UNITS_COUNTER_OFFSET_WIDTH;
+  public int getUnitsCounterOffsetWidth() {
+    return unitsCounterOffsetWidth;
   }
 
-  public void setUNITS_COUNTER_OFFSET_WIDTH(final int value) {
-    UNITS_COUNTER_OFFSET_WIDTH = value;
+  public void setUnitsCounterOffsetWidth(final int value) {
+    unitsCounterOffsetWidth = value;
   }
 
-  public String outUNITS_COUNTER_OFFSET_WIDTH() {
-    return MapData.PROPERTY_UNITS_COUNTER_OFFSET_WIDTH + "=" + UNITS_COUNTER_OFFSET_WIDTH + "\r\n";
+  public String outUnitsCounterOffsetWidth() {
+    return MapData.PROPERTY_UNITS_COUNTER_OFFSET_WIDTH + "=" + unitsCounterOffsetWidth + "\r\n";
   }
 
-  public int getUNITS_COUNTER_OFFSET_HEIGHT() {
-    return UNITS_COUNTER_OFFSET_HEIGHT;
+  public int getUnitsCounterOffsetHeight() {
+    return unitsCounterOffsetHeight;
   }
 
-  public void setUNITS_COUNTER_OFFSET_HEIGHT(final int value) {
-    UNITS_COUNTER_OFFSET_HEIGHT = value;
+  public void setUnitsCounterOffsetHeight(final int value) {
+    unitsCounterOffsetHeight = value;
   }
 
-  public String outUNITS_COUNTER_OFFSET_HEIGHT() {
-    return MapData.PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT + "=" + UNITS_COUNTER_OFFSET_HEIGHT + "\r\n";
+  public String outUnitsCounterOffsetHeight() {
+    return MapData.PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT + "=" + unitsCounterOffsetHeight + "\r\n";
   }
 
-  public int getUNITS_STACK_SIZE() {
-    return UNITS_STACK_SIZE;
+  public int getUnitsStackSize() {
+    return unitsStackSize;
   }
 
-  public void setUNITS_STACK_SIZE(final int value) {
-    UNITS_STACK_SIZE = value;
+  public void setUnitsStackSize(final int value) {
+    unitsStackSize = value;
   }
 
-  public String outUNITS_STACK_SIZE() {
-    return MapData.PROPERTY_UNITS_STACK_SIZE + "=" + UNITS_STACK_SIZE + "\r\n";
+  public String outUnitsStackSize() {
+    return MapData.PROPERTY_UNITS_STACK_SIZE + "=" + unitsStackSize + "\r\n";
   }
 
-  public int getMAP_WIDTH() {
-    return MAP_WIDTH;
+  public int getMapWidth() {
+    return mapWidth;
   }
 
-  public void setMAP_WIDTH(final int value) {
-    MAP_WIDTH = value;
+  public void setMapWidth(final int value) {
+    mapWidth = value;
   }
 
-  public String outMAP_WIDTH() {
-    return MapData.PROPERTY_MAP_WIDTH + "=" + MAP_WIDTH + "\r\n";
+  public String outMapWidth() {
+    return MapData.PROPERTY_MAP_WIDTH + "=" + mapWidth + "\r\n";
   }
 
-  public int getMAP_HEIGHT() {
-    return MAP_HEIGHT;
+  public int getMapHeight() {
+    return mapHeight;
   }
 
-  public void setMAP_HEIGHT(final int value) {
-    MAP_HEIGHT = value;
+  public void setMapHeight(final int value) {
+    mapHeight = value;
   }
 
-  public String outMAP_HEIGHT() {
-    return MapData.PROPERTY_MAP_HEIGHT + "=" + MAP_HEIGHT + "\r\n";
+  public String outMapHeight() {
+    return MapData.PROPERTY_MAP_HEIGHT + "=" + mapHeight + "\r\n";
   }
 
-  public boolean getMAP_SCROLLWRAPX() {
-    return MAP_SCROLLWRAPX;
+  public boolean getMapScrollWrapX() {
+    return mapScrollWrapX;
   }
 
-  public void setMAP_SCROLLWRAPX(final boolean value) {
-    MAP_SCROLLWRAPX = value;
+  public void setMapScrollWrapX(final boolean value) {
+    mapScrollWrapX = value;
   }
 
-  public String outMAP_SCROLLWRAPX() {
-    return MapData.PROPERTY_MAP_SCROLLWRAPX + "=" + MAP_SCROLLWRAPX + "\r\n";
+  public String outMapScrollWrapX() {
+    return MapData.PROPERTY_MAP_SCROLLWRAPX + "=" + mapScrollWrapX + "\r\n";
   }
 
-  public boolean getMAP_SCROLLWRAPY() {
-    return MAP_SCROLLWRAPY;
+  public boolean getMapScrollWrapY() {
+    return mapScrollWrapY;
   }
 
-  public void setMAP_SCROLLWRAPY(final boolean value) {
-    MAP_SCROLLWRAPY = value;
+  public void setMapScrollWrapY(final boolean value) {
+    mapScrollWrapY = value;
   }
 
-  public String outMAP_SCROLLWRAPY() {
-    return MapData.PROPERTY_MAP_SCROLLWRAPY + "=" + MAP_SCROLLWRAPY + "\r\n";
+  public String outMapScrollWrapY() {
+    return MapData.PROPERTY_MAP_SCROLLWRAPY + "=" + mapScrollWrapY + "\r\n";
   }
 
-  public boolean getMAP_HASRELIEF() {
-    return MAP_HASRELIEF;
+  public boolean getMapHasRelief() {
+    return mapHasRelief;
   }
 
-  public void setMAP_HASRELIEF(final boolean value) {
-    MAP_HASRELIEF = value;
+  public void setMapHasRelief(final boolean value) {
+    mapHasRelief = value;
   }
 
-  public String outMAP_HASRELIEF() {
-    return MapData.PROPERTY_MAP_HASRELIEF + "=" + MAP_HASRELIEF + "\r\n";
+  public String outMapHasRelief() {
+    return MapData.PROPERTY_MAP_HASRELIEF + "=" + mapHasRelief + "\r\n";
   }
 
-  public int getMAP_CURSOR_HOTSPOT_X() {
-    return MAP_CURSOR_HOTSPOT_X;
+  public int getMapCursorHotspotX() {
+    return mapCursorHotspotX;
   }
 
-  public void setMAP_CURSOR_HOTSPOT_X(final int value) {
-    MAP_CURSOR_HOTSPOT_X = value;
+  public void setMapCursorHotspotX(final int value) {
+    mapCursorHotspotX = value;
   }
 
-  public String outMAP_CURSOR_HOTSPOT_X() {
-    return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_X + "=" + MAP_CURSOR_HOTSPOT_X + "\r\n";
+  public String outMapCursorHotspotX() {
+    return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_X + "=" + mapCursorHotspotX + "\r\n";
   }
 
-  public int getMAP_CURSOR_HOTSPOT_Y() {
-    return MAP_CURSOR_HOTSPOT_Y;
+  public int getMapCursorHotspotY() {
+    return mapCursorHotspotY;
   }
 
-  public void setMAP_CURSOR_HOTSPOT_Y(final int value) {
-    MAP_CURSOR_HOTSPOT_Y = value;
+  public void setMapCursorHotspotY(final int value) {
+    mapCursorHotspotY = value;
   }
 
-  public String outMAP_CURSOR_HOTSPOT_Y() {
-    return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_Y + "=" + MAP_CURSOR_HOTSPOT_Y + "\r\n";
+  public String outMapCursorHotspotY() {
+    return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_Y + "=" + mapCursorHotspotY + "\r\n";
   }
 
-  public boolean getMAP_SHOWCAPITOLMARKERS() {
-    return MAP_SHOWCAPITOLMARKERS;
+  public boolean getMapShowCapitolMarkers() {
+    return mapShowCapitolMarkers;
   }
 
-  public void setMAP_SHOWCAPITOLMARKERS(final boolean value) {
-    MAP_SHOWCAPITOLMARKERS = value;
+  public void setMapShowCapitolMarkers(final boolean value) {
+    mapShowCapitolMarkers = value;
   }
 
-  public String outMAP_SHOWCAPITOLMARKERS() {
-    return MapData.PROPERTY_MAP_SHOWCAPITOLMARKERS + "=" + MAP_SHOWCAPITOLMARKERS + "\r\n";
+  public String outMapShowCapitolMarkers() {
+    return MapData.PROPERTY_MAP_SHOWCAPITOLMARKERS + "=" + mapShowCapitolMarkers + "\r\n";
   }
 
-  public boolean getMAP_USETERRITORYEFFECTMARKERS() {
-    return MAP_USETERRITORYEFFECTMARKERS;
+  public boolean getMapUseTerritoryEffectMarkers() {
+    return mapUseTerritoryEffectMarkers;
   }
 
-  public void setMAP_USETERRITORYEFFECTMARKERS(final boolean value) {
-    MAP_USETERRITORYEFFECTMARKERS = value;
+  public void setMapUseTerritoryEffectMarkers(final boolean value) {
+    mapUseTerritoryEffectMarkers = value;
   }
 
-  public String outMAP_USETERRITORYEFFECTMARKERS() {
-    return MapData.PROPERTY_MAP_USETERRITORYEFFECTMARKERS + "=" + MAP_USETERRITORYEFFECTMARKERS + "\r\n";
+  public String outMapUseTerritoryEffectMarkers() {
+    return MapData.PROPERTY_MAP_USETERRITORYEFFECTMARKERS + "=" + mapUseTerritoryEffectMarkers + "\r\n";
   }
 
-  public boolean getMAP_SHOWTERRITORYNAMES() {
-    return MAP_SHOWTERRITORYNAMES;
+  public boolean getMapShowTerritoryNames() {
+    return mapShowTerritoryNames;
   }
 
-  public void setMAP_SHOWTERRITORYNAMES(final boolean value) {
-    MAP_SHOWTERRITORYNAMES = value;
+  public void setMapShowTerritoryNames(final boolean value) {
+    mapShowTerritoryNames = value;
   }
 
-  public String outMAP_SHOWTERRITORYNAMES() {
-    return MapData.PROPERTY_MAP_SHOWTERRITORYNAMES + "=" + MAP_SHOWTERRITORYNAMES + "\r\n";
+  public String outMapShowTerritoryNames() {
+    return MapData.PROPERTY_MAP_SHOWTERRITORYNAMES + "=" + mapShowTerritoryNames + "\r\n";
   }
 
-  public boolean getMAP_SHOWRESOURCES() {
-    return MAP_SHOWRESOURCES;
+  public boolean getMapShowResources() {
+    return mapShowResources;
   }
 
-  public void setMAP_SHOWRESOURCES(final boolean value) {
-    MAP_SHOWRESOURCES = value;
+  public void setMapShowResources(final boolean value) {
+    mapShowResources = value;
   }
 
-  public String outMAP_SHOWRESOURCES() {
-    return MapData.PROPERTY_MAP_SHOWRESOURCES + "=" + MAP_SHOWRESOURCES + "\r\n";
+  public String outMapShowResources() {
+    return MapData.PROPERTY_MAP_SHOWRESOURCES + "=" + mapShowResources + "\r\n";
   }
 
-  public boolean getMAP_SHOWCOMMENTS() {
-    return MAP_SHOWCOMMENTS;
+  public boolean getMapShowComments() {
+    return mapShowComments;
   }
 
-  public void setMAP_SHOWCOMMENTS(final boolean value) {
-    MAP_SHOWCOMMENTS = value;
+  public void setMapShowComments(final boolean value) {
+    mapShowComments = value;
   }
 
-  public String outMAP_SHOWCOMMENTS() {
-    return MapData.PROPERTY_MAP_SHOWCOMMENTS + "=" + MAP_SHOWCOMMENTS + "\r\n";
+  public String outMapShowComments() {
+    return MapData.PROPERTY_MAP_SHOWCOMMENTS + "=" + mapShowComments + "\r\n";
   }
 
-  public boolean getMAP_SHOWSEAZONENAMES() {
-    return MAP_SHOWSEAZONENAMES;
+  public boolean getMapShowSeaZoneNames() {
+    return mapShowSeaZoneNames;
   }
 
-  public void setMAP_SHOWSEAZONENAMES(final boolean value) {
-    MAP_SHOWSEAZONENAMES = value;
+  public void setMapShowSeaZoneNames(final boolean value) {
+    mapShowSeaZoneNames = value;
   }
 
-  public String outMAP_SHOWSEAZONENAMES() {
-    return MapData.PROPERTY_MAP_SHOWSEAZONENAMES + "=" + MAP_SHOWSEAZONENAMES + "\r\n";
+  public String outMapShowSeaZoneNames() {
+    return MapData.PROPERTY_MAP_SHOWSEAZONENAMES + "=" + mapShowSeaZoneNames + "\r\n";
   }
 
-  public boolean getMAP_DRAWNAMESFROMTOPLEFT() {
-    return MAP_DRAWNAMESFROMTOPLEFT;
+  public boolean getMapDrawNamesFromTopLeft() {
+    return mapDrawNamesFromTopLeft;
   }
 
-  public void setMAP_DRAWNAMESFROMTOPLEFT(final boolean value) {
-    MAP_DRAWNAMESFROMTOPLEFT = value;
+  public void setMapDrawNamesFromTopLeft(final boolean value) {
+    mapDrawNamesFromTopLeft = value;
   }
 
-  public String outMAP_DRAWNAMESFROMTOPLEFT() {
-    return MapData.PROPERTY_MAP_DRAWNAMESFROMTOPLEFT + "=" + MAP_DRAWNAMESFROMTOPLEFT + "\r\n";
+  public String outMapDrawNamesFromTopLeft() {
+    return MapData.PROPERTY_MAP_DRAWNAMESFROMTOPLEFT + "=" + mapDrawNamesFromTopLeft + "\r\n";
   }
 
-  public boolean getMAP_USENATION_CONVOYFLAGS() {
-    return MAP_USENATION_CONVOYFLAGS;
+  public boolean getMapUseNationConvoyFlags() {
+    return mapUseNationConvoyFlags;
   }
 
-  public void setMAP_USENATION_CONVOYFLAGS(final boolean value) {
-    MAP_USENATION_CONVOYFLAGS = value;
+  public void setMapUseNationConvoyFlags(final boolean value) {
+    mapUseNationConvoyFlags = value;
   }
 
-  public String outMAP_USENATION_CONVOYFLAGS() {
-    return MapData.PROPERTY_MAP_USENATION_CONVOYFLAGS + "=" + MAP_USENATION_CONVOYFLAGS + "\r\n";
+  public String outMapUseNationConvoyFlags() {
+    return MapData.PROPERTY_MAP_USENATION_CONVOYFLAGS + "=" + mapUseNationConvoyFlags + "\r\n";
   }
 
-  public String getDONT_DRAW_TERRITORY_NAMES() {
-    return DONT_DRAW_TERRITORY_NAMES;
+  public String getDontDrawTerritoryNames() {
+    return dontDrawTerritoryNames;
   }
 
-  public void setDONT_DRAW_TERRITORY_NAMES(final String value) {
-    DONT_DRAW_TERRITORY_NAMES = value;
+  public void setDontDrawTerritoryNames(final String value) {
+    dontDrawTerritoryNames = value;
   }
 
-  public String outDONT_DRAW_TERRITORY_NAMES() {
-    return MapData.PROPERTY_DONT_DRAW_TERRITORY_NAMES + "=" + DONT_DRAW_TERRITORY_NAMES + "\r\n";
+  public String outDontDrawTerritoryNames() {
+    return MapData.PROPERTY_DONT_DRAW_TERRITORY_NAMES + "=" + dontDrawTerritoryNames + "\r\n";
   }
 
-  public boolean getMAP_MAPBLENDS() {
-    return MAP_MAPBLENDS;
+  public boolean getMapMapBlends() {
+    return mapMapBlends;
   }
 
-  public void setMAP_MAPBLENDS(final boolean value) {
-    MAP_MAPBLENDS = value;
+  public void setMapMapBlends(final boolean value) {
+    mapMapBlends = value;
   }
 
-  public String outMAP_MAPBLENDS() {
-    return MapData.PROPERTY_MAP_MAPBLENDS + "=" + MAP_MAPBLENDS + "\r\n";
+  public String outMapMapBlends() {
+    return MapData.PROPERTY_MAP_MAPBLENDS + "=" + mapMapBlends + "\r\n";
   }
 
-  public String getMAP_MAPBLENDMODE() {
-    return MAP_MAPBLENDMODE;
+  public String getMapMapBlendMode() {
+    return mapMapBlendMode;
   }
 
-  public void setMAP_MAPBLENDMODE(final String value) {
-    MAP_MAPBLENDMODE = value;
+  public void setMapMapBlendMode(final String value) {
+    mapMapBlendMode = value;
   }
 
-  public String outMAP_MAPBLENDMODE() {
-    return MapData.PROPERTY_MAP_MAPBLENDMODE + "=" + MAP_MAPBLENDMODE + "\r\n";
+  public String outMapMapBlendMode() {
+    return MapData.PROPERTY_MAP_MAPBLENDMODE + "=" + mapMapBlendMode + "\r\n";
   }
 
-  public String getMAP_MAPBLENDALPHA() {
-    return MAP_MAPBLENDALPHA;
+  public String getMapMapBlendAlpha() {
+    return mapMapBlendAlpha;
   }
 
-  public void setMAP_MAPBLENDALPHA(final String value) {
+  public void setMapMapBlendAlpha(final String value) {
     Double.parseDouble(value);
-    MAP_MAPBLENDALPHA = value;
+    mapMapBlendAlpha = value;
   }
 
-  public String outMAP_MAPBLENDALPHA() {
-    return MapData.PROPERTY_MAP_MAPBLENDALPHA + "=" + MAP_MAPBLENDALPHA + "\r\n";
+  public String outMapMapBlendAlpha() {
+    return MapData.PROPERTY_MAP_MAPBLENDALPHA + "=" + mapMapBlendAlpha + "\r\n";
   }
 
-  public boolean getSCREENSHOT_TITLE_ENABLED() {
-    return SCREENSHOT_TITLE_ENABLED;
+  public boolean getScreenshotTitleEnabled() {
+    return screenshotTitleEnabled;
   }
 
-  public void setSCREENSHOT_TITLE_ENABLED(final boolean value) {
-    SCREENSHOT_TITLE_ENABLED = value;
+  public void setScreenshotTitleEnabled(final boolean value) {
+    screenshotTitleEnabled = value;
   }
 
-  public String outSCREENSHOT_TITLE_ENABLED() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED + "=" + SCREENSHOT_TITLE_ENABLED + "\r\n";
+  public String outScreenshotTitleEnabled() {
+    return MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED + "=" + screenshotTitleEnabled + "\r\n";
   }
 
-  public int getSCREENSHOT_TITLE_X() {
-    return SCREENSHOT_TITLE_X;
+  public int getScreenshotTitleX() {
+    return screenshotTitleX;
   }
 
-  public void setSCREENSHOT_TITLE_X(final int value) {
-    SCREENSHOT_TITLE_X = value;
+  public void setScreenshotTitleX(final int value) {
+    screenshotTitleX = value;
   }
 
-  public String outSCREENSHOT_TITLE_X() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_X + "=" + SCREENSHOT_TITLE_X + "\r\n";
+  public String outScreenshotTitleX() {
+    return MapData.PROPERTY_SCREENSHOT_TITLE_X + "=" + screenshotTitleX + "\r\n";
   }
 
-  public int getSCREENSHOT_TITLE_Y() {
-    return SCREENSHOT_TITLE_Y;
+  public int getScreenshotTitleY() {
+    return screenshotTitleY;
   }
 
-  public void setSCREENSHOT_TITLE_Y(final int value) {
-    SCREENSHOT_TITLE_Y = value;
+  public void setScreenshotTitleY(final int value) {
+    screenshotTitleY = value;
   }
 
-  public String outSCREENSHOT_TITLE_Y() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_Y + "=" + SCREENSHOT_TITLE_Y + "\r\n";
+  public String outScreenshotTitleY() {
+    return MapData.PROPERTY_SCREENSHOT_TITLE_Y + "=" + screenshotTitleY + "\r\n";
   }
 
-  public Color getSCREENSHOT_TITLE_COLOR() {
-    return SCREENSHOT_TITLE_COLOR;
+  public Color getScreenshotTitleColor() {
+    return screenshotTitleColor;
   }
 
-  public void setSCREENSHOT_TITLE_COLOR(final Color value) {
-    SCREENSHOT_TITLE_COLOR = value;
+  public void setScreenshotTitleColor(final Color value) {
+    screenshotTitleColor = value;
   }
 
-  public String outSCREENSHOT_TITLE_COLOR() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_COLOR + "=" + colorToHex(SCREENSHOT_TITLE_COLOR) + "\r\n";
+  public String outScreenshotTitleColor() {
+    return MapData.PROPERTY_SCREENSHOT_TITLE_COLOR + "=" + colorToHex(screenshotTitleColor) + "\r\n";
   }
 
-  public int getSCREENSHOT_TITLE_FONT_SIZE() {
-    return SCREENSHOT_TITLE_FONT_SIZE;
+  public int getScreenshotTitleFontSize() {
+    return screenshotTitleFontSize;
   }
 
-  public void setSCREENSHOT_TITLE_FONT_SIZE(final int value) {
-    SCREENSHOT_TITLE_FONT_SIZE = value;
+  public void setScreenshotTitleFontSize(final int value) {
+    screenshotTitleFontSize = value;
   }
 
-  public String outSCREENSHOT_TITLE_FONT_SIZE() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE + "=" + SCREENSHOT_TITLE_FONT_SIZE + "\r\n";
+  public String outScreenshotTitleFontSize() {
+    return MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE + "=" + screenshotTitleFontSize + "\r\n";
   }
 }
