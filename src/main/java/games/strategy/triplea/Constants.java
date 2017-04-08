@@ -63,7 +63,7 @@ public interface Constants {
   String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
   String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
   // public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
-  /**
+  /*
    * These are the individual rules from a game (All default to FALSE)
    */
   String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
@@ -86,10 +86,10 @@ public interface Constants {
   String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
-  /**
+  /*
    * End individual rules (All default to FALSE)
    */
-  /**
+  /*
    * These are the individual rules for TripleA WW2V3 (All default to FALSE)
    */
   String NATIONAL_OBJECTIVES = "National Objectives";
@@ -110,7 +110,7 @@ public interface Constants {
   String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
   String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";
   String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
-  /**
+  /*
    * End individual rules for TripleA WW2V3 (All default to FALSE)
    */
   String PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED = "Production Per Valued Territory Restricted";

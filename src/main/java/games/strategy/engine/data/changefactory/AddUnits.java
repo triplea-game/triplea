@@ -10,7 +10,7 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
 
 /**
- * Add units
+ * Add units.
  */
 class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;

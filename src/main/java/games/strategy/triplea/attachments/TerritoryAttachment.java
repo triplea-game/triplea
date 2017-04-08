@@ -88,7 +88,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * will return empty list if none controlled, never returns null
+   * will return empty list if none controlled, never returns null.
    */
   public static List<Territory> getAllCapitals(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -115,7 +115,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * will return empty list if none controlled, never returns null
+   * will return empty list if none controlled, never returns null.
    */
   public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -192,7 +192,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection m_resources = null;
 
-  /** Creates new TerritoryAttachment */
+  /** Creates new TerritoryAttachment. */
   public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -312,7 +312,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets only m_production
+   * Sets only m_production.
    *
    * @param value
    */

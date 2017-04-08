@@ -53,7 +53,7 @@ public interface IGame {
   void addDisplay(IDisplay display);
 
   /**
-   * remove a display
+   * remove a display.
    */
   void removeDisplay(IDisplay display);
 

@@ -5,7 +5,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.net.INode;
 
 /**
- * Chat messages occur on this channel
+ * Chat messages occur on this channel.
  */
 public interface IChatChannel extends IChannelSubscribor {
   // we get the sender from MessageContext

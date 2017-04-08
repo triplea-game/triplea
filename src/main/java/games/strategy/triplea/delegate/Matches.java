@@ -1301,7 +1301,7 @@ public class Matches {
 
   /**
    * @param data
-   *        game data
+   *        game data.
    * @param player
    * @return true only if the route is land
    */
@@ -1711,7 +1711,7 @@ public class Matches {
   }
 
   /**
-   * Match units that have at least 1 movement left
+   * Match units that have at least 1 movement left.
    */
   public static final Match<Unit> unitHasMovementLeft = new Match<Unit>() {
     @Override
@@ -2280,7 +2280,7 @@ public class Matches {
 
   /**
    * @param units
-   *        referring unit
+   *        referring unit.
    * @param route
    *        referring route
    * @param currentPlayer
@@ -3421,6 +3421,6 @@ public class Matches {
     };
   }
 
-  /** Creates new Matches */
+  /** Creates new Matches. */
   private Matches() {}
 }

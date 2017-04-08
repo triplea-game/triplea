@@ -207,7 +207,7 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * Sets the alpha channel to the same as that of the base image
+   * Sets the alpha channel to the same as that of the base image.
    */
   private static void blankOutline(final Image alphaChannelImage, final BufferedImage relief) {
     final Graphics2D gc = (Graphics2D) relief.getGraphics();

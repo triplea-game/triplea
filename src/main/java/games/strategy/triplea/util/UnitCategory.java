@@ -150,7 +150,7 @@ public class UnitCategory implements Comparable<Object> {
   }
 
   /**
-   * Collection of UnitOwners, the type of our dependents, not the dependents
+   * Collection of UnitOwners, the type of our dependents, not the dependents.
    */
   public Collection<UnitOwner> getDependents() {
     return m_dependents;

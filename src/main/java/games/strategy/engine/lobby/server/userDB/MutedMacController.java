@@ -18,7 +18,7 @@ public class MutedMacController {
   private static final Logger s_logger = Logger.getLogger(MutedMacController.class.getName());
 
   /**
-   * Mute the mac permanently
+   * Mute the mac permanently.
    */
   public void addMutedMac(final String mac) {
     addMutedMac(mac, null);
@@ -79,7 +79,7 @@ public class MutedMacController {
 
   /**
    * Is the given mac muted? This may have the side effect of removing from the
-   * database any mac's whose mute has expired
+   * database any mac's whose mute has expired.
    */
   public boolean isMacMuted(final String mac) {
     final long muteTill = getMacUnmuteTime(mac);

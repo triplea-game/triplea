@@ -44,7 +44,7 @@ public class TechPanel extends ActionPanel {
   private int m_quantity;
   private IntegerMap<PlayerID> m_whoPaysHowMuch = null;
 
-  /** Creates new BattlePanel */
+  /** Creates new TechPanel. */
   public TechPanel(final GameData data, final MapPanel map) {
     super(data, map);
   }

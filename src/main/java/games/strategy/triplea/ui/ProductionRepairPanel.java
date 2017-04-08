@@ -109,7 +109,7 @@ public class ProductionRepairPanel extends JPanel {
     m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
   }
 
-  /** Creates new ProductionRepairPanel */
+  /** Creates new ProductionRepairPanel. */
   // the constructor can be accessed by subclasses
   public ProductionRepairPanel(final IUIContext uiContext) {
     m_uiContext = uiContext;

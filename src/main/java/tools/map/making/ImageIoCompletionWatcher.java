@@ -5,7 +5,7 @@ import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Code originally contributed by "Thomas Carvin"
+ * Code originally contributed by "Thomas Carvin".
  */
 public class ImageIoCompletionWatcher implements ImageObserver {
   // we countdown when we are done

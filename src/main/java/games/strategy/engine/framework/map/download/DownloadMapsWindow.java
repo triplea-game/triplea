@@ -37,7 +37,7 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
 
-/** Window that allows for map downloads and removal */
+/** Window that allows for map downloads and removal. */
 public class DownloadMapsWindow extends JFrame {
   private enum MapAction {
     INSTALL, UPDATE, REMOVE

@@ -4,7 +4,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
- * Framework independent Line class
+ * Framework independent Line class.
  */
 public class Line {
 

@@ -7,7 +7,7 @@ public interface IRemoteModelListener {
   void playerListChanged();
 
   /**
-   * The players taken have changed
+   * The players taken have changed.
    */
   void playersTakenChanged();
 

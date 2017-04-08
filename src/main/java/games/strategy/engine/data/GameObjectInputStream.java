@@ -7,13 +7,13 @@ import java.io.ObjectInputStream;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 
 /**
- * Please refer to the comments on GameObjectOutputStream
+ * Please refer to the comments on GameObjectOutputStream.
  */
 public class GameObjectInputStream extends ObjectInputStream {
   private final GameObjectStreamFactory m_dataSource;
 
   /**
-   * Creates new GameObjectReader
+   * Creates new GameObjectReader.
    *
    * @param dataSource
    *        data source

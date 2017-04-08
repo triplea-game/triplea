@@ -87,7 +87,7 @@ public class Chat {
     return sb.toString();
   }
 
-  /** Creates a new instance of Chat */
+  /** Creates a new instance of Chat. */
   public Chat(final String chatName, final Messengers messengers, final CHAT_SOUND_PROFILE chatSoundProfile) {
     this.chatSoundProfile = chatSoundProfile;
     this.messengers = messengers;
@@ -157,7 +157,7 @@ public class Chat {
   }
 
   /**
-   * Call only when mutex for node is locked!
+   * Call only when mutex for node is locked.
    *
    * @param chatters
    *        map from node to tag

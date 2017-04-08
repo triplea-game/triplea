@@ -80,7 +80,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private IntegerMap<String> m_unitPresence = new IntegerMap<>();
 
 
-  /** Creates new RulesAttachment */
+  /** Creates new RulesAttachment. */
   public RulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }

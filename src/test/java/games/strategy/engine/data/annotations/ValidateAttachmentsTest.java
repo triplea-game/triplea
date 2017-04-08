@@ -40,11 +40,11 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
 
 /**
- * A test that validates that all attachment classes have properties with valid setters and getters
+ * A test that validates that all attachment classes have properties with valid setters and getters.
  */
 public class ValidateAttachmentsTest {
   /**
-   * Test that the Example Attachment is valid
+   * Test that the Example Attachment is valid.
    */
   @Test
   public void testExample() {
@@ -53,7 +53,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Tests that the algorithm finds invalidly named field
+   * Tests that the algorithm finds invalidly named field.
    */
   @Test
   public void testInvalidField() {
@@ -63,7 +63,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * tests that the algorithm will find invalid annotation on a getters
+   * tests that the algorithm will find invalid annotation on a getters.
    */
   @Test
   public void testAnnotationOnGetter() {
@@ -73,7 +73,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Tests that the algorithm will find invalid return types
+   * Tests that the algorithm will find invalid return types.
    */
   @Test
   public void testInvalidReturnType() {
@@ -83,7 +83,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Tests that the algorithm will find invalid clear method
+   * Tests that the algorithm will find invalid clear method.
    */
   @Test
   public void testInvalidClearMethod() {
@@ -93,7 +93,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Tests that the algorithm will find invalid clear method
+   * Tests that the algorithm will find invalid clear method.
    */
   @Test
   public void testInvalidResetMethod() {
@@ -103,7 +103,7 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Tests that the algorithm will find adders that doesn't have type IntegerMap
+   * Tests that the algorithm will find adders that doesn't have type IntegerMap.
    */
   @Test
   public void testInvalidFieldType() {
@@ -151,7 +151,7 @@ public class ValidateAttachmentsTest {
 
   /**
    * Scans the compiled /classes folder and finds all classes that implement IAttachment to verify that
-   * all @GameProperty have valid setters and getters
+   * all @GameProperty have valid setters and getters.
    */
   @Test
   public void testAllAttachments() {
@@ -182,7 +182,7 @@ public class ValidateAttachmentsTest {
 
   /**
    * Recursive method to find all classes that implement IAttachment and validate that they use the @GameProperty
-   * annotation correctly
+   * annotation correctly.
    *
    * @param file
    *        the file or directory
@@ -233,7 +233,7 @@ public class ValidateAttachmentsTest {
    * ReliefImageBreaker and TileImageBreaker has a static field that opens a save dialog!!!
    * "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample" are skipped because they are
    * purposely invalid, and use
-   * to test the validation algorithm
+   * to test the validation algorithm.
    */
   public static final List<String> SKIPCLASSES = Arrays.asList("ReliefImageBreaker", "TileImageBreaker",
       "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample", "InvalidClearExample",
@@ -242,7 +242,7 @@ public class ValidateAttachmentsTest {
   /**
    * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the
    * class triggers
-   * the initializer
+   * the initializer.
    *
    * @param className
    *        the class name

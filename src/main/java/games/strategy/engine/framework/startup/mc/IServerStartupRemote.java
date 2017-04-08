@@ -9,7 +9,7 @@ import games.strategy.net.INode;
 
 public interface IServerStartupRemote extends IRemote {
   /**
-   * @return a listing of the players in the game
+   * @return a listing of the players in the game.
    */
   PlayerListing getPlayerListing();
 

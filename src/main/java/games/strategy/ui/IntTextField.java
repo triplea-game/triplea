@@ -22,7 +22,7 @@ public class IntTextField extends JTextField {
   private String m_terr = null;
   private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<>();
 
-  /** Creates new IntTextBox */
+  /** Creates new IntTextField. */
   public IntTextField() {
     super(3);
     initTextField();

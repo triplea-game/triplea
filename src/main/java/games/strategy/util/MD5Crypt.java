@@ -61,7 +61,7 @@ public class MD5Crypt {
   }
 
   /**
-   * LINUX/BSD MD5Crypt function
+   * LINUX/BSD MD5Crypt function.
    *
    * @return The encrypted password as an MD5 hash
    * @param password
@@ -80,7 +80,7 @@ public class MD5Crypt {
   }
 
   /**
-   * LINUX/BSD MD5Crypt function
+   * LINUX/BSD MD5Crypt function.
    *
    * @return The encrypted password as an MD5 hash
    * @param salt
@@ -116,7 +116,7 @@ public class MD5Crypt {
     }
     byte finalState[];
     long l;
-    /**
+    /*
      * Two MD5 hashes are used
      */
     MessageDigest ctx, ctx1;

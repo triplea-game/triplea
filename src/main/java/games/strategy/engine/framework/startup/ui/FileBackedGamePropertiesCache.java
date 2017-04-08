@@ -17,7 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
 
 /**
- * A game options cache that uses files to store the game options
+ * A game options cache that uses files to store the game options.
  */
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
@@ -54,7 +54,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Loads cached game options into the gameData
+   * Loads cached game options into the gameData.
    *
    * @param gameData
    *        the game to load the cached game options into
@@ -82,7 +82,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Calculates the cache filename and location based on the game data
+   * Calculates the cache filename and location based on the game data.
    *
    * @param gameData
    *        the game data
@@ -94,7 +94,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Removes any special characters from the file name
+   * Removes any special characters from the file name.
    *
    * @param gameName
    *        the name of the game

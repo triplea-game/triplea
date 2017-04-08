@@ -8,7 +8,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
 /**
- * A collection of Relationship types
+ * A collection of Relationship types.
  */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
@@ -33,7 +33,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * Constructs a new RelationshipTypeList
+   * Constructs a new RelationshipTypeList.
    *
    * @param data
    *        GameData used for construction
@@ -57,7 +57,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * Creates a default relationship
+   * Creates a default relationship.
    *
    * @param relationshipTypeConstant
    *        the type of relationship
@@ -94,7 +94,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * Gets a relationshipType from the list by name;
+   * Gets a relationshipType from the list by name.
    *
    * @param name
    *        name of the relationshipType
@@ -105,7 +105,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * returns a relationshipTypeIterator
+   * returns a relationshipTypeIterator.
    */
   @Override
   public Iterator<RelationshipType> iterator() {
@@ -113,7 +113,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null Relation)
+   * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null
+   *         Relation).
    */
   public int size() {
     return m_relationshipTypes.size();

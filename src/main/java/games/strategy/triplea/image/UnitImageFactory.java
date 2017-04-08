@@ -46,7 +46,7 @@ public class UnitImageFactory {
   private double m_scaleFactor;
   private ResourceLoader m_resourceLoader;
 
-  /** Creates new IconImageFactory */
+  /** Creates new UnitImageFactory. */
   public UnitImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth,
@@ -61,7 +61,7 @@ public class UnitImageFactory {
   }
 
   /**
-   * Set the unitScaling factor
+   * Set the unitScaling factor.
    */
   public void setScaleFactor(final double scaleFactor) {
     if (m_scaleFactor != scaleFactor) {
@@ -71,7 +71,7 @@ public class UnitImageFactory {
   }
 
   /**
-   * Return the unit scaling factor
+   * Return the unit scaling factor.
    */
   public double getScaleFactor() {
     return m_scaleFactor;
@@ -85,7 +85,7 @@ public class UnitImageFactory {
   }
 
   /**
-   * Return the height of scaled units
+   * Return the height of scaled units.
    */
   public int getUnitImageHeight() {
     return (int) (m_scaleFactor * UNIT_ICON_HEIGHT);

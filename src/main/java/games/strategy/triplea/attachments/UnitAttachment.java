@@ -227,7 +227,7 @@ public class UnitAttachment extends DefaultAttachment {
   // currently used for: placement in original territories only
   private HashSet<String> m_special = new HashSet<>();
 
-  /** Creates new UnitAttachment */
+  /** Creates new UnitAttachment. */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -1213,7 +1213,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
-   * DO NOT REMOVE
+   * DO NOT REMOVE.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsTwoHit(final String s) {
@@ -3283,12 +3283,12 @@ public class UnitAttachment extends DefaultAttachment {
     return stats.toString();
   }
 
-  /** @deprecated does nothing, kept to avoid breaking maps, do not remove */
+  /** @deprecated does nothing, kept to avoid breaking maps, do not remove. */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsParatroop(final String s) {}
 
-  /** @deprecated does nothing, used to keep compatibility with older xml files, do not remove */
+  /** @deprecated does nothing, used to keep compatibility with older xml files, do not remove. */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsMechanized(final String s) {}

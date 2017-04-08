@@ -165,7 +165,7 @@ public class Database {
   }
 
   /**
-   * Set up folders and environment variables for database
+   * Set up folders and environment variables for database.
    */
   private static void ensureDbIsSetup() {
     synchronized (s_dbSetupLock) {

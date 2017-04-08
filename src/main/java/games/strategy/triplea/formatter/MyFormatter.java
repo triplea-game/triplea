@@ -111,9 +111,6 @@ public class MyFormatter {
     return pluralize(in);
   }
 
-  /**
-   * Is pluralize even a word?
-   */
   public static String pluralize(final String in) {
     if (s_plural.containsKey(in)) {
       return s_plural.get(in);
@@ -298,7 +295,7 @@ public class MyFormatter {
     return buf.toString().replaceFirst(separator, "");
   }
 
-  /** Creates a new instance of MyFormatter */
+  /** Creates a new instance of MyFormatter. */
   private MyFormatter() {}
 }
 

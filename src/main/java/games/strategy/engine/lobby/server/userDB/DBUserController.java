@@ -16,7 +16,7 @@ public class DBUserController {
   private static final Logger s_logger = Logger.getLogger(DBUserController.class.getName());
 
   /**
-   * @return if this user is valid
+   * @return if this user is valid.
    */
   public String validate(final String userName, final String email, final String hashedPassword) {
     if (email == null || !Util.isMailValid(email)) {
@@ -47,7 +47,7 @@ public class DBUserController {
   }
 
   /**
-   * @return null if the user does not exist
+   * @return null if the user does not exist.
    */
   public String getPassword(final String userName) {
     final String sql = "select password from ta_users where username = ?";
@@ -183,7 +183,7 @@ public class DBUserController {
   }
 
   /**
-   * @return null if no such user
+   * @return null if no such user.
    */
   public DBUser getUser(final String userName) {
     final String sql = "select * from ta_users where username = ?";

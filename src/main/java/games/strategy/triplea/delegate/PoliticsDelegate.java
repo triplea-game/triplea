@@ -34,13 +34,13 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 /**
- * Responsible allowing players to perform politicalActions
+ * Responsible allowing players to perform politicalActions.
  */
 @MapSupport
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
   // protected HashMap<ICondition, Boolean> m_testedConditions = null;
   // private final boolean m_needToInitialize = true;
-  /** Creates new PoliticsDelegate */
+  /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
 
   /**
@@ -288,7 +288,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   /**
    * @param paa
-   *        The Political Action the player should be charged for
+   *        The Political Action the player should be charged for.
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
@@ -326,7 +326,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   /**
    * Send a notification to the other players involved in this action (all
-   * players except the player starting the action)
+   * players except the player starting the action).
    */
   private void notifyOtherPlayers(final String notification) {
     if (!"NONE".equals(notification)) {
@@ -340,7 +340,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Send a notification to the current player
+   * Send a notification to the current player.
    *
    * @param text
    *        if NONE don't send a notification
@@ -352,7 +352,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Changes all relationships
+   * Changes all relationships.
    *
    * @param paa
    *        the political action to change the relationships for

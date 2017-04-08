@@ -82,7 +82,7 @@ public class ServerGame extends AbstractGame {
 
   /**
    * @param data
-   *        game data
+   *        game data.
    * @param localPlayers
    *        Set - A set of GamePlayers
    * @param remotePlayerMapping
@@ -441,7 +441,7 @@ public class ServerGame extends AbstractGame {
   }
 
   /**
-   * @return true if the step should autosave
+   * @return true if the step should autosave.
    */
   private boolean endStep() {
     m_delegateExecutionManager.enterDelegateExecution();

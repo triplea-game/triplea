@@ -14,7 +14,7 @@ import games.strategy.engine.config.PropertyReader;
 
 /**
  * Basic test of map listing source, make sure that the test object requests a specific property key,
- * we fake a return value, then verify that we get the same faked value back when calling 'getMapListDownloadSite()'
+ * we fake a return value, then verify that we get the same faked value back when calling 'getMapListDownloadSite()'.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MapDownloadPropertiesTest {

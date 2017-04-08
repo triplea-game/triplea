@@ -24,7 +24,7 @@ import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 
 /**
- * An editor for modifying email senders
+ * An editor for modifying email senders.
  */
 public class EmailSenderEditor extends EditorPanel {
   private static final long serialVersionUID = -4647781117491269926L;
@@ -43,7 +43,7 @@ public class EmailSenderEditor extends EditorPanel {
   private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
 
   /**
-   * creates a new instance
+   * creates a new instance.
    *
    * @param bean
    *        the EmailSender to edit
@@ -208,7 +208,7 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
   /**
-   * class for configuring the editor so some fields can be hidden
+   * class for configuring the editor so some fields can be hidden.
    */
   public static class EditorConfiguration {
     public boolean showHost;

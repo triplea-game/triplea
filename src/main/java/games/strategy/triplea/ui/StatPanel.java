@@ -53,7 +53,7 @@ public class StatPanel extends AbstractStatPanel {
   protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<>();
   protected IUIContext m_uiContext;
 
-  /** Creates a new instance of InfoPanel */
+  /** Creates a new instance of StatPanel. */
   public StatPanel(final GameData data, final IUIContext uiContext2) {
     super(data);
     m_uiContext = uiContext2;
@@ -123,7 +123,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   /**
-   * Gets the small flag for a given PlayerID
+   * Gets the small flag for a given PlayerID.
    *
    * @param player
    *        the player to get the flag for

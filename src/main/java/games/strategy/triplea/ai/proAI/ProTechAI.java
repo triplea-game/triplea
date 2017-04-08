@@ -339,7 +339,7 @@ public final class ProTechAI {
   }
 
   /**
-   * Returns a list of all enemy players
+   * Returns a list of all enemy players.
    */
   private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
     final List<PlayerID> enemyPlayers = new ArrayList<>();
@@ -352,7 +352,7 @@ public final class ProTechAI {
   }
 
   /**
-   * Determine the enemy potential for blitzing a territory - all enemies are combined
+   * Determine the enemy potential for blitzing a territory - all enemies are combined.
    *
    * @param blitzHere
    *        - Territory expecting to be blitzed
@@ -449,7 +449,7 @@ public final class ProTechAI {
   }
 
   /**
-   * does not count planes already in the starting territory
+   * does not count planes already in the starting territory.
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
       final PlayerID player, final GameData data, final List<Territory> ignore, final List<Territory> checked) {
@@ -602,7 +602,7 @@ public final class ProTechAI {
   /**
    * Gets the neighbors which are exactly a certain # of territories away (distance)
    * Removes the inner circle neighbors
-   * neutral - whether to include neutral countries
+   * neutral - whether to include neutral countries.
    */
   private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final GameData data,
       final boolean neutral) {
@@ -616,7 +616,7 @@ public final class ProTechAI {
   }
 
   /**
-   * Finds list of territories at exactly distance from the start
+   * Finds list of territories at exactly distance from the start.
    *
    * @param start
    * @param endCondition
@@ -663,7 +663,7 @@ public final class ProTechAI {
 
   /**
    * Return Territories containing any unit depending on unitCondition
-   * Differs from findCertainShips because it doesn't require the units be owned
+   * Differs from findCertainShips because it doesn't require the units be owned.
    */
   private static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
@@ -679,7 +679,7 @@ public final class ProTechAI {
   }
 
   /**
-   * Interleave infantry and artillery/armor for loading on transports
+   * Interleave infantry and artillery/armor for loading on transports.
    */
   private static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
     final List<Unit> sorted = new ArrayList<>();
@@ -738,7 +738,7 @@ public final class ProTechAI {
   }
 
   /**
-   * Assumes that water is passable to air units always
+   * Assumes that water is passable to air units always.
    */
   private static Match<Territory> TerritoryIsImpassableToAirUnits() {
     return new Match<Territory>() {

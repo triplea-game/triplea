@@ -17,7 +17,7 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.ui.Util;
 
 /**
- * Utility for creating dice images
+ * Utility for creating dice images.
  */
 public class DiceImageFactory {
   public int DIE_WIDTH = 32;

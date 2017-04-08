@@ -1,14 +1,14 @@
 package games.strategy.engine.framework.startup.ui.editors.validators;
 
 /**
- * A validator that validates that a string is a integer, and within a given min/max range
+ * A validator that validates that a string is a integer, and within a given min/max range.
  */
 public class IntegerRangeValidator implements IValidator {
   private final int m_min;
   private final int m_max;
 
   /**
-   * create a new instance
+   * create a new instance.
    *
    * @param min
    *        the minimal value

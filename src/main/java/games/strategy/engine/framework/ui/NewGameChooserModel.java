@@ -161,7 +161,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   /**
    * @param entries
-   *        list of entries where to add the new entry
+   *        list of entries where to add the new entry.
    * @param uri
    *        URI of the new entry
    */

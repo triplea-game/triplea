@@ -32,7 +32,7 @@ import games.strategy.util.Version;
  * Title: TripleA
  * </p>
  * <p>
- * Description: Responsible for loading saved games, new games from xml, and saving games
+ * Description: Responsible for loading saved games, new games from xml, and saving games.
  * </p>
  */
 public class GameDataManager {

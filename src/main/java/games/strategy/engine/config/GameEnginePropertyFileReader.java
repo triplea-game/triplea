@@ -24,7 +24,7 @@ public class GameEnginePropertyFileReader implements PropertyReader {
     this(new File(GAME_ENGINE_PROPERTY_FILE));
   }
 
-  /** This constructor here for testing purposes, use the simple no-arg constructor instead */
+  /** This constructor here for testing purposes, use the simple no-arg constructor instead. */
   protected GameEnginePropertyFileReader(final File propertyFile) {
     this.propertyFile = propertyFile;
   }

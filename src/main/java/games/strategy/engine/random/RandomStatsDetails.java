@@ -65,9 +65,7 @@ public class RandomStatsDetails implements Serializable {
         tmp2 = calcMedian((total / 2) + 1, diceSides, stats);
         m_median = (tmp1 + tmp2) / 2;
       }
-      /**
-       * calculate variance
-       */
+      // calculate variance
       double variance = 0;
       // TODO: does this need to be updated to take data.getDiceSides() ?
       for (int i = 1; i <= diceSides; i++) {

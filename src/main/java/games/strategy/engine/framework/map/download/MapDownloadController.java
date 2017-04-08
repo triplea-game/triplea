@@ -16,7 +16,7 @@ import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
 
 
-/** Controller for in-game map download actions */
+/** Controller for in-game map download actions. */
 public class MapDownloadController {
 
   private final MapListingSource mapDownloadProperties;
@@ -27,7 +27,7 @@ public class MapDownloadController {
 
   /**
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
-   * not recognized
+   * not recognized.
    */
   public boolean checkDownloadedMapsAreLatest() {
     try {

@@ -27,14 +27,14 @@ public class Node implements INode, Externalizable {
   // needed to support Externalizable
   public Node() {}
 
-  /** Creates new Node */
+  /** Creates new Node. */
   public Node(final String name, final InetSocketAddress address) {
     this.name = name;
     m_address = address.getAddress();
     port = address.getPort();
   }
 
-  /** Creates new Node */
+  /** Creates new Node. */
   public Node(final String name, final InetAddress address, final int port) {
     this.name = name;
     m_address = address;

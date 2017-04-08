@@ -98,7 +98,7 @@ public class PBEMDiceRoller implements IRandomSource {
 
 
 /**
- * The dialog that will show while the dice are rolling
+ * The dialog that will show while the dice are rolling.
  */
 class HttpDiceRollerDialog extends JDialog {
   private static final long serialVersionUID = -4802403913826489223L;
@@ -120,7 +120,7 @@ class HttpDiceRollerDialog extends JDialog {
 
   /**
    * @param owner
-   *        owner frame
+   *        owner frame.
    * @param sides
    *        the number of sides on the dice
    * @param count
@@ -161,7 +161,7 @@ class HttpDiceRollerDialog extends JDialog {
 
   /**
    * There are three differences when we are testing, 1 dont close the window
-   * when we are done 2 remove the exit button 3 add a close button
+   * when we are done 2 remove the exit button 3 add a close button.
    */
   public void setTest() {
     m_test = true;

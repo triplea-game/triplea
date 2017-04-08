@@ -148,7 +148,7 @@ public class SwingComponents {
   private static final Set<String> visiblePrompts = new HashSet<>();
 
   /**
-   * Creates a JPanel with BorderLayout and adds a west component and an east component
+   * Creates a JPanel with BorderLayout and adds a west component and an east component.
    */
   public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
     final JPanel panel = new JPanel();

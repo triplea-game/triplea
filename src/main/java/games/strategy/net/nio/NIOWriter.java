@@ -149,7 +149,7 @@ public class NIOWriter {
   }
 
   /**
-   * Remove the data for this channel
+   * Remove the data for this channel.
    */
   public void closed(final SocketChannel channel) {
     removeAll(channel);

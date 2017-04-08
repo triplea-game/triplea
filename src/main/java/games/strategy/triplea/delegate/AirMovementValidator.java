@@ -510,7 +510,7 @@ public class AirMovementValidator {
 
   /**
    * @param units
-   *        the units flying this route
+   *        the units flying this route.
    * @param route
    *        the route flown
    * @param player

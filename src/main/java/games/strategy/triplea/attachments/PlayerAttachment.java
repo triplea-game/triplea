@@ -74,7 +74,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
       new HashSet<>();
 
-  /** Creates new PlayerAttachment */
+  /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }

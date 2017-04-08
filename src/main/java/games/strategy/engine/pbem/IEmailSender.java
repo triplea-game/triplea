@@ -35,7 +35,7 @@ public interface IEmailSender extends IBean {
   String getToAddress();
 
   /**
-   * Remove any sensitive information, like passwords before this object is saved in as a game properties
+   * Remove any sensitive information, like passwords before this object is saved in as a game properties.
    */
   void clearSensitiveInfo();
 
@@ -55,14 +55,14 @@ public interface IEmailSender extends IBean {
   void setPassword(String password);
 
   /**
-   * Should we also post at the end of combat move
+   * Should we also post at the end of combat move.
    *
    * @return true if the save game should be included in the summary
    */
   boolean getAlsoPostAfterCombatMove();
 
   /**
-   * Configure if we should also post at the end of combat move
+   * Configure if we should also post at the end of combat move.
    *
    * @param include
    *        true if the save game should be included

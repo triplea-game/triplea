@@ -24,6 +24,8 @@ public class SetupFrame extends JPanel {
   private File m_outDir;
 
   /**
+   * Creates a new SetupFrame.
+   *
    * @param data
    */
   public SetupFrame(final GameData data) {

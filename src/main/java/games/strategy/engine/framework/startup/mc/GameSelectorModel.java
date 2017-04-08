@@ -196,7 +196,7 @@ public class GameSelectorModel extends Observable {
 
   /**
    * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
-   * we still want to display game info
+   * we still want to display game info.
    */
   public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {

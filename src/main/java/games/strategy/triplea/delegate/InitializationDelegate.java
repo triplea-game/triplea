@@ -32,7 +32,7 @@ import games.strategy.util.Match;
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean m_needToInitialize = true;
 
-  /** Creates a new instance of InitializationDelegate */
+  /** Creates a new instance of InitializationDelegate. */
   public InitializationDelegate() {}
 
   @Override

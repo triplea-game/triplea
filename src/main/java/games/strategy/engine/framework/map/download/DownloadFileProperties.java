@@ -11,7 +11,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.util.Version;
 
-/** Properties file used to know which map versions have been installed */
+/** Properties file used to know which map versions have been installed. */
 public class DownloadFileProperties {
   protected static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();

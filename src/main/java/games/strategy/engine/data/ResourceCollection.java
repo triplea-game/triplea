@@ -8,7 +8,7 @@ public class ResourceCollection extends GameDataComponent {
   private final IntegerMap<Resource> m_resources = new IntegerMap<>();
 
   /**
-   * Creates new ResourceCollection
+   * Creates new ResourceCollection.
    *
    * @param data
    *        game data
@@ -113,7 +113,7 @@ public class ResourceCollection extends GameDataComponent {
 
   /**
    * @param spent
-   * @return new ResourceCollection containing the difference between both collections
+   * @return new ResourceCollection containing the difference between both collections.
    */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
     final ResourceCollection returnCollection = new ResourceCollection(getData(), m_resources);

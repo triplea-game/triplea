@@ -49,7 +49,7 @@ public class ActionButtons extends JPanel {
   private UserActionPanel m_userActionPanel;
   private PickTerritoryAndUnitsPanel m_pickTerritoryAndUnitsPanel;
 
-  /** Creates new ActionPanel */
+  /** Creates new ActionButtons. */
   public ActionButtons(final GameData data, final MapPanel map, final MovePanel movePanel, final TripleAFrame parent) {
     m_battlePanel = new BattlePanel(data, map);
     m_movePanel = movePanel;

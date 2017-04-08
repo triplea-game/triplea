@@ -162,7 +162,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * Forces the user to either enter nothing or a positive integer
+   * Forces the user to either enter nothing or a positive integer.
    *
    * @return input value or 0 if nothing has been entered
    */

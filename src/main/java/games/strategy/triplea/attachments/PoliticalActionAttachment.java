@@ -123,7 +123,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @return a set of all other players involved in this PoliticalAction
+   * @return a set of all other players involved in this PoliticalAction.
    */
   public Set<PlayerID> getOtherPlayers() {
     final HashSet<PlayerID> otherPlayers = new HashSet<>();

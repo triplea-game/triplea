@@ -52,7 +52,7 @@ public class SoundProperties {
   }
 
   /**
-   * @return the string property, or null if not found
+   * @return the string property, or null if not found.
    */
   public String getProperty(final String key) {
     return m_properties.getProperty(key);

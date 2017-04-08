@@ -6,7 +6,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * A dummy forum poster, for when Forum posting is disabled
+ * A dummy forum poster, for when Forum posting is disabled.
  */
 public class NullForumPoster implements IForumPoster {
   private static final long serialVersionUID = 6465230505089142268L;

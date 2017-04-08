@@ -113,7 +113,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   /**
    * @param uaa
-   *        The UserActionAttachment the player should be charged for
+   *        The UserActionAttachment the player should be charged for.
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final UserActionAttachment uaa) {
@@ -193,7 +193,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Fire triggers
+   * Fire triggers.
    *
    * @param uaa
    *        the UserActionAttachment to activate triggers for
@@ -216,7 +216,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Send a notification to the current player
+   * Send a notification to the current player.
    *
    * @param text
    *        if NONE don't send a notification
@@ -230,7 +230,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   /**
    * Send a notification to the other players involved in this action (all
-   * players except the player starting the action)
+   * players except the player starting the action).
    *
    * @param uaa
    * @param notification
@@ -264,7 +264,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   /**
    * Let the player know he is being charged for money or that he hasn't got
-   * enough money
+   * enough money.
    * 
    * @param uaa
    *        the UserActionAttachment the player is notified about

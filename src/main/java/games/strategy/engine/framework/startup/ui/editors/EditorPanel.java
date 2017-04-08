@@ -112,7 +112,7 @@ public abstract class EditorPanel extends JPanel {
   public abstract IBean getBean();
 
   /**
-   * Returns the Label width, this can be used by wrapping editors to try to align label sizes
+   * Returns the Label width, this can be used by wrapping editors to try to align label sizes.
    *
    * @return the size of the largest label in the first column
    */
@@ -154,14 +154,14 @@ public abstract class EditorPanel extends JPanel {
 
   /**
    * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
-   * notified when the editor modifies the bean
+   * notified when the editor modifies the bean.
    */
   protected void fireEditorChanged() {
     firePropertyChange(EDITOR_CHANGE, null, null);
   }
 
   /**
-   * Document listener which calls fireEditorChanged in response to any document change
+   * Document listener which calls fireEditorChanged in response to any document change.
    */
   protected class EditorChangedFiringDocumentListener implements DocumentListener {
     @Override

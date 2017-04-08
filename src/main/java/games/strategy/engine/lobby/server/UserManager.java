@@ -16,7 +16,7 @@ public class UserManager implements IUserManager {
   }
 
   /**
-   * Update hte user info, returning an error string if an error occurs
+   * Update the user info, returning an error string if an error occurs.
    */
   @Override
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
@@ -35,7 +35,7 @@ public class UserManager implements IUserManager {
   }
 
   /**
-   * Update hte user info, returning an error string if an error occurs
+   * Update the user info, returning an error string if an error occurs.
    */
   @Override
   public DBUser getUserInfo(final String userName) {

@@ -32,13 +32,13 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.util.Util;
 
 /**
- * A pbem dice roller that reads its configuration from a properties file
+ * A pbem dice roller that reads its configuration from a properties file.
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
 
   /**
-   * Loads the property dice rollers from the properties file
+   * Loads the property dice rollers from the properties file.
    *
    * @return the collection of available dice rollers
    */
@@ -156,7 +156,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   /**
    * @throws IOException
-   *         if there was an error parsing the string
+   *         if there was an error parsing the string.
    */
   @Override
   public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException {

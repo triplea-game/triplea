@@ -142,7 +142,7 @@ public class XmlGameElementMapper {
               attachmentData.attachable, attachmentData.gameData))
           .build();
 
-  /** Small data holder class */
+  /** Small data holder class. */
   private static class AttachmentData {
     private final String name;
     private final Attachable attachable;

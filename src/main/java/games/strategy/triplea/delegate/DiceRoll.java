@@ -55,7 +55,7 @@ public class DiceRoll implements Externalizable {
 
   /**
    * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
-   * that attack value
+   * that attack value.
    */
   public static Tuple<Integer, Integer> getAAattackAndMaxDiceSides(final Collection<Unit> defendingEnemyAA,
       final GameData data, final boolean defending) {
@@ -397,7 +397,7 @@ public class DiceRoll implements Externalizable {
 
   /**
    * @param unitsGettingPowerFor
-   *        should be sorted from weakest to strongest, before the method is called, for the actual battle
+   *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -413,7 +413,7 @@ public class DiceRoll implements Externalizable {
 
   /**
    * @param unitsGettingPowerFor
-   *        should be sorted from weakest to strongest, before the method is called, for the actual battle
+   *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
   protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor,

@@ -18,7 +18,7 @@ public class BannedUsernameController {
   private static final Logger s_logger = Logger.getLogger(BannedUsernameController.class.getName());
 
   /**
-   * Ban the username permanently
+   * Ban the username permanently.
    */
   public void addBannedUsername(final String username) {
     addBannedUsername(username, null);
@@ -80,7 +80,7 @@ public class BannedUsernameController {
 
   /**
    * Is the given username banned? This may have the side effect of removing from the
-   * database any username's whose ban has expired
+   * database any username's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
     boolean found = false;

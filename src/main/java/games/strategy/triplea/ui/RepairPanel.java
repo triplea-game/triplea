@@ -33,7 +33,7 @@ public class RepairPanel extends ActionPanel {
   private final JLabel m_repairdSoFar = new JLabel();
   private final JButton m_buyButton;
 
-  /** Creates new RepairPanel */
+  /** Creates new RepairPanel. */
   public RepairPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_unitsPanel = new SimpleUnitPanel(map.getUIContext());

@@ -11,7 +11,7 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
   private List<RepairRule> m_cachedRules;
 
   /**
-   * Creates new RepairFrontier
+   * Creates new RepairFrontier.
    *
    * @param name
    *        name of new repair frontier

@@ -7,7 +7,7 @@ import java.util.List;
  * True if one match returns true.
  */
 public class CompositeMatchOr<T> extends CompositeMatch<T> {
-  /** Creates new CompositeMatchOr */
+  /** Creates new CompositeMatchOr. */
   @SuppressWarnings("unchecked")
   public CompositeMatchOr(final Match<?>... matches) { // TODO rewrite in order to remove Suppressed Warning
     super();

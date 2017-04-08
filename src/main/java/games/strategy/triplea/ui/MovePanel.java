@@ -58,7 +58,7 @@ public class MovePanel extends AbstractMovePanel {
    * @param s_deselectNumber
    *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large
    *        armies), but changed it
-   *        after feedback)
+   *        after feedback).
    */
   private static final int s_deselectNumber = 10;
   // access only through getter and setter!
@@ -85,7 +85,7 @@ public class MovePanel extends AbstractMovePanel {
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
 
-  /** Creates new MovePanel */
+  /** Creates new MovePanel. */
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     m_undoableMovesPanel = new UndoableMovesPanel(data, this);
@@ -444,7 +444,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /**
-   * Get the route ignoring forced territories
+   * Get the route ignoring forced territories.
    */
   private Route getRouteNonForced(final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     // can't rely on current player being the unit owner in Edit Mode

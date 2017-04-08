@@ -39,7 +39,7 @@ public class UrlStreamsTest {
   }
 
   /**
-   * Check that we turned off caching on a mocked UrlConnection
+   * Check that we turned off caching on a mocked UrlConnection.
    */
   @Test
   public void cacheIsOff() throws Exception {

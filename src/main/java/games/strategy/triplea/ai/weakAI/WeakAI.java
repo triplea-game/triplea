@@ -50,7 +50,7 @@ import games.strategy.util.Util;
 public class WeakAI extends AbstractAI {
   private static final Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 
-  /** Creates new TripleAPlayer */
+  /** Creates new WeakAI. */
   public WeakAI(final String name, final String type) {
     super(name, type);
   }
@@ -295,7 +295,7 @@ public class WeakAI extends AbstractAI {
   }
 
   /**
-   * prepares moves for transports
+   * prepares moves for transports.
    *
    * @param nonCombat
    * @param data

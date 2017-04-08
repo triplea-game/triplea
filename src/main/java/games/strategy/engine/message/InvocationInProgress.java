@@ -23,7 +23,7 @@ public class InvocationInProgress {
   }
 
   /**
-   * @return true if there are no more results to process
+   * @return true if there are no more results to process.
    */
   public boolean process(final HubInvocationResults hubresults, final INode from) {
     if (hubresults.results == null) {

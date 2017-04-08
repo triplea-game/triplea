@@ -17,7 +17,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 public class TechTracker implements java.io.Serializable {
   private static final long serialVersionUID = 4705039229340373735L;
 
-  /** Creates new TechTracker */
+  /** Creates new TechTracker. */
   public TechTracker() {}
 
   /**

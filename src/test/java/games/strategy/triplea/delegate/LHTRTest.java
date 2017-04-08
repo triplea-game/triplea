@@ -232,7 +232,7 @@ public class LHTRTest {
 
 /**
  * a random source that throws when asked for random
- * usefule for testing
+ * useful for testing.
  */
 class ThrowingRandomSource implements IRandomSource {
   @Override

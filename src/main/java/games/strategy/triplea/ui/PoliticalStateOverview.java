@@ -176,7 +176,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   /**
-   * returns a color to represent the relationship
+   * returns a color to represent the relationship.
    *
    * @param relType
    *        which relationship to get the color for
@@ -198,7 +198,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   /**
-   * Gets a label showing the flag + name of this player
+   * Gets a label showing the flag + name of this player.
    *
    * @param player
    *        the player to get the label for
@@ -209,7 +209,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   /**
-   * Redraw this panel (because of changed politics)
+   * Redraw this panel (because of changed politics).
    */
   public void redrawPolitics() {
     this.removeAll();

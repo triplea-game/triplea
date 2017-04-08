@@ -243,7 +243,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   }
 
   /**
-   * Create a clone of the poster
+   * Create a clone of the poster.
    *
    * @return a copy
    */

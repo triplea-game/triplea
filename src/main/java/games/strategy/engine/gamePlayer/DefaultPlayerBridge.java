@@ -27,7 +27,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   private String m_currentStep;
   private String m_currentDelegate;
 
-  /** Creates new DefaultPlayerBridge */
+  /** Creates new DefaultPlayerBridge. */
   public DefaultPlayerBridge(final IGame aGame) {
     m_game = aGame;
     final GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
@@ -57,7 +57,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   }
 
   /**
-   * Return the game data
+   * Return the game data.
    */
   @Override
   public GameData getGameData() {

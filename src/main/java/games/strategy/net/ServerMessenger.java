@@ -88,7 +88,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return loginValidator;
   }
 
-  /** Creates new ServerMessenger */
+  /** Creates new ServerMessenger. */
   public ServerMessenger(final String name, final int portNumber) throws IOException {
     this(name, portNumber, new DefaultObjectStreamFactory());
   }
@@ -555,9 +555,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return acceptNewConnection;
   }
 
-  /**
-   * Get the local node
-   */
   @Override
   public INode getLocalNode() {
     return node;

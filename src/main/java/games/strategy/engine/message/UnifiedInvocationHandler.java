@@ -7,9 +7,8 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.triplea.util.WrappedInvocationHandler;
 
 /**
- * Invocation handler for the UnifiedMessenger
- */
-/**
+ * Invocation handler for the UnifiedMessenger.
+ *
  * Handles the invocation for a channel
  */
 class UnifiedInvocationHandler extends WrappedInvocationHandler {

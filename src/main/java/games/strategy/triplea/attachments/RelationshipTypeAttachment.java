@@ -35,7 +35,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   private String m_rocketsCanFlyOver = PROPERTY_DEFAULT;
 
   /**
-   * Creates new RelationshipTypeAttachment
+   * Creates new RelationshipTypeAttachment.
    */
   public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -97,7 +97,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   /**
    * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
    *         isNeutral, isAllied or
-   *         isWar();
+   *         isWar().
    */
   public String getArcheType() {
     return m_archeType;
@@ -348,21 +348,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return whether this relationship is based on the WAR_ARCHETYPE
+   * @return whether this relationship is based on the WAR_ARCHETYPE.
    */
   public boolean isWar() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
   }
 
   /**
-   * @return whether this relationship is based on the ALLIED_ARCHETYPE
+   * @return whether this relationship is based on the ALLIED_ARCHETYPE.
    */
   public boolean isAllied() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
   }
 
   /**
-   * @return whether this relationship is based on the NEUTRAL_ARCHETYPE
+   * @return whether this relationship is based on the NEUTRAL_ARCHETYPE.
    */
   public boolean isNeutral() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);

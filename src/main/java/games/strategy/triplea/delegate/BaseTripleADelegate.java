@@ -23,7 +23,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   private boolean m_endBaseStepsFinished = false;
 
   /**
-   * Creates a new instance of the Delegate
+   * Creates a new instance of the Delegate.
    */
   public BaseTripleADelegate() {
     super();
@@ -77,9 +77,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     return state;
   }
 
-  /**
-   * Loads the delegates state
-   */
   @Override
   public void loadState(final Serializable state) {
     final BaseDelegateState s = (BaseDelegateState) state;

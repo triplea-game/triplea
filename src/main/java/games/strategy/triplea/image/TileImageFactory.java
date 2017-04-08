@@ -142,9 +142,6 @@ public final class TileImageFactory {
 
   public TileImageFactory() {}
 
-  /**
-   * @param fileName
-   */
   private Image isImageLoaded(final String fileName) {
     if (getM_imageCache().get(fileName) == null) {
       return null;
@@ -175,9 +172,6 @@ public final class TileImageFactory {
     return fileName;
   }
 
-  /**
-   * @param fileName
-   */
   private Image getImage(final String fileName, final boolean transparent) {
     synchronized (m_mutex) {
       final Image rVal = isImageLoaded(fileName);

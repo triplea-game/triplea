@@ -34,7 +34,7 @@ public class SystemPreferences {
   }
 
   /**
-   * Puts a value into system preferences (note: not actually persisted until flush is called)
+   * Puts a value into system preferences (note: not actually persisted until flush is called).
    */
   private static void putNoFlush(SystemPreferenceKey key, String value) {
     getPrefs().put(key.name(), value);
@@ -60,7 +60,7 @@ public class SystemPreferences {
   }
 
   /**
-   * Looks up a preference value by key (note: returns the last flushed value)
+   * Looks up a preference value by key (note: returns the last flushed value).
    *
    * @param key The preference key to look up
    * @param defaultValue A default value to use when the look up finds nothing

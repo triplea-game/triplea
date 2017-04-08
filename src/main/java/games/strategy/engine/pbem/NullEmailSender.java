@@ -7,7 +7,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * A dummy Email sender, to use when Email sending is disabled
+ * A dummy Email sender, to use when Email sending is disabled.
  */
 public class NullEmailSender implements IEmailSender {
   private static final long serialVersionUID = 9138507282128548506L;

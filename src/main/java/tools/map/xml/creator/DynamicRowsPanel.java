@@ -115,7 +115,7 @@ public abstract class DynamicRowsPanel {
   }
 
   /**
-   * @return number of rows
+   * @return number of rows.
    */
   public int countRows() {
     return rows.size() + 1;

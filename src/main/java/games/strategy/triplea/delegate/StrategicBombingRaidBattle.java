@@ -53,7 +53,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<>();
 
   /**
-   * Creates new StrategicBombingRaidBattle
+   * Creates new StrategicBombingRaidBattle.
    *
    * @param battleSite
    *        - battle territory

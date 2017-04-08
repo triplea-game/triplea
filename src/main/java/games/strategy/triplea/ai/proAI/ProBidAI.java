@@ -395,7 +395,7 @@ public class ProBidAI {
     final List<Territory> factoryTerritories =
         Match.getMatches(findUnitTerr(data, ourFactory), Matches.isTerritoryOwnedBy(player));
     factoryTerritories.removeAll(impassableTerrs);
-    /**
+    /*
      * Bid place with following criteria:
      * 1) Has an enemy Neighbor
      * 2) Has the largest combination value:
@@ -622,7 +622,7 @@ public class ProBidAI {
   }
 
   /**
-   * All the territories that border one of our territories
+   * All the territories that border one of our territories.
    */
   private static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
     final ArrayList<Territory> rVal = new ArrayList<>();
@@ -707,7 +707,7 @@ public class ProBidAI {
 
   /**
    * Recursive routine to determine the bestAttack and bestDefense set of purchase
-   * Expects bestAttack to already be filled with the rules
+   * Expects bestAttack to already be filled with the rules.
    *
    * @param parameters
    *        - set of parameters to be used (8 of them)
@@ -1067,7 +1067,7 @@ public class ProBidAI {
   }
 
   /**
-   * Returns a List of all territories with a water neighbor
+   * Returns a List of all territories with a water neighbor.
    *
    * @param allTerr - List of Territories
    */
@@ -1100,7 +1100,8 @@ public class ProBidAI {
   }
 
   /**
-   * Return Territories containing any unit depending on unitCondition
+   * Return Territories containing any unit depending on unitCondition.
+   *
    * Differs from findCertainShips because it doesn't require the units be owned
    */
   private static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
@@ -1117,7 +1118,7 @@ public class ProBidAI {
   }
 
   /**
-   * Territories we actually own in a modifiable List
+   * Territories we actually own in a modifiable List.
    */
   private static List<Territory> allOurTerritories(final GameData data, final PlayerID player) {
     final Collection<Territory> ours = data.getMap().getTerritoriesOwnedBy(player);
@@ -1127,7 +1128,7 @@ public class ProBidAI {
   }
 
   /**
-   * Territory ranking system
+   * Territory ranking system.
    *
    * @param waterBased - attack is Water Based - Remove all terr with no avail water
    * @param nonCombat - if nonCombat, emphasize threatened factories over their neighbors
@@ -1171,7 +1172,7 @@ public class ProBidAI {
         minDist = Math.min(minDist, dist);
       }
     }
-    /**
+    /*
      * Send units because:
      * 1) Production Value
      * 2) Victory City
@@ -1334,7 +1335,7 @@ public class ProBidAI {
   }
 
   /**
-   * Returns a list of all enemy players
+   * Returns a list of all enemy players.
    */
   private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
     final List<PlayerID> enemyPlayers = new ArrayList<>();
@@ -1347,7 +1348,7 @@ public class ProBidAI {
   }
 
   /**
-   * List containing the enemy Capitals
+   * List containing the enemy Capitals.
    */
   private static List<Territory> getEnemyCapitals(final GameData data, final PlayerID player) {
     // generate a list of all enemy capitals
@@ -1364,7 +1365,7 @@ public class ProBidAI {
   }
 
   /**
-   * Returns the players current pus available
+   * Returns the players current pus available.
    */
   private static int getLeftToSpend(final GameData data, final PlayerID player) {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
@@ -1577,7 +1578,7 @@ public class ProBidAI {
   }
 
   /**
-   * Find the Route to the nearest Territory
+   * Find the Route to the nearest Territory.
    *
    * @param start - starting territory
    * @param endCondition - condition for the ending Territory
@@ -1678,7 +1679,7 @@ public class ProBidAI {
   }
 
   /**
-   * Determine the enemy potential for blitzing a territory - all enemies are combined
+   * Determine the enemy potential for blitzing a territory - all enemies are combined.
    *
    * @param blitzHere
    *        - Territory expecting to be blitzed
@@ -1779,7 +1780,7 @@ public class ProBidAI {
   }
 
   /**
-   * does not count planes already in the starting territory
+   * does not count planes already in the starting territory.
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
       final PlayerID player, final GameData data, final List<Territory> ignore, final List<Territory> checked) {
@@ -1913,7 +1914,7 @@ public class ProBidAI {
   }
 
   /**
-   * All allied Territories which have a Land Enemy Neighbor
+   * All allied Territories which have a Land Enemy Neighbor.
    *
    * @neutral - include neutral territories
    * @allied - include allied territories
@@ -1979,7 +1980,7 @@ public class ProBidAI {
   }
 
   /**
-   * All Enemy Territories in a modifiable List
+   * All Enemy Territories in a modifiable List.
    */
   private static List<Territory> allEnemyTerritories(final GameData data, final PlayerID player) {
     final List<Territory> badGuys = new ArrayList<>();
@@ -2010,7 +2011,7 @@ public class ProBidAI {
   /**
    * Look for an available sea Territory to place sea Units
    * if other owned sea units exist, place them with these units
-   * Otherwise, look for the location which is least likely to get them killed
+   * Otherwise, look for the location which is least likely to get them killed.
    *
    * @param landTerr
    *        - factory territory
@@ -2082,7 +2083,7 @@ public class ProBidAI {
 
   /**
    * distance to the closest enemy
-   * just uses findNearest
+   * just uses findNearest.
    */
   private static int distanceToEnemy(final Territory t, final GameData data, final PlayerID player, final boolean sea) {
     // note: neutrals are enemies
@@ -2110,7 +2111,7 @@ public class ProBidAI {
   }
 
   /**
-   * Determine the strength of a territory
+   * Determine the strength of a territory.
    *
    * @param attacking - attacking strength or defending
    * @param allied - allied = true - all allied units --> false - owned units only
@@ -2155,7 +2156,7 @@ public class ProBidAI {
   }
 
   /**
-   * Interleave infantry and artillery/armor for loading on transports
+   * Interleave infantry and artillery/armor for loading on transports.
    */
   private static List<Unit> sortTransportUnits(final List<Unit> transUnits) {
     final List<Unit> sorted = new ArrayList<>();
@@ -2214,7 +2215,7 @@ public class ProBidAI {
   }
 
   /**
-   * Assumes that water is passable to air units always
+   * Assumes that water is passable to air units always.
    */
   private static Match<Territory> TerritoryIsImpassableToAirUnits() {
     return new Match<Territory>() {
@@ -2248,7 +2249,7 @@ public class ProBidAI {
   /**
    * Gets the neighbors which are exactly a certain # of territories away (distance)
    * Removes the inner circle neighbors
-   * neutral - whether to include neutral countries
+   * neutral - whether to include neutral countries.
    */
   private static List<Territory> getExactNeighbors(final Territory territory, final int distance, final GameData data,
       final boolean neutral) {
@@ -2262,7 +2263,7 @@ public class ProBidAI {
   }
 
   /**
-   * Finds list of territories at exactly distance from the start
+   * Finds list of territories at exactly distance from the start.
    *
    * @param start
    * @param endCondition

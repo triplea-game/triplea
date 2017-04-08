@@ -21,7 +21,7 @@ public abstract class ActionPanel extends JPanel {
   private CountDownLatch m_latch;
   private final Object m_latchLock = new Object();
 
-  /** Creates new ActionPanel */
+  /** Creates new ActionPanel. */
   public ActionPanel(final GameData data, final MapPanel map) {
     m_data = data;
     m_map = map;

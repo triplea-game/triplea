@@ -164,7 +164,7 @@ class AAInMoveUtil implements Serializable {
   }
 
   /**
-   * Fire the aa units in the given territory, hits are removed from units
+   * Fire the aa units in the given territory, hits are removed from units.
    */
   private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove) {
     if (units.isEmpty()) {

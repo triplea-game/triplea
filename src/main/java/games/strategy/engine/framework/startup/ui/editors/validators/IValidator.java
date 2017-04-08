@@ -1,11 +1,11 @@
 package games.strategy.engine.framework.startup.ui.editors.validators;
 
 /**
- * A simple interface for validating data from text fields
+ * A simple interface for validating data from text fields.
  */
 public interface IValidator {
   /**
-   * Validates that the give input is valid
+   * Validates that the give input is valid.
    *
    * @param text
    *        the text to be validated

@@ -12,7 +12,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     this(name, false, data);
   }
 
-  /** Creates new Territory */
+  /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
     m_water = water;
@@ -20,7 +20,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     m_coordinate = null;
   }
 
-  /** Creates new Territory */
+  /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data, final int... coordinate) {
     super(name, data);
     m_water = water;
@@ -52,7 +52,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * Get the units in this territory
+   * Get the units in this territory.
    */
   @Override
   public UnitCollection getUnits() {
@@ -60,7 +60,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * refers to unit holder being changed
+   * refers to unit holder being changed.
    */
   @Override
   public void notifyChanged() {
@@ -69,7 +69,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
 
   /**
    * refers to attachment changing, and therefore needing a redraw on the map in case something like the production
-   * number is now different
+   * number is now different.
    */
   public void notifyAttachmentChanged() {
     getData().notifyTerritoryAttachmentChanged(this);

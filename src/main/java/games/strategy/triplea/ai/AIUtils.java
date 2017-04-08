@@ -25,7 +25,7 @@ import games.strategy.util.Match;
 public class AIUtils {
 
   /**
-   * @return a comparator that sorts cheaper units before expensive ones
+   * @return a comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
     return (o1, o2) -> getCost(o1.getType(), o1.getOwner(), o1.getData())

@@ -42,7 +42,7 @@ public class GameProperties extends GameDataComponent {
   private final List<String> ordering = new ArrayList<>();
 
   /**
-   * Creates a new instance of Properties
+   * Creates a new instance of GameProperties.
    *
    * @param data
    *        game data

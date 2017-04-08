@@ -67,7 +67,7 @@ public class BattlePanel extends ActionPanel {
   private final JFrame m_battleFrame;
   Map<BattleType, Collection<Territory>> m_battles;
 
-  /** Creates new BattlePanel */
+  /** Creates new BattlePanel. */
   public BattlePanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_battleFrame = new JFrame() {

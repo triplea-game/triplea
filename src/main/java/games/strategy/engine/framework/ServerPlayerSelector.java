@@ -26,7 +26,7 @@ public class ServerPlayerSelector extends JFrame {
   private Collection<String> m_remote;
   private final JTextField m_nameField;
 
-  /** Creates a new instance of PlayerSelecter */
+  /** Creates a new instance of ServerPlayerSelector. */
   public ServerPlayerSelector(final String[] players) {
     super("Choose players");
     final JPanel namePanel = new JPanel();

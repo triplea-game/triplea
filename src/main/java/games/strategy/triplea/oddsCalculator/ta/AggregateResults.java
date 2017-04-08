@@ -36,7 +36,7 @@ public class AggregateResults implements Serializable {
   }
 
   /**
-   * This could be null if we have zero results!
+   * This could be null if we have zero results.
    */
   public BattleResults getBattleResultsClosestToAverage() {
     double closestBattleDif = Integer.MAX_VALUE;
@@ -78,7 +78,7 @@ public class AggregateResults implements Serializable {
   }
 
   /**
-   * First is Attacker, Second is Defender
+   * First is Attacker, Second is Defender.
    */
   public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV,
       final IntegerMap<UnitType> defenderCostsForTUV) {

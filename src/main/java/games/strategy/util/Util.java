@@ -96,7 +96,7 @@ public class Util {
   }
 
   /**
-   * returns a list of everything in source, with the first count units moved to the end
+   * returns a list of everything in source, with the first count units moved to the end.
    */
   public static <T> List<T> shiftElementsToEnd(final List<T> source, final int count) {
     final ArrayList<T> rVal = new ArrayList<>(source.size());
@@ -112,11 +112,11 @@ public class Util {
     return rVal;
   }
 
-  /** Creates new Util */
+  /** Creates new Util. */
   private Util() {}
 
   /**
-   * allow multiple fully qualified email adresses seperated by spaces, or a blank string
+   * allow multiple fully qualified email addresses separated by spaces, or a blank string.
    */
   public static boolean isMailValid(final String emailAddress) {
     final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";

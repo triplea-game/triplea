@@ -199,13 +199,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false));
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {
     addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
@@ -287,7 +287,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   /**
-   * Show only the first n lines
+   * Show only the first n lines.
    */
   public static void trimLines(final Document doc, final int lineCount) {
     if (doc.getLength() < lineCount) {

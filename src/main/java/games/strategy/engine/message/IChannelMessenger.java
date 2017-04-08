@@ -46,24 +46,24 @@ import games.strategy.net.INode;
 public interface IChannelMessenger {
   /**
    * Get a reference such that methods called on it will be multicast
-   * to all subscribors of the channel
+   * to all subscribers of the channel.
    */
   IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
 
   /**
-   * register a subscribor to a channel
+   * register a subscriber to a channel.
    */
   void registerChannelSubscriber(Object implementor, RemoteName channelName);
 
   /**
-   * unregister a subscribor to a channel
+   * unregister a subscriber to a channel.
    */
   void unregisterChannelSubscriber(Object implementor, RemoteName channelName);
 
   INode getLocalNode();
 
   /**
-   * Is the underlying messenger a server?
+   * Indicates the underlying messenger is a server.
    */
   boolean isServer();
 }

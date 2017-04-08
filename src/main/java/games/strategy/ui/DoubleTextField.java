@@ -18,7 +18,7 @@ public class DoubleTextField extends JTextField {
   private final ListenerList<DoubleTextFieldChangeListener> m_listeners =
       new ListenerList<>();
 
-  /** Creates new IntTextBox */
+  /** Creates new DoubleTextField. */
   public DoubleTextField() {
     super(10);
     initTextField();

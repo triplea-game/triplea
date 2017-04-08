@@ -12,7 +12,7 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 
 /**
- * Encodes data to be written by a writer
+ * Encodes data to be written by a writer.
  */
 public class Encoder {
   private static final Logger s_logger = Logger.getLogger(Encoder.class.getName());

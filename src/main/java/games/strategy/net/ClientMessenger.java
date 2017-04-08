@@ -194,9 +194,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
   }
 
-  /**
-   * Get the local node
-   */
   @Override
   public INode getLocalNode() {
     return m_node;

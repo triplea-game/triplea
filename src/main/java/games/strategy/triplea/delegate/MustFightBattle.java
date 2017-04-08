@@ -101,7 +101,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Used for head-less battles
+   * Used for head-less battles.
    *
    * @param defending
    *        - defending units
@@ -1146,8 +1146,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstDefendingSubs() {
-    /** Attacker subs fire */
-    /*
+    /* Attacker subs fire
+     *
      * calculate here, this holds for the fight round, but can't be computed later
      * since destroyers may die
      */
@@ -1700,7 +1700,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Check for suicide units and kill them immediately (they get to shoot back, which is the point)
+   * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
    *
    * @param bridge
    * @param player
@@ -1722,7 +1722,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Check for unescorted TRNS and kill them immediately
+   * Check for unescorted TRNS and kill them immediately.
    *
    * @param bridge
    * @param player
@@ -1813,7 +1813,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Submerge attacking/defending SUBS if they're alone OR with TRNS against only AIRCRAFT
+   * Submerge attacking/defending SUBS if they're alone OR with TRNS against only AIRCRAFT.
    *
    * @param bridge
    * @param player

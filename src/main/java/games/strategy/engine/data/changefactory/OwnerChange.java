@@ -18,7 +18,7 @@ class OwnerChange extends Change {
   private final String m_territory;
 
   /**
-   * newOwner can be null
+   * newOwner can be null.
    */
   OwnerChange(final Territory territory, final PlayerID newOwner) {
     m_territory = territory.getName();

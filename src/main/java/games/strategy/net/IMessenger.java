@@ -35,7 +35,7 @@ public interface IMessenger {
   void removeMessageListener(IMessageListener listener);
 
   /**
-   * Listen for errors
+   * Listen for errors.
    */
   void addErrorListener(IMessengerErrorListener listener);
 
@@ -45,7 +45,7 @@ public interface IMessenger {
   void removeErrorListener(IMessengerErrorListener listener);
 
   /**
-   * Get the local node
+   * Get the local node.
    */
   INode getLocalNode();
 

@@ -42,7 +42,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean m_gameOver = false;
   private Collection<PlayerID> m_winners = new ArrayList<>();
 
-  /** Creates a new instance of EndRoundDelegate */
+  /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
 
   /**
@@ -310,7 +310,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   }
 
   /**
-   * if null, the game is not over yet
+   * if null, the game is not over yet.
    */
   public Collection<PlayerID> getWinners() {
     if (!m_gameOver) {

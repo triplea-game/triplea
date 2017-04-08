@@ -17,7 +17,7 @@ import java.io.OutputStream;
  */
 public class GameObjectOutputStream extends ObjectOutputStream {
   /**
-   * Creates a new instance of GameObjectOutputStream
+   * Creates a new instance of GameObjectOutputStream.
    *
    * @param output
    *        output stream

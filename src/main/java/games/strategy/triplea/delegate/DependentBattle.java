@@ -14,7 +14,7 @@ import games.strategy.engine.data.Unit;
 
 /**
  * Battle with possible dependencies
- * Includes MustFightBattle and NonFightingBattle
+ * Includes MustFightBattle and NonFightingBattle.
  */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
@@ -36,7 +36,7 @@ public abstract class DependentBattle extends AbstractBattle {
   }
 
   /**
-   * @return territories where there are amphibious attacks
+   * @return territories where there are amphibious attacks.
    */
   public Collection<Territory> getAmphibiousAttackTerritories() {
     return m_amphibiousAttackFrom;

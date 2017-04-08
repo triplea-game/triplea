@@ -91,7 +91,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws Points on the Map
+   * Draws Points on the Map.
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param points The {@linkplain Point} array aka the "Joints" to be drawn
@@ -114,7 +114,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws a specified CursorImage if available
+   * Draws a specified CursorImage if available.
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param routeDescription The RouteDescription object containing the CursorImage
@@ -180,7 +180,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws a line to the Screen regarding the Map-Offset and scale
+   * Draws a line to the Screen regarding the Map-Offset and scale.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param line The Line to be drawn
@@ -197,7 +197,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates a {@linkplain Point} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object
+   * Creates a {@linkplain Point} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object.
    *
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
@@ -221,7 +221,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates double arrays of y or x coordinates of the given {@linkplain Point} Array
+   * Creates double arrays of y or x coordinates of the given {@linkplain Point} Array.
    *
    * @param points The {@linkplain Point} Array containing the Coordinates
    * @param extractor A function specifying which value to return
@@ -238,7 +238,7 @@ public class MapRouteDrawer {
 
   /**
    * Creates a double array containing y coordinates of a {@linkplain PolynomialSplineFunction} with the above specified
-   * {@code DETAIL_LEVEL}
+   * {@code DETAIL_LEVEL}.
    *
    * @param fuction The {@linkplain PolynomialSplineFunction} with the values
    * @param index the parameterized array to indicate the maximum Values
@@ -257,7 +257,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws how many moves are left
+   * Draws how many moves are left.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The {@linkplain Point} array of the unit's tour
@@ -354,7 +354,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates an Arrow-Shape
+   * Creates an Arrow-Shape.
    *
    * @param from The {@linkplain Point2D} specifying the direction of the Arrow
    * @param to The {@linkplain Point2D} where the arrow is placed
@@ -378,7 +378,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws an Arrow on the {@linkplain Graphics2D} Object
+   * Draws an Arrow on the {@linkplain Graphics2D} Object.
    *
    * @param graphics The {@linkplain Graphics2D} object to draw on
    * @param from The destination {@linkplain Point2D} form the Arrow

@@ -88,7 +88,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
 
   /**
    * Dice servers has to be serializable, so we need to provide custom serialization since
-   * PlainRandomSource is not serializable
+   * PlainRandomSource is not serializable.
    *
    * @return a new InternalDiceServer
    * @throws ObjectStreamException

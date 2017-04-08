@@ -11,7 +11,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.ui.SwingComponents;
 
 /**
- * Panel to show who is playing which players
+ * Panel to show who is playing which players.
  */
 public class PlayersPanel {
 

@@ -69,7 +69,7 @@ public interface ITripleADisplay extends IDisplay {
 
   /**
    * @param battleID
-   *        - the battle we are listing steps for
+   *        - the battle we are listing steps for.
    * @param currentStep
    *        - the current step
    * @param steps
@@ -83,13 +83,13 @@ public interface ITripleADisplay extends IDisplay {
   void battleEnd(GUID battleID, String message);
 
   /**
-   * Notify that the casualties occurred
+   * Notify that the casualties occurred.
    */
   void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
       Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
 
   /**
-   * Notify that the casualties occurred, and only the casualty
+   * Notify that the casualties occurred, and only the casualty.
    */
   void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
@@ -98,7 +98,7 @@ public interface ITripleADisplay extends IDisplay {
       Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 
   /**
-   * Notification of the results of a bombing raid
+   * Notification of the results of a bombing raid.
    */
   void bombingResults(GUID battleID, List<Die> dice, int cost);
 
@@ -110,7 +110,7 @@ public interface ITripleADisplay extends IDisplay {
   void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 
   /**
-   * Show dice for the given battle and step
+   * Show dice for the given battle and step.
    */
   void notifyDice(DiceRoll dice, String stepName);
 

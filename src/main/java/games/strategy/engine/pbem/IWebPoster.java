@@ -8,11 +8,11 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
- * implementing class supports this
+ * implementing class supports this.
  */
 public interface IWebPoster extends IBean {
   /**
-   * Called when the turn summary should be posted
+   * Called when the turn summary should be posted.
    *
    * @return true if the post was successful
    */
@@ -23,7 +23,7 @@ public interface IWebPoster extends IBean {
   void setMailSaveGame(boolean mail);
 
   /**
-   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true
+   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true.
    *
    * @param saveGame
    *        the save game file
@@ -32,7 +32,7 @@ public interface IWebPoster extends IBean {
   void addSaveGame(File saveGame, String fileName);
 
   /**
-   * Create a clone of this object
+   * Create a clone of this object.
    *
    * @return the clone
    */
@@ -41,13 +41,13 @@ public interface IWebPoster extends IBean {
   void clearSensitiveInfo();
 
   /**
-   * Get the display name
+   * Get the display name.
    */
   @Override
   String getDisplayName();
 
   /**
-   * Get the site id
+   * Get the site id.
    *
    * @return the site id
    */
@@ -67,7 +67,7 @@ public interface IWebPoster extends IBean {
   void setGameName(String gameName);
 
   /**
-   * Set the host name
+   * Set the host name.
    */
   void setHost(String host);
 
@@ -76,12 +76,12 @@ public interface IWebPoster extends IBean {
   void addToAllHosts(String host);
 
   /**
-   * Opens a browser and go to the web site, identified by the site id
+   * Opens a browser and go to the web site, identified by the site id.
    */
   void viewSite();
 
   /**
-   * Each poster provides a message that is displayed on the progress bar when testing the poster
+   * Each poster provides a message that is displayed on the progress bar when testing the poster.
    *
    * @return the progress bar message
    */

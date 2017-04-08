@@ -68,7 +68,7 @@ public abstract class GenericConsole extends JFrame {
   }
 
   /**
-   * Displays standard error to the console
+   * Displays standard error to the console.
    */
   public void displayStandardError() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);

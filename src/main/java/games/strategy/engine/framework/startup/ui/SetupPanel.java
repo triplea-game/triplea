@@ -41,13 +41,13 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
   }
 
   /**
-   * Cleanup should occur here that occurs when we cancel
+   * Cleanup should occur here that occurs when we cancel.
    */
   @Override
   public abstract void cancel();
 
   /**
-   * Can we start the game?
+   * Indicates we can start the game.
    */
   @Override
   public abstract boolean canGameStart();

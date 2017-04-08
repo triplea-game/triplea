@@ -49,7 +49,7 @@ public class MouseDetails {
   }
 
   /**
-   * @return this point is in the map co-ordinates, unscaled
+   * @return this point is in the map co-ordinates, unscaled.
    */
   public Point getMapPoint() {
     return new Point((int) m_x, (int) m_y);

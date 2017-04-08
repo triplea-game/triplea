@@ -18,7 +18,7 @@ public class BannedMacController {
   private static final Logger s_logger = Logger.getLogger(BannedMacController.class.getName());
 
   /**
-   * Ban the mac permanently
+   * Ban the mac permanently.
    */
   public void addBannedMac(final String mac) {
     addBannedMac(mac, null);
@@ -79,7 +79,7 @@ public class BannedMacController {
 
   /**
    * Is the given mac banned? This may have the side effect of removing from the
-   * database any mac's whose ban has expired
+   * database any mac's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isMacBanned(final String mac) {
     boolean found = false;
