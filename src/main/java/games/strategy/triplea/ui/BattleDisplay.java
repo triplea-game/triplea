@@ -95,7 +95,7 @@ public class BattleDisplay extends JPanel {
   private final PlayerID m_attacker;
   private final Territory m_location;
   private final GameData m_data;
-  private final JButton m_actionButton = new JButton("");
+  private final JButton actionButton = new JButton("");
   private final BattleModel m_defenderModel;
   private final BattleModel m_attackerModel;
   private BattleStepsPanel m_steps;
@@ -153,7 +153,7 @@ public class BattleDisplay extends JPanel {
   }
 
   public void cleanUp() {
-    m_actionButton.setAction(m_nullAction);
+    actionButton.setAction(m_nullAction);
     m_steps.deactivate();
     m_mapPanel.getUIContext().removeActive(m_steps);
     m_steps = null;
@@ -163,7 +163,7 @@ public class BattleDisplay extends JPanel {
     // we want a component on this frame to take focus
     // so that pressing space will work (since it requires in focused
     // window). Only seems to be an issue on windows
-    m_actionButton.requestFocus();
+    actionButton.requestFocus();
   }
 
   public Territory getBattleLocation() {
@@ -305,7 +305,7 @@ public class BattleDisplay extends JPanel {
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(buttonAction));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
     m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
@@ -317,7 +317,7 @@ public class BattleDisplay extends JPanel {
         public void run() {
           continueLatch.countDown();
           if (continueLatch.getCount() > 0) {
-            SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+            SwingUtilities.invokeLater(() -> actionButton.setAction(m_nullAction));
           }
         }
       }, maxWaitTime);
@@ -330,14 +330,14 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(m_nullAction));
   }
 
 
   public void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
     final Action close = SwingAction.of(message + " : (Press Space to Close)", e -> enclosingFrame.setVisible(false));
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(close));
   }
 
   public void notifyRetreat(final Collection<Unit> retreating) {
@@ -383,7 +383,7 @@ public class BattleDisplay extends JPanel {
       retreatTo[0] = m_location;
       latch.countDown();
     });
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(action));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     m_mapPanel.getUIContext().addShutdownLatch(latch);
     try {
@@ -392,7 +392,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(latch);
     }
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(m_nullAction));
     return retreatTo[0];
   }
 
@@ -440,7 +440,7 @@ public class BattleDisplay extends JPanel {
         }
       }
     });
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(action));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     m_mapPanel.getUIContext().addShutdownLatch(latch);
     try {
@@ -450,7 +450,7 @@ public class BattleDisplay extends JPanel {
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(latch);
     }
-    SwingUtilities.invokeLater(() -> m_actionButton.setAction(m_nullAction));
+    SwingUtilities.invokeLater(() -> actionButton.setAction(m_nullAction));
     return retreatTo[0];
   }
 
@@ -516,7 +516,7 @@ public class BattleDisplay extends JPanel {
       final String countStr = isEditMode ? "" : "" + count;
       final String btnText =
           hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
-      m_actionButton.setAction(new AbstractAction(btnText) {
+      actionButton.setAction(new AbstractAction(btnText) {
         private static final long serialVersionUID = -2156028313292233568L;
         private UnitChooser chooser;
         private JScrollPane chooserScrollPane;
@@ -564,8 +564,8 @@ public class BattleDisplay extends JPanel {
             final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
             casualtyDetails.set(response);
             m_dicePanel.clear();
-            m_actionButton.setEnabled(false);
-            m_actionButton.setAction(m_nullAction);
+            actionButton.setEnabled(false);
+            actionButton.setAction(m_nullAction);
             continueLatch.countDown();
           }
         }
@@ -638,16 +638,16 @@ public class BattleDisplay extends JPanel {
     setLayout(new BorderLayout());
     add(north, BorderLayout.NORTH);
     add(diceAndSteps, BorderLayout.CENTER);
-    add(m_actionButton, BorderLayout.SOUTH);
-    m_actionButton.setEnabled(false);
+    add(actionButton, BorderLayout.SOUTH);
+    actionButton.setEnabled(false);
     if (!SystemProperties.isMac()) {
-      m_actionButton.setBackground(Color.lightGray.darker());
-      m_actionButton.setForeground(Color.white);
+      actionButton.setBackground(Color.lightGray.darker());
+      actionButton.setForeground(Color.white);
     }
     setDefaultWidths(defenderTable);
     setDefaultWidths(attackerTable);
     final Action continueAction = SwingAction.of(e -> {
-      final Action a = m_actionButton.getAction();
+      final Action a = actionButton.getAction();
       if (a != null) {
         a.actionPerformed(null);
       }

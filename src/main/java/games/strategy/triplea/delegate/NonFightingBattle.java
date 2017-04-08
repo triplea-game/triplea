@@ -25,7 +25,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
- * Battle in which no fighting occurs. <b>
+ * Battle in which no fighting occurs.
  * Example is a naval invasion into an empty country,
  * but the battle cannot be fought until a naval battle
  * occurs.
@@ -161,6 +161,9 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
+  /*
+  * Add dependent units - suppress javadoc error
+  */
   public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
