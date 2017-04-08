@@ -833,9 +833,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if( Match.someMatch( m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1) ) 
-            && Match.allMatch( m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert() ) ) {
-          remove( m_defendingUnits, bridge, m_battleSite, true);
+        if (Match.someMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1))
+            && Match.allMatch(m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert())) {
+          remove(m_defendingUnits, bridge, m_battleSite, true);
         }
         clearWaitingToDie(bridge);
       }
@@ -900,8 +900,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
           endBattle(bridge);
           attackerWins(bridge);
-        } else if (shouldEndBattleDueToMaxRounds()
-            || (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
+        } else if (shouldEndBattleDueToMaxRounds() ||
+                (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
                 && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
           endBattle(bridge);
           nobodyWins(bridge);
