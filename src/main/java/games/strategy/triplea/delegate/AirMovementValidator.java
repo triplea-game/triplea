@@ -44,10 +44,8 @@ public class AirMovementValidator {
     if (getEditMode(data) || // Edit Mode, no need to check
         !Match.someMatch(units, Matches.UnitIsAir) || // No Airunits, nothing to check
         route.hasNoSteps() || // if there are no steps, we didn't move, so it is always OK!
-        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd()) || // we can land at
-                                                                                                       // the end,
-                                                                                                       // nothing
-                                                                                                       // left to check
+        // we can land at the end, nothing left to check
+        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd()) ||
         isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
     ) {
       return result;
@@ -592,10 +590,9 @@ public class AirMovementValidator {
     final PlayerID player = unit.getOwner();
     final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(current, movementLeft),
         Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
-    for (final Territory landingSpot : possibleSpots) { // TODO EW: Assuming movement cost of 1, this could get VERY
-                                                        // slow when the
-                                                        // movementcost is very high and airunits have a lot of
-                                                        // movementcapacity.
+    // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movement cost is very high and air units
+    // have a lot of movement capacity.
+    for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(data, player, unit, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
         return true;
       }

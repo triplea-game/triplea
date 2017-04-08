@@ -406,10 +406,9 @@ public class ClipPlayer {
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
           String decoded;
           try {
-            decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are
-                                                               // equal to %20, but if
-                                                               // we make a file using that it will fail, so we need to
-                                                               // decode
+            // the file path may have spaces, which in a URL are equal to %20, but if we make a file using that it will
+            // fail, so we need to decode
+            decoded = URLDecoder.decode(zipFilePath, "UTF-8");
           } catch (final UnsupportedEncodingException uee) {
             decoded = zipFilePath.replaceAll("%20", " ");
           }

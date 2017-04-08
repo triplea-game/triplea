@@ -105,8 +105,8 @@ public class TripleAMenuBar extends JMenuBar {
 
 
       fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
-      fileDialog.setFilenameFilter((dir, name) -> { // the extension should be .tsvg, but find svg
-                                                    // extensions as well
+      fileDialog.setFilenameFilter((dir, name) -> {
+        // the extension should be .tsvg, but find svg extensions as well
         return name.endsWith(".tsvg") || name.endsWith(".svg");
       });
       fileDialog.setVisible(true);

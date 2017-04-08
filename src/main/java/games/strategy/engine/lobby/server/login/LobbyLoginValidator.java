@@ -168,11 +168,9 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (new DBUserController().doesUserExist(userName)) {
       return "Can't login anonymously, username already exists";
     }
+    // If this is a lobby watcher, use a different set of validation
     if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null
-        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) // If this is a lobby
-                                                                                              // watcher, use a
-                                                                                              // different
-                                                                                              // set of validation
+        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) 
     {
       if (!userName.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
         return "Lobby watcher usernames must end with 'lobby_watcher'";

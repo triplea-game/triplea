@@ -1086,8 +1086,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
     final int unitCountAlreadyProduced = alreadProducedUnits.size();
-    if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory &&
-                                                  // !unitPlacementPerTerritoryRestricted
+    if (originalFactory && playerIsOriginalOwner)
     {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);

@@ -868,12 +868,10 @@ public class WeakAI extends AbstractAI {
       // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better
       // than under-repairing
       // goal is to be able to produce all our units, and at least half of that production in the capitol
-      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) // if capitol is super safe, we
-                                                                                      // don't have to do this.
-                                                                                      // and if capitol is under siege,
-                                                                                      // we should repair
-                                                                                      // enough to place all our units
-                                                                                      // here
+      //
+      // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
+      // place all our units here
+      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null)
       {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {

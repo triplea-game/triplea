@@ -45,8 +45,8 @@ public class PoliticsText {
   }
 
   public static PoliticsText getInstance() {
-    if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10
-                                                                                          // seconds
+    // cache properties for 10 seconds
+    if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) {
       s_pt = new PoliticsText();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

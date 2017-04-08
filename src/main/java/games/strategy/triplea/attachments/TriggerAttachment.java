@@ -66,24 +66,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
-  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an
-                                                           // attachment. java will not be able to deserialize it.
-  private ArrayList<String> m_relationshipChange = new ArrayList<>(); // List of relationshipChanges that should be
-                                                                      // executed when this trigger hits.
+  // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
+  private LinkedHashMap<String, Boolean> m_support = null;
+  // List of relationshipChanges that should be executed when this trigger hits.
+  private ArrayList<String> m_relationshipChange = new ArrayList<>();
   private String m_victory = null;
   private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
   private ArrayList<String> m_changeOwnership = new ArrayList<>();
   // raw property changes below:
-  private ArrayList<UnitType> m_unitType = new ArrayList<>(); // really m_unitTypes, but we are not going to rename
-                                                              // because it will break all existing maps
+  //
+  // really m_unitTypes, but we are not going to rename because it will break all existing maps
+  private ArrayList<UnitType> m_unitType = new ArrayList<>();
   private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
   private ArrayList<Tuple<String, String>> m_unitProperty = null;
   private ArrayList<Territory> m_territories = new ArrayList<>();
   private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
   private ArrayList<Tuple<String, String>> m_territoryProperty = null;
   private ArrayList<PlayerID> m_players = new ArrayList<>();
-  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment,
-                                                               // RulesAttachment, TechAttachment, UserActionAttachment
+  // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
+  private Tuple<String, String> m_playerAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_playerProperty = null;
   private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<>();
   private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
@@ -790,9 +791,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_unitProperty == null) {
       m_unitProperty = new ArrayList<>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the
-                                             // string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing it to
+    final String property = s[s.length - 1];
     m_unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -910,9 +910,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_territoryProperty == null) {
       m_territoryProperty = new ArrayList<>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the
-                                             // string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing it to
+    final String property = s[s.length - 1];
     m_territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -1050,9 +1049,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_playerProperty == null) {
       m_playerProperty = new ArrayList<>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the
-                                             // string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing it to
+    final String property = s[s.length - 1];
     m_playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -1168,9 +1166,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_relationshipTypeProperty == null) {
       m_relationshipTypeProperty = new ArrayList<>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the
-                                             // string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing it to
+    final String property = s[s.length - 1];
     m_relationshipTypeProperty
         .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
@@ -1287,9 +1284,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_territoryEffectProperty == null) {
       m_territoryEffectProperty = new ArrayList<>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the
-                                             // string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing it to
+    final String property = s[s.length - 1];
     m_territoryEffectProperty
         .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
@@ -1644,10 +1640,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final String notificationMessageKey = t.getNotification().trim();
         final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
         if (sounds != null) {
+          // play to observers if we are playing to everyone
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), t.getPlayers(), null,
-              t.getPlayers().containsAll(data.getPlayerList().getPlayers())); // play to observers if we are playing to
-                                                                              // everyone
+              t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
         }
         final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
         if (message != null) {
@@ -1887,18 +1883,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             final TerritoryAttachment attachment =
                 TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
             if (attachment == null) {
-              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName()); // water
-                                                                                                                // territories
-                                                                                                                // may
-                                                                                                                // not
-                                                                                                                // have
-                                                                                                                // an
-                                                                                                                // attachment,
-                                                                                                                // so
-                                                                                                                // this
-                                                                                                                // could
-                                                                                                                // be
-                                                                                                                // null
+              // water territories may not have an attachment, so this could be null
+              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName());
             }
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
@@ -2353,8 +2339,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           final Territory territorySet = data.getMap().getTerritory(s[0]);
           territories.add(territorySet);
         }
-        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]); // if null, then is must be "any", so then any
-                                                                          // player
+        // if null, then is must be "any", so then any player
+        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]);
         final PlayerID newOwner = data.getPlayerList().getPlayerID(s[2]);
         final boolean captured = getBool(s[3]);
         for (final Territory terr : territories) {
