@@ -99,7 +99,7 @@ public class MapPropertiesMaker extends JFrame {
       System.out.println("No Map Folder Selected. Shutting down.");
       System.exit(0);
     }
-  }// end main
+  } // end main
 
   public MapPropertiesMaker() {
     super("Map Properties Maker");

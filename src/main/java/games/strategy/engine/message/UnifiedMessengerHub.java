@@ -145,7 +145,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   public void waitForNodesToImplement(final String endPointName) {
     final long endTime = NODE_IMPLEMENTATION_TIMEOUT + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
-      if(!ThreadUtil.sleep(50)) {
+      if (!ThreadUtil.sleep(50)) {
         return;
       }
     }

@@ -161,7 +161,7 @@ public class DecorationPlacer extends JFrame {
       System.out.println("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
-  }// end main
+  } // end main
 
   public DecorationPlacer(final String mapName) {
     super("Decoration Placer");
@@ -332,7 +332,7 @@ public class DecorationPlacer extends JFrame {
     editMenu.add(clearAction);
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
-  }// end constructor
+  } // end constructor
 
   /**
    * createImage(java.lang.String)

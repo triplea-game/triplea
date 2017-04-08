@@ -158,10 +158,10 @@ public class Util {
     });
   }
   
-  public static String getStringFromInputStream(InputStream in){
+  public static String getStringFromInputStream(InputStream in) {
     StringBuilder builder = new StringBuilder();
-    try(Scanner scanner = new Scanner(in)){
-      while(scanner.hasNextLine()){
+    try (Scanner scanner = new Scanner(in)) {
+      while (scanner.hasNextLine()) {
         builder.append(scanner.nextLine()).append("\n");
       }
     }

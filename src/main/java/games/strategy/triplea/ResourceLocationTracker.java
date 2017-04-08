@@ -30,7 +30,7 @@ class ResourceLocationTracker {
 
 
     // map skins will have the full path name as their map name.
-    if(mapName.endsWith("-master.zip")) {
+    if (mapName.endsWith("-master.zip")) {
       mapPrefix = mapName.substring(0, mapName.length() - "-master.zip".length()) + MASTER_ZIP_MAGIC_PREFIX;
     } else {
       mapPrefix = isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";

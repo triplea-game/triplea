@@ -107,7 +107,7 @@ public class RocketsFireHelper {
         attackingFromTerritories.put(target,territory);
       }
     }
-    for( final Territory target : attackedTerritories ) {
+    for (final Territory target : attackedTerritories) {
       // Roll dice for the rocket attack damage and apply it
       fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }

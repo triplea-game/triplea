@@ -71,7 +71,7 @@ class Updater implements Runnable {
   @Override
   public void run() {
     while (m_label.get() != null) {
-      if(!ThreadUtil.sleep(2000)) {
+      if (!ThreadUtil.sleep(2000)) {
         return;
       }
       update();

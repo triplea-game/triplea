@@ -160,7 +160,7 @@ public class XmlGameElementMapper {
    * Assumes a zero argument constructor.
    */
   public Optional<IDelegate> getDelegate(final String className) {
-    if(!delegateMap.containsKey(className)) {
+    if (!delegateMap.containsKey(className)) {
       handleMissingObjectError("delegate", className);
       return Optional.empty();
     }
@@ -177,7 +177,7 @@ public class XmlGameElementMapper {
   }
 
   public Optional<IAttachment> getAttachment(String javaClass, String name, Attachable attachable, GameData data) {
-    if(!attachmentMap.containsKey(javaClass)) {
+    if (!attachmentMap.containsKey(javaClass)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();
     }

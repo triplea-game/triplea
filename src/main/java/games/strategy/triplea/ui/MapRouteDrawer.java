@@ -73,7 +73,7 @@ public class MapRouteDrawer {
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
-      if (routeDescription.getEnd() != null) {// AI has no End Point
+      if (routeDescription.getEnd() != null) { // AI has no End Point
         drawDirectPath(graphics, new Point(routeDescription.getStart()), new Point(routeDescription.getEnd()), xOffset,
             yOffset, scale);
       } else {

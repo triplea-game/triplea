@@ -209,7 +209,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           .forEach(entry -> steps.add(new FireAA(entry.getValue())));
 
       // otherwise fire an AA shot at all the planes
-      if(steps.isEmpty()) {
+      if (steps.isEmpty()) {
         steps.add(new FireAA());
       }
     }
@@ -355,7 +355,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAA                = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
         final Set<UnitType> targetUnitTypesForThisTypeAA        = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo           = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-        if( determineAttackers ) {
+        if (determineAttackers) {
           validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
                     new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }

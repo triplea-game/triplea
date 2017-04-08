@@ -16,7 +16,7 @@ public class EndTurnPanel extends AbstractForumPosterPanel {
     if (m_forumPosterComponent.getHasPostedTurnSummary() || JOptionPane.YES_OPTION ==
         JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
         "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
-        release();
+      release();
     }
   });
 

@@ -220,7 +220,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       // units may have special restrictions like RequiresUnits
 
       final List<Unit> unitsCanBePlacedByThisProducer;
-      if(bidMode == BidMode.BID) {
+      if (bidMode == BidMode.BID) {
         unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
       } else {
         unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
@@ -233,7 +233,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0 && bidMode == BidMode.NOT_BID) {
         continue;
-      } else if(maxPlaceable == 0) {
+      } else if (maxPlaceable == 0) {
         maxPlaceable = 1;
       }
 

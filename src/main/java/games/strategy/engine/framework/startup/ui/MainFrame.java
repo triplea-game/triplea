@@ -46,9 +46,9 @@ public class MainFrame extends JFrame {
     }
     s_instance = this;
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    addWindowListener(new WindowAdapter(){
+    addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e){
+      public void windowClosing(WindowEvent e) {
         GameRunner.exitGameIfFinished();
       }
     });

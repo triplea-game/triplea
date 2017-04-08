@@ -79,7 +79,7 @@ public class IPFinder {
     }
     // all else fails, return localhost
     return InetAddress.getLocalHost();
-  }// end static findInetAddress()
+  } // end static findInetAddress()
 
   private static boolean isPrivateNetworkAddress(final InetAddress address) {
     // stupid java signed byte type

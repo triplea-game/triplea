@@ -210,7 +210,7 @@ public class GameStepPropertiesHelper {
       if (prop != null) {
         isRemoveAir = Boolean.parseBoolean(prop);
       } else if (data.getSequence().getStep().getDelegate() != null
-        && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
+          && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
         isRemoveAir = false;
       } else {
         isRemoveAir = isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place");
@@ -264,7 +264,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop =
-        data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
       isReset = (prop != null) && Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();

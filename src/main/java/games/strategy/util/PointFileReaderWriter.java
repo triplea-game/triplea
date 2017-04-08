@@ -204,7 +204,7 @@ public class PointFileReaderWriter {
       System.exit(0);
     } finally {
       try {
-        if(stream != null) {
+        if (stream != null) {
           stream.close();
         }
       } catch (final IOException e) {

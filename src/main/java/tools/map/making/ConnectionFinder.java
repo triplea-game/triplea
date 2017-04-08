@@ -190,7 +190,7 @@ public class ConnectionFinder {
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
-  }// end main
+  } // end main
 
   /**
    * Creates the xml territory definitions.

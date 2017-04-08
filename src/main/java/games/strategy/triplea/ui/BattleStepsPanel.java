@@ -134,21 +134,21 @@ class BattleStepsPanel extends JPanel implements Active {
 
   private void waitThenWalk() {
     new Thread(() -> {
+      synchronized (m_mutex) {
+        if (m_hasWalkThread) {
+          return;
+        }
+        m_hasWalkThread = true;
+      }
+      try {
+        if (ThreadUtil.sleep(330)) {
+          SwingUtilities.invokeLater(this::walkStep);
+        }
+      } finally {
         synchronized (m_mutex) {
-          if (m_hasWalkThread) {
-            return;
-          }
-          m_hasWalkThread = true;
+          m_hasWalkThread = false;
         }
-        try {
-          if(ThreadUtil.sleep(330)) {
-            SwingUtilities.invokeLater(this::walkStep);
-          }
-        } finally {
-          synchronized (m_mutex) {
-            m_hasWalkThread = false;
-          }
-        }
+      }
     }).start();
   }
 

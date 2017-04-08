@@ -128,7 +128,7 @@ public class PlacementPicker extends JFrame {
       System.out.println("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
-  }// end main
+  } // end main
 
   /**
    * Constructor PlacementPicker(java.lang.String)
@@ -372,7 +372,7 @@ public class PlacementPicker extends JFrame {
     editMenu.add(showIncompleteModeItem);
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
-  }// end
+  } // end
    // constructor
 
   /**
@@ -460,7 +460,7 @@ public class PlacementPicker extends JFrame {
             g.setColor(Color.red);
           }
         }
-      }// paint
+      } // paint
     };
     return imagePanel;
   }

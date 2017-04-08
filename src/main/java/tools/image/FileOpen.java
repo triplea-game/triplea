@@ -82,7 +82,7 @@ public class FileOpen {
       JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
     }
-  }// constructor
+  } // constructor
 
   /**
    * Returns the newly selected file.
