@@ -213,6 +213,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         ClientLogger.logQuietly(e);
       }
     }
+    properties.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
     return properties;
   }
 
