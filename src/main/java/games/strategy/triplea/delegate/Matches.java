@@ -140,6 +140,13 @@ public class Matches {
       }
     }
   };
+  public static final Match<Unit> UnitIsDefenselessTransport = new Match<Unit>() {
+    @Override
+    public boolean match(final Unit unit) {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return ua.getTransportCapacity() != -1 && ua.getIsSea() && ua.getRawDefense() == 0;
+    }
+  };
   public static final Match<Unit> UnitIsDestroyer = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
