@@ -559,7 +559,7 @@ public class HeadlessGameServer {
 
     final Runnable r = () -> {
       while (!m_shutDown) {
-        if(!ThreadUtil.sleep(8000)) {
+        if (!ThreadUtil.sleep(8000)) {
           m_shutDown = true;
           break;
         }

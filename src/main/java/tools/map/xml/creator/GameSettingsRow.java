@@ -169,8 +169,8 @@ class GameSettingsRow extends DynamicRow {
     comboBoxEditable.setPreferredSize(dimension);
     comboBoxEditable.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, editable));
     comboBoxEditable.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new value name, lets rename everything
-    MapXmlHelper.getGameSettingsMap().get(currentRowName).set(1, (String) comboBoxEditable.getSelectedItem())));
+        // everything is okay with the new value name, lets rename everything
+        MapXmlHelper.getGameSettingsMap().get(currentRowName).set(1, (String) comboBoxEditable.getSelectedItem())));
 
     dimension = textFieldMinNumber.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;

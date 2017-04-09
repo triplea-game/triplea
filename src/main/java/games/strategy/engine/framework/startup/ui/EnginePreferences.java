@@ -242,7 +242,7 @@ public class EnginePreferences extends JDialog {
       if (answer == JOptionPane.YES_OPTION) {
         GameRunner.setServerStartGameSyncWaitTime(clientWait.getValue());
         GameRunner.setServerObserverJoinWaitTime(observerWait.getValue());
-      } else if (answer == JOptionPane.NO_OPTION) {// reset
+      } else if (answer == JOptionPane.NO_OPTION) { // reset
         GameRunner.resetServerStartGameSyncWaitTime();
         GameRunner.resetServerObserverJoinWaitTime();
       }

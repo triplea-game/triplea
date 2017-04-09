@@ -136,7 +136,7 @@ public class DownloadFileDescription {
 
   public String toHtmlString() {
     String text = "<h1>" + getMapName() + "</h1>\n";
-    if(!img.isEmpty()) {
+    if (!img.isEmpty()) {
       text += "<img src='" + img + "' />\n";
     }
     text += getDescription();

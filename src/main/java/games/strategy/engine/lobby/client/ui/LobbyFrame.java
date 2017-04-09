@@ -42,10 +42,10 @@ public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
   private static final List<String> banOrMuteOptions = ImmutableList.of(
-    "Mac Address Only",
-    "User Name only",
-    "Name and Mac",
-    "Cancel");
+      "Mac Address Only",
+      "User Name only",
+      "Name and Mac",
+      "Cancel");
 
   private final LobbyClient m_client;
   private final ChatMessagePanel m_chatMessagePanel;
@@ -57,7 +57,7 @@ public class LobbyFrame extends JFrame {
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
-      m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
+        m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(props);
     m_chatMessagePanel.setShowTime(true);
@@ -119,9 +119,9 @@ public class LobbyFrame extends JFrame {
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
       final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
-        "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
-        "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
-        banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+          "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
+          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
+          banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultBT < 0) {
         return;
       }

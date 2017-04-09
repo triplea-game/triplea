@@ -182,7 +182,7 @@ public class Database {
     final Thread backupThread = new Thread(() -> {
       while (true) {
         // wait 7 days
-        if(!ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000)) {
+        if (!ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000)) {
           break;
         }
         backup();

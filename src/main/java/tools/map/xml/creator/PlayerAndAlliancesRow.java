@@ -111,8 +111,8 @@ class PlayerAndAlliancesRow extends DynamicRow {
     comboBoxPlayerAlliance.setPreferredSize(dimension);
     comboBoxPlayerAlliance.setSelectedIndex(Arrays.binarySearch(alliances, allianceName));
     comboBoxPlayerAlliance.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new technology name, lets rename everything
-    MapXmlHelper.getPlayerAllianceMap().put(playerName, (String) comboBoxPlayerAlliance.getSelectedItem())));
+        // everything is okay with the new technology name, lets rename everything
+        MapXmlHelper.getPlayerAllianceMap().put(playerName, (String) comboBoxPlayerAlliance.getSelectedItem())));
 
     dimension = textFieldInitialResource.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;

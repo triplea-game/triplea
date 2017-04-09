@@ -84,7 +84,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
         if (m_socketChannel.finishConnect()) {
           break;
         }
-        if(!ThreadUtil.sleep(50)) {
+        if (!ThreadUtil.sleep(50)) {
           shutDown();
           m_socket = null;
           return;
@@ -170,7 +170,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   @Override
   public void shutDown() {
     m_shutDown = true;
-    if(m_socket != null) {
+    if (m_socket != null) {
       m_socket.shutDown();
     }
     try {

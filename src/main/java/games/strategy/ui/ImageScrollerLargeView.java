@@ -48,8 +48,8 @@ public class ImageScrollerLargeView extends JComponent {
   private int m_drag_scrolling_lasty;
   private boolean wasLastActionDragging = false;
   
-  public boolean wasLastActionDraggingAndReset(){
-    if(wasLastActionDragging){
+  public boolean wasLastActionDraggingAndReset() {
+    if (wasLastActionDragging) {
       wasLastActionDragging = false;
       return true;
     }

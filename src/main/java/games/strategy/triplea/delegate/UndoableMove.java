@@ -170,8 +170,8 @@ public class UndoableMove extends AbstractUndoableMove {
         throw new IllegalStateException("other should not be null");
       }
       if ( // if the other move has moves that depend on this
-      !Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
-      // if the other move has transports that we are loading
+          !Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
+          // if the other move has transports that we are loading
           !Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
           // or we are moving through a previously conqueured territory
           // we should be able to take this out later

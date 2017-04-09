@@ -20,9 +20,9 @@ public class DownloadUtils {
 
 
   static Optional<Integer> getDownloadLength(URL url) {
-    if(!downloadLengthCache.containsKey(url)) {
+    if (!downloadLengthCache.containsKey(url)) {
       Optional<Integer> length = getDownloadLengthWithoutCache(url);
-      if(length.isPresent()) {
+      if (length.isPresent()) {
         downloadLengthCache.put(url, length.get());
       } else {
         return Optional.empty();
@@ -38,7 +38,7 @@ public class DownloadUtils {
       // always check HTTP response code first
       if (responseCode == HttpURLConnection.HTTP_OK) {
         int length = httpConn.getContentLength();
-        if(length <= 0) {
+        if (length <= 0) {
           return Optional.empty();
         } else {
           return Optional.of(httpConn.getContentLength());

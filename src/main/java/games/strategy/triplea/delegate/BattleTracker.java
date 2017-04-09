@@ -253,8 +253,8 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID id,
-    final IDelegateBridge bridge, final UndoableMove changeTracker,
-    final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
+      final IDelegateBridge bridge, final UndoableMove changeTracker,
+      final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
 
     this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
@@ -1105,7 +1105,7 @@ public class BattleTracker implements java.io.Serializable {
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge) {
     boolean bombing = true;
     fightAirRaidsAndStrategicBombing(delegateBridge, () -> getPendingBattleSites(bombing),
-            (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
+        (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
   }
 
   @VisibleForTesting
@@ -1119,7 +1119,7 @@ public class BattleTracker implements java.io.Serializable {
     // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor
     // that out, in the meantime be aware there are mass side effects in these calls..
 
-    for( final Territory t : pendingBattleSiteSupplier.get()) {
+    for (final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
       if (airRaid != null) {
         airRaid.fight(delegateBridge);
@@ -1127,9 +1127,9 @@ public class BattleTracker implements java.io.Serializable {
     }
 
     // now that we've done all of the air battles, do all of the SBR's as a second wave.
-    for( final Territory t : pendingBattleSiteSupplier.get()) {
+    for (final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle bombingRaid = pendingBattleFunction.apply(t, BattleType.BOMBING_RAID);
-      if( bombingRaid != null ) {
+      if (bombingRaid != null) {
         bombingRaid.fight(delegateBridge);
       }
     }

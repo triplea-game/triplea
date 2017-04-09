@@ -129,7 +129,7 @@ public class ClientGame extends AbstractGame {
           } finally {
             m_data.releaseReadLock();
           }
-          if(!ThreadUtil.sleep(100)) {
+          if (!ThreadUtil.sleep(100)) {
             break;
           }
           i++;

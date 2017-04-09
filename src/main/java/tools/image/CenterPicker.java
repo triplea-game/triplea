@@ -91,7 +91,7 @@ public class CenterPicker extends JFrame {
       System.out.println("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
-  }// end main
+  } // end main
 
   /**
    * Constructor CenterPicker(java.lang.String)
@@ -183,7 +183,7 @@ public class CenterPicker extends JFrame {
     fileMenu.addSeparator();
     fileMenu.add(exitItem);
     menuBar.add(fileMenu);
-  }// end constructor
+  } // end constructor
 
   /**
    * createImage(java.lang.String)

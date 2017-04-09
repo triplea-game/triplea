@@ -100,9 +100,9 @@ class TechnologyDefinitionsRow extends DynamicRow {
     comboBoxAlreadyEnabled.setPreferredSize(dimension);
     comboBoxAlreadyEnabled.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, alreadyEnabled));
     comboBoxAlreadyEnabled.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new technology name, lets rename everything
-    MapXmlHelper.getTechnologyDefinitionsMap().get(currentRowName).set(1,
-        (String) comboBoxAlreadyEnabled.getSelectedItem())));
+        // everything is okay with the new technology name, lets rename everything
+        MapXmlHelper.getTechnologyDefinitionsMap().get(currentRowName).set(1,
+            (String) comboBoxAlreadyEnabled.getSelectedItem())));
   }
 
   @Override

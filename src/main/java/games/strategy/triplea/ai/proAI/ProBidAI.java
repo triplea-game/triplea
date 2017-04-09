@@ -222,9 +222,9 @@ public class ProBidAI {
             PUsToSpend, buyLimit, data, player, 2);
       }
     } else if (Math.random() < 0.35) {
-      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) {// force a carrier purchase if enough
-                                                                               // available $$ for it and
-                                                                               // at least 1 fighter
+      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) { // force a carrier purchase if enough
+                                                                                // available $$ for it and
+                                                                                // at least 1 fighter
         final int cost = carrierRule.getCosts().getInt(pus);
         final int fighterCost = fighterRule.getCosts().getInt(pus);
         if ((cost + fighterCost) <= PUsToSpend) {

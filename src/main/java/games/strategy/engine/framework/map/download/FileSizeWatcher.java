@@ -30,7 +30,7 @@ public class FileSizeWatcher {
     return () -> {
       while (!stop) {
         progressListener.accept((int) fileToWatch.length());
-        if(!ThreadUtil.sleep(50)) {
+        if (!ThreadUtil.sleep(50)) {
           break;
         }
       }

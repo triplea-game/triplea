@@ -123,11 +123,11 @@ public class DownloadMapsWindow extends JFrame {
 
     JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
 
-    for(DownloadFileDescription.MapCategory mapCategory : Arrays.asList(DownloadFileDescription.MapCategory.values()) ) {
+    for (DownloadFileDescription.MapCategory mapCategory : Arrays.asList(DownloadFileDescription.MapCategory.values()) ) {
 
       List<DownloadFileDescription> mapsByCategory =
           maps.stream().filter(map -> map.getMapCategory() == mapCategory).collect(Collectors.toList());
-      if(!mapsByCategory.isEmpty()) {
+      if (!mapsByCategory.isEmpty()) {
         JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()), mapsByCategory);
         mapTabs.add(mapCategory.toString(), subTab);
       }
@@ -298,8 +298,8 @@ public class DownloadMapsWindow extends JFrame {
     String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion();
     
     if (action == MapAction.INSTALL) {
-      if(map.newURL() == null ) {
-       mapSize = 0L;
+      if (map.newURL() == null) {
+        mapSize = 0L;
       } else {
         mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
       }

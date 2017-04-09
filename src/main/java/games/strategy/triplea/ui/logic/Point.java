@@ -8,7 +8,7 @@ public class Point {
   private double x;
   private double y;
   
-  public Point(){
+  public Point() {
     this(0, 0);
   }
 

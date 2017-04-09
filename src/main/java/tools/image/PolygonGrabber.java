@@ -118,7 +118,7 @@ public class PolygonGrabber extends JFrame {
       System.out.println("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
-  }// end main
+  } // end main
 
   /**
    * Constructor PolygonGrabber(java.lang.String)
@@ -293,7 +293,7 @@ public class PolygonGrabber extends JFrame {
     editMenu.add(autoItem);
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
-  }// end constructor
+  } // end constructor
 
   /**
    * createImage(java.lang.String)
@@ -358,7 +358,7 @@ public class PolygonGrabber extends JFrame {
             g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
           } // while
         } // if
-      }// paint
+      } // paint
     };
     return imagePanel;
   }

@@ -26,7 +26,7 @@ class ThreadReader implements Runnable {
       if (m_displayConsoleOnWrite && !parentConsole.isVisible()) {
         parentConsole.setVisible(true);
       }
-      if(!ThreadUtil.sleep(CONSOLE_UPDATE_INTERVAL_MS)) {
+      if (!ThreadUtil.sleep(CONSOLE_UPDATE_INTERVAL_MS)) {
         break;
       }
     }
