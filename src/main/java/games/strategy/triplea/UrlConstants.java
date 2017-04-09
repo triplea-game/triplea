@@ -10,7 +10,7 @@ public enum UrlConstants {
   SF_PORT_FORWARDING(
       "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html"),
   TRIPLEA_FORUM("http://forums.triplea-game.org/"),
-  TRIPLEA_WAR_CLUB_LOBBY_RULES("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1"),
+  TRIPLEA_LOBBY_RULES("https://forums.triplea-game.org/topic/4"),
   LATEST_GAME_DOWNLOAD_WEBSITE("http://www.triplea-game.org/download"),
   TRIPLEA_WEBSITE("http://www.triplea-game.org/");
 
