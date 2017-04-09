@@ -24,12 +24,12 @@ public class MapListingSource {
     mapListDownloadSite = propertyReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE);
   }
 
-  /** Return the URL where we can download a file that lists each map that is available */
+  /** Return the URL where we can download a file that lists each map that is available. */
   protected String getMapListDownloadSite() {
     return mapListDownloadSite;
   }
 
-  /** Return the URL where we can download a file that lists each map that is available */
+  /** Return the URL where we can download a file that lists each map that is available. */
   public URL getMapListDownloadURL() {
     try {
       return getUrlFollowingRedirects(mapListDownloadSite);

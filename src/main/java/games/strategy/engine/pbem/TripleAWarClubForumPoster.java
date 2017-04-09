@@ -43,7 +43,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   /**
-   * Logs into the website
+   * Logs into the website.
    *
    * @throws Exception
    *         if login fails
@@ -83,7 +83,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   /**
    * Post the turn summary and save game to the forum
    * After login we must load the post page to get the XOOPS_TOKEN_REQUEST (which I think is CSRF nounce)
-   * then we can post the reply
+   * then we can post the reply.
    *
    * @param summary
    *        the forum summary

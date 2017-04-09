@@ -17,7 +17,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final LinkedHashMap<T, Integer> m_values;
 
-  /** Creates new IntegerMap */
+  /** Creates new LinkedIntegerMap. */
   public LinkedIntegerMap() {
     m_values = new LinkedHashMap<>();
   }
@@ -332,7 +332,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   /**
-   * Add map * multiple
+   * Add map * multiple.
    */
   public void addMultiple(final LinkedIntegerMap<T> map, final int multiple) {
     for (final T key : map.keySet()) {

@@ -83,7 +83,7 @@ public class MovePerformer implements Serializable {
   }
 
   /**
-   * We assume that the move is valid
+   * We assume that the move is valid.
    */
   private void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
       final Collection<Unit> transportsToLoad) {

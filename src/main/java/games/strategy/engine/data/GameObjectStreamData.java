@@ -23,7 +23,7 @@ public class GameObjectStreamData implements Externalizable {
   public GameObjectStreamData() {}
 
   /**
-   * Creates a new instance of GameObjectStreamData
+   * Creates a new instance of GameObjectStreamData.
    *
    * @param named
    *        named entity

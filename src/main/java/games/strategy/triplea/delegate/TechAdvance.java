@@ -195,7 +195,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   /**
    * @param data
-   * @return first is air&naval, second is land&production
+   * @return first is air&naval, second is land&production.
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
     List<TechAdvance> allAdvances;

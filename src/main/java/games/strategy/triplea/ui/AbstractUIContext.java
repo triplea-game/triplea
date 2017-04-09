@@ -88,7 +88,7 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   /**
-   * Get the preferences for the map or map skin
+   * Get the preferences for the map or map skin.
    */
   protected static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(AbstractUIContext.class).node(mapDir);

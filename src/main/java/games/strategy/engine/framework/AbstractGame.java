@@ -61,9 +61,6 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
-  /**
-   * @param localPlayers
-   */
   private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
     final PlayerList playerList = m_data.getPlayerList();
     for (final IGamePlayer gp : localPlayers) {
@@ -78,7 +75,7 @@ public abstract class AbstractGame implements IGame {
 
   /**
    * @param stepName
-   *        step name
+   *        step name.
    * @param delegateName
    *        delegate name
    * @param player

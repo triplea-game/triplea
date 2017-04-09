@@ -13,7 +13,7 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
 
 /**
- * An class for editing a Dice Server bean
+ * An class for editing a Dice Server bean.
  */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;
@@ -26,7 +26,7 @@ public class DiceServerEditor extends EditorPanel {
   private final IRemoteDiceServer m_bean;
 
   /**
-   * Creating a new instance
+   * Creating a new instance.
    *
    * @param diceServer
    *        the DiceServer bean to edit
@@ -65,7 +65,7 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   /**
-   * Configures the listeners for the gui components
+   * Configures the listeners for the gui components.
    */
   private void setupListeners() {
     m_testDiceyButton.addActionListener(e -> {
@@ -96,7 +96,7 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   /**
-   * Returns the currently configured dice server
+   * Returns the currently configured dice server.
    *
    * @return the dice server
    */

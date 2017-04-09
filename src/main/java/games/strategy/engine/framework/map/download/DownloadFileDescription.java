@@ -103,7 +103,7 @@ public class DownloadFileDescription {
     return downloadType == DownloadType.MAP_TOOL;
   }
 
-  /** @return Name of the zip file */
+  /** @return Name of the zip file. */
   public String getMapZipFileName() {
     if (url != null && url.contains("/")) {
       return url.substring(url.lastIndexOf('/') + 1, url.length());
@@ -112,7 +112,7 @@ public class DownloadFileDescription {
     }
   }
 
-  /** Translates the stored URL into a github new issue link */
+  /** Translates the stored URL into a github new issue link. */
   public String getFeedbackUrl() {
     if (url.contains("github.com") && url.contains("/releases/")) {
       return url.substring(0, url.indexOf("/releases/")) + "/issues/new";
@@ -121,7 +121,7 @@ public class DownloadFileDescription {
     }
   }
 
-  /** File reference for where to install the file */
+  /** File reference for where to install the file. */
   public File getInstallLocation() {
     String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ?
         "-master" : "";

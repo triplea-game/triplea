@@ -9,12 +9,12 @@ import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
 public interface IBattleDelegate extends IRemote, IDelegate {
   /**
-   * @return the battles currently waiting to be fought
+   * @return the battles currently waiting to be fought.
    */
   BattleListing getBattles();
 
   /**
-   * Fight the battle in the given country
+   * Fight the battle in the given country.
    *
    * @param where
    *        - where to fight
@@ -25,7 +25,7 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   String fightBattle(Territory where, boolean bombing, BattleType type);
 
   /**
-   * Finish the current battle
+   * Finish the current battle.
    *
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */

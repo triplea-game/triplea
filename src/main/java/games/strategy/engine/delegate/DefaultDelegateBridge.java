@@ -20,7 +20,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.sound.ISound;
 
 /**
- * Default implementation of DelegateBridge
+ * Default implementation of DelegateBridge.
  */
 public class DefaultDelegateBridge implements IDelegateBridge {
   private final GameData m_data;
@@ -30,7 +30,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   private final DelegateExecutionManager m_delegateExecutionManager;
   private IRandomSource m_randomSource;
 
-  /** Creates new DefaultDelegateBridge */
+  /** Creates new DefaultDelegateBridge. */
   public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter,
       final RandomStats randomStats, final DelegateExecutionManager delegateExecutionManager) {
     m_data = data;
@@ -92,7 +92,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * Returns the current step name
+   * Returns the current step name.
    */
   @Override
   public String getStepName() {

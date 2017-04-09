@@ -16,7 +16,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final HashMap<T, Integer> mapValues;
 
-  /** Creates new IntegerMap */
+  /** Creates new IntegerMap. */
   public IntegerMap() {
     mapValues = new HashMap<>();
   }
@@ -315,7 +315,7 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   /**
-   * Add map * multiple
+   * Add map * multiple.
    */
   public void addMultiple(final IntegerMap<T> map, final int multiple) {
     for (final T key : map.keySet()) {

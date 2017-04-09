@@ -21,7 +21,7 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.Match;
 
 /**
- * The Purpose of this class is to hold shared and simple methods used by RulesAttachment
+ * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;

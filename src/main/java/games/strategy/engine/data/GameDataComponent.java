@@ -12,7 +12,7 @@ public class GameDataComponent implements java.io.Serializable {
   private GameData m_data;
 
   /**
-   * Creates new GameDataComponent
+   * Creates new GameDataComponent.
    *
    * @param data
    *        game data

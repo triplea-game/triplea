@@ -100,7 +100,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final MapRouteDrawer routeDrawer;
 
 
-  /** Creates new MapPanel */
+  /** Creates new MapPanel. */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);

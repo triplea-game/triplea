@@ -32,7 +32,7 @@ public class ScrollableTextField extends JPanel {
   private final JButton m_min;
   private final ListenerList<ScrollableTextFieldListener> m_listeners = new ListenerList<>();
 
-  /** Creates new ScrollableTextField */
+  /** Creates new ScrollableTextField. */
   public ScrollableTextField(final int minVal, final int maxVal) {
     super();
     loadImages();

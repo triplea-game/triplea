@@ -87,7 +87,7 @@ public interface IBattle extends java.io.Serializable {
   void fight(IDelegateBridge bridge);
 
   /**
-   * @return whether this battle is over or not
+   * @return whether this battle is over or not.
    */
   boolean isOver();
 
@@ -115,7 +115,7 @@ public interface IBattle extends java.io.Serializable {
   void addBombardingUnit(Unit u);
 
   /**
-   * @return whether battle is amphibious
+   * @return whether battle is amphibious.
    */
   boolean isAmphibious();
 
@@ -148,27 +148,27 @@ public interface IBattle extends java.io.Serializable {
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
   /**
-   * @return units which are actually assaulting amphibiously
+   * @return units which are actually assaulting amphibiously.
    */
   Collection<Unit> getAmphibiousLandAttackers();
 
   /**
-   * @return units which are actually bombarding
+   * @return units which are actually bombarding.
    */
   Collection<Unit> getBombardingUnits();
 
   /**
-   * @return what round this battle is in
+   * @return what round this battle is in.
    */
   int getBattleRound();
 
   /**
-   * @return units which are attacking
+   * @return units which are attacking.
    */
   Collection<Unit> getAttackingUnits();
 
   /**
-   * @return units which are defending
+   * @return units which are defending.
    */
   Collection<Unit> getDefendingUnits();
 

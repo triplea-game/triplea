@@ -54,6 +54,8 @@ public class Vault {
   private final Object m_waitForLock = new Object();
 
   /**
+   * Creates a new instance of Vault.
+   *
    * @param channelMessenger
    */
   public Vault(final IChannelMessenger channelMessenger) {
@@ -307,7 +309,7 @@ public class Vault {
   }
 
   /**
-   * Wait until the given id is unlocked
+   * Wait until the given id is unlocked.
    */
   public void waitForIdToUnlock(final VaultID id, final long timeout) {
     if (timeout <= 0) {

@@ -57,6 +57,8 @@ public class UnifiedMessenger {
   private UnifiedMessengerHub m_hub;
 
   /**
+   * Creates a new instance of UnifiedMessanger.
+   *
    * @param messenger
    */
   public UnifiedMessenger(final IMessenger messenger) {
@@ -137,7 +139,7 @@ public class UnifiedMessenger {
   }
 
   /**
-   * invoke without waiting for remote nodes to respond
+   * invoke without waiting for remote nodes to respond.
    */
   public void invoke(final String endPointName, final RemoteMethodCall call) {
     // send the remote invocation

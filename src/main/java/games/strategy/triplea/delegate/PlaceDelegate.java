@@ -20,7 +20,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 @MapSupport
 public class PlaceDelegate extends AbstractPlaceDelegate {
   /**
-   * @return gets the production of the territory
+   * @return gets the production of the territory.
    */
   @Override
   protected int getProduction(final Territory territory) {

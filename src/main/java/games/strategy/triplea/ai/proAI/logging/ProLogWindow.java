@@ -22,7 +22,7 @@ import games.strategy.ui.SwingAction;
 public class ProLogWindow extends javax.swing.JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
-  /** Creates new form SettingsWindow */
+  /** Creates new form ProLogWindow. */
   public ProLogWindow(final TripleAFrame frame) {
     super(frame);
     initComponents();

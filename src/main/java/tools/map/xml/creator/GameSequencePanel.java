@@ -68,7 +68,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
   /**
    * @param gridBadConstLabelSequenceName GridBagConstraints object for "Sequence Name" label and default for other
-   *        labels
+   *        labels.
    */
   private void addLabelsRow(final GridBagConstraints gridBadConstLabelSequenceName) {
     final JLabel labelSequenceName = new JLabel("Sequence Name");
@@ -86,11 +86,6 @@ public class GameSequencePanel extends DynamicRowsPanel {
     getOwnPanel().add(labelDisplayName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelSequenceName, 2, 0));
   }
 
-  /**
-   * @param gbcBase
-   * @param rowIndex
-   * @param rowEntry
-   */
   private void addMainInputRow(final GridBagConstraints gbcBase, final int rowIndex,
       final Entry<String, List<String>> rowEntry) {
     final List<String> defintionValues = rowEntry.getValue();

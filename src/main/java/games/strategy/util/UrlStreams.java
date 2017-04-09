@@ -44,7 +44,7 @@ public final class UrlStreams {
     }
   }
 
-  /** Used to obtain a connection from a given URL */
+  /** Used to obtain a connection from a given URL. */
   private final Function<URL, URLConnection> urlConnectionFactory;
 
 
@@ -60,7 +60,7 @@ public final class UrlStreams {
   }
 
   /**
-   * For test, a constructor that allows mock object injection
+   * For test, a constructor that allows mock object injection.
    */
   protected UrlStreams(final Function<URL, URLConnection> connectionFactory) {
     this.urlConnectionFactory = connectionFactory;

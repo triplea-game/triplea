@@ -329,7 +329,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     /**
      * This should not be called from within game, only from the game setup screen, while everyone is waiting for game
-     * to start
+     * to start.
      */
     @Override
     public byte[] getSaveGame() {

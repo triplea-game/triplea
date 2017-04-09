@@ -6,7 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 /**
- * Render to render IBeans in a combo box
+ * Render to render IBeans in a combo box.
  */
 class DisplayNameComboBoxRender extends DefaultListCellRenderer {
   private static final long serialVersionUID = -93452907043224502L;

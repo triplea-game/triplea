@@ -17,7 +17,7 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IDelegate {
   /**
-   * Uses name as the internal unique name and displayName for display to users
+   * Uses name as the internal unique name and displayName for display to users.
    */
   void initialize(final String name, final String displayName);
 
@@ -46,13 +46,13 @@ public interface IDelegate {
   IDelegateBridge getBridge();
 
   /**
-   * @return state of the Delegate
+   * @return state of the Delegate.
    */
   Serializable saveState();
 
   /**
    * @param state
-   *        the delegates state
+   *        the delegates state.
    */
   void loadState(final Serializable state);
 

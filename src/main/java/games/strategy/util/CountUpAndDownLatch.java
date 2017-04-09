@@ -47,6 +47,8 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
+   * Decrements the count of the latch, releasing all waiting threads if the count reaches zero.
+   *
    * @see CountDownLatch#countDown()
    */
   public void countDown() {
@@ -56,7 +58,7 @@ public class CountUpAndDownLatch implements Serializable {
   /**
    * @see CountDownLatch#countDown()
    * @param delta
-   *        the amount to increment (or if negative, decrement countDown)
+   *        the amount to increment (or if negative, decrement countDown).
    */
   public void applyDelta(final int delta) {
     sync.releaseShared(delta);
@@ -82,6 +84,8 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
+   * Returns the current count.
+   *
    * @see CountDownLatch#getCount()
    */
   public int getCount() {
@@ -89,13 +93,15 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
-   * @return the original count this latch was created with
+   * @return the original count this latch was created with.
    */
   public int getOriginalCount() {
     return originalCount;
   }
 
   /**
+   * Causes the current thread to wait until the latch has counted down to zero, unless the thread is interrupted.
+   *
    * @see CountDownLatch#await()
    */
   public void await() throws InterruptedException {
@@ -103,6 +109,9 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
+   * Causes the current thread to wait until the latch has counted down to zero, unless the thread is interrupted, or
+   * the specified waiting time elapses.
+   *
    * @see CountDownLatch#await(long,TimeUnit)
    */
   public boolean await(final long timeout, final TimeUnit unit) throws InterruptedException {

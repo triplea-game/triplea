@@ -3,29 +3,18 @@ package games.strategy.engine.data.properties;
 import javax.swing.JComponent;
 
 /**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002
- * </p>
- * <p>
- * Company:
- * </p>
+ * An editable property.
  */
 public interface IEditableProperty {
   /**
-   * get the name of the property
+   * get the name of the property.
    *
    * @return the name
    */
   String getName();
 
   /**
-   * Get the value of the property
+   * Get the value of the property.
    *
    * @return the value
    */
@@ -33,12 +22,12 @@ public interface IEditableProperty {
 
   /**
    * @param value
-   * @return is the object a valide object for setting as our value
+   * @return is the object a valid object for setting as our value.
    */
   boolean validate(Object value);
 
   /**
-   * Set the value of the property (programmatically), GUI would normally use the editor
+   * Set the value of the property (programmatically), GUI would normally use the editor.
    *
    * @param value
    *        the new value
@@ -48,12 +37,12 @@ public interface IEditableProperty {
   void setValue(Object value) throws ClassCastException;
 
   /**
-   * @return component used to edit this property
+   * @return component used to edit this property.
    */
   JComponent getEditorComponent();
 
   /**
-   * Get the view (read only) component for this property
+   * Get the view (read only) component for this property.
    */
   JComponent getViewComponent();
 

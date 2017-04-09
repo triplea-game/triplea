@@ -35,7 +35,7 @@ public class PlacePanel extends AbstractMovePanel {
   private PlaceData m_placeData;
   private final SimpleUnitPanel m_unitsToPlace;
 
-  /** Creates new PlacePanel */
+  /** Creates new PlacePanel. */
   public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);

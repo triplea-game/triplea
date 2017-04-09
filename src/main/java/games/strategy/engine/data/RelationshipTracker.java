@@ -76,7 +76,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
   /**
    * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
-   * players
+   * players.
    *
    * @param p1
    *        Player 1 in the relationship
@@ -111,12 +111,12 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
   }
 
-  /** convenience method to get the SelfRelationshipType added for readability */
+  /** convenience method to get the SelfRelationshipType added for readability. */
   private RelationshipType getSelfRelationshipType() {
     return getData().getRelationshipTypeList().getSelfRelation();
   }
 
-  /** convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for readability */
+  /** convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for readability. */
   private RelationshipType getNullRelationshipType() {
     return getData().getRelationshipTypeList().getNullRelation();
   }
@@ -129,8 +129,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
     /**
      * override hashCode to make sure that each new instance of this class can be matched in the Hashtable
-     * even if it was put in as (p1,p2) and you want to get it out as (p2,p1)
-     * and
+     * even if it was put in as (p1,p2) and you want to get it out as (p2,p1).
      */
     @Override
     public int hashCode() {

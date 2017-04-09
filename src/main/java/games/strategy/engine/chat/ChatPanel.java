@@ -25,7 +25,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;
 
-  /** Creates a new instance of ChatFrame */
+  /** Creates a new instance of ChatPanel. */
   public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
     init();

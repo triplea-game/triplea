@@ -102,9 +102,6 @@ public abstract class ImageScrollPanePanel {
     return imagePanel;
   }
 
-  /**
-   *
-   */
   protected void addMouseAdapterToImagePanel() {
     final MouseAdapter imageMouseAdapter = new MouseAdapter() {
       private final Cursor defCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);

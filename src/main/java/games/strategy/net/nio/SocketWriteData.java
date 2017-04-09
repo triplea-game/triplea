@@ -45,7 +45,7 @@ public class SocketWriteData {
   }
 
   /**
-   * @return true if the write has written the entire message
+   * @return true if the write has written the entire message.
    */
   public boolean write(final SocketChannel channel) throws IOException {
     m_writeCalls++;

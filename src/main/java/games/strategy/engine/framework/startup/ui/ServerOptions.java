@@ -37,7 +37,7 @@ public class ServerOptions extends JDialog {
   private boolean m_showComment = false;
 
   /**
-   * Creates a new instance of ServerOptions
+   * Creates a new instance of ServerOptions.
    */
   public ServerOptions(final Component owner, final String defaultName, final int defaultPort,
       final boolean showComment) {

@@ -24,7 +24,7 @@ public class ErrorConsole extends GenericConsole {
     return getConsole();
   }
 
-  /** Creates a new instance of Console */
+  /** Creates a new instance of ErrorConsole. */
   public ErrorConsole() {
     super("TripleA Console");
   }

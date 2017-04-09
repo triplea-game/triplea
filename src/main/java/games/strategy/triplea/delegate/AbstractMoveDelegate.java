@@ -166,7 +166,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   /**
    * @param unit
-   *        referring unit
+   *        referring unit.
    * @param end
    *        target territory
    * @return the route that a unit used to move into the given territory

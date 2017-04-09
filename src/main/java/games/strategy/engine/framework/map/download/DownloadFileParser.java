@@ -11,7 +11,7 @@ import games.strategy.util.Version;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are available for
- * download
+ * download.
  */
 final class DownloadFileParser {
 

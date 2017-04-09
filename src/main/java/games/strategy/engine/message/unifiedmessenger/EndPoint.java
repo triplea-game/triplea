@@ -69,7 +69,7 @@ class EndPoint {
   }
 
   /**
-   * @return is this the first implementor
+   * @return is this the first implementor.
    */
   public boolean addImplementor(final Object implementor) {
     if (!m_remoteClass.isAssignableFrom(implementor.getClass())) {
@@ -99,7 +99,7 @@ class EndPoint {
   }
 
   /**
-   * @return - we have no more implementors
+   * @return we have no more implementors.
    */
   boolean removeImplementor(final Object implementor) {
     synchronized (m_implementorsMutext) {
@@ -135,10 +135,6 @@ class EndPoint {
     }
   }
 
-  /**
-   * @param call
-   * @param rVal
-   */
   private List<RemoteMethodCallResults> invokeMultiple(final RemoteMethodCall call, final INode messageOriginator) {
     // copy the implementors
     List<Object> implementorsCopy;
@@ -152,10 +148,6 @@ class EndPoint {
     return results;
   }
 
-  /**
-   * @param call
-   * @param implementor
-   */
   private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor,
       final INode messageOriginator) {
     call.resolve(m_remoteClass);

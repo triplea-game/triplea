@@ -6,7 +6,7 @@ package games.strategy.util;
 public class InverseMatch<T> extends Match<T> {
   private final Match<T> match;
 
-  /** Creates new CompositeMatchOr */
+  /** Creates new InverseMatch. */
   public InverseMatch(final Match<T> aMatch) {
     match = aMatch;
   }

@@ -105,7 +105,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   /**
-   * set minimum size based on players (number and max name length) and distribution to playerIDs
+   * set minimum size based on players (number and max name length) and distribution to playerIDs.
    */
   private void setDynamicPreferredSize() {
     final List<INode> onlinePlayers = chat.getOnlinePlayers();
@@ -191,7 +191,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   private void setWidgetActivation() {}
 
   /**
-   * The renderer will be passed in a string
+   * The renderer will be passed in a string.
    */
   public void setPlayerRenderer(final ListCellRenderer<Object> renderer) {
     setCellRenderer = renderer;

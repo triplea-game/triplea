@@ -20,7 +20,7 @@ import games.strategy.util.Match;
 
 public class Utils {
   /**
-   * All the territories that border one of our territories
+   * All the territories that border one of our territories.
    */
   public static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
     final ArrayList<Territory> rVal = new ArrayList<>();
@@ -102,7 +102,7 @@ public class Utils {
 
   /**
    * Return Territories containing any unit depending on unitCondition
-   * Differs from findCertainShips because it doesn't require the units be owned
+   * Differs from findCertainShips because it doesn't require the units be owned.
    */
   public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
       final Match<Unit> unitCondition) {

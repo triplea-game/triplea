@@ -239,7 +239,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * @param s
    *        name of the searched territory (case sensitive)
-   * @return the territory with the given name, or null if no territory can be found (case sensitive)
+   * @return the territory with the given name, or null if no territory can be found (case sensitive).
    */
   public Territory getTerritory(final String s) {
     return m_territoryLookup.get(s);
@@ -397,7 +397,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the shortest route between two territories or null if no route exists
+   * @return the shortest route between two territories or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.TerritoryIsLandOrWater);
@@ -408,7 +408,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the shortest land route between two territories or null if no route exists
+   * @return the shortest land route between two territories or null if no route exists.
    */
   public Route getLandRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.TerritoryIsLand);
@@ -419,7 +419,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the shortest water route between two territories or null if no route exists
+   * @return the shortest water route between two territories or null if no route exists.
    */
   public Route getWaterRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.TerritoryIsWater);
@@ -433,7 +433,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond
    *        condition that covered territories of the route must match
    * @return the shortest route between two territories so that covered territories match the condition
-   *         or null if no route exists
+   *         or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2, final Match<Territory> cond) {
     if (t1 == t2) {
@@ -493,7 +493,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the distance between two territories or -1 if they are not connected
+   * @return the distance between two territories or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.TerritoryIsLandOrWater);
@@ -504,7 +504,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the land distance between two territories or -1 if they are not connected
+   * @return the land distance between two territories or -1 if they are not connected.
    */
   public int getLandDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.TerritoryIsLand);
@@ -515,7 +515,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        start territory of the route
    * @param t2
    *        end territory of the route
-   * @return the water distance between two territories or -1 if they are not connected
+   * @return the water distance between two territories or -1 if they are not connected.
    */
   public int getWaterDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.TerritoryIsWater);
@@ -529,7 +529,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond
    *        condition that covered territories of the route must match
    * @return the distance between two territories where the covered territories of the route satisfy the condition
-   *         or -1 if they are not connected
+   *         or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2, final Match<Territory> cond) {
     if (t1.equals(t2)) {
@@ -624,7 +624,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * @param route
    *        route containing the territories in question
-   * @return whether each territory is connected to the preceding territory
+   * @return whether each territory is connected to the preceding territory.
    */
   public boolean isValidRoute(final Route route) {
     Territory previous = null;

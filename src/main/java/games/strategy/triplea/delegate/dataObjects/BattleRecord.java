@@ -96,7 +96,7 @@ public class BattleRecord implements Serializable {
   }
 
   /**
-   * Convenience copy constructor
+   * Convenience copy constructor.
    */
   protected BattleRecord(final BattleRecord record) {
     battleSite = record.battleSite;

@@ -220,7 +220,7 @@ public class Fire implements IExecutable {
   }
 
   /**
-   * We must execute in atomic steps, push these steps onto the stack, and let them execute
+   * We must execute in atomic steps, push these steps onto the stack, and let them execute.
    */
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {

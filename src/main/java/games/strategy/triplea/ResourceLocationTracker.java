@@ -9,7 +9,7 @@ import java.util.Arrays;
 class ResourceLocationTracker {
 
   /**
-   * master zip is the zipped folder format you get when downloading from a map repo via the 'clone or download' button
+   * master zip is the zipped folder format you get when downloading from a map repo via the 'clone or download' button.
    */
   static final String MASTER_ZIP_MAGIC_PREFIX = "-master/map/";
 

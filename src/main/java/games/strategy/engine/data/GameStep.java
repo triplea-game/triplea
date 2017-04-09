@@ -36,7 +36,7 @@ public class GameStep extends GameDataComponent {
   public static final String PROPERTY_repairPlayers = "repairPlayers";
 
   /**
-   * Creates new GameStep
+   * Creates new GameStep.
    *
    * @param name
    *        name of the game step
@@ -123,6 +123,7 @@ public class GameStep extends GameDataComponent {
   }
 
   /**
+   * Returns the properties of the game step.
    * Allowed Properties so far:<br>
    * EndTurn delegates -> skipPosting = true/false<br>
    * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary<br>

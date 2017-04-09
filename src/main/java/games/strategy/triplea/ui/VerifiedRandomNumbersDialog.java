@@ -48,9 +48,6 @@ public class VerifiedRandomNumbersDialog extends JDialog {
     buttons.add(close);
   }
 
-  /**
-   * @param verified
-   */
   private String[][] getTableValues(final List<VerifiedRandomNumbers> verified) {
     if (verified.isEmpty()) {
       return new String[][] {{"", ""}};

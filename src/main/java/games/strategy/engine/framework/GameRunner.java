@@ -474,7 +474,7 @@ public class GameRunner {
   }
 
   /**
-   * @return true if we are out of date or this is the first time this triplea has ever been run
+   * @return true if we are out of date or this is the first time this triplea has ever been run.
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
@@ -533,7 +533,7 @@ public class GameRunner {
   }
 
   /**
-   * @return true if we have any out of date maps
+   * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
     MapDownloadController downloadController = ClientContext.mapDownloadController();

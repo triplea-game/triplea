@@ -12,7 +12,7 @@ import games.strategy.ui.SwingComponents;
 public final class FeedbackDialog {
   private FeedbackDialog() {}
 
-  /** Determines the selected map and opens a confirmation dialog asking the user if its okay to open an external URL */
+  /** Determines the selected map and opens a confirmation dialog asking the user if its okay to open an external URL. */
   public static void showFeedbackDialog(final List<String> selectedValuesList,
       final List<DownloadFileDescription> maps) {
     if (selectedValuesList.isEmpty()) {

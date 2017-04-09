@@ -48,7 +48,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
 
   /**
    * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid
-   * value
+   * value.
    */
   void setValue(String valueToSet);
 

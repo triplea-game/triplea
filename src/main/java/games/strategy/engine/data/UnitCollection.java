@@ -20,7 +20,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   private final NamedUnitHolder m_holder;
 
   /**
-   * Creates new UnitCollection
+   * Creates new UnitCollection.
    *
    * @param holder
    *        named unit holder
@@ -125,7 +125,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   /**
-   * @return integer map of UnitType
+   * @return integer map of UnitType.
    */
   public IntegerMap<UnitType> getUnitsByType() {
     final IntegerMap<UnitType> units = new IntegerMap<>();
@@ -141,7 +141,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   /**
    * @param id
    *        referring player ID
-   * @return map of UnitType (only of units for the specified player)
+   * @return map of UnitType (only of units for the specified player).
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
@@ -156,7 +156,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   /**
    * @param types
    *        map of unit types
-   * @return collection of units of each type up to max
+   * @return collection of units of each type up to max.
    */
   public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
     final Collection<Unit> units = new ArrayList<>();

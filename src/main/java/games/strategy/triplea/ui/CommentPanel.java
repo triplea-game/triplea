@@ -201,7 +201,7 @@ public class CommentPanel extends JPanel {
     }
   }
 
-  /** thread safe */
+  /** thread safe. */
   public void addMessage(final String message) {
     final Runnable runner = () -> {
       try {
@@ -232,7 +232,7 @@ public class CommentPanel extends JPanel {
   }
 
   /**
-   * Show only the first n lines
+   * Show only the first n lines.
    */
   public static void trimLines(final Document doc, final int lineCount) {
     if (doc.getLength() < lineCount) {

@@ -23,7 +23,7 @@ public class ResourceImageFactory {
   private double m_scaleFactor;
   private ResourceLoader m_resourceLoader;
 
-  /** Creates new ResourceImageFactory */
+  /** Creates new ResourceImageFactory. */
   public ResourceImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor) {
@@ -33,7 +33,7 @@ public class ResourceImageFactory {
   }
 
   /**
-   * Set the scaling factor
+   * Set the scaling factor.
    */
   public void setScaleFactor(final double scaleFactor) {
     if (m_scaleFactor != scaleFactor) {
@@ -43,21 +43,21 @@ public class ResourceImageFactory {
   }
 
   /**
-   * Return the scaling factor
+   * Return the scaling factor.
    */
   public double getScaleFactor() {
     return m_scaleFactor;
   }
 
   /**
-   * Return the width of scaled
+   * Return the width of scaled.
    */
   public int getUnitImageWidth(final boolean large) {
     return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
   }
 
   /**
-   * Return the height of scaled
+   * Return the height of scaled.
    */
   public int getUnitImageHeight(final boolean large) {
     return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));

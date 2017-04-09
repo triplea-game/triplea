@@ -186,7 +186,7 @@ public class History extends DefaultTreeModel {
 
 /**
  * DefaultTreeModel is not serializable across jdk versions
- * Instead we use an instance of this class to store our data
+ * Instead we use an instance of this class to store our data.
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;

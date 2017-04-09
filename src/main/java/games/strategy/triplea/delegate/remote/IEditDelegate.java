@@ -13,7 +13,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
 /**
- * Remote interface for EditDelegate
+ * Remote interface for EditDelegate.
  */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   boolean getEditMode();

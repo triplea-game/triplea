@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.SwingUtilities;
 
 public class BackgroundTaskRunner {
-  /** Non-blocking */
+  /** Non-blocking. */
   public static void runInBackground(final String waitMessage, final Runnable r) {
     SwingUtilities.invokeLater(() -> {
       final WaitDialog window = new WaitDialog(null, waitMessage);

@@ -82,7 +82,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- * Displays a running battle
+ * Displays a running battle.
  */
 public class BattleDisplay extends JPanel {
   private static final long serialVersionUID = -7939993104972562765L;
@@ -211,7 +211,7 @@ public class BattleDisplay extends JPanel {
 
 
   /**
-   * updates the panel content according to killed units for the player
+   * updates the panel content according to killed units for the player.
    *
    * @param aKilledUnits
    *        list of units killed
@@ -793,7 +793,7 @@ class BattleModel extends DefaultTableModel {
   }
 
   /**
-   * refresh the model from m_units
+   * refresh the model from m_units.
    */
   public void refresh() {
     // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)

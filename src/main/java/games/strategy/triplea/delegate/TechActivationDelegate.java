@@ -29,7 +29,7 @@ import games.strategy.util.Util;
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean m_needToInitialize = true;
 
-  /** Creates new TechActivationDelegate */
+  /** Creates new TechActivationDelegate. */
   public TechActivationDelegate() {}
 
   /**

@@ -25,7 +25,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<>();
 
   /**
-   * Creates new TerritoryEffectAttachment
+   * Creates new TerritoryEffectAttachment.
    */
   public TerritoryEffectAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);

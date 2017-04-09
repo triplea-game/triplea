@@ -188,7 +188,7 @@ public class UnitsDrawer implements IDrawable {
   }
 
   /**
-   * This draws the given image onto the given graphics object
+   * This draws the given image onto the given graphics object.
    */
   private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);

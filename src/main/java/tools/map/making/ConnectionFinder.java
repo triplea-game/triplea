@@ -222,7 +222,7 @@ public class ConnectionFinder {
   }
 
   /**
-   * Converts a map of connections to XML formatted text with the connections
+   * Converts a map of connections to XML formatted text with the connections.
    *
    * @param connections
    *        a map of connections between Territories
@@ -243,7 +243,7 @@ public class ConnectionFinder {
   }
 
   /**
-   * Returns the size of the area of the boundingbox of the polygon
+   * Returns the size of the area of the bounding box of the polygon.
    *
    * @param area
    *        the area of which the boundingbox size is measured

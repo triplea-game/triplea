@@ -347,9 +347,6 @@ public class MapXmlCreator extends JFrame {
     }
   }
 
-  /**
-   * @return
-   */
   public File getDefaultMapXmlFile() {
     return new File(getDefaultMapFolderLocation() + File.separator + "new_world_order"
         + File.separator + "games" + File.separator + "new_world_order.xml");
@@ -359,9 +356,6 @@ public class MapXmlCreator extends JFrame {
     return ClientFileSystemHelper.getUserMapsFolder();
   }
 
-  /**
-   * @return
-   */
   private Action createMenuBar() {
     // set up the actions
     final Action openAction = SwingAction.of("Load Map XML", e -> {
@@ -682,9 +676,6 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  /**
-   *
-   */
   private void addSouthCenterPanelButtons() {
     buttonBack = new JButton("Back");
     buttonBack.setMnemonic(KeyEvent.VK_B);
@@ -707,9 +698,6 @@ public class MapXmlCreator extends JFrame {
     southCenterPanel.add(nextButton);
   }
 
-  /**
-   *
-   */
   private void invokeLaterRepaintActionPanel() {
     SwingUtilities.invokeLater(() -> {
       actionPanel.validate();
@@ -1080,14 +1068,6 @@ public class MapXmlCreator extends JFrame {
     }
   }
 
-  /**
-   * @param gameXMLPath
-   * @return
-   * @throws FileNotFoundException
-   * @throws SAXException
-   * @throws IOException
-   * @throws ParserConfigurationException
-   */
   public static GameStep loadXmlFromFilePath(final String gameXMLPath)
       throws SAXException, IOException, ParserConfigurationException {
     final FileInputStream in = new FileInputStream(gameXMLPath);

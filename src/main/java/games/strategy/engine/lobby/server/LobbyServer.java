@@ -28,7 +28,7 @@ public class LobbyServer {
     return new String[] {TRIPLEA_LOBBY_PORT_PROPERTY};
   }
 
-  /** Creates a new instance of LobbyServer */
+  /** Creates a new instance of LobbyServer. */
   public LobbyServer(final int port) {
     IServerMessenger server;
     try {

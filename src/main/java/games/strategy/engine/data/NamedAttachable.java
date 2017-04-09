@@ -8,7 +8,7 @@ public class NamedAttachable extends DefaultNamed implements Attachable {
   private static final long serialVersionUID = 8597712929519099255L;
   private final Map<String, IAttachment> m_attachments = new HashMap<>();
 
-  /** Creates new NamedAttachable */
+  /** Creates new NamedAttachable. */
   public NamedAttachable(final String name, final GameData data) {
     super(name, data);
   }

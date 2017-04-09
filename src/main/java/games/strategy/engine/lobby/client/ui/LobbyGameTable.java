@@ -63,7 +63,7 @@ public class LobbyGameTable extends JTable {
   }
 
   /**
-   * record the id of the currently selected game
+   * record the id of the currently selected game.
    */
   private void markSelection() {
     final int selected = getSelectedRow();
@@ -75,7 +75,7 @@ public class LobbyGameTable extends JTable {
   }
 
   /**
-   * Restore the selection to the marked value
+   * Restore the selection to the marked value.
    */
   private void restoreSelection() {
     if (m_selectedGame == null) {

@@ -8,14 +8,14 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Comparable
   // In a grid-based game, stores the coordinate of the Territory
   int[] m_coordinate = null;
 
-  /** Creates new Territory */
+  /** Creates new Rule. */
   public Rule(final String name, final boolean water, final GameData data) {
     super(name, data);
     m_water = water;
     m_units = new UnitCollection(this, getData());
   }
 
-  /** Creates new Territory */
+  /** Creates new Rule. */
   public Rule(final String name, final boolean water, final GameData data, final int... coordinate) {
     super(name, data);
     m_water = water;
@@ -39,7 +39,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Comparable
   }
 
   /**
-   * Get the units in this territory
+   * Get the units in this territory.
    */
   @Override
   public UnitCollection getUnits() {

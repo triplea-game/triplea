@@ -155,7 +155,7 @@ public final class ClientFileSystemHelper {
     return mapsFolder;
   }
 
-  /** Create a temporary file, checked exceptions are re-thrown as unchecked */
+  /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
   public static File createTempFile() {
     try {
       return File.createTempFile("triplea", "tmp");

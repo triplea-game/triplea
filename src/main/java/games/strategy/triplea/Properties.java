@@ -3,9 +3,7 @@ package games.strategy.triplea;
 import games.strategy.engine.data.GameData;
 
 /**
- * <p>
- * Title: TripleA
- * </p>
+ * Provides typed access to the properties of GameData.
  */
 public class Properties implements Constants {
   // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior
@@ -157,7 +155,7 @@ public class Properties implements Constants {
 
   /**
    * Limit the TOTAL damage caused by Rockets in a turn to territory's
-   * production
+   * production.
    */
   public static boolean getLimitRocketDamagePerTurn(final GameData data) {
     return data.getProperties().get(LIMIT_ROCKET_DAMAGE_PER_TURN, false);
@@ -165,77 +163,77 @@ public class Properties implements Constants {
 
   /**
    * Limit the TOTAL PUs lost to Bombers/Rockets in a turn to territory's
-   * production
+   * production.
    */
   public static boolean getPUCap(final GameData data) {
     return data.getProperties().get(PU_CAP, false);
   }
 
   /**
-   * Reduce Victory Points by Strategic Bombing
+   * Reduce Victory Points by Strategic Bombing.
    */
   public static boolean getSBRVictoryPoint(final GameData data) {
     return data.getProperties().get(SBR_VICTORY_POINTS, false);
   }
 
   /**
-   * Allow x rocket attack(s) per defending factory
+   * Allow x rocket attack(s) per defending factory.
    */
   public static boolean getRocketAttacksPerFactoryInfinite(final GameData data) {
     return data.getProperties().get(ROCKET_ATTACKS_PER_FACTORY_INFINITE, false);
   }
 
   /**
-   * Are allied aircraft dependents of CVs
+   * Are allied aircraft dependents of CVs.
    */
   public static boolean getAlliedAirIndependent(final GameData data) {
     return data.getProperties().get(ALLIED_AIR_INDEPENDENT, false);
   }
 
   /**
-   * Defending subs sneak attack
+   * Defending subs sneak attack.
    */
   public static boolean getDefendingSubsSneakAttack(final GameData data) {
     return data.getProperties().get(DEFENDING_SUBS_SNEAK_ATTACK, false);
   }
 
   /**
-   * Attacker retreat planes from Amphib assault
+   * Attacker retreat planes from Amphib assault.
    */
   public static boolean getAttackerRetreatPlanes(final GameData data) {
     return data.getProperties().get(ATTACKER_RETREAT_PLANES, false);
   }
 
   /**
-   * Can surviving air at sea move to land on friendly land/carriers
+   * Can surviving air at sea move to land on friendly land/carriers.
    */
   public static boolean getSurvivingAirMoveToLand(final GameData data) {
     return data.getProperties().get(SURVIVING_AIR_MOVE_TO_LAND, false);
   }
 
   /**
-   * Naval Bombard casualties restricted from return fire
+   * Naval Bombard casualties restricted from return fire.
    */
   public static boolean getNavalBombardCasualtiesReturnFireRestricted(final GameData data) {
     return data.getProperties().get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED, false);
   }
 
   /**
-   * Restricted from blitz through territories with factories/AA
+   * Restricted from blitz through territories with factories/AA.
    */
   public static boolean getBlitzThroughFactoriesAndAARestricted(final GameData data) {
     return data.getProperties().get(BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED, false);
   }
 
   /**
-   * Can place new units in occupied sea zones
+   * Can place new units in occupied sea zones.
    */
   public static boolean getUnitPlacementInEnemySeas(final GameData data) {
     return data.getProperties().get(UNIT_PLACEMENT_IN_ENEMY_SEAS, false);
   }
 
   /**
-   * Subs restricted from controlling sea zones
+   * Subs restricted from controlling sea zones.
    */
   public static boolean getSubControlSeaZoneRestricted(final GameData data) {
     return data.getProperties().get(SUB_CONTROL_SEA_ZONE_RESTRICTED, false);
@@ -249,56 +247,56 @@ public class Properties implements Constants {
   }
 
   /**
-   * Production restricted to 1 unit per X owned territories
+   * Production restricted to 1 unit per X owned territories.
    */
   public static boolean getProductionPerXTerritoriesRestricted(final GameData data) {
     return data.getProperties().get(PRODUCTION_PER_X_TERRITORIES_RESTRICTED, false);
   }
 
   /**
-   * Production restricted to 1 unit per owned territory with an PU value
+   * Production restricted to 1 unit per owned territory with an PU value.
    */
   public static boolean getProductionPerValuedTerritoryRestricted(final GameData data) {
     return data.getProperties().get(PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED, false);
   }
 
   /**
-   * Can units be placed in any owned territory
+   * Can units be placed in any owned territory.
    */
   public static boolean getPlaceInAnyTerritory(final GameData data) {
     return data.getProperties().get(PLACE_IN_ANY_TERRITORY, false);
   }
 
   /**
-   * Limit the number of units that can be in a territory
+   * Limit the number of units that can be in a territory.
    */
   public static boolean getUnitPlacementPerTerritoryRestricted(final GameData data) {
     return data.getProperties().get(UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED, false);
   }
 
   /**
-   * Movement restricted for territories
+   * Movement restricted for territories.
    */
   public static boolean getMovementByTerritoryRestricted(final GameData data) {
     return data.getProperties().get(MOVEMENT_BY_TERRITORY_RESTRICTED, false);
   }
 
   /**
-   * Transports restricted from being taken as casualties
+   * Transports restricted from being taken as casualties.
    */
   public static boolean getTransportCasualtiesRestricted(final GameData data) {
     return data.getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false);
   }
 
   /**
-   * Transports do not restrict movement of other units
+   * Transports do not restrict movement of other units.
    */
   public static boolean getIgnoreTransportInMovement(final GameData data) {
     return data.getProperties().get(IGNORE_TRANSPORT_IN_MOVEMENT, false);
   }
 
   /**
-   * Subs do not restrict movement of other units
+   * Subs do not restrict movement of other units.
    */
   public static boolean getIgnoreSubInMovement(final GameData data) {
     return data.getProperties().get(IGNORE_SUB_IN_MOVEMENT, false);
@@ -309,21 +307,21 @@ public class Properties implements Constants {
   }
 
   /**
-   * Air restricted from attacking subs unless DD present
+   * Air restricted from attacking subs unless DD present.
    */
   public static boolean getAirAttackSubRestricted(final GameData data) {
     return data.getProperties().get(AIR_ATTACK_SUB_RESTRICTED, false);
   }
 
   /**
-   * Allows units with zero movement to be selected to be moved
+   * Allows units with zero movement to be selected to be moved.
    */
   public static boolean getSelectableZeroMovementUnits(final GameData data) {
     return data.getProperties().get(SELECTABLE_ZERO_MOVEMENT_UNITS, false);
   }
 
   /**
-   * Allows paratroopers to move ground units to friendly territories during non-combat move phase
+   * Allows paratroopers to move ground units to friendly territories during non-combat move phase.
    */
   public static boolean getParatroopersCanMoveDuringNonCombat(final GameData data) {
     return data.getProperties().get(PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT, false);
@@ -334,14 +332,14 @@ public class Properties implements Constants {
   }
 
   /**
-   * Shore Bombard per Ground Unit Restricted
+   * Shore Bombard per Ground Unit Restricted.
    */
   public static boolean getShoreBombardPerGroundUnitRestricted(final GameData data) {
     return data.getProperties().get(SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED, false);
   }
 
   /**
-   * AA restricted to Attacked Territory Only
+   * AA restricted to Attacked Territory Only.
    */
   public static boolean getAATerritoryRestricted(final GameData data) {
     return data.getProperties().get(AA_TERRITORY_RESTRICTED, false);
@@ -368,7 +366,7 @@ public class Properties implements Constants {
   }
 
   /**
-   * Atomic units of the fighter/carrier production rules
+   * Atomic units of the fighter/carrier production rules.
    */
   public static boolean getProduceFightersOnCarriers(final GameData data) {
     return data.getProperties().get(CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);

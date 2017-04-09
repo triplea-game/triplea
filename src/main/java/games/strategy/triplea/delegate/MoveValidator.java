@@ -1493,7 +1493,7 @@ public class MoveValidator {
   }
 
   /**
-   * Get the route ignoring forced territories
+   * Get the route ignoring forced territories.
    */
   public static Route getBestRoute(final Territory start, final Territory end, final GameData data,
       final PlayerID player, final Collection<Unit> units, final boolean forceLandOrSeaRoute) {
@@ -1657,6 +1657,6 @@ public class MoveValidator {
     return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
   }
 
-  /** Creates new MoveValidator */
+  /** Creates new MoveValidator. */
   private MoveValidator() {}
 }

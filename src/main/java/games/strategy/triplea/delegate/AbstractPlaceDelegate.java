@@ -132,7 +132,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @param t territory of interest
+   * @param t territory of interest.
    * @return a COPY of the collection of units that are produced at territory t
    */
   protected Collection<Unit> getAlreadyProduced(final Territory t) {
@@ -281,7 +281,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * @param producer
-   *        territory that produces the new units
+   *        territory that produces the new units.
    * @param placeableUnits
    *        the new units
    * @param at
@@ -1005,7 +1005,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns -1 if can place unlimited units
+   * Returns -1 if can place unlimited units.
    */
   protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player,
       final boolean countSwitchedProductionToNeighbors) {
@@ -1022,7 +1022,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns -1 somewhere in the map if can place unlimited units
+   * Returns -1 somewhere in the map if can place unlimited units.
    */
   protected IntegerMap<Territory> getMaxUnitsToBePlacedMap(final Collection<Unit> units, final Territory to,
       final PlayerID player, final boolean countSwitchedProductionToNeighbors) {
@@ -1047,7 +1047,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns -1 if can place unlimited units
+   * Returns -1 if can place unlimited units.
    */
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
       final PlayerID player) {
@@ -1055,7 +1055,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns -1 if can place unlimited units
+   * Returns -1 if can place unlimited units.
    */
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
       final PlayerID player, final boolean countSwitchedProductionToNeighbors,
@@ -1216,7 +1216,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @return gets the production of the territory
+   * @return gets the production of the territory.
    */
   protected int getProduction(final Territory territory) {
     // Can be null!
@@ -1229,7 +1229,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * @param to
-   *        referring territory
+   *        referring territory.
    * @param units
    *        units to place
    * @param player
@@ -1513,7 +1513,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * @param to
-   *        referring territory
+   *        referring territory.
    * @return collection of units that were there at start of turn
    */
   public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to) {
@@ -1544,7 +1544,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * @param to
-   *        referring territory
+   *        referring territory.
    * @param player
    *        PlayerID
    * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
@@ -1602,7 +1602,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Get what air units must move before the end of the players turn
+   * Get what air units must move before the end of the players turn.
    *
    * @return a list of Territories with air units that must move
    */

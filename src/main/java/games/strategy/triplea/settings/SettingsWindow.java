@@ -145,7 +145,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
   }
 
   /**
-   * Each element is arranged in a row, with glue in between every element
+   * Each element is arranged in a row, with glue in between every element.
    */
   private <T extends HasDefaults> JPanel createButtonsPanel(final SettingsTab<T> settingTab) {
     final JPanel buttonsPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();

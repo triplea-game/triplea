@@ -17,7 +17,7 @@ import com.google.common.collect.Maps;
 import games.strategy.ui.SwingComponents;
 
 
-/** A small non-modal window that holds the progress bars for the current and pending map downloads */
+/** A small non-modal window that holds the progress bars for the current and pending map downloads. */
 public final class MapDownloadProgressPanel extends JPanel {
 
   private static final long serialVersionUID = -7288639737337542689L;

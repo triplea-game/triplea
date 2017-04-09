@@ -468,7 +468,7 @@ public class GameParser {
   }
 
   /**
-   * If optional is true, will not throw an exception if there are 0 children
+   * If optional is true, will not throw an exception if there are 0 children.
    */
   private Element getSingleChild(final String name, final Node node, final boolean optional) throws GameParseException {
     final List<Element> children = getChildren(name, node);
@@ -786,7 +786,7 @@ public class GameParser {
 
   /**
    * @param root
-   *        root node containing the playerList
+   *        root node containing the playerList.
    * @throws GameParseException
    */
   private void parsePlayerList(final Element root) {

@@ -74,7 +74,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   private boolean m_soundPlayedAlreadyEndTurn = false;
   private boolean m_soundPlayedAlreadyPlacement = false;
 
-  /** Creates new TripleAPlayer */
+  /** Creates new TripleAPlayer. */
   public TripleAPlayer(final String name, final String type) {
     super(name, type);
   }

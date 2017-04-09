@@ -127,13 +127,13 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     }
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {
     addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {

@@ -18,7 +18,7 @@ public class MutedUsernameController {
   private static final Logger s_logger = Logger.getLogger(MutedUsernameController.class.getName());
 
   /**
-   * Mute the username permanently
+   * Mute the username permanently.
    */
   public void addMutedUsername(final String username) {
     addMutedUsername(username, null);
@@ -80,7 +80,7 @@ public class MutedUsernameController {
 
   /**
    * Is the given username muted? This may have the side effect of removing from the
-   * database any username's whose mute has expired
+   * database any username's whose mute has expired.
    */
   public boolean isUsernameMuted(final String username) {
     final long muteTill = getUsernameUnmuteTime(username);

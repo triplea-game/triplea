@@ -21,10 +21,10 @@ import games.strategy.debug.ClientLogger;
 
 /**
  * Utiltity to read and write files in the form of
- * String -> a list of points, or string-> list of polygons
+ * String -> a list of points, or string-> list of polygons.
  */
 public class PointFileReaderWriter {
-  /** Creates a new instance of PointFileReader */
+  /** Creates a new instance of PointFileReader. */
   public PointFileReaderWriter() {}
 
   /**

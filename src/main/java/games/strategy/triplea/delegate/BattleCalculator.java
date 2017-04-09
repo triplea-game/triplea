@@ -98,7 +98,7 @@ public class BattleCalculator {
   }
 
   /**
-   * Choose plane casualties according to specified rules
+   * Choose plane casualties according to specified rules.
    */
   public static CasualtyDetails getAACasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> allFriendlyUnits, final Collection<Unit> defendingAA, final Collection<Unit> allEnemyUnits,
@@ -331,7 +331,7 @@ public class BattleCalculator {
   }
 
   /**
-   * Choose plane casualties randomly
+   * Choose plane casualties randomly.
    */
   public static CasualtyDetails RandomAACasualties(final Collection<Unit> planes, final DiceRoll dice,
       final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
@@ -459,7 +459,7 @@ public class BattleCalculator {
 
   /**
    * @param battleID
-   *        may be null if we are not in a battle (eg, if this is an aa fire due to moving
+   *        may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
   public static CasualtyDetails selectCasualties(final String step, final PlayerID player,
       final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
@@ -1306,35 +1306,35 @@ public class BattleCalculator {
   }
 
   /**
-   * @return Can transports be used as cannon fodder
+   * @return Can transports be used as cannon fodder.
    */
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
   }
 
   /**
-   * @return Random AA Casualties - casualties randomly assigned
+   * @return Random AA Casualties - casualties randomly assigned.
    */
   private static boolean isRandomAACasualties(final GameData data) {
     return games.strategy.triplea.Properties.getRandomAACasualties(data);
   }
 
   /**
-   * @return Roll AA Individually - roll against each aircraft
+   * @return Roll AA Individually - roll against each aircraft.
    */
   private static boolean isRollAAIndividually(final GameData data) {
     return games.strategy.triplea.Properties.getRollAAIndividually(data);
   }
 
   /**
-   * @return Choose AA - attacker selects casualties
+   * @return Choose AA - attacker selects casualties.
    */
   private static boolean isChooseAA(final GameData data) {
     return games.strategy.triplea.Properties.getChoose_AA_Casualties(data);
   }
 
   /**
-   * @return Can the attacker retreat non-amphibious units
+   * @return Can the attacker retreat non-amphibious units.
    */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
     return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);

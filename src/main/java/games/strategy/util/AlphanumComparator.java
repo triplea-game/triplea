@@ -18,7 +18,7 @@ public class AlphanumComparator implements Comparator<String> {
     return ch >= 48 && ch <= 57;
   }
 
-  /** Length of string is passed in for improved efficiency (only need to calculate it once) **/
+  /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
   private String getChunk(final String s, final int slength, int marker) {
     final StringBuilder chunk = new StringBuilder();
     char c = s.charAt(marker);

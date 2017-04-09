@@ -11,12 +11,12 @@ public class PrintGenerationData {
   private GameData m_data;
 
   /**
-   * General Constructor
+   * General Constructor.
    */
   protected PrintGenerationData() {}
 
   /**
-   * @return the outDir
+   * @return the outDir.
    */
   protected File getOutDir() {
     return m_outDir;
@@ -24,14 +24,14 @@ public class PrintGenerationData {
 
   /**
    * @param outDir
-   *        the outDir to set
+   *        the outDir to set.
    */
   protected void setOutDir(final File outDir) {
     m_outDir = outDir;
   }
 
   /**
-   * @return the samePUMap
+   * @return the samePUMap.
    */
   protected Map<Integer, Integer> getSamePUMap() {
     return m_SamePUMap;
@@ -39,14 +39,14 @@ public class PrintGenerationData {
 
   /**
    * @param samePUMap
-   *        the samePUMap to set
+   *        the samePUMap to set.
    */
   protected void setSamePUMap(final Map<Integer, Integer> samePUMap) {
     m_SamePUMap = samePUMap;
   }
 
   /**
-   * @return the data
+   * @return the data.
    */
   protected GameData getData() {
     return m_data;
@@ -54,7 +54,7 @@ public class PrintGenerationData {
 
   /**
    * @param data
-   *        the data to set
+   *        the data to set.
    */
   protected void setData(final GameData data) {
     m_data = data;

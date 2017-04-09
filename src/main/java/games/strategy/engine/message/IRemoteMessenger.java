@@ -68,7 +68,7 @@ public interface IRemoteMessenger {
   /**
    * @param remoteInterface
    *        - the remote interface that implementor implements,
-   *        must be a subclass of IRemote
+   *        must be a subclass of IRemote.
    * @param implementor
    *        - an object that implements remoteInterface
    * @param name

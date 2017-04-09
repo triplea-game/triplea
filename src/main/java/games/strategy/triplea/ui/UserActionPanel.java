@@ -78,7 +78,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   /**
-   * waits till someone calls release() and then returns the action chosen
+   * waits till someone calls release() and then returns the action chosen.
    *
    * @return the choice of action
    */
@@ -108,7 +108,7 @@ public class UserActionPanel extends ActionPanel {
 
   /**
    * Fires up a JDialog showing valid actions,
-   * choosing an action will release this model and trigger waitForRelease()
+   * choosing an action will release this model and trigger waitForRelease().
    */
   private final Action SelectUserActionAction = new AbstractAction("Take Action...") {
     private static final long serialVersionUID = 2389485901611958851L;
@@ -213,7 +213,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   /**
-   * This will stop the user action Phase
+   * This will stop the user action Phase.
    */
   private final Action DontBotherAction = new AbstractAction("Done") {
     private static final long serialVersionUID = 2835948679299520899L;

@@ -95,7 +95,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /**
-   * @return boolean wether the round has changed
+   * @return boolean whether the round has changed.
    */
   public boolean next() {
     synchronized (m_currentStepMutex) {

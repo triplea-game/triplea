@@ -48,7 +48,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private TechnologyFrontier m_techCategory;
   private boolean m_needToInitialize = true;
 
-  /** Creates new TechnolgoyDelegate */
+  /** Creates new TechnolgoyDelegate. */
   public TechnologyDelegate() {}
 
   @Override

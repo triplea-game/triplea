@@ -26,7 +26,7 @@ public class MessageHeader {
   }
 
   /**
-   * null if a broadcast
+   * null if a broadcast.
    */
   public INode getFor() {
     return m_for;

@@ -98,7 +98,7 @@ public class GameData implements java.io.Serializable {
   private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
-  /** Creates new GameData */
+  /** Creates new GameData. */
   public GameData() {
     super();
     delegateList = new DelegateList(this);
@@ -122,7 +122,7 @@ public class GameData implements java.io.Serializable {
 
   /**
    * Print an exception report if we are testing the lock is held, and
-   * do not currently hold the read or write lock
+   * do not currently hold the read or write lock.
    */
   private void ensureLockHeld() {
     if (!testLockIsHeld) {
@@ -137,7 +137,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return a collection of all units in the game
+   * @return a collection of all units in the game.
    */
   public UnitsList getUnits() {
     // ensureLockHeld();
@@ -145,7 +145,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return list of Players in the game
+   * @return list of Players in the game.
    */
   public PlayerList getPlayerList() {
     return playerList;

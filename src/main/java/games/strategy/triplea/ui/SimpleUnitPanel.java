@@ -40,7 +40,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * @param units
    *        a HashMap in the form ProductionRule -> number of units
-   *        assumes that each production rule has 1 result, which is simple the number of units
+   *        assumes that each production rule has 1 result, which is simple the number of units.
    */
   public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player,
       final GameData data) {
@@ -59,7 +59,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * @param units
    *        a HashMap in the form RepairRule -> number of units
-   *        assumes that each repair rule has 1 result, which is simply the number of units
+   *        assumes that each repair rule has 1 result, which is simply the number of units.
    */
   public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
       final GameData data) {
@@ -84,7 +84,7 @@ public class SimpleUnitPanel extends JPanel {
 
   /**
    * @param categories
-   *        a collection of UnitCategories
+   *        a collection of UnitCategories.
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data) {
     removeAll();

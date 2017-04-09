@@ -37,7 +37,7 @@ import games.strategy.triplea.help.HelpSupport;
 public class GenericEmailSender implements IEmailSender {
   private static final long serialVersionUID = 4644748856027574157L;
   /**
-   * a value to assign to the non-transitive password, as we can see that is was cleared
+   * a value to assign to the non-transitive password, as we can see that is was cleared.
    */
   private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
@@ -132,7 +132,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the user name used to login to the smtp server to send the email
+   * Get the user name used to login to the smtp server to send the email.
    *
    * @return the userName or null if no authentication is required
    */
@@ -142,7 +142,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the userName used for authentication with the smtp server
+   * Set the userName used for authentication with the smtp server.
    *
    * @param userName
    *        the userName or null if no authentication is required
@@ -153,7 +153,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the password used to authenticate
+   * Get the password used to authenticate.
    *
    * @return the password or null
    */
@@ -166,7 +166,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the password to authenticate with
+   * Set the password to authenticate with.
    *
    * @param password
    *        the password or null
@@ -178,7 +178,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the timeout (in milli seconds) before the send operation should be aborted
+   * Get the timeout (in milliseconds) before the send operation should be aborted.
    *
    * @return the timeout
    */
@@ -198,7 +198,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the SMTP host
+   * Get the SMTP host.
    *
    * @return the host to send to
    */
@@ -207,7 +207,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the smtp server host or IP address
+   * Set the smtp server host or IP address.
    *
    * @param host
    *        the host
@@ -217,7 +217,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the smtp server post
+   * Get the smtp server post.
    *
    * @return the port
    */
@@ -226,7 +226,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the SMTP servers port
+   * Set the SMTP server port.
    *
    * @param port
    *        the port
@@ -236,7 +236,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the message encryption
+   * Get the message encryption.
    *
    * @return the selected encryption
    */
@@ -245,7 +245,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Sets the message encryption
+   * Sets the message encryption.
    *
    * @param encryption
    *        the encryption
@@ -255,7 +255,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Sets the to address field, if multiple email addresses are given they must be separated by space
+   * Sets the to address field, if multiple email addresses are given they must be separated by space.
    *
    * @param to
    *        the to addresses
@@ -265,7 +265,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the To address configured
+   * Get the To address configured.
    *
    * @return the to address, or multiple separated by space
    */

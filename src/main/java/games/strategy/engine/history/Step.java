@@ -8,7 +8,7 @@ public class Step extends IndexedHistoryNode {
   private final String m_stepName;
   private final String m_delegateName;
 
-  /** Creates a new instance of StepChangedMessage */
+  /** Creates a new instance of Step. */
   Step(final String stepName, final String delegateName, final PlayerID player, final int changeStartIndex,
       final String displayName) {
     super(displayName, changeStartIndex);

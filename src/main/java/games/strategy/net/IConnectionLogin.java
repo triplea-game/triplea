@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface IConnectionLogin {
   /**
-   * Get the properties to log in given the challenge Properties
+   * Get the properties to log in given the challenge Properties.
    */
   Map<String, String> getProperties(Map<String, String> challengProperties);
 

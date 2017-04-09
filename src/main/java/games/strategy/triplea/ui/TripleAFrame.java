@@ -159,7 +159,7 @@ import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
- * Main frame for the triple a game
+ * Main frame for the triple a game.
  */
 public class TripleAFrame extends MainGameFrame {
   private static final long serialVersionUID = 7640069668264418976L;
@@ -208,7 +208,7 @@ public class TripleAFrame extends MainGameFrame {
   private final ScrollSettings scrollSettings;
   private boolean isCtrlPressed = false;
 
-  /** Creates new TripleAFrame */
+  /** Creates new TripleAFrame. */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
     scrollSettings = ClientContext.scrollSettings();
@@ -546,14 +546,14 @@ public class TripleAFrame extends MainGameFrame {
 
   /**
    * @param value
-   *        - a number between 15 and 100
+   *        a number between 15 and 100.
    */
   public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
   /**
-   * @return a scale between 15 and 100
+   * @return a scale between 15 and 100.
    */
   private double getScale() {
     return getMapPanel().getScale() * 100;

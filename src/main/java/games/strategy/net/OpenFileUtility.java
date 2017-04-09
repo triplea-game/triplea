@@ -9,7 +9,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingComponents;
 
 /**
- * A wrapper class for opening Files & URLs using the Desktop API
+ * A wrapper class for opening Files & URLs using the Desktop API.
  */
 public class OpenFileUtility {
 

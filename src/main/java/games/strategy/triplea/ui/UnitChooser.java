@@ -45,7 +45,7 @@ public class UnitChooser extends JPanel {
   private final IUIContext m_uiContext;
   private final Match<Collection<Unit>> m_match;
 
-  /** Creates new UnitChooser */
+  /** Creates new UnitChooser. */
   public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
       final boolean allowTwoHit, final IUIContext uiContext) {
     this(units, Collections.emptyList(), dependent, data, allowTwoHit, uiContext);
@@ -248,7 +248,7 @@ public class UnitChooser extends JPanel {
   }
 
   /**
-   * Only applicable if this dialog was constructed using multiple hit points
+   * Only applicable if this dialog was constructed using multiple hit points.
    */
   public List<Unit> getSelectedDamagedMultipleHitPointUnits() {
     final List<Unit> selectedUnits = new ArrayList<>();

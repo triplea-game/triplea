@@ -17,20 +17,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 
-/**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2003
- * </p>
- * <p>
- * Company:
- * </p>
- */
 public class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;
 

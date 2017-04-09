@@ -82,7 +82,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 
   /**
-   * Creates a new instance
+   * Creates a new instance.
    *
    * @param model
    *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
@@ -164,7 +164,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected
+   * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected.
    *
    * @param data
    *        the game data
@@ -290,7 +290,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Called when the current game changes
+   * Called when the current game changes.
    */
   @Override
   public void cancel() {
@@ -298,7 +298,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Called when the observers detect change, to see if the game is in a startable state
+   * Called when the observers detect change, to see if the game is in a startable state.
    */
   @Override
   public boolean canGameStart() {
@@ -383,7 +383,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Called when the user hits play
+   * Called when the user hits play.
    */
   @Override
   public ILauncher getLauncher() {
@@ -422,7 +422,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * A property change listener that notify our observers
+   * A property change listener that notify our observers.
    */
   private class NotifyingPropertyChangeListener implements PropertyChangeListener {
     @Override
@@ -591,7 +591,7 @@ class PBEMLocalPlayerComboBoxSelector {
 }
 
 
-/** A bean cache used by PBEMSetupPanel */
+/** A bean cache used by PBEMSetupPanel. */
 enum LocalBeanCache {
   INSTANCE;
   private final File m_file;
@@ -650,7 +650,7 @@ enum LocalBeanCache {
   }
 
   /**
-   * Call to have the cache written to disk
+   * Call to have the cache written to disk.
    */
   public void writeToDisk() {
     synchronized (m_mutex) {
@@ -665,7 +665,7 @@ enum LocalBeanCache {
   }
 
   /**
-   * Get a serializable from the cache
+   * Get a serializable from the cache.
    *
    * @param key
    *        the key ot was stored under

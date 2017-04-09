@@ -115,7 +115,7 @@ public abstract class Match<T> {
   }
 
   /**
-   * return the keys where the value keyed by the key matches valueMatch
+   * return the keys where the value keyed by the key matches valueMatch.
    */
   public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> aMap, final Match<V> valueMatch) {
     final Set<K> rVal = new HashSet<>();

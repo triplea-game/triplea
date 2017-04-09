@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class CompositeMatch<T> extends Match<T> {
   private final List<Match<T>> m_matches = new ArrayList<>(4);
 
-  /** Creates new CompositeMatch */
+  /** Creates new CompositeMatch. */
   public CompositeMatch() {}
 
   /**

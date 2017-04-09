@@ -16,7 +16,7 @@ import games.strategy.net.GUID;
  */
 class PlayerOwnerChange extends Change {
   /**
-   * Maps unit id -> owner as String
+   * Maps unit id -> owner as String.
    */
   private final Map<GUID, String> m_old;
   private final Map<GUID, String> m_new;

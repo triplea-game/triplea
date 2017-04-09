@@ -13,7 +13,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
 /**
- * Downlaods a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>
+ * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
  */
 class DownloadRunnable {
   private final String urlString;

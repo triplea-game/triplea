@@ -29,7 +29,7 @@ public class ClientOptions extends JDialog {
   private boolean m_okPressed;
 
   /**
-   * Creates a new instance of ClientOptions
+   * Creates a new instance of ClientOptions.
    */
   public ClientOptions(final Component parent, final String defaultName, final int defaultPort,
       final String defaultAddress) {

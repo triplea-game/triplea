@@ -35,7 +35,7 @@ public interface IDelegateBridge {
   PlayerID getPlayerID();
 
   /**
-   * Returns the current step name
+   * Returns the current step name.
    */
   String getStepName();
 
@@ -49,7 +49,7 @@ public interface IDelegateBridge {
   void addChange(Change aChange);
 
   /**
-   * equivalent to getRandom(max,1,annotation)[0]
+   * equivalent to getRandom(max,1,annotation)[0].
    */
   int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
 

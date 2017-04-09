@@ -41,7 +41,7 @@ public interface IGameLoader extends Serializable {
   void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
 
   /**
-   * Get the type of the display
+   * Get the type of the display.
    *
    * @return an interface that extends IChannelSubscrobor
    */

@@ -28,7 +28,7 @@ public class BooleanProperty extends AEditableProperty {
   }
 
   /**
-   * @return component used to edit this property
+   * @return component used to edit this property.
    */
   @Override
   public JComponent getEditorComponent() {

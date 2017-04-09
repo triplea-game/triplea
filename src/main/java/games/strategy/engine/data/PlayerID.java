@@ -26,7 +26,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     this(name, false, false, data);
   }
 
-  /** Creates new Player */
+  /** Creates new PlayerID. */
   public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final GameData data) {
     super(name, data);
     m_optional = optional;

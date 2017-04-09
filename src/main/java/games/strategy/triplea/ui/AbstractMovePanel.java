@@ -217,7 +217,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   /**
-   * sub-classes method for undo handling
+   * sub-classes method for undo handling.
    */
   protected abstract void undoMoveSpecific();
 

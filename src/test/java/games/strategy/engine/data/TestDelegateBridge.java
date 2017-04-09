@@ -41,7 +41,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   private final IDelegateHistoryWriter m_historyWriter;
   private IRemotePlayer m_remote;
 
-  /** Creates new TestDelegateBridge */
+  /** Creates new TestDelegateBridge. */
   public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay) {
     m_data = data;
     m_id = id;
@@ -129,9 +129,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     }
   }
 
-  /**
-   * Returns the current step name
-   */
   @Override
   public String getStepName() {
     return m_stepName;

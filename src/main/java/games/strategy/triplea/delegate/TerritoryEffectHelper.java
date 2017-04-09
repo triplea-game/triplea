@@ -13,7 +13,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 
 /**
- * Placeholder for all calculations to do with TerritoryEffects
+ * Placeholder for all calculations to do with TerritoryEffects.
  */
 public class TerritoryEffectHelper {
   public static Collection<TerritoryEffect> getEffects(final Territory location) {

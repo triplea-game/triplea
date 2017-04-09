@@ -198,7 +198,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param newTerrName - territory name
+   * @param newTerrName - territory name.
    * @param newTerrIsWater - IS_WATER property of newTerrName territory
    * @param newTerrNeighborsDiffType - list of neighbor territories with/without (defined by newTerrIsWater) property
    *        IS_WATER
@@ -325,7 +325,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param newTerrName - base territory
+   * @param newTerrName - base territory.
    * @param newTerrIsWater - IS_WATER property of base territory
    * @param terrCanals - list of canals the base territory is linked to
    */
@@ -359,7 +359,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @return suggested canal name
+   * @return suggested canal name.
    */
   private String getSuggestedCanalName() {
     String suggestedCanalName;
@@ -379,7 +379,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   /**
    *
-   * @param newTerrName - territory name
+   * @param newTerrName - territory name.
    * @param waterNeighbors - whether IS_WATER property is supposed to be present or not
    * @return list of neighbor territories with/without (defined by waterNeighbors) property IS_WATER
    */
@@ -419,7 +419,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param terrList - list of territories for which neighbors should be evaluated
+   * @param terrList - list of territories for which neighbors should be evaluated.
    * @param typeIsWater - filter criteria of neighbors by their property IS_WATER
    * @return map of terrList list territory entry -> neighbor territories with/without (defined by typeIsWater) IS_WATER
    *         property

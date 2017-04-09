@@ -27,12 +27,12 @@ public class PlayerChooser extends JOptionPane {
   private final boolean m_allowNeutral;
 
   // private JOptionPane m_pane;
-  /** Creates new PlayerChooser */
+  /** Creates new PlayerChooser. */
   public PlayerChooser(final PlayerList players, final IUIContext uiContext, final boolean allowNeutral) {
     this(players, null, uiContext, allowNeutral);
   }
 
-  /** Creates new PlayerChooser */
+  /** Creates new PlayerChooser. */
   public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
@@ -74,7 +74,7 @@ public class PlayerChooser extends JOptionPane {
 
 
   /**
-   * Returns the selected player or null, or null if the dialog was closed
+   * Returns the selected player or null, or null if the dialog was closed.
    *
    * @return the player or null
    */

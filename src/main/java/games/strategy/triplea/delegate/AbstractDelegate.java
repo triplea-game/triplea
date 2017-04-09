@@ -22,7 +22,7 @@ public abstract class AbstractDelegate implements IDelegate {
   protected IDelegateBridge m_bridge;
 
   /**
-   * Creates a new instance of the Delegate
+   * Creates a new instance of the Delegate.
    */
   public AbstractDelegate() {}
 
@@ -79,7 +79,7 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Loads the delegates state
+   * Loads the delegate state.
    */
   @Override
   public void loadState(final Serializable state) {

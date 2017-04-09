@@ -14,7 +14,7 @@ import games.strategy.engine.data.PlayerID;
  */
 public class GameStepPropertiesHelper {
   /**
-   * Do we skip posting the game summary and save to a forum or email?
+   * Indicates we skip posting the game summary and save to a forum or email.
    */
   public static boolean isSkipPosting(final GameData data) {
     final boolean skipPosting;

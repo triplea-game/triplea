@@ -36,7 +36,7 @@ import games.strategy.ui.ProgressWindow;
 import games.strategy.util.UrlStreams;
 
 /**
- * A class for displaying settings for the micro web site poster
+ * A class for displaying settings for the micro web site poster.
  */
 public class MicroWebPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
@@ -99,7 +99,7 @@ public class MicroWebPosterEditor extends EditorPanel {
   }
 
   /**
-   * Configures the listeners for the gui components
+   * Configures the listeners for the gui components.
    */
   private void setupListeners() {
     m_viewSite.addActionListener(e -> ((IWebPoster) getBean()).viewSite());
@@ -213,7 +213,7 @@ public class MicroWebPosterEditor extends EditorPanel {
   }
 
   /**
-   * Tests the Forum poster
+   * Tests the Forum poster.
    */
   void testSite() {
     final IWebPoster poster = (IWebPoster) getBean();

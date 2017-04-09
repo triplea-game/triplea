@@ -179,7 +179,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   /**
-   * Converts text to html, by transforming \n to <br/>
+   * Converts text to html, by transforming \n to <br/>.
    *
    * @param string
    *        the string to transform
@@ -190,7 +190,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   /**
-   * Get the configured email sender
+   * Get the configured email sender.
    *
    * @return return an email sender or null
    */

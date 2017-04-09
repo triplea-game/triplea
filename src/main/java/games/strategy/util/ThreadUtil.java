@@ -1,6 +1,6 @@
 package games.strategy.util;
 
-/** Utility class for java Thread related operations */
+/** Utility class for java Thread related operations. */
 public class ThreadUtil {
 
 

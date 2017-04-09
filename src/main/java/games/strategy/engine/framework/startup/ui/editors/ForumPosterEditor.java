@@ -27,7 +27,7 @@ import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
 
 /**
- * A class for selecting which Forum poster to use
+ * A class for selecting which Forum poster to use.
  */
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
@@ -88,7 +88,7 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   /**
-   * Configures the listeners for the gui components
+   * Configures the listeners for the gui components.
    */
   private void setupListeners() {
     m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
@@ -101,7 +101,7 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   /**
-   * Tests the Forum poster
+   * Tests the Forum poster.
    */
   void testForum() {
     final IForumPoster poster = (IForumPoster) getBean();

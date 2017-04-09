@@ -20,7 +20,7 @@ public class MapXmlUIHelper {
 
   /**
    *
-   * @param title - the title string for the dialog
+   * @param title - the title string for the dialog.
    * @param message - the Object to display
    * @param messageType - an integer designating the kind of message this is, primarily used to determine the icon from
    *        the pluggable Look and Feel: ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE, QUESTION_MESSAGE, or
@@ -57,7 +57,7 @@ public class MapXmlUIHelper {
 
   /**
    *
-   * @param title - the title string for the dialog
+   * @param title - the title string for the dialog.
    * @param message - the Object to display
    * @param messageType - an integer designating the kind of message this is, primarily used to determine the icon from
    *        the pluggable Look and Feel: ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE, QUESTION_MESSAGE, or
@@ -134,7 +134,7 @@ public class MapXmlUIHelper {
   }
 
   /**
-   * @param gbcToClone base GridBagConstraints object
+   * @param gbcToClone base GridBagConstraints object.
    * @param gridx gridx value for new GridBagConstraints object
    * @param gridy gridy value for new GridBagConstraints object
    * @param anchor anchor value for new GridBagConstraints object
@@ -148,7 +148,7 @@ public class MapXmlUIHelper {
   }
 
   /**
-   * @param gbcToClone base GridBagConstraints object
+   * @param gbcToClone base GridBagConstraints object.
    * @param gridx gridx value for new GridBagConstraints object
    * @param gridy gridy value for new GridBagConstraints object
    * @return cloned GridBagConstraints object with provided gridx and gridy values
@@ -176,7 +176,7 @@ public class MapXmlUIHelper {
 
   /**
    *
-   * @param gridx - gridx value for new GridBagConstraints object
+   * @param gridx - gridx value for new GridBagConstraints object.
    * @param gridy - gridx value for new GridBagConstraints object
    * @return new GridBagConstraints based on gbcTemplate and provided data
    */

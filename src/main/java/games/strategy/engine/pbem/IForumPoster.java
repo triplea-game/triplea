@@ -6,11 +6,11 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
- * implementing class supports this
+ * implementing class supports this.
  */
 public interface IForumPoster extends IBean {
   /**
-   * Called when the turn summary should be posted
+   * Called when the turn summary should be posted.
    *
    * @param summary
    *        the forum summary
@@ -21,7 +21,7 @@ public interface IForumPoster extends IBean {
   boolean postTurnSummary(String summary, final String subject);
 
   /**
-   * Get the reference to the posted turn summary
+   * Get the reference to the posted turn summary.
    *
    * @return the reference string, often a URL
    */
@@ -36,7 +36,7 @@ public interface IForumPoster extends IBean {
   boolean getIncludeSaveGame();
 
   /**
-   * Configure if the save game should be included in the summary post
+   * Configure if the save game should be included in the summary post.
    *
    * @param include
    *        true if the save game should be included
@@ -44,14 +44,14 @@ public interface IForumPoster extends IBean {
   void setIncludeSaveGame(boolean include);
 
   /**
-   * Should we also post at the end of combat move
+   * Should we also post at the end of combat move.
    *
    * @return true if the save game should be included in the summary
    */
   boolean getAlsoPostAfterCombatMove();
 
   /**
-   * Configure if we should also post at the end of combat move
+   * Configure if we should also post at the end of combat move.
    *
    * @param include
    *        true if the save game should be included
@@ -59,7 +59,7 @@ public interface IForumPoster extends IBean {
   void setAlsoPostAfterCombatMove(boolean postAlso);
 
   /**
-   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true
+   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true.
    *
    * @param saveGame
    *        the save game file
@@ -68,53 +68,53 @@ public interface IForumPoster extends IBean {
   void addSaveGame(File saveGame, String fileName);
 
   /**
-   * Create a clone of this object
+   * Create a clone of this object.
    *
    * @return the clone
    */
   IForumPoster doClone();
 
   /**
-   * Returns true if this forum poster supports attaching save games
+   * Returns true if this forum poster supports attaching save games.
    *
    * @return true if save games are supported
    */
   boolean supportsSaveGame();
 
   /**
-   * Can you view the forum post with this poster
+   * Can you view the forum post with this poster.
    */
   boolean getCanViewPosted();
 
   /**
-   * Get the user name to login with
+   * Get the user name to login with.
    */
   @Override
   String getDisplayName();
 
   /**
-   * Get the forum id
+   * Get the forum id.
    *
    * @return the forum id
    */
   String getTopicId();
 
   /**
-   * get the user name to login
+   * get the user name to login.
    *
    * @return the user name
    */
   String getUsername();
 
   /**
-   * Get the password to login
+   * Get the password to login.
    *
    * @return the password
    */
   String getPassword();
 
   /**
-   * Set the forum id
+   * Set the forum id.
    *
    * @param forumId
    *        the new forum id
@@ -122,7 +122,7 @@ public interface IForumPoster extends IBean {
   void setTopicId(String forumId);
 
   /**
-   * Set the user name
+   * Set the user name.
    *
    * @param username
    *        the new user name
@@ -130,7 +130,7 @@ public interface IForumPoster extends IBean {
   void setUsername(String username);
 
   /**
-   * Set the password
+   * Set the password.
    *
    * @param password
    *        the new password
@@ -138,17 +138,17 @@ public interface IForumPoster extends IBean {
   void setPassword(String password);
 
   /**
-   * Opens a browser and go to the forum post, identified by the forumId
+   * Opens a browser and go to the forum post, identified by the forumId.
    */
   void viewPosted();
 
   /**
-   * Remove any sensitive information, like passwords before this object is saved in as a game properties
+   * Remove any sensitive information, like passwords before this object is saved in as a game properties.
    */
   void clearSensitiveInfo();
 
   /**
-   * Each poster provides a message that is displayed on the progress bar when testing the poster
+   * Each poster provides a message that is displayed on the progress bar when testing the poster.
    *
    * @return the progress bar message
    */

@@ -9,12 +9,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
 /**
- * Remote interface for MoveDelegate
+ * Remote interface for MoveDelegate.
  */
 public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPosterDelegate {
   /**
    * @param units
-   *        - the units to move
+   *        - the units to move.
    * @param route
    *        - the route to move along
    * @param m_transportsThatCanBeLoaded
@@ -25,7 +25,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
 
   /**
    * @param units
-   *        - the units to move
+   *        - the units to move.
    * @param route
    *        - the route to move along
    * @param m_transportsThatCanBeLoaded
@@ -49,7 +49,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
   String move(Collection<Unit> units, Route route);
 
   /**
-   * Get what air units must move before the end of the players turn
+   * Get what air units must move before the end of the players turn.
    *
    * @param player
    *        referring player ID
@@ -60,7 +60,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /**
-   * Get what units must have combat ability
+   * Get what units must have combat ability.
    *
    * @return a list of Territories with units that can't fight
    */

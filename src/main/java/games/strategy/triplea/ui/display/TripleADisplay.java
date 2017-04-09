@@ -87,7 +87,7 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   /**
-   * Show dice for the given battle and step
+   * Show dice for the given battle and step.
    */
   @Override
   public void notifyDice(final DiceRoll dice, final String stepName) {

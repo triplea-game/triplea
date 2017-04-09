@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 /**
- * A holder for BattleRecords
+ * A holder for BattleRecords.
  */
 public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
@@ -115,7 +115,7 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   /**
-   * Determines if there were any battles that match the following criteria:
+   * Determines if there were any battles that match the specified criteria.
    *
    * @param attacker
    *        if null then any player

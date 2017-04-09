@@ -43,7 +43,7 @@ public final class SettingInputComponentFactory {
   }
 
   /**
-   * Factory method to create instances of this interface, backed by TextField component types
+   * Factory method to create instances of this interface, backed by TextField component types.
    */
   public static <Z extends HasDefaults> SettingInputComponent<Z> buildTextComponent(
       final String label,

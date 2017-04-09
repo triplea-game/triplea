@@ -39,7 +39,7 @@ public class SelectAndViewEditor extends EditorPanel {
   private final String m_defaultHelp;
 
   /**
-   * creates a new editor
+   * creates a new editor.
    *
    * @param labelTitle
    *        the title in front of the combo box
@@ -119,7 +119,7 @@ public class SelectAndViewEditor extends EditorPanel {
 
   /**
    * Aligns label of this editor with the nested editor, by either resizing this (if it is smaller)
-   * or resizing the labels on the nested editor (if it is bigger)
+   * or resizing the labels on the nested editor (if it is bigger).
    */
   private void alignLabels() {
     // resize the label to align with the nested editors labels
@@ -141,7 +141,7 @@ public class SelectAndViewEditor extends EditorPanel {
   }
 
   /**
-   * Sets the list of possible beans to choose from
+   * Sets the list of possible beans to choose from.
    *
    * @param beans
    *        the list of beans
@@ -157,7 +157,7 @@ public class SelectAndViewEditor extends EditorPanel {
   }
 
   /**
-   * Returns the bean being edited
+   * Returns the bean being edited.
    *
    * @return the current bean, or null if the bean doesn't have an editor (is disabled)
    */

@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.ClientFileSystemHelper;
 
-/** Simple panel that shows a list of map download help notes */
+/** Simple panel that shows a list of map download help notes. */
 public class MapDownloadHelpPanel extends JPanel {
   private static final long serialVersionUID = -7254964602067275442L;
 

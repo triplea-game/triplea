@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
 
   /**
    * todo, replace with something better
-   * Get the chat for the game, or null if there is no chat
+   * Get the chat for the game, or null if there is no chat.
    */
   public Chat getChat() {
     final ISetupPanel model = m_setupPanelModel.getPanel();

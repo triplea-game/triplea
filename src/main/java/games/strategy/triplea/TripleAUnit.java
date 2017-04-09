@@ -355,7 +355,7 @@ public class TripleAUnit extends Unit {
 
   /**
    * How much more damage can this unit take?
-   * Will return 0 if the unit cannot be damaged, or is at max damage
+   * Will return 0 if the unit cannot be damaged, or is at max damage.
    */
   public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t) {
     if (!Matches.UnitCanBeDamaged.match(u)) {

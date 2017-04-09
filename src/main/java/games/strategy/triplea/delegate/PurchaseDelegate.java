@@ -147,7 +147,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   /**
-   * subclasses can over ride this method to use different restrictions as to what a player can buy
+   * subclasses can over ride this method to use different restrictions as to what a player can buy.
    */
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
     return player.getResources().has(costs);

@@ -470,7 +470,7 @@ public class MapXmlHelper {
 
   /**
    * @param gameNode
-   * @return step to go to
+   * @return step to go to.
    */
   public static GameStep parseGameNode(final Node gameNode) {
     GameStep stepToGo = MapXmlCreator.GAME_STEP_FIRST;
@@ -941,10 +941,6 @@ public class MapXmlHelper {
     return doc;
   }
 
-  /**
-   * @param doc
-   * @param game
-   */
   private static void appendInitialize(final Document doc, final Element game) {
     final Element initialize = doc.createElement(XML_NODE_NAME_INITIALIZE);
     game.appendChild(initialize);
@@ -956,10 +952,6 @@ public class MapXmlHelper {
     appendPropertyList(doc, game);
   }
 
-  /**
-   * @param doc
-   * @param game
-   */
   private static void appendPropertyList(final Document doc, final Element game) {
     final Element propertyList = doc.createElement(XML_NODE_NAME_PROPERTY_LIST);
     game.appendChild(propertyList);
@@ -1279,7 +1271,7 @@ public class MapXmlHelper {
 
   // TODO REPLACE 'endsWith("NonCombatMove")'-checks IN REMAINING PROJEKT
   /**
-   * @param stepName - string of the step name
+   * @param stepName - string of the step name.
    * @return true if string ends with "NonCombatMove", false otherwise
    */
   private static boolean stepNameIndicatesNonCombatMove(final String stepName) {

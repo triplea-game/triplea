@@ -28,7 +28,7 @@ public class EditProductionPanel extends ProductionPanel {
     return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
   }
 
-  /** Creates new ProductionPanel */
+  /** Creates new EditProductionPanel. */
   private EditProductionPanel(final IUIContext uiContext) {
     super(uiContext);
   }

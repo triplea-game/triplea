@@ -77,7 +77,7 @@ public class PoliticsPanel extends ActionPanel {
 
   /**
    * waits till someone calls release() and then returns the political action
-   * chosen
+   * chosen.
    *
    * @return the choice of political action
    */
@@ -108,7 +108,7 @@ public class PoliticsPanel extends ActionPanel {
 
   /**
    * Fires up a JDialog showing the political landscape and valid actions,
-   * choosing an action will release this model and trigger waitForRelease()
+   * choosing an action will release this model and trigger waitForRelease().
    */
   private final Action SelectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -191,7 +191,7 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   /**
-   * This will stop the politicsPhase
+   * This will stop the politicsPhase.
    */
   private final Action DontBotherAction = SwingAction.of("Done", e -> {
     if (!m_firstRun || youSureDoNothing()) {

@@ -36,7 +36,7 @@ import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.UrlStreams;
 
 /**
- * contains data about the territories useful for drawing
+ * contains data about the territories useful for drawing.
  */
 public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
@@ -471,14 +471,14 @@ public class MapData implements Closeable {
   }
 
   /**
-   * returns the named property, or null
+   * returns the named property, or null.
    */
   public String getProperty(final String propertiesKey) {
     return m_mapProperties.getProperty(propertiesKey);
   }
 
   /**
-   * returns the color for impassable territories
+   * returns the color for impassable territories.
    */
   public Color impassableColor() {
     // just use getPlayerColor, since it parses the properties
@@ -494,7 +494,7 @@ public class MapData implements Closeable {
   }
 
   /**
-   * Does this territory have any territories contained within it
+   * Does this territory have any territories contained within it.
    */
   public boolean hasContainedTerritory(final String territoryName) {
     return m_contains.containsKey(territoryName);

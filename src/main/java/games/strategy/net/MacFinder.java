@@ -21,7 +21,7 @@ import games.strategy.util.MD5Crypt;
 public class MacFinder {
 
   /**
-   * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
+   * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3.
    */
   public static String getHashedMacAddress() {
     final String mac = getMacAddress();

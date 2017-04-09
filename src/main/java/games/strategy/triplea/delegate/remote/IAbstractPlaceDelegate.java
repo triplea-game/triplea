@@ -9,7 +9,7 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   /**
    * @param units
-   *        units to place
+   *        units to place.
    * @param at
    *        territory to place
    * @return an error code if the placement was not successful
@@ -39,12 +39,12 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   /**
    * @return the number of placements made so far.
    *         this is not the number of units placed, but the number
-   *         of times we have made successful placements
+   *         of times we have made successful placements.
    */
   int getPlacementsMade();
 
   /**
-   * Get what air units must move before the end of the players turn
+   * Get what air units must move before the end of the players turn.
    *
    * @return a list of Territories with air units that must move
    */

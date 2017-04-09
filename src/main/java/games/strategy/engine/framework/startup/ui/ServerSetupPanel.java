@@ -46,7 +46,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.ThreadUtil;
 
-/** Setup panel displayed for hosting a non-lobby network game (using host option from main panel) */
+/** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
   private static final long serialVersionUID = -2849872641665561807L;
   private final ServerModel m_model;

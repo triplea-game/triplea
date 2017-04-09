@@ -15,7 +15,7 @@ public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource m_plainRandom = new PlainRandomSource();
 
   /**
-   * converts an int[] to a bytep[
+   * converts an int[] to a byte[].
    */
   public static byte[] intsToBytes(final int[] ints) {
     final byte[] rVal = new byte[ints.length * 4];

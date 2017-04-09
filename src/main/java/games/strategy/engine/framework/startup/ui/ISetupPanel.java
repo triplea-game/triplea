@@ -27,14 +27,14 @@ public interface ISetupPanel extends java.io.Serializable {
   IChatPanel getChatPanel();
 
   /**
-   * Cleanup should occur here that occurs when we cancel
+   * Cleanup should occur here that occurs when we cancel.
    */
   void cancel();
 
   void shutDown();
 
   /**
-   * Can we start the game?
+   * Indicates we can start the game.
    */
   boolean canGameStart();
 
