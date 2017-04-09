@@ -146,8 +146,8 @@ public class ProBidAI {
       if (Matches.UnitTypeIsSub.match(x)) {
         subProductionRules.add(ruleCheck);
       }
-      if (Matches.UnitTypeIsCarrier.match(x)) // might be more than 1 carrier rule...use the one which will hold the
-                                              // most fighters
+      // might be more than 1 carrier rule...use the one which will hold the most fighters
+      if (Matches.UnitTypeIsCarrier.match(x))
       {
         final int thisFighterLimit = UnitAttachment.get(x).getCarrierCapacity();
         if (thisFighterLimit >= carrierFighterLimit) {
@@ -164,11 +164,9 @@ public class ProBidAI {
         }
       }
     }
-    if (averageSeaMove / seaProductionRules.size() >= 1.8) // most sea units move at least 2 movement, so remove any sea
-                                                           // units with 1
-                                                           // movement (dumb t-boats) (some maps like 270BC have mostly
-                                                           // 1 movement sea
-                                                           // units, so we must be sure not to remove those)
+    // most sea units move at least 2 movement, so remove any sea units with 1 movement (dumb t-boats) (some maps like
+    // 270BC have mostly 1 movement sea units, so we must be sure not to remove those)
+    if (averageSeaMove / seaProductionRules.size() >= 1.8)
     {
       final List<ProductionRule> seaProductionRulesCopy = new ArrayList<>(seaProductionRules);
       for (final ProductionRule seaRule : seaProductionRulesCopy) {
@@ -183,8 +181,8 @@ public class ProBidAI {
       }
     }
     if (subProductionRules.size() > 0 && seaProductionRules.size() > 0) {
-      if (subProductionRules.size() / seaProductionRules.size() < 0.3) // remove submarines from consideration, unless
-                                                                       // we are mostly subs
+      // remove submarines from consideration, unless we are mostly subs
+      if (subProductionRules.size() / seaProductionRules.size() < 0.3)
       {
         seaProductionRules.removeAll(subProductionRules);
       }
@@ -222,9 +220,8 @@ public class ProBidAI {
             PUsToSpend, buyLimit, data, player, 2);
       }
     } else if (Math.random() < 0.35) {
-      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) { // force a carrier purchase if enough
-                                                                                // available $$ for it and
-                                                                                // at least 1 fighter
+      // force a carrier purchase if enough available $$ for it and at least 1 fighter
+      if (Math.random() > 0.55 && carrierRule != null && fighterRule != null) {
         final int cost = carrierRule.getCosts().getInt(pus);
         final int fighterCost = fighterRule.getCosts().getInt(pus);
         if ((cost + fighterCost) <= PUsToSpend) {
@@ -1352,8 +1349,8 @@ public class ProBidAI {
   /**
    * List containing the enemy Capitals
    */
-  private static List<Territory> getEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of
-                                                                                                // all enemy capitals
+  private static List<Territory> getEnemyCapitals(final GameData data, final PlayerID player) {
+    // generate a list of all enemy capitals
     final List<Territory> enemyCapitals = new ArrayList<>();
     final List<PlayerID> ePlayers = getEnemyPlayers(data, player);
     for (final PlayerID otherPlayer : ePlayers) {
@@ -2136,11 +2133,8 @@ public class ProBidAI {
    * @neutral - count an attackable neutral as a land neighbor
    * @return boolean (true if a land territory is a neighbor to t
    */
-  private static boolean doesLandExistAt(final Territory t, final GameData data, final boolean neutral) { // simply: is
-                                                                                                          // this
-                                                                                                          // territory
-                                                                                                          // surrounded
-                                                                                                          // by water
+  private static boolean doesLandExistAt(final Territory t, final GameData data, final boolean neutral) {
+    // simply: is this territory surrounded by water
     boolean isLand = false;
     final Set<Territory> checkList = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
     if (!neutral) {

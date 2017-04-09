@@ -37,8 +37,8 @@ public class RouteTest {
 
   @Before
   public void setUp() {
-    dummyRoute.add(mock(Territory.class));// This will be overridden with the startPoint, since it's the origin
-                                          // territory
+    // This will be overridden with the startPoint, since it's the origin territory
+    dummyRoute.add(mock(Territory.class));
     dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1].toPoint());
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));

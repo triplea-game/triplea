@@ -372,8 +372,7 @@ public class PlacementPicker extends JFrame {
     editMenu.add(showIncompleteModeItem);
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
-  } // end
-   // constructor
+  } // end constructor
 
   /**
    * createImage(java.lang.String)

@@ -210,8 +210,7 @@ public class ValidateAttachmentsTest {
       Class<?> clazz;
       try {
         clazz = Class.forName(className);
-        if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) // &&
-                                                                               // !Modifier.isAbstract(clazz.getModifiers())
+        if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz))
         {
           @SuppressWarnings("unchecked")
           final Class<? extends IAttachment> attachmentClass = (Class<? extends IAttachment>) clazz;

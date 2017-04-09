@@ -50,8 +50,8 @@ public abstract class ImageScrollPanePanel {
     return mapXmlCreator;
   }
 
-  protected static Map<String, List<Polygon>> polygons = Maps.newHashMap(); // hash map for polygon
-                                                                            // points
+  // hash map for polygon points
+  protected static Map<String, List<Polygon>> polygons = Maps.newHashMap();
   public static boolean polygonsInvalid = true;
 
   private JPanel imagePanel;

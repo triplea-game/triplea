@@ -589,12 +589,7 @@ public class MapXmlCreator extends JFrame {
               "Help For Current Step");
           break;
 
-        case TERRITORY_DEFINITIONS: // showInfoMessage("To add a new territory, click somewhere on the map and enter a
-                                    // name for the
-          // territory in the window that appears. \r If you want to change the properties of a territory,
-          // left click on it and answer each question. The color of the territory label changes for each
-          // property that is applies. If you want to remove a territory label, right click on it and click yes
-          // when it asks for confirmation.", "Help For Current Step");
+        case TERRITORY_DEFINITIONS:
           showInfoMessage(
               "Right click to rename a territory. \r If you want to change the properties of a territory, left click on it. \r The color of the territory label changes for each property that is applied.",
               "Help For Current Step");

@@ -273,8 +273,8 @@ public class ProLogWindow extends javax.swing.JDialog {
     final int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all AI settings?",
         "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
-      final ProLogSettings defaultSettings = new ProLogSettings(); // Default settings are already contained in a new
-                                                                   // DSettings instance
+      // Default settings are already contained in a new DSettings instance
+      final ProLogSettings defaultSettings = new ProLogSettings();
       loadSettings(defaultSettings);
       JOptionPane.showMessageDialog(rootPane,
           "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
