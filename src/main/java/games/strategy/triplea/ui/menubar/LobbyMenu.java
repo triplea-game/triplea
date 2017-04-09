@@ -349,8 +349,8 @@ public class LobbyMenu extends JMenuBar {
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder");
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    final JMenuItem warClub = new JMenuItem("TripleA Forum");
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
 
   }
