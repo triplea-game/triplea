@@ -28,9 +28,9 @@ public class WebHelpMenu {
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder");
+    final JMenuItem warClub = new JMenuItem("TripleA Forum");
     warClub.setMnemonic(KeyEvent.VK_W);
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
 
     final JMenuItem donateLink = new JMenuItem("Donate");
