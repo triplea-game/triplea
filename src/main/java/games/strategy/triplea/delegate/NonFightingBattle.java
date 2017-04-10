@@ -161,9 +161,6 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
-  /*
-  * Add dependent units - suppress javadoc error
-  */
   public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);

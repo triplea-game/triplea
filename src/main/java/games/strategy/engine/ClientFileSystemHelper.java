@@ -101,7 +101,7 @@ public final class ClientFileSystemHelper {
 
   private static boolean folderContainsGamePropsFile(File folder) {
     if (!folder.isDirectory()) {
-      folder = new File(folder.toString().substring(5));
+      folder = new File(folder.toString().substring(5));                // strip off "file:" prefix
     }
     final File[] files = folder.listFiles();
     final List<String> fileNames =
