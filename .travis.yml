@@ -18,8 +18,8 @@ before_deploy:
 ## Add the travis build number to the game engine version
 - GAME_CONFIG=game_engine.properties
 - VERSION_SOURCE=src/main/java/games/strategy/engine/config/GameEnginePropertyFileReader.java
-- ENGINE_VERSION=$(grep "public static final String GAME_ENGINE_VERSION *=" $VERSION_SOURCE | sed 's/.*="//g' | cut -d\" -f2)
-- [ "$ENGINE_VERSION"="" ] && echo "$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER" >> $GAME_CONFIG
+- ENGINE_VERSION=$(grep "public static final String GAME_ENGINE_VERSION *=" $VERSION_SOURCE | sed 's/.*=//g' | cut -d\" -f2)
+- test "$ENGINE_VERSION" = "" && echo "$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER" >> $GAME_CONFIG
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 ## Run the gradle release build process - creates the installers
 - ./gradlew --no-daemon release
