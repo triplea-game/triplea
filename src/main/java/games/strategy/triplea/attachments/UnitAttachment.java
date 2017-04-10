@@ -444,8 +444,8 @@ public class UnitAttachment extends DefaultAttachment {
   public void setWhenCapturedChangesInto(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 5 || (s.length - 1) % 2 != 0) {
-      throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
-          + "playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc"
+      throw new GameParseException("whenCapturedChangesInto must have 5 or more values, playerFrom:playerTo:"
+          + "keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc"
           + thisErrorMsg());
     }
     final PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);

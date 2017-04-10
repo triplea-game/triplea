@@ -99,7 +99,8 @@ public class EngineVersionProperties {
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
     text.append("<br />Your current version: ").append(ClientContext.engineVersion().getFullVersion());
     text.append("<br />Latest version available for download: ").append(getLatestVersionOut());
-    text.append("<br /><br />Click to download: <a class=\"external\" href=\"").append(getLinkToDownloadLatestVersion())
+    text.append("<br /><br />Click to download: <a class=\"external\" href=\"")
+        .append(getLinkToDownloadLatestVersion())
         .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");
     text.append("<br />Backup Mirror: <a class=\"external\" href=\"").append(getLinkAltToDownloadLatestVersion())
         .append("\">").append(getLinkAltToDownloadLatestVersion()).append("</a>");
