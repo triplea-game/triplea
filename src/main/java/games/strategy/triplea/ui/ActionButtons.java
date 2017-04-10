@@ -247,9 +247,7 @@ public class ActionButtons extends JPanel {
   }
 
   /**
-   * Blocks until the user selects an end-of-turn action
-   *
-   * @return null if no action was made.
+   * Blocks until the user selects an end-of-turn action.
    */
   public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
     m_endTurnPanel.waitForEndTurn(frame, bridge);

@@ -8,8 +8,10 @@ import games.strategy.net.INode;
 public interface IModeratorController extends IRemote {
   /**
    * Boot the given INode from the network.
+   *
    * <p>
    * This method can only be called by admin users.
+   * </p>
    */
   void boot(INode node);
 
@@ -20,6 +22,7 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Ban the ip of the given INode.
+   *
    * @deprecated Remove usages of this, banUserName and banMac are sufficient
    */
   @Deprecated
@@ -42,6 +45,7 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Mute the ip of the given INode.
+   *
    * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
    */
   @Deprecated
@@ -96,9 +100,11 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Reset the password of the given user. Returns null if the password was updated without error.
+   *
    * <p>
    * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.
-   * <p>
+   * </p>
+   *
    * @deprecated Remove usages of this. Does not make sense for moderators to be able to reset passwords of logged
    *             in users.
    */

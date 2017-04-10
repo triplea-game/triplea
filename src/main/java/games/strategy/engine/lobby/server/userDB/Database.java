@@ -23,15 +23,22 @@ import games.strategy.util.ThreadUtil;
 
 /**
  * Utility to get connections to the database.
+ *
  * <p>
  * The database is embedded within the jvm.
+ * </p>
+ *
  * <p>
  * Getting a connection will cause the database (and the neccessary tables) to be created if it does not already exist.
+ * </p>
+ *
  * <p>
  * The database will be shutdown on System.exit through a shutdown hook.
+ * </p>
+ *
  * <p>
  * Getting a connection will also schedule backups at regular intervals.
- * <p>
+ * </p>
  */
 public class Database {
   private static final Logger s_logger = Logger.getLogger(Database.class.getName());

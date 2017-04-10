@@ -14,15 +14,18 @@ import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Utility class for ensuring that locks are acquired in a consistent order.
+ *
  * <p>
  * Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(), lock.release(). If locks
  * are acquired in an
  * inconsistent order, an error message will be printed.
+ * </p>
+ *
  * <p>
  * This class is not terribly good for multithreading as it locks globally on all calls, but that is ok, as this code is
  * meant more for when
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
- * <p>
+ * </p>
  */
 public enum LockUtil {
   INSTANCE;

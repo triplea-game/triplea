@@ -41,9 +41,10 @@ import games.strategy.net.UniversalPlugAndPlayHelper;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
+ *
  * <p>
  * This class opens its own connection to the lobby, and its own messenger.
- * <p>
+ * </p>
  */
 public class InGameLobbyWatcher {
   public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
@@ -69,9 +70,10 @@ public class InGameLobbyWatcher {
 
   /**
    * Reads SystemProperties to see if we should connect to a lobby server
+   *
    * <p>
    * After creation, those properties are cleared, since we should watch the first start game.
-   * <p>
+   * </p>
    *
    * @return null if no watcher should be created
    */

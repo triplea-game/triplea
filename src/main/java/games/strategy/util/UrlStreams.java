@@ -31,10 +31,10 @@ public final class UrlStreams {
   /**
    * Opens an input stream to a given uri.
    *
-   * @throws IllegalStateException if the given uri is malformed
-   *
    * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
    *         containing an input stream to the parameter uri.
+   *
+   * @throws IllegalStateException if the given uri is malformed
    */
   public static Optional<InputStream> openStream(final URI uri) {
     try {

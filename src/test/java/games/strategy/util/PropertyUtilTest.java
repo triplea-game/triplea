@@ -10,9 +10,13 @@ import games.strategy.triplea.attachments.RulesAttachment;
 /**
  * PropertyUtil test sets / gets variables via reflection.
  *
+ * <p>
  * The set in PropertyUtil done through a setter method, the get is done by reading the private variable value directly.
+ * </p>
  *
+ * <p>
  * To test we set up some sample test objects and do read/set property operations on them.
+ * </p>
  */
 public class PropertyUtilTest {
   @Test

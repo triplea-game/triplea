@@ -35,9 +35,14 @@ import games.strategy.ui.SwingAction;
 
 /**
  * A Chat window.
+ *
+ * <p>
  * Mutiple chat panels can be connected to the same Chat.
+ * </p>
+ *
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
+ * </p>
  */
 public class ChatMessagePanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;

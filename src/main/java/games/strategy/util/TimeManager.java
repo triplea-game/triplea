@@ -7,7 +7,6 @@ import java.util.SimpleTimeZone;
 
 public class TimeManager {
   /**
-   *
    * Replacement for Date.toGMTString();
    *
    * @param date The Date being returned as String

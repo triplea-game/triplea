@@ -28,7 +28,7 @@ public class CompositeRouteFinder {
    * way.
    *
    * @param map
-   *        - Game map found through <gamedata>.getMap()
+   *        - Game map found through &lt;gamedata>.getMap()
    * @param matches
    *        - Set of matches and scores. The lower a match is scored, the more favorable it is.
    */

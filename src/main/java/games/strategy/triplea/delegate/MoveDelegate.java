@@ -35,8 +35,10 @@ import games.strategy.util.Match;
 
 /**
  * Responsible for moving units on the board.
+ *
  * <p>
- * Responsible for checking the validity of a move, and for moving the units. <br>
+ * Responsible for checking the validity of a move, and for moving the units.
+ * </p>
  */
 public class MoveDelegate extends AbstractMoveDelegate {
 

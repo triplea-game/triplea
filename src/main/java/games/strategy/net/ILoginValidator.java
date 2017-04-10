@@ -5,7 +5,6 @@ import java.util.Map;
 
 /**
  * Code to validate a login attempt.
- * <p>
  */
 public interface ILoginValidator {
   /**

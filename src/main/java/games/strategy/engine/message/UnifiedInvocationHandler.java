@@ -9,7 +9,9 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
 /**
  * Invocation handler for the UnifiedMessenger.
  *
+ * <p>
  * Handles the invocation for a channel
+ * </p>
  */
 class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final UnifiedMessenger m_messenger;

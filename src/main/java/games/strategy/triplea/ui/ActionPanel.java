@@ -49,11 +49,14 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Waitfor another thread to call release.
    * If the thread is interupted, we will return silently.
+   *
    * <p>
    * A memory barrier will be crossed both on entering and before exiting this method.
+   * </p>
+   *
    * <p>
    * This method will return in the event of the game shutting down.
-   * <p>
+   * </p>
    */
   protected void waitForRelease() {
     if (Thread.currentThread().isInterrupted()) {
@@ -79,9 +82,10 @@ public abstract class ActionPanel extends JPanel {
 
   /**
    * Release the latch acquired by waitOnNewLatch()
+   *
    * <p>
    * This method will crossed on entering this method.
-   * <p>
+   * </p>
    */
   protected void release() {
     synchronized (m_latchLock) {

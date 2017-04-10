@@ -269,9 +269,12 @@ public class MapXmlData {
    *
    * <p>
    * <b>Example:</b>
+   * </p>
    *
    * <p>
    * Output:
+   * </p>
+   *
    * <ul>
    * <li>map1 { land1 -> {water1, water2} }
    * <li>map2 { water3 -> {land2, land3} }
@@ -311,14 +314,21 @@ public class MapXmlData {
    *
    * <p>
    * <b>Example:</b>
+   * </p>
+   *
    * <p>
    * Input:
+   * </p>
+   *
    * <ul>
    * <li>map1 = { land1 -> {water1, water2} }
    * <li>map2 = { water3 -> {land2, land3} }
    * </ul>
+   *
    * <p>
    * Output:
+   * </p>
+   *
    * <ul>
    * <li>map1 = { land1 -> {water1, water2, water3} }
    * <li>map2 = { water3 -> {land2, land3} }

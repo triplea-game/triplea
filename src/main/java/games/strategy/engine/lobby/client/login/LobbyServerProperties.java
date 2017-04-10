@@ -4,14 +4,19 @@ import java.util.Map;
 
 /**
  * Server properties.
+ *
  * <p>
  * Generally there is one lobby server, but that server may move.
+ * </p>
+ *
  * <p>
  * To keep track of this, we always have a properties file in a constant location that points to the current lobby
  * server.
+ * </p>
+ *
  * <p>
  * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
- * <p>
+ * </p>
  */
 public class LobbyServerProperties {
   public final String host;

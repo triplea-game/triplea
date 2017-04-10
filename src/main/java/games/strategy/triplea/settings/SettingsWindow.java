@@ -28,13 +28,28 @@ import games.strategy.ui.SwingComponents;
  * game settings. The window handles generic logic around preferences, each tab will specify configuration values for
  * the settings.
  *
+ * <p>
  * Overall layout:
- * - Primary element is a JTabbed pain, the contents are organized into rows, one row per option presented to the user.
+ * </p>
+ *
+ * <ul>
+ * <li>Primary element is a JTabbed pain, the contents are organized into rows, one row per option presented to the
+ * user.</li>
+ * </ul>
+ *
+ * <p>
  * Each row consists of: label, swing input, detailed description
- * - Then we have some buttons:
- * - default (revert) settings
- * - save settings
- * - close window
+ * </p>
+ *
+ * <p>
+ * Then we have some buttons:
+ * </p>
+ *
+ * <ul>
+ * <li>default (revert) settings</li>
+ * <li>save settings</li>
+ * <li>close window</li>
+ * </ul>
  */
 public class SettingsWindow extends SwingComponents.ModalJDialog {
 

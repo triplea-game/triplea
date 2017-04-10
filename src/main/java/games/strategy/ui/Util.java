@@ -150,8 +150,8 @@ public final class Util {
    * -> polygons map.
    *
    * @param java.awt.point p - a point on the map
-   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
-   * @return Optional<String>
+   * @param terrPolygons a map territory name -> polygons
+   * @return Optional&lt;String>
    */
   public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
     return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
@@ -163,7 +163,7 @@ public final class Util {
    * -> polygons map. If no land or sea territory has been found a default name is returned.
    *
    * @param java.awt.point p - a point on the map
-   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
+   * @param terrPolygons a map territory name -> polygons
    * @param String defaultTerrName - default territory name that gets returns if nothing was found
    * @return found territory name of defaultTerrName
    */

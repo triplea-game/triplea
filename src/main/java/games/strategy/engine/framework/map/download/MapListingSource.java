@@ -14,7 +14,9 @@ import games.strategy.engine.config.PropertyReader;
  * to find the "triplea_map.xml" file, whether that be a URL, or a local file path relative to
  * the game root folder.
  *
+ * <p>
  * Can be used to create a <code>MapDownloadAction</code>
+ * </p>
  */
 public class MapListingSource {
   private final String mapListDownloadSite;

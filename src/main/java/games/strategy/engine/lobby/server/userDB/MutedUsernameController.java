@@ -26,8 +26,10 @@ public class MutedUsernameController {
 
   /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
+   *
    * <p>
    * If this username is already muted, this call will update the mute_end.
+   * </p>
    */
   public void addMutedUsername(final String username, final Date muteTill) {
     if (isUsernameMuted(username)) {

@@ -13,10 +13,21 @@ public class Triple<F, S, T> implements Serializable {
   /**
    * Static creation method to create a new instance of a triple with the parameters provided.
    *
+   * <p>
    * This method allows for nicer triple creation syntax, namely:
-   * Triple<String,Integer,String> myTriple = Triple.of("abc",123,"xyz");
+   * </p>
+   *
+   * <pre>
+   * Triple&lt;String, Integer, String> myTriple = Triple.of("abc", 123, "xyz");
+   * </pre>
+   *
+   * <p>
    * Instead of:
-   * Triple<String,Integer,String> myTriple = new Triple<String,Integer,String>("abc",123,"xyz");
+   * </p>
+   *
+   * <pre>
+   * Triple&lt;String, Integer, String> myTriple = new Triple&lt;String, Integer, String>("abc", 123, "xyz");
+   * </pre>
    */
   public static <F, S, T> Triple<F, S, T> of(final F first, final S second, final T third) {
     return new Triple<>(first, second, third);

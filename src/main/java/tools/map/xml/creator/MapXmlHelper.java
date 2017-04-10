@@ -1479,7 +1479,7 @@ public class MapXmlHelper {
 
   /**
    * @return HTML string listing the canal definitions in the following format:
-   *         ' - <canal name>: <water territory 1>-<water territory 2>- ...'
+   *         ' - &lt;canal name>: &lt;water territory 1>-&lt;water territory 2>- ...'
    */
   public static String getHtmlStringFromCanalDefinitions() {
     final StringBuilder sb = new StringBuilder();

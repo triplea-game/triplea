@@ -51,8 +51,10 @@ public interface IGameLoader extends Serializable {
 
   /**
    * Get the type of the GamePlayer.
+   *
    * <p>
    * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotately
+   * </p>
    */
   Class<? extends IRemote> getRemotePlayerType();
 
@@ -61,9 +63,10 @@ public interface IGameLoader extends Serializable {
   /**
    * A game may use a subclass of Unit to allow associating data with a particular unit. The
    * game does this by specifying a IUnitFactory that should be used to create units.
+   *
    * <p>
    * Games that do not want to subclasses of units should simply return a DefaultUnitFactory.
-   * <p>
+   * </p>
    */
   IUnitFactory getUnitFactory();
 }

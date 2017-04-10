@@ -30,12 +30,18 @@ import games.strategy.util.Version;
 
 /**
  * Central place to find all the information for a running game.
+ *
+ * <p>
  * Using this object you can find the territories, connections, production rules,
  * unit types...
+ * </p>
+ *
  * <p>
  * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a
  * read/write lock. If
  * you are reading the game data, you should read while you have the read lock as below.
+ * </p>
+ *
  * <p>
  * <code>
  * data.acquireReadLock();
@@ -51,11 +57,13 @@ import games.strategy.util.Version;
  * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates
  * remote interface. The
  * delegate will have a read lock for the duration of those methods.
+ * </p>
+ *
  * <p>
  * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a
  * DelegateBridge or through a
  * History object.
- * <p>
+ * </p>
  */
 public class GameData implements java.io.Serializable {
   private static final long serialVersionUID = -2612710634080125728L;

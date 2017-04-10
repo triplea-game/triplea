@@ -1102,7 +1102,9 @@ public class ProBidAI {
   /**
    * Return Territories containing any unit depending on unitCondition.
    *
+   * <p>
    * Differs from findCertainShips because it doesn't require the units be owned
+   * </p>
    */
   private static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units

@@ -25,11 +25,12 @@ import games.strategy.util.Tuple;
 
 /**
  * Extended unit for triplea games.
+ *
  * <p>
  * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
  * on this directly will
  * not serialize the changes across the network.
- * <p>
+ * </p>
  */
 public class TripleAUnit extends Unit {
   // compatable with 0.9.2

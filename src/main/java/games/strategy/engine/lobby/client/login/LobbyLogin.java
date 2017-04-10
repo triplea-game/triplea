@@ -30,8 +30,10 @@ public class LobbyLogin {
 
   /**
    * Attempt to login to the LobbyServer
+   *
    * <p>
    * If we could not login, return null.
+   * </p>
    */
   public LobbyClient login() {
     if (!m_serverProperties.isServerAvailable()) {

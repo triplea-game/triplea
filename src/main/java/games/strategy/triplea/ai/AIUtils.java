@@ -34,9 +34,10 @@ public class AIUtils {
 
   /**
    * How many PU's does it cost the given player to produce the given unit type.
+   *
    * <p>
    * If the player cannot produce the given unit, return Integer.MAX_VALUE
-   * <p>
+   * </p>
    */
   static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
@@ -50,8 +51,10 @@ public class AIUtils {
 
   /**
    * Get the production rule for the given player, for the given unit type.
+   *
    * <p>
    * If no such rule can be found, then return null.
+   * </p>
    */
   private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();

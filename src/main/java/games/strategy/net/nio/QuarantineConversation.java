@@ -2,13 +2,18 @@ package games.strategy.net.nio;
 
 /**
  * When a connection is first made, it is quarantined until it logs in.
+ *
  * <p>
  * When quaratined, all messages sent by the node are sent to this quarntine conversation.
+ * </p>
+ *
  * <p>
  * The quarantine conversation can only write to the node across the socket from it.
+ * </p>
+ *
  * <p>
  * All messages sent to a conversation must be done in the Decode thread.
- * <p>
+ * </p>
  */
 public abstract class QuarantineConversation {
   public static enum ACTION {

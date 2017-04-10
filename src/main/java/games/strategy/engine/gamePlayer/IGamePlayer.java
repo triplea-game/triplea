@@ -4,8 +4,10 @@ import games.strategy.engine.data.PlayerID;
 
 /**
  * A player of the game.
+ *
  * <p>
  * Game players communicate to the game through a PlayerBridge.
+ * </p>
  */
 public interface IGamePlayer extends IRemotePlayer {
   /**

@@ -7,10 +7,14 @@ import com.apple.eawt.QuitResponse;
 
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
+ *
  * <p>
  * Based on TripleA code.
+ * </p>
+ *
  * <p>
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
+ * </p>
  */
 public class MacQuitMenuWrapper {
   private static MainGameFrame shutdownFrame;

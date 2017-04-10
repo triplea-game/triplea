@@ -25,7 +25,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
- * Battle in which no fighting occurs. <b>
+ * Battle in which no fighting occurs.
  * Example is a naval invasion into an empty country,
  * but the battle cannot be fought until a naval battle
  * occurs.
