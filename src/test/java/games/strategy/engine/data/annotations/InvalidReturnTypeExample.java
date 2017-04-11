@@ -18,8 +18,7 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
   @SuppressWarnings("unused")
   private String m_attribute;
 
-  public int getAttribute() // is not returning our variable, so should cause test to fail
-  {
+  public int getAttribute() { // is not returning our variable, so should cause test to fail
     return 1;
   }
 

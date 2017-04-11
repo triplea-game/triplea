@@ -495,6 +495,7 @@ public class BattlePanel extends ActionPanel {
       }
     }
   }
+
   class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
     Territory m_territory;

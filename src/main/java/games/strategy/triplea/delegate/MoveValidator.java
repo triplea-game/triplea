@@ -418,10 +418,9 @@ public class MoveValidator {
           && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
         return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
       }
-    }
     // if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules
     // stop us
-    else if (Match.someMatch(units, Matches.UnitIsSea) || route.someMatch(Matches.TerritoryIsWater)) {
+    } else if (Match.someMatch(units, Matches.UnitIsSea) || route.someMatch(Matches.TerritoryIsWater)) {
       // if there are neutral or owned territories, we cannot move through them (only under old rules. under new rules
       // we can move through
       // owned sea zones.)
@@ -991,16 +990,14 @@ public class MoveValidator {
           for (final Unit unit : TransportTracker.transporting(transport)) {
             result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
           }
-        }
         // check whether transport is restricted to another territory
-        else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
+        } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
           final Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
           for (final Unit unit : TransportTracker.transporting(transport)) {
             result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
           }
-        }
         // Check if the transport has already loaded after being in combat
-        else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {
+        } else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {
           for (final Unit unit : TransportTracker.transporting(transport)) {
             result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT, unit);
           }

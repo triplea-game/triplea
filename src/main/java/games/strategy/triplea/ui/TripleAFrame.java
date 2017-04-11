@@ -1382,7 +1382,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public static int save(final String filename, final GameData m_data) {
-    try (FileOutputStream fos = new FileOutputStream(filename); ObjectOutputStream oos = new ObjectOutputStream(fos);) {
+    try (FileOutputStream fos = new FileOutputStream(filename); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
       oos.writeObject(m_data);
       return 0;
     } catch (final Throwable t) {

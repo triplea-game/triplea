@@ -68,10 +68,10 @@ public class MersenneTwister extends Random {
   private static final int TEMPERING_MASK_B = 0x9d2c5680;
   private static final int TEMPERING_MASK_C = 0xefc60000;
   // the array for the state vector
-  private int m_mt[];
+  private int[] m_mt;
   // mti==N+1 means mt[N] is not initialized
   private int mti;
-  private int mag01[];
+  private int[] mag01;
   /*
    * implemented here because there's a bug in Random's implementation
    * of the Gaussian code (divide by zero, and log(0), ugh!), yet its
@@ -175,8 +175,7 @@ public class MersenneTwister extends Random {
   @Override
   protected synchronized int next(final int bits) {
     int y;
-    if (mti >= N) // generate N words at one time
-    {
+    if (mti >= N) { // generate N words at one time
       int kk;
       // locals are slightly faster
       final int[] mt = this.m_mt;

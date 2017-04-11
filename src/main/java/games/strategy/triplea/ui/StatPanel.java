@@ -161,6 +161,7 @@ public class StatPanel extends AbstractStatPanel {
       return (JComponent) value;
     }
   }
+
   /**
    * Custom table model.
    * This model is thread safe.
@@ -284,6 +285,7 @@ public class StatPanel extends AbstractStatPanel {
       repaint();
     }
   }
+
   class TechTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -4612476336419396081L;
     /* Flag to indicate whether data needs to be recalculated */
@@ -446,6 +448,7 @@ public class StatPanel extends AbstractStatPanel {
       isDirty = true;
     }
   }
+
   class ProductionStat extends AbstractStat {
     @Override
     public String getName() {
@@ -467,11 +470,13 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
+
   class PUStat extends ResourceStat {
     public PUStat() {
       super(getResourcePUs(m_data));
     }
   }
+
   class UnitsStat extends AbstractStat {
     @Override
     public String getName() {
@@ -488,6 +493,7 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
+
   class TUVStat extends AbstractStat {
     @Override
     public String getName() {
@@ -506,6 +512,7 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
+
   class VictoryCityStat extends AbstractStat {
     @Override
     public String getName() {
@@ -530,6 +537,7 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
+
   class VPStat extends AbstractStat {
     @Override
     public String getName() {

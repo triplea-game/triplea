@@ -66,8 +66,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAverageAttackingUnitsLeft() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -82,8 +81,7 @@ public class AggregateResults implements Serializable {
    */
   public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV,
       final IntegerMap<UnitType> defenderCostsForTUV) {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return Tuple.of(0.0, 0.0);
     }
     double attackerTUV = 0;
@@ -97,8 +95,7 @@ public class AggregateResults implements Serializable {
 
   public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
       final Collection<Unit> defenders, final GameData data) {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     final IntegerMap<UnitType> attackerCostsForTUV = BattleCalculator.getCostsForTUV(attacker, data);
@@ -113,8 +110,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAverageAttackingUnitsLeftWhenAttackerWon() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -132,8 +128,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAverageDefendingUnitsLeft() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -144,8 +139,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAverageDefendingUnitsLeftWhenDefenderWon() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -163,8 +157,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAttackerWinPercent() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -177,8 +170,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getDefenderWinPercent() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -191,8 +183,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAverageBattleRoundsFought() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
@@ -207,8 +198,7 @@ public class AggregateResults implements Serializable {
   }
 
   public double getDrawPercent() {
-    if (m_results.isEmpty()) // can be empty!
-    {
+    if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;

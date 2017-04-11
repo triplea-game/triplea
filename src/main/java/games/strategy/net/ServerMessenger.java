@@ -306,8 +306,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (!expectedReceive.equals(msg.getFrom())) {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
-    if (msg.getMessage() instanceof HubInvoke) // Chat messages are always HubInvoke's
-    {
+    if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
         if (IsUsernameMuted(realName)) {

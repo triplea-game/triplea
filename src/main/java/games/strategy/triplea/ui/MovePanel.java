@@ -843,9 +843,7 @@ public class MovePanel extends AbstractMovePanel {
         selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory));
       } else if (me.isControlDown()) {
         selectedUnits.addAll(Match.getMatches(units, unitsToMoveMatch));
-      }
-      // add one
-      else {
+      } else { // add one
         // best candidate unit for route is chosen dynamically later
         // check for alt key - add 1/10 of total units (useful for splitting large armies)
         final List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
@@ -1040,9 +1038,7 @@ public class MovePanel extends AbstractMovePanel {
             }
           }
         }
-      }
-      // we have actually clicked on a specific unit
-      else {
+      } else { // we have actually clicked on a specific unit
         // remove all if control is down
         if (me.isControlDown()) {
           unitsToRemove.addAll(units);
@@ -1055,9 +1051,7 @@ public class MovePanel extends AbstractMovePanel {
               }
             }
           }
-        }
-        // remove one
-        else {
+        } else { // remove one
           if (!getFirstSelectedTerritory().equals(t)) {
             throw new IllegalStateException("Wrong selected territory");
           }

@@ -145,8 +145,7 @@ public class AirBattle extends AbstractBattle {
       }
       steps.add(new AttackersFire());
       steps.add(new DefendersFire());
-      steps.add(new IExecutable() // just calculates lost TUV and kills off any suicide units
-      {
+      steps.add(new IExecutable() { // just calculates lost TUV and kills off any suicide units
         private static final long serialVersionUID = -5575569705493214941L;
 
         @Override
@@ -538,6 +537,7 @@ public class AirBattle extends AbstractBattle {
       }
     }
   }
+
   class AttackersFire implements IExecutable {
     private static final long serialVersionUID = -5289634214875797408L;
     DiceRoll m_dice;
@@ -582,6 +582,7 @@ public class AirBattle extends AbstractBattle {
       stack.push(roll);
     }
   }
+
   class DefendersFire implements IExecutable {
     private static final long serialVersionUID = -7277182945495744003L;
     DiceRoll m_dice;

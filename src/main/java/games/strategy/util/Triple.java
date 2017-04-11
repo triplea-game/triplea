@@ -75,7 +75,7 @@ public class Triple<F, S, T> implements Serializable {
     }
 
     final Triple<?, ?, ?> other = (Triple<?, ?, ?>) obj;
-    return Objects.equals(tuple, other.tuple) &&
-        Objects.equals(getThird(), other.getThird());
+    return Objects.equals(tuple, other.tuple)
+        && Objects.equals(getThird(), other.getThird());
   }
 }

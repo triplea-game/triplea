@@ -144,8 +144,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         newData.acquireReadLock();
         int i = 0;
         // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
-        if (m_currentThreads <= 2 || MAX_THREADS <= 2)
-        { // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
+        if (m_currentThreads <= 2 || MAX_THREADS <= 2) {
+          // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
           // only 1 more copy to
           // make)
           while (m_cancelCurrentOperation >= 0 && i < m_currentThreads) {

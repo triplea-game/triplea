@@ -125,8 +125,7 @@ public class DownloadFileDescription {
 
   /** File reference for where to install the file. */
   public File getInstallLocation() {
-    String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ?
-        "-master" : "";
+    String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ? "-master" : "";
     String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
     return new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
   }

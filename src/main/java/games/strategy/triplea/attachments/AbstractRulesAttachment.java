@@ -280,16 +280,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players,
       final GameData data) {
     final GameMap gameMap = data.getMap();
-    if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
-    {
+    if (name.equals("original") || name.equals("enemy")) { // get all originally owned territories
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
-    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassables
-    {
+    } else if (name.equals("originalNoWater")) { // get all originally owned territories, but no water or impassables
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),

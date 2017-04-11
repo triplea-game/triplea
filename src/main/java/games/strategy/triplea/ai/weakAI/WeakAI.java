@@ -504,9 +504,7 @@ public class WeakAI extends AbstractAI {
           route.add(firstStep);
           moveRoutes.add(route);
         }
-      }
-      // if we cant move to a capitol, move towards the enemy
-      else {
+      } else { // if we cant move to a capitol, move towards the enemy
         final CompositeMatchAnd<Territory> routeCondition =
             new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable.invert());
         Route newRoute = Utils.findNearest(t, Matches.territoryHasEnemyLandUnits(player, data), routeCondition, data);
@@ -871,8 +869,7 @@ public class WeakAI extends AbstractAI {
       //
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
       // place all our units here
-      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null)
-      {
+      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;

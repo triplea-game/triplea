@@ -123,10 +123,9 @@ public class GameSelectorModel extends Observable {
         try (FileInputStream fis = new FileInputStream(file)) {
           newData = (new GameParser(file.getAbsolutePath())).parse(fis, gameName, false);
         }
-      }
-      // the extension should be tsvg, but
-      // try to load it as a saved game whatever the extension
-      else {
+      } else {
+        // the extension should be tsvg, but
+        // try to load it as a saved game whatever the extension
         newData = manager.loadGame(file);
       }
       if (newData != null) {

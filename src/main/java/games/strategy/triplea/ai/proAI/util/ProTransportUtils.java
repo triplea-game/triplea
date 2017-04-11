@@ -260,9 +260,7 @@ public class ProTransportUtils {
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
       final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-      if (ua.getCarrierCost() > 0 || i == 0) // If this is a plane or last unit
-      {
-
+      if (ua.getCarrierCost() > 0 || i == 0) { // If this is a plane or last unit
         // If we haven't ignored enough trailing planes and not last unit
         if (processedPlaneCount < planesThatDontNeedToLand && i > 0) {
           processedPlaneCount++; // Increase number of trailing planes ignored

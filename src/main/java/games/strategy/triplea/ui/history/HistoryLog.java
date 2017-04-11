@@ -125,7 +125,7 @@ public class HistoryLog extends JFrame {
     final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
     PlayerID curPlayer = null;
     if (parentPath != null) {
-      final Object pathToNode[] = parentPath.getPath();
+      final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
         if (node instanceof Step) {
@@ -163,7 +163,7 @@ public class HistoryLog extends JFrame {
     final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
     PlayerID currentPlayer = null;
     if (parentPath != null) {
-      final Object pathToNode[] = parentPath.getPath();
+      final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
         for (int i = 0; i < node.getLevel(); i++) {

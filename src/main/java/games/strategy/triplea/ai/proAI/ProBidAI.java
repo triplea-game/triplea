@@ -147,16 +147,15 @@ public class ProBidAI {
         subProductionRules.add(ruleCheck);
       }
       // might be more than 1 carrier rule...use the one which will hold the most fighters
-      if (Matches.UnitTypeIsCarrier.match(x))
-      {
+      if (Matches.UnitTypeIsCarrier.match(x)) {
         final int thisFighterLimit = UnitAttachment.get(x).getCarrierCapacity();
         if (thisFighterLimit >= carrierFighterLimit) {
           carrierRule = ruleCheck;
           carrierFighterLimit = thisFighterLimit;
         }
       }
-      if (Matches.UnitTypeCanLandOnCarrier.match(x)) // might be more than 1 fighter...use the one with the best attack
-      {
+      // might be more than 1 fighter...use the one with the best attack
+      if (Matches.UnitTypeCanLandOnCarrier.match(x)) {
         final int thisFighterAttack = UnitAttachment.get(x).getAttack(player);
         if (thisFighterAttack > maxFighterAttack) {
           fighterRule = ruleCheck;
@@ -166,8 +165,7 @@ public class ProBidAI {
     }
     // most sea units move at least 2 movement, so remove any sea units with 1 movement (dumb t-boats) (some maps like
     // 270BC have mostly 1 movement sea units, so we must be sure not to remove those)
-    if (averageSeaMove / seaProductionRules.size() >= 1.8)
-    {
+    if (averageSeaMove / seaProductionRules.size() >= 1.8) {
       final List<ProductionRule> seaProductionRulesCopy = new ArrayList<>(seaProductionRules);
       for (final ProductionRule seaRule : seaProductionRulesCopy) {
         final NamedAttachable resourceOrUnit = seaRule.getResults().keySet().iterator().next();
@@ -182,8 +180,7 @@ public class ProBidAI {
     }
     if (subProductionRules.size() > 0 && seaProductionRules.size() > 0) {
       // remove submarines from consideration, unless we are mostly subs
-      if (subProductionRules.size() / seaProductionRules.size() < 0.3)
-      {
+      if (subProductionRules.size() / seaProductionRules.size() < 0.3) {
         seaProductionRules.removeAll(subProductionRules);
       }
     }
@@ -311,8 +308,7 @@ public class ProBidAI {
     bestTransport.clear();
     bestMaxUnits.clear();
     bestMobileAttack.clear();
-    if (PUsToSpend > 0) // verify a run through the land units
-    {
+    if (PUsToSpend > 0) { // verify a run through the land units
       buyLimit = PUsToSpend / 2;
       findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, landProductionRules,
           PUsToSpend, buyLimit, data, player, 2);
@@ -571,12 +567,10 @@ public class ProBidAI {
   private void placeAllWeCanOn(final boolean bid, final GameData data, final Territory factoryPlace,
       final Territory placeAt, final IAbstractPlaceDelegate placeDelegate, final PlayerID player) {
     final CompositeMatch<Unit> landOrAir = new CompositeMatchOr<>(Matches.UnitIsAir, Matches.UnitIsLand);
-    if (factoryPlace != null) // place a factory?
-    {
+    if (factoryPlace != null) { // place a factory?
       final Collection<Unit> toPlace =
           new ArrayList<>(player.getUnits().getMatches(Matches.UnitCanProduceUnitsAndIsConstruction));
-      if (toPlace.size() == 1) // only 1 may have been purchased...anything greater is wrong
-      {
+      if (toPlace.size() == 1) { // only 1 may have been purchased...anything greater is wrong
         doPlace(factoryPlace, toPlace, placeDelegate);
         return;
       } else if (toPlace.size() > 1) {
@@ -834,8 +828,8 @@ public class ProBidAI {
       usableMaxUnits = usableMaxUnits / 2;
     }
     for (int i = 0; i <= (usableMaxUnits - totUnits); i++) {
-      if (i > 0) // allow 0 so that this unit might be skipped...due to low value...consider special capabilities later
-      {
+      // allow 0 so that this unit might be skipped...due to low value...consider special capabilities later
+      if (i > 0) {
         totCost += cost;
         if (totCost > maxCost) {
           continue;
@@ -896,8 +890,7 @@ public class ProBidAI {
         continue;
       }
       // parameters changed: 001: attack, 010: defense, 100: maxUnits, 1000: transport, 10000: mobileAttack
-      if (parametersChanged > 0) // change forced by another rule
-      {
+      if (parametersChanged > 0) { // change forced by another rule
         if ((parametersChanged - 3) % 4 == 0) {
           bestAttack.put(rule, i);
           bestDefense.put(rule, i);
@@ -950,8 +943,7 @@ public class ProBidAI {
         final Iterator<ProductionRule> changeIter = ruleCheck.iterator();
         ProductionRule changeThis = null;
         int countThis = 1;
-        while (changeIter.hasNext()) // have to clear the rules below this rule
-        {
+        while (changeIter.hasNext()) { // have to clear the rules below this rule
           changeThis = changeIter.next();
           if (countThis >= counter) {
             bestAttack.put(changeThis, 0);
@@ -971,8 +963,7 @@ public class ProBidAI {
         final Iterator<ProductionRule> changeIter = ruleCheck.iterator();
         ProductionRule changeThis = null;
         int countThis = 1;
-        while (changeIter.hasNext()) // have to clear the rules below this rule
-        {
+        while (changeIter.hasNext()) { // have to clear the rules below this rule
           changeThis = changeIter.next();
           if (countThis >= counter) {
             bestDefense.put(changeThis, 0);
@@ -994,8 +985,7 @@ public class ProBidAI {
         final Iterator<ProductionRule> changeIter = ruleCheck.iterator();
         ProductionRule changeThis = null;
         int countThis = 1;
-        while (changeIter.hasNext()) // have to clear the rules below this rule
-        {
+        while (changeIter.hasNext()) { // have to clear the rules below this rule
           changeThis = changeIter.next();
           if (countThis >= counter) {
             bestMaxUnits.put(changeThis, 0);
@@ -1456,9 +1446,8 @@ public class ProBidAI {
       }
       if (Matches.TerritoryIsLand.match(location)) {
         blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, ePlayer);
-      } else
-      // get ships attack strength
-      { // old assumed fleets won't split up, new lets them. no biggie.
+      } else { // get ships attack strength
+        // old assumed fleets won't split up, new lets them. no biggie.
         // assumes max ship movement is 3.
         // note, both old and new implementations
         // allow units to be calculated that are in
@@ -2036,8 +2025,7 @@ public class ProBidAI {
     final Set<Territory> seaNeighbors = data.getMap().getNeighbors(landTerr, ourSeaTerr);
     // float eStrength = 0.0F;
     float minStrength = 1000.0F, maxStrength = -1000.0F;
-    for (final Territory t : seaNeighbors) // give preference to territory with units
-    {
+    for (final Territory t : seaNeighbors) { // give preference to territory with units
       float enemyStrength = getStrengthOfPotentialAttackers(t, data, player, tFirst, true, null);
       final float extraEnemy = strength(t.getUnits().getMatches(Matches.enemyUnit(player, data)), true, true, tFirst);
       enemyStrength += extraEnemy;
@@ -2057,8 +2045,7 @@ public class ProBidAI {
     }
     if (seaPlaceAt == null && bestSeaPlaceAt == null) {
       final Set<Territory> seaNeighbors2 = data.getMap().getNeighbors(landTerr, Matches.TerritoryIsWater);
-      for (final Territory t : seaNeighbors2) // find Terr away from enemy units
-      {
+      for (final Territory t : seaNeighbors2) { // find Terr away from enemy units
         final float enemyStrength = getStrengthOfPotentialAttackers(t, data, player, tFirst, true, null);
         final float ourStrength = strength(t.getUnits().getMatches(seaAirUnit), false, true, tFirst);
         if (t.getUnits().someMatch(Matches.enemyUnit(player, data))) {

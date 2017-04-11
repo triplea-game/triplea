@@ -21,6 +21,7 @@ public interface IBattle extends java.io.Serializable {
   enum WhoWon {
     NOTFINISHED, DRAW, ATTACKER, DEFENDER
   }
+
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
     private final String m_type;

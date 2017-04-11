@@ -221,6 +221,7 @@ public class ViewMenu {
         frame.getMapPanel().resetMap();
       }
     }
+
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_S);
     unitSizeMenu.setText("Unit Size");

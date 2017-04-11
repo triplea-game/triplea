@@ -69,7 +69,7 @@ public class DownloadUtils {
     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
     fos.close();
   }
-  
+
   public static void downloadFile(String urlString, File targetFile) throws IOException {
     downloadFile(getUrlFollowingRedirects(urlString), targetFile);
   }
@@ -85,6 +85,7 @@ public class DownloadUtils {
     }
     return url;
   }
+
   private static URL getUrlFollowingRedirects(URL url) throws IOException {
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     int status = conn.getResponseCode();

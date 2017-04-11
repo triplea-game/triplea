@@ -178,6 +178,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return m_p1.getName() + "-" + m_p2.getName();
     }
   }
+
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 

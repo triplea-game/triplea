@@ -46,9 +46,7 @@ public enum LockUtil {
     if (isLockHeld(aLock)) {
       final int current = locksHeld.get().get(aLock);
       locksHeld.get().put(aLock, current + 1);
-    }
-    // we don't have it
-    else {
+    } else { // we don't have it
       synchronized (mutex) {
         // all the locks currently held must be acquired before a lock
         if (!locksHeldWhenAcquired.containsKey(aLock)) {

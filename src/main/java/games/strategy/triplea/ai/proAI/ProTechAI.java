@@ -157,9 +157,8 @@ public final class ProTechAI {
       }
       if (Matches.TerritoryIsLand.match(location)) {
         blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, ePlayer);
-      } else
-      // get ships attack strength
-      { // old assumed fleets won't split up, new lets them. no biggie.
+      } else { // get ships attack strength
+        // old assumed fleets won't split up, new lets them. no biggie.
         // assumes max ship movement is 3.
         // note, both old and new implementations
         // allow units to be calculated that are in

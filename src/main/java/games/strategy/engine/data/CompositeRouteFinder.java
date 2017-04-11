@@ -68,8 +68,7 @@ public class CompositeRouteFinder {
           if (routeLeadersToProcess.contains(ter) || ter.equals(start)) {
             continue;
           }
-          if (previous.containsKey(ter)) // If we're bumping into an existing route
-          {
+          if (previous.containsKey(ter)) { // If we're bumping into an existing route
             if (routeScore >= routeScoreMap.get(ter)) {
               continue;
             }
@@ -124,8 +123,7 @@ public class CompositeRouteFinder {
     int bestMatchingScore = Integer.MAX_VALUE;
     for (final Match<Territory> match : m_matches.keySet()) {
       final int score = m_matches.get(match);
-      if (score < bestMatchingScore) // If this is a 'better' match
-      {
+      if (score < bestMatchingScore) { // If this is a 'better' match
         if (match.match(ter)) {
           bestMatchingScore = score;
         }

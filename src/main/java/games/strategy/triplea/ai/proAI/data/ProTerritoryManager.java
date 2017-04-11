@@ -463,8 +463,7 @@ public class ProTerritoryManager {
           // Find route over water
           boolean hasNoRoute = true;
           final List<Territory> eliminatedTerritories = new ArrayList<>();
-          while (true) // Need a loop to consider different route combinations to avoid canals
-          {
+          while (true) { // Need a loop to consider different route combinations to avoid canals
             Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
                 ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(player, data, isCombatMove,
                     clearedTerritories, eliminatedTerritories));
@@ -960,8 +959,7 @@ public class ProTerritoryManager {
 
           // Populate attack territories with bombard unit
           for (final Territory bombardToTerritory : bombardToTerritories) {
-            if (moveMap.containsKey(bombardToTerritory)) // Should always contain it
-            {
+            if (moveMap.containsKey(bombardToTerritory)) { // Should always contain it
               moveMap.get(bombardToTerritory).addMaxBombardUnit(mySeaUnit);
               moveMap.get(bombardToTerritory).addBombardOptionsMap(mySeaUnit, bombardFromTerritory);
             }

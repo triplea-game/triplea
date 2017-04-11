@@ -51,13 +51,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   public static enum ReturnFire {
     ALL, SUBS, NONE
   }
+
   public static enum RetreatType {
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
-  // these class exist for testing
+
+  // this class exists for testing
   public abstract static class AttackSubs implements IExecutable {
     private static final long serialVersionUID = 4872551667582174716L;
   }
+
+  // this class exists for testing
   public abstract static class DefendSubs implements IExecutable {
     private static final long serialVersionUID = 3768066729336520095L;
   }
@@ -861,10 +865,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               defenderWins(bridge);
             }
           }
-        }
         // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
         // and infrastructure.
-        else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
+        } else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
           if (isTransportCasualtiesRestricted()) {
             // If there are undefended attacking transports, determine if they automatically die
             checkUndefendedTransports(bridge, m_defender);

@@ -17,6 +17,7 @@ public class MapDownloadListSortTest {
   // capitol B to ensure case insensitive sorting
   private static final DownloadFileDescription MAP_B = createDownload("B", "url");
   private static final DownloadFileDescription MAP_C = createDownload("c", "url");
+
   private static DownloadFileDescription createDownload(final String mapName, final String url) {
     final String description = "fake";
     final Version version = new Version("1");

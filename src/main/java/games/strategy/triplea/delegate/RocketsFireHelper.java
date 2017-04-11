@@ -374,9 +374,8 @@ public class RocketsFireHelper {
       damageMap.put(target, totalDamage);
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
-    }
     // in WW2V2, limit rocket attack cost to production value of factory.
-    else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
+    } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
       if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
         final int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);

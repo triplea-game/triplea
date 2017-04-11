@@ -144,15 +144,11 @@ public class Fire implements IExecutable {
             !m_defending, m_battleID, m_isHeadless, extraHits, true);
         m_killed.addAll(message.getKilled());
         m_confirmOwnCasualties = true;
-      }
-      // exact number of combat units
-      else if (hitCount == numPossibleHits) {
+      } else if (hitCount == numPossibleHits) { // exact number of combat units
         m_killed = nonTransports;
         m_damaged = Collections.emptyList();
         m_confirmOwnCasualties = true;
-      }
-      // less than possible number
-      else {
+      } else { // less than possible number
         message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports,
             m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
             m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
@@ -161,18 +157,14 @@ public class Fire implements IExecutable {
         m_damaged = message.getDamaged();
         m_confirmOwnCasualties = message.getAutoCalculated();
       }
-    } else
-    // not isTransportCasualtiesRestricted
-    {
+    } else { // not isTransportCasualtiesRestricted
       // they all die
       if (hitCount >= AbstractBattle.getMaxHits(m_attackableUnits)) {
         m_killed = m_attackableUnits;
         m_damaged = Collections.emptyList();
         // everything died, so we need to confirm
         m_confirmOwnCasualties = true;
-      }
-      // Choose casualties
-      else {
+      } else { // Choose casualties
         CasualtyDetails message;
         message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits,
             m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
