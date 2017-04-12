@@ -22,7 +22,8 @@ public class PlayersPanel {
       if (playerID.isAI()) {
         panel.add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
       } else {
-        panel.add(new JLabel(game.getPlayerManager().getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
+        panel.add(
+            new JLabel(game.getPlayerManager().getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
       }
     }
 

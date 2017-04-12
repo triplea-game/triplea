@@ -127,8 +127,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
-      throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+      throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
+          + "size of default casualty selections");
     }
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);

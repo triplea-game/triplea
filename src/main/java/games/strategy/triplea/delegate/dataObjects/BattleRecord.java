@@ -14,25 +14,46 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  */
 public class BattleRecord implements Serializable {
 
-  /**
-   * BLITZED = conquered without a fight <br>
-   * CONQUERED = fought, won, and took over territory if land or convoy <br>
-   * WON_WITHOUT_CONQUERING = fought, won, did not take over territory (could be water, or could be air attackers) <br>
-   * WON_WITH_ENEMY_LEFT = fought, enemy either submerged or the battle is over with our objectives successful even
-   * though enemies are left
-   * <br>
-   * STALEMATE = have units left in the territory beside enemy defenders (like both sides have transports left) <br>
-   * LOST = either lost the battle, or retreated <br>
-   * BOMBED = Successfully bombed something <br>
-   * AIR_BATTLE_WON = Won an Air Battle with units surviving <br>
-   * AIR_BATTLE_LOST = Lost an Air Battle with enemy units surviving <br>
-   * AIR_BATTLE_STALEMATE = Neither side has air units left <br>
-   * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the
-   * bombing could begin,
-   * etc.<br>
-   */
   public enum BattleResultDescription {
-    BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE, NO_BATTLE
+    /** conquered without a fight. */
+    BLITZED,
+
+    /** fought, won, and took over territory if land or convoy. */
+    CONQUERED,
+
+    /** fought, won, did not take over territory (could be water, or could be air attackers). */
+    WON_WITHOUT_CONQUERING,
+
+    /**
+     * fought, enemy either submerged or the battle is over with our objectives successful even
+     * though enemies are left.
+     */
+    WON_WITH_ENEMY_LEFT,
+
+    /** have units left in the territory beside enemy defenders (like both sides have transports left). */
+    STALEMATE,
+
+    /** either lost the battle, or retreated. */
+    LOST,
+
+    /** Successfully bombed something. */
+    BOMBED,
+
+    /** Won an Air Battle with units surviving. */
+    AIR_BATTLE_WON,
+
+    /** Lost an Air Battle with enemy units surviving. */
+    AIR_BATTLE_LOST,
+
+    /** Neither side has air units left. */
+    AIR_BATTLE_STALEMATE,
+
+    /**
+     * No battle was fought, possibly because the territory you were about to bomb was conquered before the
+     * bombing could begin,
+     * etc.
+     */
+    NO_BATTLE
   }
 
 

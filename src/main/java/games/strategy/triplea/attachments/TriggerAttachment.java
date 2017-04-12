@@ -987,9 +987,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment")
         || s[1].equals("TechAttachment") || s[1].equals("PoliticalActionAttachment")
         || s[1].equals("UserActionAttachment"))) {
-      throw new GameParseException(
-          "playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment or UserActionAttachment"
-              + thisErrorMsg());
+      throw new GameParseException("playerAttachmentName value must be PlayerAttachment or RulesAttachment or "
+          + "TriggerAttachment or TechAttachment or PoliticalActionAttachment or UserActionAttachment"
+          + thisErrorMsg());
     }
     // TODO validate attachment exists?
     if (s[0].length() < 1) {

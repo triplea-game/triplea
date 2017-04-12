@@ -135,10 +135,13 @@ public class GameRunner {
           + "\n"
           + "   You must start the Name and HostedBy with \"Bot\".\n"
           + "   Game Comments must have this string in it: \"automated_host\".\n"
-          + "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error."
+          + "   You must include a support email for your host, so that you can be alerted by lobby admins when your "
+          + "host has an error."
           + " (For example they may email you when your host is down and needs to be restarted.)\n"
-          + "   Support password is a remote access password that will allow lobby admins to remotely take the following actions: ban player, stop game, shutdown server."
-          + " (Please email this password to one of the lobby moderators, or private message an admin on the TripleaWarClub.org website forum.)\n");
+          + "   Support password is a remote access password that will allow lobby admins to remotely take the "
+          + "following actions: ban player, stop game, shutdown server."
+          + " (Please email this password to one of the lobby moderators, or private message an admin on the "
+          + "TripleaWarClub.org website forum.)\n");
 
     } else {
       System.out.println("Arguments\n"
@@ -637,7 +640,8 @@ public class GameRunner {
         if (ClientFileSystemHelper.areWeOldExtraJar()) {
           JOptionPane.showMessageDialog(parent,
               "<html>Please run the default TripleA and try joining the online lobby for it instead. "
-                  + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
+                  + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with "
+                  + "people using the exact same version as this one. "
                   + "<br><br>Host is using a different engine than you, and cannot find correct engine: "
                   + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
               "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
@@ -653,8 +657,10 @@ public class GameRunner {
       final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
           + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
-          + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
-          + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will join the host's game."
+          + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. "
+          + "This is a new feature and is in 'beta' stage."
+          + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance "
+          + "will join the host's game."
           + "<br>Your current instance will not be closed. Please report any bugs or issues."
           + "<br><br>Do you wish to continue?</html>";
       final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?",

@@ -61,9 +61,11 @@ public class AutoPlacementFinder {
             + "<br><br>The program will ask for the folder name (just the name, not the full path)."
             + "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
             + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
-            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size."
+            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit "
+            + "size."
             + "<br><br>When done, the program will attempt to make placements for all territories on your map."
-            + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good idea"
+            + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good "
+            + "idea"
             + "<br>to use the PlacementPicker to check all placements and redo some of them by hand." + "</html>"));
     calculate();
   }
@@ -151,7 +153,8 @@ public class AutoPlacementFinder {
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
         "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
-            + "do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.",
+            + "do you wish to continue with this?\r\n"
+            + "Select Yes to continue, Select No to override and change the size.",
         "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
       try {
         final String result = getUnitsScale();

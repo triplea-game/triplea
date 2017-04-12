@@ -44,7 +44,8 @@ public class UniversalPlugAndPlayHelper {
       textResult = "It appears TripleA failed to set your Port Forwarding.\r\n"
           + "Please make sure UPnP is turned on, in your router's settings.\r\n\r\n"
           + "If you still cannot get TripleA to set them correctly, then you must set them yourself!\r\n"
-          + "See 'How To Host...' in the help menu, at the top of the lobby screen in order to manually set them.\r\n\r\n"
+          + "See 'How To Host...' in the help menu, at the top of the lobby screen in order to manually set "
+          + "them.\r\n\r\n"
           + "\r\nThis program will close now.\r\n";
     }
     System.out.println(textResult);
@@ -167,16 +168,18 @@ public class UniversalPlugAndPlayHelper {
     try {
       devices = InternetGatewayDevice.getDevices(2000);
     } catch (final IOException e) {
-      System.out.println(
-          "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on! \r\n "
-              + e.getMessage());
-      return "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on! \r\n "
+      System.out.println("Router/Device UPnP turned off. Or no Routers/Devices found.  "
+          + "Please make sure your router's UPNP is turned on! \r\n "
+          + e.getMessage());
+      return "Router/Device UPnP turned off. Or no Routers/Devices found.  "
+          + "Please make sure your router's UPNP is turned on! \r\n "
           + e.getMessage();
     }
     if (devices == null || 1 > devices.length) {
-      System.out.println(
-          "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on!");
-      return "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on!";
+      System.out.println("Router/Device UPnP turned off. Or no Routers/Devices found.  "
+          + "Please make sure your router's UPNP is turned on!");
+      return "Router/Device UPnP turned off. Or no Routers/Devices found.  "
+          + "Please make sure your router's UPNP is turned on!";
     }
     m_device = devices[0];
     System.out.println("Device found!");

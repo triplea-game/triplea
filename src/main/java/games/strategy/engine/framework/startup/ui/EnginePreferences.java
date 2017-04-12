@@ -140,7 +140,8 @@ public class EnginePreferences extends JDialog {
       final JList<String> list = lookAndFeel.getFirst();
       final String currentKey = lookAndFeel.getThird();
       final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(m_parentFrame, list, lookAndFeelTitle, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.OK_OPTION) {
+      if (JOptionPane.showConfirmDialog(m_parentFrame, list, lookAndFeelTitle,
+          JOptionPane.INFORMATION_MESSAGE) == JOptionPane.OK_OPTION) {
         final String selectedValue = list.getSelectedValue();
         if (selectedValue == null) {
           return;
@@ -160,8 +161,8 @@ public class EnginePreferences extends JDialog {
       final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
       final int answer = JOptionPane.showOptionDialog(m_parentFrame,
           new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" + "<br><br>'" + options[1]
-              + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid,"
-              + "but can slow down the game significantly)."
+              + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are "
+              + "valid, but can slow down the game significantly)."
               + "<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString())
               + "'</html>"),
           "Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
@@ -267,7 +268,8 @@ public class EnginePreferences extends JDialog {
       onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
       onlyOnlineCheckBox.setToolTipText(
           "<html>If checked, only joining and hosting from online lobby will be affected by these settings."
-              + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
+              + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time "
+              + "you start TripleA.</html>");
       final JButton test = new JButton("Test User Settings");
       test.addActionListener(SwingAction.of("Test User Settings", event -> {
         tested.set(true);
@@ -290,7 +292,8 @@ public class EnginePreferences extends JDialog {
           + "<br />free memory available, not being used by your operating system or other programs you are running. "
           + "<br />Otherwise, TripleA will fail to start, and/or fail to join/host games online. "
           + "<br />If you do mess this up, you can always run TripleA by command line with a different setting: "
-          + "<br />java -Xmx512m -classpath triplea.jar games.strategy.engine.framework.GameRunner triplea.memory.set=true"
+          + "<br />java -Xmx512m -classpath triplea.jar games.strategy.engine.framework.GameRunner "
+          + "triplea.memory.set=true"
           + "<br />Or you can delete or change the 'system.ini' file located where TripleA was installed. </p>"
           + "<br /><p>In order to make sure you do not mess this up, click the 'Test' button and make sure that "
           + "<br />a new TripleA process is able to run with your new max memory setting. "
@@ -306,7 +309,8 @@ public class EnginePreferences extends JDialog {
       radioPanel.add(new JLabel("<html>After clicking the 'Test' button, a new TripleA should launch. "
           + "<br />If nothing launches, there is something wrong and you probably set the maximum too high. "
           + "<br />You MUST test user settings before you use them! Otherwise the engine will discard changes. "
-          + "<br />TripleA has no way of knowing if this fails or succeeds, and there will not be an error message of any kind. </html>"));
+          + "<br />TripleA has no way of knowing if this fails or succeeds, and there will not be an error message of "
+          + "any kind. </html>"));
       radioPanel.add(test);
       radioPanel.add(new JLabel(" "));
       final Object[] options = {"Accept", "Cancel"};

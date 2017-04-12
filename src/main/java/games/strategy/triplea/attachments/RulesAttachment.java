@@ -157,9 +157,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     final String[] s = value.split(":");
     if (s.length != 2) {
-      throw new GameParseException(
-          "destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy"
-              + thisErrorMsg());
+      throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount "
+          + "of TUV that this player must destroy" + thisErrorMsg());
     }
     final int i = getInt(s[0]);
     if (i < -1) {
@@ -269,9 +268,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (s.length == 4 && Integer.parseInt(s[3]) < -1) {
-      throw new GameParseException(
-          "numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put"
-              + thisErrorMsg());
+      throw new GameParseException("numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be "
+          + "default value if you don't know what to put" + thisErrorMsg());
     }
     m_relationship.add((s.length == 3) ? (value + ":-1") : value);
   }
@@ -513,9 +511,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   public void setUnitPresence(String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 1) {
-      throw new GameParseException(
-          "unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number"
-              + thisErrorMsg());
+      throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or "
+          + "value=unit1:unit2:unit3 count=number" + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 0) {

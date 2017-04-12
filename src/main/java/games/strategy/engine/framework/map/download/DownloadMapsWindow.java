@@ -71,7 +71,8 @@ public class DownloadMapsWindow extends JFrame {
 
   private static void showDownloadMapsWindow(Optional<String> mapName) {
     Runnable downloadAndShowWindow = () -> {
-      final List<DownloadFileDescription> games = new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite()).getDownloads();
+      final List<DownloadFileDescription> games =
+          new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite()).getDownloads();
       checkNotNull(games);
 
       SwingUtilities.invokeLater(() -> {
@@ -123,7 +124,8 @@ public class DownloadMapsWindow extends JFrame {
 
     JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
 
-    for (DownloadFileDescription.MapCategory mapCategory : Arrays.asList(DownloadFileDescription.MapCategory.values()) ) {
+    for (DownloadFileDescription.MapCategory mapCategory : Arrays
+        .asList(DownloadFileDescription.MapCategory.values())) {
 
       List<DownloadFileDescription> mapsByCategory =
           maps.stream().filter(map -> map.getMapCategory() == mapCategory).collect(Collectors.toList());
@@ -296,7 +298,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final long mapSize;
     String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion();
-    
+
     if (action == MapAction.INSTALL) {
       if (map.newURL() == null) {
         mapSize = 0L;
@@ -310,7 +312,7 @@ public class DownloadMapsWindow extends JFrame {
     if (mapSize > 0) {
       labelText += DOUBLE_SPACE + " (" + createSizeLabel(mapSize) + ")";
     }
-    
+
     labelText += "<br/>";
 
     if (action == MapAction.INSTALL) {

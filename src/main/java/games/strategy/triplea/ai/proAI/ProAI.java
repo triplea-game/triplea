@@ -331,8 +331,8 @@ public class ProAI extends AbstractAI {
     initializeData();
 
     if (defaultCasualties.size() != count) {
-      throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+      throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
+          + "size of default casualty selections");
     }
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);

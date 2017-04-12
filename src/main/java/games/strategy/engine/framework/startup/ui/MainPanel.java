@@ -54,8 +54,9 @@ public class MainPanel extends JPanel implements Observer {
     GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
     playButton = new JButton("Play");
-    playButton.setToolTipText(
-        "<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
+    playButton.setToolTipText("<html>Start your game! <br>"
+        + "If not enabled, then you must select a way to play your game first: <br>"
+        + "Play Online, or Local Game, or PBEM, or Host Networked.</html>");
     JButton quitButton = new JButton("Quit");
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
