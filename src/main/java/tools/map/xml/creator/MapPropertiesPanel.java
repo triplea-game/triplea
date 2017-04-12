@@ -131,7 +131,8 @@ public class MapPropertiesPanel {
           final File fileGuess = new File(MapXmlCreator.mapFolderLocation, "centers.txt");
           if (fileGuess.exists()
               && JOptionPane.showConfirmDialog(new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
+                  "A centers.txt file was found in the map's folder, do you want to use the file to supply the "
+                      + "territories names?",
                   "File Suggestion", 1) == 0) {
             MapXmlCreator.mapCentersFile = fileGuess;
             textFieldCentersFile.setText(MapXmlCreator.mapCentersFile.getAbsolutePath());

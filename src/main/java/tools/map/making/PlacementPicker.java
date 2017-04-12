@@ -100,18 +100,24 @@ public class PlacementPicker extends JFrame {
             + "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file. "
             + "<br><br>The program will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0], "
             + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]. "
-            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size. "
-            + "<br><br>After it starts, you may Load an existing place.txt file, that way you can make changes to it then save it. "
+            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit "
+            + "size. "
+            + "<br><br>After it starts, you may Load an existing place.txt file, that way you can make changes to it "
+            + "then save it. "
             + "<br><br>LEFT CLICK = Select a new territory. "
             + "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that territory. "
             + "<br><br>RIGHT CLICK = Remove last placement for that territory. "
             + "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that territory. "
-            + "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the AutoPlacementFinder "
-            + "<br>to make sure there are enough placements for each territory. If not, you can always add more then save it. "
-            + "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST placement made, "
+            + "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the "
+            + "AutoPlacementFinder "
+            + "<br>to make sure there are enough placements for each territory. If not, you can always add more then "
+            + "save it. "
+            + "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST "
+            + "placement made, "
             + "<br>so be sure that the last placement is on the right side of the territory "
             + "<br>or that it does not overflow directly on top of other placements. "
-            + "<br><br>To show all placements, or see the overflow direction, or see which territories you have not yet completed enough, "
+            + "<br><br>To show all placements, or see the overflow direction, or see which territories you have not "
+            + "yet completed enough, "
             + "<br>placements for, turn on the mode options in the 'edit' menu. " + "</html>"));
     System.out.println("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
@@ -214,7 +220,8 @@ public class PlacementPicker extends JFrame {
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
         "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
-            + "do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.",
+            + "do you wish to continue with this?\r\n"
+            + "Select Yes to continue, Select No to override and change the size.",
         "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
       try {
         final String result = getUnitsScale();

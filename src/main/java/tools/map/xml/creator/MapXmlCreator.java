@@ -118,7 +118,37 @@ public class MapXmlCreator extends JFrame {
   public static final String MAP_XML_CREATOR_LOGGER_NAME = "Logger for Map XML Creation";
 
   public static enum GameStep {
-    MAP_PROPERTIES, TERRITORY_DEFINITIONS, TERRITORY_CONNECTIONS, PLAYERS_AND_ALLIANCES, UNIT_DEFINITIONS, GAMEPLAY_SEQUENCE, PLAYER_SEQUENCE, TECHNOLOGY_DEFINITIONS, PRODUCTION_FRONTIERS, UNIT_ATTACHMENTS, TERRITORY_PRODUCTION, CANAL_DEFINITIONS, TERRITORY_OWNERSHIP, UNIT_PLACEMENTS, GAME_SETTINGS, MAP_FINISHED
+    MAP_PROPERTIES,
+
+    TERRITORY_DEFINITIONS,
+
+    TERRITORY_CONNECTIONS,
+
+    PLAYERS_AND_ALLIANCES,
+
+    UNIT_DEFINITIONS,
+
+    GAMEPLAY_SEQUENCE,
+
+    PLAYER_SEQUENCE,
+
+    TECHNOLOGY_DEFINITIONS,
+
+    PRODUCTION_FRONTIERS,
+
+    UNIT_ATTACHMENTS,
+
+    TERRITORY_PRODUCTION,
+
+    CANAL_DEFINITIONS,
+
+    TERRITORY_OWNERSHIP,
+
+    UNIT_PLACEMENTS,
+
+    GAME_SETTINGS,
+
+    MAP_FINISHED
   }
 
   public static GameStep getMaxGameStep(final GameStep step1, final GameStep step2) {
@@ -494,7 +524,18 @@ public class MapXmlCreator extends JFrame {
 
         case GAMEPLAY_SEQUENCE:
           showInfoMessage(
-              "Here is a list of all the available gameplay sequences with their class name and display name:\r\r initDelegate-InitializationDelegate-Initializing Delegates,\r bid-BidPurchaseDelegate-Bid Purchase,\r placeBid-BidPlaceDelegate-Bid Placement,\r tech-TechnologyDelegate-Research Technology,\r tech_Activation-TechActivationDelegate-Activate Technology,\r purchase-PurchaseDelegate-Purchase Units,\r move-MoveDelegate-Combat Move,\r battle-BattleDelegate-Combat,\r place-PlaceDelegate-Place Units,\r endTurn-EndTurnDelegate-Turn Complete,\r endRound-EndRoundDelegate-Round Complete",
+              "Here is a list of all the available gameplay sequences with their class name and display name:\r\r "
+                  + "initDelegate-InitializationDelegate-Initializing Delegates,\r "
+                  + "bid-BidPurchaseDelegate-Bid Purchase,\r "
+                  + "placeBid-BidPlaceDelegate-Bid Placement,\r "
+                  + "tech-TechnologyDelegate-Research Technology,\r "
+                  + "tech_Activation-TechActivationDelegate-Activate Technology,\r "
+                  + "purchase-PurchaseDelegate-Purchase Units,\r "
+                  + "move-MoveDelegate-Combat Move,\r "
+                  + "battle-BattleDelegate-Combat,\r "
+                  + "place-PlaceDelegate-Place Units,\r "
+                  + "endTurn-EndTurnDelegate-Turn Complete,\r "
+                  + "endRound-EndRoundDelegate-Round Complete",
               "List Of Available Gameplay Sequence Choices (As Of TripleA 1.0.3.4)");
           break;
 
@@ -511,7 +552,10 @@ public class MapXmlCreator extends JFrame {
 
         case TECHNOLOGY_DEFINITIONS:
           showInfoMessage(
-              "Here is a list of all the available technology types: heavyBomber, longRangeAir, jetPower, rocket, industrialTechnology, superSub, destroyerBombard, improvedArtillerySupport, paratroopers, increasedFactoryProduction, warBonds, mechanizedInfantry, aARadar, shipyards",
+              "Here is a list of all the available technology types: "
+                  + "heavyBomber, longRangeAir, jetPower, rocket, industrialTechnology, superSub, destroyerBombard, "
+                  + "improvedArtillerySupport, paratroopers, increasedFactoryProduction, warBonds, mechanizedInfantry, "
+                  + "aARadar, shipyards",
               "List Of Available Technology Choices (As Of TripleA 1.0.3.4)");
           break;
 
@@ -525,7 +569,11 @@ public class MapXmlCreator extends JFrame {
 
         case UNIT_ATTACHMENTS:
           showInfoMessage(
-              "Here is a list of all the available unit attachments: movement, attack, defense, isAir, isSea, isAA, isFactory, canBlitz, isSub, canBombard, isStrategicBomber, hitPoints, isDestroyer, isArtillery, isArtillerySupportable, isMarine, isInfantry, isAirTransportable, isInfantry, transportCapacity, transportCost, carrierCapacity, carrierCost",
+              "Here is a list of all the available unit attachments: "
+                  + "movement, attack, defense, isAir, isSea, isAA, isFactory, canBlitz, isSub, canBombard, "
+                  + "isStrategicBomber, hitPoints, isDestroyer, isArtillery, isArtillerySupportable, isMarine, "
+                  + "isInfantry, isAirTransportable, isInfantry, transportCapacity, transportCost, carrierCapacity, "
+                  + "carrierCost",
               "List Of Available Unit Attachment Choices (As Of TripleA 1.0.3.4)");
           break;
 
@@ -561,9 +609,9 @@ public class MapXmlCreator extends JFrame {
 
         case MAP_FINISHED:
           showInfoMessage(
-              "The map notes can be entered in the textbox. You can enter plain text or html code. Then just click the '"
-                  + BUTTON_LABEL_SAVE_MAP_XML
-                  + "' button, and save the file in the map's 'games' folder. (Create the 'games' folder if not already created)",
+              "The map notes can be entered in the textbox. You can enter plain text or html code. "
+                  + "Then just click the '" + BUTTON_LABEL_SAVE_MAP_XML + "' button, and save the file in the map's "
+                  + "'games' folder. (Create the 'games' folder if not already created)",
               "Help For Current Step");
           break;
       }
@@ -579,97 +627,180 @@ public class MapXmlCreator extends JFrame {
       switch (currentStep) {
         case MAP_PROPERTIES:
           showInfoMessage(
-              "Map Name: The map name that is displayed in the New Game window in TripleA. Examples: Revised, Classic, Big World, and Great War\r\rMap Version: The version of the map's xml file. Examples: 0.0.1, 1.0.0.1, and 1.1\r\rResource Name: The name of the resource used in the map. Resources can be thought of as buying tokens or currency used to buy units, technology, etc. 'IPCs' have recently been replaced by 'PUs'. 'IPCs' will no longer work as the map resource. \r\rMap Image Location: The location of the map image. Example: C:/My Maps/Sleeping Giant/full_map.png\r\rMap Centers File: The location of the centers file produced by the 'Center Picker' program. The centers file is used to automatically add the map's territories. Example: C:/My Maps/Sleeping Giant/centers.txt\r\rWater Territory Filter: An optional setting that makes the program automatically apply the 'Is Water' property to every territory that contains the filter text. Examples: SZ, Sea Zone, Pacific, and Atlantic.",
+              "Map Name: The map name that is displayed in the New Game window in TripleA. Examples: Revised, Classic, "
+                  + "Big World, and Great War\r\r"
+                  + "Map Version: The version of the map's xml file. Examples: 0.0.1, 1.0.0.1, and 1.1\r\r"
+                  + "Resource Name: The name of the resource used in the map. Resources can be thought of as buying "
+                  + "tokens or currency used to buy units, technology, etc. 'IPCs' have recently been replaced by "
+                  + "'PUs'. 'IPCs' will no longer work as the map resource. \r\r"
+                  + "Map Image Location: The location of the map image. Example: "
+                  + "C:/My Maps/Sleeping Giant/full_map.png\r\r"
+                  + "Map Centers File: The location of the centers file produced by the 'Center Picker' program. The "
+                  + "centers file is used to automatically add the map's territories. Example: "
+                  + "C:/My Maps/Sleeping Giant/centers.txt\r\r"
+                  + "Water Territory Filter: An optional setting that makes the program automatically apply the "
+                  + "'Is Water' property to every territory that contains the filter text. Examples: SZ, Sea Zone, "
+                  + "Pacific, and Atlantic.",
               "Help For Current Step");
           break;
 
         case TERRITORY_DEFINITIONS:
           showInfoMessage(
-              "Right click to rename a territory. \r If you want to change the properties of a territory, left click on it. \r The color of the territory label changes for each property that is applied.",
+              "Right click to rename a territory. \r "
+                  + "If you want to change the properties of a territory, left click on it. \r "
+                  + "The color of the territory label changes for each property that is applied.",
               "Help For Current Step");
           break;
 
         case TERRITORY_CONNECTIONS:
           showInfoMessage(
-              "To add a connection between two territories, click on the first territory in the connection and then the second. To remove all the connections from a certain territory, right click on it and click yes.\r\rNote: To have the program find the connections automatically, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "To add a connection between two territories, click on the first territory in the connection and then "
+                  + "the second. To remove all the connections from a certain territory, right click on it and click "
+                  + "yes.\r\r"
+                  + "Note: To have the program find the connections automatically, click the 'Auto-Fill' button "
+                  + "between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case PLAYERS_AND_ALLIANCES:
           showInfoMessage(
-              "Player Name: The name of the player. Examples: Russians, Germans, British, Americans, Chinese, and Italians.\r\rPlayer Alliance: The name of the alliance that the player is part of. Examples: Allies, and Axis.\r\rInitial Resources: The amount of resources(PUs) the player begins with when the map is started.",
+              "Player Name: The name of the player. Examples: Russians, Germans, British, Americans, Chinese, and "
+                  + "Italians.\r\r"
+                  + "Player Alliance: The name of the alliance that the player is part of. Examples: Allies, and "
+                  + "Axis.\r\r"
+                  + "Initial Resources: The amount of resources(PUs) the player begins with when the map is started.",
               "Help For Current Step");
           break;
 
         case UNIT_DEFINITIONS:
           showInfoMessage(
-              "Unit Name: The name of the unit. Examples: infantry, artillery, armour, fighter, bomber, and transport.\r\rBuy Cost: The amount of resources it takes to buy the unit.\r\rBuy Quantity: The amount of units to be placed with each purchase of the unit.\r\rTo have the program automatically enter some of the commonly used units, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Unit Name: The name of the unit. Examples: infantry, artillery, armour, fighter, bomber, and "
+                  + "transport.\r\r"
+                  + "Buy Cost: The amount of resources it takes to buy the unit.\r\r"
+                  + "Buy Quantity: The amount of units to be placed with each purchase of the unit.\r\r"
+                  + "To have the program automatically enter some of the commonly used units, click the 'Auto-Fill' "
+                  + "button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case GAMEPLAY_SEQUENCE:
           showInfoMessage(
-              "Sequence Name: The name of the sequence. Examples(Typical): tech, techActivation, battle, move, place, purchase, endTurn, placeBid, bid.\r\rClass Name: The name of the java delegate. Examples(Typical): TechnologyDelegate, TechActivationDelegate, BattleDelegate, MoveDelegate, PlaceDelegate, PurchaseDelegate, EndTurnDelegate, BidPlaceDelegate, BidPurchaseDelegate.\r\rDisplay: The text displayed for the delegate in TripleA. Examples(Typical): Research Technology, Activate Technology, Combat, Combat Move, Place Units, Purchase Units, Turn Complete, Bid Placement, and Bid Purchase\r\rTo have the program automatically enter the default Gameplay Sequences, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Sequence Name: The name of the sequence. Examples(Typical): tech, techActivation, battle, move, place, "
+                  + "purchase, endTurn, placeBid, bid.\r\r"
+                  + "Class Name: The name of the java delegate. Examples(Typical): TechnologyDelegate, "
+                  + "TechActivationDelegate, BattleDelegate, MoveDelegate, PlaceDelegate, PurchaseDelegate, "
+                  + "EndTurnDelegate, BidPlaceDelegate, BidPurchaseDelegate.\r\r"
+                  + "Display: The text displayed for the delegate in TripleA. Examples(Typical): Research Technology, "
+                  + "Activate Technology, Combat, Combat Move, Place Units, Purchase Units, Turn Complete, "
+                  + "Bid Placement, and Bid Purchase\r\r"
+                  + "To have the program automatically enter the default Gameplay Sequences, click the 'Auto-Fill' "
+                  + "button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case PLAYER_SEQUENCE:
           showInfoMessage(
-              "Sequence Name: The name of the sequence. Examples: russianBid, germanBidPlace, chineseTech, americanCombatMove, and germanPlace.\r\rGameplay Sequence: The name of the Gameplay Sequence that the player sequence uses. Examples: bid, tech, move, place, endTurn.\r\rPlayer: The name of the player that the Player Delegate is attached to. Examples: Russians, Germans, Americans, and Chinese.\r\rMax Run Count: The maximum number of times the Sequence can be used in the game. (You can set this value to 0 if you do not want the sequence to have a run limit).\r\rTo have the program automatically enter the default Player Sequences, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Sequence Name: The name of the sequence. Examples: russianBid, germanBidPlace, chineseTech, "
+                  + "americanCombatMove, and germanPlace.\r\r"
+                  + "Gameplay Sequence: The name of the Gameplay Sequence that the player sequence uses. Examples: "
+                  + "bid, tech, move, place, endTurn.\r\r"
+                  + "Player: The name of the player that the Player Delegate is attached to. Examples: Russians, "
+                  + "Germans, Americans, and Chinese.\r\r"
+                  + "Max Run Count: The maximum number of times the Sequence can be used in the game. (You can set "
+                  + "this value to 0 if you do not want the sequence to have a run limit).\r\r"
+                  + "To have the program automatically enter the default Player Sequences, click the 'Auto-Fill' "
+                  + "button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case TECHNOLOGY_DEFINITIONS:
           showInfoMessage(
-              "Technology Name: The name of the technology that can be researched and unlocked by the player. Examples(Typical): heavyBomber, jetPower, industrialTechnology, superSub, rocket, and longRangeAir.\r\rPlayer: The name of the player that is able to research the technology. Examples: Russians, Germans, Americans, and Chinese.\r\rAlready Enabled: Determines if the technology should be unlocked for the selected player when the game first starts.\r\rTo have the program automatically enter some of the commonly used technologies, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Technology Name: The name of the technology that can be researched and unlocked by the player. "
+                  + "Examples(Typical): heavyBomber, jetPower, industrialTechnology, superSub, rocket, and "
+                  + "longRangeAir.\r\r"
+                  + "Player: The name of the player that is able to research the technology. Examples: Russians, "
+                  + "Germans, Americans, and Chinese.\r\r"
+                  + "Already Enabled: Determines if the technology should be unlocked for the selected player when the "
+                  + "game first starts.\r\r"
+                  + "To have the program automatically enter some of the commonly used technologies, click the "
+                  + "'Auto-Fill' button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case PRODUCTION_FRONTIERS:
           showInfoMessage(
-              "Unit Name: The name of the unit that is included in the production frontier. Examples: infantry, artillery, and armour.\r\rTo have the program automatically add all the units to the production frontier being shown, click the 'Auto-Fill' button between the Back and Next buttons.\r\rNote: A production frontier is just a list of units that a player is allowed to purchase.",
+              "Unit Name: The name of the unit that is included in the production frontier. Examples: infantry, "
+                  + "artillery, and armour.\r\r"
+                  + "To have the program automatically add all the units to the production frontier being shown, click "
+                  + "the 'Auto-Fill' button between the Back and Next buttons.\r\r"
+                  + "Note: A production frontier is just a list of units that a player is allowed to purchase.",
               "Help For Current Step");
           break;
 
         case UNIT_ATTACHMENTS:
           showInfoMessage(
-              "Attachment Name: The name of the unit attachment that is applied to the unit. Examples: movement, attack, defense, isAir, isSea, and isStrategicBomber.\r\rValue: The attachment value. Examples: True, False, 1, 2\r\rTo have the program automatically enter the default attachments for the units that are commonly used, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Attachment Name: The name of the unit attachment that is applied to the unit. Examples: movement, "
+                  + "attack, defense, isAir, isSea, and isStrategicBomber.\r\r"
+                  + "Value: The attachment value. Examples: True, False, 1, 2\r\r"
+                  + "To have the program automatically enter the default attachments for the units that are commonly "
+                  + "used, click the 'Auto-Fill' button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case TERRITORY_PRODUCTION:
           showInfoMessage(
-              "To change the production value of a territory, click on the territory and enter the territory's new production value in the window that appears.",
+              "To change the production value of a territory, click on the territory and enter the territory's new "
+                  + "production value in the window that appears.",
               "Help For Current Step");
           break;
 
         case CANAL_DEFINITIONS:
           showInfoMessage(
-              "To add a new canal, click on both of the land territories that form the canal(Touch the canal) and click yes when it asks for confirmation. To remove all the canals from the map, right click on one of the territories and click 'Yes' to confirm.",
+              "To add a new canal, click on both of the land territories that form the canal(Touch the canal) and "
+                  + "click yes when it asks for confirmation. To remove all the canals from the map, right click on "
+                  + "one of the territories and click 'Yes' to confirm.",
               "Help For Current Step");
           break;
 
         case TERRITORY_OWNERSHIP:
           showInfoMessage(
-              "To change the initial owner of a territory, click on the territory and type in its new owner when it asks for it.",
+              "To change the initial owner of a territory, click on the territory and type in its new owner when it "
+                  + "asks for it.",
               "Help For Current Step");
           break;
 
         case UNIT_PLACEMENTS:
           showInfoMessage(
-              "To change the units that a territory begins with, click on the territory and use the window that opens to set the territory's units. To do so, use the + and - buttons below each unit's name to change the quantity of each unit in the territory. You can also edit the text in the result textbox directly to change the territory units. Just type the name of each unit you want to add, followed by ':', followed by the unit quantitiy: Example: 'infantry: 1, artillery: 3, armour: 2, fighter: 1'.",
+              "To change the units that a territory begins with, click on the territory and use the window that opens "
+                  + "to set the territory's units. To do so, use the + and - buttons below each unit's name to change "
+                  + "the quantity of each unit in the territory. You can also edit the text in the result textbox "
+                  + "directly to change the territory units. Just type the name of each unit you want to add, followed "
+                  + "by ':', followed by the unit quantitiy: Example: 'infantry: 1, artillery: 3, armour: 2, "
+                  + "fighter: 1'.",
               "Help For Current Step");
           break;
 
         case GAME_SETTINGS:
           showInfoMessage(
-              "Setting Name: The name of the setting that is applied to the map. Examples: Always on AA, Two hit battleship, and Japanese bid.\r\rValue: The value of the game setting. Examples: true, false, 0, 5, 32.\r\rEditable: Whether players are allowed to change the value of the setting when the map is being started.\r\rMin. N. (Optional): The lowest number that the value can be set to when the user sets the game options in TripleA. Only change this if the setting is a number.\r\rMax. N.(Optional): The highest number that the value can be set to when the user sets the game options in TripleA. Only change this if the setting is a number.\r\rTo have the program automatically enter some of the commonly used Game Settings, click the 'Auto-Fill' button between the Back and Next buttons.",
+              "Setting Name: The name of the setting that is applied to the map. Examples: Always on AA, Two hit "
+                  + "battleship, and Japanese bid.\r\r"
+                  + "Value: The value of the game setting. Examples: true, false, 0, 5, 32.\r\r"
+                  + "Editable: Whether players are allowed to change the value of the setting when the map is being "
+                  + "started.\r\r"
+                  + "Min. N. (Optional): The lowest number that the value can be set to when the user sets the game "
+                  + "options in TripleA. Only change this if the setting is a number.\r\r"
+                  + "Max. N.(Optional): The highest number that the value can be set to when the user sets the game "
+                  + "options in TripleA. Only change this if the setting is a number.\r\r"
+                  + "To have the program automatically enter some of the commonly used Game Settings, click the "
+                  + "'Auto-Fill' button between the Back and Next buttons.",
               "Help For Current Step");
           break;
 
         case MAP_FINISHED:
           showInfoMessage(
-              "The map notes can be entered in the textbox. You can enter plain text or html code. Then just click the 'Save Map To File' button, and save the file in the map's 'games' folder. (Create the 'games' folder if not already created)",
+              "The map notes can be entered in the textbox. You can enter plain text or html code. Then just click the "
+                  + "'Save Map To File' button, and save the file in the map's 'games' folder. (Create the 'games' "
+                  + "folder if not already created)",
               "Help For Current Step");
           break;
       }

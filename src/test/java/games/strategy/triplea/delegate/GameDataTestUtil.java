@@ -80,7 +80,8 @@ public class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
-  // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request 1074
+  // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request
+  // 1074
   public static UnitType tacBomber(final GameData data) {
     return unitType("tactical_bomber", data);
   }

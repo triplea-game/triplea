@@ -36,7 +36,8 @@ public class GameSequencePanel extends DynamicRowsPanel {
   protected ActionListener getAutoFillAction() {
     return e -> {
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Are you sure you want to use the  Auto-Fill feature?\r"
+              + "It will remove any information you have entered in this step and propose commonly used choices.",
           "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
         setGamePlaySequenceMapToDefault();
         // Update UI

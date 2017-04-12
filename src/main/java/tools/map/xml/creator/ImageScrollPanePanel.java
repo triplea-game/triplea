@@ -219,7 +219,8 @@ public abstract class ImageScrollPanePanel {
     if (MapXmlCreator.mapPolygonsFile != null
         || file.exists()
             && (JOptionPane.showConfirmDialog(new JPanel(),
-                "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territory shapes?",
+                "A polygons.txt file was found in the map's folder, do you want to use the file to supply the "
+                    + "territory shapes?",
                 "File Suggestion",
                 1) == 0)) {
       try {

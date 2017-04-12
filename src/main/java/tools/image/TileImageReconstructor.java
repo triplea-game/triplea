@@ -47,8 +47,10 @@ public class TileImageReconstructor {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"
-            + "This is the TileImageReconstructor, it will reconstruct a single map image from a folder full of basetiles. "
-            + "<br>You must know the size of the map image before you begin, this is normally found in the map.properties file. "
+            + "This is the TileImageReconstructor, it will reconstruct a single map image from a folder full of "
+            + "basetiles. "
+            + "<br>You must know the size of the map image before you begin, this is normally found in the "
+            + "map.properties file. "
             + "</html>"));
     final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, s_mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getPathString();

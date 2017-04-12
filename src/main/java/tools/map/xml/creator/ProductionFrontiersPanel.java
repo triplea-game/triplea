@@ -44,7 +44,8 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     return e -> {
 
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Are you sure you want to use the  Auto-Fill feature?\r"
+              + "It will remove any information you have entered in this step and propose commonly used choices.",
           "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
         MapXmlHelper.clearProductionFrontiers();
         for (final String playerName1 : MapXmlHelper.getPlayerNames()) {

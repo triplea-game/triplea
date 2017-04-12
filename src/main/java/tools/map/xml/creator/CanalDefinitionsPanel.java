@@ -310,8 +310,8 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     if (currentCanalName.isPresent()
         && (selectedLandTerritories.size() < 2 || selectedWaterTerritories.size() < 2)) {
       if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Canal incomplete",
-          "Canal '" + currentCanalName
-              + "' is incomplete. A canal needs at least 2 land and 2 water territories.\rDo you want to continue to deselect the canal?",
+          "Canal '" + currentCanalName + "' is incomplete. A canal needs at least 2 land and 2 water territories.\r"
+              + "Do you want to continue to deselect the canal?",
           JOptionPane.WARNING_MESSAGE)) {
         return;
       }

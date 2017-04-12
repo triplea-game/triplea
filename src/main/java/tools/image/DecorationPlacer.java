@@ -135,26 +135,43 @@ public class DecorationPlacer extends JFrame {
       picker.setVisible(true);
       JOptionPane.showMessageDialog(picker,
           new JLabel("<html>"
-              + "This is the DecorationPlacer, it will create a text file for you containing the points to place images at. "
-              + "<br><br>In order to begin this, you must already have the map file, as well as the centers.txt and polygons.txt finished. "
-              + "<br>To start, load you map image. Then you will be asked which kind of Image Point File you are creating. "
-              + "<br><br>There are basically 2 different kinds of image point files, and with each of those are 2 different sub-types. "
-              + "<br>The 1st type is a folder full of many different images, that after being placed on the map will never be changed. "
-              + "<br>Examples of this are the decorations.txt file [misc folder] and the name_place.txt file [territoryNames folder]. "
-              + "<br>In these files the 'point' string directly corresponds to exact name of an image file in the folder, with the only "
-              + "<br>exception being whether the point string needs the .png extension or not (decorations do, name_place does not). "
-              + "<br><br>The 2nd type is single image, or small set of images, where the chosen image is determined by something in the xml file. "
+              + "This is the DecorationPlacer, it will create a text file for you containing the points to place "
+              + "images at. "
+              + "<br><br>In order to begin this, you must already have the map file, as well as the centers.txt and "
+              + "polygons.txt finished. "
+              + "<br>To start, load you map image. Then you will be asked which kind of Image Point File you are "
+              + "creating. "
+              + "<br><br>There are basically 2 different kinds of image point files, and with each of those are 2 "
+              + "different sub-types. "
+              + "<br>The 1st type is a folder full of many different images, that after being placed on the map will "
+              + "never be changed. "
+              + "<br>Examples of this are the decorations.txt file [misc folder] and the name_place.txt file "
+              + "[territoryNames folder]. "
+              + "<br>In these files the 'point' string directly corresponds to exact name of an image file in the "
+              + "folder, with the only "
+              + "<br>exception being whether the point string needs the .png extension or not (decorations do, "
+              + "name_place does not). "
+              + "<br><br>The 2nd type is single image, or small set of images, where the chosen image is determined by "
+              + "something in the xml file. "
               + "<br>Examples of this are the pu_place.txt file [PUs folder] and the capitols.txt file [flags folder]. "
-              + "<br>In these files, the 'point' string is the exact name of a territory, while the image file has a different name, "
-              + "<br>and is chosen by the engine based on the game data.  For things like the pu_place you may want the decoration placer "
-              + "<br>to generate placements for all territories, while others like capitols are more rare and you may want to individually "
+              + "<br>In these files, the 'point' string is the exact name of a territory, while the image file has a "
+              + "different name, "
+              + "<br>and is chosen by the engine based on the game data.  For things like the pu_place you may want "
+              + "the decoration placer "
+              + "<br>to generate placements for all territories, while others like capitols are more rare and you may "
+              + "want to individually "
               + "<br>select which territories you need a placement point for."
-              + "<br><br>After selecting the point file type you want to make, the program will choose the default selections for you, "
-              + "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the answers. "
-              + "<br><br>Any images that this program cannot find the point for, will start in the upper left corner of the map, "
+              + "<br><br>After selecting the point file type you want to make, the program will choose the default "
+              + "selections for you, "
+              + "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do "
+              + "not know the answers. "
+              + "<br><br>Any images that this program cannot find the point for, will start in the upper left corner "
+              + "of the map, "
               + "<br>and you may click on them to move them to their appropriate place."
-              + "<br><br>Do not forget to save the points when finished. To save and continue with another set of images, choose the "
-              + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use 'Load Image Points'."
+              + "<br><br>Do not forget to save the points when finished. To save and continue with another set of "
+              + "images, choose the "
+              + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use "
+              + "'Load Image Points'."
               + "</html>"));
       picker.loadImagesAndPoints();
     } else {
@@ -176,7 +193,8 @@ public class DecorationPlacer extends JFrame {
       fileCenters = new File(new File(mapName).getParent() + File.separator + "centers.txt");
     }
     if (fileCenters.exists() && JOptionPane.showConfirmDialog(new JPanel(),
-        "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories centers?",
+        "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
+            + "centers?",
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Centers : " + fileCenters.getPath());
@@ -212,7 +230,8 @@ public class DecorationPlacer extends JFrame {
       filePoly = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
     }
     if (filePoly.exists() && JOptionPane.showConfirmDialog(new JPanel(),
-        "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories polygons?",
+        "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
+            + "polygons?",
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Polygons : " + filePoly.getPath());
@@ -492,9 +511,11 @@ public class DecorationPlacer extends JFrame {
     System.out.println("Select Show images from top left or bottom left point?");
     s_showFromTopLeft = JOptionPane.showOptionDialog(this,
         "Are the images shown from the top left, or from the bottom left point? \r\n"
-            + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and 'comments.txt'. \r\n"
+            + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and "
+            + "'comments.txt'. \r\n"
             + "For these 3 files, whether they are top left or bottom left is determined by the \r\n"
-            + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to false if not specified [meaning bottom left]. \r\n"
+            + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to false if not specified "
+            + "[meaning bottom left]. \r\n"
             + "Do NOT change this from whatever the default has choosen, unless you know exactly what you are doing!",
         "Show images from top left or bottom left point?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
         null, showFromTopLeft,
@@ -511,8 +532,10 @@ public class DecorationPlacer extends JFrame {
     final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
     System.out.println("Select Folder full of images OR Text file full of points?");
     if (JOptionPane.showOptionDialog(this,
-        "Are you doing a folder full of different images (decorations.txt [misc] and name_place.txt [territoryNames]) \r\n"
-            + "Or are we doing a per territory static or dynamic image based on game data (pu_place.txt [PUs], capitols.txt [flags], etc, basically all others) ?",
+        "Are you doing a folder full of different images (decorations.txt [misc] and name_place.txt [territoryNames]) "
+            + "\r\n"
+            + "Or are we doing a per territory static or dynamic image based on game data (pu_place.txt [PUs], "
+            + "capitols.txt [flags], etc, basically all others) ?",
         "Folder full of images OR Text file full of points?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
         null, miscOrNamesOptions,
         miscOrNamesOptions[(s_imagePointType.isUseFolder() ? 0 : 1)]) != JOptionPane.NO_OPTION) {
@@ -532,7 +555,8 @@ public class DecorationPlacer extends JFrame {
       System.out.println("Points end in .png OR they do not?");
       fillCurrentImagePointsBasedOnImageFolder(JOptionPane.showOptionDialog(this,
           "Does the text file use the exact image file name, including the .png extension (decorations.txt) \r\n"
-              + "Or does the text file not use the full file name with no extension, just a territory name (name_place.txt) ?",
+              + "Or does the text file not use the full file name with no extension, just a territory name "
+              + "(name_place.txt) ?",
           "Points end in .png OR they do not?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           pointsAreNamesOptions,
           pointsAreNamesOptions[(s_imagePointType.isEndInPNG() ? 0 : 1)]) == JOptionPane.NO_OPTION);
@@ -547,8 +571,10 @@ public class DecorationPlacer extends JFrame {
       System.out.println("Select Fill in all territories OR let you select them?");
       fillCurrentImagePointsBasedOnTextFile(JOptionPane.showOptionDialog(this,
           "Are you going to do a point for every single territory (pu_place.txt) \r\n"
-              + "Or are you going to do just a few territories (capitols.txt, convoy.txt, vc.txt, etc, most others) ? \r\n"
-              + "(If you choose the later option, you must Right Click on a territory to create an image for that territory.)",
+              + "Or are you going to do just a few territories (capitols.txt, convoy.txt, vc.txt, etc, most others) ? "
+              + "\r\n"
+              + "(If you choose the later option, you must Right Click on a territory to create an image for that "
+              + "territory.)",
           "Fill in all territories OR let you select them?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
           null, fillAllOptions, fillAllOptions[(s_imagePointType.isFillAll() ? 0 : 1)]) != JOptionPane.NO_OPTION);
     }
@@ -801,52 +827,93 @@ public class DecorationPlacer extends JFrame {
 
 
 enum ImagePointType {
-  decorations("decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true,
+  decorations(
+      "decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true,
       "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
-      "<html>decorations.txt will allow for multiple points per image. <br>Left Click = select closest image  OR  place currently selected image "
-          + "<br>Right click = create a copy of currently selected image OR closest image <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), name_place(
-              "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
-              "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' folder",
-              "<html>name_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                  + "<br>Right click = nothing <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), pu_place(
-                      "pu_place.txt", "PUs", "2.png", false, false, true, true, false, false,
-                      "pu_place.txt is the point where the PUs get shown, and picks the PU images (like '2.png') from the 'PUs' folder",
-                      "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                          + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), capitols(
-                              "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false, true,
-                              "capitols.txt is the point where a capitol flag is shown, and picks the <name>_large.png image from the 'flags' folder",
-                              "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                  + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), vc(
-                                      "vc.txt", "misc", "vc.png", false, false, false, false, false, true,
-                                      "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
-                                      "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                          + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), blockade(
-                                              "blockade.txt", "misc", "blockade.png", false, false, false, false, false,
-                                              true,
-                                              "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the 'misc' folder",
-                                              "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                                  + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), convoy(
-                                                      "convoy.txt", "flags", "Neutral.png", false, false, false, false,
-                                                      false, true,
-                                                      "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability, and picks the <name>.png image from the 'flags' folder",
-                                                      "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                                          + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), comments(
-                                                              "comments.txt", "misc", "exampleConvoyText.png", false,
-                                                              false, false, true, false, false,
-                                                              "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any image, instead it writes the text in-game",
-                                                              "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                                                  + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), kamikaze_place(
-                                                                      "kamikaze_place.txt", "flags", "Neutral_fade.png",
-                                                                      false, false, false, false, false, true,
-                                                                      "kamikaze_place.txt is the point where a kamikaze zone symbol is shown, and it picks the <name>_fade.png image from the 'flags' folder",
-                                                                      "<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image "
-                                                                          + "<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"), territory_effects(
-                                                                              "territory_effects.txt",
-                                                                              "territoryEffects", "mountain.png", false,
-                                                                              false, false, false, true, true,
-                                                                              "territory_effects.txt is the point where a territory effect image is shown, and it picks the <effect>.png image from the 'territoryEffects' folder",
-                                                                              "<html>pu_place.txt will allow for multiple points per image. <br>Left Click = select closest image  OR  place currently selected image "
-                                                                                  + "<br>Right click = copy selected image OR create an image for this territory<br>CTRL/SHIFT + Right Click = delete currently selected image point</html>");
+      "<html>decorations.txt will allow for multiple points per image. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create a copy of currently selected image OR closest image <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  name_place(
+      "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
+      "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' "
+          + "folder",
+      "<html>name_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = nothing <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  pu_place(
+      "pu_place.txt", "PUs", "2.png", false, false, true, true, false, false,
+      "pu_place.txt is the point where the PUs get shown, and picks the PU images (like '2.png') from the 'PUs' folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  capitols(
+      "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false, true,
+      "capitols.txt is the point where a capitol flag is shown, and picks the <name>_large.png image from the 'flags' "
+          + "folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  vc(
+      "vc.txt", "misc", "vc.png", false, false, false, false, false, true,
+      "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  blockade(
+      "blockade.txt", "misc", "blockade.png", false, false, false, false, false, true,
+      "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the "
+          + "'misc' folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  convoy(
+      "convoy.txt", "flags", "Neutral.png", false, false, false, false, false, true,
+      "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability, and picks the "
+          + "<name>.png image from the 'flags' folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  comments(
+      "comments.txt", "misc", "exampleConvoyText.png", false, false, false, true, false, false,
+      "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any "
+          + "image, instead it writes the text in-game",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  kamikaze_place(
+      "kamikaze_place.txt", "flags", "Neutral_fade.png", false, false, false, false, false, true,
+      "kamikaze_place.txt is the point where a kamikaze zone symbol is shown, and it picks the <name>_fade.png image "
+          + "from the 'flags' folder",
+      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = create an image and point for this territory if none exists yet <br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+
+  territory_effects(
+      "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true, true,
+      "territory_effects.txt is the point where a territory effect image is shown, and it picks the <effect>.png image "
+          + "from the 'territoryEffects' folder",
+      "<html>pu_place.txt will allow for multiple points per image. <br>"
+          + "Left Click = select closest image  OR  place currently selected image <br>"
+          + "Right click = copy selected image OR create an image for this territory<br>"
+          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>");
+
   public static final int SPACE_BETWEEN_NAMES_AND_PUS = 32;
   private final String m_fileName;
   private final String m_folderName;

@@ -52,7 +52,8 @@ public class XmlGameElementMapperTest {
 
   @Test
   public void getAttachmentHappyCase() {
-    Optional<IAttachment> resultObject = testObj.getAttachment(XmlGameElementMapper.CANAL_ATTACHMENT_NAME, "", null, null);
+    Optional<IAttachment> resultObject =
+        testObj.getAttachment(XmlGameElementMapper.CANAL_ATTACHMENT_NAME, "", null, null);
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(CanalAttachment.class));
   }

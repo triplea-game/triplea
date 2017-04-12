@@ -61,7 +61,8 @@ public class PlaceDelegateTest extends DelegateTest {
 
   @Test
   public void testNotCorrectUnitsValid() {
-    final String response = m_delegate.placeUnits(infantry.create(3, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    final String response =
+        m_delegate.placeUnits(infantry.create(3, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertError(response);
   }
 
