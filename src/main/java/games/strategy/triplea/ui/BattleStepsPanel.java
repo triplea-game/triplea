@@ -61,8 +61,6 @@ class BattleStepsPanel extends JPanel implements Active {
 
   /**
    * Set the steps given, setting the selected step to the first step.
-   *
-   * @param steps
    */
   public void listBattle(final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {

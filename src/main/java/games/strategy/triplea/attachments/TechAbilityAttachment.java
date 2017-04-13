@@ -1217,9 +1217,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
   /**
    * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game
    * options/properties.
-   *
-   * @param data
-   * @throws GameParseException
    */
   @InternalDoNotExport
   public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {

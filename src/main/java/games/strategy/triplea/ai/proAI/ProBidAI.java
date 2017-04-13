@@ -1676,7 +1676,6 @@ public class ProBidAI {
    *        - Territory expecting to be blitzed
    * @param blitzTerr
    *        - Territory which is being blitzed through (not guaranteed to be all possible route territories!)
-   * @param data
    * @param ePlayer
    *        - the enemy Player
    * @return actual strength of enemy units (armor)
@@ -2254,13 +2253,10 @@ public class ProBidAI {
   /**
    * Finds list of territories at exactly distance from the start.
    *
-   * @param start
    * @param endCondition
    *        condition that all end points must satisfy
    * @param routeCondition
    *        condition that all traversed internal territories must satisy
-   * @param distance
-   * @param data
    */
   private static List<Territory> findFontier(final Territory start, final Match<Territory> endCondition,
       final Match<Territory> routeCondition, final int distance, final GameData data) {

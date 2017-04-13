@@ -121,12 +121,6 @@ public class BattleRecordsList extends GameDataComponent {
    *        if null then any player
    * @param defender
    *        if null then any player
-   * @param battleType
-   * @param anyOfTheseTerritories
-   * @param brl
-   * @param beginningRound
-   * @param endRound
-   * @param currentRoundOnly
    */
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,

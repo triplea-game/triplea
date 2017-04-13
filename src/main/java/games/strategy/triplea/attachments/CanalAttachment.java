@@ -121,8 +121,6 @@ public class CanalAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param landTerritories
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setExcludedUnits(final String value) {

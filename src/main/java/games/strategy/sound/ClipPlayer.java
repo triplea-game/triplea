@@ -330,8 +330,6 @@ public class ClipPlayer {
    * battle_aa_miss_02_just_aa_artillery.
    * mp3<br>
    * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
-   *
-   * @param pathName
    */
   private List<URL> parseClipPaths(final String pathName) {
     // Check if there is a sound.properties path override for this resource

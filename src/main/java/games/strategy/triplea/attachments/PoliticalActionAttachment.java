@@ -79,9 +79,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param relChange
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationshipChange(final String relChange) throws GameParseException {
@@ -137,7 +134,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @param player
    * @return gets the valid actions for this player.
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,

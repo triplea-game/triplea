@@ -21,7 +21,6 @@ public class GameObjectOutputStream extends ObjectOutputStream {
    *
    * @param output
    *        output stream
-   * @throws IOException
    */
   public GameObjectOutputStream(final OutputStream output) throws IOException {
     super(output);

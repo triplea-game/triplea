@@ -202,9 +202,6 @@ public class Database {
   /**
    * This must be the first db call made.
    * Run Database as a main method to run the backup.
-   *
-   * @param backupDir
-   * @throws SQLException
    */
   private static void restoreFromBackup(final File backupDir) throws SQLException {
     // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/

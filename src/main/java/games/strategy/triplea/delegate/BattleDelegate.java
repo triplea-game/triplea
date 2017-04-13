@@ -1353,12 +1353,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * This rolls the dice and validates them to see if units died or not.
    * It will use LowLuck or normal dice.
    * If any units die, we remove them from the game, and if units take damage but live, we also do that here.
-   *
-   * @param unitUnderFire
-   * @param numberOfAttacks
-   * @param resourcesAndAttackValues
-   * @param firingEnemy
-   * @param location
    */
   private void fireKamikazeSuicideAttacks(final Unit unitUnderFire, final IntegerMap<Resource> numberOfAttacks,
       final IntegerMap<Resource> resourcesAndAttackValues, final PlayerID firingEnemy, final Territory location) {

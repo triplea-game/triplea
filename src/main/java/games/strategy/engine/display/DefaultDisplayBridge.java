@@ -7,8 +7,6 @@ public class DefaultDisplayBridge implements IDisplayBridge {
 
   /**
    * Constructs a DefaultDisplayBridge.
-   *
-   * @param gameData
    */
   public DefaultDisplayBridge(final GameData gameData) {
     super();

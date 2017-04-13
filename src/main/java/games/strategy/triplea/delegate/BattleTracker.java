@@ -87,7 +87,6 @@ public class BattleTracker implements java.io.Serializable {
   /**
    * @param t
    *        referring territory.
-   * @param bombing
    * @return whether a battle is to be fought in the given territory
    */
   public boolean hasPendingBattle(final Territory t, final boolean bombing) {

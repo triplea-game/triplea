@@ -22,10 +22,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Only used when we are trying to export the data to a savegame,
    * and we need to change the round and step to something other than the current round and step
    * (because we are creating a savegame at a certain point in history, for example).
-   *
-   * @param currentRound
-   * @param stepDisplayName
-   * @param player
    */
   public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
       final PlayerID player) {

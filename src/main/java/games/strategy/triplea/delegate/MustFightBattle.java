@@ -1704,10 +1704,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   /**
    * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
-   *
-   * @param bridge
-   * @param player
-   * @param defender
    */
   private void checkSuicideUnits(final IDelegateBridge bridge) {
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
@@ -1726,10 +1722,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   /**
    * Check for unescorted TRNS and kill them immediately.
-   *
-   * @param bridge
-   * @param player
-   * @param defender
    */
   private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerID player) {
     // if we are the attacker, we can retreat instead of dying
@@ -1817,10 +1809,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   /**
    * Submerge attacking/defending SUBS if they're alone OR with TRNS against only AIRCRAFT.
-   *
-   * @param bridge
-   * @param player
-   * @param defender
    */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     // if All attackers are AIR submerge any defending subs ..m_defendingUnits.removeAll(m_killed);

@@ -25,8 +25,6 @@ public class SetupFrame extends JPanel {
 
   /**
    * Creates a new SetupFrame.
-   *
-   * @param data
    */
   public SetupFrame(final GameData data) {
     super(new BorderLayout());

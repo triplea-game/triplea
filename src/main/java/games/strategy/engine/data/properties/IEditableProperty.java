@@ -21,7 +21,6 @@ public interface IEditableProperty {
   Object getValue();
 
   /**
-   * @param value
    * @return is the object a valid object for setting as our value.
    */
   boolean validate(Object value);

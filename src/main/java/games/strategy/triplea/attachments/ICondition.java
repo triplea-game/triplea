@@ -16,9 +16,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 public interface ICondition extends IAttachment {
   /**
    * Only accepts RulesAttachments, and this is on purpose.
-   *
-   * @param conditions
-   * @throws GameParseException
    */
   void setConditions(final String conditions) throws GameParseException;
 
@@ -67,9 +64,6 @@ public interface ICondition extends IAttachment {
    * then IDelegateBridge is not required and can be null (or use the shortcut method). Therefore use this method while
    * testing the
    * conditions the first time.
-   *
-   * @param testedConditions
-   * @param aBridge
    */
   boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge);
 
@@ -77,9 +71,6 @@ public interface ICondition extends IAttachment {
    * HashMap&lt;ICondition, Boolean> testedConditions must be filled with completed tests of all conditions already, or
    * this will give you
    * errors.
-   *
-   * @param testedConditions
-   * @param aBridge
    */
   boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions);
 }

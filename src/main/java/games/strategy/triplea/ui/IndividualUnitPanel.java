@@ -54,15 +54,6 @@ public class IndividualUnitPanel extends JPanel {
    * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
    * with the points per
    * unit.
-   *
-   * @param units
-   * @param title
-   * @param data
-   * @param uiContext
-   * @param max
-   * @param showMinAndMax
-   * @param showSelectAll
-   * @param optionalListener
    */
   public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
       final IUIContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
@@ -91,13 +82,6 @@ public class IndividualUnitPanel extends JPanel {
    *
    * @param unitsAndTheirMaxMinAndCurrent
    *        mapped to their individual max, then min, then current values
-   * @param title
-   * @param data
-   * @param context
-   * @param max
-   * @param showMinAndMax
-   * @param showSelectAll
-   * @param optionalListener
    */
   public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
       final String title, final GameData data, final IUIContext context, final int max, final boolean showMinAndMax,

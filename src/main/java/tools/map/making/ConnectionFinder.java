@@ -200,7 +200,6 @@ public class ConnectionFinder {
   /**
    * Creates the xml territory definitions.
    *
-   * @param allTerritoryNames
    * @param waterString
    *        a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
    *        territory is water
@@ -263,8 +262,6 @@ public class ConnectionFinder {
    * from: eu.hansolo.steelseries.tools.Scaler.java
    * Returns a double that represents the area of the given point array of a polygon
    *
-   * @param pointArray
-   * @param N
    * @return a double that represents the area of the given point array of a polygon
    */
   private static double calcSignedPolygonArea(final Point2D[] pointArray) {
@@ -286,7 +283,6 @@ public class ConnectionFinder {
    * Returns a Point2D object that represents the center of mass of the given point array which represents a
    * polygon.
    *
-   * @param pointArray
    * @return a Point2D object that represents the center of mass of the given point array
    */
   private static Point2D calcCenterOfMass(final Point2D[] pointArray) {
@@ -316,7 +312,6 @@ public class ConnectionFinder {
    * from: eu.hansolo.steelseries.tools.Scaler.java
    * Returns a Point2D object that represents the center of mass of the given shape.
    *
-   * @param currentShape
    * @return a Point2D object that represents the center of mass of the given shape
    */
   private static Point2D getCentroid(final Shape currentShape) {
@@ -367,12 +362,11 @@ public class ConnectionFinder {
    * Returns a scaled version of the given shape, calculated by the given scale factor.
    * The scaling will be calculated around the centroid of the shape.
    *
-   * @param currentPolygon
    * @param xScaleFactor
    *        how much to scale on the x-axis
    * @param yScaleFactor
    *        how much to scale on the y-axis
-   *        * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
+   * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
    */
   private static Shape scale(final Shape currentPolygon, final double xScaleFactor, final double yScaleFactor) {
     final Point2D centroid = getCentroid(currentPolygon);

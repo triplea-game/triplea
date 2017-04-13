@@ -16,9 +16,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 public interface ITripleADisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
-   *
-   * @param message
-   * @param title
    */
   void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
@@ -28,11 +25,6 @@ public interface ITripleADisplay extends IDisplay {
    * NOT any of the players
    * listed as butNotThesePlayers.
    * (No message to any observers or players not in the list.)
-   *
-   * @param playersToSendTo
-   * @param butNotThesePlayers
-   * @param message
-   * @param title
    */
   void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
       final Collection<PlayerID> butNotThesePlayers, final String message, final String title);
@@ -59,7 +51,6 @@ public interface ITripleADisplay extends IDisplay {
    *        - PlayerID of attacker
    * @param defender
    *        - PlayerID of defender
-   * @param isAmphibious
    */
   void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,

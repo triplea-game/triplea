@@ -31,11 +31,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
   /**
    * Method for setting a relationship between two players, this should only be called during the Game Parser.
-   *
-   * @param p1
-   * @param p2
-   * @param r
-   * @param roundValue
    */
   protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue) {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
@@ -184,8 +179,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
     /**
      * This should never be called outside of the change factory.
-     *
-     * @param relationshipType
      */
     public Relationship(final RelationshipType relationshipType) {
       this.relationshipType = relationshipType;
@@ -194,9 +187,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
     /**
      * This should never be called outside of the game parser.
-     *
-     * @param relationshipType
-     * @param roundValue
      */
     public Relationship(final RelationshipType relationshipType, final int roundValue) {
       this.relationshipType = relationshipType;

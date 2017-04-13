@@ -26,7 +26,6 @@ public class MapXmlUIHelper {
    *        the pluggable Look and Feel: ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE, QUESTION_MESSAGE, or
    *        PLAIN_MESSAGE
    * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
-   * @throws HeadlessException
    */
   public static int showYesNoOptionDialog(
       final String title, final Object message,
@@ -65,7 +64,6 @@ public class MapXmlUIHelper {
    * @param initialValue - the object that represents the default selection for the dialog; only meaningful if options
    *        is used; can be null
    * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
-   * @throws HeadlessException
    */
   public static int showOptionDialog(
       final String title, final Object message,
@@ -110,7 +108,6 @@ public class MapXmlUIHelper {
    * @param buttonText - the text of the button
    * @param mnemonic - the key code which represents the mnemonic
    * @param actionListener - the ActionListener to be added
-   * @return
    */
   public static JButton createButton(final String buttonText, final int mnemonic, final ActionListener actionListener) {
     final JButton newButton = MapXmlUIHelper.createButton(buttonText, mnemonic);
@@ -123,7 +120,6 @@ public class MapXmlUIHelper {
    *
    * @param buttonText - the text of the button
    * @param mnemonic - the key code which represents the mnemonic
-   * @return
    */
   public static JButton createButton(final String buttonText, final int mnemonic) {
     final JButton newButton = new JButton(buttonText);

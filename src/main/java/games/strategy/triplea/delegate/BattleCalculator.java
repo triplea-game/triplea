@@ -961,8 +961,6 @@ public class BattleCalculator {
    * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
-   *
-   * @param data
    */
   public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     /*
@@ -1019,9 +1017,6 @@ public class BattleCalculator {
    * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
-   *
-   * @param data
-   * @param includeAverageForMissingUnits
    */
   public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data,
       final boolean includeAverageForMissingUnits) {
@@ -1088,8 +1083,6 @@ public class BattleCalculator {
    * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
-   *
-   * @param data
    */
   private static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(
       final GameData data) {

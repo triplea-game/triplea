@@ -1243,11 +1243,8 @@ public class MoveValidator {
   /**
    * Test a route's canals to see if you can move through it.
    *
-   * @param route
    * @param units
    *        (Can be null. If null we will assume all units would be stopped by the canal.)
-   * @param player
-   * @param data
    */
   public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
       final GameData data) {
@@ -1264,15 +1261,12 @@ public class MoveValidator {
    * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it
    * can be passed through otherwise returns a failure message indicating why the canal can't be passed through.
    *
-   * @param territory
    * @param route
    *        (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we
    *        will not test the
    *        canal)
    * @param units
    *        (Can be null. If null we will assume all units would be stopped by the canal.)
-   * @param player
-   * @param data
    */
   public static Optional<String> validateCanal(final Territory territory, final Route route,
       final Collection<Unit> units, final PlayerID player, final GameData data) {

@@ -784,9 +784,6 @@ public class TripleAFrame extends MainGameFrame {
 
   /**
    * We do NOT want to block the next player from beginning their turn.
-   *
-   * @param message
-   * @param title
    */
   public void notifyMessage(final String message, final String title) {
     if (message == null || title == null) {

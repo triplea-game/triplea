@@ -238,8 +238,6 @@ public class ProLogWindow extends javax.swing.JDialog {
 
   /**
    * Loads the settings provided and displays it in this settings window.
-   *
-   * @param settings
    */
   private void loadSettings(final ProLogSettings settings) {
     v_enableAILogging.setSelected(settings.EnableAILogging);

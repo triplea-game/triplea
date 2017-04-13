@@ -265,7 +265,6 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * @param ui
    * @param forceFactoryDefault
    *        - False is default behavior and causes the new game chooser model to be cleared (and refreshed if needed).
    *        True causes the default game preference to be reset, but the model does not get cleared/refreshed (because

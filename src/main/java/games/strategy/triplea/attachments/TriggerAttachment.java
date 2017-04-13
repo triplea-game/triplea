@@ -100,8 +100,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   /**
    * Convenience method for returning TriggerAttachments.
    *
-   * @param player
-   * @param nameOfAttachment
    * @return a new trigger attachment
    */
   public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment) {
@@ -135,9 +133,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   /**
    * Convenience method for return all TriggerAttachments attached to a player.
    *
-   * @param player
-   * @param data
-   * @param cond
    * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this
    *         player)
    */
@@ -161,10 +156,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * This will collect all triggers for the desired players, based on a match provided,
    * and then it will gather all the conditions necessary, then test all the conditions,
    * and then it will fire all the conditions which are satisfied.
-   *
-   * @param players
-   * @param triggerMatch
-   * @param aBridge
    */
   public static void collectAndFireTriggers(final HashSet<PlayerID> players,
       final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge, final String beforeOrAfter,
@@ -213,11 +204,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * of using this directly.
    * To see if they are satisfied, first create the list of triggers using Matches + TriggerAttachment.getTriggers.
    * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
-   *
-   * @param triggersToBeFired
-   * @param aBridge
-   * @param beforeOrAfter
-   * @param stepName
    */
   public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired,
       final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge,
@@ -298,9 +284,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setActivateTrigger(final String value) throws GameParseException {
@@ -388,9 +371,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setProductionRule(final String prop) throws GameParseException {
@@ -472,9 +452,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param techs
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTech(final String techs) throws GameParseException {
@@ -509,9 +486,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param techs
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAvailableTech(final String techs) throws GameParseException {
@@ -569,9 +543,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param sup
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setSupport(final String sup) throws GameParseException {
@@ -644,9 +615,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param relChange
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationshipChange(final String relChange) throws GameParseException {
@@ -696,9 +664,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setUnitType(final String names) throws GameParseException {
@@ -777,9 +742,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setUnitProperty(final String prop) throws GameParseException {
@@ -815,9 +777,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritories(final String names) throws GameParseException {
@@ -896,9 +855,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritoryProperty(final String prop) throws GameParseException {
@@ -934,9 +890,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlayers(final String names) throws GameParseException {
@@ -1035,9 +988,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlayerProperty(final String prop) throws GameParseException {
@@ -1073,9 +1023,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationshipTypes(final String names) throws GameParseException {
@@ -1152,9 +1099,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationshipTypeProperty(final String prop) throws GameParseException {
@@ -1191,9 +1135,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritoryEffects(final String names) throws GameParseException {
@@ -1270,9 +1211,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param prop
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritoryEffectProperty(final String prop) throws GameParseException {
@@ -1310,9 +1248,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   /**
    * Fudging this, it really represents adding placements.
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param place
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlacement(final String place) throws GameParseException {
@@ -1377,9 +1312,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRemoveUnits(final String value) throws GameParseException {
@@ -1460,9 +1392,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param place
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPurchase(final String place) throws GameParseException {
@@ -1517,9 +1446,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param place
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setChangeOwnership(final String value) throws GameParseException {

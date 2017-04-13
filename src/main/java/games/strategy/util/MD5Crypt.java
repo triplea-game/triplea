@@ -93,7 +93,7 @@ public class MD5Crypt {
   }
 
   /**
-   * Linux/BSD MD5Crypt function
+   * Linux/BSD MD5Crypt function.
    *
    * @param magic
    *        $1$ for Linux/BSB, $apr1$ for Apache crypt
@@ -102,7 +102,6 @@ public class MD5Crypt {
    * @param password
    *        user password
    * @return The encrypted password as an MD5 hash
-   * @throws java.lang.Exception
    */
   public static String crypt(final String password, String salt, final String magic) {
     if (password == null) {

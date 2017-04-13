@@ -24,8 +24,6 @@ public abstract class AbstractStatPanel extends JPanel {
   /**
    * Does not call initLayout() because initLayout may depend on some private tables being created with GameData first.
    * So make sure you call initLayout() yourself.
-   *
-   * @param data
    */
   public AbstractStatPanel(final GameData data) {
     m_data = data;

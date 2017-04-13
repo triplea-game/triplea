@@ -503,9 +503,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setUnitPresence(String value) throws GameParseException {

@@ -81,9 +81,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlacementLimit(final String value) throws GameParseException {
@@ -133,9 +130,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setMovementLimit(final String value) throws GameParseException {
@@ -185,9 +179,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackingLimit(final String value) throws GameParseException {
@@ -284,9 +275,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setSuicideAttackTargets(final String value) throws GameParseException {
@@ -326,9 +314,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setSuicideAttackResources(final String value) throws GameParseException {
@@ -438,9 +423,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGiveUnitControl(final String value) throws GameParseException {
@@ -474,9 +456,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -510,9 +489,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setShareTechnology(final String value) throws GameParseException {
@@ -546,9 +522,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setHelpPayTechCost(final String value) throws GameParseException {

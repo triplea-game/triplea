@@ -338,8 +338,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * Takes the raw data from the xml, and turns it into an actual territory list.
    * Will also set territoryCount.
-   *
-   * @throws GameParseException
    */
   protected Set<Territory> getTerritoryListBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players,
       final GameData data) {

@@ -43,8 +43,6 @@ public interface IDelegateBridge {
    * Add a change to game data. Use this rather than changing gameData
    * directly since this method allows us to send the changes to other
    * machines.
-   *
-   * @param aChange
    */
   void addChange(Change aChange);
 

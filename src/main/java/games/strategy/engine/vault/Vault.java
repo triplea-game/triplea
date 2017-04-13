@@ -61,8 +61,6 @@ public class Vault {
 
   /**
    * Creates a new instance of Vault.
-   *
-   * @param channelMessenger
    */
   public Vault(final IChannelMessenger channelMessenger) {
     m_channelMessenger = channelMessenger;

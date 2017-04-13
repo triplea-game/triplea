@@ -246,9 +246,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlayers(final String names) throws GameParseException {
