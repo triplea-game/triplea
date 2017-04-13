@@ -131,7 +131,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Report an error to the user.
    *
-   * @param report
+   * @param error
    *        that an error occurred
    */
   void reportError(String error);

@@ -89,7 +89,7 @@ public class IndividualUnitPanel extends JPanel {
    * individually.
    * It lets you set a max number of points total AND per unit. It can return an IntegerMap with the points per unit.
    *
-   * @param units
+   * @param unitsAndTheirMaxMinAndCurrent
    *        mapped to their individual max, then min, then current values
    * @param title
    * @param data

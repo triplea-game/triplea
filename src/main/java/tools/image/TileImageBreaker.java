@@ -43,9 +43,7 @@ public class TileImageBreaker {
    * Main program begins here. Creates a new instance of ReliefImageBreaker
    * and calls createMaps() method to start the computations.
    *
-   * @param java
-   *        .lang.String[]
-   *        args the command line parameters
+   * @param args The command line parameters.
    * @exception java.lang.Exception
    *            throws
    */

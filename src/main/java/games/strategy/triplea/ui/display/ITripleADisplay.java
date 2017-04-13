@@ -70,8 +70,6 @@ public interface ITripleADisplay extends IDisplay {
   /**
    * @param battleID
    *        - the battle we are listing steps for.
-   * @param currentStep
-   *        - the current step
    * @param steps
    *        - a collection of strings denoting all steps in the battle
    */

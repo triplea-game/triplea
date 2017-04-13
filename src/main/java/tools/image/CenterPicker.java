@@ -59,8 +59,7 @@ public class CenterPicker extends JFrame {
    * Asks the user to select the map then runs the
    * the actual picker.
    *
-   * @param java
-   *        .lang.String[] args the command line arguments
+   * @param args The command line arguments.
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
@@ -102,8 +101,7 @@ public class CenterPicker extends JFrame {
    * default or needed values, and prepares the map for user
    * commands.
    *
-   * @param java
-   *        .lang.String mapName name of map file
+   * @param mapName Name of map file.
    */
   public CenterPicker(final String mapName) {
     super("Center Picker");

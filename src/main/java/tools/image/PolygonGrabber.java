@@ -83,8 +83,7 @@ public class PolygonGrabber extends JFrame {
    * Asks the user to select the map then runs the
    * the actual polygon grabber program.
    *
-   * @param java
-   *        .lang.String[] args the command line arguments
+   * @param args The command line arguments.
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
@@ -128,8 +127,7 @@ public class PolygonGrabber extends JFrame {
    * program will exit. We setup the mouse listenrs and toolbars
    * and load the actual image of the map here.
    *
-   * @param java
-   *        .lang.String mapName path to image map
+   * @param mapName Path to image map.
    */
   public PolygonGrabber(final String mapName) {
     super("Polygon grabber");
