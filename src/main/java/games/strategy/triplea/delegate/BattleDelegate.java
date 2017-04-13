@@ -101,6 +101,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       m_needToAddBombardmentSources = false;
     }
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
+
+    final Collection<Territory> territories = m_battleTracker.getPendingBattleSites(false);
+    if (territories.size() == 1) {
+      final IBattle battle = m_battleTracker.getPendingBattle(territories.iterator().next(), false, BattleType.NORMAL);
+      battle.fight(m_bridge);
+    }
   }
 
   /**
@@ -252,9 +258,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Add bombardment units to battles.
+   * Add bombardment units to battles. Made public for test purposes only
    */
-  private void addBombardmentSources() {
+  public void addBombardmentSources() {
     final PlayerID attacker = m_bridge.getPlayerID();
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     final Match<Unit> ownedAndCanBombard =
