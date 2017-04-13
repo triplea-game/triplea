@@ -103,7 +103,9 @@ public class DownloadFileDescription {
     return downloadType == DownloadType.MAP_TOOL;
   }
 
-  /** @return Name of the zip file. */
+  /**
+   * @return Name of the zip file.
+   */
   public String getMapZipFileName() {
     if (url != null && url.contains("/")) {
       return url.substring(url.lastIndexOf('/') + 1, url.length());

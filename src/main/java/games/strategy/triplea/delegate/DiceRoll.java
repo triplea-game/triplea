@@ -40,9 +40,14 @@ import games.strategy.util.Tuple;
 
 /**
  * Used to store information about a dice roll.
+ *
+ * <p>
  * # of rolls at 5, at 4, etc.
+ * </p>
+ *
  * <p>
  * Externalizable so we can efficiently write out our dice as ints rather than as full objects.
+ * </p>
  */
 public class DiceRoll implements Externalizable {
   private static final long serialVersionUID = -1167204061937566271L;

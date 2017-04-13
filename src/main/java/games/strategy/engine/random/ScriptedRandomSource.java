@@ -4,15 +4,23 @@ import java.util.StringTokenizer;
 
 /**
  * A random source for use while debugging.
+ *
  * <p>
  * Returns the random numbers designated in the system property triplea.scriptedRandom
+ * </p>
+ *
  * <p>
  * for example, to roll 1,2,3 use -Dtriplea.scriptedRandom=1,2,3
+ * </p>
+ *
  * <p>
  * When scripted random runs out of numbers, the numbers will repeat.
+ * </p>
+ *
  * <p>
  * Special characters are also allowed in the sequence.
  * e - the random source will throw an error p - the random source will pause and never return.
+ * </p>
  */
 public class ScriptedRandomSource implements IRandomSource {
   public static final int PAUSE = -2;

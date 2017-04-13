@@ -17,6 +17,7 @@ import games.strategy.util.Util;
 
 /**
  * A route between two territories.
+ *
  * <p>
  * A route consists of a start territory, and a sequence of steps. To create a route do,
  * <code>
@@ -25,6 +26,7 @@ import games.strategy.util.Util;
  * route.add(anotherTerritory);
  * route.add(yetAnotherTerritory);
  * </code>
+ * </p>
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;

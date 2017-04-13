@@ -46,7 +46,10 @@ import games.strategy.util.Util;
 
 /**
  * Useful match interfaces.
+ *
+ * <p>
  * Rather than writing code like,
+ * </p>
  *
  * <pre>
  * boolean hasLand = false;
@@ -61,9 +64,17 @@ import games.strategy.util.Util;
  * }
  * </pre>
  *
+ * <p>
  * You can write code like,
+ * </p>
+ *
+ * <pre>
  * boolean hasLand = Match.someMatch(someCollection, Matches.UnitIsAir);
+ * </pre>
+ *
+ * <p>
  * The benefits should be obvious to any right minded person.
+ * </p>
  */
 public class Matches {
   public static final Match<Object> IsTerritory = new Match<Object>() {
@@ -1275,7 +1286,7 @@ public class Matches {
    * @param data
    *        game data
    * @param player
-   * @return Match<Territory> that tests if there is a route to an enemy capital from the given territory
+   * @return Match&lt;Territory> that tests if there is a route to an enemy capital from the given territory.
    */
   public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player) {
     return new Match<Territory>() {

@@ -69,42 +69,45 @@ public interface IDelegateBridge {
 
   /**
    * return the delegate history writer for this game.
+   *
    * <p>
    * The delegate history writer allows writing to the game history.
-   * <p>
+   * </p>
    */
   IDelegateHistoryWriter getHistoryWriter();
 
   /**
    * Return an object that implements the IDisplay interface for the game.
+   *
    * <p>
    * Methods called on this returned object will be invoked on all displays in the game, including those on remote
    * machines
-   * <p>
+   * </p>
    */
   IDisplay getDisplayChannelBroadcaster();
 
   /**
    * Return an object that implements the ISound interface for the game.
+   *
    * <p>
    * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote
    * machines
-   * <p>
+   * </p>
    */
   ISound getSoundChannelBroadcaster();
 
   /**
    * @return the propertie for this step.
-   *         <p>
    */
   Properties getStepProperties();
 
   /**
    * After this step finishes executing, the next delegate will not be called.
+   *
    * <p>
    * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to
    * shutdown.
-   * <p>
+   * </p>
    */
   void stopGameSequence();
 

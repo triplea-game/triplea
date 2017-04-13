@@ -50,14 +50,20 @@ import games.strategy.twoIfBySea.delegate.InitDelegate;
 /**
  * This class creates objects referred to by game XMLs via the 'javaClass' property, eg:
  *
- * <attachment name="territoryAttachment" attachTo="Rason"
+ * <pre>
+ * &lt;attachment name="territoryAttachment" attachTo="Rason"
  * javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+ * </pre>
  *
+ * <p>
  * In the above example, we are going to map the String value "games.strategy.triplea.attachments.TerritoryAttachment"
  * to a class constructor.
+ * </p>
  *
+ * <p>
  * Note: attachments and delegates are initialized slightly differently, one is is no-arg the other has initialization
  * parameters.
+ * </p>
  */
 public class XmlGameElementMapper {
 

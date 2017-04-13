@@ -16,15 +16,18 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
 
 /**
  * Manages when delegates are allowed to execute.
+ *
  * <p>
  * When saving a game, we want to ensure that no delegate is executing, otherwise the delegate could modify the state of
  * the game while the
  * game is being saved, resulting in an invalid save game.
+ * </p>
+ *
  * <p>
  * This class effectivly keeps a count of how many threads are executing in the delegates, and provides a way of
  * blocking further threads
  * from starting execution in a delegate.
- * <p>
+ * </p>
  */
 public class DelegateExecutionManager {
   private final Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
@@ -44,11 +47,14 @@ public class DelegateExecutionManager {
   /**
    * When this method returns true, threads will not be able to enter delegates until
    * a call to resumeDelegateExecution is made.
+   *
    * <p>
    * When delegateExecution is blocked, it also blocks subsequent cals to blockDelegateExecution(...)
+   * </p>
+   *
    * <p>
    * If timeToWaitMS is > 0, we will give up trying to block delegate execution after timeTiWaitMS has elapsed.
-   * <p>
+   * </p>
    *
    * @param timeToWait
    */
@@ -94,9 +100,11 @@ public class DelegateExecutionManager {
 
   /**
    * Used to create an object the exits delegate execution.
+   *
    * <p>
    * Objects on this method will decrement the thread lock count when called, and will increment it again when execution
    * is finished.
+   * </p>
    */
   public Object createOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
     assertGameNotOver();
@@ -130,9 +138,11 @@ public class DelegateExecutionManager {
 
   /**
    * Use to create an object that begins delegate execution.
+   *
    * <p>
    * Objects on this method will increment the thread lock count when called, and will decrement it again when execution
    * is finished.
+   * </p>
    */
   public Object createInboundImplementation(final Object implementor, final Class<?>[] interfaces) {
     assertGameNotOver();

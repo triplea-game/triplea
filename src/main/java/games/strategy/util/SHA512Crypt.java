@@ -9,8 +9,10 @@ import java.security.NoSuchAlgorithmException;
  * Replacement for MD5Crypt
  * using SHA512 instead.
  *
+ * <p>
  * Do not use for Passwords!
  * Use the BCrypt library instead!
+ * </p>
  */
 public class SHA512Crypt {
 
@@ -41,8 +43,7 @@ public class SHA512Crypt {
   }
 
   /**
-   *
-   * Same as {@link SHA512Crypt.crypt(text, salt)}, but passing the salt as well
+   * Same as {@link SHA512Crypt#crypt(text, salt)}, but passing the salt as well.
    */
   public static String cryptPassSalt(final String text, final String salt) {
     return "$" + salt + crypt(text, salt);

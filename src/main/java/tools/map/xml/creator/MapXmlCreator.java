@@ -1043,11 +1043,12 @@ public class MapXmlCreator extends JFrame {
 
   /**
    * Log a message, with no arguments.
+   *
    * <p>
    * If the logger is currently enabled for the given message
    * level then the given message is forwarded to all the
    * registered output Handler objects.
-   * <p>
+   * </p>
    *
    * @param level One of the message level identifiers, e.g., SEVERE
    * @param msg The string message (or a key in the message catalog)

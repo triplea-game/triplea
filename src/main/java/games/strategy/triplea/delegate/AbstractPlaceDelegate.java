@@ -40,6 +40,7 @@ import games.strategy.util.Tuple;
 
 /**
  * Logic for placing units.
+ *
  * <p>
  * Known limitations.
  * Doesn't take into account limits on number of factories that can be produced.
@@ -51,6 +52,7 @@ import games.strategy.util.Tuple;
  * capacity to produce in f.
  * A workaround was that if anyone ever accidently run into this situation
  * then they could undo the production, produce in f first, and then produce in e.
+ * </p>
  */
 public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implements IAbstractPlaceDelegate {
   // maps Territory-> Collection of units

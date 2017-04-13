@@ -287,8 +287,10 @@ public class ProPurchaseUtils {
 
   /**
    * Get the production rule for the given player, for the given unit type.
+   *
    * <p>
    * If no such rule can be found, then return null.
+   * </p>
    */
   private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();

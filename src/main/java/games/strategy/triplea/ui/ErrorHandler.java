@@ -8,8 +8,10 @@ import games.strategy.debug.ClientLogger;
  * will get a stack trace that points to where you started the thread and not to the actual line within
  * the thread that had the problem.
  *
+ * <p>
  * To solve this unhandled exception handlers get registered. For more details, see:
  * http://stackoverflow.com/questions/75218/how-can-i-detect-when-an-exceptions-been-thrown-globally-in-java#75439
+ * </p>
  */
 public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandlerAwtEvents {
 

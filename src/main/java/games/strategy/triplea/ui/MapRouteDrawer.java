@@ -160,10 +160,12 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Centripetal parameterization<br>
+   * Centripetal parameterization
    *
+   * <p>
    * Check <a href="http://stackoverflow.com/a/37370620/5769952">http://stackoverflow.com/a/37370620/5769952</a> for
    * more information
+   * </p>
    *
    * @param points - The Points which should be parameterized
    * @return A Parameter-Array called the "Index"
@@ -289,13 +291,18 @@ public class MapRouteDrawer {
 
   /**
    * Draws a smooth curve through the given array of points
+   *
+   * <p>
    * This algorithm is called Spline-Interpolation
    * because the Apache-commons-math library we are using here does not accept
    * values but {@code f(x)=y} with x having to increase all the time
    * the idea behind this is to use a parameter array - the so called index
    * as x array and splitting the points into a x and y coordinates array.
+   * </p>
    *
+   * <p>
    * Finally those 2 interpolated arrays get unified into a single {@linkplain Point} array and drawn to the Map
+   * </p>
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The Knot Points for the Spline-Interpolator aka the joints

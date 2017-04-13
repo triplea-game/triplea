@@ -72,7 +72,6 @@ public class ServerGame extends AbstractGame {
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
    * returning.
-   * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
   /**

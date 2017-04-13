@@ -15,9 +15,14 @@ import games.strategy.net.IMessenger;
 
 /**
  * A Chat window.
+ *
+ * <p>
  * Mutiple chat panels can be connected to the same Chat.
+ * </p>
+ *
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
+ * </p>
  */
 public class ChatPanel extends JPanel implements IChatPanel {
   private static final long serialVersionUID = -6177517517279779486L;

@@ -9,10 +9,14 @@ import java.util.logging.Logger;
 
 /**
  * A packet of data to be written over the network.
+ *
  * <p>
  * Packets do not correspond to ip packets. A packet is just the data for one serialized object.
+ * </p>
+ *
  * <p>
  * The packet is written over the network as 32 bits indicating the size in bytes, then the data itself.
+ * </p>
  */
 public class SocketWriteData {
   private static final Logger s_logger = Logger.getLogger(SocketWriteData.class.getName());

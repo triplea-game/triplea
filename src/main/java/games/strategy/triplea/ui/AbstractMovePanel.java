@@ -147,9 +147,11 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /**
    * Executes an undo move for any of the units passed in as a parameter.
    *
+   * <p>
    * "Cannot undo" Error messages are suppressed if any moves cannot be undone
    * (at least until we come up with a way to deal with "n" reasons for an undo
    * failure rather than just one)
+   * </p>
    */
   public void undoMoves(final Set<Unit> units) {
     @SuppressWarnings("unchecked")

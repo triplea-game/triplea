@@ -17,13 +17,16 @@ public class MessageContext {
   /**
    * Within the invocation on a remote method on an IRemote or an IChannelSubscriber,
    * this method will return the node that originated the message.
+   *
    * <p>
    * Will return null if the current thread is not currenlty executing a remote method of an IRemote or
    * IChannelSubscrobor.
+   * </p>
+   *
    * <p>
    * This is set by the server, and cannot be overwritten by the client, and can be used to verify where messages come
    * from.
-   * <p>
+   * </p>
    *
    * @return the node that originated the message being received
    */

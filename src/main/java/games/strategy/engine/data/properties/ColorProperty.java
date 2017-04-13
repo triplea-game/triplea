@@ -13,9 +13,11 @@ import javax.swing.SwingUtilities;
 
 /**
  * User editable property representing a color.
+ *
  * <p>
  * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to
  * change the color.
+ * </p>
  */
 public class ColorProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;

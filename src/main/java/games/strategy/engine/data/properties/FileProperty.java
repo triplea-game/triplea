@@ -17,9 +17,11 @@ import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * User editable property representing a file.
+ *
  * <p>
  * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to
  * change the file.
+ * </p>
  */
 public class FileProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;

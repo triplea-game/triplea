@@ -14,10 +14,21 @@ public class Tuple<T, S> implements Serializable {
   /**
    * Static creation method to create a new instance of a tuple with the parameters provided.
    *
+   * <p>
    * This method allows for nicer tuple creation syntax, namely:
-   * Tuple<String,Integer> myTuple = Tuple.of("abc",123);
+   * </p>
+   *
+   * <pre>
+   * Tuple&lt;String, Integer> myTuple = Tuple.of("abc", 123);
+   * </pre>
+   *
+   * <p>
    * Instead of:
-   * Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
+   * </p>
+   *
+   * <pre>
+   * Tuple&lt;String, Integer> myTuple = new Tuple&lt;String, Integer>("abc", 123);
+   * </pre>
    */
   public static <T, S> Tuple<T, S> of(final T first, final S second) {
     return new Tuple<>(first, second);

@@ -11,11 +11,15 @@ import java.util.Set;
 
 /**
  * A utilty for seeing which elements in a collection satisfy a given condition.
+ *
  * <p>
  * An instance of match allows you to test that an object matches some condition.
+ * </p>
+ *
  * <p>
- * Static utility methods allow you to find what elements in a collection satisfy a match, <br>
+ * Static utility methods allow you to find what elements in a collection satisfy a match,
  * count the number of matches, see if any elements match etc.
+ * </p>
  */
 public abstract class Match<T> {
 

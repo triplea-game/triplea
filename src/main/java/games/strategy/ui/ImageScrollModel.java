@@ -6,9 +6,10 @@ import java.util.Observable;
 /**
  * Model for an ImageScroller. Generally one large view and one small view will be
  * connected to the same model.
+ *
  * <p>
  * notifies its observers when changes occur.
- * <p>
+ * </p>
  */
 public class ImageScrollModel extends Observable {
   private int m_x;

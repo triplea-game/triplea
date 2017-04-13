@@ -22,9 +22,10 @@ import games.strategy.util.Tuple;
 
 /**
  * chat logic.
+ *
  * <p>
  * A chat can be bound to multiple chat panels.
- * <p>
+ * </p>
  */
 public class Chat {
   private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();

@@ -26,8 +26,10 @@ public class BannedUsernameController {
 
   /**
    * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.
+   *
    * <p>
    * If this username is already banned, this call will update the ban_end.
+   * </p>
    */
   public void addBannedUsername(final String username, final Date banTill) {
     if (isUsernameBanned(username).getFirst()) {

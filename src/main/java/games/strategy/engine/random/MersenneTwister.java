@@ -5,45 +5,54 @@ import java.util.Random;
 /**
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
  *
+ * <p>
  * Version 9, based on version MT199937(99/10/29) of the Mersenne Twister algorithm found at
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html"> The Mersenne Twister Home Page</a>, with the initialization
  * improved using the new 2002/1/26 initialization algorithm By Sean Luke, October 2004.
+ * </p>
  *
- *
+ * <p>
  * MersenneTwister is a drop-in subclass replacement for java.tools.Random. It is properly synchronized and can be
  * used in a multithreaded environment. On modern VMs such as HotSpot, it is approximately 1/3 slower than
  * java.tools.Random.
+ * </p>
  *
+ * <p>
  * MersenneTwisterFast is not a subclass of java.tools.Random. It has the same public methods as Random does, however,
  * and it is
  * algorithmically identical to MersenneTwister. MersenneTwisterFast has hard-code inlined all of its methods directly,
  * and made all of them
  * final (well, the ones of consequence anyway). Further, these methods are <i>not</i> synchronized, so the same
+ * </p>
  *
+ * <p>
  * MersenneTwisterFast
  * instance cannot be shared by multiple threads. But all this helps MersenneTwisterFast achieve well over twice the
  * speed of
  * MersenneTwister. java.tools.Random is about 1/3 slower than MersenneTwisterFast.
- *
+ * </p>
  *
  * <h3>About the Mersenne Twister</h3>
  *
+ * <p>
  * This is a Java version of the C-program for MT19937: Integer version. The MT19937 algorithm was created by Makoto
  * Matsumoto and Takuji
  * Nishimura, who ask:
  * "When you use this, send an email to: matumoto@math.keio.ac.jp with an appropriate reference to your work". Indicate
  * that this is a translation of their algorithm into Java.
+ * </p>
  *
- *
+ * <p>
  * <b>Reference. </b> Makato Matsumoto and Takuji Nishimura,
  * "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator", <i>ACM Transactions
  * on Modeling and Computer Simulation,</i> Vol. 8, No. 1, January 1998, pp 3--30.
+ * </p>
  *
- *
+ * <p>
  * The MersenneTwister code is based on standard MT19937 C/C++ code by Takuji Nishimura, with suggestions from Topher
  * Cooper and Marc Rieffel, July 1997. The code was originally translated into Java by Michael Lecuyer, January 1999,
  * and the original code is Copyright (c) 1999 by Michael Lecuyer.
- *
+ * </p>
  */
 public class MersenneTwister extends Random {
   private static final long serialVersionUID = -6946159560323874784L;

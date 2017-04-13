@@ -13,19 +13,24 @@ import games.strategy.debug.ClientLogger;
 /**
  * Builder class for using Lambda expressions to create 'AbstractAction'
  *
+ * <p>
  * For example, instead of:
- * <code>
+ * </p>
+ *
+ * <pre>
  *   new AbstractionAction("text") {
  *         private final long serialVersion = ..
  *         &#64;Override public void actionPerformed(ActionEvent e ) { doSomething(); }
  *   }
- * </code>
+ * </pre>
  *
+ * <p>
  * You can rewrite the above using 'SwingAction.of(..)':
+ * </p>
  *
- * <code>
- *    SwingAction.of( e -> doSomething() );
- * </code>
+ * <pre>
+ * SwingAction.of(e -> doSomething());
+ * </pre>
  */
 public class SwingAction {
 

@@ -28,13 +28,20 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.util.IntegerMap;
 
 /**
- * All changes made to GameData should be made through changes produced here. <br>
- * The way to change game data is to <br>
- * 1) Create a change with a ChangeFactory.change** or ChangeFactory.set**
- * method <br>
- * 2) Execute that change through DelegateBridge.addChange()).
+ * All changes made to GameData should be made through changes produced here.
+ *
+ * <p>
+ * The way to change game data is to
+ * </p>
+ *
+ * <ol>
+ * <li>Create a change with a ChangeFactory.change** or ChangeFactory.set** method</li>
+ * <li>Execute that change through DelegateBridge.addChange()</li>
+ * </ol>
+ *
  * <p>
  * In this way changes to the game data can be co-ordinated across the network.
+ * </p>
  */
 public class ChangeFactory {
   public static final Change EMPTY_CHANGE = new Change() {

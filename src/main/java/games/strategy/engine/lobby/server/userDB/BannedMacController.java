@@ -26,8 +26,10 @@ public class BannedMacController {
 
   /**
    * Ban the given mac. If banTill is not null, the ban will expire when banTill is reached.
+   *
    * <p>
    * If this mac is already banned, this call will update the ban_end.
+   * </p>
    */
   public void addBannedMac(final String mac, final Date banTill) {
     if (isMacBanned(mac).getFirst()) {
