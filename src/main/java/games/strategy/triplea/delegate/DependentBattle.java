@@ -18,13 +18,15 @@ import games.strategy.engine.data.Unit;
  */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
-  protected Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
-  protected Set<Territory> m_attackingFrom = new HashSet<>();
+  protected Map<Territory, Collection<Unit>> m_attackingFromMap;
+  protected Set<Territory> m_attackingFrom;
   protected final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
 
   DependentBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
+    m_attackingFromMap = new HashMap<>();
+    m_attackingFrom = new HashSet<>();
   }
 
   public Collection<Territory> getAttackingFrom() {

@@ -513,6 +513,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         }
       }
+      // See if there any unescorted trns
+      if (m_battleSite.isWater() && isTransportCasualtiesRestricted()) {
+        if (Match.someMatch(m_attackingUnits, Matches.UnitIsTransport)
+            || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport)) {
+          steps.add(REMOVE_UNESCORTED_TRANSPORTS);
+        }
+      }
+    }
+    // Air only Units can't attack subs without Destroyers present
+    if (isAirAttackSubRestricted()) {
+      final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
+      units.addAll(m_attackingUnits);
+      if (Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units)) {
+        steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
+      }
     }
     // Check if defending subs can submerge before battle
     if (isSubRetreatBeforeBattle()) {
@@ -523,13 +538,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer)
           && Match.someMatch(m_defendingUnits, Matches.UnitIsSub)) {
         steps.add(m_defender.getName() + SUBS_SUBMERGE);
-      }
-    }
-    // See if there any unescorted trns
-    if (m_battleSite.isWater() && isTransportCasualtiesRestricted()) {
-      if (Match.someMatch(m_attackingUnits, Matches.UnitIsTransport)
-          || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport)) {
-        steps.add(REMOVE_UNESCORTED_TRANSPORTS);
       }
     }
     // if attacker has no sneak attack subs, then defendering sneak attack subs fire first and remove casualties
@@ -569,16 +577,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && (returnFireAgainstDefendingSubs() != ReturnFire.ALL || returnFireAgainstAttackingSubs() != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
-    // Air only Units can't attack subs without Destroyers present
-    if (isAirAttackSubRestricted()) {
-      final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
-      units.addAll(m_attackingUnits);
-      // if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.allMatch(m_attackingUnits,
-      // Matches.UnitIsAir))
-      if (Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units)) {
-        steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
-      }
-    }
     // Air Units can't attack subs without Destroyers present
     if (m_battleSite.isWater() && isAirAttackSubRestricted()) {
       final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
@@ -611,9 +609,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Unit> units = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
       units.addAll(m_defendingUnits);
       units.addAll(m_defendingWaitingToDie);
-      // if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits,
-      // Matches.UnitIsAir) &&
-      // Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
       if (Match.someMatch(m_defendingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_attackingUnits, units)) {
         steps.add(AIR_DEFEND_NON_SUBS);
       }
@@ -646,6 +641,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             steps.add(m_defender.getName() + SUBS_WITHDRAW);
           }
         }
+      }
+    }
+    // See if there any unescorted trns
+    if (m_battleSite.isWater() && isTransportCasualtiesRestricted()) {
+      if (Match.someMatch(m_attackingUnits, Matches.UnitIsTransport)
+          || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport)) {
+        steps.add(REMOVE_UNESCORTED_TRANSPORTS);
       }
     }
     // if we are a sea zone, then we may not be able to retreat
@@ -715,6 +717,22 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       });
     }
     if (firstRun) {
+      /** Remove undefended trns */
+      if (isTransportCasualtiesRestricted()) {
+        steps.add(new IExecutable() {
+          private static final long serialVersionUID = 99989L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            checkUndefendedTransports(bridge, m_defender);
+            checkUndefendedTransports(bridge, m_attacker);
+            checkForUnitsThatCanRollLeft(bridge, true);
+            checkForUnitsThatCanRollLeft(bridge, false);
+            clearWaitingToDie(bridge);
+            // ?? This appears to remove both sides undefended transports twice
+          }
+        });
+      }
       steps.add(new IExecutable() {
         private static final long serialVersionUID = -2255284529092427441L;
 
@@ -815,9 +833,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        if( Match.someMatch( m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1) )
+            && Match.allMatch( m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert() ) ) {
+          remove( m_defendingUnits, bridge, m_battleSite, true);
+        }
         clearWaitingToDie(bridge);
       }
     });
+    /** Submerge subs if -vs air only & air restricted from attacking subs */
+    if (isAirAttackSubRestricted()) {
+      steps.add(new IExecutable() {
+        private static final long serialVersionUID = 99990L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          submergeSubsVsOnlyAir(bridge);
+        }
+      });
+    }
     steps.add(new IExecutable() {
       // not compatible with 0.9.0.2 saved games. this is new for 1.2.6.0
       private static final long serialVersionUID = 6387198382888361848L;
@@ -865,11 +898,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
         // and infrastructure.
         else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
-          if (isTransportCasualtiesRestricted()) {
-            // If there are undefended attacking transports, determine if they automatically die
-            checkUndefendedTransports(bridge, m_defender);
-          }
-          checkForUnitsThatCanRollLeft(bridge, false);
           endBattle(bridge);
           attackerWins(bridge);
         } else if (shouldEndBattleDueToMaxRounds()
@@ -1017,31 +1045,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         checkSuicideUnits(bridge);
       }
     });
-    /** Remove undefended trns */
-    if (isTransportCasualtiesRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99989L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          checkUndefendedTransports(bridge, m_defender);
-          checkUndefendedTransports(bridge, m_attacker);
-          checkForUnitsThatCanRollLeft(bridge, true);
-          checkForUnitsThatCanRollLeft(bridge, false);
-        }
-      });
-    }
-    /** Submerge subs if -vs air only & air restricted from attacking subs */
-    if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99990L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          submergeSubsVsOnlyAir(bridge);
-        }
-      });
-    }
     final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
     final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
     if (defenderSubsFireFirst()) {
