@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -78,6 +79,7 @@ public class UnitsDrawer implements IDrawable {
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
 
+    boolean invisible = false;
     // If there are too many Units at one point a black line is drawn to make clear which units belong to where
     if (overflow) {
       graphics.setColor(Color.BLACK);
@@ -90,6 +92,13 @@ public class UnitsDrawer implements IDrawable {
       throw new IllegalStateException("Type not found:" + unitType);
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
+    for (final String special : UnitAttachment.get(type).getSpecial()) {
+      invisible = special.equals("invisible");
+      if (invisible) {
+        return;
+      }
+    }
+
     final Optional<Image> img =
         uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
 

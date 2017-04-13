@@ -856,7 +856,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setSpecial(final String value) throws GameParseException {
     final String[] s = value.split(":");
     for (final String option : s) {
-      if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories"))) {
+      if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories") || option.equals("invisible"))){
         throw new GameParseException("special does not allow: " + option + thisErrorMsg());
       }
       m_special.add(option);

@@ -1005,14 +1005,13 @@ public class WW2V3_41_Test {
     assertEquals(2, mfb.getBombardingUnits().size());
     // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
-    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return
-    // fire on 1.
-    bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
+    // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once
+    bridge.setRandomSource(new ScriptedRandomSource(2, 2, 1, 5, 5, 5, 5, 5));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
     fight(battleDelegate(m_data), eg);
     // end result should be 2 italian infantry.
-    assertEquals(2, eg.getUnits().size());
+    assertEquals(3, eg.getUnits().size());
   }
 
   @Test
