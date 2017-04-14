@@ -215,11 +215,9 @@ public class RevisedTest {
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
-    // fight the battle
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(dummyPlayer);
-    fight(battle, sinkiang, false);
+    battle.start();                             // fights battle
     battle.end();
     assertEquals(sinkiang.getOwner(), americans);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));

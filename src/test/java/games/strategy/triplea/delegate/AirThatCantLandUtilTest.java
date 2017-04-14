@@ -157,10 +157,9 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(getDummyPlayer());
-    fight(battle, sz_44, false);
+    battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountSz_52 = sz_52.getUnits().size();
@@ -206,10 +205,9 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(getDummyPlayer());
-    fight(battle, sz_44, false);
+    battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountSz_52 = sz_52.getUnits().size();
@@ -256,10 +254,9 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,}));
     bridge.setRemote(getDummyPlayer());
-    fight(battle, sz_9, false);
+    battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountCanada = eastCanada.getUnits().size();
@@ -320,9 +317,7 @@ public class AirThatCantLandUtilTest {
     assertEquals(expectedCountCanada, postCountInt);
   }
 
-  /**
-   * @deprecated Use a mock object instead.
-   */
+  /** @deprecated Use a mock object instead. */
   @Deprecated
   private static ITripleAPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
