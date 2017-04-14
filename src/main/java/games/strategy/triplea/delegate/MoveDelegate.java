@@ -596,7 +596,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   /**
-   * @return the number of PUs that have been lost by bombing, rockets, etc.
+   * @return The number of PUs that have been lost by bombing, rockets, etc.
    */
   @Override
   public int PUsAlreadyLost(final Territory t) {

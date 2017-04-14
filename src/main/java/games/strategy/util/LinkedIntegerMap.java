@@ -264,7 +264,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   /**
-   * @return the sum of all keys.
+   * @return The sum of all keys.
    */
   public int totalValues() {
     int sum = 0;

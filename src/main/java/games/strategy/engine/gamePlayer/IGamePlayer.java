@@ -16,12 +16,12 @@ public interface IGamePlayer extends IRemotePlayer {
   void initialize(IPlayerBridge bridge, PlayerID id);
 
   /**
-   * @return the name of the game player (what nation we are).
+   * @return The name of the game player (what nation we are).
    */
   String getName();
 
   /**
-   * @return the type of player we are (human or a kind of ai).
+   * @return The type of player we are (human or a kind of ai).
    */
   String getType();
 

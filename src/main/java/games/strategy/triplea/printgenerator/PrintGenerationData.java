@@ -16,7 +16,7 @@ public class PrintGenerationData {
   protected PrintGenerationData() {}
 
   /**
-   * @return the outDir.
+   * @return The outDir.
    */
   protected File getOutDir() {
     return m_outDir;
@@ -31,7 +31,7 @@ public class PrintGenerationData {
   }
 
   /**
-   * @return the samePUMap.
+   * @return The samePUMap.
    */
   protected Map<Integer, Integer> getSamePUMap() {
     return m_SamePUMap;
@@ -46,7 +46,7 @@ public class PrintGenerationData {
   }
 
   /**
-   * @return the data.
+   * @return The data.
    */
   protected GameData getData() {
     return m_data;

@@ -69,7 +69,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the Key that is used in politicstext.properties or other .properties for all the texts.
+   * @return The Key that is used in politicstext.properties or other .properties for all the texts.
    */
   public String getText() {
     return m_text;
@@ -94,7 +94,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the amount you need to pay to perform the action.
+   * @return The amount you need to pay to perform the action.
    */
   public int getCostPU() {
     return m_costPU;
@@ -157,7 +157,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the amount of times you can try this Action per Round.
+   * @return The amount of times you can try this Action per Round.
    */
   public int getAttemptsPerTurn() {
     return m_attemptsPerTurn;

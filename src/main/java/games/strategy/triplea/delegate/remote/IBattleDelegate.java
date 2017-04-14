@@ -9,7 +9,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
 public interface IBattleDelegate extends IRemote, IDelegate {
   /**
-   * @return the battles currently waiting to be fought.
+   * @return The battles currently waiting to be fought.
    */
   BattleListing getBattles();
 

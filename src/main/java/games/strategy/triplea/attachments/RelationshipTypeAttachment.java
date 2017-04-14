@@ -95,7 +95,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
+   * @return The ArcheType of this relationshipType, this really shouldn't be called, typically you should call
    *         isNeutral, isAllied or
    *         isWar().
    */

@@ -15,7 +15,7 @@ public class EngineVersion {
 
 
   /**
-   * @return the game engine 'Version' used for in-game compatibility checks.
+   * @return The game engine 'Version' used for in-game compatibility checks.
    */
   public Version getVersion() {
     return version;

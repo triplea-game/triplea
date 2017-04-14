@@ -93,7 +93,7 @@ public class CountUpAndDownLatch implements Serializable {
   }
 
   /**
-   * @return the original count this latch was created with.
+   * @return The original count this latch was created with.
    */
   public int getOriginalCount() {
     return originalCount;
