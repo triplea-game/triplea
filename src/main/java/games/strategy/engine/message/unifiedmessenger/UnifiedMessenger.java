@@ -315,9 +315,7 @@ public class UnifiedMessenger {
         }
       };
       threadPool.execute(task);
-    }
-    // a remote machine is returning results
-    else if (msg instanceof SpokeInvocationResults) {
+    } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
       assertIsServer(from);

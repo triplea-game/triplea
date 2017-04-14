@@ -80,7 +80,7 @@ public class PlacePanel extends AbstractMovePanel {
       if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
         return;
       }
-      final int maxUnits[] = new int[1];
+      final int[] maxUnits = new int[1];
       final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
       if (units.isEmpty()) {
         return;
@@ -115,7 +115,7 @@ public class PlacePanel extends AbstractMovePanel {
     }
   };
 
-  private Collection<Unit> getUnitsToPlace(final Territory territory, final int maxUnits[]) {
+  private Collection<Unit> getUnitsToPlace(final Territory territory, final int[] maxUnits) {
     getData().acquireReadLock();
     try {
       // not our territory

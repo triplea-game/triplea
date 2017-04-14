@@ -77,9 +77,7 @@ public class AirThatCantLandUtil {
     // if we cant land on land then none can
     if (!territory.isWater()) {
       toRemove.addAll(airUnits);
-    } else
-    // on water we may just no have enough carriers
-    {
+    } else { // on water we may just no have enough carriers
       // find the carrier capacity
       final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);

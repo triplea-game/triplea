@@ -41,6 +41,7 @@ public interface IUIContext {
   enum UnitDamage {
     DAMAGED, NOT_DAMAGED
   }
+
   enum UnitEnable {
     DISABLED, ENABLED
   }

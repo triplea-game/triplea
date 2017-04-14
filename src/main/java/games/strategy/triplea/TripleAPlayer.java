@@ -117,8 +117,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (name.endsWith("Tech")) {
       tech();
     } else if (name.endsWith("TechActivation")) {
-    } // the delegate handles everything
-    else if (name.endsWith("Bid") || name.endsWith("Purchase")) {
+    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
     } else if (name.endsWith("Move")) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);

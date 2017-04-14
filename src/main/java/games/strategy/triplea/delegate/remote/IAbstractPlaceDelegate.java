@@ -23,6 +23,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   enum BidMode {
     BID, NOT_BID
   }
+
   /**
    * Query what units can be produced in a given territory.
    * ProductionResponse may indicate an error string that there

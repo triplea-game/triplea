@@ -153,6 +153,7 @@ public class ExtendedStats extends StatPanel {
       return count;
     }
   }
+
   class GenericResourceStat extends AbstractStat {
     private String m_name = null;
 
@@ -170,6 +171,7 @@ public class ExtendedStats extends StatPanel {
       return player.getResources().getQuantity(m_name);
     }
   }
+
   class GenericTechNameStat extends AbstractStat {
     private TechAdvance m_ta = null;
 
@@ -190,6 +192,7 @@ public class ExtendedStats extends StatPanel {
       return 0;
     }
   }
+
   class GenericUnitNameStat extends AbstractStat {
     private UnitType m_ut = null;
 
@@ -213,6 +216,7 @@ public class ExtendedStats extends StatPanel {
       return rVal;
     }
   }
+
   class TechTokenStat extends ResourceStat {
     public TechTokenStat() {
       super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));

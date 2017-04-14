@@ -22,8 +22,7 @@ public class InvalidResetExample extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
 
-  public void resetGiveMovement() // badly named, should cause test to fail
-  {
+  public void resetGiveMovement() { // badly named, should cause test to fail
     m_givesMovement = new IntegerMap<>();
   }
 

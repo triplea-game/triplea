@@ -45,8 +45,8 @@ public class AirMovementValidator {
         !Match.someMatch(units, Matches.UnitIsAir) || // No Airunits, nothing to check
         route.hasNoSteps() || // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
-        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd()) ||
-        isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
+        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd())
+        || isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
     ) {
       return result;
     }

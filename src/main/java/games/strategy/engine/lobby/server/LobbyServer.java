@@ -55,7 +55,7 @@ public class LobbyServer {
     server.setAcceptNewConnections(true);
   }
 
-  public static void main(final String args[]) {
+  public static void main(final String[] args) {
     try {
       // send args to system properties
       handleCommandLineArgs(args);

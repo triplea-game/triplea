@@ -421,11 +421,9 @@ public class PolygonGrabber extends JFrame {
     if (p == null) {
       return;
     }
-    if (rightMouse && m_current != null) // right click and list of polys is not empty
-    {
+    if (rightMouse && m_current != null) { // right click and list of polys is not empty
       doneCurrentGroup();
-    } else if (pointInCurrentPolygon(point)) // point clicked is already highlighted
-    {
+    } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
       System.out.println("rejecting");
       return;
     } else if (ctrlDown) {
@@ -701,8 +699,7 @@ public class PolygonGrabber extends JFrame {
         return null;
       }
       int tempDirection;
-      for (int i = 2; i >= -3; i--) // was -4
-      {
+      for (int i = 2; i >= -3; i--) { // was -4
         tempDirection = (currentDirection + i) % 8;
         if (tempDirection < 0) {
           tempDirection += 8;

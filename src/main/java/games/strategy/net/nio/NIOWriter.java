@@ -81,11 +81,10 @@ public class NIOWriter {
           s_logger.finest("selecting...");
         }
         try {
+          // exceptions can be thrown here, nothing we can do
+          // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
           m_selector.select();
-        }
-        // exceptions can be thrown here, nothing we can do
-        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
-        catch (final Exception e) {
+        } catch (final Exception e) {
           s_logger.log(Level.INFO, "error reading selection", e);
         }
         if (!m_running) {

@@ -281,9 +281,7 @@ public class HelpMenu {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
-    } else
-    // On Mac OS X, put the About menu where Mac users expect it to be
-    {
+    } else { // On Mac OS X, put the About menu where Mac users expect it to be
       Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));
     }

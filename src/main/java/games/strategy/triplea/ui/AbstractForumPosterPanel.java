@@ -28,8 +28,8 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
 
   private int getRound() {
     int round = 0;
-    final Object pathFromRoot[] = getData().getHistory().getLastNode().getPath();
-    final Object arr$[] = pathFromRoot;
+    final Object[] pathFromRoot = getData().getHistory().getLastNode().getPath();
+    final Object[] arr$ = pathFromRoot;
     final int len$ = arr$.length;
     int i$ = 0;
     do {

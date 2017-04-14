@@ -446,9 +446,8 @@ public class GameParser {
     try {
       final Class<?> instanceClass = Class.forName(className);
       instance = instanceClass.newInstance();
-    }
     // a lot can go wrong, the following list is just a subset of potential pitfalls
-    catch (final ClassNotFoundException cnfe) {
+    } catch (final ClassNotFoundException cnfe) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
       throw new GameParseException(mapName,

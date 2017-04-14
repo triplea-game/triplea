@@ -46,7 +46,7 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  private static void clearbits(final byte bits[]) {
+  private static void clearbits(final byte[] bits) {
     for (int i = 0; i < bits.length; i++) {
       bits[i] = 0;
     }
@@ -114,7 +114,7 @@ public class MD5Crypt {
     if (magic == null) {
       throw new IllegalArgumentException("Null salt!");
     }
-    byte finalState[];
+    byte[] finalState;
     long l;
     /*
      * Two MD5 hashes are used

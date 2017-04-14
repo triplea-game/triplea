@@ -68,8 +68,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // Check for Winning conditions
-    if (isTotalVictory()) // Check for Win by Victory Cities
-    {
+    if (isTotalVictory()) { // Check for Win by Victory Cities
       victoryMessage = " achieve TOTAL VICTORY with ";
       checkVictoryCities(m_bridge, victoryMessage, " Total Victory VCs");
     }
@@ -81,8 +80,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
       checkVictoryCities(m_bridge, victoryMessage, " Projection of Power VCs");
     }
-    if (isEconomicVictory()) // Check for regular economic victory
-    {
+    if (isEconomicVictory()) { // Check for regular economic victory
       final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
       String allianceName = null;
       while (allianceIter.hasNext()) {

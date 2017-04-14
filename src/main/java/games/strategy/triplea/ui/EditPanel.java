@@ -666,15 +666,11 @@ public class EditPanel extends ActionPanel {
           // remove the last element
           m_selectedUnits.remove(new ArrayList<>(m_selectedUnits).get(m_selectedUnits.size() - 1));
         }
-      }
-      // user has clicked on a specific unit
-      else {
+      } else { // user has clicked on a specific unit
         // deselect all if control is down
         if (md.isControlDown() || t != m_selectedTerritory) {
           m_selectedUnits.removeAll(units);
-        }
-        // deselect one
-        else {
+        } else { // deselect one
           // remove those with the least movement first
           for (final Unit unit : units) {
             if (m_selectedUnits.contains(unit)) {
@@ -724,9 +720,7 @@ public class EditPanel extends ActionPanel {
         m_selectedUnits.addAll(t.getUnits().getUnits());
       } else if (md.isControlDown()) {
         m_selectedUnits.addAll(units);
-      }
-      // select one
-      else {
+      } else { // select one
         for (final Unit unit : units) {
           if (!m_selectedUnits.contains(unit)) {
             m_selectedUnits.add(unit);

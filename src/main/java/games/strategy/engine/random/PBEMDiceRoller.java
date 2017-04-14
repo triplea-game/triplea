@@ -269,9 +269,7 @@ class HttpDiceRollerDialog extends JDialog {
       if (!m_test) {
         closeAndReturn();
       }
-    }
-    // an error in networking
-    catch (final SocketException ex) {
+    } catch (final SocketException ex) { // an error in networking
       appendText("Connection failure:" + ex.getMessage() + "\n"
           + "Please ensure your Internet connection is working, and try again.");
       notifyError();

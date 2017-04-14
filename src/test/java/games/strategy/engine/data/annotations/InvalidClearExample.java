@@ -24,8 +24,7 @@ public class InvalidClearExample extends DefaultAttachment {
 
   public void resetGivesMovement() {}
 
-  public void clearMovement() // badly named, should cause test to fail
-  {
+  public void clearMovement() { // badly named, should cause test to fail
     m_givesMovement.clear();
   }
 

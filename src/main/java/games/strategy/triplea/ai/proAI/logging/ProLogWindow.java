@@ -310,8 +310,7 @@ public class ProLogWindow extends javax.swing.JDialog {
   private void v_settingsDetailsButtonActionPerformed() {
     final JDialog dialog = new JDialog(this, "Pro AI - Settings Details");
     String message = "";
-    if (v_tabPaneMain.getSelectedIndex() == 0) // Debugging
-    {
+    if (v_tabPaneMain.getSelectedIndex() == 0) { // Debugging
       message = "Debugging\r\n" + "\r\n"
           + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
           + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
@@ -359,8 +358,7 @@ public class ProLogWindow extends javax.swing.JDialog {
         currentLogTextArea = v_aiOutputLogArea;
       }
       currentLogTextArea.append(message + "\r\n");
-    } catch (final NullPointerException ex) // This is bad, but we don't want TripleA crashing because of this...
-    {
+    } catch (final NullPointerException ex) { // This is bad, but we don't want TripleA crashing because of this...
       System.out.print("Error adding Pro log message! Level: " + level.getName() + " Message: " + message);
     }
   }
