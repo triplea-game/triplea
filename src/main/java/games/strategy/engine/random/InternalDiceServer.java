@@ -78,7 +78,9 @@ public class InternalDiceServer implements IRemoteDiceServer {
 
   @Override
   public String getInfoText() {
-    return "Uses the build in TripleA dice roller.\nDice are not logged, and no internet access is required.\nIt is technically possible (for a hacker) to modify the dice rolls.";
+    return "Uses the build in TripleA dice roller.\n"
+        + "Dice are not logged, and no internet access is required.\n"
+        + "It is technically possible (for a hacker) to modify the dice rolls.";
   }
 
   @Override

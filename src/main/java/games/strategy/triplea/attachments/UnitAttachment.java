@@ -445,8 +445,8 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = value.split(":");
     if (s.length < 5 || (s.length - 1) % 2 != 0) {
       throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
-          + "playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc"
-          + thisErrorMsg());
+          + "playerFrom:playerTo:keepAttributes:unitType:howMany "
+          + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
     }
     final PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
     if (pfrom == null && !s[0].equals("any")) {
@@ -968,9 +968,8 @@ public class UnitAttachment extends DefaultAttachment {
     final int from = getInt(s[0]);
     final int to = getInt(s[1]);
     if (from < 0 || to < 0 || to < from) {
-      throw new GameParseException(
-          "whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first"
-              + thisErrorMsg());
+      throw new GameParseException("whenCombatDamaged damaged integers must be positive, and the second integer must "
+          + "be equal to or greater than the first" + thisErrorMsg());
     }
     final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
     Tuple<String, String> effectNum;
@@ -2672,9 +2671,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_isConstruction
         && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("")
             || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0)) {
-      throw new GameParseException(
-          "Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType, "
-              + thisErrorMsg());
+      throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType "
+          + "and maxConstructionsPerType, " + thisErrorMsg());
     }
     if (!m_isConstruction
         && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals(""))

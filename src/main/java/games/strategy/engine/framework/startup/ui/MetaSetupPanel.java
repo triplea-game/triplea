@@ -62,17 +62,21 @@ public class MetaSetupPanel extends SetupPanel {
     final Font bigButtonFont = new Font(m_connectToLobby.getFont().getName(), m_connectToLobby.getFont().getStyle(),
         m_connectToLobby.getFont().getSize() + 3);
     m_connectToLobby.setFont(bigButtonFont);
-    m_connectToLobby.setToolTipText(
-        "<html>Find Games Online on the Lobby Server. <br>TripleA is MEANT to be played Online against other humans. <br>Any other way is not as fun!</html>");
+    m_connectToLobby.setToolTipText("<html>Find Games Online on the Lobby Server. <br>"
+        + "TripleA is MEANT to be played Online against other humans. <br>"
+        + "Any other way is not as fun!</html>");
     m_startLocal = new JButton("Start Local Game");
-    m_startLocal.setToolTipText(
-        "<html>Start a game on this computer. <br>You can play against a friend sitting besides you (hotseat mode), <br>or against one of the AIs.</html>");
+    m_startLocal.setToolTipText("<html>Start a game on this computer. <br>"
+        + "You can play against a friend sitting besides you (hotseat mode), <br>"
+        + "or against one of the AIs.</html>");
     m_startPBEM = new JButton("Start PBEM (Play-By-Email/Forum) Game");
-    m_startPBEM.setToolTipText(
-        "<html>Starts a game which will be emailed back and forth between all players, <br>or be posted to an online forum or message board.</html>");
+    m_startPBEM.setToolTipText("<html>Starts a game which will be emailed back and forth between all players, <br>"
+        + "or be posted to an online forum or message board.</html>");
     m_hostGame = new JButton("Host Networked Game");
-    m_hostGame.setToolTipText(
-        "<html>Hosts a network game, which people can connect to. <br>Anyone on a LAN will be able to connect. <br>Anyone from the internet can connect as well, but only if the host has configured port forwarding correctly.</html>");
+    m_hostGame.setToolTipText("<html>Hosts a network game, which people can connect to. <br>"
+        + "Anyone on a LAN will be able to connect. <br>"
+        + "Anyone from the internet can connect as well, but only if the host has configured port forwarding "
+        + "correctly.</html>");
     m_connectToHostedGame = new JButton("Connect to Networked Game");
     m_connectToHostedGame
         .setToolTipText("<html>Connects to someone's hosted game, <br>so long as you know their IP address.</html>");
@@ -80,8 +84,8 @@ public class MetaSetupPanel extends SetupPanel {
     m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     m_ruleBook = new JButton("Rule Book");
     m_helpButton = new JButton("Help");
-    m_ruleBook.setToolTipText(
-        "<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
+    m_ruleBook.setToolTipText("<html>Download a manual of how to play <br>"
+        + "(it is also included in the directory TripleA was installed to).</html>");
   }
 
   private void layoutComponents() {

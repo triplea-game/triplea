@@ -67,8 +67,9 @@ public final class ClientFileSystemHelper {
   }
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
-    final String subString =
-        fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+    final String subString = fileName.substring(
+        "file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
+        fileName.indexOf(tripleaJarName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);

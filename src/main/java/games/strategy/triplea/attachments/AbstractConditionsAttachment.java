@@ -128,21 +128,18 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       final String[] nums = s.split("-");
       if (nums.length == 1) {
         if (Integer.parseInt(nums[0]) < 0) {
-          throw new GameParseException(
-              "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
-                  + thisErrorMsg());
+          throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+              + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
         }
       } else if (nums.length == 2) {
         if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0
             || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
-          throw new GameParseException(
-              "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
-                  + thisErrorMsg());
+          throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+              + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
         }
       } else {
-        throw new GameParseException(
-            "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
-                + thisErrorMsg());
+        throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+            + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
       }
     }
     m_conditionType = s;

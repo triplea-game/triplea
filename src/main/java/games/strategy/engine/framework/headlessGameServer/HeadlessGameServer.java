@@ -424,9 +424,10 @@ public class HeadlessGameServer {
 
     int reconnect;
     try {
-      final String reconnectionSeconds =
-          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-      reconnect = Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
+      final String reconnectionSeconds = System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION,
+          "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+      reconnect =
+          Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
     } catch (final NumberFormatException e) {
       reconnect = GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
     }

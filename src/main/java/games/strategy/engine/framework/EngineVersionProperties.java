@@ -103,9 +103,10 @@ public class EngineVersionProperties {
         .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");
     text.append("<br />Backup Mirror: <a class=\"external\" href=\"").append(getLinkAltToDownloadLatestVersion())
         .append("\">").append(getLinkAltToDownloadLatestVersion()).append("</a>");
-    text.append(
-        "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
-            + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
+    text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of ")
+        .append("TripleA.");
+    text.append("<br />So be sure to either manually uninstall all older versions of TripleA, or change your ")
+        .append("shortcuts to the new TripleA.");
     text.append("<br /><br />What is new:<br />");
     text.append("</html>");
     return text.toString();

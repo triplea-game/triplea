@@ -119,9 +119,11 @@ public class LobbyFrame extends JFrame {
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
       final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
-          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
-          banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+          "<html>Select the type of ban: <br>"
+              + "Please consult other admins before banning longer than 1 day. <br>"
+              + "And please remember to report this ban.</html>",
+          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultBT < 0) {
         return;
       }
@@ -197,8 +199,8 @@ public class LobbyFrame extends JFrame {
     rVal.add(SwingAction.of("Mute Player", e -> {
       final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
-          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
-          banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultMT < 0) {
         return;
       }

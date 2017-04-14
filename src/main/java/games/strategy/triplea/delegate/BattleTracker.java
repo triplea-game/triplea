@@ -1109,8 +1109,9 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   @VisibleForTesting
-  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge, Supplier<Collection<Territory>> pendingBattleSiteSupplier,
-             BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+  void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
+      Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+      BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
 
 
 

@@ -93,12 +93,13 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
    */
   @Override
   public boolean postTurnSummary(final String summary, final String subject) {
-    try (CloseableHttpClient client = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
+    try (CloseableHttpClient client =
+        HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
       HttpContext httpContext = login(client);
       // load the reply page
       final String s_forumId = "20";
-      final String url =
-          WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
+      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id="
+          + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
       String XOOPS_TOKEN_REQUEST;
       HttpGet httpGet = new HttpGet(url);
       HttpProxy.addProxy(httpGet);

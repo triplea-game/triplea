@@ -722,25 +722,25 @@ public class OddsCalculatorPanel extends JPanel {
     m_retreatAfterXUnitsLeft.setMin(-1);
     m_retreatAfterXUnitsLeft.setMax(1000);
     m_retreatAfterXUnitsLeft.setValue(-1);
-    m_retreatAfterXUnitsLeft.setToolTipText(
-        "-1 means never. If positive and 'retreat when only air left' is also selected, then we will retreat when X of non-air units is left.");
+    m_retreatAfterXUnitsLeft.setToolTipText("-1 means never. If positive and 'retreat when only air left' is also "
+        + "selected, then we will retreat when X of non-air units is left.");
     setResultsToBlank();
-    m_defenderLeft.setToolTipText(
-        "Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_attackerLeft.setToolTipText(
-        "Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_defenderLeftWhenDefenderWon.setToolTipText(
-        "Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_attackerLeftWhenAttackerWon.setToolTipText(
-        "Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_averageChangeInTUV.setToolTipText(
-        "TUV Swing does not include captured AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_retreatWhenOnlyAirLeftCheckBox.setToolTipText(
-        "We retreat if only air is left, and if 'retreat when x units left' is positive we will retreat when x of non-air is left too.");
-    m_attackerUnitsTotalNumber.setToolTipText(
-        "Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-    m_defenderUnitsTotalNumber.setToolTipText(
-        "Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
+    m_defenderLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
+        + "Bombarding sea units for land battles.");
+    m_attackerLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
+        + "Bombarding sea units for land battles.");
+    m_defenderLeftWhenDefenderWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    m_attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    m_averageChangeInTUV.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    m_retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
+        + "left' is positive we will retreat when x of non-air is left too.");
+    m_attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
+        + "include Bombarding sea units for land battles.");
+    m_defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
+        + "include Bombarding sea units for land battles.");
   }
 
   private void setResultsToBlank() {
@@ -1165,7 +1165,8 @@ class OrderOfLossesInputPanel extends JPanel {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     final JLabel instructions = new JLabel("<html>Here you can specify the 'Order of Losses' (OOL) for each side."
         + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
-        + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text line."
+        + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
+        + "line."
         + "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL." + "<br />"
         + OddsCalculator.OOL_SEPARATOR + " separates unit types." + "<br />" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR
         + " is in front of the unit type and describes the number of units." + "<br />" + OddsCalculator.OOL_ALL
@@ -1173,7 +1174,8 @@ class OrderOfLossesInputPanel extends JPanel {
         + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
         + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
         + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
-        + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as casualty."
+        + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as "
+        + "casualty."
         + "<br /><br />1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + "2"
         + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery" + OddsCalculator.OOL_SEPARATOR + "6"
         + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
@@ -1181,7 +1183,8 @@ class OrderOfLossesInputPanel extends JPanel {
         + "<br /><br />" + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry"
         + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
         + OddsCalculator.OOL_SEPARATOR + "1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry"
-        + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then all other units casualty.</html>");
+        + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
+        + "all other units casualty.</html>");
     instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
     this.add(instructions);
     this.add(Box.createVerticalStrut(30));

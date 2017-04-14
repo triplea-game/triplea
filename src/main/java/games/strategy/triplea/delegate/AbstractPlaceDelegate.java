@@ -739,7 +739,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // if its an original factory then unlimited production
     Collections.sort(producers, getBestProducerComparator(to, units, player));
     if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to)) {
-      return "Cannot place more units which require units, than production capacity of territories with the required units";
+      return "Cannot place more units which require units, than production capacity of territories with the required "
+          + "units";
     }
     final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player, true);
     if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size())) {
@@ -1197,8 +1198,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
               }
             }
             if (productionThatCanBeTakenOverFromThisPlacement > maxProductionThatCanBeTakenOverFromThisPlacement) {
-              throw new IllegalStateException(
-                  "productionThatCanBeTakenOverFromThisPlacement should never be larger than maxProductionThatCanBeTakenOverFromThisPlacement");
+              throw new IllegalStateException("productionThatCanBeTakenOverFromThisPlacement should never be larger "
+                  + "than maxProductionThatCanBeTakenOverFromThisPlacement");
             }
             productionThatCanBeTakenOver += productionThatCanBeTakenOverFromThisPlacement;
           }

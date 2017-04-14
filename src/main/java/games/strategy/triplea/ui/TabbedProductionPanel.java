@@ -47,7 +47,8 @@ public class TabbedProductionPanel extends ProductionPanel {
     this.setLayout(new GridBagLayout());
     add(
         new JLabel(String.format(
-            "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: %s)</html>",
+            "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "
+                + "(Total Resources: %s)</html>",
             ResourceCollectionUtils.getProductionResources(getResources()))),
         new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
             new Insets(8, 8, 8, 0), 0, 0));

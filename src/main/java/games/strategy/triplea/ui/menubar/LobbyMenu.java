@@ -142,7 +142,8 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem item = new JMenuItem("Ban Username");
     item.addActionListener(e -> {
       final String name1 = JOptionPane.showInputDialog(null,
-          "Enter the username that you want to ban from the lobby.\r\n\r\nNote that this ban is effective on any username, registered or anonymous, online or offline.",
+          "Enter the username that you want to ban from the lobby.\r\n\r\n"
+              + "Note that this ban is effective on any username, registered or anonymous, online or offline.",
           "");
       if (name1 == null || name1.length() < 1) {
         return;
@@ -171,7 +172,8 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
     item.addActionListener(e -> {
       final String mac = JOptionPane.showInputDialog(null,
-          "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
+          "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\n"
+              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
           "");
       if (mac == null || mac.length() < 1) {
         return;
@@ -238,7 +240,8 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
     item.addActionListener(e -> {
       final String mac = JOptionPane.showInputDialog(null,
-          "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
+          "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\n"
+              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
           "");
       if (mac == null || mac.length() < 1) {
         return;
