@@ -108,8 +108,10 @@ public class PolygonGrabber extends JFrame {
               + "<br>If the territory shape or borders do not match what you intend, then your borders "
               + "<br>might have a gap or differently colored pixel in the border."
               + "<br>These borders will define the shape of the territory in TripleA."
-              + "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to see it."
-              + "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it again."
+              + "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to "
+              + "see it."
+              + "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it "
+              + "again."
               + "<br><br>LEFT CLICK = fill in a territory's borders."
               + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories together (eg: islands)."
               + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
@@ -140,7 +142,8 @@ public class PolygonGrabber extends JFrame {
       file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
     }
     if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
-        "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
+        "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
+            + "names?",
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Centers : " + file.getPath());
@@ -691,11 +694,9 @@ public class PolygonGrabber extends JFrame {
       iterCount++;
       if (iterCount > 100000) {
         JOptionPane.showMessageDialog(this,
-            "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + ","
-                + currentPoint
-                    .getY()
-                + "\r\n"
-                + "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border and removing any anti-aliasing.");
+            "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + "," + currentPoint.getY() + "\r\n"
+                + "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border "
+                + "and removing any anti-aliasing.");
         return null;
       }
       int tempDirection;

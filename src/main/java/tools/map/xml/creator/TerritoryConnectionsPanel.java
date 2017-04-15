@@ -86,13 +86,15 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
             + "Do you wish to continue with this? \rSelect Yes to continue, Select No to override and change the size.",
         "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1) {
       scalePixels = showInputDialogForPositiveIntegerInput(
-          "Enter the number of pixels larger each territory should become? \r(Normally 4x bigger than the border line width. eg: 4, or 8, etc)",
+          "Enter the number of pixels larger each territory should become? \r"
+              + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)",
           "4");
       if (scalePixels == 0) {
         return;
       }
       minOverlap = showInputDialogForPositiveIntegerInput(
-          "Enter the minimum number of overlapping pixels for a connection? \r(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)",
+          "Enter the minimum number of overlapping pixels for a connection? \r"
+              + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)",
           "16");
       if (minOverlap == 0) {
         return;

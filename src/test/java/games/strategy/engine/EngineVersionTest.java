@@ -24,13 +24,15 @@ public class EngineVersionTest {
 
     EngineVersion testObj = createTestObj(input);
     assertThat(
-        "We wrote to property file version:'1.2.3.4.5', and expect Version class to chomp off the fifth number and return '1.2.3.4'",
+        "We wrote to property file version:'1.2.3.4.5', and expect Version class to chomp off the fifth number and "
+            + "return '1.2.3.4'",
         testObj.getVersion(), is(new Version(1, 2, 3, 4)));
 
     input = EXPECTED_OUTPUT;
     testObj = createTestObj(input);
     assertThat(
-        "We wrote to property file version:'1.2.3.4', and expect to get the same value back when reading from property file.",
+        "We wrote to property file version:'1.2.3.4', and expect to get the same value back when reading from property "
+            + "file.",
         testObj.getVersion(), is(new Version(1, 2, 3, 4)));
   }
 

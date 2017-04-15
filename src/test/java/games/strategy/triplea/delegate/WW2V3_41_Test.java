@@ -273,7 +273,8 @@ public class WW2V3_41_Test {
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
     del.start();
     addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
-    final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data), IAbstractPlaceDelegate.BidMode.NOT_BID);
+    final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data),
+        IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
   }
 

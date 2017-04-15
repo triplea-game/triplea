@@ -58,9 +58,11 @@ public class ConnectionFinder {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ConnectionFinder. "
-            + "<br>It will create a file containing the connections between territories, and optionally the territory definitions as well. "
+            + "<br>It will create a file containing the connections between territories, and optionally the territory "
+            + "definitions as well. "
             + "<br>Copy and paste everything from this file into your game xml file (the 'map' section). "
-            + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read by the engine. "
+            + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
+            + "by the engine. "
             + "</html>"));
     System.out.println("Select polygons.txt");
     File polyFile = null;
@@ -109,16 +111,19 @@ public class ConnectionFinder {
     }
     if (JOptionPane.showConfirmDialog(null,
         "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n"
-            + "Do you wish to continue with this? \r\nSelect Yes to continue, Select No to override and change the size.",
+            + "Do you wish to continue with this? \r\n"
+            + "Select Yes to continue, Select No to override and change the size.",
         "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1) {
       final String scale = JOptionPane.showInputDialog(null,
-          "Enter the number of pixels larger each territory should become? \r\n(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
+          "Enter the number of pixels larger each territory should become? \r\n"
+              + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
       try {
         scalePixels = Integer.parseInt(scale);
       } catch (final NumberFormatException ex) {
       }
       final String overlap = JOptionPane.showInputDialog(null,
-          "Enter the minimum number of overlapping pixels for a connection? \r\n(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
+          "Enter the minimum number of overlapping pixels for a connection? \r\n"
+              + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
       try {
         minOverlap = Integer.parseInt(overlap);
       } catch (final NumberFormatException ex) {

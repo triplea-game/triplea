@@ -74,7 +74,8 @@ public class PropertyUtilTest {
     final NoOpSetterClass testClass = new NoOpSetterClass();
     PropertyUtil.set(BAR, NEW_VALUE, testClass);
     assertThat(
-        "we are only really checking that the setter method was called, which did not do anything, thus we shoudl still have a default value.",
+        "we are only really checking that the setter method was called, which did not do anything, thus we should "
+            + "still have a default value.",
         testClass.bar, is("default"));
   }
 
