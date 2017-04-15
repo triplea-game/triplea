@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,15 +19,29 @@ import java.util.zip.GZIPOutputStream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
+import org.apache.commons.io.output.CloseShieldOutputStream;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.engine.persistence.serializable.PersistenceDelegateRegistryFactory;
+import games.strategy.persistence.memento.serializable.SerializableMementoExportException;
+import games.strategy.persistence.memento.serializable.SerializableMementoExporter;
+import games.strategy.persistence.memento.serializable.SerializableMementoImportException;
+import games.strategy.persistence.memento.serializable.SerializableMementoImporter;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
+import games.strategy.util.memento.Memento;
+import games.strategy.util.memento.MementoExportException;
+import games.strategy.util.memento.MementoExporter;
+import games.strategy.util.memento.MementoImportException;
+import games.strategy.util.memento.MementoImporter;
 
 /**
  * <p>
@@ -255,4 +271,73 @@ public class GameDataManager {
     out.writeObject(DELEGATE_LIST_END);
   }
 
+  /**
+   * Loads game data from the specified stream, which is expected to be in serializable format.
+   *
+   * @param is The stream from which the game data will be loaded; must not be {@code null}. The caller is responsible
+   *        for closing this stream; it will not be closed when this method returns.
+   *
+   * @return The loaded game data; never {@code null}.
+   *
+   * @throws IOException If an error occurs while loading the game.
+   */
+  public static GameData loadSerializableGame(final InputStream is) throws IOException {
+    checkNotNull(is);
+
+    return fromMemento(loadMemento(new CloseShieldInputStream(is)));
+  }
+
+  private static Memento loadMemento(final InputStream is) throws IOException {
+    try (final GZIPInputStream gzipis = new GZIPInputStream(is)) {
+      final SerializableMementoImporter mementoImporter =
+          new SerializableMementoImporter(PersistenceDelegateRegistryFactory.newPlatformPersistenceDelegateRegistry());
+      return mementoImporter.importMemento(gzipis);
+    } catch (final SerializableMementoImportException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static GameData fromMemento(final Memento memento) throws IOException {
+    try {
+      final MementoImporter<GameData> mementoImporter = GameDataMemento.newImporter();
+      return mementoImporter.importMemento(memento);
+    } catch (final MementoImportException e) {
+      throw new IOException(e);
+    }
+  }
+
+  /**
+   * Saves the specified game data to the specified stream in serializable format.
+   *
+   * @param os The stream to which the game data will be saved; must not be {@code null}. The caller is responsible for
+   *        closing this stream; it will not be closed when this method returns.
+   * @param gameData The game data to save; must not be {@code null}.
+   *
+   * @throws IOException If an error occurs while saving the game.
+   */
+  public static void saveSerializableGame(final OutputStream os, final GameData gameData) throws IOException {
+    checkNotNull(os);
+    checkNotNull(gameData);
+
+    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData));
+  }
+
+  private static Memento toMemento(final GameData gameData) throws IOException {
+    try {
+      final MementoExporter<GameData> mementoExporter = GameDataMemento.newExporter();
+      return mementoExporter.exportMemento(gameData);
+    } catch (final MementoExportException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
+    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os)) {
+      final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(
+          PersistenceDelegateRegistryFactory.newPlatformPersistenceDelegateRegistry());
+      mementoExporter.exportMemento(memento, gzipos);
+    } catch (final SerializableMementoExportException e) {
+      throw new IOException(e);
+    }
+  }
 }

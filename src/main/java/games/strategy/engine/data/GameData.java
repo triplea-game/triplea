@@ -504,4 +504,17 @@ public class GameData implements Serializable {
     }
     notifyGameDataChanged(change);
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("GameData[");
+    sb.append("gameName=");
+    sb.append(gameName);
+    sb.append(", gameVersion=");
+    sb.append(gameVersion);
+    // TODO: include remaining significant fields
+    sb.append("]");
+    return sb.toString();
+  }
 }
