@@ -26,19 +26,19 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class AirThatCantLandUtilTest {
-  private GameData m_data;
-  private PlayerID m_americans;
-  private UnitType m_fighter;
+  private GameData gameData;
+  private PlayerID americansPlayer;
+  private UnitType fighterType;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.REVISED.getGameData();
-    m_americans = GameDataTestUtil.americans(m_data);
-    m_fighter = GameDataTestUtil.fighter(m_data);
+    gameData = TestMapGameData.REVISED.getGameData();
+    americansPlayer = GameDataTestUtil.americans(gameData);
+    fighterType = GameDataTestUtil.fighter(gameData);
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
@@ -55,7 +55,7 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testSimple() {
-    final PlayerID player = m_americans;
+    final PlayerID player = americansPlayer;
     // everything can land
     final ITestDelegateBridge bridge = getDelegateBridge(player);
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
@@ -64,11 +64,11 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCantLandEnemyTerritory() {
-    final PlayerID player = m_americans;
+    final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory balkans = m_data.getMap().getTerritory("Balkans");
-    final Change addAir = ChangeFactory.addUnits(balkans, m_fighter.create(2, player));
-    m_data.performChange(addAir);
+    final Territory balkans = gameData.getMap().getTerritory("Balkans");
+    final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
+    gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -80,11 +80,11 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCantLandWater() {
-    final PlayerID player = m_americans;
+    final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    m_data.performChange(addAir);
+    final Territory sz_55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz_55, fighterType.create(2, player));
+    gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -95,11 +95,11 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testSpareNextToFactory() {
-    final PlayerID player = m_americans;
+    final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, player));
-    m_data.performChange(addAir);
+    final Territory sz_55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz_55, fighterType.create(2, player));
+    gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     airThatCantLandUtil.removeAirThatCantLand(player, true);
     assertEquals(2, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
@@ -108,11 +108,11 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testCantLandCarrier() {
     // 1 carrier in the region, but three fighters, make sure we cant land
-    final PlayerID player = m_americans;
+    final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_52, m_fighter.create(2, player));
-    m_data.performChange(addAir);
+    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz_52, fighterType.create(2, player));
+    gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
@@ -124,38 +124,38 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCanLandNeighborCarrier() {
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_44 = m_data.getMap().getTerritory("44 Sea Zone");
-    final Territory sz_45 = m_data.getMap().getTerritory("45 Sea Zone");
-    final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
-    final UnitType subType = GameDataTestUtil.submarine(m_data);
-    final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final Territory sz_44 = gameData.getMap().getTerritory("44 Sea Zone");
+    final Territory sz_45 = gameData.getMap().getTerritory("45 Sea Zone");
+    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final UnitType subType = GameDataTestUtil.submarine(gameData);
+    final UnitType carrierType = GameDataTestUtil.carrier(gameData);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    m_data.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountSz_52 = sz_52.getUnits().size();
     final int preCountAirSz_44 = sz_44.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));
+    moveDelegate.move(sz_45.getUnits().getUnits(), gameData.getMap().getRoute(sz_45, sz_44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(getDummyPlayer());
@@ -170,40 +170,40 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCanLandMultiNeighborCarriers() {
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_43 = m_data.getMap().getTerritory("43 Sea Zone");
-    final Territory sz_44 = m_data.getMap().getTerritory("44 Sea Zone");
-    final Territory sz_45 = m_data.getMap().getTerritory("45 Sea Zone");
-    final Territory sz_52 = m_data.getMap().getTerritory("52 Sea Zone");
-    final UnitType subType = GameDataTestUtil.submarine(m_data);
-    final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final Territory sz_43 = gameData.getMap().getTerritory("43 Sea Zone");
+    final Territory sz_44 = gameData.getMap().getTerritory("44 Sea Zone");
+    final Territory sz_45 = gameData.getMap().getTerritory("45 Sea Zone");
+    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final UnitType subType = GameDataTestUtil.submarine(gameData);
+    final UnitType carrierType = GameDataTestUtil.carrier(gameData);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    m_data.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    m_data.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
-    m_data.performChange(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountSz_52 = sz_52.getUnits().size();
     final int preCountSz_43 = sz_43.getUnits().size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));
+    moveDelegate.move(sz_45.getUnits().getUnits(), gameData.getMap().getRoute(sz_45, sz_44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(getDummyPlayer());
@@ -221,38 +221,38 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCanLandNeighborLandV2() {
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
-    final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
-    final UnitType subType = GameDataTestUtil.submarine(m_data);
-    final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
+    final Territory sz_9 = gameData.getMap().getTerritory("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
+    final Territory sz_11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final UnitType subType = GameDataTestUtil.submarine(gameData);
+    final UnitType carrierType = GameDataTestUtil.carrier(gameData);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    m_data.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    m_data.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountCanada = eastCanada.getUnits().size();
     final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));
+    moveDelegate.move(sz_11.getUnits().getUnits(), gameData.getMap().getRoute(sz_11, sz_9));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,}));
     bridge.setRemote(getDummyPlayer());
@@ -267,27 +267,27 @@ public class AirThatCantLandUtilTest {
 
   @Test
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
-    final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
-    final Territory sz_11 = m_data.getMap().getTerritory("11 Sea Zone");
-    final UnitType subType = GameDataTestUtil.submarine(m_data);
-    final UnitType carrierType = GameDataTestUtil.carrier(m_data);
-    final UnitType fighterType = GameDataTestUtil.fighter(m_data);
-    final UnitType transportType = GameDataTestUtil.transport(m_data);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
+    final Territory sz_9 = gameData.getMap().getTerritory("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
+    final Territory sz_11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final UnitType subType = GameDataTestUtil.submarine(gameData);
+    final UnitType carrierType = GameDataTestUtil.carrier(gameData);
+    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
+    final UnitType transportType = GameDataTestUtil.transport(gameData);
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     // Add units for the test
-    m_data.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_11, transportType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
-    m_data.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    m_data.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_11, transportType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -295,15 +295,15 @@ public class AirThatCantLandUtilTest {
     final int preCountCanada = eastCanada.getUnits().size();
     final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));
-    moveDelegate.move(sz_9.getUnits().getUnits(infantryType, 1), m_data.getMap().getRoute(sz_9, eastCanada));
+    moveDelegate.move(sz_11.getUnits().getUnits(), gameData.getMap().getRoute(sz_11, sz_9));
+    moveDelegate.move(sz_9.getUnits().getUnits(infantryType, 1), gameData.getMap().getRoute(sz_9, eastCanada));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
