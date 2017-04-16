@@ -86,13 +86,10 @@ public interface IRemoteMessenger {
   IRemote getRemote(RemoteName name, boolean ignoreResults);
 
   /**
-   * @param remoteInterface
-   *        - the remote interface that implementor implements,
-   *        must be a subclass of IRemote.
    * @param implementor
-   *        - an object that implements remoteInterface
+   *        An object that implements remoteInterface.
    * @param name
-   *        - the name that implementor will be registered under
+   *        The name that implementor will be registered under.
    */
   void registerRemote(Object implementor, RemoteName name);
 

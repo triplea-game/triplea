@@ -142,8 +142,7 @@ public class PlacementPicker extends JFrame {
    * default or needed values, and prepares the map for user
    * commands.
    *
-   * @param java
-   *        .lang.String mapName name of map file
+   * @param mapName Name of map file.
    */
   public PlacementPicker(final String mapName) {
     super("Placement Picker");

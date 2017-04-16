@@ -19,10 +19,10 @@ public class CollectionProperty<T> extends AEditableProperty {
   /**
    * @param name
    *        name of the property.
-   * @param defaultValue
-   *        default string value
-   * @param possibleValues
-   *        collection of Strings
+   * @param description
+   *        description of the property.
+   * @param values
+   *        collection of values.
    */
   public CollectionProperty(final String name, final String description, final Collection<T> values) {
     super(name, description);

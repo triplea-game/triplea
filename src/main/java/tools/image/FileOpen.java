@@ -11,8 +11,7 @@ public class FileOpen {
   /**
    * Default Constructor.
    *
-   * @param java
-   *        .lang.String title the title of the JFileChooser
+   * @param title The title of the JFileChooser.
    * @exception java.lang.Exception
    *            ex
    *            Creates a file selection dialog starting at the current

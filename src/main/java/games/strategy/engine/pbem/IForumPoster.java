@@ -53,7 +53,7 @@ public interface IForumPoster extends IBean {
   /**
    * Configure if we should also post at the end of combat move.
    *
-   * @param include
+   * @param postAlso
    *        true if the save game should be included
    */
   void setAlsoPostAfterCombatMove(boolean postAlso);
