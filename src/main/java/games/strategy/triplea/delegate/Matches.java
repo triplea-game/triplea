@@ -537,10 +537,6 @@ public class Matches {
 
   /**
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
-   *
-   * @param attack
-   * @param player
-   * @param data
    */
   public static Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final GameData data) {
     return new Match<Unit>() {
@@ -553,10 +549,6 @@ public class Matches {
 
   /**
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
-   *
-   * @param attack
-   * @param player
-   * @param data
    */
   private static Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack,
       final PlayerID player,
@@ -1285,7 +1277,6 @@ public class Matches {
   /**
    * @param data
    *        game data
-   * @param player
    * @return Match&lt;Territory> that tests if there is a route to an enemy capital from the given territory.
    */
   public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player) {
@@ -1313,7 +1304,6 @@ public class Matches {
   /**
    * @param data
    *        game data.
-   * @param player
    * @return true only if the route is land
    */
   public static Match<Territory> territoryHasLandRouteToEnemyCapital(final GameData data, final PlayerID player) {
@@ -3136,8 +3126,6 @@ public class Matches {
 
   /**
    * Accounts for OccupiedTerrOf. Returns false if there is no territory attachment (like if it is water).
-   *
-   * @param player
    */
   public static Match<Territory> TerritoryIsOriginallyOwnedBy(final PlayerID player) {
     return new Match<Territory>() {

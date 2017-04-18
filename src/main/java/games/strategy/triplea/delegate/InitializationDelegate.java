@@ -93,8 +93,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   /**
    * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
-   *
-   * @param aBridge
    */
   private void resetUnitState(final IDelegateBridge aBridge) {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());

@@ -116,8 +116,6 @@ public class FileProperty extends AEditableProperty {
 
   /**
    * Prompts the user to select a file.
-   *
-   * @param acceptableSuffixes
    */
   private File getFileUsingDialog(final String... acceptableSuffixes) {
     // For some strange reason,

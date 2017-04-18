@@ -468,7 +468,6 @@ public class MapXmlHelper {
   }
 
   /**
-   * @param gameNode
    * @return step to go to.
    */
   public static GameStep parseGameNode(final Node gameNode) {

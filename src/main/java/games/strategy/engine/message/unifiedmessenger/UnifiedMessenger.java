@@ -58,8 +58,6 @@ public class UnifiedMessenger {
 
   /**
    * Creates a new instance of UnifiedMessanger.
-   *
-   * @param messenger
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
@@ -231,9 +229,6 @@ public class UnifiedMessenger {
 
   /**
    * Wait for the messenger to know about the given endpoint.
-   *
-   * @param endPointName
-   * @param timeout
    */
   public void waitForLocalImplement(final String endPointName, long timeoutMS) {
     // dont use Long.MAX_VALUE since that will overflow

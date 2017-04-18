@@ -55,14 +55,6 @@ public class IndividualUnitPanelGrouped extends JPanel {
    * MAX.
    * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
    * unit.
-   *
-   * @param unitsToChooseFrom
-   * @param data
-   * @param uiContext
-   * @param title
-   * @param maxTotal
-   * @param showMinAndMax
-   * @param showSelectAll
    */
   public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data,
       final IUIContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,

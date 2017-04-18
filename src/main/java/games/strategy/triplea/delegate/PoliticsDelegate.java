@@ -233,8 +233,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * Let the player know this action isn't valid anymore, this shouldn't
    * happen as the player shouldn't get an option to push the button on
    * non-valid actions.
-   *
-   * @param paa
    */
   private void notifyNoValidAction(final PoliticalActionAttachment paa) {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");

@@ -195,9 +195,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   /**
    * Bi-directional. T1 connects to T2, and T2 connects to T1.
-   *
-   * @param t1
-   * @param t2
    */
   protected void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
@@ -213,9 +210,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   /**
    * Uni-directional. T1 connects to T2, while T2 does NOT connect to T1.
-   *
-   * @param t1
-   * @param t2
    */
   protected void addOneWayConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
@@ -311,9 +305,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param territory
-   * @param distance
-   * @param cond
    * @return All neighbors within a certain distance of the starting territory that match the condition.
    *         Does NOT include the original/starting territory in the returned Set.
    */
@@ -335,9 +326,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param frontier
-   * @param distance
-   * @param cond
    * @return All neighbors within a certain distance of the starting territory set that match the condition.
    *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
    *         other.
@@ -349,8 +337,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param frontier
-   * @param distance
    * @return All neighbors within a certain distance of the starting territory set.
    *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
    *         other.

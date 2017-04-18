@@ -56,9 +56,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param combatDefenseEffect
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException {
@@ -84,9 +81,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param combatOffenseEffect
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException {
@@ -143,9 +137,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param noBlitzUnitTypes
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
@@ -181,9 +172,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param unitsNotAllowedUnitTypes
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {

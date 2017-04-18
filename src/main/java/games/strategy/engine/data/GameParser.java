@@ -65,14 +65,10 @@ public class GameParser {
   /**
    * Parses a file into a GameData object.
    *
-   * @param stream
    * @param delayParsing
    *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
    *        game chooser which
    *        should use the user set preference.
-   * @throws GameParseException
-   * @throws SAXException
-   * @throws EngineVersionException
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
       final boolean delayParsing)
@@ -786,7 +782,6 @@ public class GameParser {
   /**
    * @param root
    *        root node containing the playerList.
-   * @throws GameParseException
    */
   private void parsePlayerList(final Element root) {
     final PlayerList playerList = data.getPlayerList();

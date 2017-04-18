@@ -37,7 +37,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    *
    * @param data
    *        GameData used for construction
-   * @throws GameParseException
    */
   protected RelationshipTypeList(final GameData data) {
     super(data);

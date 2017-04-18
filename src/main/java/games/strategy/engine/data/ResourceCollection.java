@@ -75,9 +75,6 @@ public class ResourceCollection extends GameDataComponent {
 
   /**
    * Overwrites any current resource with the same name.
-   *
-   * @param resource
-   * @param quantity
    */
   public void putResource(final Resource resource, final int quantity) {
     if (quantity < 0) {
@@ -112,7 +109,6 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * @param spent
    * @return new ResourceCollection containing the difference between both collections.
    */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
@@ -151,8 +147,6 @@ public class ResourceCollection extends GameDataComponent {
 
   /**
    * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
-   *
-   * @param discount
    */
   public void discount(final double discount) {
     multiplyAllValuesBy(discount, 3);
@@ -163,7 +157,6 @@ public class ResourceCollection extends GameDataComponent {
    * divide by 2, use
    * 0.5 as the double)
    *
-   * @param multiplyBy
    * @param roundType
    *        (1 = floor, 2 = round, 3 = ceil)
    */
@@ -172,7 +165,6 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * @param cost
    * @return will return 10000 if it can fit more times than 10000. will return Integer MaxValue if cost is zero.
    */
   public int fitsHowOften(final IntegerMap<Resource> cost) {

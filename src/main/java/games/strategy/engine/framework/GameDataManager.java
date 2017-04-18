@@ -164,9 +164,6 @@ public class GameDataManager {
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
-   *
-   * @param originalEngineVersion
-   * @param data
    */
   private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
     // whenever this gets out of date, just comment out (but keep as an example, by commenting out)

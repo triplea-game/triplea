@@ -177,10 +177,6 @@ public class DiceRoll implements Externalizable {
    *        = Rolled Dice numbers from bridge. Can be null if we do not want to return hits or fill the sortedDice
    * @param sortedDice
    *        List of dice we are recording. Can be null if we do not want to return hits or fill the sortedDice
-   * @param defendingAA
-   * @param validAttackingUnitsForThisRoll
-   * @param data
-   * @param fillInSortedDiceAndRecordHits
    * @return an object containing 3 things: first is the total power of the defendingAA who will be rolling, second is
    *         number of hits,
    *         third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1, we would return
@@ -365,8 +361,6 @@ public class DiceRoll implements Externalizable {
 
   /**
    * Roll dice for units.
-   *
-   * @param annotation
    */
   public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
@@ -625,14 +619,12 @@ public class DiceRoll implements Externalizable {
   /**
    * Fills a set and map with the support possibly given by these units.
    *
-   * @param unitsGivingTheSupport
    * @param supportsAvailable
    *        an empty set that will be filled with all support rules grouped into lists of non-stacking rules
    * @param supportLeft
    *        an empty map that will be filled with all the support that can be given in the form of counters
    * @param supportUnitsLeft
    *        an empty map that will be filled with all the support that can be given in the form of counters
-   * @param data
    * @param defence
    *        are the receiving units defending?
    * @param allies
@@ -695,13 +687,6 @@ public class DiceRoll implements Externalizable {
   /**
    * Returns the support for this unit type, and decrements the supportLeft counters.
    *
-   * @param unit
-   * @param supportsAvailable
-   * @param supportLeft
-   * @param supportUnitsLeft
-   * @param unitSupportMap
-   * @param strength
-   * @param rolls
    * @return the bonus given to the unit
    */
   public static int getSupport(final Unit unit, final Set<List<UnitSupportAttachment>> supportsAvailable,

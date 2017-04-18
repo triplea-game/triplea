@@ -19,7 +19,6 @@ public class GameObjectInputStream extends ObjectInputStream {
    *        data source
    * @param input
    *        input stream
-   * @throws IOException
    */
   public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input) throws IOException {
     super(input);

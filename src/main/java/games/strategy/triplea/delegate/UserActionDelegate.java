@@ -231,9 +231,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Send a notification to the other players involved in this action (all
    * players except the player starting the action).
-   *
-   * @param uaa
-   * @param notification
    */
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification) {
     if (!"NONE".equals(notification)) {
@@ -278,8 +275,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Let the player know this action isn't valid anymore, this shouldn't
    * happen as the player shouldn't get an option to push the button on
    * non-valid actions.
-   *
-   * @param uaa
    */
   private void notifyNoValidAction(final UserActionAttachment uaa) {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");

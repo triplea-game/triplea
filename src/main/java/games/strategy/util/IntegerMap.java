@@ -42,8 +42,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   /**
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
-   *
-   * @param integerMap
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
     mapValues = new HashMap<>(integerMap.size());
@@ -55,8 +53,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
   /**
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
-   *
-   * @param integerMaps
    */
   public IntegerMap(final IntegerMap<T>[] integerMaps) {
     mapValues = new HashMap<>();
@@ -111,7 +107,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * Can be used to divide all numbers, if given a fractional double
    * (ie: to divide by 2, use 0.5 as the double)
    *
-   * @param multiplyBy
    * @param RoundType
    *        (1 = floor, 2 = round, 3 = ceil)
    */

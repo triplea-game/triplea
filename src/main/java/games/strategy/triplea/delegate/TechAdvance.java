@@ -127,8 +127,6 @@ public abstract class TechAdvance extends NamedAttachable {
 
   /**
    * For the game parser only.
-   *
-   * @param data
    */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
@@ -194,7 +192,6 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /**
-   * @param data
    * @return first is air&naval, second is land&production.
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {

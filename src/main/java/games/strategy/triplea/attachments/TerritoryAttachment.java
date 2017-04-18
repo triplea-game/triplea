@@ -47,9 +47,6 @@ public class TerritoryAttachment extends DefaultAttachment {
    * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't
    * own.
    * If a capital has no neighbor connections, it will be sent last.
-   *
-   * @param player
-   * @param data
    */
   public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -199,8 +196,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setResources(final String value) throws GameParseException {
@@ -301,8 +296,6 @@ public class TerritoryAttachment extends DefaultAttachment {
    * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
    * territory to be equal to the
    * String value passed.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
@@ -313,8 +306,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Sets only m_production.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProductionOnly(final String value) {
@@ -337,8 +328,6 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property
    * Utils.
-   *
-   * @param player
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setOriginalOwner(final PlayerID player) {
@@ -385,9 +374,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setChangeUnitOwners(final String value) throws GameParseException {
@@ -423,9 +409,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -459,9 +442,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhenCapturedByGoesTo(final String value) throws GameParseException {
@@ -498,8 +478,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritoryEffect(final String value) throws GameParseException {
@@ -533,9 +511,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setConvoyAttached(final String value) throws GameParseException {

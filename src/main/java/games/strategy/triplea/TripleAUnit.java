@@ -522,9 +522,6 @@ public class TripleAUnit extends Unit {
    * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
    * damage for the new units.
    *
-   * @param unitGivingAttributes
-   * @param unitsThatWillGetAttributes
-   * @param t
    * @return change for unit's properties
    */
   public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes,

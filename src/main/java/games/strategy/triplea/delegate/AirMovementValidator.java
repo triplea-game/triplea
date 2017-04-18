@@ -561,7 +561,6 @@ public class AirMovementValidator {
   /**
    * Can this airunit reach safe land at this point in the route?
    *
-   * @param data
    * @param unit
    *        the airunit in question
    * @param route
@@ -663,9 +662,6 @@ public class AirMovementValidator {
    * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
    * properties and
    * restrictions.
-   *
-   * @param units
-   * @param territory
    */
   public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn) {
     int sum = 0;
@@ -680,9 +676,6 @@ public class AirMovementValidator {
    * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
    * properties and
    * restrictions.
-   *
-   * @param unit
-   * @param territoryUnitsAreCurrentlyIn
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
     if (Matches.UnitIsCarrier.match(unit)) {

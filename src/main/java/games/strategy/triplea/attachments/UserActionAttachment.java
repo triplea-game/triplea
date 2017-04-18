@@ -62,9 +62,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    * (same as one in TriggerAttachment)
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setActivateTrigger(final String value) throws GameParseException {

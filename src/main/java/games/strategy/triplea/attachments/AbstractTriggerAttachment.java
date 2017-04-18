@@ -58,8 +58,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
    *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   * @param triggers
-   * @throws GameParseException
    */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = true)
@@ -139,9 +137,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param when
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhen(final String when) throws GameParseException {

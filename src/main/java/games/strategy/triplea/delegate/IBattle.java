@@ -143,7 +143,6 @@ public interface IBattle extends java.io.Serializable {
   boolean isEmpty();
 
   /**
-   * @param units
    * @return units which are dependent on the given units.
    */
   Collection<Unit> getDependentUnits(Collection<Unit> units);

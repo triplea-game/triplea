@@ -109,8 +109,6 @@ public class GameMenu {
   /**
    * Add a Politics Panel button to the game menu, this panel will show the
    * current political landscape as a reference, no actions on this panel.
-   *
-   * @param menuGame
    */
   private void addPoliticsMenu(final JMenu menuGame) {
     final AbstractAction politicsAction = SwingAction.of("Show Politics Panel", e -> {

@@ -35,8 +35,6 @@ public interface IGameLoader extends Serializable {
 
   /**
    * The game is about to start.
-   *
-   * @throws Exception
    */
   void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
 

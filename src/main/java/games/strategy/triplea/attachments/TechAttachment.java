@@ -381,9 +381,6 @@ public class TechAttachment extends DefaultAttachment {
   /**
    * Internal use only, is not set by xml or property utils.
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param name
-   * @param value
    */
   @InternalDoNotExport
   public void setGenericTech(final String name, final boolean value) {

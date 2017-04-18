@@ -55,8 +55,6 @@ public class DelegateExecutionManager {
    * <p>
    * If timeToWaitMS is > 0, we will give up trying to block delegate execution after timeTiWaitMS has elapsed.
    * </p>
-   *
-   * @param timeToWait
    */
   public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException {
     final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);

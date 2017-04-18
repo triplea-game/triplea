@@ -464,8 +464,6 @@ public class PolygonGrabber extends JFrame {
    * doneCurrentGroup()
    * Does something with respect to check if the name
    * of a territory is valid or not.
-   *
-   * @throws HeadlessException
    */
   private void doneCurrentGroup() throws HeadlessException {
     final JTextField text = new JTextField();

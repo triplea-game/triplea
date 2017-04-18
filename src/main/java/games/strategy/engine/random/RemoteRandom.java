@@ -32,8 +32,6 @@ public class RemoteRandom implements IRemoteRandom {
 
   /**
    * Creates a new instance of RemoteRandom.
-   *
-   * @param id
    */
   public RemoteRandom(final IGame game) {
     m_game = game;

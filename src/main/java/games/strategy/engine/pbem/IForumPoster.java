@@ -63,7 +63,6 @@ public interface IForumPoster extends IBean {
    *
    * @param saveGame
    *        the save game file
-   * @param fileName
    */
   void addSaveGame(File saveGame, String fileName);
 

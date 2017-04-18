@@ -96,9 +96,6 @@ public class PoliticalStateOverview extends JPanel {
   /**
    * Gets a label showing the coloured relationshipName between these two
    * players.
-   *
-   * @param player1
-   * @param player2
    */
   private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2) {
     RelationshipType relType = null;

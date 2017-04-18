@@ -10,8 +10,6 @@ public class IllegalCharacterRemover {
 
   /**
    * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
-   *
-   * @param text
    */
   public static String removeIllegalCharacter(final String text) {
     final StringBuilder rVal = new StringBuilder();
@@ -25,9 +23,6 @@ public class IllegalCharacterRemover {
 
   /**
    * Designed to replace / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
-   *
-   * @param text
-   * @param replacement
    */
   public static String replaceIllegalCharacter(final String text, final char replacement) {
     final StringBuilder rVal = new StringBuilder();

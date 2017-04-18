@@ -10,8 +10,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 public interface IDisplay extends IChannelSubscribor {
   /**
    * before recieving messages, this method will be called by the game engine.
-   *
-   * @param bridge
    */
   void initialize(IDisplayBridge bridge);
 

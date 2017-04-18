@@ -297,12 +297,6 @@ public class WeakAI extends AbstractAI {
   /**
    * prepares moves for transports.
    *
-   * @param nonCombat
-   * @param data
-   * @param moveUnits
-   * @param moveRoutes
-   * @param player
-   * @param amphibRoute
    * @param maxTrans
    *        -
    *        if -1 unlimited
