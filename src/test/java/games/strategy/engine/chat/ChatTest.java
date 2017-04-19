@@ -185,37 +185,36 @@ public class ChatTest {
     }
     assertEquals(m_serverChatListener.m_players.size(), 0);
   }
-}
 
+  private static class TestChatListener implements IChatListener {
+    public List<INode> m_players;
+    public List<String> m_messages = new ArrayList<>();
+    public List<Boolean> m_thirdPerson = new ArrayList<>();
+    public List<String> m_from = new ArrayList<>();
 
-class TestChatListener implements IChatListener {
-  public List<INode> m_players;
-  public List<String> m_messages = new ArrayList<>();
-  public List<Boolean> m_thirdPerson = new ArrayList<>();
-  public List<String> m_from = new ArrayList<>();
-
-  @Override
-  public void updatePlayerList(final Collection<INode> players) {
-    synchronized (this) {
-      m_players = new ArrayList<>(players);
+    @Override
+    public void updatePlayerList(final Collection<INode> players) {
+      synchronized (this) {
+        m_players = new ArrayList<>(players);
+      }
     }
-  }
 
-  @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound) {
-    synchronized (this) {
-      m_messages.add(message);
-      m_thirdPerson.add(thirdperson);
-      m_from.add(from);
+    @Override
+    public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
+        final String sound) {
+      synchronized (this) {
+        m_messages.add(message);
+        m_thirdPerson.add(thirdperson);
+        m_from.add(from);
+      }
     }
-  }
 
-  @Override
-  public void addMessage(final String message, final String from, final boolean thirdperson) {
-    addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
-  }
+    @Override
+    public void addMessage(final String message, final String from, final boolean thirdperson) {
+      addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
+    }
 
-  @Override
-  public void addStatusMessage(final String message) {}
+    @Override
+    public void addStatusMessage(final String message) {}
+  }
 }

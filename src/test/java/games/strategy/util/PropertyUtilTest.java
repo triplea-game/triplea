@@ -79,45 +79,38 @@ public class PropertyUtilTest {
         testClass.bar, is("default"));
   }
 
-
-}
-
-
-class NoSetterClass {
-  @SuppressWarnings("unused")
-  private final String bar = PropertyUtilTest.DEFAULT;
-}
-
-
-class InvalidSetterClass {
-  @SuppressWarnings("unused")
-  private final String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar() {}
-}
-
-
-class NoOpSetterClass {
-  protected String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar(final String value) {}
-}
-
-
-class PropertyClass {
-  protected String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar(final String newValue) {
-    bar = newValue;
+  private static class NoSetterClass {
+    @SuppressWarnings("unused")
+    private final String bar = PropertyUtilTest.DEFAULT;
   }
-}
 
+  private static class InvalidSetterClass {
+    @SuppressWarnings("unused")
+    private final String bar = PropertyUtilTest.DEFAULT;
 
-class mUnderBarClass {
-  @SuppressWarnings("unused")
-  private String m_bar = PropertyUtilTest.DEFAULT;
+    public void setBar() {}
+  }
 
-  public void setBar(final String newValue) {
-    m_bar = newValue;
+  private static class NoOpSetterClass {
+    protected String bar = PropertyUtilTest.DEFAULT;
+
+    public void setBar(final String value) {}
+  }
+
+  private static class PropertyClass {
+    protected String bar = PropertyUtilTest.DEFAULT;
+
+    public void setBar(final String newValue) {
+      bar = newValue;
+    }
+  }
+
+  private static class mUnderBarClass {
+    @SuppressWarnings("unused")
+    private String m_bar = PropertyUtilTest.DEFAULT;
+
+    public void setBar(final String newValue) {
+      m_bar = newValue;
+    }
   }
 }

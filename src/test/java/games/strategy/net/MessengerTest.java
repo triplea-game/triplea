@@ -291,80 +291,78 @@ public class MessengerTest {
       clients.get(i).shutDown();
     }
   }
-}
 
+  private static class MessageListener implements IMessageListener {
+    private final List<Serializable> messages = new ArrayList<>();
+    private final ArrayList<INode> senders = new ArrayList<>();
+    private final Object lock = new Object();
 
-class MessageListener implements IMessageListener {
-  private final List<Serializable> messages = new ArrayList<>();
-  private final ArrayList<INode> senders = new ArrayList<>();
-  private final Object lock = new Object();
-
-  @Override
-  public void messageReceived(final Serializable msg, final INode from) {
-    synchronized (lock) {
-      messages.add(msg);
-      senders.add(from);
-      lock.notifyAll();
-    }
-  }
-
-  public void clearLastMessage() {
-    synchronized (lock) {
-      if (messages.isEmpty()) {
-        waitForMessage();
+    @Override
+    public void messageReceived(final Serializable msg, final INode from) {
+      synchronized (lock) {
+        messages.add(msg);
+        senders.add(from);
+        lock.notifyAll();
       }
-      messages.remove(0);
-      senders.remove(0);
     }
-  }
 
-  public Object getLastMessage() {
-    synchronized (lock) {
-      if (messages.isEmpty()) {
-        waitForMessage();
+    public void clearLastMessage() {
+      synchronized (lock) {
+        if (messages.isEmpty()) {
+          waitForMessage();
+        }
+        messages.remove(0);
+        senders.remove(0);
       }
-      assertFalse(messages.isEmpty());
-      return messages.get(0);
     }
-  }
 
-  public INode getLastSender() {
-    synchronized (lock) {
-      if (messages.isEmpty()) {
-        waitForMessage();
+    public Object getLastMessage() {
+      synchronized (lock) {
+        if (messages.isEmpty()) {
+          waitForMessage();
+        }
+        assertFalse(messages.isEmpty());
+        return messages.get(0);
       }
-      return senders.get(0);
+    }
+
+    public INode getLastSender() {
+      synchronized (lock) {
+        if (messages.isEmpty()) {
+          waitForMessage();
+        }
+        return senders.get(0);
+      }
+    }
+
+    private void waitForMessage() {
+      try {
+        lock.wait(1500);
+      } catch (final InterruptedException e) {
+        fail("unexpected exception: " + e.getMessage());
+      }
+    }
+
+    public int getMessageCount() {
+      synchronized (lock) {
+        return messages.size();
+      }
     }
   }
 
-  private void waitForMessage() {
-    try {
-      lock.wait(1500);
-    } catch (final InterruptedException e) {
-      fail("unexpected exception: " + e.getMessage());
+  private static class MultipleMessageSender implements Runnable {
+    IMessenger m_messenger;
+
+    public MultipleMessageSender(final IMessenger messenger) {
+      m_messenger = messenger;
     }
-  }
 
-  public int getMessageCount() {
-    synchronized (lock) {
-      return messages.size();
-    }
-  }
-}
-
-
-class MultipleMessageSender implements Runnable {
-  IMessenger m_messenger;
-
-  public MultipleMessageSender(final IMessenger messenger) {
-    m_messenger = messenger;
-  }
-
-  @Override
-  public void run() {
-    Thread.yield();
-    for (int i = 0; i < 100; i++) {
-      m_messenger.broadcast(i);
+    @Override
+    public void run() {
+      Thread.yield();
+      for (int i = 0; i < 100; i++) {
+        m_messenger.broadcast(i);
+      }
     }
   }
 }

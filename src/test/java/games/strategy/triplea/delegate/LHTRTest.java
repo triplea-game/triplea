@@ -24,7 +24,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
@@ -226,22 +225,5 @@ public class LHTRTest {
     // bomber 2 hits at 2, so damage is 3, for a total of 8
     // Changed to match StrategicBombingRaidBattle changes
     assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
-  }
-}
-
-
-/**
- * a random source that throws when asked for random
- * useful for testing.
- */
-class ThrowingRandomSource implements IRandomSource {
-  @Override
-  public int getRandom(final int max, final String annotation) {
-    throw new IllegalStateException("not allowed");
-  }
-
-  @Override
-  public int[] getRandom(final int max, final int count, final String annotation) {
-    throw new IllegalStateException("not allowed");
   }
 }

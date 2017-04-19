@@ -323,44 +323,41 @@ public class RemoteMessengerTest {
       shutdownServerAndClient(server, client);
     }
   }
-}
 
-
-interface IFoo extends IRemote {
-  void foo();
-}
-
-
-interface ITestRemote extends IRemote {
-  int increment(int testVal);
-
-  void testVoid();
-
-  void throwException() throws Exception;
-}
-
-
-class TestRemote implements ITestRemote {
-  public static final String EXCEPTION_STRING = "AND GO";
-  private INode m_senderNode;
-
-  @Override
-  public int increment(final int testVal) {
-    m_senderNode = MessageContext.getSender();
-    return testVal + 1;
+  private interface IFoo extends IRemote {
+    void foo();
   }
 
-  @Override
-  public void testVoid() {
-    m_senderNode = MessageContext.getSender();
+  private interface ITestRemote extends IRemote {
+    int increment(int testVal);
+
+    void testVoid();
+
+    void throwException() throws Exception;
   }
 
-  @Override
-  public void throwException() throws Exception {
-    throw new Exception(EXCEPTION_STRING);
-  }
+  private static class TestRemote implements ITestRemote {
+    public static final String EXCEPTION_STRING = "AND GO";
+    private INode m_senderNode;
 
-  public INode getLastSenderNode() {
-    return m_senderNode;
+    @Override
+    public int increment(final int testVal) {
+      m_senderNode = MessageContext.getSender();
+      return testVal + 1;
+    }
+
+    @Override
+    public void testVoid() {
+      m_senderNode = MessageContext.getSender();
+    }
+
+    @Override
+    public void throwException() throws Exception {
+      throw new Exception(EXCEPTION_STRING);
+    }
+
+    public INode getLastSenderNode() {
+      return m_senderNode;
+    }
   }
 }
