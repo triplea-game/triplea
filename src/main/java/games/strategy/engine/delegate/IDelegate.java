@@ -57,7 +57,7 @@ public interface IDelegate {
   void loadState(final Serializable state);
 
   /**
-   * @return the remote type of this delegate for use
+   * @return The remote type of this delegate for use
    *         by a RemoteMessenger (Class must be an interface that extends IRemote.
    *         If the return value is null, then it indicates that this
    *         delegate should not be used as in IRemote.)

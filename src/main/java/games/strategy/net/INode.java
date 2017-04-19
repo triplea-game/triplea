@@ -20,22 +20,22 @@ import java.net.InetSocketAddress;
  */
 public interface INode extends Serializable, Comparable<INode> {
   /**
-   * @return the display/user name for the node.
+   * @return The display/user name for the node.
    */
   String getName();
 
   /**
-   * @return the address for the node as seen by the server.
+   * @return The address for the node as seen by the server.
    */
   InetAddress getAddress();
 
   /**
-   * @return the port for the node as seen by the server.
+   * @return The port for the node as seen by the server.
    */
   int getPort();
 
   /**
-   * @return the address for the node as seen by the server.
+   * @return The address for the node as seen by the server.
    */
   InetSocketAddress getSocketAddress();
 }

@@ -184,14 +184,14 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the Technology Frontier for this game.
+   * @return The Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
   /**
-   * @return the list of production Frontiers for this game.
+   * @return The list of production Frontiers for this game.
    */
   public RepairFrontierList getRepairFrontierList() {
     ensureLockHeld();
@@ -199,7 +199,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the list of Production Rules for the game.
+   * @return The list of Production Rules for the game.
    */
   public RepairRuleList getRepairRuleList() {
     ensureLockHeld();
@@ -207,7 +207,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the Alliance Tracker for the game.
+   * @return The Alliance Tracker for the game.
    */
   public AllianceTracker getAllianceTracker() {
     ensureLockHeld();

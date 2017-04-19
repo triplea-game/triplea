@@ -156,7 +156,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @return the actual m_produced variable, allowing direct editing of the variable.
+   * @return The actual m_produced variable, allowing direct editing of the variable.
    */
   protected final Map<Territory, Collection<Unit>> getProduced() {
     return m_produced;

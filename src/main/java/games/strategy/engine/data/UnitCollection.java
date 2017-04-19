@@ -191,7 +191,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   /**
-   * @return the count of units each player has in this collection.
+   * @return The count of units each player has in this collection.
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
     final IntegerMap<PlayerID> count = new IntegerMap<>();

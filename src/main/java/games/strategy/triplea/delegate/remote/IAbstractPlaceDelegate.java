@@ -38,7 +38,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
-   * @return the number of placements made so far.
+   * @return The number of placements made so far.
    *         this is not the number of units placed, but the number
    *         of times we have made successful placements.
    */

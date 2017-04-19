@@ -95,7 +95,7 @@ public interface IDelegateBridge {
   ISound getSoundChannelBroadcaster();
 
   /**
-   * @return the propertie for this step.
+   * @return The properties for this step.
    */
   Properties getStepProperties();
 
