@@ -88,37 +88,35 @@ public class ThreadPoolTest {
     }
     pool.shutDown();
   }
-}
 
+  private static class Task implements Runnable {
+    private boolean done = false;
 
-class Task implements Runnable {
-  private boolean done = false;
-
-  public synchronized boolean isDone() {
-    return done;
-  }
-
-  @Override
-  public void run() {
-    try {
-      Thread.sleep(0, 1);
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
+    public synchronized boolean isDone() {
+      return done;
     }
-    done = true;
-  }
-}
 
-
-class BlockedTask extends Task {
-  @Override
-  public void run() {
-    synchronized (this) {
+    @Override
+    public void run() {
       try {
-        wait(10);
-      } catch (final InterruptedException ie) {
+        Thread.sleep(0, 1);
+      } catch (final InterruptedException e) {
+        throw new IllegalStateException(e);
       }
-      super.run();
+      done = true;
+    }
+  }
+
+  private static class BlockedTask extends Task {
+    @Override
+    public void run() {
+      synchronized (this) {
+        try {
+          wait(10);
+        } catch (final InterruptedException ie) {
+        }
+        super.run();
+      }
     }
   }
 }

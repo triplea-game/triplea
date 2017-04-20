@@ -142,49 +142,47 @@ public class ChannelMessengerTest {
     }
     assertEquals(expected, subscribor.getCallCount());
   }
-}
 
+  private interface IChannelBase extends IChannelSubscribor {
+    void testNoParams();
 
-interface IChannelBase extends IChannelSubscribor {
-  void testNoParams();
+    void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
 
-  void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
+    void testString(String a);
 
-  void testString(String a);
-
-  void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
-}
-
-
-class ChannelSubscribor implements IChannelBase {
-  private int m_callCount = 0;
-
-  private synchronized void incrementCount() {
-    m_callCount++;
+    void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
   }
 
-  public synchronized int getCallCount() {
-    return m_callCount;
-  }
+  private static class ChannelSubscribor implements IChannelBase {
+    private int m_callCount = 0;
 
-  @Override
-  public void testNoParams() {
-    incrementCount();
-  }
+    private synchronized void incrementCount() {
+      m_callCount++;
+    }
 
-  @Override
-  public void testPrimitives(final int a, final short b, final long c, final byte d, final boolean e, final float f) {
-    incrementCount();
-  }
+    public synchronized int getCallCount() {
+      return m_callCount;
+    }
 
-  @Override
-  public void testString(final String a) {
-    incrementCount();
-  }
+    @Override
+    public void testNoParams() {
+      incrementCount();
+    }
 
-  @Override
-  public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools,
-      final float[] floats, final Object[] objects) {
-    incrementCount();
+    @Override
+    public void testPrimitives(final int a, final short b, final long c, final byte d, final boolean e, final float f) {
+      incrementCount();
+    }
+
+    @Override
+    public void testString(final String a) {
+      incrementCount();
+    }
+
+    @Override
+    public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools,
+        final float[] floats, final Object[] objects) {
+      incrementCount();
+    }
   }
 }

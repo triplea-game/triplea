@@ -58,7 +58,7 @@ public class ModeratorControllerTest {
     m_controller.boot(booted);
     assertTrue(m_listener.getRemoved().contains(booted));
   }
-  
+
   @Test
   public void testCantResetAdminPassword() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(m_adminNode);
@@ -77,21 +77,20 @@ public class ModeratorControllerTest {
     MessageContext.setSenderNodeForThread(m_adminNode);
     assertTrue(m_controller.isAdmin());
   }
-}
 
+  private static class ConnectionChangeListener implements IConnectionChangeListener {
+    final List<INode> m_removed = new ArrayList<>();
 
-class ConnectionChangeListener implements IConnectionChangeListener {
-  final List<INode> m_removed = new ArrayList<>();
+    @Override
+    public void connectionAdded(final INode to) {}
 
-  @Override
-  public void connectionAdded(final INode to) {}
+    @Override
+    public void connectionRemoved(final INode to) {
+      m_removed.add(to);
+    }
 
-  @Override
-  public void connectionRemoved(final INode to) {
-    m_removed.add(to);
-  }
-
-  public List<INode> getRemoved() {
-    return m_removed;
+    public List<INode> getRemoved() {
+      return m_removed;
+    }
   }
 }
