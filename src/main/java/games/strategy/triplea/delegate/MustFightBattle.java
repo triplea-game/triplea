@@ -26,6 +26,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.ai.proAI.ProData;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -819,9 +821,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (Match.someMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1))
-            && Match.allMatch(m_defendingUnits, Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1).invert())) {
-          remove(m_defendingUnits, bridge, m_battleSite, true);
+        if (Match.someMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1))) {
+          final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(m_defendingUnits,
+                 Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), m_data, 1, false, true, true)));
+          Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+                 TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+          Collections.reverse(sortedUnitsList);
+          if (DiceRoll.getTotalPower(
+              DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, m_defendingUnits, false, false, m_data,
+                  m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) == 0) {          
+            remove(m_defendingUnits, bridge, m_battleSite, true);
+          }
         }
         clearWaitingToDie(bridge);
       }
