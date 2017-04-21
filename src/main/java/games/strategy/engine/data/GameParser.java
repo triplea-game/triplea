@@ -55,7 +55,7 @@ import games.strategy.util.Version;
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
-  private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
+  private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapPathName;
   private final String mapCodeName;
@@ -111,8 +111,8 @@ public class GameParser {
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any
     // SAX errors we need to show
-    if (!errorsSAX.isEmpty()) {
-      for (final SAXParseException error : errorsSAX) {
+    if (!errorsSax.isEmpty()) {
+      for (final SAXParseException error : errorsSax) {
         System.err.println("SAXParseException: game: "
             + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
             + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
@@ -263,7 +263,8 @@ public class GameParser {
     final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
-      throw new RuntimeException("Map: " + mapPathName +", "+ String.format("Could not find in classpath %s", dtdFile));
+      throw new RuntimeException(
+        "Map: " + mapPathName + ", " + String.format("Could not find in classpath %s", dtdFile));
     }
     final String dtdSystem = url.toExternalForm();
     final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
@@ -271,17 +272,17 @@ public class GameParser {
     builder.setErrorHandler(new ErrorHandler() {
       @Override
       public void fatalError(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
 
       @Override
       public void error(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
 
       @Override
       public void warning(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
     });
     return builder.parse(input, system);
@@ -608,16 +609,16 @@ public class GameParser {
           "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     final int xSize = Integer.valueOf(xs);
-    int ySize;
+    int yySize;                                 // ySize or y_size == checkstyle violation
     if (ys != null) {
-      ySize = Integer.valueOf(ys);
+      yySize = Integer.valueOf(ys);
     } else {
-      ySize = 0;
+      yySize = 0;
     }
-    map.setGridDimensions(xSize, ySize);
+    map.setGridDimensions(xSize, yySize);
     if (gridType.equals("square")) {
       // Add territories
-      for (int y = 0; y < ySize; y++) {
+      for (int y = 0; y < yySize; y++) {
         for (int x = 0; x < xSize; x++) {
           boolean isWater;
           isWater = water.contains(x + "-" + y);
@@ -633,7 +634,7 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < ySize; y++) {
+        for (int y = 0; y < yySize; y++) {
           for (int x = 0; x < xSize - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y));
           }
@@ -642,14 +643,14 @@ public class GameParser {
       // Add any implicit vertical connections
       if (verticalConnectionsImplict) {
         for (int x = 0; x < xSize; x++) {
-          for (int y = 0; y < ySize - 1; y++) {
+          for (int y = 0; y < yySize - 1; y++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x, y + 1));
           }
         }
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < ySize - 1; y++) {
+        for (int y = 0; y < yySize - 1; y++) {
           for (int x = 0; x < xSize - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y + 1));
           }
@@ -657,7 +658,7 @@ public class GameParser {
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < ySize - 1; y++) {
+        for (int y = 0; y < yySize - 1; y++) {
           for (int x = 1; x < xSize; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x - 1, y + 1));
           }
@@ -666,7 +667,7 @@ public class GameParser {
       // This type is a triangular grid of points and lines, used for in several rail games
     } else if (gridType.equals("points-and-lines")) {
       // Add territories
-      for (int y = 0; y < ySize; y++) {
+      for (int y = 0; y < yySize; y++) {
         for (int x = 0; x < xSize; x++) {
           final boolean isWater = false;
           if (!water.contains(x + "-" + y)) {
@@ -683,7 +684,7 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < ySize; y++) {
+        for (int y = 0; y < yySize; y++) {
           for (int x = 0; x < xSize - 1; x++) {
             final Territory from = map.getTerritoryFromCoordinates(x, y);
             final Territory to = map.getTerritoryFromCoordinates(x + 1, y);
@@ -695,7 +696,7 @@ public class GameParser {
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < ySize; y++) {
+        for (int y = 1; y < yySize; y++) {
           for (int x = 0; x < xSize - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
@@ -715,7 +716,7 @@ public class GameParser {
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < ySize; y++) {
+        for (int y = 1; y < yySize; y++) {
           for (int x = 0; x < xSize - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
@@ -1298,10 +1299,10 @@ public class GameParser {
     return returnVal;
   }
 
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String str) {
+    char first = str.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + str.substring(1);
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
