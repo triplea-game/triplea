@@ -129,7 +129,6 @@ public class MapXmlHelper {
   public static final String XML_ATTR_VALUE_PLAYER_OPTIONAL_NAME_FALSE = "false";
   public static final String XML_ATTR_VALUE_OPTION_NAME_CANAL_NAME = "canalName";
   public static final String XML_ATTR_VALUE_OPTION_NAME_LAND_TERRITORIES = "landTerritories";
-  public static final String XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME = "mapName";
   public static final String XML_ATTR_VALUE_PROPERTY_NAME_NOTES = "notes";
 
 
@@ -640,8 +639,7 @@ public class MapXmlHelper {
     final HashMap<String, String> propertyAttr = getAttributesMap(property.getAttributes());
     final ArrayList<String> settingValues = new ArrayList<>();
     final String propertyName = propertyAttr.get(XML_ATTR_PROPERTY_NAME_NAME);
-    if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
-        || propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME)) {
+    if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)) {
       final NodeList propertyListChildNodes = property.getChildNodes();
       for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
         final Node subProperty = propertyListChildNodes.item(prop_i);
@@ -967,7 +965,6 @@ public class MapXmlHelper {
     if (getMapXMLFile() != null) {
       propertyList.appendChild(doc.createComment(" Map Name: also used for map utils when asked "));
       final Element property = doc.createElement(XML_NODE_NAME_PROPERTY);
-      property.setAttribute(XML_ATTR_PROPERTY_NAME_NAME, XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME);
       final String fileName = getMapXMLFile().getName();
       property.setAttribute(XML_ATTR_PROPERTY_NAME_VALUE, fileName.substring(0, fileName.lastIndexOf(".") - 1));
       property.setAttribute(XML_ATTR_PROPERTY_NAME_EDITABLE, Constants.PROPERTY_FALSE);
