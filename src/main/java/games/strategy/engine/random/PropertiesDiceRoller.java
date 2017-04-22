@@ -130,9 +130,10 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
     }
-    try (CloseableHttpClient httpClient = HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
-      HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
-      List<NameValuePair> params = new ArrayList<>(8);
+    try (CloseableHttpClient httpClient =
+        HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
+      final HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
+      final List<NameValuePair> params = new ArrayList<>(8);
       params.add(new BasicNameValuePair("numdice", "" + numDice));
       params.add(new BasicNameValuePair("numsides", "" + max));
       params.add(new BasicNameValuePair("modroll", "No"));
@@ -147,11 +148,11 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       // rather than sending out email for each roll
       httpPost.addHeader("X-Triplea-Game-UUID", gameUUID);
       final String host = m_props.getProperty("host");
-      int port = Integer.parseInt(m_props.getProperty("port", "80"));
-      HttpHost hostConfig = new HttpHost(host, port);
+      final int port = Integer.parseInt(m_props.getProperty("port", "80"));
+      final HttpHost hostConfig = new HttpHost(host, port);
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost);) {
-        HttpEntity entity = response.getEntity();
+        final HttpEntity entity = response.getEntity();
         return Util.getStringFromInputStream(entity.getContent());
       }
     }
@@ -255,25 +256,28 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return getInfoText();
   }
 }
-class AdvancedRedirectStrategy extends LaxRedirectStrategy{
+
+
+class AdvancedRedirectStrategy extends LaxRedirectStrategy {
   @Override
   public HttpUriRequest getRedirect(
-          final HttpRequest request,
-          final HttpResponse response,
-          final HttpContext context) throws ProtocolException {
-      final URI uri = getLocationURI(request, response, context);
-      final String method = request.getRequestLine().getMethod();
-      if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
-          return new HttpHead(uri);
-      } else if (method.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
-          return new HttpGet(uri);
+      final HttpRequest request,
+      final HttpResponse response,
+      final HttpContext context) throws ProtocolException {
+    final URI uri = getLocationURI(request, response, context);
+    final String method = request.getRequestLine().getMethod();
+    if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
+      return new HttpHead(uri);
+    } else if (method.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
+      return new HttpGet(uri);
+    } else {
+      final int status = response.getStatusLine().getStatusCode();
+      if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
+          || status == HttpStatus.SC_MOVED_TEMPORARILY) {
+        return RequestBuilder.copy(request).setUri(uri).build();
       } else {
-          final int status = response.getStatusLine().getStatusCode();
-          if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY || status == HttpStatus.SC_MOVED_TEMPORARILY) {
-              return RequestBuilder.copy(request).setUri(uri).build();
-          } else {
-              return new HttpGet(uri);
-          }
+        return new HttpGet(uri);
       }
+    }
   }
 }
