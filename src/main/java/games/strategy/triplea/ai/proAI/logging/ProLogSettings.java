@@ -33,6 +33,7 @@ public class ProLogSettings implements Serializable {
           result = (ProLogSettings) new ObjectInputStream(new ByteArrayInputStream(pool)).readObject();
         }
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
       if (result == null) {
         result = new ProLogSettings();

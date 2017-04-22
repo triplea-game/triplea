@@ -140,6 +140,7 @@ public class UniversalPlugAndPlayHelper {
     try {
       System.out.print(m_device.getExternalIPAddress());
     } catch (final UPNPResponseException | IOException e1) {
+      // ignore
     }
     System.out.println(":" + externalPort);
     System.out.println("To " + local.getHostAddress() + ":" + internalPort);

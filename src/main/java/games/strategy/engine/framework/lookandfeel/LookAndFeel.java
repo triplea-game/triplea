@@ -31,6 +31,7 @@ public class LookAndFeel {
           try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           } catch (final Exception e) {
+            ClientLogger.logQuietly(e);
           }
         }
       }

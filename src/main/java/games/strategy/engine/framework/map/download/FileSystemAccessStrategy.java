@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 public class FileSystemAccessStrategy {
@@ -57,10 +58,7 @@ public class FileSystemAccessStrategy {
       }
 
       // now sleep a short while before we check our work
-      try {
-        Thread.sleep(10);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(10);
 
       // check our work, see if we actuall deleted stuff
       for (final DownloadFileDescription map : maps) {

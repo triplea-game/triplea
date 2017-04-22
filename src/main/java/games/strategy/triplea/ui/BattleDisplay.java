@@ -327,6 +327,7 @@ public class BattleDisplay extends JPanel {
       // wait for the button to be pressed.
       continueLatch.await();
     } catch (final InterruptedException ie) {
+      Thread.currentThread().interrupt();
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
     }
@@ -389,6 +390,7 @@ public class BattleDisplay extends JPanel {
     try {
       latch.await();
     } catch (final InterruptedException e1) {
+      Thread.currentThread().interrupt();
     } finally {
       m_mapPanel.getUIContext().removeShutdownLatch(latch);
     }

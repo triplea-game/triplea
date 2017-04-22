@@ -74,6 +74,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         m_latchWorkerThreadsCreation.await();
         // we could have exited the synchronized block already.
       } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
       cancel();
       m_isDataSet = false;
@@ -168,6 +169,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           try {
             workerLatch.await();
           } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
           }
         }
       } finally {
@@ -213,6 +215,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       // setGameData
       m_latchSetData.await();
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 

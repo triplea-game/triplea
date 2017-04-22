@@ -107,6 +107,7 @@ public class ConnectionFinder {
         minOverlap = scalePixels * 4;
         dimensionsSet = true;
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     if (JOptionPane.showConfirmDialog(null,
@@ -120,6 +121,7 @@ public class ConnectionFinder {
       try {
         scalePixels = Integer.parseInt(scale);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
       final String overlap = JOptionPane.showInputDialog(null,
           "Enter the minimum number of overlapping pixels for a connection? \r\n"
@@ -127,6 +129,7 @@ public class ConnectionFinder {
       try {
         minOverlap = Integer.parseInt(overlap);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     final Map<String, Collection<String>> connections = new HashMap<>();

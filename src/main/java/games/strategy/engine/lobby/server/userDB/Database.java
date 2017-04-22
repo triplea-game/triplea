@@ -164,6 +164,7 @@ public class Database {
         try {
           conn.close();
         } catch (final SQLException e) {
+          // ignore close errors
         }
         s_logger.log(Level.SEVERE, sqle.getMessage(), sqle);
         throw new IllegalStateException("Could not create tables");

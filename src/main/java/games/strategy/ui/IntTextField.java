@@ -168,6 +168,7 @@ public class IntTextField extends JTextField {
         Integer.parseInt(IntTextField.this.getText());
         notifyListeners();
       } catch (final NumberFormatException e) {
+        // ignore malformed input
       }
     }
   }

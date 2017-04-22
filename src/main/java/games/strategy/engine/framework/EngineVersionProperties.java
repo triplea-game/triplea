@@ -55,6 +55,7 @@ public class EngineVersionProperties {
       try {
         latch.await(2, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
       if (ref.get() != null) {
         break;
@@ -64,6 +65,7 @@ public class EngineVersionProperties {
     try {
       latch.await(15, TimeUnit.SECONDS);
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     return ref.get();
   }

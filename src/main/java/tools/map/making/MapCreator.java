@@ -224,6 +224,7 @@ public class MapCreator extends JFrame {
           s_unit_zoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
           System.setProperty(TRIPLEA_UNIT_ZOOM, "" + s_unit_zoom);
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         unitZoomText.setText("" + s_unit_zoom);
       }
@@ -243,6 +244,7 @@ public class MapCreator extends JFrame {
           s_unit_width = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
           System.setProperty(TRIPLEA_UNIT_WIDTH, "" + s_unit_width);
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         unitWidthText.setText("" + s_unit_width);
       }
@@ -262,6 +264,7 @@ public class MapCreator extends JFrame {
           s_unit_height = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
           System.setProperty(TRIPLEA_UNIT_HEIGHT, "" + s_unit_height);
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         unitHeightText.setText("" + s_unit_height);
       }
@@ -283,6 +286,7 @@ public class MapCreator extends JFrame {
         try {
           s_memory = (long) 1024 * 1024 * Math.min(4096, Math.max(256, Integer.parseInt(memoryText.getText())));
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         memoryText.setText("" + (s_memory / (1024 * 1024)));
       }

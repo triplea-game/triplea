@@ -159,6 +159,7 @@ public class MapPropertiesMaker extends JFrame {
         try {
           s_mapProperties.setMapWidth(Integer.parseInt(widthField.getText()));
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         widthField.setText("" + s_mapProperties.getMapWidth());
       }
@@ -178,6 +179,7 @@ public class MapPropertiesMaker extends JFrame {
         try {
           s_mapProperties.setMapHeight(Integer.parseInt(heightField.getText()));
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         heightField.setText("" + s_mapProperties.getMapHeight());
       }
@@ -201,6 +203,7 @@ public class MapPropertiesMaker extends JFrame {
           // s_mapProperties.setUNITS_SCALE(Double.parseDouble(scaleField.getText()));
           s_mapProperties.setUnitsScale(scaleField.getText());
         } catch (final Exception ex) {
+          // ignore malformed input
         }
         scaleField.setText("" + s_mapProperties.getUnitsScale());
       }

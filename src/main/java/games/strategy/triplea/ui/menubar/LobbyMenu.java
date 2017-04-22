@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
@@ -162,6 +163,7 @@ public class LobbyMenu extends JMenuBar {
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
       } catch (final UnknownHostException ex) {
+        ClientLogger.logQuietly(ex);
       }
     });
     item.setEnabled(true);
@@ -204,6 +206,7 @@ public class LobbyMenu extends JMenuBar {
         controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
             new Date(expire));
       } catch (final UnknownHostException ex) {
+        ClientLogger.logQuietly(ex);
       }
     });
     item.setEnabled(true);
@@ -230,6 +233,7 @@ public class LobbyMenu extends JMenuBar {
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
       } catch (final UnknownHostException ex) {
+        ClientLogger.logQuietly(ex);
       }
     });
     item.setEnabled(true);
@@ -270,6 +274,7 @@ public class LobbyMenu extends JMenuBar {
         controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
             new Date(0));
       } catch (final UnknownHostException ex) {
+        ClientLogger.logQuietly(ex);
       }
     });
     item.setEnabled(true);

@@ -226,6 +226,7 @@ public class GameMenu {
           JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
         }
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     });
     parentMenu.add(RollDiceBox);

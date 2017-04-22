@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.swing.DefaultListCellRenderer;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -107,6 +108,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
             m_out.println();
           }
         } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
         for (final ChatMessage message : m_chat.getChatHistory()) {
           if (message.getFrom().equals(m_chat.getServerNode().getName())) {
@@ -177,6 +179,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         m_out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -193,6 +196,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         m_out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
