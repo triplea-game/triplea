@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
 import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
@@ -42,17 +42,8 @@ public final class MapDownloadControllerTest {
   }
 
   @Test
-  public void testShouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCannotPromptToDownloadAndUserMapsIsEmpty() {
+  public void testShouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCannotPromptToDownload() {
     when(tutorialMapPreferences.canPromptToDownload()).thenReturn(false);
-    when(userMaps.isEmpty()).thenReturn(true);
-
-    assertThat(shouldPromptToDownloadTutorialMap(), is(false));
-  }
-
-  @Test
-  public void testShouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCannotPromptToDownloadAndUserMapsIsNotEmpty() {
-    when(tutorialMapPreferences.canPromptToDownload()).thenReturn(false);
-    when(userMaps.isEmpty()).thenReturn(false);
 
     assertThat(shouldPromptToDownloadTutorialMap(), is(false));
   }
