@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,13 +15,23 @@ import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -119,7 +130,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
     }
-    try (CloseableHttpClient httpClient = HttpClients.createDefault();) {
+    try (CloseableHttpClient httpClient = HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
       List<NameValuePair> params = new ArrayList<>(8);
       params.add(new BasicNameValuePair("numdice", "" + numDice));
@@ -136,10 +147,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       // rather than sending out email for each roll
       httpPost.addHeader("X-Triplea-Game-UUID", gameUUID);
       final String host = m_props.getProperty("host");
-      int port = 80;
-      if (m_props.getProperty("port") != null) {
-        port = Integer.parseInt(m_props.getProperty("port"));
-      }
+      int port = Integer.parseInt(m_props.getProperty("port", "80"));
       HttpHost hostConfig = new HttpHost(host, port);
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost);) {
@@ -245,5 +253,27 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public String getHelpText() {
     return getInfoText();
+  }
+}
+class AdvancedRedirectStrategy extends LaxRedirectStrategy{
+  @Override
+  public HttpUriRequest getRedirect(
+          final HttpRequest request,
+          final HttpResponse response,
+          final HttpContext context) throws ProtocolException {
+      final URI uri = getLocationURI(request, response, context);
+      final String method = request.getRequestLine().getMethod();
+      if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
+          return new HttpHead(uri);
+      } else if (method.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
+          return new HttpGet(uri);
+      } else {
+          final int status = response.getStatusLine().getStatusCode();
+          if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY || status == HttpStatus.SC_MOVED_TEMPORARILY) {
+              return RequestBuilder.copy(request).setUri(uri).build();
+          } else {
+              return new HttpGet(uri);
+          }
+      }
   }
 }
