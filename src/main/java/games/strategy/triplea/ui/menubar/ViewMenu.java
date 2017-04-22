@@ -457,8 +457,7 @@ public class ViewMenu {
       final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
       final int result = JOptionPane.showOptionDialog(frame, ui, "Edit Map Font and Color",
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
-      if (result == 2) {
-      } else if (result == 1) {
+      if (result == 1) {
         MapImage.resetPropertyMapFont();
         MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
         MapImage.resetPropertyUnitCountColor();

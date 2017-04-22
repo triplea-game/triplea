@@ -245,8 +245,7 @@ public class PBEMMessagePoster implements Serializable {
     }
     message = sb.toString();
     final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?", 2, -1, null);
-    if (choice != 0) {
-    } else {
+    if (choice == 0) {
       if (postButton != null) {
         postButton.setEnabled(false);
       }

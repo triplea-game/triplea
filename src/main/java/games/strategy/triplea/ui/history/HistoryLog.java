@@ -140,8 +140,7 @@ public class HistoryLog extends JFrame {
         if (node instanceof Step) {
           final String title = node.getTitle();
           final PlayerID playerId = ((Step) node).getPlayerID();
-          if (title.equals("Initializing Delegates")) {
-          } else {
+          if (!title.equals("Initializing Delegates")) {
             if (playerId != null) {
               curPlayer = playerId;
             }
@@ -308,14 +307,23 @@ public class HistoryLog extends JFrame {
             logWriter.println(indent + title);
           } else if (details == null) {
             if (title.equals("Adding original owners")) {
+              // do nothing
             } else if (title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)) {
+              // do nothing
             } else if (title.equals("Game Loaded")) {
+              // do nothing
             } else if (title.contains("now being played by")) {
+              // do nothing
             } else if (title.contains("Turn Summary") || title.contains("Move Summary")) {
+              // do nothing
             } else if (title.contains("Setting uses for triggers used")) {
+              // do nothing
             } else if (title.equals("Resetting and Giving Bonus Movement to Units")) {
+              // do nothing
             } else if (title.equals("Recording Battle Statistics")) {
+              // do nothing
             } else if (title.equals("Preparing Airbases for Possible Scrambling")) {
+              // do nothing
             } else if (title.matches("\\w+ collect \\d+ PUs?.*")) {
               logWriter.println(indent + title);
             } else if (title.matches("\\w+ takes? .*? from \\w+")) {
@@ -329,6 +337,7 @@ public class HistoryLog extends JFrame {
             } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
               logWriter.println(indent + title);
             } else if (title.startsWith("Rolls to resolve tech hits:")) {
+              // do nothing
             } else if (title.matches("\\w+ discover .*")) {
               logWriter.println(indent + title);
             } else if (title.matches("AA raid costs .*")) {
@@ -343,8 +352,7 @@ public class HistoryLog extends JFrame {
           }
         } else if (node instanceof Step) {
           final PlayerID playerId = ((Step) node).getPlayerID();
-          if (title.equals("Initializing Delegates")) {
-          } else {
+          if (!title.equals("Initializing Delegates")) {
             logWriter.println();
             logWriter.print(indent + title);
             if (playerId != null) {
