@@ -161,9 +161,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
       if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand)) {
-        m_amphibiousAttackFrom.remove(attackingFrom);
+        getAmphibiousAttackers().remove(attackingFrom);
         // do we have any amphibious attacks left?
-        m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+        m_isAmphibious = !getAmphibiousAttackers().isEmpty();
       }
     }
     final Iterator<Unit> dependentHolders = m_dependentUnits.keySet().iterator();
@@ -197,7 +197,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && Match.someMatch(attackingUnits, Matches.UnitIsLand)) {
-      m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
+      getAmphibiousAttackers().add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.UnitIsLand));
       m_isAmphibious = true;
     }
