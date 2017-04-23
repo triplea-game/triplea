@@ -199,18 +199,9 @@ public class HeadlessGameServer {
         (new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
           SaveGameFileChooser.ensureMapsFolderExists();
-          final File f1 =
-              new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-          final File f2 =
-              new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
-          final File f;
-          if (f1.lastModified() > f2.lastModified()) {
-            f = f2;
-          } else {
-            f = f1;
-          }
           try {
-            iGame.saveGame(f);
+            iGame.saveGame(new File(
+                ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
           }
