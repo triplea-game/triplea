@@ -1113,9 +1113,6 @@ public class BattleTracker implements java.io.Serializable {
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
       Supplier<Collection<Territory>> pendingBattleSiteSupplier,
       BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
-
-
-
     // First we'll fight all of the air battles (air raids)
     // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for damage.
     // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor
@@ -1138,33 +1135,40 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   /**
-   * 'Auto-fight' defenseless battles.
+   *  Kill undefended transports. Done first to remove potentially dependent sea battles
+   *  Which could block amphibious assaults later
    */
-  public void fightAutoKills(final IDelegateBridge bridge) {
-    // Kill undefended transports. Done first to remove potentially dependent sea battles
-    // Which could block amphibious assaults below
+  public void fightDefenselessBattles(final IDelegateBridge bridge) {
     final GameData gameData = bridge.getData();
+    // Here and below parameter "false" to getPendingBattleSites & getPendingBattle denote non-SBR battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
       final List<Unit> defenders = new ArrayList<>();
       defenders.addAll(battle.getDefendingUnits());
-      final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
-                 Matches.UnitCanBeInBattle(true, !territory.isWater(), gameData, 1, false, true, true)));
-      Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
-          TerritoryEffectHelper.getEffects(territory), gameData, false, false));
-      Collections.reverse(sortedUnitsList);
+      final List<Unit> sortedUnitsList = getSortedDefendingUnits(gameData, territory, defenders);
       if (DiceRoll.getTotalPower(
           DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,
             territory, TerritoryEffectHelper.getEffects(territory), false, null), gameData) == 0) {
         battle.fight(bridge);
       }
     }
-    getPendingBattleSites(false).stream().map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
+    getPendingBattleSites(false).stream()
+         .map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
          .forEach( battle -> {
            if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
              battle.fight( bridge );
            }
          });
+  }
+
+  private List<Unit> getSortedDefendingUnits(final GameData gameData, final Territory territory,
+      final List<Unit> defenders) {
+    final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
+               Matches.UnitCanBeInBattle(true, !territory.isWater(), gameData, 1, false, true, true)));
+    Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+        TerritoryEffectHelper.getEffects(territory), gameData, false, false));
+    Collections.reverse(sortedUnitsList);
+    return sortedUnitsList;
   }
 
   @Override
