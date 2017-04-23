@@ -1161,6 +1161,7 @@ public class BattleTracker implements java.io.Serializable {
          });
   }
 
+  // This code copied from ProBattleUtils.estimatePower()
   private List<Unit> getSortedDefendingUnits(final GameData gameData, final Territory territory,
       final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
