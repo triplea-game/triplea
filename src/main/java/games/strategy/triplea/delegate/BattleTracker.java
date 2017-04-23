@@ -1143,6 +1143,7 @@ public class BattleTracker implements java.io.Serializable {
     // Here and below parameter "false" to getPendingBattleSites & getPendingBattle denote non-SBR battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
+      // This code copied from ProBattleUtils.estimatePower(), including private method below
       final List<Unit> defenders = new ArrayList<>();
       defenders.addAll(battle.getDefendingUnits());
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(gameData, territory, defenders);
@@ -1161,7 +1162,6 @@ public class BattleTracker implements java.io.Serializable {
          });
   }
 
-  // This code copied from ProBattleUtils.estimatePower()
   private List<Unit> getSortedDefendingUnits(final GameData gameData, final Territory territory,
       final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
