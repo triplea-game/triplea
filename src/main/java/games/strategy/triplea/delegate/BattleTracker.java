@@ -1154,9 +1154,9 @@ public class BattleTracker implements java.io.Serializable {
     }
     getPendingBattleSites(false).stream()
          .map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
-         .forEach( battle -> {
+         .forEach(battle -> {
            if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
-             battle.fight( bridge );
+             battle.fight(bridge);
            }
          });
   }
