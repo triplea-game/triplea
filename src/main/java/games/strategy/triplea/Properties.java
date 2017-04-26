@@ -59,6 +59,10 @@ public class Properties implements Constants {
     return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
   }
 
+  public static boolean getStrictRockets(final GameData data) {
+    return data.getProperties().get("Strictly rule compliant rockets", false);
+  }
+
   /*
    * Pacific Theater
    */
