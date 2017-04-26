@@ -352,9 +352,15 @@ public class ServerGame extends AbstractGame {
     saveGame(new File(ClientContext.folderSettings().getSaveGamePath(), fileName));
   }
 
-  private void autoSave(final IDelegate currentDelegate) {
-    autoSave("autosaveAfter" + currentDelegate.getClass().getTypeName().substring(
-        "games.strategy.triplea.delegate.".length()).replaceFirst("Delegate$","") + ".tsvg");
+  private void autoSaveAfter(final IDelegate currentDelegate) {
+    final String phaseName = currentDelegate.getClass().getTypeName().substring(
+        "games.strategy.triplea.delegate.".length()).replaceFirst("Delegate$","");
+    autoSave("autosaveAfter" + phaseName.substring(0,1).toUpperCase() + phaseName.substring(1) + ".tsvg");
+  }
+
+  private void autoSaveBefore(final IDelegate currentDelegate) {
+    final String stepName = currentDelegate.getName();
+    autoSave("autosaveBefore" + stepName.substring(0,1).toUpperCase() + stepName.substring(1) + ".tsvg");
   }
 
   @Override
@@ -389,7 +395,19 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
+    final GameStep currentStep = m_data.getSequence().getStep();
+    final IDelegate currentDelegate = currentStep.getDelegate();
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     startStep(stepIsRestoredFromSavedGame);
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     if (m_isGameOver) {
       return;
     }
@@ -397,13 +415,13 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
-    final GameStep currentStep = m_data.getSequence().getStep();
     // save after the step has advanced
     // otherwise, the delegate will execute again.
-    final boolean autoSaveThisDelegate = currentStep.getDelegate().getClass().isAnnotationPresent(AutoSave.class)
-        && currentStep.getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd();
-    if (autoSaveThisDelegate && currentStep.getDelegate() instanceof MoveDelegate) {
-      autoSave("autosaveAfter" + currentStep.getName() + ".tsvg");
+    final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
+    if (autoSaveThisDelegate && currentDelegate instanceof MoveDelegate) {
+      autoSave("autosaveAfter" + currentStep.getName().substring(0,1).toUpperCase()
+        + currentStep.getName().substring(1) + ".tsvg");
     }
     endStep();
     if (m_isGameOver) {
@@ -414,8 +432,8 @@ public class ServerGame extends AbstractGame {
       autoSave(m_data.getSequence().getRound() % 2 == 0
           ? SaveGameFileChooser.getAutoSaveEvenFileName() : SaveGameFileChooser.getAutoSaveOddFileName());
     }
-    if (autoSaveThisDelegate && !(currentStep.getDelegate() instanceof MoveDelegate)) {
-      autoSave(currentStep.getDelegate());
+    if (autoSaveThisDelegate && !(currentDelegate instanceof MoveDelegate)) {
+      autoSaveAfter(currentDelegate);
     }
   }
 
@@ -458,13 +476,6 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
-    if (!stepIsRestoredFromSavedGame) {
-      if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class)) {
-        if (m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
-          autoSave(SaveGameFileChooser.getAutoSaveFileName());
-        }
-      }
-    }
     final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
         new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     if (m_delegateRandomSource == null) {
