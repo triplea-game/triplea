@@ -14,6 +14,9 @@ public @interface AutoSave {
   // should we auto save before the step starts
   boolean beforeStepStart() default false;
 
+  // should we auto save after the delegate's start method?
+  boolean afterStepStart() default false;
+
   // should we auto save after the step ends
   boolean afterStepEnd() default false;
 }
