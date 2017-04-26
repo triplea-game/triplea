@@ -60,6 +60,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToRecordBattleStatistics = true;
   private boolean m_needToCheckDefendingPlanesCanLand = true;
   private boolean m_needToCleanup = true;
+  private boolean needToFindRocketTargets = true;
+  private boolean needToFireRockets = true;
+  private RocketsFireHelper rocketHelper = new RocketsFireHelper();
   protected IBattle m_currentBattle = null;
 
   /**
@@ -78,9 +81,23 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     super.start();
     // we may start multiple times due to loading after saving
     // only initialize once
+    final PlayerID player = m_bridge.getPlayerID();
     if (m_needToInitialize) {
       doInitialize(m_battleTracker, m_bridge);
+      needToFindRocketTargets = true;
+      needToFireRockets = true;
       m_needToInitialize = false;
+    }
+    // WW2V2/WW2V3, fires at end of combat move - now moved to the start of the BattleDelegate
+    // WW2V1, fires at end of non combat move
+    if (GameStepPropertiesHelper.isFireRockets(getData()) && TechTracker.hasRocket(player)) {
+      if (needToFindRocketTargets && !games.strategy.triplea.Properties.getStrictRockets(getData())) {
+        rocketHelper.findRocketTargets(m_bridge, player);
+        needToFindRocketTargets = false;
+      }
+    } else {
+      needToFindRocketTargets = false;
+      needToFireRockets = false;
     }
     // do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
     // the order of all of this stuff matters quite a bit.
@@ -101,6 +118,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       m_needToAddBombardmentSources = false;
     }
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
+    if (needToFindRocketTargets) {      // Should only be true if we are using strict rockets
+      rocketHelper.findRocketTargets(m_bridge, player);
+    }
+    if (needToFireRockets) {
+      rocketHelper.fireRockets(m_bridge, player);
+    }
     m_battleTracker.fightDefenselessBattles(m_bridge);
     m_battleTracker.fightBattleIfOnlyOne(m_bridge);
   }
@@ -133,6 +156,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_needToRecordBattleStatistics = true;
     m_needToCleanup = true;
     m_needToCheckDefendingPlanesCanLand = true;
+    needToFindRocketTargets = true;
+    needToFireRockets = true;
   }
 
   @Override
@@ -168,6 +193,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
     m_needToCleanup = s.m_needToCleanup;
     m_currentBattle = s.m_currentBattle;
+    // Below is to avoid changing save games. Can be broken if a game is saved at the rocket target selection stage
+    if (!m_needToInitialize && !m_needToAddBombardmentSources) {
+      needToFindRocketTargets = true;
+      needToFireRockets = true;
+    }
   }
 
   @Override
