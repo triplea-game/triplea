@@ -102,12 +102,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     m_battleTracker.fightAirRaidsAndStrategicBombing(m_bridge);
     m_battleTracker.fightDefenselessBattles(m_bridge);
-
-    final Collection<Territory> territories = m_battleTracker.getPendingBattleSites(false);
-    if (territories.size() == 1) {
-      final IBattle battle = m_battleTracker.getPendingBattle(territories.iterator().next(), false, BattleType.NORMAL);
-      battle.fight(m_bridge);
-    }
+    m_battleTracker.fightBattleIfOnlyOne(m_bridge);
   }
 
   /**
