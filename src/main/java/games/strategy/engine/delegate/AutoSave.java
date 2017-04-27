@@ -11,12 +11,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AutoSave {
-  // should we auto save before the step starts
+  /**
+   *  Should we auto save before the step starts?
+   */
   boolean beforeStepStart() default false;
 
-  // should we auto save after the delegate's start method?
+  /**
+   *  Should we auto save before the step starts?
+   *  Useful for the EndTurnDelegate in PBEM/PBF which allows the autosave before the "Done" button is clicked.
+   *  Still a problem if the "User Report" is on though - doesn't save until "OK" is clicked.
+   */
   boolean afterStepStart() default false;
 
-  // should we auto save after the step ends
+  /**
+   *  Should we auto save after the step starts?
+   */
   boolean afterStepEnd() default false;
 }
