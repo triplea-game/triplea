@@ -32,8 +32,6 @@ import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.proAI.ProData;
-import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -1145,7 +1143,7 @@ public class BattleTracker implements java.io.Serializable {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
       final List<Unit> defenders = new ArrayList<>();
       defenders.addAll(battle.getDefendingUnits());
-      final List<Unit> sortedUnitsList = getSortedDefendingUnits(gameData, territory, defenders);
+      final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (DiceRoll.getTotalPower(
           DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,
             territory, TerritoryEffectHelper.getEffects(territory), false, null), gameData) == 0) {
@@ -1161,11 +1159,12 @@ public class BattleTracker implements java.io.Serializable {
          });
   }
 
-  private List<Unit> getSortedDefendingUnits(final GameData gameData, final Territory territory,
-      final List<Unit> defenders) {
+  private List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
+      final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
                Matches.UnitCanBeInBattle(true, !territory.isWater(), gameData, 1, false, true, true)));
-    Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+    Collections.sort(sortedUnitsList,
+        new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
         TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;
