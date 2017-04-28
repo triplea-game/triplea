@@ -29,8 +29,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -96,7 +94,6 @@ public class WW2V3_42_Test {
 
   @Test
   public void testLingeringSeaUnitsJoinBattle() throws Exception {
-    ProData.initializeSimulation(new ProAI("one","two"), m_data, germans(m_data));
     final Territory sz5 = territory("5 Sea Zone", m_data);
     final Territory sz6 = territory("6 Sea Zone", m_data);
     final Territory sz7 = territory("7 Sea Zone", m_data);
