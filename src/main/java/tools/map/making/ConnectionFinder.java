@@ -157,7 +157,6 @@ public class ConnectionFinder {
             testArea.intersect(otherArea);
             if (!testArea.isEmpty() && sizeOfArea(testArea) > minOverlap) {
               thisTerritoryConnections.add(otherTerritory);
-            } else if (!testArea.isEmpty()) {
             }
           }
         }

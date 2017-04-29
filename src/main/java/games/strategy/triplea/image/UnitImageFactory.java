@@ -253,6 +253,7 @@ public class UnitImageFactory {
           name.append("_ss");
         }
         if (TechTracker.hasRocket(id)) {
+          // do nothing
         }
       }
       if (type.getName().equals(Constants.UNIT_TYPE_FACTORY) || UnitAttachment.get(type).getCanProduceUnits()) {

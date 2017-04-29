@@ -466,6 +466,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     } else if (name.endsWith("Move")) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       if (name.endsWith("AirborneCombatMove")) {
+        // do nothing
       } else {
         move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
       }

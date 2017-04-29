@@ -48,6 +48,7 @@ public final class SoundOptions {
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
+      // do nothing
     } else if (pressedButton.equals(ok)) {
       for (final IEditableProperty property : properties) {
         clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
