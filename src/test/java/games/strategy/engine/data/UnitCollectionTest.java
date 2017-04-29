@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.triplea.delegate.Matches;
@@ -69,7 +69,6 @@ public class UnitCollectionTest {
     unitTypeList.addUnitType(unitTypeTwo);
     Mockito.when(mockGameData.getUnitTypeList()).thenReturn(unitTypeList);
 
-    Mockito.when(defaultPlayerID.isNull()).thenReturn(true);
     Mockito.doAnswer(new Answer<Void>() {
       @Override
       public Void answer(final InvocationOnMock invocation) throws Throwable {
@@ -77,8 +76,6 @@ public class UnitCollectionTest {
         return null;
       }
     }).when(defaultPlayerID).notifyChanged();
-
-    Mockito.when(otherPlayerID.isNull()).thenReturn(true);
 
     unitCollection = new UnitCollection(defaultPlayerID, mockGameData);
 

@@ -3,16 +3,14 @@ package games.strategy.triplea.ui.logic;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -24,14 +22,6 @@ public class RouteCalculatorTest {
   private MapPanel mapPanel;
   @Mock
   private MapData mapData;
-
-  @Before
-  public void setUp() {
-    when(mapPanel.getImageWidth()).thenReturn(1000);
-    when(mapPanel.getImageHeight()).thenReturn(1000);
-    when(mapData.scrollWrapX()).thenReturn(true, true, false, false);
-    when(mapData.scrollWrapY()).thenReturn(true, false, true, false);
-  }
 
   @Test
   public void testRouteTranslation() {
