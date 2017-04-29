@@ -80,25 +80,30 @@ public class PropertyUtilTest {
   }
 
   private static class NoSetterClass {
+    
     @SuppressWarnings("unused")
     private final String bar = PropertyUtilTest.DEFAULT;
   }
 
   private static class InvalidSetterClass {
+    
     @SuppressWarnings("unused")
     private final String bar = PropertyUtilTest.DEFAULT;
+    
     @SuppressWarnings("unused")
     public void setBar() {}
   }
 
   private static class NoOpSetterClass {
     protected String bar = PropertyUtilTest.DEFAULT;
+    
     @SuppressWarnings("unused")
     public void setBar(final String value) {}
   }
 
   private static class PropertyClass {
     protected String bar = PropertyUtilTest.DEFAULT;
+    
     @SuppressWarnings("unused")
     public void setBar(final String newValue) {
       bar = newValue;
@@ -106,8 +111,10 @@ public class PropertyUtilTest {
   }
 
   private static class mUnderBarClass {
+    
     @SuppressWarnings("unused")
     private String m_bar = PropertyUtilTest.DEFAULT;
+    
     @SuppressWarnings("unused")
     public void setBar(final String newValue) {
       m_bar = newValue;
