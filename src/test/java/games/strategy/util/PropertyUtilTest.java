@@ -87,30 +87,18 @@ public class PropertyUtilTest {
   private static class InvalidSetterClass {
     @SuppressWarnings("unused")
     private final String bar = PropertyUtilTest.DEFAULT;
-
-    public void setBar() {}
   }
 
   private static class NoOpSetterClass {
     protected String bar = PropertyUtilTest.DEFAULT;
-
-    public void setBar(final String value) {}
   }
 
   private static class PropertyClass {
     protected String bar = PropertyUtilTest.DEFAULT;
-
-    public void setBar(final String newValue) {
-      bar = newValue;
-    }
   }
 
   private static class mUnderBarClass {
     @SuppressWarnings("unused")
     private String m_bar = PropertyUtilTest.DEFAULT;
-
-    public void setBar(final String newValue) {
-      m_bar = newValue;
-    }
   }
 }
