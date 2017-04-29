@@ -254,7 +254,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Add bombardment units to battles. Made public for test purposes only
+   * Add bombardment units to battles. Made public for test purposes only.
    */
   void addBombardmentSources() {
     final PlayerID attacker = m_bridge.getPlayerID();
