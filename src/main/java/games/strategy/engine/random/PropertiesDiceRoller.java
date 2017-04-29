@@ -280,5 +280,3 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     }
   }
 }
-
-
