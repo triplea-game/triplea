@@ -255,29 +255,30 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   public String getHelpText() {
     return getInfoText();
   }
-}
 
-
-class AdvancedRedirectStrategy extends LaxRedirectStrategy {
-  @Override
-  public HttpUriRequest getRedirect(
-      final HttpRequest request,
-      final HttpResponse response,
-      final HttpContext context) throws ProtocolException {
-    final URI uri = getLocationURI(request, response, context);
-    final String method = request.getRequestLine().getMethod();
-    if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
-      return new HttpHead(uri);
-    } else if (method.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
-      return new HttpGet(uri);
-    } else {
-      final int status = response.getStatusLine().getStatusCode();
-      if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
-          || status == HttpStatus.SC_MOVED_TEMPORARILY) {
-        return RequestBuilder.copy(request).setUri(uri).build();
-      } else {
+  private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {
+    @Override
+    public HttpUriRequest getRedirect(
+        final HttpRequest request,
+        final HttpResponse response,
+        final HttpContext context) throws ProtocolException {
+      final URI uri = getLocationURI(request, response, context);
+      final String method = request.getRequestLine().getMethod();
+      if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
+        return new HttpHead(uri);
+      } else if (method.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
         return new HttpGet(uri);
+      } else {
+        final int status = response.getStatusLine().getStatusCode();
+        if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
+            || status == HttpStatus.SC_MOVED_TEMPORARILY) {
+          return RequestBuilder.copy(request).setUri(uri).build();
+        } else {
+          return new HttpGet(uri);
+        }
       }
     }
   }
 }
+
+
