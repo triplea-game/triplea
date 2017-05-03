@@ -1335,7 +1335,7 @@ public class RevisedTest {
     // blitz
     final Territory wr = territory("West Russia", m_data);
     move(wr.getUnits().getMatches(Matches.UnitCanBlitz), new Route(wr, cauc));
-    final Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(m_data, germans(m_data));
+    final Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(bridge, m_data, germans(m_data));
     // germany, WE, SE, but not caucusus
     assertEquals(fire.size(), 3);
   }

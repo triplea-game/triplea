@@ -196,7 +196,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (GameStepPropertiesHelper.isFireRockets(data)) {
       if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID())) {
         final RocketsFireHelper helper = new RocketsFireHelper();
-        helper.fireRockets(m_bridge, m_bridge.getPlayerID());
+        helper.processRockets(m_bridge, m_bridge.getPlayerID());
         m_needToDoRockets = false;
       }
     }
