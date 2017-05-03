@@ -1170,6 +1170,17 @@ public class BattleTracker implements java.io.Serializable {
     return sortedUnitsList;
   }
 
+  /**
+   *  Fight battle automatically if there is only one left to pick from.
+   */
+  public void fightBattleIfOnlyOne(final IDelegateBridge bridge) {
+    final Collection<Territory> territories = getPendingBattleSites(false);
+    if (territories.size() == 1) {
+      final IBattle battle = getPendingBattle(territories.iterator().next(), false, BattleType.NORMAL);
+      battle.fight(bridge);
+    }
+  }
+
   @Override
   public String toString() {
     return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:"

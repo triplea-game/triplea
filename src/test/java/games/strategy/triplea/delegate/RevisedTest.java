@@ -89,7 +89,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class RevisedTest {
-  private GameData m_data;
+  private GameData gameData;
   private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
   @Before
@@ -105,11 +105,11 @@ public class RevisedTest {
             return null;
           }
         });
-    m_data = TestMapGameData.REVISED.getGameData();
+    gameData = TestMapGameData.REVISED.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
@@ -126,38 +126,38 @@ public class RevisedTest {
 
   @Test
   public void testMoveBadRoute() {
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
-    final Territory sz11 = m_data.getMap().getTerritory("11 Sea Zone");
-    final Territory sz9 = m_data.getMap().getTerritory("9 Sea Zone");
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
+    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("NonCombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
-    final String error = moveDelegate(m_data).move(sz1.getUnits().getUnits(), new Route(sz1, sz11, sz9));
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
+    final String error = moveDelegate(gameData).move(sz1.getUnits().getUnits(), new Route(sz1, sz11, sz9));
     assertTrue(error != null);
   }
 
   @Test
   public void testAlliedNeighbors() {
-    final PlayerID americans = americans(m_data);
-    final Territory centralUs = territory("Central United States", m_data);
+    final PlayerID americans = americans(gameData);
+    final Territory centralUs = territory("Central United States", gameData);
     final Set<Territory> enemyNeighbors =
-        m_data.getMap().getNeighbors(centralUs, Matches.isTerritoryEnemy(americans, m_data));
+        gameData.getMap().getNeighbors(centralUs, Matches.isTerritoryEnemy(americans, gameData));
     assertTrue(enemyNeighbors.isEmpty());
   }
 
   @Test
   public void testSubAdvance() {
-    final UnitType sub = GameDataTestUtil.submarine(m_data);
+    final UnitType sub = GameDataTestUtil.submarine(gameData);
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     TechTracker.addAdvance(japanese, bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, m_data, japanese));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
     // after tech advance, this is now 3
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
@@ -165,14 +165,14 @@ public class RevisedTest {
 
   @Test
   public void testMoveThroughSubmergedSubs() {
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    final Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
-    final Territory sz7 = m_data.getMap().getTerritory("7 Sea Zone");
-    final Territory sz8 = m_data.getMap().getTerritory("8 Sea Zone");
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
+    final Territory sz7 = gameData.getMap().getTerritory("7 Sea Zone");
+    final Territory sz8 = gameData.getMap().getTerritory("8 Sea Zone");
     final TripleAUnit sub = (TripleAUnit) sz8.getUnits().iterator().next();
     sub.setSubmerged(true);
     // now move to attack it
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -189,44 +189,42 @@ public class RevisedTest {
 
   @Test
   public void testRetreatBug() {
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID americans = GameDataTestUtil.americans(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
     // make sinkian japanese owned, put one infantry in it
-    final Territory sinkiang = m_data.getMap().getTerritory("Sinkiang");
-    m_data.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
+    final Territory sinkiang = gameData.getMap().getTerritory("Sinkiang");
+    gameData.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     sinkiang.setOwner(japanese);
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    m_data.performChange(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    gameData.performChange(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
     // now move to attack it
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory novo = m_data.getMap().getTerritory("Novosibirsk");
-    moveDelegate.move(novo.getUnits().getUnits(), m_data.getMap().getRoute(novo, sinkiang));
+    final Territory novo = gameData.getMap().getTerritory("Novosibirsk");
+    moveDelegate.move(novo.getUnits().getUnits(), gameData.getMap().getRoute(novo, sinkiang));
     moveDelegate.end();
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    battle.start();
-    // fight the battle
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(dummyPlayer);
-    fight(battle, sinkiang, false);
+    battle.start();                             // fights battle
     battle.end();
     assertEquals(sinkiang.getOwner(), americans);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
     bridge.setStepName("NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory russia = m_data.getMap().getTerritory("Russia");
+    final Territory russia = gameData.getMap().getTerritory("Russia");
     // move two tanks from russia, then undo
     final Route r = new Route();
     r.setStart(russia);
@@ -243,24 +241,24 @@ public class RevisedTest {
 
   @Test
   public void testContinuedBattles() {
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     // set up battle
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    m_data.performChange(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final UnitType subType = GameDataTestUtil.submarine(m_data);
-    final UnitType trnType = GameDataTestUtil.transport(m_data);
-    m_data.performChange(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
-    m_data.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
-    m_data.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
+    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory karelia = gameData.getMap().getTerritory("Karelia S.S.R.");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    gameData.performChange(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final UnitType subType = GameDataTestUtil.submarine(gameData);
+    final UnitType trnType = GameDataTestUtil.transport(gameData);
+    gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
+    gameData.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
+    gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
     // submerge the russian sub
     final TripleAUnit sub =
         (TripleAUnit) Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
@@ -268,17 +266,17 @@ public class RevisedTest {
     // now move an infantry through the sz
     String results =
         moveDelegate.move(Match.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            m_data.getMap().getRoute(germany, sz5),
+            gameData.getMap().getRoute(germany, sz5),
             Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
     assertNull(results);
     results = moveDelegate.move(Match.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
-        m_data.getMap().getRoute(sz5, karelia));
+        gameData.getMap().getRoute(sz5, karelia));
     assertNull(results);
     moveDelegate.end();
-    final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
-    final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(m_data);
+    final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
     // The battle should NOT be empty
     assertTrue(tracker.hasPendingBattle(sz5, false));
     assertFalse(tracker.getPendingBattle(sz5, false, null).isEmpty());
@@ -287,18 +285,18 @@ public class RevisedTest {
 
   @Test
   public void testLoadAlliedTransports() {
-    final PlayerID british = british(m_data);
-    final PlayerID americans = americans(m_data);
-    final Territory uk = territory("United Kingdom", m_data);
+    final PlayerID british = british(gameData);
+    final PlayerID americans = americans(gameData);
+    final Territory uk = territory("United Kingdom", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     // create 2 us infantry
-    addTo(uk, infantry(m_data).create(2, americans));
+    addTo(uk, infantry(gameData).create(2, americans));
     // try to load them on the british players turn
-    final Territory sz2 = territory("2 Sea Zone", m_data);
-    final String error = moveDelegate(m_data).move(uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)),
+    final Territory sz2 = territory("2 Sea Zone", gameData);
+    final String error = moveDelegate(gameData).move(uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)),
         new Route(uk, sz2), sz2.getUnits().getMatches(Matches.UnitIsTransport));
     // should not be able to load on british turn, only on american turn
     assertFalse(error == null);
@@ -306,25 +304,25 @@ public class RevisedTest {
 
   @Test
   public void testBidPlace() {
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("BidPlace");
-    bidPlaceDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    bidPlaceDelegate(m_data).start();
+    bidPlaceDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    bidPlaceDelegate(gameData).start();
     // create 20 british infantry
-    addTo(british(m_data), infantry(m_data).create(20, british(m_data)), m_data);
-    final Territory uk = territory("United Kingdom", m_data);
-    final Collection<Unit> units = british(m_data).getUnits().getUnits();
-    final PlaceableUnits placeable = bidPlaceDelegate(m_data).getPlaceableUnits(units, uk);
+    addTo(british(gameData), infantry(gameData).create(20, british(gameData)), gameData);
+    final Territory uk = territory("United Kingdom", gameData);
+    final Collection<Unit> units = british(gameData).getUnits().getUnits();
+    final PlaceableUnits placeable = bidPlaceDelegate(gameData).getPlaceableUnits(units, uk);
     assertEquals(20, placeable.getMaxUnits());
     assertNull(placeable.getErrorMessage());
-    final String error = bidPlaceDelegate(m_data).placeUnits(units, uk);
+    final String error = bidPlaceDelegate(gameData).placeUnits(units, uk);
     assertNull(error);
   }
 
   @Test
   public void testOverFlyBombersDies() {
-    final PlayerID british = british(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final PlayerID british = british(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -332,10 +330,10 @@ public class RevisedTest {
     when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
-    final Territory uk = territory("United Kingdom", m_data);
-    final Territory we = territory("Western Europe", m_data);
-    final Territory se = territory("Southern Europe", m_data);
-    final Route route = new Route(uk, territory("7 Sea Zone", m_data), we, se);
+    final Territory uk = territory("United Kingdom", gameData);
+    final Territory we = territory("Western Europe", gameData);
+    final Territory se = territory("Southern Europe", gameData);
+    final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
     move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
     // the aa gun should have fired. the bomber no longer exists
     assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
@@ -345,8 +343,8 @@ public class RevisedTest {
 
   @Test
   public void testMultipleOverFlyBombersDies() {
-    final PlayerID british = british(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final PlayerID british = british(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -354,12 +352,12 @@ public class RevisedTest {
     when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
-    final Territory uk = territory("United Kingdom", m_data);
-    final Territory sz7 = territory("7 Sea Zone", m_data);
-    final Territory we = territory("Western Europe", m_data);
-    final Territory se = territory("Southern Europe", m_data);
-    final Territory balk = territory("Balkans", m_data);
-    addTo(uk, bomber(m_data).create(1, british));
+    final Territory uk = territory("United Kingdom", gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
+    final Territory we = territory("Western Europe", gameData);
+    final Territory se = territory("Southern Europe", gameData);
+    final Territory balk = territory("Balkans", gameData);
+    addTo(uk, bomber(gameData).create(1, british));
     final Route route = new Route(uk, sz7, we, se, balk);
     move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
     // the aa gun should have fired (one hit, one miss in each territory overflown). the bombers no longer exists
@@ -373,8 +371,8 @@ public class RevisedTest {
   public void testOverFlyBombersJoiningBattleDie() {
     // a bomber flies over aa to join a battle, gets hit,
     // it should not appear in the battle
-    final PlayerID british = british(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final PlayerID british = british(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -382,19 +380,19 @@ public class RevisedTest {
     when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
-    final Territory uk = territory("United Kingdom", m_data);
-    final Territory we = territory("Western Europe", m_data);
-    final Territory se = territory("Southern Europe", m_data);
-    final Territory sz14 = territory("14 Sea Zone", m_data);
-    final Territory sz15 = territory("15 Sea Zone", m_data);
-    final Territory egypt = territory("Anglo Egypt", m_data);
+    final Territory uk = territory("United Kingdom", gameData);
+    final Territory we = territory("Western Europe", gameData);
+    final Territory se = territory("Southern Europe", gameData);
+    final Territory sz14 = territory("14 Sea Zone", gameData);
+    final Territory sz15 = territory("15 Sea Zone", gameData);
+    final Territory egypt = territory("Anglo Egypt", gameData);
     // start a battle in se
     removeFrom(sz14, sz14.getUnits().getUnits());
-    addTo(sz15, transport(m_data).create(1, british));
+    addTo(sz15, transport(gameData).create(1, british));
     load(egypt.getUnits().getMatches(Matches.UnitIsInfantry), new Route(egypt, sz15));
     move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
     move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14, se));
-    final Route route = new Route(uk, territory("7 Sea Zone", m_data), we, se);
+    final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
     move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
     // the aa gun should have fired and hit
     assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
@@ -404,10 +402,10 @@ public class RevisedTest {
 
   @Test
   public void testTransportAttack() {
-    final Territory sz14 = m_data.getMap().getTerritory("14 Sea Zone");
-    final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz14 = gameData.getMap().getTerritory("14 Sea Zone");
+    final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -423,11 +421,11 @@ public class RevisedTest {
 
   @Test
   public void testLoadUndo() {
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -455,12 +453,12 @@ public class RevisedTest {
 
   @Test
   public void testLoadDependencies() {
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final Territory norway = m_data.getMap().getTerritory("Norway");
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory norway = gameData.getMap().getTerritory("Norway");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -502,11 +500,11 @@ public class RevisedTest {
 
   @Test
   public void testLoadUndoInWrongOrder() {
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -538,14 +536,14 @@ public class RevisedTest {
   @Test
   public void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     // add japanese infantry to eastern europe
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
-    m_data.performChange(change);
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    gameData.performChange(change);
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -571,11 +569,11 @@ public class RevisedTest {
   @Test
   public void testUnloadMultipleTerritories() {
     // in revised a transport may only unload to 1 territory.
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -590,7 +588,7 @@ public class RevisedTest {
     String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
-    final Territory norway = m_data.getMap().getTerritory("Norway");
+    final Territory norway = gameData.getMap().getTerritory("Norway");
     final Route sz5ToNorway = new Route();
     sz5ToNorway.setStart(sz5);
     sz5ToNorway.add(norway);
@@ -624,11 +622,11 @@ public class RevisedTest {
   @Test
   public void testUnloadInPreviousPhase() {
     // a transport may not unload in both combat and non combat
-    final Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = GameDataTestUtil.infantry(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -643,7 +641,7 @@ public class RevisedTest {
     String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
-    final Territory norway = m_data.getMap().getTerritory("Norway");
+    final Territory norway = gameData.getMap().getTerritory("Norway");
     final Route sz5ToNorway = new Route();
     sz5ToNorway.setStart(sz5);
     sz5ToNorway.add(norway);
@@ -654,8 +652,8 @@ public class RevisedTest {
     moveDelegate.end();
     bridge.setStepName("germanNonCombatMove");
     // the transport tracker relies on the step name
-    while (!m_data.getSequence().getStep().getName().equals("germanNonCombatMove")) {
-      m_data.getSequence().next();
+    while (!gameData.getSequence().getStep().getName().equals("germanNonCombatMove")) {
+      gameData.getSequence().next();
     }
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -667,64 +665,64 @@ public class RevisedTest {
 
   @Test
   public void testSubAttackTransportNonCombat() {
-    final Territory sz1 = territory("1 Sea Zone", m_data);
-    final Territory sz8 = territory("8 Sea Zone", m_data);
-    final PlayerID germans = germans(m_data);
+    final Territory sz1 = territory("1 Sea Zone", gameData);
+    final Territory sz8 = territory("8 Sea Zone", gameData);
+    final PlayerID germans = germans(gameData);
     // german sub tries to attack a transport in non combat
     // should be an error
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz8, sz1));
+    final String error = moveDelegate(gameData).move(sz8.getUnits().getUnits(), new Route(sz8, sz1));
     assertError(error);
   }
 
   @Test
   public void testSubAttackNonCombat() {
-    final Territory sz2 = territory("2 Sea Zone", m_data);
-    final Territory sz8 = territory("8 Sea Zone", m_data);
-    final PlayerID germans = germans(m_data);
+    final Territory sz2 = territory("2 Sea Zone", gameData);
+    final Territory sz8 = territory("8 Sea Zone", gameData);
+    final PlayerID germans = germans(gameData);
     // german sub tries to attack a transport in non combat
     // should be an error
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz8, sz2));
+    final String error = moveDelegate(gameData).move(sz8.getUnits().getUnits(), new Route(sz8, sz2));
     assertError(error);
   }
 
   @Test
   public void testTransportAttackSubNonCombat() {
-    final Territory sz1 = territory("1 Sea Zone", m_data);
-    final Territory sz8 = territory("8 Sea Zone", m_data);
-    final PlayerID british = british(m_data);
+    final Territory sz1 = territory("1 Sea Zone", gameData);
+    final Territory sz8 = territory("8 Sea Zone", gameData);
+    final PlayerID british = british(gameData);
     // german sub tries to attack a transport in non combat
     // should be an error
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(m_data).move(sz8.getUnits().getUnits(), new Route(sz1, sz8));
+    final String error = moveDelegate(gameData).move(sz8.getUnits().getUnits(), new Route(sz1, sz8));
     assertError(error);
   }
 
   @Test
   public void testMoveSubAwayFromSubmergedSubsInBattleZone() {
-    final Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
-    final Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
+    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
+    final Territory sz50 = gameData.getMap().getTerritory("50 Sea Zone");
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
-    final UnitType sub = GameDataTestUtil.submarine(m_data);
+    final UnitType sub = GameDataTestUtil.submarine(gameData);
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
-    m_data.performChange(c);
+    gameData.performChange(c);
     // new move delegate
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -735,7 +733,7 @@ public class RevisedTest {
     sz50To45.add(sz45);
     String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.UnitIsAir), sz50To45);
     assertNull(error);
-    assertEquals(1, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+    assertEquals(1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
     // we should be able to move the sub out of the sz
     final Route sz45To50 = new Route();
     sz45To50.setStart(sz45);
@@ -746,45 +744,45 @@ public class RevisedTest {
     // make sure no error
     assertNull(error);
     // make sure the battle is still there
-    assertEquals(1, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+    assertEquals(1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
     // we should be able to undo the move of the sub
     error = moveDelegate.undoMove(1);
     assertNull(error);
     // undo the move of the fighter, should be no battles now
     error = moveDelegate.undoMove(0);
     assertNull(error);
-    assertEquals(0, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+    assertEquals(0, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
   }
 
   @Test
   public void testAAOwnership() {
     // Set up players
-    // PlayerID british = GameDataTestUtil.british(m_data);
-    final PlayerID japanese = GameDataTestUtil.japanese(m_data);
-    // PlayerID americans = GameDataTestUtil.americans(m_data);
+    // PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    // PlayerID americans = GameDataTestUtil.americans(gameData);
     // Set up the territories
-    final Territory india = territory("India", m_data);
-    final Territory fic = territory("French Indochina", m_data);
-    final Territory china = territory("China", m_data);
-    final Territory kwang = territory("Kwantung", m_data);
+    final Territory india = territory("India", gameData);
+    final Territory fic = territory("French Indochina", gameData);
+    final Territory china = territory("China", gameData);
+    final Territory kwang = territory("Kwantung", gameData);
     // Preset units in FIC
-    final UnitType infType = GameDataTestUtil.infantry(m_data);
-    // UnitType aaType = GameDataTestUtil.aaGun(m_data);
+    final UnitType infType = GameDataTestUtil.infantry(gameData);
+    // UnitType aaType = GameDataTestUtil.aaGun(gameData);
     removeFrom(fic, fic.getUnits().getUnits());
-    addTo(fic, aaGun(m_data).create(1, japanese));
-    addTo(fic, infantry(m_data).create(1, japanese));
+    addTo(fic, aaGun(gameData).create(1, japanese));
+    addTo(fic, infantry(gameData).create(1, japanese));
     assertEquals(2, fic.getUnits().getUnitCount());
     // Get attacking units
     final Collection<Unit> britishUnits = india.getUnits().getUnits(infType, 1);
     final Collection<Unit> japaneseUnits = kwang.getUnits().getUnits(infType, 1);
     final Collection<Unit> americanUnits = china.getUnits().getUnits(infType, 1);
     // Get Owner prior to battle
-    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));
+    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(gameData))));
     final String preOwner = fic.getOwner().getName();
     assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
     // Set up the move delegate
-    ITestDelegateBridge delegateBridge = getDelegateBridge(british(m_data));
-    final MoveDelegate moveDelegate = moveDelegate(m_data);
+    ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
     delegateBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
@@ -793,102 +791,102 @@ public class RevisedTest {
      */
     String validResults = moveDelegate.move(britishUnits, new Route(india, fic));
     assertValid(validResults);
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     // Set up battle
     MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(fic, false, null);
     delegateBridge.setRemote(dummyPlayer);
     // fight
     ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
     battle.fight(delegateBridge);
     // Get Owner after to battle
-    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(british(m_data))));
+    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(british(gameData))));
     final String postOwner = fic.getOwner().getName();
     assertEquals(postOwner, Constants.PLAYER_NAME_BRITISH);
     /*
      * add a VALID JAPANESE attack
      */
     // Set up battle
-    delegateBridge = getDelegateBridge(japanese(m_data));
+    delegateBridge = getDelegateBridge(japanese(gameData));
     delegateBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // Move to battle
     validResults = moveDelegate.move(japaneseUnits, new Route(kwang, fic));
     assertValid(validResults);
-    moveDelegate(m_data).end();
-    battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+    moveDelegate(gameData).end();
+    battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(fic, false, null);
     delegateBridge.setRemote(dummyPlayer);
     // fight
     randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
     battle.fight(delegateBridge);
     // Get Owner after to battle
-    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(m_data))));
+    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(gameData))));
     final String midOwner = fic.getOwner().getName();
     assertEquals(midOwner, Constants.PLAYER_NAME_JAPANESE);
     /*
      * add a VALID AMERICAN attack
      */
     // Set up battle
-    delegateBridge = getDelegateBridge(americans(m_data));
+    delegateBridge = getDelegateBridge(americans(gameData));
     delegateBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // Move to battle
     validResults = moveDelegate.move(americanUnits, new Route(china, fic));
     assertValid(validResults);
-    moveDelegate(m_data).end();
-    battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+    moveDelegate(gameData).end();
+    battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(fic, false, null);
     delegateBridge.setRemote(dummyPlayer);
     // fight
     randomSource = new ScriptedRandomSource(0, 5);
     delegateBridge.setRandomSource(randomSource);
     battle.fight(delegateBridge);
     // Get Owner after to battle
-    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(americans(m_data))));
+    assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(americans(gameData))));
     final String endOwner = fic.getOwner().getName();
     assertEquals(endOwner, Constants.PLAYER_NAME_AMERICANS);
   }
 
   @Test
   public void testStratBombCasualties() {
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
+    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
     addTo(germany, bombers);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
-    // int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    // int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    // int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    final int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    // int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid, pusAfterRaid);
     assertEquals(0, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
   }
 
   @Test
   public void testStratBombCasualtiesLowLuck() {
-    makeGameLowLuck(m_data);
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    makeGameLowLuck(gameData);
+    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    final List<Unit> bombers = bomber(m_data).create(2, british);
+    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
@@ -899,34 +897,34 @@ public class RevisedTest {
     // second 0 is the LL AA casualty selection randomly picking the first unit to die
     // third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0, ScriptedRandomSource.ERROR}));
-    final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid - 1, pusAfterRaid);
     assertEquals(1, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
   }
 
   @Test
   public void testStratBombCasualtiesLowLuckManyBombers() {
-    makeGameLowLuck(m_data);
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    makeGameLowLuck(gameData);
+    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    final List<Unit> bombers = bomber(m_data).create(7, british);
+    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
     // surviving bombers
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0, 0, 0, 0, ScriptedRandomSource.ERROR}));
-    final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid - 5, pusAfterRaid);
     // 2 bombers get hit
     assertEquals(5, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
@@ -934,19 +932,19 @@ public class RevisedTest {
 
   @Test
   public void testStratBombRaidWithHeavyBombers() {
-    final Territory germany = m_data.getMap().getTerritory("Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
+    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
-        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 2, 2}));
     // if we try to move aa, then the game will ask us if we want to move
@@ -961,11 +959,11 @@ public class RevisedTest {
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
-    // int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    final int pusBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    // int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    // int PUsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
-    final int pusAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
+    // int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
 
@@ -973,16 +971,16 @@ public class RevisedTest {
   public void testLandBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("Libya", m_data);
-    final Territory from = territory("Anglo Egypt", m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    final Territory attacked = territory("Libya", gameData);
+    final Territory from = territory("Anglo Egypt", gameData);
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
@@ -992,19 +990,19 @@ public class RevisedTest {
   public void testSeaBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 destroyer attacks 1 destroyer
-    addTo(from, destroyer(m_data).create(1, british(m_data)));
-    addTo(attacked, destroyer(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, destroyer(gameData).create(1, british(gameData)));
+    addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
@@ -1014,19 +1012,19 @@ public class RevisedTest {
   public void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub attacks 1 sub
-    addTo(from, submarine(m_data).create(1, british(m_data)));
-    addTo(attacked, submarine(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(1, british(gameData)));
+    addTo(attacked, submarine(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
@@ -1051,20 +1049,20 @@ public class RevisedTest {
   public void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 2 sub attacks 1 sub and 1 destroyer
-    addTo(from, submarine(m_data).create(2, british(m_data)));
-    addTo(attacked, submarine(m_data).create(1, germans(m_data)));
-    addTo(attacked, destroyer(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(2, british(gameData)));
+    addTo(attacked, submarine(gameData).create(1, germans(gameData)));
+    addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
@@ -1099,7 +1097,7 @@ public class RevisedTest {
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
     assertEquals(4, randomSource.getTotalRolled());
-    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
+    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(gameData))).isEmpty());
     assertEquals(1, attacked.getUnits().size());
   }
 
@@ -1107,21 +1105,21 @@ public class RevisedTest {
   public void testAttackSubsAndBBOnDestroyerAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
-    addTo(from, submarine(m_data).create(1, british(m_data)));
-    addTo(from, battleship(m_data).create(1, british(m_data)));
-    addTo(attacked, submarine(m_data).create(3, germans(m_data)));
-    addTo(attacked, destroyer(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(1, british(gameData)));
+    addTo(from, battleship(gameData).create(1, british(gameData)));
+    addTo(attacked, submarine(gameData).create(3, germans(gameData)));
+    addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
@@ -1159,7 +1157,7 @@ public class RevisedTest {
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
     assertEquals(4, randomSource.getTotalRolled());
-    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(m_data))).isEmpty());
+    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(gameData))).isEmpty());
     assertEquals(3, attacked.getUnits().size());
   }
 
@@ -1167,21 +1165,21 @@ public class RevisedTest {
   public void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 destroyer attack 1 sub
     // defender sneak attacks, not attacker
-    addTo(from, submarine(m_data).create(1, british(m_data)));
-    addTo(from, destroyer(m_data).create(1, british(m_data)));
-    addTo(attacked, submarine(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(1, british(gameData)));
+    addTo(from, destroyer(gameData).create(1, british(gameData)));
+    addTo(attacked, submarine(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
         attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
@@ -1198,7 +1196,7 @@ public class RevisedTest {
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
     assertEquals(2, randomSource.getTotalRolled());
-    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
+    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(gameData))).isEmpty());
     assertEquals(1, attacked.getUnits().size());
   }
 
@@ -1206,21 +1204,21 @@ public class RevisedTest {
   public void testAttackSubsAndDestroyerOnBBAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 BB (two hp) attacks 3 subs and 1 destroyer
-    addTo(from, submarine(m_data).create(3, british(m_data)));
-    addTo(from, destroyer(m_data).create(1, british(m_data)));
-    addTo(attacked, submarine(m_data).create(1, germans(m_data)));
-    addTo(attacked, battleship(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(3, british(gameData)));
+    addTo(from, destroyer(gameData).create(1, british(gameData)));
+    addTo(attacked, submarine(gameData).create(1, germans(gameData)));
+    addTo(attacked, battleship(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
@@ -1258,7 +1256,7 @@ public class RevisedTest {
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
     assertEquals(4, randomSource.getTotalRolled());
-    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
+    assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(gameData))).isEmpty());
     assertEquals(3, attacked.getUnits().size());
   }
 
@@ -1266,22 +1264,22 @@ public class RevisedTest {
   public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
-    final Territory attacked = territory("31 Sea Zone", m_data);
-    final Territory from = territory("32 Sea Zone", m_data);
+    final Territory attacked = territory("31 Sea Zone", gameData);
+    final Territory from = territory("32 Sea Zone", gameData);
     // 1 sub and 1 destroyer attack 1 sub and 1 destroyer
     // defender sneak attacks, not attacker
-    addTo(from, submarine(m_data).create(1, british(m_data)));
-    addTo(from, destroyer(m_data).create(1, british(m_data)));
-    addTo(attacked, submarine(m_data).create(1, germans(m_data)));
-    addTo(attacked, destroyer(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    addTo(from, submarine(gameData).create(1, british(gameData)));
+    addTo(from, destroyer(gameData).create(1, british(gameData)));
+    addTo(attacked, submarine(gameData).create(1, germans(gameData)));
+    addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
     final List<String> steps = battle.determineStepStrings(true, bridge);
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
         attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
@@ -1312,30 +1310,30 @@ public class RevisedTest {
 
   @Test
   public void testUnplacedDie() {
-    final PlaceDelegate del = placeDelegate(m_data);
-    del.setDelegateBridgeAndPlayer(getDelegateBridge(british(m_data)));
+    final PlaceDelegate del = placeDelegate(gameData);
+    del.setDelegateBridgeAndPlayer(getDelegateBridge(british(gameData)));
     del.start();
-    addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
+    addTo(british(gameData), transport(gameData).create(1, british(gameData)), gameData);
     del.end();
     // unplaced units die
-    assertTrue(british(m_data).getUnits().isEmpty());
+    assertTrue(british(gameData).getUnits().isEmpty());
   }
 
   @Test
   public void testRocketsDontFireInConquered() {
-    final MoveDelegate move = moveDelegate(m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    final MoveDelegate move = moveDelegate(gameData);
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
     bridge.setRemote(dummyPlayer);
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     // remove the russians units in caucasus so we can blitz
-    final Territory cauc = territory("Caucasus", m_data);
+    final Territory cauc = territory("Caucasus", gameData);
     removeFrom(cauc, cauc.getUnits().getMatches(Matches.UnitIsNotAA));
     // blitz
-    final Territory wr = territory("West Russia", m_data);
+    final Territory wr = territory("West Russia", gameData);
     move(wr.getUnits().getMatches(Matches.UnitCanBlitz), new Route(wr, cauc));
-    final Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(m_data, germans(m_data));
+    final Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(gameData, germans(gameData));
     // germany, WE, SE, but not caucusus
     assertEquals(fire.size(), 3);
   }
@@ -1343,18 +1341,18 @@ public class RevisedTest {
   @Test
   public void testTechRolls() {
     // Set up the test
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
     delegateBridge.setStepName("germanTech");
-    final TechnologyDelegate techDelegate = techDelegate(m_data);
+    final TechnologyDelegate techDelegate = techDelegate(gameData);
     techDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     techDelegate.start();
     final TechAttachment ta = TechAttachment.get(germans);
     // PlayerAttachment pa = PlayerAttachment.get(germans);
-    final TechnologyFrontier rockets = new TechnologyFrontier("", m_data);
-    rockets.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_ROCKETS, m_data, null));
-    final TechnologyFrontier jet = new TechnologyFrontier("", m_data);
-    jet.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, m_data, null));
+    final TechnologyFrontier rockets = new TechnologyFrontier("", gameData);
+    rockets.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_ROCKETS, gameData, null));
+    final TechnologyFrontier jet = new TechnologyFrontier("", gameData);
+    jet.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, gameData, null));
     // Check to make sure it was successful
     final int initPUs = germans.getResources().getQuantity("PUs");
     // Fail the roll
@@ -1388,22 +1386,22 @@ public class RevisedTest {
     // their units to two allied territories before
     // the begin the battle
     // the units they drop off should die with the transports
-    final PlayerID germans = germans(m_data);
-    final PlayerID british = british(m_data);
-    final Territory sz6 = territory("6 Sea Zone", m_data);
-    final Territory sz5 = territory("5 Sea Zone", m_data);
-    final Territory germany = territory("Germany", m_data);
-    final Territory norway = territory("Norway", m_data);
-    final Territory we = territory("Western Europe", m_data);
-    final Territory uk = territory("United Kingdom", m_data);
-    addTo(sz6, destroyer(m_data).create(2, british));
-    addTo(sz5, transport(m_data).create(3, germans));
-    addTo(germany, armour(m_data).create(3, germans));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    final PlayerID germans = germans(gameData);
+    final PlayerID british = british(gameData);
+    final Territory sz6 = territory("6 Sea Zone", gameData);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory germany = territory("Germany", gameData);
+    final Territory norway = territory("Norway", gameData);
+    final Territory we = territory("Western Europe", gameData);
+    final Territory uk = territory("United Kingdom", gameData);
+    addTo(sz6, destroyer(gameData).create(2, british));
+    addTo(sz5, transport(gameData).create(3, germans));
+    addTo(germany, armour(gameData).create(3, germans));
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
     bridge.setRemote(dummyPlayer);
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     // load two transports, 1 tank each
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
@@ -1418,9 +1416,9 @@ public class RevisedTest {
     assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
     move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
     // fight the battle
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(sz6, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz6, false, null);
     // everything hits, this will kill both transports
     bridge.setRandomSource(new ScriptedRandomSource(0));
     battle.fight(bridge);
@@ -1432,11 +1430,11 @@ public class RevisedTest {
 
   @Test
   public void testCanalMovePass() {
-    final Territory sz15 = territory("15 Sea Zone", m_data);
-    final Territory sz34 = territory("34 Sea Zone", m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+    final Territory sz15 = territory("15 Sea Zone", gameData);
+    final Territory sz34 = territory("34 Sea Zone", gameData);
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
     bridge.setStepName("CombatMove");
-    final MoveDelegate moveDelegate = moveDelegate(m_data);
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final String error = moveDelegate.move(sz15.getUnits().getUnits(), new Route(sz15, sz34));
@@ -1445,14 +1443,14 @@ public class RevisedTest {
 
   @Test
   public void testCanalMovementFail() {
-    final Territory sz14 = territory("14 Sea Zone", m_data);
-    final Territory sz15 = territory("15 Sea Zone", m_data);
-    final Territory sz34 = territory("34 Sea Zone", m_data);
+    final Territory sz14 = territory("14 Sea Zone", gameData);
+    final Territory sz15 = territory("15 Sea Zone", gameData);
+    final Territory sz34 = territory("34 Sea Zone", gameData);
     // clear the british in sz 15
     removeFrom(sz15, sz15.getUnits().getUnits());
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
-    final MoveDelegate moveDelegate = moveDelegate(m_data);
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final String error = moveDelegate.move(sz14.getUnits().getUnits(), new Route(sz14, sz15, sz34));
@@ -1460,7 +1458,7 @@ public class RevisedTest {
   }
 
   public void testTransportIsTransport() {
-    assertTrue(Matches.UnitIsTransport.match(transport(m_data).create(british(m_data))));
-    assertFalse(Matches.UnitIsTransport.match(infantry(m_data).create(british(m_data))));
+    assertTrue(Matches.UnitIsTransport.match(transport(gameData).create(british(gameData))));
+    assertFalse(Matches.UnitIsTransport.match(infantry(gameData).create(british(gameData))));
   }
 }

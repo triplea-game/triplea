@@ -33,27 +33,27 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class WW2V3_42_Test {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.WW2V3_1942.getGameData();
+    gameData = TestMapGameData.WW2V3_1942.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test
   public void testTransportAttack() {
-    final Territory sz13 = m_data.getMap().getTerritory("13 Sea Zone");
-    final Territory sz12 = m_data.getMap().getTerritory("12 Sea Zone");
-    final PlayerID germans = germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
+    final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
+    final PlayerID germans = germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     final Route sz13To12 = new Route();
     sz13To12.setStart(sz13);
     sz13To12.add(sz12);
@@ -65,12 +65,12 @@ public class WW2V3_42_Test {
 
   @Test
   public void testBombAndAttackEmptyTerritory() {
-    final Territory karrelia = territory("Karelia S.S.R.", m_data);
-    final Territory baltic = territory("Baltic States", m_data);
-    final Territory sz5 = territory("5 Sea Zone", m_data);
-    final Territory germany = territory("Germany", m_data);
-    final PlayerID germans = germans(m_data);
-    final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+    final Territory karrelia = territory("Karelia S.S.R.", gameData);
+    final Territory baltic = territory("Baltic States", gameData);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory germany = territory("Germany", gameData);
+    final PlayerID germans = germans(gameData);
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -84,86 +84,86 @@ public class WW2V3_42_Test {
     move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, sz5, karrelia));
     // move an infantry to invade
     move(baltic.getUnits().getMatches(Matches.UnitIsInfantry), new Route(baltic, karrelia));
-    final BattleTracker battleTracker = MoveDelegate.getBattleTracker(m_data);
+    final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
     assertNotNull(battleTracker.getPendingBattle(karrelia, false, null));
     assertNotNull(battleTracker.getPendingBattle(karrelia, true, null));
     // the territory should not be conquered
-    assertEquals(karrelia.getOwner(), russians(m_data));
+    assertEquals(karrelia.getOwner(), russians(gameData));
   }
 
   @Test
   public void testLingeringSeaUnitsJoinBattle() throws Exception {
-    final Territory sz5 = territory("5 Sea Zone", m_data);
-    final Territory sz6 = territory("6 Sea Zone", m_data);
-    final Territory sz7 = territory("7 Sea Zone", m_data);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory sz6 = territory("6 Sea Zone", gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
-    addTo(sz5, battleship(m_data).create(1, russians(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    addTo(sz5, battleship(gameData).create(1, russians(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     // attack with a german sub
     move(sz7.getUnits().getUnits(), new Route(sz7, sz6, sz5));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(5, mfb.getAttackingUnits().size());
   }
 
   @Test
   public void testLingeringFightersAndALliedUnitsJoinBattle() throws Exception {
-    final Territory sz5 = territory("5 Sea Zone", m_data);
-    final Territory sz6 = territory("6 Sea Zone", m_data);
-    final Territory sz7 = territory("7 Sea Zone", m_data);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory sz6 = territory("6 Sea Zone", gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
-    addTo(sz5, battleship(m_data).create(1, russians(m_data)));
+    addTo(sz5, battleship(gameData).create(1, russians(gameData)));
     // add an allied carrier and a fighter
-    addTo(sz5, carrier(m_data).create(1, italians(m_data)));
-    addTo(sz5, fighter(m_data).create(1, germans(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    addTo(sz5, carrier(gameData).create(1, italians(gameData)));
+    addTo(sz5, fighter(gameData).create(1, germans(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     // attack with a german sub
     move(sz7.getUnits().getUnits(), new Route(sz7, sz6, sz5));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     // except the italian carrier
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(6, mfb.getAttackingUnits().size());
   }
 
   @Test
   public void testLingeringSeaUnitsCanMoveAwayFromBattle() throws Exception {
-    final Territory sz5 = territory("5 Sea Zone", m_data);
-    final Territory sz6 = territory("6 Sea Zone", m_data);
-    final Territory sz7 = territory("7 Sea Zone", m_data);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory sz6 = territory("6 Sea Zone", gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
-    addTo(sz5, battleship(m_data).create(1, russians(m_data)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
+    addTo(sz5, battleship(gameData).create(1, russians(gameData)));
+    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
-    moveDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(m_data).start();
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     // attack with a german sub
     move(sz7.getUnits().getUnits(), new Route(sz7, sz6, sz5));
     // move the transport away
     move(sz5.getUnits().getMatches(Matches.UnitIsTransport), new Route(sz5, sz6));
-    moveDelegate(m_data).end();
+    moveDelegate(gameData).end();
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
-    battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(4, mfb.getAttackingUnits().size());
   }
 }

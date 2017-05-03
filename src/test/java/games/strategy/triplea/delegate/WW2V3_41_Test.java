@@ -274,7 +274,7 @@ public class WW2V3_41_Test {
     del.start();
     addTo(british(m_data), transport(m_data).create(1, british(m_data)), m_data);
     final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", m_data),
-        IAbstractPlaceDelegate.BidMode.NOT_BID);
+      IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
   }
 
@@ -363,10 +363,9 @@ public class WW2V3_41_Test {
     bridge.setStepName("britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(m_data);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
-    battleDelegate.start();
     assertEquals(2, TransportTracker.transporting(transports.get(0)).size());
-    // fight the battle
-    assertValid(fight(battleDelegate, sz7));
+    battleDelegate.start();
+    // battle already fought
     // make sure the infantry die with the transport
     assertTrue(sz7.getUnits().toString(), sz7.getUnits().getMatches(Matches.unitOwnedBy(british)).isEmpty());
   }
@@ -998,7 +997,8 @@ public class WW2V3_41_Test {
     move.end();
     // start the battle phase, this will ask the user to bombard
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    BattleDelegate.doInitialize(battleDelegate(m_data).getBattleTracker(), bridge);
+    battleDelegate(m_data).addBombardmentSources();
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
     // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships
@@ -1006,14 +1006,12 @@ public class WW2V3_41_Test {
     assertEquals(2, mfb.getBombardingUnits().size());
     // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
-    // 3= Battleship hitting a 4, 2=Cruiser hitting a 3, 5555=italian infantry missing on 6s, 00= british getting return
-    // fire on 1.
-    bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
+    // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once
+    bridge.setRandomSource(new ScriptedRandomSource(2, 2, 1, 5, 5, 5, 5, 5));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), eg);
     // end result should be 2 italian infantry.
-    assertEquals(2, eg.getUnits().size());
+    assertEquals(3, eg.getUnits().size());
   }
 
   @Test
@@ -1060,7 +1058,8 @@ public class WW2V3_41_Test {
     }
     // start the battle phase, this will ask the user to bombard
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    BattleDelegate.doInitialize(battleDelegate(m_data).getBattleTracker(), bridge);
+    battleDelegate(m_data).addBombardmentSources();
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
     assertNotNull(mfb);
@@ -1070,7 +1069,8 @@ public class WW2V3_41_Test {
     // defending inf hit
     bridge.setRandomSource(new ScriptedRandomSource(3, 2, 6, 6, 1, 1));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    BattleDelegate.doInitialize(battleDelegate(m_data).getBattleTracker(), bridge);
+    battleDelegate(m_data).addBombardmentSources();
     fight(battleDelegate(m_data), eg);
     // 1 defending inf remaining
     assertEquals(1, eg.getUnits().size());
@@ -1105,7 +1105,8 @@ public class WW2V3_41_Test {
     move.end();
     // start the battle phase, this will ask the user to bombard
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(m_data).start();
+    BattleDelegate.doInitialize(battleDelegate(m_data).getBattleTracker(), bridge);
+    battleDelegate(m_data).addBombardmentSources();
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
     // only 2 battleships are allowed to bombard
@@ -1445,7 +1446,6 @@ public class WW2V3_41_Test {
     bridge.setRandomSource(new ScriptedRandomSource(5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), egypt);
   }
 
   @Test
@@ -1478,7 +1478,6 @@ public class WW2V3_41_Test {
     bridge.setRandomSource(new ScriptedRandomSource(1, 5, 5, 5, 5, 5, 5, 5, 5));
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
-    fight(battleDelegate(m_data), sz5);
     // make sure the transports died
     assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
   }
