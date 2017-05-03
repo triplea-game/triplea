@@ -271,21 +271,3 @@ class UnitCostComparator implements Comparator<Unit> {
     return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
   }
 }
-
-
-class UnitTypeCostComparator implements Comparator<UnitType> {
-  private final IntegerMap<UnitType> m_costs;
-
-  public UnitTypeCostComparator(final IntegerMap<UnitType> costs) {
-    m_costs = costs;
-  }
-
-  public UnitTypeCostComparator(final PlayerID player, final GameData data) {
-    m_costs = BattleCalculator.getCostsForTUV(player, data);
-  }
-
-  @Override
-  public int compare(final UnitType u1, final UnitType u2) {
-    return m_costs.getInt(u1) - m_costs.getInt(u2);
-  }
-}
