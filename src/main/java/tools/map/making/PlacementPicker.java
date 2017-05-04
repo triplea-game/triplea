@@ -178,6 +178,7 @@ public class PlacementPicker extends JFrame {
                 scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(widthProperty)) {
@@ -185,6 +186,7 @@ public class PlacementPicker extends JFrame {
                 width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(heightProperty)) {
@@ -193,6 +195,7 @@ public class PlacementPicker extends JFrame {
                     Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
           }
@@ -215,6 +218,7 @@ public class PlacementPicker extends JFrame {
           }
         }
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -227,6 +231,7 @@ public class PlacementPicker extends JFrame {
         try {
           unit_zoom_percent = Double.parseDouble(result.toLowerCase());
         } catch (final NumberFormatException ex) {
+          // ignore malformed input
         }
         final String width = JOptionPane.showInputDialog(null,
             "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
@@ -234,6 +239,7 @@ public class PlacementPicker extends JFrame {
           try {
             PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         final String height = JOptionPane.showInputDialog(null,
@@ -242,10 +248,12 @@ public class PlacementPicker extends JFrame {
           try {
             PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         placeDimensionsSet = true;
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     File file = null;
@@ -588,6 +596,7 @@ public class PlacementPicker extends JFrame {
         Double.parseDouble(value);
         System.setProperty(TRIPLEA_UNIT_ZOOM, value);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     } else if (args.length == 2) {
       String value0;
@@ -600,6 +609,7 @@ public class PlacementPicker extends JFrame {
         Integer.parseInt(value0);
         System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
       String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
@@ -611,6 +621,7 @@ public class PlacementPicker extends JFrame {
         Integer.parseInt(value1);
         System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     }
     boolean usagePrinted = false;

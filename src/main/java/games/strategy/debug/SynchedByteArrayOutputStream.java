@@ -45,6 +45,7 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
         try {
           lock.wait();
         } catch (final InterruptedException ie) {
+          Thread.currentThread().interrupt();
         }
       }
       final String s = toString();

@@ -13,6 +13,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
@@ -93,6 +94,7 @@ public class GameSelectorModel extends Observable {
         return newData;
       }
     } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
     }
     return null;
   }

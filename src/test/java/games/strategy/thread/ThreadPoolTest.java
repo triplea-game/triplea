@@ -114,6 +114,7 @@ public class ThreadPoolTest {
         try {
           wait(10);
         } catch (final InterruptedException ie) {
+          Thread.currentThread().interrupt();
         }
         super.run();
       }

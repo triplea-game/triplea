@@ -36,6 +36,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -226,6 +227,7 @@ public class EditPanel extends ActionPanel {
         try {
           newTotal = Integer.parseInt(PUsField.getText());
         } catch (final Exception e) {
+          // ignore malformed input
         }
         final String result = m_frame.getEditDelegate().changePUs(player, newTotal);
         if (result != null) {
@@ -279,6 +281,7 @@ public class EditPanel extends ActionPanel {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
         final String result = m_frame.getEditDelegate().addTechAdvance(player, advance);
         if (result != null) {
@@ -341,6 +344,7 @@ public class EditPanel extends ActionPanel {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
         final String result = m_frame.getEditDelegate().removeTechAdvance(player, advance);
         if (result != null) {

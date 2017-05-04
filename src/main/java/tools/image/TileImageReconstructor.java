@@ -90,6 +90,7 @@ public class TileImageReconstructor {
       try {
         sizeX = Integer.parseInt(width);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     final String height = JOptionPane.showInputDialog(null, "Enter the map image's full height in pixels:");
@@ -97,6 +98,7 @@ public class TileImageReconstructor {
       try {
         sizeY = Integer.parseInt(height);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     if (sizeX <= 0 || sizeY <= 0) {

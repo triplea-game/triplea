@@ -524,12 +524,14 @@ public class HeadlessGameServer {
         m_lobbyWatcherResetupThread.shutdown();
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_iGame != null) {
         m_iGame.stopGame();
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_setupPanelModel != null) {
@@ -542,12 +544,14 @@ public class HeadlessGameServer {
         }
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
     try {
       if (m_gameSelectorModel != null && m_gameSelectorModel.getGameData() != null) {
         m_gameSelectorModel.getGameData().clearAllListeners();
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
     s_instance = null;
     m_setupPanelModel = null;

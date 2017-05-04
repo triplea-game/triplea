@@ -149,6 +149,7 @@ public class DoubleTextField extends JTextField {
         Double.parseDouble(DoubleTextField.this.getText());
         notifyListeners();
       } catch (final NumberFormatException e) {
+        // ignore malformed input
       }
     }
   }

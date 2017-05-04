@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -112,6 +113,7 @@ public class AutoPlacementFinder {
                 scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(widthProperty)) {
@@ -119,6 +121,7 @@ public class AutoPlacementFinder {
                 width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(heightProperty)) {
@@ -127,6 +130,7 @@ public class AutoPlacementFinder {
                     Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
           }
@@ -149,6 +153,7 @@ public class AutoPlacementFinder {
           }
         }
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -161,6 +166,7 @@ public class AutoPlacementFinder {
         try {
           unit_zoom_percent = Double.parseDouble(result.toLowerCase());
         } catch (final NumberFormatException ex) {
+          // ignore malformed input
         }
         final String width = JOptionPane.showInputDialog(null,
             "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
@@ -168,6 +174,7 @@ public class AutoPlacementFinder {
           try {
             PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         final String height = JOptionPane.showInputDialog(null,
@@ -176,10 +183,12 @@ public class AutoPlacementFinder {
           try {
             PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         placeDimensionsSet = true;
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     try {
@@ -469,6 +478,7 @@ public class AutoPlacementFinder {
         Double.parseDouble(value);
         System.setProperty(TRIPLEA_UNIT_ZOOM, value);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     } else if (args.length == 2) {
       String value0;
@@ -481,6 +491,7 @@ public class AutoPlacementFinder {
         Integer.parseInt(value0);
         System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
       String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
@@ -492,6 +503,7 @@ public class AutoPlacementFinder {
         Integer.parseInt(value1);
         System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     }
     boolean usagePrinted = false;

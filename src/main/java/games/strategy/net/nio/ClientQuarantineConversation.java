@@ -75,6 +75,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     try {
       showLatch.await();
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     if (login != null && challengeProperties != null) {
       try {
