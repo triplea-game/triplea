@@ -403,7 +403,7 @@ public class BattleDisplay extends JPanel {
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action = SwingAction.of("Retreat?", e -> {
-      final String yes = "Retreat";
+      final String yes = possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
       final String no = "Remain";
       final String cancel = "Ask Me Later";
       final String[] options = {yes, no, cancel};
@@ -425,13 +425,18 @@ public class BattleDisplay extends JPanel {
       // if you have eliminated the impossible, whatever remains, no matter
       // how improbable, must be the truth
       // retreat
-      final RetreatComponent comp = new RetreatComponent(possible);
-      final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-      if (option == JOptionPane.OK_OPTION) {
-        if (comp.getSelection() != null) {
-          retreatTo[0] = comp.getSelection();
-          latch.countDown();
+      if (possible.size() == 1) {
+        retreatTo[0] = possible.iterator().next();
+        latch.countDown();
+      } else {
+        final RetreatComponent comp = new RetreatComponent(possible);
+        final int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+        if (option == JOptionPane.OK_OPTION) {
+          if (comp.getSelection() != null) {
+            retreatTo[0] = comp.getSelection();
+            latch.countDown();
+          }
         }
       }
     });
