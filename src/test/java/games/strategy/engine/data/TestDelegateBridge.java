@@ -32,21 +32,21 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
  */
 @Deprecated
 public class TestDelegateBridge implements ITestDelegateBridge {
-  private final GameData m_data;
-  private PlayerID m_id;
-  private String m_stepName = "no name specified";
-  private IDisplay m_dummyDisplay;
-  private final ISound m_soundChannel = mock(ISound.class);
-  private IRandomSource m_randomSource;
-  private final IDelegateHistoryWriter m_historyWriter;
-  private IRemotePlayer m_remote;
+  private final GameData gameData;
+  private PlayerID playerId;
+  private String stepName = "no name specified";
+  private IDisplay dummyDisplay;
+  private final ISound soundChannel = mock(ISound.class);
+  private IRandomSource randomSource;
+  private final IDelegateHistoryWriter delegateHistoryWriter;
+  private IRemotePlayer remotePlayer;
 
   /** Creates new TestDelegateBridge. */
   public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay) {
-    m_data = data;
-    m_id = id;
-    m_dummyDisplay = dummyDisplay;
-    final History history = new History(m_data);
+    gameData = data;
+    playerId = id;
+    this.dummyDisplay = dummyDisplay;
+    final History history = new History(gameData);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
     final IServerMessenger messenger = mock(IServerMessenger.class);
@@ -58,12 +58,12 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     when(messenger.isServer()).thenReturn(true);
     final ChannelMessenger channelMessenger =
         new ChannelMessenger(new UnifiedMessenger(messenger));
-    m_historyWriter = new DelegateHistoryWriter(channelMessenger);
+    delegateHistoryWriter = new DelegateHistoryWriter(channelMessenger);
   }
 
   @Override
   public void setDisplay(final ITripleADisplay display) {
-    m_dummyDisplay = display;
+    dummyDisplay = display;
   }
 
   /**
@@ -71,13 +71,13 @@ public class TestDelegateBridge implements ITestDelegateBridge {
    */
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-    return m_randomSource.getRandom(max, annotation);
+    return randomSource.getRandom(max, annotation);
   }
 
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {
-    return m_randomSource.getRandom(max, count, annotation);
+    return randomSource.getRandom(max, count, annotation);
   }
 
   /**
@@ -86,7 +86,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
    */
   @Override
   public void setPlayerID(final PlayerID aPlayer) {
-    m_id = aPlayer;
+    playerId = aPlayer;
   }
 
   public boolean inTransaction() {
@@ -95,12 +95,12 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public PlayerID getPlayerID() {
-    return m_id;
+    return playerId;
   }
 
   @Override
   public void addChange(final Change aChange) {
-    m_data.performChange(aChange);
+    gameData.performChange(aChange);
   }
 
   @Override
@@ -110,53 +110,53 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void setStepName(final String name, final boolean doNotChangeSequence) {
-    m_stepName = name;
+    stepName = name;
     if (!doNotChangeSequence) {
-      m_data.acquireWriteLock();
+      gameData.acquireWriteLock();
       try {
-        final int length = m_data.getSequence().size();
+        final int length = gameData.getSequence().size();
         int i = 0;
-        while (i < length && m_data.getSequence().getStep().getName().indexOf(name) == -1) {
-          m_data.getSequence().next();
+        while (i < length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
+          gameData.getSequence().next();
           i++;
         }
-        if (i > +length && m_data.getSequence().getStep().getName().indexOf(name) == -1) {
+        if (i > +length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
           throw new IllegalStateException("Step not found: " + name);
         }
       } finally {
-        m_data.releaseWriteLock();
+        gameData.releaseWriteLock();
       }
     }
   }
 
   @Override
   public String getStepName() {
-    return m_stepName;
+    return stepName;
   }
 
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return m_historyWriter;
+    return delegateHistoryWriter;
   }
 
   @Override
   public IRemotePlayer getRemotePlayer() {
-    return m_remote;
+    return remotePlayer;
   }
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
-    return m_remote;
+    return remotePlayer;
   }
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
-    return m_dummyDisplay;
+    return dummyDisplay;
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    return m_soundChannel;
+    return soundChannel;
   }
 
   @Override
@@ -172,12 +172,12 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void setRandomSource(final IRandomSource randomSource) {
-    m_randomSource = randomSource;
+    this.randomSource = randomSource;
   }
 
   @Override
   public void setRemote(final IRemotePlayer remote) {
-    m_remote = remote;
+    remotePlayer = remote;
   }
 
   @Override
@@ -185,6 +185,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 }

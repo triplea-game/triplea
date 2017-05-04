@@ -28,66 +28,66 @@ import games.strategy.util.ThreadUtil;
 
 public class ChatTest {
   private static int SERVER_PORT = -1;
-  private IServerMessenger m_server;
-  private IMessenger m_client1;
-  private IMessenger m_client2;
-  UnifiedMessenger m_sum;
-  RemoteMessenger m_srm;
-  ChannelMessenger m_scm;
-  UnifiedMessenger m_c1um;
-  RemoteMessenger m_c1rm;
-  ChannelMessenger m_c1cm;
-  UnifiedMessenger m_c2um;
-  RemoteMessenger m_c2rm;
-  ChannelMessenger m_c2cm;
-  TestChatListener m_serverChatListener;
-  TestChatListener m_client1ChatListener;
-  TestChatListener m_client2ChatListener;
-  NullModeratorController m_smc;
+  private IServerMessenger serverMessenger;
+  private IMessenger client1Messenger;
+  private IMessenger client2Messenger;
+  UnifiedMessenger serverUnifiedMessenger;
+  RemoteMessenger serverRemoteMessenger;
+  ChannelMessenger serverChannelMessenger;
+  UnifiedMessenger client1UnifiedMessenger;
+  RemoteMessenger client1RemoteMessenger;
+  ChannelMessenger client1ChannelMessenger;
+  UnifiedMessenger client2UnifiedMessenger;
+  RemoteMessenger client2RemoteMessenger;
+  ChannelMessenger client2ChannelMessenger;
+  TestChatListener serverChatListener;
+  TestChatListener client1ChatListener;
+  TestChatListener client2ChatListener;
+  NullModeratorController serverModeratorController;
 
   @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
-    m_server = new ServerMessenger("Server", SERVER_PORT);
-    m_server.setAcceptNewConnections(true);
+    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
-    m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-    m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
-    m_sum = new UnifiedMessenger(m_server);
-    m_srm = new RemoteMessenger(m_sum);
-    m_scm = new ChannelMessenger(m_sum);
-    m_c1um = new UnifiedMessenger(m_client1);
-    m_c1rm = new RemoteMessenger(m_c1um);
-    m_c1cm = new ChannelMessenger(m_c1um);
-    m_c2um = new UnifiedMessenger(m_client2);
-    m_c2rm = new RemoteMessenger(m_c2um);
-    m_c2cm = new ChannelMessenger(m_c2um);
-    m_smc = new NullModeratorController(m_server, null);
-    m_smc.register(m_srm);
-    m_serverChatListener = new TestChatListener();
-    m_client1ChatListener = new TestChatListener();
-    m_client2ChatListener = new TestChatListener();
+    client1Messenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    client2Messenger = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
+    serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
+    serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
+    serverChannelMessenger = new ChannelMessenger(serverUnifiedMessenger);
+    client1UnifiedMessenger = new UnifiedMessenger(client1Messenger);
+    client1RemoteMessenger = new RemoteMessenger(client1UnifiedMessenger);
+    client1ChannelMessenger = new ChannelMessenger(client1UnifiedMessenger);
+    client2UnifiedMessenger = new UnifiedMessenger(client2Messenger);
+    client2RemoteMessenger = new RemoteMessenger(client2UnifiedMessenger);
+    client2ChannelMessenger = new ChannelMessenger(client2UnifiedMessenger);
+    serverModeratorController = new NullModeratorController(serverMessenger, null);
+    serverModeratorController.register(serverRemoteMessenger);
+    serverChatListener = new TestChatListener();
+    client1ChatListener = new TestChatListener();
+    client2ChatListener = new TestChatListener();
   }
 
   @After
   public void tearDown() {
     try {
-      if (m_server != null) {
-        m_server.shutDown();
+      if (serverMessenger != null) {
+        serverMessenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_client1 != null) {
-        m_client1.shutDown();
+      if (client1Messenger != null) {
+        client1Messenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_client2 != null) {
-        m_client2.shutDown();
+      if (client2Messenger != null) {
+        client2Messenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -100,27 +100,31 @@ public class ChatTest {
     // its just that the chat is so hard to set up
     // and we really need to test it working with sockets
     // rather than some mocked up implementation
-    final ChatController controller = new ChatController("c", m_server, m_srm, m_scm, m_smc);
-    final Chat server = new Chat(m_server, "c", m_scm, m_srm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
-    server.addChatListener(m_serverChatListener);
-    final Chat client1 = new Chat(m_client1, "c", m_c1cm, m_c1rm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
-    client1.addChatListener(m_client1ChatListener);
-    final Chat client2 = new Chat(m_client2, "c", m_c2cm, m_c2rm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
-    client2.addChatListener(m_client2ChatListener);
+    final ChatController controller = new ChatController("c", serverMessenger, serverRemoteMessenger,
+        serverChannelMessenger, serverModeratorController);
+    final Chat server =
+        new Chat(serverMessenger, "c", serverChannelMessenger, serverRemoteMessenger, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
+    server.addChatListener(serverChatListener);
+    final Chat client1 = new Chat(client1Messenger, "c", client1ChannelMessenger, client1RemoteMessenger,
+        Chat.CHAT_SOUND_PROFILE.NO_SOUND);
+    client1.addChatListener(client1ChatListener);
+    final Chat client2 = new Chat(client2Messenger, "c", client2ChannelMessenger, client2RemoteMessenger,
+        Chat.CHAT_SOUND_PROFILE.NO_SOUND);
+    client2.addChatListener(client2ChatListener);
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
-        assertEquals(m_client1ChatListener.m_players.size(), 3);
-        assertEquals(m_client2ChatListener.m_players.size(), 3);
-        assertEquals(m_serverChatListener.m_players.size(), 3);
+        assertEquals(client1ChatListener.players.size(), 3);
+        assertEquals(client2ChatListener.players.size(), 3);
+        assertEquals(serverChatListener.players.size(), 3);
         break;
       } catch (final AssertionError e) {
         ThreadUtil.sleep(25);
       }
     }
-    assertEquals(m_client1ChatListener.m_players.size(), 3);
-    assertEquals(m_client2ChatListener.m_players.size(), 3);
-    assertEquals(m_serverChatListener.m_players.size(), 3);
+    assertEquals(client1ChatListener.players.size(), 3);
+    assertEquals(client2ChatListener.players.size(), 3);
+    assertEquals(serverChatListener.players.size(), 3);
     // send 50 messages, each client sending messages on a different thread.
     final int messageCount = 50;
     final Runnable client2Send = new Runnable() {
@@ -151,51 +155,49 @@ public class ChatTest {
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
-        assertEquals(m_client1ChatListener.m_messages.size(), 3 * messageCount);
-        assertEquals(m_client2ChatListener.m_messages.size(), 3 * messageCount);
-        assertEquals(m_serverChatListener.m_messages.size(), 3 * messageCount);
+        assertEquals(client1ChatListener.messages.size(), 3 * messageCount);
+        assertEquals(client2ChatListener.messages.size(), 3 * messageCount);
+        assertEquals(serverChatListener.messages.size(), 3 * messageCount);
         break;
       } catch (final AssertionError afe) {
         ThreadUtil.sleep(25);
       }
     }
-    assertEquals(m_client1ChatListener.m_messages.size(), 3 * messageCount);
-    assertEquals(m_client2ChatListener.m_messages.size(), 3 * messageCount);
-    assertEquals(m_serverChatListener.m_messages.size(), 3 * messageCount);
+    assertEquals(client1ChatListener.messages.size(), 3 * messageCount);
+    assertEquals(client2ChatListener.messages.size(), 3 * messageCount);
+    assertEquals(serverChatListener.messages.size(), 3 * messageCount);
     client1.shutdown();
     client2.shutdown();
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
-        assertEquals(m_serverChatListener.m_players.size(), 1);
+        assertEquals(serverChatListener.players.size(), 1);
         break;
       } catch (final AssertionError e) {
         ThreadUtil.sleep(25);
       }
     }
-    assertEquals(m_serverChatListener.m_players.size(), 1);
+    assertEquals(serverChatListener.players.size(), 1);
     controller.deactivate();
     for (int i = 0; i < 10; i++) {
       try {
-        assertEquals(m_serverChatListener.m_players.size(), 0);
+        assertEquals(serverChatListener.players.size(), 0);
         break;
       } catch (final AssertionError afe) {
         ThreadUtil.sleep(25);
       }
     }
-    assertEquals(m_serverChatListener.m_players.size(), 0);
+    assertEquals(serverChatListener.players.size(), 0);
   }
 
   private static class TestChatListener implements IChatListener {
-    public List<INode> m_players;
-    public List<String> m_messages = new ArrayList<>();
-    public List<Boolean> m_thirdPerson = new ArrayList<>();
-    public List<String> m_from = new ArrayList<>();
+    public List<INode> players;
+    public List<String> messages = new ArrayList<>();
 
     @Override
     public void updatePlayerList(final Collection<INode> players) {
       synchronized (this) {
-        m_players = new ArrayList<>(players);
+        this.players = new ArrayList<>(players);
       }
     }
 
@@ -203,9 +205,7 @@ public class ChatTest {
     public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
         final String sound) {
       synchronized (this) {
-        m_messages.add(message);
-        m_thirdPerson.add(thirdperson);
-        m_from.add(from);
+        messages.add(message);
       }
     }
 
