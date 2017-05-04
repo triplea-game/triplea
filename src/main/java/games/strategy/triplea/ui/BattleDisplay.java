@@ -403,7 +403,7 @@ public class BattleDisplay extends JPanel {
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action = SwingAction.of("Retreat?", e -> {
-      final String yes = "Retreat";
+      final String yes = possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
       final String no = "Remain";
       final String cancel = "Ask Me Later";
       final String[] options = {yes, no, cancel};

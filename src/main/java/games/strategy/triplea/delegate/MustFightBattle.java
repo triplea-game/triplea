@@ -819,16 +819,23 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (Match.someMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1))) {
-          final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(m_defendingUnits,
-                 Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), m_data, 1, false, true, true)));
-          Collections.sort(sortedUnitsList, new UnitBattleComparator(false,
+        Match<Unit> UnitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), m_data, 1, false, true, true);
+        final List<Unit> sortedAttackingUnits = new ArrayList<>(Match.getMatches(m_attackingUnits, UnitList));
+        Collections.sort(sortedAttackingUnits, new UnitBattleComparator(false,
+            BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
+            TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+        Collections.reverse(sortedAttackingUnits);
+        if (DiceRoll.getTotalPower(
+            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits, false, false,
+                m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) > 0) {
+          final List<Unit> sortedDefendingUnits = new ArrayList<>(Match.getMatches(m_defendingUnits, UnitList));
+          Collections.sort(sortedDefendingUnits, new UnitBattleComparator(false,
                  BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
                  TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
-          Collections.reverse(sortedUnitsList);
+          Collections.reverse(sortedDefendingUnits);
           if (DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, m_defendingUnits, false, false, m_data,
-                  m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) == 0) {
+              DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits, m_defendingUnits, false, false,
+                  m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) == 0) {
             remove(m_defendingUnits, bridge, m_battleSite, true);
           }
         }
