@@ -397,7 +397,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           }
           continue;
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          // territory name is not an integer; fall through
         }
       }
       if (name.equals("each")) {
