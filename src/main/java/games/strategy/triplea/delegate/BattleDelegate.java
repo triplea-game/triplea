@@ -684,7 +684,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite
       // it.
       if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {
-        final Collection<Territory> amphibFromTerrs = ( (DependentBattle) battle).getAmphibiousAttackTerritories();
+        final Collection<Territory> amphibFromTerrs = ((DependentBattle) battle).getAmphibiousAttackTerritories();
         amphibFromTerrs.removeAll(territoriesWithBattlesWater);
         for (final Territory amphibFrom : amphibFromTerrs) {
           HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
