@@ -272,8 +272,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       }
       for (int i = 0; i < status.length(); i++) {
         final char c = status.charAt(i);
-        // skip combining characters
-        if (c >= '\u0300' && c <= '\u036F') {
+        if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
           continue;
         }
         statusSB.append(c);
