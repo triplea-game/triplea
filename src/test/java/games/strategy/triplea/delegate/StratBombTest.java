@@ -28,30 +28,30 @@ import games.strategy.triplea.xml.TestMapGameData;
 // Test Global 1940 feature of having AA for each individual facility firing at bombers which are attacking it
 
 public class StratBombTest {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.GLOBAL1940.getGameData();
+    gameData = TestMapGameData.GLOBAL1940.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
 
   @Test
   public void TestBombingRaidInvidualAA() {
-    final Territory wgermany = m_data.getMap().getTerritory("Western Germany");
-    final Territory uk = m_data.getMap().getTerritory("United Kingdom");
-    final PlayerID british = GameDataTestUtil.british(m_data);
+    final Territory wgermany = gameData.getMap().getTerritory("Western Germany");
+    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final PlayerID british = GameDataTestUtil.british(gameData);
     // add a unit
-    final Unit stratBomber = GameDataTestUtil.bomber(m_data).create(british);
-    final Unit tacBomber1 = GameDataTestUtil.tacBomber(m_data).create(british);
-    final Unit tacBomber2 = GameDataTestUtil.tacBomber(m_data).create(british);
-    m_data.performChange(ChangeFactory.addUnits(uk, Collections.singleton(stratBomber)));
-    m_data.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber1)));
-    m_data.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber2)));
+    final Unit stratBomber = GameDataTestUtil.bomber(gameData).create(british);
+    final Unit tacBomber1 = GameDataTestUtil.tacBomber(gameData).create(british);
+    final Unit tacBomber2 = GameDataTestUtil.tacBomber(gameData).create(british);
+    gameData.performChange(ChangeFactory.addUnits(uk, Collections.singleton(stratBomber)));
+    gameData.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber1)));
+    gameData.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber2)));
     final BattleTracker tracker = new BattleTracker();
     List<Unit> attackers = new ArrayList<>();
     attackers.add(stratBomber);
@@ -84,7 +84,7 @@ public class StratBombTest {
 
     final StrategicBombingRaidBattle battle =
         (StrategicBombingRaidBattle) tracker.getPendingBattle(wgermany, true, null);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, wgermany),
+    battle.addAttackChange(gameData.getMap().getRoute(uk, wgermany),
         uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     // addTo(wgermany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), wgermany, battle.getBattleType());
