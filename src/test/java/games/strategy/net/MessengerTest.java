@@ -22,56 +22,56 @@ import games.strategy.util.ThreadUtil;
 
 public class MessengerTest {
   private static int SERVER_PORT = -1;
-  private IServerMessenger m_server;
-  private IMessenger m_client1;
-  private IMessenger m_client2;
-  private final MessageListener m_serverListener = new MessageListener();
-  private final MessageListener m_client1Listener = new MessageListener();
-  private final MessageListener m_client2Listener = new MessageListener();
+  private IServerMessenger serverMessenger;
+  private IMessenger client1Messenger;
+  private IMessenger client2Messenger;
+  private final MessageListener serverMessageListener = new MessageListener();
+  private final MessageListener client1MessageListener = new MessageListener();
+  private final MessageListener client2MessageListener = new MessageListener();
 
   @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
-    m_server = new ServerMessenger("Server", SERVER_PORT);
-    m_server.setAcceptNewConnections(true);
-    m_server.addMessageListener(m_serverListener);
+    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverMessenger.setAcceptNewConnections(true);
+    serverMessenger.addMessageListener(serverMessageListener);
     final String mac = MacFinder.getHashedMacAddress();
-    m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-    m_client1.addMessageListener(m_client1Listener);
-    m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
-    m_client2.addMessageListener(m_client2Listener);
-    assertEquals(m_client1.getServerNode(), m_server.getLocalNode());
-    assertEquals(m_client2.getServerNode(), m_server.getLocalNode());
-    assertEquals(m_server.getServerNode(), m_server.getLocalNode());
+    client1Messenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    client1Messenger.addMessageListener(client1MessageListener);
+    client2Messenger = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
+    client2Messenger.addMessageListener(client2MessageListener);
+    assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
+    assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());
+    assertEquals(serverMessenger.getServerNode(), serverMessenger.getLocalNode());
     for (int i = 0; i < 100; i++) {
-      if (m_server.getNodes().size() != 3) {
+      if (serverMessenger.getNodes().size() != 3) {
         ThreadUtil.sleep(1);
       } else {
         break;
       }
     }
-    assertEquals(m_server.getNodes().size(), 3);
+    assertEquals(serverMessenger.getNodes().size(), 3);
   }
 
   @After
   public void tearDown() {
     try {
-      if (m_server != null) {
-        m_server.shutDown();
+      if (serverMessenger != null) {
+        serverMessenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_client1 != null) {
-        m_client1.shutDown();
+      if (client1Messenger != null) {
+        client1Messenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_client2 != null) {
-        m_client2.shutDown();
+      if (client2Messenger != null) {
+        client2Messenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -81,39 +81,39 @@ public class MessengerTest {
   @Test
   public void testServerSend() {
     final String message = "Hello";
-    m_server.send(message, m_client1.getLocalNode());
-    assertEquals(m_client1Listener.getLastMessage(), message);
-    assertEquals(m_client1Listener.getLastSender(), m_server.getLocalNode());
-    assertEquals(m_client2Listener.getMessageCount(), 0);
+    serverMessenger.send(message, client1Messenger.getLocalNode());
+    assertEquals(client1MessageListener.getLastMessage(), message);
+    assertEquals(client1MessageListener.getLastSender(), serverMessenger.getLocalNode());
+    assertEquals(client2MessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testServerSendToClient2() throws Exception {
     final String message = "Hello";
-    m_server.send(message, m_client2.getLocalNode());
-    assertEquals(m_client2Listener.getLastMessage(), message);
-    assertEquals(m_client2Listener.getLastSender(), m_server.getLocalNode());
-    assertEquals(m_client1Listener.getMessageCount(), 0);
+    serverMessenger.send(message, client2Messenger.getLocalNode());
+    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(client2MessageListener.getLastSender(), serverMessenger.getLocalNode());
+    assertEquals(client1MessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testClientSendToServer() {
     final String message = "Hello";
-    m_client1.send(message, m_server.getLocalNode());
-    assertEquals(m_serverListener.getLastMessage(), message);
-    assertEquals(m_serverListener.getLastSender(), m_client1.getLocalNode());
-    assertEquals(m_client1Listener.getMessageCount(), 0);
-    assertEquals(m_client2Listener.getMessageCount(), 0);
+    client1Messenger.send(message, serverMessenger.getLocalNode());
+    assertEquals(serverMessageListener.getLastMessage(), message);
+    assertEquals(serverMessageListener.getLastSender(), client1Messenger.getLocalNode());
+    assertEquals(client1MessageListener.getMessageCount(), 0);
+    assertEquals(client2MessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testClientSendToClient() throws InterruptedException {
     final String message = "Hello";
-    m_client1.send(message, m_client2.getLocalNode());
-    assertEquals(m_client2Listener.getLastMessage(), message);
-    assertEquals(m_client2Listener.getLastSender(), m_client1.getLocalNode());
-    assertEquals(m_client1Listener.getMessageCount(), 0);
-    assertEquals(m_serverListener.getMessageCount(), 0);
+    client1Messenger.send(message, client2Messenger.getLocalNode());
+    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
+    assertEquals(client1MessageListener.getMessageCount(), 0);
+    assertEquals(serverMessageListener.getMessageCount(), 0);
   }
 
   @Test
@@ -124,60 +124,60 @@ public class MessengerTest {
       builder.append('a');
     }
     final String message = builder.toString();
-    m_client1.send(message, m_client2.getLocalNode());
-    assertEquals(m_client2Listener.getLastMessage(), message);
-    assertEquals(m_client2Listener.getLastSender(), m_client1.getLocalNode());
-    assertEquals(m_client1Listener.getMessageCount(), 0);
-    assertEquals(m_serverListener.getMessageCount(), 0);
+    client1Messenger.send(message, client2Messenger.getLocalNode());
+    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
+    assertEquals(client1MessageListener.getMessageCount(), 0);
+    assertEquals(serverMessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testServerBroadcast() {
     final String message = "Hello";
-    m_server.broadcast(message);
-    assertEquals(m_client1Listener.getLastMessage(), message);
-    assertEquals(m_client1Listener.getLastSender(), m_server.getLocalNode());
-    assertEquals(m_client2Listener.getLastMessage(), message);
-    assertEquals(m_client2Listener.getLastSender(), m_server.getLocalNode());
-    assertEquals(m_serverListener.getMessageCount(), 0);
+    serverMessenger.broadcast(message);
+    assertEquals(client1MessageListener.getLastMessage(), message);
+    assertEquals(client1MessageListener.getLastSender(), serverMessenger.getLocalNode());
+    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(client2MessageListener.getLastSender(), serverMessenger.getLocalNode());
+    assertEquals(serverMessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testClientBroadcast() {
     final String message = "Hello";
-    m_client1.broadcast(message);
-    assertEquals(m_client2Listener.getLastMessage(), message);
-    assertEquals(m_client2Listener.getLastSender(), m_client1.getLocalNode());
-    assertEquals(m_serverListener.getLastMessage(), message);
-    assertEquals(m_serverListener.getLastSender(), m_client1.getLocalNode());
-    assertEquals(m_client1Listener.getMessageCount(), 0);
+    client1Messenger.broadcast(message);
+    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
+    assertEquals(serverMessageListener.getLastMessage(), message);
+    assertEquals(serverMessageListener.getLastSender(), client1Messenger.getLocalNode());
+    assertEquals(client1MessageListener.getMessageCount(), 0);
   }
 
   @Test
   public void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
-      m_server.send(i, m_client1.getLocalNode());
+      serverMessenger.send(i, client1Messenger.getLocalNode());
     }
     for (int i = 0; i < 100; i++) {
-      m_client1Listener.clearLastMessage();
+      client1MessageListener.clearLastMessage();
     }
   }
 
   @Test
   public void testMultipleClientToClient() {
     for (int i = 0; i < 100; i++) {
-      m_client1.send(i, m_client2.getLocalNode());
+      client1Messenger.send(i, client2Messenger.getLocalNode());
     }
     for (int i = 0; i < 100; i++) {
-      m_client2Listener.clearLastMessage();
+      client2MessageListener.clearLastMessage();
     }
   }
 
   @Test
   public void testMultipleMessages() throws Exception {
-    final Thread t1 = new Thread(new MultipleMessageSender(m_server));
-    final Thread t2 = new Thread(new MultipleMessageSender(m_client1));
-    final Thread t3 = new Thread(new MultipleMessageSender(m_client2));
+    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger));
+    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger));
+    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger));
     t1.start();
     t2.start();
     t3.start();
@@ -185,13 +185,13 @@ public class MessengerTest {
     t2.join();
     t3.join();
     for (int i = 0; i < 200; i++) {
-      m_client1Listener.clearLastMessage();
+      client1MessageListener.clearLastMessage();
     }
     for (int i = 0; i < 200; i++) {
-      m_client2Listener.clearLastMessage();
+      client2MessageListener.clearLastMessage();
     }
     for (int i = 0; i < 200; i++) {
-      m_serverListener.clearLastMessage();
+      serverMessageListener.clearLastMessage();
     }
   }
 
@@ -201,13 +201,13 @@ public class MessengerTest {
     // connection has been lost, the node list
     // should reflect that change
     for (int i = 0; i < 100; i++) {
-      if (m_server.getNodes().size() == 3) {
+      if (serverMessenger.getNodes().size() == 3) {
         break;
       }
       ThreadUtil.sleep(10);
     }
     final AtomicInteger m_serverCount = new AtomicInteger(3);
-    m_server.addConnectionChangeListener(new IConnectionChangeListener() {
+    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         m_serverCount.decrementAndGet();
@@ -218,9 +218,9 @@ public class MessengerTest {
         fail();
       }
     });
-    m_client1.shutDown();
+    client1Messenger.shutDown();
     for (int i = 0; i < 100; i++) {
-      if (m_server.getNodes().size() == 2) {
+      if (serverMessenger.getNodes().size() == 2) {
         ThreadUtil.sleep(10);
         break;
       }
@@ -232,34 +232,34 @@ public class MessengerTest {
   @Test
   public void testDisconnect() throws InterruptedException {
     for (int i = 0; i < 100; i++) {
-      if (m_server.getNodes().size() == 3) {
+      if (serverMessenger.getNodes().size() == 3) {
         break;
       }
       ThreadUtil.sleep(10);
     }
-    assertEquals(3, m_server.getNodes().size());
-    m_client1.shutDown();
-    m_client2.shutDown();
+    assertEquals(3, serverMessenger.getNodes().size());
+    client1Messenger.shutDown();
+    client2Messenger.shutDown();
     for (int i = 0; i < 100; i++) {
-      if (m_server.getNodes().size() == 1) {
+      if (serverMessenger.getNodes().size() == 1) {
         ThreadUtil.sleep(10);
         break;
       }
       ThreadUtil.sleep(1);
     }
-    assertEquals(m_server.getNodes().size(), 1);
+    assertEquals(serverMessenger.getNodes().size(), 1);
   }
 
   @Test
   public void testClose() throws InterruptedException {
     final AtomicBoolean closed = new AtomicBoolean(false);
-    m_client1.addErrorListener(new IMessengerErrorListener() {
+    client1Messenger.addErrorListener(new IMessengerErrorListener() {
       @Override
       public void messengerInvalid(final IMessenger messenger, final Exception reason) {
         closed.set(true);
       }
     });
-    m_server.removeConnection(m_client1.getLocalNode());
+    serverMessenger.removeConnection(client1Messenger.getLocalNode());
     int waitCount = 0;
     while (!closed.get() && waitCount < 10) {
       ThreadUtil.sleep(40);
@@ -283,7 +283,7 @@ public class MessengerTest {
       listeners.add(listener);
     }
 
-    m_server.broadcast("TEST");
+    serverMessenger.broadcast("TEST");
     for (final MessageListener listener : listeners) {
       assertEquals("TEST", listener.getLastMessage());
     }
@@ -351,17 +351,17 @@ public class MessengerTest {
   }
 
   private static class MultipleMessageSender implements Runnable {
-    IMessenger m_messenger;
+    IMessenger messenger;
 
     public MultipleMessageSender(final IMessenger messenger) {
-      m_messenger = messenger;
+      this.messenger = messenger;
     }
 
     @Override
     public void run() {
       Thread.yield();
       for (int i = 0; i < 100; i++) {
-        m_messenger.broadcast(i);
+        messenger.broadcast(i);
       }
     }
   }
