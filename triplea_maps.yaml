@@ -1479,7 +1479,7 @@
 - mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
   description: |  
     <br><b><em>by Frostion</em></b>
