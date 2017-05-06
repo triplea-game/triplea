@@ -16,13 +16,13 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class SerializationTest {
-  private GameData m_dataSource;
-  private GameData m_dataSink;
+  private GameData gameDataSource;
+  private GameData gameDataSink;
 
   @Before
   public void setUp() throws Exception {
-    m_dataSource = TestMapGameData.TEST.getGameData();
-    m_dataSink = TestMapGameData.TEST.getGameData();
+    gameDataSource = TestMapGameData.TEST.getGameData();
+    gameDataSink = TestMapGameData.TEST.getGameData();
   }
 
   private Object serialize(final Object anObject) throws Exception {
@@ -32,7 +32,7 @@ public class SerializationTest {
     output.flush();
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
     final ObjectInputStream input =
-        new GameObjectInputStream(new GameObjectStreamFactory(m_dataSource), source);
+        new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), source);
     final Object obj = input.readObject();
     input.close();
     output.close();
@@ -41,33 +41,33 @@ public class SerializationTest {
 
   @Test
   public void testWritePlayerID() throws Exception {
-    final PlayerID id = m_dataSource.getPlayerList().getPlayerID("chretian");
+    final PlayerID id = gameDataSource.getPlayerList().getPlayerID("chretian");
     final PlayerID readID = (PlayerID) serialize(id);
-    final PlayerID localID = m_dataSink.getPlayerList().getPlayerID("chretian");
+    final PlayerID localID = gameDataSink.getPlayerList().getPlayerID("chretian");
     assertTrue(localID != readID);
   }
 
   @Test
   public void testWriteUnitType() throws Exception {
-    final Object orig = m_dataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final Object orig = gameDataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
-    final Object local = m_dataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final Object local = gameDataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     assertTrue(local != read);
   }
 
   @Test
   public void testWriteTerritory() throws Exception {
-    final Object orig = m_dataSource.getMap().getTerritory("canada");
+    final Object orig = gameDataSource.getMap().getTerritory("canada");
     final Object read = serialize(orig);
-    final Object local = m_dataSink.getMap().getTerritory("canada");
+    final Object local = gameDataSink.getMap().getTerritory("canada");
     assertTrue(local != read);
   }
 
   @Test
   public void testWriteProductionRulte() throws Exception {
-    final Object orig = m_dataSource.getProductionRuleList().getProductionRule("infForSilver");
+    final Object orig = gameDataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);
-    final Object local = m_dataSink.getProductionRuleList().getProductionRule("infForSilver");
+    final Object local = gameDataSink.getProductionRuleList().getProductionRule("infForSilver");
     assertTrue(local != read);
   }
 }

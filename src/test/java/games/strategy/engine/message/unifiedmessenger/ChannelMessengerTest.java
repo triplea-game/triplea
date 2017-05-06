@@ -23,38 +23,38 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
 public class ChannelMessengerTest {
-  private IServerMessenger m_server;
-  private IMessenger m_client1;
+  private IServerMessenger serverMessenger;
+  private IMessenger clientMessenger;
   private static int SERVER_PORT = -1;
-  private ChannelMessenger m_serverMessenger;
-  private ChannelMessenger m_clientMessenger;
-  private UnifiedMessengerHub m_hub;
+  private ChannelMessenger serverChannelMessenger;
+  private ChannelMessenger clientChannelMessenger;
+  private UnifiedMessengerHub unifiedMessengerHub;
 
   @Before
   public void setUp() throws IOException {
     SERVER_PORT = TestUtil.getUniquePort();
-    m_server = new ServerMessenger("Server", SERVER_PORT);
-    m_server.setAcceptNewConnections(true);
+    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
-    m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_server);
-    m_hub = unifiedMessenger.getHub();
-    m_serverMessenger = new ChannelMessenger(unifiedMessenger);
-    m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
+    clientMessenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
+    unifiedMessengerHub = unifiedMessenger.getHub();
+    serverChannelMessenger = new ChannelMessenger(unifiedMessenger);
+    clientChannelMessenger = new ChannelMessenger(new UnifiedMessenger(clientMessenger));
   }
 
   @After
   public void tearDown() {
     try {
-      if (m_server != null) {
-        m_server.shutDown();
+      if (serverMessenger != null) {
+        serverMessenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_client1 != null) {
-        m_client1.shutDown();
+      if (clientMessenger != null) {
+        clientMessenger.shutDown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -64,8 +64,8 @@ public class ChannelMessengerTest {
   @Test
   public void testLocalCall() {
     final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
-    m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
-    final IChannelBase subscribor = (IChannelBase) m_serverMessenger.getChannelBroadcastor(descriptor);
+    serverChannelMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
+    final IChannelBase subscribor = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(descriptor);
     subscribor.testNoParams();
     subscribor.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
     subscribor.testString("a");
@@ -75,9 +75,9 @@ public class ChannelMessengerTest {
   public void testRemoteCall() {
     final RemoteName testRemote = new RemoteName(IChannelBase.class, "testRemote");
     final ChannelSubscribor subscribor1 = new ChannelSubscribor();
-    m_serverMessenger.registerChannelSubscriber(subscribor1, testRemote);
-    assertHasChannel(testRemote, m_hub);
-    final IChannelBase channelTest = (IChannelBase) m_clientMessenger.getChannelBroadcastor(testRemote);
+    serverChannelMessenger.registerChannelSubscriber(subscribor1, testRemote);
+    assertHasChannel(testRemote, unifiedMessengerHub);
+    final IChannelBase channelTest = (IChannelBase) clientChannelMessenger.getChannelBroadcastor(testRemote);
     channelTest.testNoParams();
     assertCallCountIs(subscribor1, 1);
     channelTest.testString("a");
@@ -94,9 +94,9 @@ public class ChannelMessengerTest {
     // so that the client has 1 subscribor, and the server knows about it
     final RemoteName test = new RemoteName(IChannelBase.class, "test");
     final ChannelSubscribor client1Subscribor = new ChannelSubscribor();
-    m_clientMessenger.registerChannelSubscriber(client1Subscribor, test);
-    assertHasChannel(test, m_hub);
-    assertEquals(1, m_clientMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
+    clientChannelMessenger.registerChannelSubscriber(client1Subscribor, test);
+    assertHasChannel(test, unifiedMessengerHub);
+    assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
     // add a new client
     final String mac = MacFinder.getHashedMacAddress();
     final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
@@ -110,15 +110,15 @@ public class ChannelMessengerTest {
     final RemoteName testRemote2 = new RemoteName(IChannelBase.class, "testRemote2");
     final RemoteName testRemote3 = new RemoteName(IChannelBase.class, "testRemote3");
     final ChannelSubscribor subscribor2 = new ChannelSubscribor();
-    m_clientMessenger.registerChannelSubscriber(subscribor2, testRemote2);
+    clientChannelMessenger.registerChannelSubscriber(subscribor2, testRemote2);
     final ChannelSubscribor subscribor3 = new ChannelSubscribor();
-    m_clientMessenger.registerChannelSubscriber(subscribor3, testRemote3);
-    assertHasChannel(testRemote2, m_hub);
-    assertHasChannel(testRemote3, m_hub);
-    final IChannelBase channelTest2 = (IChannelBase) m_serverMessenger.getChannelBroadcastor(testRemote2);
+    clientChannelMessenger.registerChannelSubscriber(subscribor3, testRemote3);
+    assertHasChannel(testRemote2, unifiedMessengerHub);
+    assertHasChannel(testRemote3, unifiedMessengerHub);
+    final IChannelBase channelTest2 = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(testRemote2);
     channelTest2.testNoParams();
     assertCallCountIs(subscribor2, 1);
-    final IChannelBase channelTest3 = (IChannelBase) m_serverMessenger.getChannelBroadcastor(testRemote3);
+    final IChannelBase channelTest3 = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(testRemote3);
     channelTest3.testNoParams();
     assertCallCountIs(subscribor3, 1);
   }
@@ -154,14 +154,14 @@ public class ChannelMessengerTest {
   }
 
   private static class ChannelSubscribor implements IChannelBase {
-    private int m_callCount = 0;
+    private int callCount = 0;
 
     private synchronized void incrementCount() {
-      m_callCount++;
+      callCount++;
     }
 
     public synchronized int getCallCount() {
-      return m_callCount;
+      return callCount;
     }
 
     @Override

@@ -17,13 +17,13 @@ import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class ChangeTripleATest {
-  private GameData m_data;
+  private GameData gameData;
   private Territory can;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.BIG_WORLD_1942.getGameData();
-    can = m_data.getMap().getTerritory("Western Canada");
+    gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+    can = gameData.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
@@ -35,7 +35,7 @@ public class ChangeTripleATest {
     // System.out.println("bytes:" + sink.toByteArray().length);
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
     final ObjectInputStream input =
-        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
+        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(gameData), source);
     final Change newChange = (Change) input.readObject();
     input.close();
     output.close();
@@ -46,36 +46,36 @@ public class ChangeTripleATest {
   public void testUnitsAddTerritory() {
     // add some units
     final Change change =
-        ChangeFactory.addUnits(can, GameDataTestUtil.infantry(m_data).create(10, null));
-    m_data.performChange(change);
+        ChangeFactory.addUnits(can, GameDataTestUtil.infantry(gameData).create(10, null));
+    gameData.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 12);
     // invert the change
-    m_data.performChange(change.invert());
+    gameData.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
   @Test
   public void testUnitsRemoveTerritory() {
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
+    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(gameData), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
-    m_data.performChange(change);
+    gameData.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 1);
     // invert the change
-    m_data.performChange(change.invert());
+    gameData.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
   @Test
   public void testSerializeUnitsRemoteTerritory() throws Exception {
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(m_data), 1);
+    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(gameData), 1);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
-    m_data.performChange(change);
+    gameData.performChange(change);
     assertEquals(can.getUnits().getUnitCount(), 1);
     // invert the change
-    m_data.performChange(change.invert());
+    gameData.performChange(change.invert());
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 }
