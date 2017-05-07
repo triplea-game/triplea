@@ -204,21 +204,21 @@ public class GameDataTestUtil {
   }
 
   public static int getIndex(final List<IExecutable> steps, final Class<?> type) {
-    int rVal = -1;
+    int indexOfType = -1;
     int index = 0;
     for (final IExecutable e : steps) {
       if (type.isInstance(e)) {
-        if (rVal != -1) {
+        if (indexOfType != -1) {
           throw new AssertionFailedError("More than one instance:" + steps);
         }
-        rVal = index;
+        indexOfType = index;
       }
       index++;
     }
-    if (rVal == -1) {
+    if (indexOfType == -1) {
       throw new AssertionFailedError("No instance:" + steps);
     }
-    return rVal;
+    return indexOfType;
   }
 
   public static void setSelectAACasualties(final GameData data, final boolean val) {
