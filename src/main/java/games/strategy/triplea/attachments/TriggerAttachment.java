@@ -1256,7 +1256,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       return;
     }
     final String[] s = place.split(":");
-    int count = -1, i = 0;
+    int count = -1;
+    int i = 0;
     if (s.length < 1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
@@ -1323,7 +1324,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_removeUnits = new HashMap<>();
     }
     final String[] s = value.split(":");
-    int count = -1, i = 0;
+    int count = -1;
+    int i = 0;
     if (s.length < 1) {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
@@ -1400,7 +1402,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       return;
     }
     final String[] s = place.split(":");
-    int count = -1, i = 0;
+    int count = -1;
+    int i = 0;
     if (s.length < 1) {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
     }

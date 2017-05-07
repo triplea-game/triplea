@@ -103,8 +103,12 @@ public final class ProTechAI {
     }
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
-      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
-          airStrength = 0.0F;
+      float seaStrength = 0.0F;
+      float firstStrength = 0.0F;
+      float secondStrength = 0.0F;
+      float blitzStrength = 0.0F;
+      float strength = 0.0F;
+      float airStrength = 0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
@@ -117,7 +121,8 @@ public final class ProTechAI {
       final CompositeMatch<Unit> aTransport =
           new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
-      int maxFighterDistance = 0, maxBomberDistance = 0;
+      int maxFighterDistance = 0;
+      int maxBomberDistance = 0;
       // should change this to read production frontier and tech
       // reality is 99% of time units considered will have full move.
       // and likely player will have at least 1 max move plane.
@@ -198,7 +203,8 @@ public final class ProTechAI {
               }
             }
             final List<Unit> loadedUnits = new ArrayList<>();
-            int availInf = 0, availOther = 0;
+            int availInf = 0;
+            int availOther = 0;
             for (final Unit xTrans : transports) {
               final Collection<Unit> thisTransUnits = TransportTracker.transporting(xTrans);
               if (thisTransUnits == null) {
@@ -206,7 +212,8 @@ public final class ProTechAI {
                 availOther += 1;
                 continue;
               } else {
-                int Inf = 2, Other = 1;
+                int Inf = 2;
+                int Other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
                   if (Matches.UnitIsInfantry.match(checkUnit)) {
                     Inf--;
@@ -458,7 +465,8 @@ public final class ProTechAI {
     final IntegerMap<Unit> unitDistance = new IntegerMap<>();
     final List<Unit> units = new ArrayList<>();
     final Queue<Territory> q = new LinkedList<>();
-    Territory lz = null, ac = null;
+    Territory lz = null;
+    Territory ac = null;
     final CompositeMatch<Unit> enemyPlane =
         new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
     final CompositeMatch<Unit> enemyCarrier =

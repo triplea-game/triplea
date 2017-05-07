@@ -147,7 +147,8 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       gbc_tValue.gridx = 0;
       gridBadConstLabelValue.gridy = rowIndex;
       final List<String> settingValue = settingEntry.getValue();
-      int minValueInteger, maxValueInteger;
+      int minValueInteger;
+      int maxValueInteger;
       try {
         minValueInteger = Integer.parseInt(settingValue.get(2));
         maxValueInteger = Integer.parseInt(settingValue.get(3));

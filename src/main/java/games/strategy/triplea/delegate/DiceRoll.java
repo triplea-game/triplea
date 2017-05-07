@@ -728,7 +728,8 @@ public class DiceRoll implements Externalizable {
 
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
     final Comparator<Unit> comp = (u1, u2) -> {
-      Integer v1, v2;
+      Integer v1;
+      Integer v2;
       if (defending) {
         v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
         v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());

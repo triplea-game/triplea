@@ -228,7 +228,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       throw new GameParseException("Empty turn list" + thisErrorMsg());
     }
     for (final String subString : s) {
-      int start, end;
+      int start;
+      int end;
       try {
         start = getInt(subString);
         end = start;

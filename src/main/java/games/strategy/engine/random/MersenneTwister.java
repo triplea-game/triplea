@@ -228,7 +228,8 @@ public class MersenneTwister extends Random {
     if ((n & -n) == n) {
       return (int) ((n * (long) next(31)) >> 31);
     }
-    int bits, val;
+    int bits;
+    int val;
     do {
       bits = next(31);
       val = bits % n;
@@ -279,7 +280,9 @@ public class MersenneTwister extends Random {
       haveNextNextGaussian = false;
       return nextNextGaussian;
     } else {
-      double v1, v2, s;
+      double v1;
+      double v2;
+      double s;
       do {
         // between -1.0 and 1.0
         v1 = 2 * nextDouble() - 1;

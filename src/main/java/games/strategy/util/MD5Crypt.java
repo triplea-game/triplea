@@ -116,7 +116,8 @@ public class MD5Crypt {
     /*
      * Two MD5 hashes are used
      */
-    MessageDigest ctx, ctx1;
+    MessageDigest ctx;
+    MessageDigest ctx1;
     try {
       ctx = MessageDigest.getInstance("md5");
       ctx1 = MessageDigest.getInstance("md5");
