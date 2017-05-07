@@ -25,27 +25,27 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 public class Pact_of_Steel_2_Test {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test
   public void testDirectOwnershipTerritories() {
-    final Territory Norway = m_data.getMap().getTerritory("Norway");
-    final Territory Eastern_Europe = m_data.getMap().getTerritory("Eastern Europe");
-    final Territory East_Balkans = m_data.getMap().getTerritory("East Balkans");
-    final Territory Ukraine_S_S_R_ = m_data.getMap().getTerritory("Ukraine S.S.R.");
-    final Territory Belorussia = m_data.getMap().getTerritory("Belorussia");
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    final PlayerID germans = GameDataTestUtil.germans(m_data);
-    final PlayerID russians = GameDataTestUtil.russians(m_data);
+    final Territory Norway = gameData.getMap().getTerritory("Norway");
+    final Territory Eastern_Europe = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory East_Balkans = gameData.getMap().getTerritory("East Balkans");
+    final Territory Ukraine_S_S_R_ = gameData.getMap().getTerritory("Ukraine S.S.R.");
+    final Territory Belorussia = gameData.getMap().getTerritory("Belorussia");
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // this National Objective russia has to own at least 3 of the 5 territories by itself
     final RulesAttachment russian_easternEurope =

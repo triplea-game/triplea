@@ -15,28 +15,27 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class AIUtilsTest {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.REVISED.getGameData();
+    gameData = TestMapGameData.REVISED.getGameData();
   }
 
   @Test
   public void testCost() {
-    final UnitType infantry = GameDataTestUtil.infantry(m_data);
-    final PlayerID british = GameDataTestUtil.british(m_data);
-    assertEquals(3, AIUtils.getCost(infantry, british, m_data));
+    final UnitType infantry = GameDataTestUtil.infantry(gameData);
+    final PlayerID british = GameDataTestUtil.british(gameData);
+    assertEquals(3, AIUtils.getCost(infantry, british, gameData));
   }
 
   @Test
   public void testSortByCost() {
-    final Territory germany = m_data.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());
     Collections.sort(sorted, AIUtils.getCostComparator());
     assertEquals(sorted.get(0).getUnitType().getName(), Constants.UNIT_TYPE_INFANTRY);

@@ -18,16 +18,16 @@ import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
 public class Pacific_1940_Test {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   protected void setUp() throws Exception {
-    m_data = TestMapGameData.WW2PAC40.getGameData();
+    gameData = TestMapGameData.WW2PAC40.getGameData();
   }
 
   @SuppressWarnings("unused")
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   public void test() {

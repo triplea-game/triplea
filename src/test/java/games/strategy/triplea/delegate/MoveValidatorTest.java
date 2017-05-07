@@ -29,18 +29,18 @@ public class MoveValidatorTest extends DelegateTest {
     // japanese unit in congo
     final Route bad = new Route();
     // the empty case
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, m_data));
+    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, gameData));
     bad.add(egypt);
     bad.add(congo);
     bad.add(kenya);
-    assertTrue(!MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, m_data));
+    assertTrue(!MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, gameData));
     final Route good = new Route();
     good.add(egypt);
     good.add(kenya);
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, m_data));
+    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, gameData));
     // at end so should still be good
     good.add(congo);
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, m_data));
+    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, gameData));
   }
 
   @Test
@@ -57,7 +57,7 @@ public class MoveValidatorTest extends DelegateTest {
   @Test
   public void testCarrierCapacity() {
     final Collection<Unit> units = carrier.create(5, british);
-    assertEquals(10, AirMovementValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
+    assertEquals(10, AirMovementValidator.carrierCapacity(units, new Territory("TestTerritory", true, gameData)));
   }
 
   @Test
@@ -81,23 +81,23 @@ public class MoveValidatorTest extends DelegateTest {
   public void testCanLand() {
     final Collection<Unit> units = fighter.create(4, british);
     // 2 carriers in red sea
-    assertTrue(AirMovementValidator.canLand(units, redSea, british, m_data));
+    assertTrue(AirMovementValidator.canLand(units, redSea, british, gameData));
     // britian owns egypt
-    assertTrue(AirMovementValidator.canLand(units, egypt, british, m_data));
+    assertTrue(AirMovementValidator.canLand(units, egypt, british, gameData));
     // only 2 carriers
     final Collection<Unit> tooMany = fighter.create(6, british);
-    assertTrue(!AirMovementValidator.canLand(tooMany, redSea, british, m_data));
+    assertTrue(!AirMovementValidator.canLand(tooMany, redSea, british, gameData));
     // nowhere to land
-    assertTrue(!AirMovementValidator.canLand(units, japanSeaZone, british, m_data));
+    assertTrue(!AirMovementValidator.canLand(units, japanSeaZone, british, gameData));
     // nuetral
-    assertTrue(!AirMovementValidator.canLand(units, westAfrica, british, m_data));
+    assertTrue(!AirMovementValidator.canLand(units, westAfrica, british, gameData));
   }
 
   @Test
   public void testCanLandInfantry() {
     try {
       final Collection<Unit> units = infantry.create(1, british);
-      AirMovementValidator.canLand(units, redSea, british, m_data);
+      AirMovementValidator.canLand(units, redSea, british, gameData);
     } catch (final IllegalArgumentException e) {
       return;
     }
@@ -107,7 +107,7 @@ public class MoveValidatorTest extends DelegateTest {
   @Test
   public void testCanLandBomber() {
     final Collection<Unit> units = bomber.create(1, british);
-    assertTrue(!AirMovementValidator.canLand(units, redSea, british, m_data));
+    assertTrue(!AirMovementValidator.canLand(units, redSea, british, gameData));
   }
 
   @Test

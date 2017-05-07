@@ -35,72 +35,72 @@ public class PacificTest extends DelegateTest {
   PlayerID chinese;
   // Define territories
   Territory queensland;
-  Territory US;
-  Territory NewBrit;
-  Territory Midway;
-  Territory Mariana;
-  Territory Bonin;
+  Territory unitedStates;
+  Territory newBritain;
+  Territory midway;
+  Territory mariana;
+  Territory bonin;
   // Define Sea Zones
-  Territory SZ4;
-  Territory SZ5;
-  Territory SZ7;
-  Territory SZ8;
-  Territory SZ10;
-  Territory SZ16;
-  Territory SZ20;
-  Territory SZ24;
-  Territory SZ25;
-  Territory SZ27;
+  Territory sz4;
+  Territory sz5;
+  Territory sz7;
+  Territory sz8;
+  Territory sz10;
+  Territory sz16;
+  Territory sz20;
+  Territory sz24;
+  Territory sz25;
+  Territory sz27;
   ITestDelegateBridge bridge;
-  MoveDelegate m_delegate;
+  MoveDelegate delegate;
 
   @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    m_data = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
+    gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
     // Define units
-    infantry = GameDataTestUtil.infantry(m_data);
-    armor = GameDataTestUtil.armour(m_data);
-    artillery = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
-    marine = m_data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
-    fighter = GameDataTestUtil.fighter(m_data);
-    bomber = GameDataTestUtil.bomber(m_data);
-    sub = GameDataTestUtil.submarine(m_data);
-    destroyer = GameDataTestUtil.destroyer(m_data);
-    carrier = GameDataTestUtil.carrier(m_data);
-    battleship = GameDataTestUtil.battleship(m_data);
-    transport = GameDataTestUtil.transport(m_data);
+    infantry = GameDataTestUtil.infantry(gameData);
+    armor = GameDataTestUtil.armour(gameData);
+    artillery = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
+    marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
+    fighter = GameDataTestUtil.fighter(gameData);
+    bomber = GameDataTestUtil.bomber(gameData);
+    sub = GameDataTestUtil.submarine(gameData);
+    destroyer = GameDataTestUtil.destroyer(gameData);
+    carrier = GameDataTestUtil.carrier(gameData);
+    battleship = GameDataTestUtil.battleship(gameData);
+    transport = GameDataTestUtil.transport(gameData);
     // Define players
-    americans = GameDataTestUtil.americans(m_data);
-    chinese = GameDataTestUtil.chinese(m_data);
-    british = GameDataTestUtil.british(m_data);
-    japanese = GameDataTestUtil.japanese(m_data);
+    americans = GameDataTestUtil.americans(gameData);
+    chinese = GameDataTestUtil.chinese(gameData);
+    british = GameDataTestUtil.british(gameData);
+    japanese = GameDataTestUtil.japanese(gameData);
     // Define territories
-    queensland = m_data.getMap().getTerritory("Queensland");
-    japan = m_data.getMap().getTerritory("Japan");
-    US = m_data.getMap().getTerritory("United States");
-    NewBrit = m_data.getMap().getTerritory("New Britain");
-    Midway = m_data.getMap().getTerritory("Midway");
-    Mariana = m_data.getMap().getTerritory("Mariana");
-    Bonin = m_data.getMap().getTerritory("Bonin");
+    queensland = gameData.getMap().getTerritory("Queensland");
+    japan = gameData.getMap().getTerritory("Japan");
+    unitedStates = gameData.getMap().getTerritory("United States");
+    newBritain = gameData.getMap().getTerritory("New Britain");
+    midway = gameData.getMap().getTerritory("Midway");
+    mariana = gameData.getMap().getTerritory("Mariana");
+    bonin = gameData.getMap().getTerritory("Bonin");
     // Define Sea Zones
-    SZ4 = m_data.getMap().getTerritory("4 Sea Zone");
-    SZ5 = m_data.getMap().getTerritory("5 Sea Zone");
-    SZ7 = m_data.getMap().getTerritory("7 Sea Zone");
-    SZ8 = m_data.getMap().getTerritory("8 Sea Zone");
-    SZ10 = m_data.getMap().getTerritory("10 Sea Zone");
-    SZ16 = m_data.getMap().getTerritory("16 Sea Zone");
-    SZ20 = m_data.getMap().getTerritory("20 Sea Zone");
-    SZ24 = m_data.getMap().getTerritory("24 Sea Zone");
-    SZ25 = m_data.getMap().getTerritory("25 Sea Zone");
-    SZ27 = m_data.getMap().getTerritory("27 Sea Zone");
+    sz4 = gameData.getMap().getTerritory("4 Sea Zone");
+    sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    sz7 = gameData.getMap().getTerritory("7 Sea Zone");
+    sz8 = gameData.getMap().getTerritory("8 Sea Zone");
+    sz10 = gameData.getMap().getTerritory("10 Sea Zone");
+    sz16 = gameData.getMap().getTerritory("16 Sea Zone");
+    sz20 = gameData.getMap().getTerritory("20 Sea Zone");
+    sz24 = gameData.getMap().getTerritory("24 Sea Zone");
+    sz25 = gameData.getMap().getTerritory("25 Sea Zone");
+    sz27 = gameData.getMap().getTerritory("27 Sea Zone");
     bridge = getDelegateBridge(americans);
     bridge.setStepName("japaneseCombatMove");
-    m_delegate = new MoveDelegate();
-    m_delegate.initialize("MoveDelegate", "MoveDelegate");
-    m_delegate.setDelegateBridgeAndPlayer(bridge);
-    m_delegate.start();
+    delegate = new MoveDelegate();
+    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.setDelegateBridgeAndPlayer(bridge);
+    delegate.start();
   }
 
   private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
@@ -115,7 +115,7 @@ public class PacificTest extends DelegateTest {
 
   @Override
   protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, m_data);
+    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test
@@ -147,8 +147,8 @@ public class PacificTest extends DelegateTest {
   @Test
   public void testJapanAttackFirstRound() {
     bridge.setStepName("japaneseBattle");
-    while (!m_data.getSequence().getStep().getName().equals("japaneseBattle")) {
-      m_data.getSequence().next();
+    while (!gameData.getSequence().getStep().getName().equals("japaneseBattle")) {
+      gameData.getSequence().next();
     }
     // >>> After patch normal to-hits will miss <<<
     // Defending US infantry miss on a 2 (0 base)
@@ -191,16 +191,16 @@ public class PacificTest extends DelegateTest {
   public void testCanLand2Airfields() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
-    route.setStart(US);
-    route.add(SZ5);
-    route.add(SZ4);
-    route.add(SZ10);
-    route.add(SZ16);
-    route.add(SZ27);
-    route.add(NewBrit);
+    route.setStart(unitedStates);
+    route.add(sz5);
+    route.add(sz4);
+    route.add(sz10);
+    route.add(sz16);
+    route.add(sz27);
+    route.add(newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -208,15 +208,15 @@ public class PacificTest extends DelegateTest {
   public void testCanLand1AirfieldStart() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
-    route.setStart(US);
-    route.add(SZ5);
-    route.add(SZ7);
-    route.add(SZ8);
-    route.add(SZ20);
-    route.add(Midway);
+    route.setStart(unitedStates);
+    route.add(sz5);
+    route.add(sz7);
+    route.add(sz8);
+    route.add(sz20);
+    route.add(midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // assertError( results);
   }
@@ -225,15 +225,15 @@ public class PacificTest extends DelegateTest {
   public void testCanLand1AirfieldEnd() {
     bridge.setStepName("americanCombatMove");
     final Route route = new Route();
-    route.setStart(US);
-    route.add(SZ5);
-    route.add(SZ7);
-    route.add(SZ8);
-    route.add(SZ20);
-    route.add(Midway);
+    route.setStart(unitedStates);
+    route.add(sz5);
+    route.add(sz7);
+    route.add(sz8);
+    route.add(sz20);
+    route.add(midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -241,39 +241,39 @@ public class PacificTest extends DelegateTest {
   public void testCanMoveNavalBase() {
     bridge.setStepName("americanNonCombatMove");
     final Route route = new Route();
-    route.setStart(SZ5);
-    route.add(SZ7);
-    route.add(SZ8);
-    route.add(SZ20);
+    route.setStart(sz5);
+    route.add(sz7);
+    route.add(sz8);
+    route.add(sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
   @Test
   public void testJapaneseDestroyerTransport() {
     bridge = getDelegateBridge(japanese);
-    m_delegate = new MoveDelegate();
-    m_delegate.initialize("MoveDelegate", "MoveDelegate");
-    m_delegate.setDelegateBridgeAndPlayer(bridge);
+    delegate = new MoveDelegate();
+    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.setDelegateBridgeAndPlayer(bridge);
     bridge.setStepName("japaneseNonCombatMove");
-    m_delegate.start();
+    delegate.start();
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route();
-    route.setStart(Bonin);
+    route.setStart(bonin);
     // movement to force boarding
-    route.add(SZ24);
+    route.add(sz24);
     // verify unit counts before move
-    assertEquals(2, Bonin.getUnits().size());
-    assertEquals(1, SZ24.getUnits().size());
+    assertEquals(2, bonin.getUnits().size());
+    assertEquals(1, sz24.getUnits().size());
     // validate movement
     final String results =
-        m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+        delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
     // verify unit counts after move
-    assertEquals(1, Bonin.getUnits().size());
-    assertEquals(2, SZ24.getUnits().size());
+    assertEquals(1, bonin.getUnits().size());
+    assertEquals(2, sz24.getUnits().size());
   }
 }

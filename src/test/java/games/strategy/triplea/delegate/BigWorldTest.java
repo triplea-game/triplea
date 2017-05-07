@@ -16,21 +16,21 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class BigWorldTest {
-  private GameData m_data;
+  private GameData gameData;
 
   @Before
   public void setUp() throws Exception {
-    m_data = TestMapGameData.BIG_WORLD_1942.getGameData();
+    gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
   }
 
   @Test
   public void testCanalMovementNotStartingInCanalZone() {
-    final Territory sz28 = territory("SZ 28 Eastern Mediterranean", m_data);
-    final Territory sz27 = territory("SZ 27 Aegean Sea", m_data);
-    final Territory sz29 = territory("SZ 29 Black Sea", m_data);
-    final ITestDelegateBridge bridge = getDelegateBridge(british(m_data), m_data);
+    final Territory sz28 = territory("SZ 28 Eastern Mediterranean", gameData);
+    final Territory sz27 = territory("SZ 27 Aegean Sea", gameData);
+    final Territory sz29 = territory("SZ 29 Black Sea", gameData);
+    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData), gameData);
     bridge.setStepName("CombatMove");
-    final MoveDelegate moveDelegate = moveDelegate(m_data);
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final String error = moveDelegate.move(sz28.getUnits().getUnits(), new Route(sz28, sz27, sz29));
