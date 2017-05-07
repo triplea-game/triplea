@@ -49,7 +49,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
    *         if login fails
    */
   private HttpContext login(CloseableHttpClient client) throws Exception {
-    HttpPost httpPost = new HttpPost("http://www.tripleawarclub.org/user.php");
+    final HttpPost httpPost = new HttpPost("http://www.tripleawarclub.org/user.php");
     CookieStore cookieStore = new BasicCookieStore();
     HttpContext httpContext = new BasicHttpContext();
     httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);

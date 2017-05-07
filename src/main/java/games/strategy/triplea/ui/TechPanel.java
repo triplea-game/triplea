@@ -158,7 +158,6 @@ public class TechPanel extends ActionPanel {
       JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
       return;
     }
-    TechnologyFrontier category = null;
     final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
       private static final long serialVersionUID = 35094445315520702L;
 
@@ -179,7 +178,7 @@ public class TechPanel extends ActionPanel {
     list.setSelectedIndex(0);
     JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
         JOptionPane.PLAIN_MESSAGE);
-    category = list.getSelectedValue();
+    final TechnologyFrontier category = list.getSelectedValue();
 
     final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
     final String message = "Purchase Tech Tokens";
@@ -214,7 +213,6 @@ public class TechPanel extends ActionPanel {
       if (techCategories.isEmpty()) {
         return;
       }
-      TechnologyFrontier category = null;
       final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
         private static final long serialVersionUID = -8415987764855418565L;
 
@@ -235,7 +233,7 @@ public class TechPanel extends ActionPanel {
       list.setSelectedIndex(0);
       JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
           JOptionPane.PLAIN_MESSAGE);
-      category = list.getSelectedValue();
+      final TechnologyFrontier category = list.getSelectedValue();
       m_techRoll = new TechRoll(category, m_currTokens);
     } else {
       m_techRoll = null;

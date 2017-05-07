@@ -58,12 +58,12 @@ public class BattleTrackerTest {
   @Test
   public void verifyRaids() {
     Territory territory = new Territory("terrName", mockGameData);
-    Route route = new Route(territory);
+    final Route route = new Route(territory);
     PlayerID playerId = new PlayerID("name", mockGameData);
 
     // need at least one attacker for there to be considered a battle.
     Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
-    List<Unit> attackers = Collections.singletonList(unit);
+    final List<Unit> attackers = Collections.singletonList(unit);
 
     when(mockDelegateBridge.getData()).thenReturn(mockGameData);
     when(mockGameData.getProperties()).thenReturn(mockGameProperties);

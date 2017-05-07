@@ -119,7 +119,6 @@ public class PoliticsPanel extends ActionPanel {
 
     final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
     final Insets insets = new Insets(1, 1, 1, 1);
-    int row = 0;
     final JPanel politicalChoicePanel = new JPanel();
     politicalChoicePanel.setLayout(new GridBagLayout());
     final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext(), false);
@@ -149,12 +148,12 @@ public class PoliticsPanel extends ActionPanel {
     final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
     splitPane.setOneTouchExpandable(true);
     splitPane.setDividerSize(8);
-    politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0,
+    politicalChoicePanel.add(splitPane, new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0,
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
     final JButton noActionButton =
         new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
     SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
-    politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
+    politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, insets, 0, 0));
     politicalChoiceDialog.add(politicalChoicePanel);
     politicalChoiceDialog.pack();

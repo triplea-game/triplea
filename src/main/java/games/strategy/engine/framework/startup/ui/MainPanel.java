@@ -51,7 +51,7 @@ public class MainPanel extends JPanel implements Observer {
 
   public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
-    GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
+    final GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
     playButton = new JButton("Play");
     playButton.setToolTipText("<html>Start your game! <br>"

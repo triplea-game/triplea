@@ -82,15 +82,15 @@ public class RouteCalculatorTest {
 
   @Test
   public void testMatrixTransposal() {
-    Point[] input = new Point[] {point(0, 0), point(1, 1)};
-    Point[] nw = new Point[] {point(-1000, -1000), point(-999, -999)};
-    Point[] n = new Point[] {point(0, -1000), point(1, -999)};
-    Point[] ne = new Point[] {point(1000, -1000), point(1001, -999)};
-    Point[] w = new Point[] {point(-1000, 0), point(-999, 1)};
-    Point[] e = new Point[] {point(1000, 0), point(1001, 1)};
-    Point[] sw = new Point[] {point(-1000, 1000), point(-999, 1001)};
-    Point[] s = new Point[] {point(0, 1000), point(1, 1001)};
-    Point[] se = new Point[] {point(1000, 1000), point(1001, 1001)};
+    final Point[] input = new Point[] {point(0, 0), point(1, 1)};
+    final Point[] nw = new Point[] {point(-1000, -1000), point(-999, -999)};
+    final Point[] n = new Point[] {point(0, -1000), point(1, -999)};
+    final Point[] ne = new Point[] {point(1000, -1000), point(1001, -999)};
+    final Point[] w = new Point[] {point(-1000, 0), point(-999, 1)};
+    final Point[] e = new Point[] {point(1000, 0), point(1001, 1)};
+    final Point[] sw = new Point[] {point(-1000, 1000), point(-999, 1001)};
+    final Point[] s = new Point[] {point(0, 1000), point(1, 1001)};
+    final Point[] se = new Point[] {point(1000, 1000), point(1001, 1001)};
 
     List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
     // This may be changed along with the RouteOptimizer#getPossiblePoints method

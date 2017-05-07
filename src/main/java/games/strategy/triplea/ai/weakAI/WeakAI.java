@@ -831,7 +831,6 @@ public class WeakAI extends AbstractAI {
       int capProduction = 0;
       Unit capUnit = null;
       Territory capUnitTerritory = null;
-      int maxUnits = (totPU - 1) / minimumUnitPrice;
       int currentProduction = 0;
       // we should sort this
       Collections.shuffle(rfactories);
@@ -864,6 +863,7 @@ public class WeakAI extends AbstractAI {
       //
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
       // place all our units here
+      int maxUnits = (totPU - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {

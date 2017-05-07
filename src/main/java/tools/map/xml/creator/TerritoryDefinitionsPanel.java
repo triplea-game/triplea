@@ -44,7 +44,6 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
           .entrySet()) {
         if (definitionEntry.getValue()) {
           final int x_value = x_text_start + oneCharacterWidthSpace * definitionCount;
-          int w;
           String character = null;
           switch (definitionEntry.getKey()) {
             case IS_WATER:
@@ -67,7 +66,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
           }
           g.fillOval(x_value, y_value, 16, 16);
           g.setColor(Color.red);
-          w = fm.stringWidth(character);
+          final int w = fm.stringWidth(character);
           h = fm.getAscent();
           g.drawString(character, x_value + 8 - (w / 2), y_value + 8 + (h / 2));
         }
