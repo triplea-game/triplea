@@ -27,10 +27,10 @@ public class ChangeTripleATest {
     assertEquals(can.getUnits().getUnitCount(), 2);
   }
 
-  private Change serialize(final Change aChange) throws Exception {
+  private Change serialize(final Change change) throws Exception {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
     final ObjectOutputStream output = new GameObjectOutputStream(sink);
-    output.writeObject(aChange);
+    output.writeObject(change);
     output.flush();
     // System.out.println("bytes:" + sink.toByteArray().length);
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());

@@ -85,8 +85,8 @@ public class TestDelegateBridge implements ITestDelegateBridge {
    * Player is initialized to the player specified in the xml data.
    */
   @Override
-  public void setPlayerID(final PlayerID aPlayer) {
-    playerId = aPlayer;
+  public void setPlayerID(final PlayerID playerId) {
+    this.playerId = playerId;
   }
 
   public boolean inTransaction() {
@@ -99,8 +99,8 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   }
 
   @Override
-  public void addChange(final Change aChange) {
-    gameData.performChange(aChange);
+  public void addChange(final Change change) {
+    gameData.performChange(change);
   }
 
   @Override
