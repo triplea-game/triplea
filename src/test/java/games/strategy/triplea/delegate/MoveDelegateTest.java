@@ -724,6 +724,7 @@ public class MoveDelegateTest extends DelegateTest {
     assertTrue(!DelegateFinder.battleDelegate(gameData).getBattleTracker().wasBlitzed(westAfrica));
   }
 
+  @Test
   public void testMoveTransportsTwice() {
     // move transports
     Route route = new Route();

@@ -170,6 +170,7 @@ public class MapTest {
     assertTrue(-1 == map.getWaterDistance(aa, ab));
   }
 
+  @Test
   public void testNeighborSeaNoLandConnect() {
     assertTrue(-1 == map.getLandDistance(bc, bd));
   }
