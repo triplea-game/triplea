@@ -134,11 +134,11 @@ public abstract class DynamicRowsPanel {
   }
 
   protected void addFinalButtonRow(final GridBagConstraints gbcTemplate) {
-    int xValue = 0;
+    int colIndex = 0;
     for (final JButton button : finalRowButtons) {
       final GridBagConstraints gbcCurrentButton = (GridBagConstraints) gbcTemplate.clone();
-      gbcCurrentButton.gridx = xValue;
-      ++xValue;
+      gbcCurrentButton.gridx = colIndex;
+      ++colIndex;
       ownPanel.add(button, gbcCurrentButton);
     }
   }

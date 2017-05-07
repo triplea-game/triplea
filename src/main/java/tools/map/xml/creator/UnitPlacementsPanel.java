@@ -227,15 +227,15 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       });
 
       // Input lines
-      int yIndex = 1;
+      int rowIndex = 1;
       final Dimension textFieldDim = new Dimension(25, 20);
       for (final Entry<String, Integer> placement : allPlayerPlacements.entrySet()) {
         final String unitType = placement.getKey();
-        this.add(new JLabel(unitType), new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        this.add(new JLabel(unitType), new GridBagConstraints(1, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
         final JTextField textFieldCount = new JTextField(placement.getValue().toString());
         textFieldCount.setPreferredSize(textFieldDim);
-        countFields[yIndex - 1] = textFieldCount;
+        countFields[rowIndex - 1] = textFieldCount;
         textFieldCount.addFocusListener(new FocusListener() {
           final String unitTypeString = unitType;
           String prevValue = textFieldCount.getText();
@@ -273,14 +273,14 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             textFieldCount.selectAll();
           }
         });
-        this.add(textFieldCount, new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        this.add(textFieldCount, new GridBagConstraints(2, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-        yIndex++;
+        rowIndex++;
       }
-      this.add(buttonPlaceNone, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+      this.add(buttonPlaceNone, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
       this.add(buttonReset,
-          new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
+          new GridBagConstraints(3, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
               nullInsets, 0, 0));
       // return territoryPlacementPanel;
     }

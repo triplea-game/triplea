@@ -139,13 +139,13 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelMaxNumber, gridBadConstLabelMaxNumber);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
 
     final String[] settingNamesArray = settingNames.toArray(new String[settingNames.size()]);
     for (final Entry<String, List<String>> settingEntry : MapXmlHelper.getGameSettingsMap().entrySet()) {
       final GridBagConstraints gbc_tValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
       gbc_tValue.gridx = 0;
-      gridBadConstLabelValue.gridy = yValue;
+      gridBadConstLabelValue.gridy = rowIndex;
       final List<String> settingValue = settingEntry.getValue();
       int minValueInteger, maxValueInteger;
       try {
@@ -157,9 +157,9 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       }
       final GameSettingsRow newRow = new GameSettingsRow(this, getOwnPanel(), settingEntry.getKey(), settingNamesArray,
           settingValue.get(0), settingValue.get(1), minValueInteger, maxValueInteger);
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tValue);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tValue);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -196,7 +196,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 

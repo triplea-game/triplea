@@ -483,9 +483,8 @@ public class MapXmlHelper {
         }
       } else if (childNodeName.equals(XML_NODE_NAME_RESOURCE_LIST)) {
         final NodeList resourceNodes = childNode.getChildNodes();
-
-        for (int resource_i = 0; resource_i < resourceNodes.getLength(); ++resource_i) {
-          final Node resourceNode = resourceNodes.item(resource_i);
+        for (int j = 0; j < resourceNodes.getLength(); ++j) {
+          final Node resourceNode = resourceNodes.item(j);
           if (resourceNode.getNodeName().equals(XML_NODE_NAME_RESOURCE)) {
             getResourceList().add(resourceNode.getAttributes().item(0).getNodeValue());
           }
@@ -508,8 +507,8 @@ public class MapXmlHelper {
             (getPlayerSequenceMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION));
       } else if (childNodeName.equals(XML_NODE_NAME_ATTACHMENT_LIST)) {
         final NodeList attachmentListChildNodes = childNode.getChildNodes();
-        for (int p_i = 0; p_i < attachmentListChildNodes.getLength(); ++p_i) {
-          final Node attachment = attachmentListChildNodes.item(p_i);
+        for (int j = 0; j < attachmentListChildNodes.getLength(); ++j) {
+          final Node attachment = attachmentListChildNodes.item(j);
           if (attachment.getNodeName().equals(XML_NODE_NAME_ATTACHMENT)) {
             parseAttachmentNode(attachment);
           }
@@ -519,8 +518,8 @@ public class MapXmlHelper {
             getTerritoyProductionsMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION);
       } else if (childNodeName.equals(XML_NODE_NAME_INITIALIZE)) {
         final NodeList initializeChildNodes = childNode.getChildNodes();
-        for (int init_i = 0; init_i < initializeChildNodes.getLength(); ++init_i) {
-          final Node ownerInitialize = initializeChildNodes.item(init_i);
+        for (int j = 0; j < initializeChildNodes.getLength(); ++j) {
+          final Node ownerInitialize = initializeChildNodes.item(j);
           if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_OWNER_INITIALIZE)) {
             putNodesToTerritoryOwnerships(ownerInitialize.getChildNodes());
           } else if (ownerInitialize.getNodeName().equals(XML_NODE_NAME_UNIT_INITIALIZE)) {
@@ -531,8 +530,8 @@ public class MapXmlHelper {
             (getUnitPlacementsMap().isEmpty() ? GameStep.TERRITORY_OWNERSHIP : GameStep.UNIT_PLACEMENTS));
       } else if (childNodeName.equals(XML_NODE_NAME_PROPERTY_LIST)) {
         final NodeList propertyListChildNodes = childNode.getChildNodes();
-        for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
-          final Node property = propertyListChildNodes.item(prop_i);
+        for (int j = 0; j < propertyListChildNodes.getLength(); ++j) {
+          final Node property = propertyListChildNodes.item(j);
           if (property.getNodeName().equals(XML_NODE_NAME_PROPERTY)) {
             parsePropertyNode(property);
           }
@@ -553,8 +552,8 @@ public class MapXmlHelper {
   }
 
   public static void putNodesToProductionFrontiers(final NodeList productionChildNodes) {
-    for (int p_i = 0; p_i < productionChildNodes.getLength(); ++p_i) {
-      final Node productionRule = productionChildNodes.item(p_i);
+    for (int i = 0; i < productionChildNodes.getLength(); ++i) {
+      final Node productionRule = productionChildNodes.item(i);
       if (productionRule.getNodeName().equals(XML_NODE_NAME_PRODUCTION_RULE)) {
         parseProductionRuleNode(productionRule.getChildNodes());
       } else if (productionRule.getNodeName().equals(XML_NODE_NAME_PRODUCTION_FRONTIER)) {
@@ -562,8 +561,8 @@ public class MapXmlHelper {
             productionRule.getAttributes().getNamedItem(XML_ATTR_ATTACHMENT_NAME_NAME).getNodeValue().substring(10);
         final ArrayList<String> frontierRules = new ArrayList<>();
         final NodeList productionFrontierChildNodes = productionRule.getChildNodes();
-        for (int pr_i = 0; pr_i < productionFrontierChildNodes.getLength(); ++pr_i) {
-          final Node productionFrontierChildNode = productionFrontierChildNodes.item(pr_i);
+        for (int j = 0; j < productionFrontierChildNodes.getLength(); ++j) {
+          final Node productionFrontierChildNode = productionFrontierChildNodes.item(j);
           if (productionFrontierChildNode.getNodeName().equals(XML_NODE_NAME_FRONTIER_RULES)) {
             frontierRules
                 .add(productionFrontierChildNode.getAttributes().getNamedItem(XML_ATTR_ATTACHMENT_NAME_NAME)
@@ -576,8 +575,8 @@ public class MapXmlHelper {
   }
 
   public static void putNodesToPlayerSequence(final NodeList gamePlayChildNodes) {
-    for (int p_i = 0; p_i < gamePlayChildNodes.getLength(); ++p_i) {
-      final Node gamePlayChildNode = gamePlayChildNodes.item(p_i);
+    for (int i = 0; i < gamePlayChildNodes.getLength(); ++i) {
+      final Node gamePlayChildNode = gamePlayChildNodes.item(i);
       if (gamePlayChildNode.getNodeName().equals(XML_NODE_NAME_DELEGATE)) {
         final HashMap<String, String> attrDelegate = getAttributesMap(gamePlayChildNode.getAttributes());
         final ArrayList<String> newValues = new ArrayList<>();
@@ -587,8 +586,8 @@ public class MapXmlHelper {
         getGamePlaySequenceMap().put(attrDelegate.get(XML_ATTR_ATTACHMENT_NAME_NAME), newValues);
       } else if (gamePlayChildNode.getNodeName().equals(XML_NODE_NAME_SEQUENCE)) {
         final NodeList sequenceChildNodes = gamePlayChildNode.getChildNodes();
-        for (int seq_i = 0; seq_i < sequenceChildNodes.getLength(); ++seq_i) {
-          final Node sequenceChildNode = sequenceChildNodes.item(seq_i);
+        for (int j = 0; j < sequenceChildNodes.getLength(); ++j) {
+          final Node sequenceChildNode = sequenceChildNodes.item(j);
           if (sequenceChildNode.getNodeName().equals(XML_NODE_NAME_STEP)) {
             final HashMap<String, String> attrSequence = getAttributesMap(sequenceChildNode.getAttributes());
             final String maxRunCount = attrSequence.get(XML_ATTR_STEP_NAME_MAX_RUN_COUNT);
@@ -603,8 +602,8 @@ public class MapXmlHelper {
   }
 
   public static void putNodesToUnitPlacements(final NodeList initializeUnitChildNodes) {
-    for (int initOwner_i = 0; initOwner_i < initializeUnitChildNodes.getLength(); ++initOwner_i) {
-      final Node unitPlacement = initializeUnitChildNodes.item(initOwner_i);
+    for (int i = 0; i < initializeUnitChildNodes.getLength(); ++i) {
+      final Node unitPlacement = initializeUnitChildNodes.item(i);
       if (unitPlacement.getNodeName().equals(XML_NODE_NAME_UNIT_PLACEMENT)) {
         final HashMap<String, String> attrUnitPlacements = getAttributesMap(unitPlacement.getAttributes());
         final String territory = attrUnitPlacements.get(XML_NODE_NAME_TERRITORY);
@@ -626,8 +625,8 @@ public class MapXmlHelper {
   }
 
   public static void putNodesToTerritoryOwnerships(final NodeList initializeOwnerChildNodes) {
-    for (int initOwner_i = 0; initOwner_i < initializeOwnerChildNodes.getLength(); ++initOwner_i) {
-      final Node territoryOwner = initializeOwnerChildNodes.item(initOwner_i);
+    for (int i = 0; i < initializeOwnerChildNodes.getLength(); ++i) {
+      final Node territoryOwner = initializeOwnerChildNodes.item(i);
       if (territoryOwner.getNodeName().equals(XML_NODE_NAME_TERRITORY_OWNER)) {
         final HashMap<String, String> attrTerrOwner = getAttributesMap(territoryOwner.getAttributes());
         getTerritoryOwnershipsMap().put(attrTerrOwner.get(XML_NODE_NAME_TERRITORY),
@@ -643,8 +642,8 @@ public class MapXmlHelper {
     if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
         || propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME)) {
       final NodeList propertyListChildNodes = property.getChildNodes();
-      for (int prop_i = 0; prop_i < propertyListChildNodes.getLength(); ++prop_i) {
-        final Node subProperty = propertyListChildNodes.item(prop_i);
+      for (int i = 0; i < propertyListChildNodes.getLength(); ++i) {
+        final Node subProperty = propertyListChildNodes.item(i);
         if (subProperty.getNodeName().equals(XML_NODE_NAME_VALUE)) {
           setNotes(subProperty.getTextContent());
         }
@@ -654,8 +653,8 @@ public class MapXmlHelper {
     settingValues.add(propertyAttr.get(XML_NODE_NAME_VALUE));
     settingValues.add(Boolean.toString(Boolean.parseBoolean(propertyAttr.get(XML_ATTR_PROPERTY_NAME_EDITABLE))));
     final NodeList propertyNodes = property.getChildNodes();
-    for (int pr_i = 0; pr_i < propertyNodes.getLength(); ++pr_i) {
-      final Node propertyRange = propertyNodes.item(pr_i);
+    for (int i = 0; i < propertyNodes.getLength(); ++i) {
+      final Node propertyRange = propertyNodes.item(i);
       if (propertyRange.getNodeName().equals(XML_NODE_NAME_NUMBER)) {
         final HashMap<String, String> propertyRangeAttr = getAttributesMap(propertyRange.getAttributes());
         settingValues.add(propertyRangeAttr.get(XML_ATTR_NUMBER_NAME_MIN));
@@ -693,8 +692,8 @@ public class MapXmlHelper {
 
   private static void parseNodeTerritoryAttachment(final Node attachment, final String attachmentAttachTo) {
     final NodeList attachmentOptionNodes = attachment.getChildNodes();
-    for (int pr_i = 0; pr_i < attachmentOptionNodes.getLength(); ++pr_i) {
-      final Node attachmentOption = attachmentOptionNodes.item(pr_i);
+    for (int i = 0; i < attachmentOptionNodes.getLength(); ++i) {
+      final Node attachmentOption = attachmentOptionNodes.item(i);
       if (attachmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attachmentOptionAttr = getAttributesMap(attachmentOption.getAttributes());
         final String optionNameAttr = attachmentOptionAttr.get(XML_ATTR_OPTION_NAME_NAME);
@@ -728,8 +727,8 @@ public class MapXmlHelper {
 
   private static void parseNodeTechAttachment(final Node attachment, final String attachmentAttachTo) {
     final NodeList attachmentOptionNodes = attachment.getChildNodes();
-    for (int pr_i = 0; pr_i < attachmentOptionNodes.getLength(); ++pr_i) {
-      final Node attachmentOption = attachmentOptionNodes.item(pr_i);
+    for (int i = 0; i < attachmentOptionNodes.getLength(); ++i) {
+      final Node attachmentOption = attachmentOptionNodes.item(i);
       if (attachmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attachmentOptionAttr = getAttributesMap(attachmentOption.getAttributes());
         final ArrayList<String> values = new ArrayList<>();
@@ -744,8 +743,8 @@ public class MapXmlHelper {
 
   private static void parseNodeUnitAttachment(final Node attachment, final String attachmentAttachTo) {
     final NodeList attachmentOptionNodes = attachment.getChildNodes();
-    for (int pr_i = 0; pr_i < attachmentOptionNodes.getLength(); ++pr_i) {
-      final Node attachmentOption = attachmentOptionNodes.item(pr_i);
+    for (int i = 0; i < attachmentOptionNodes.getLength(); ++i) {
+      final Node attachmentOption = attachmentOptionNodes.item(i);
       if (attachmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attachmentOptionAttr = getAttributesMap(attachmentOption.getAttributes());
         final ArrayList<String> values = new ArrayList<>();
@@ -764,8 +763,8 @@ public class MapXmlHelper {
     CanalTerritoriesTuple canalDef = null;
     String newCanalName = null;
     final SortedSet<String> newLandTerritories = new TreeSet<>();
-    for (int pr_i = 0; pr_i < attachmentOptionNodes.getLength(); ++pr_i) {
-      final Node attachmentOption = attachmentOptionNodes.item(pr_i);
+    for (int i = 0; i < attachmentOptionNodes.getLength(); ++i) {
+      final Node attachmentOption = attachmentOptionNodes.item(i);
       if (attachmentOption.getNodeName().equals(XML_NODE_NAME_OPTION)) {
         final HashMap<String, String> attachmentOptionAttr = getAttributesMap(attachmentOption.getAttributes());
         final String attachOptAttrName = attachmentOptionAttr.get(XML_ATTR_OPTION_NAME_NAME);
@@ -794,8 +793,8 @@ public class MapXmlHelper {
   private static void parseProductionRuleNode(final NodeList productionRuleChildNodes) {
     HashMap<String, String> attrMapCost = null;
     HashMap<String, String> attrMapResult = null;
-    for (int pr_i = 0; pr_i < productionRuleChildNodes.getLength(); ++pr_i) {
-      final Node productionRuleChildNode = productionRuleChildNodes.item(pr_i);
+    for (int i = 0; i < productionRuleChildNodes.getLength(); ++i) {
+      final Node productionRuleChildNode = productionRuleChildNodes.item(i);
       final String productionRuleChildNodeName = productionRuleChildNode.getNodeName();
       if (productionRuleChildNodeName.equals(XML_NODE_NAME_COST)) {
         attrMapCost = getAttributesMap(productionRuleChildNode.getAttributes());
@@ -825,8 +824,8 @@ public class MapXmlHelper {
   }
 
   private static void parsePlayerListNode(final NodeList playerListChildNodes) {
-    for (int pl_i = 0; pl_i < playerListChildNodes.getLength(); ++pl_i) {
-      final Node playerListChildNode = playerListChildNodes.item(pl_i);
+    for (int i = 0; i < playerListChildNodes.getLength(); ++i) {
+      final Node playerListChildNode = playerListChildNodes.item(i);
       final String playerListChildNodeName = playerListChildNode.getNodeName();
       if (playerListChildNodeName.equals(XML_NODE_NAME_PLAYER)) {
         final HashMap<String, String> attrMapPlayer = getAttributesMap(playerListChildNode.getAttributes());
@@ -845,8 +844,8 @@ public class MapXmlHelper {
   }
 
   private static void parseMapNode(final NodeList mapChildNodes) {
-    for (int map_i = 0; map_i < mapChildNodes.getLength(); ++map_i) {
-      final Node mapChildNode = mapChildNodes.item(map_i);
+    for (int i = 0; i < mapChildNodes.getLength(); ++i) {
+      final Node mapChildNode = mapChildNodes.item(i);
       final String mapChildNodeName = mapChildNode.getNodeName();
       if (mapChildNodeName.equals(XML_NODE_NAME_TERRITORY)) {
         parseNodeTerritory(mapChildNode);
@@ -879,8 +878,8 @@ public class MapXmlHelper {
     final NamedNodeMap terrAttrNodes = mapChildNode.getAttributes();
     String terrName = null;
     final HashMap<DEFINITION, Boolean> terrDef = Maps.newHashMap();
-    for (int terrAttr_i = 0; terrAttr_i < terrAttrNodes.getLength(); ++terrAttr_i) {
-      final Node terrAttrNode = terrAttrNodes.item(terrAttr_i);
+    for (int i = 0; i < terrAttrNodes.getLength(); ++i) {
+      final Node terrAttrNode = terrAttrNodes.item(i);
       if (terrAttrNode.getNodeName().equals(XML_ATTR_ATTACHMENT_NAME_NAME)) {
         terrName = terrAttrNode.getNodeValue();
       } else {

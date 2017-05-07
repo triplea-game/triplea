@@ -78,22 +78,22 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelAlreadyEnabled, gridBadConstLabelAlreadyEnabled);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
 
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
     for (final Entry<String, List<String>> technologyDefinition : MapXmlHelper.getTechnologyDefinitionsMap()
         .entrySet()) {
       final GridBagConstraints gbc_tTechnologyName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
       gbc_tTechnologyName.gridx = 0;
-      gridBadConstLabelTechnologyName.gridy = yValue;
+      gridBadConstLabelTechnologyName.gridy = rowIndex;
       final List<String> definition = technologyDefinition.getValue();
       final String techKey = technologyDefinition.getKey();
       final TechnologyDefinitionsRow newRow = new TechnologyDefinitionsRow(this, getOwnPanel(),
           techKey.substring(0, techKey.lastIndexOf(definition.get(0)) - 1), definition.get(0), playerNamesArray,
           definition.get(1));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tTechnologyName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tTechnologyName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -138,7 +138,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 

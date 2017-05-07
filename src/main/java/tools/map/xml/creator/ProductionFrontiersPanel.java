@@ -84,17 +84,17 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelUnitName, gridBadConstLabelUnitName);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
     final String[] allUnitNamesArray = allUnitNames.toArray(new String[allUnitNames.size()]);
     for (final String unitName : playersUnitNames) {
       final GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gridBadConstLabelUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = rowIndex;
       final ProductionFrontiersRow newRow =
           new ProductionFrontiersRow(this, getOwnPanel(), playerName, unitName, allUnitNamesArray);
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tUnitName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tUnitName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -126,7 +126,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
