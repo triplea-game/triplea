@@ -77,8 +77,8 @@ public class OddsCalculatorTest {
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
     final OddsCalculator calculator = new OddsCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
-    final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData), sz1,
-        attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
+    final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
+        sz1, attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
     assertEquals(results.getAttackerWinPercent(), 0.0, 0.0);
     assertEquals(results.getDefenderWinPercent(), 1.0, 0.0);
@@ -93,8 +93,8 @@ public class OddsCalculatorTest {
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));
     final OddsCalculator calculator = new OddsCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
-    final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData), sz1,
-        attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
+    final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
+        sz1, attacking, defending, Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
     assertEquals(results.getAttackerWinPercent(), 1.0, 0.0);
     assertEquals(results.getDefenderWinPercent(), 0.0, 0.0);
