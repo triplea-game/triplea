@@ -392,8 +392,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       final File save;
       if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
         save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
         save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {

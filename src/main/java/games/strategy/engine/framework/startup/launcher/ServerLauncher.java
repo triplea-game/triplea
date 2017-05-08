@@ -252,21 +252,12 @@ public class ServerLauncher extends AbstractLauncher {
                 // then crashing out, then launching, etc.
                 m_serverModel.setAllPlayersToNullNodes();
               }
-              final File f1 =
+              final File f =
                   new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-              final File f2 =
-                  new File(ClientContext.folderSettings().getSaveGamePath(),
-                      SaveGameFileChooser.getAutoSave2FileName());
-              final File f;
-              if (!f1.exists() && !f2.exists()) {
-                m_gameSelectorModel.resetGameDataToNull();
-              } else {
-                if (!f1.exists() || f1.lastModified() < f2.lastModified()) {
-                  f = f2;
-                } else {
-                  f = f1;
-                }
+              if (f.exists()) {
                 m_gameSelectorModel.load(f, null);
+              } else {
+                m_gameSelectorModel.resetGameDataToNull();
               }
             } catch (final Exception e) {
               ClientLogger.logQuietly(e);
@@ -382,21 +373,10 @@ public class ServerLauncher extends AbstractLauncher {
     final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
     SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
-    final File f;
-    if (m_headless) {
-      final File f1 =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      final File f2 =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
-      if (f1.lastModified() > f2.lastModified()) {
-        f = f2;
-      } else {
-        f = f1;
-      }
-    } else {
-      f = new File(ClientContext.folderSettings().getSaveGamePath(),
+    final File f = m_headless
+      ? new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
+      : new File(ClientContext.folderSettings().getSaveGamePath(),
           "connection_lost_on_" + format.format(new Date()) + ".tsvg");
-    }
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {
