@@ -292,7 +292,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAlliedOwnershipTerritories(final String value) throws GameParseException {
+  public void setAlliedOwnershipTerritories(final String value) {
     if (value == null) {
       m_alliedOwnershipTerritories = null;
       return;
@@ -316,7 +316,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = controlled, controlledNoWater, original, all, or list
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAlliedExclusionTerritories(final String value) throws GameParseException {
+  public void setAlliedExclusionTerritories(final String value) {
     if (value == null) {
       m_alliedExclusionTerritories = null;
       return;
@@ -339,7 +339,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDirectExclusionTerritories(final String value) throws GameParseException {
+  public void setDirectExclusionTerritories(final String value) {
     if (value == null) {
       m_directExclusionTerritories = null;
       return;
@@ -363,7 +363,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = original or list
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setEnemyExclusionTerritories(final String value) throws GameParseException {
+  public void setEnemyExclusionTerritories(final String value) {
     if (value == null) {
       m_enemyExclusionTerritories = null;
       return;
@@ -386,7 +386,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDirectPresenceTerritories(final String value) throws GameParseException {
+  public void setDirectPresenceTerritories(final String value) {
     if (value == null) {
       m_directPresenceTerritories = null;
       return;
@@ -409,7 +409,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAlliedPresenceTerritories(final String value) throws GameParseException {
+  public void setAlliedPresenceTerritories(final String value) {
     if (value == null) {
       m_alliedPresenceTerritories = null;
       return;
@@ -432,7 +432,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setEnemyPresenceTerritories(final String value) throws GameParseException {
+  public void setEnemyPresenceTerritories(final String value) {
     if (value == null) {
       m_enemyPresenceTerritories = null;
       return;
@@ -456,7 +456,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = original or list
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setEnemySurfaceExclusionTerritories(final String value) throws GameParseException {
+  public void setEnemySurfaceExclusionTerritories(final String value) {
     if (value == null) {
       m_enemySurfaceExclusionTerritories = null;
       return;
@@ -479,7 +479,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDirectOwnershipTerritories(final String value) throws GameParseException {
+  public void setDirectOwnershipTerritories(final String value) {
     if (value == null) {
       m_directOwnershipTerritories = null;
       return;

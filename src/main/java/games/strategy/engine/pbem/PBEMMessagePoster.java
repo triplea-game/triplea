@@ -1,7 +1,6 @@
 package games.strategy.engine.pbem;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -84,7 +83,7 @@ public class PBEMMessagePoster implements Serializable {
     m_turnSummary = turnSummary;
   }
 
-  public void setSaveGame(final File saveGameFile) throws FileNotFoundException {
+  public void setSaveGame(final File saveGameFile) {
     m_saveGameFile = saveGameFile;
   }
 

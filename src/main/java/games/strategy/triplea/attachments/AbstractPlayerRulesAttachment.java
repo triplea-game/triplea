@@ -75,7 +75,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMovementRestrictionTerritories(final String value) throws GameParseException {
+  public void setMovementRestrictionTerritories(final String value) {
     if (value == null) {
       m_movementRestrictionTerritories = null;
       return;

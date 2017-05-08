@@ -1,6 +1,5 @@
 package games.strategy.engine.history;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -170,7 +169,7 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  private Object writeReplace() throws ObjectStreamException {
+  private Object writeReplace() {
     return new SerializedHistory(this, m_data, m_changes);
   }
 
@@ -217,7 +216,7 @@ class SerializedHistory implements Serializable {
     }
   }
 
-  public Object readResolve() throws ObjectStreamException {
+  public Object readResolve() {
     final History rVal = new History(m_data);
     final HistoryWriter historyWriter = rVal.getHistoryWriter();
     for (final SerializationWriter element : m_Writers) {

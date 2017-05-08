@@ -744,7 +744,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setUnitProperty(final String prop) throws GameParseException {
+  public void setUnitProperty(final String prop) {
     if (prop == null) {
       m_unitProperty = null;
       return;
@@ -857,7 +857,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryProperty(final String prop) throws GameParseException {
+  public void setTerritoryProperty(final String prop) {
     if (prop == null) {
       m_territoryProperty = null;
       return;
@@ -990,7 +990,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlayerProperty(final String prop) throws GameParseException {
+  public void setPlayerProperty(final String prop) {
     if (prop == null) {
       m_playerProperty = null;
       return;
@@ -1101,7 +1101,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRelationshipTypeProperty(final String prop) throws GameParseException {
+  public void setRelationshipTypeProperty(final String prop) {
     if (prop == null) {
       m_relationshipTypeProperty = null;
       return;
@@ -1213,7 +1213,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryEffectProperty(final String prop) throws GameParseException {
+  public void setTerritoryEffectProperty(final String prop) {
     if (prop == null) {
       m_territoryEffectProperty = null;
       return;

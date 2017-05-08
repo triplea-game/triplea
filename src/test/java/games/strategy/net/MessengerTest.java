@@ -107,7 +107,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testClientSendToClient() throws InterruptedException {
+  public void testClientSendToClient() {
     final String message = "Hello";
     client1Messenger.send(message, client2Messenger.getLocalNode());
     assertEquals(client2MessageListener.getLastMessage(), message);
@@ -117,7 +117,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testClientSendToClientLargeMessage() throws InterruptedException {
+  public void testClientSendToClientLargeMessage() {
     final int count = 1 * 1000 * 1000;
     final StringBuilder builder = new StringBuilder(count);
     for (int i = 0; i < count; i++) {
@@ -196,7 +196,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testCorrectNodeCountInRemove() throws InterruptedException {
+  public void testCorrectNodeCountInRemove() {
     // when we receive the notification that a
     // connection has been lost, the node list
     // should reflect that change
@@ -230,7 +230,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testDisconnect() throws InterruptedException {
+  public void testDisconnect() {
     for (int i = 0; i < 100; i++) {
       if (serverMessenger.getNodes().size() == 3) {
         break;
@@ -251,7 +251,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testClose() throws InterruptedException {
+  public void testClose() {
     final AtomicBoolean closed = new AtomicBoolean(false);
     client1Messenger.addErrorListener(new IMessengerErrorListener() {
       @Override
@@ -269,7 +269,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException {
+  public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException {
     final int count = 5;
     final List<ClientMessenger> clients = new ArrayList<>();
     final List<MessageListener> listeners = new ArrayList<>();
