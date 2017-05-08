@@ -248,7 +248,8 @@ public class WeakAI extends AbstractAI {
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel) {
     for (int i = 0; i < moveRoutes.size(); i++) {
       pause();
-      if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {
+      if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null
+          || moveRoutes.get(i).hasNoSteps()) {
         s_logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
         continue;
       }
