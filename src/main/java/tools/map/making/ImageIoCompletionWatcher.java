@@ -9,13 +9,13 @@ import java.util.concurrent.CountDownLatch;
  */
 public class ImageIoCompletionWatcher implements ImageObserver {
   // we countdown when we are done
-  private final CountDownLatch m_countDownLatch = new CountDownLatch(1);
+  private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
   public ImageIoCompletionWatcher() {}
 
   public void waitForCompletion() {
     try {
-      m_countDownLatch.await();
+      countDownLatch.await();
     } catch (final InterruptedException e) {
       // Ignore interrupted exception
     }
@@ -26,7 +26,7 @@ public class ImageIoCompletionWatcher implements ImageObserver {
       final int height) {
     // wait for complete or error/abort
     if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0)) {
-      m_countDownLatch.countDown();
+      countDownLatch.countDown();
       return false;
     }
     return true;

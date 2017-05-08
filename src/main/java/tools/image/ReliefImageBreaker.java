@@ -38,8 +38,8 @@ import tools.map.making.ImageIoCompletionWatcher;
 public class ReliefImageBreaker {
   private static String location = null;
   private static JFrame observer = new JFrame();
-  private boolean m_seaZoneOnly;
-  private MapData m_mapData;
+  private boolean seaZoneOnly;
+  private MapData mapData;
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
@@ -81,7 +81,7 @@ public class ReliefImageBreaker {
       System.exit(0);
     }
     // ask user wether it is sea zone only or not
-    m_seaZoneOnly = doSeaZone();
+    seaZoneOnly = doSeaZone();
 
     // ask user where the map is
     final String mapDir = getMapDirectory();
@@ -91,18 +91,18 @@ public class ReliefImageBreaker {
       System.exit(0);
     }
     try {
-      m_mapData = new MapData(mapDir);
+      mapData = new MapData(mapDir);
       // files for the map.
     } catch (final NullPointerException npe) {
       System.out.println("Bad data given or missing text files, shutting down");
       System.exit(0);
     }
-    for (final String territoryName : m_mapData.getTerritories()) {
+    for (final String territoryName : mapData.getTerritories()) {
       final boolean seaZone = Util.isTerritoryNameIndicatingWater(territoryName);
-      if (!seaZone && m_seaZoneOnly) {
+      if (!seaZone && seaZoneOnly) {
         continue;
       }
-      if (seaZone && !m_seaZoneOnly) {
+      if (seaZone && !seaZoneOnly) {
         continue;
       }
       processImage(territoryName, map);
@@ -178,11 +178,11 @@ public class ReliefImageBreaker {
   }
 
   private void processImage(final String territory, final Image map) throws IOException {
-    final Rectangle bounds = m_mapData.getBoundingRect(territory);
+    final Rectangle bounds = mapData.getBoundingRect(territory);
     final int width = bounds.width;
     final int height = bounds.height;
     final BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-    final Iterator<Polygon> iter = m_mapData.getPolygons(territory).iterator();
+    final Iterator<Polygon> iter = mapData.getPolygons(territory).iterator();
     while (iter.hasNext()) {
       Polygon item = iter.next();
       item = new Polygon(item.xpoints, item.ypoints, item.npoints);
@@ -192,12 +192,12 @@ public class ReliefImageBreaker {
     final GraphicsConfiguration m_localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height,
-        m_seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
+        seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
     relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height,
         observer);
     blankOutline(alphaChannelImage, relief);
     String outFileName = location + File.separator + territory;
-    if (!m_seaZoneOnly) {
+    if (!seaZoneOnly) {
       outFileName += "_relief.png";
     } else {
       outFileName += ".png";

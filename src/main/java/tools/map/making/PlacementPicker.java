@@ -62,13 +62,13 @@ public class PlacementPicker extends JFrame {
   private static boolean s_showOverflowMode = false;
   private static boolean s_showIncompleteMode = false;
   private static int s_incompleteNum = 1;
-  private Point m_currentSquare;
-  private Image m_image;
-  private final JLabel m_location = new JLabel();
-  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
-  private Map<String, List<Point>> m_placements;
-  private List<Point> m_currentPlacements;
-  private String m_currentCountry;
+  private Point currentSquare;
+  private Image image;
+  private final JLabel locationLabel = new JLabel();
+  private Map<String, List<Polygon>> polygons = new HashMap<>();
+  private Map<String, List<Point>> placements;
+  private List<Point> currentPlacements;
+  private String currentCountry;
   private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static boolean placeDimensionsSet = false;
@@ -268,7 +268,7 @@ public class PlacementPicker extends JFrame {
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Polygons : " + file.getPath());
-        m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
+        polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
       } catch (final IOException ex1) {
         ex1.printStackTrace();
       }
@@ -278,7 +278,7 @@ public class PlacementPicker extends JFrame {
         final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           System.out.println("Polygons : " + polyPath);
-          m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+          polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
         } else {
           System.out.println("Polygons file not given. Will run regardless");
         }
@@ -296,8 +296,8 @@ public class PlacementPicker extends JFrame {
     imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-        m_location.setText("x:" + e.getX() + " y:" + e.getY());
-        m_currentSquare = new Point(e.getPoint());
+        locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
+        currentSquare = new Point(e.getPoint());
         repaint();
       }
     });
@@ -313,13 +313,13 @@ public class PlacementPicker extends JFrame {
       }
     });
     // set up the image panel size dimensions ...etc
-    imagePanel.setMinimumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-    imagePanel.setPreferredSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-    imagePanel.setMaximumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+    imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+    imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+    imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
     // set up the layout manager
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-    this.getContentPane().add(m_location, BorderLayout.SOUTH);
+    this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
     // set up the actions
     final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
@@ -397,8 +397,8 @@ public class PlacementPicker extends JFrame {
    *        .lang.String mapName the path of image map
    */
   private void createImage(final String mapName) {
-    m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-    Util.ensureImageLoaded(m_image);
+    image = Toolkit.getDefaultToolkit().createImage(mapName);
+    Util.ensureImageLoaded(image);
   }
 
   /**
@@ -415,12 +415,12 @@ public class PlacementPicker extends JFrame {
       @Override
       public void paint(final Graphics g) {
         // super.paint(g);
-        g.drawImage(m_image, 0, 0, this);
+        g.drawImage(image, 0, 0, this);
         if (s_showAllMode) {
           g.setColor(Color.yellow);
-          for (final Entry<String, List<Point>> entry : m_placements.entrySet()) {
-            if (entry.getKey().equals(m_currentCountry) && m_currentPlacements != null
-                && !m_currentPlacements.isEmpty()) {
+          for (final Entry<String, List<Point>> entry : placements.entrySet()) {
+            if (entry.getKey().equals(currentCountry) && currentPlacements != null
+                && !currentPlacements.isEmpty()) {
               continue;
             }
             final Iterator<Point> pointIter = entry.getValue().iterator();
@@ -437,17 +437,17 @@ public class PlacementPicker extends JFrame {
         }
         if (s_showIncompleteMode) {
           g.setColor(Color.green);
-          final Set<String> territories = new HashSet<>(m_polygons.keySet());
+          final Set<String> territories = new HashSet<>(polygons.keySet());
           final Iterator<String> terrIter = territories.iterator();
           while (terrIter.hasNext()) {
             final String terr = terrIter.next();
-            final List<Point> points = m_placements.get(terr);
+            final List<Point> points = placements.get(terr);
             if (points != null && points.size() >= s_incompleteNum) {
               terrIter.remove();
             }
           }
           for (final String terr : territories) {
-            final List<Polygon> polys = m_polygons.get(terr);
+            final List<Polygon> polys = polygons.get(terr);
             if (polys == null || polys.isEmpty()) {
               continue;
             }
@@ -457,13 +457,13 @@ public class PlacementPicker extends JFrame {
           }
         }
         g.setColor(Color.red);
-        if (m_currentSquare != null) {
-          g.drawRect(m_currentSquare.x, m_currentSquare.y, PLACEWIDTH, PLACEHEIGHT);
+        if (currentSquare != null) {
+          g.drawRect(currentSquare.x, currentSquare.y, PLACEWIDTH, PLACEHEIGHT);
         }
-        if (m_currentPlacements == null) {
+        if (currentPlacements == null) {
           return;
         }
-        final Iterator<Point> pointIter = m_currentPlacements.iterator();
+        final Iterator<Point> pointIter = currentPlacements.iterator();
         while (pointIter.hasNext()) {
           final Point item = pointIter.next();
           g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
@@ -490,7 +490,7 @@ public class PlacementPicker extends JFrame {
         return;
       }
       final FileOutputStream out = new FileOutputStream(fileName);
-      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(m_placements));
+      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(placements));
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
@@ -511,7 +511,7 @@ public class PlacementPicker extends JFrame {
         return;
       }
       final FileInputStream in = new FileInputStream(placeName);
-      m_placements = PointFileReaderWriter.readOneToMany(in);
+      placements = PointFileReaderWriter.readOneToMany(in);
       repaint();
     } catch (final HeadlessException | IOException ex) {
       ClientLogger.logQuietly(ex);
@@ -535,31 +535,31 @@ public class PlacementPicker extends JFrame {
    */
   private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
     if (!rightMouse && !ctrlDown) {
-      m_currentCountry = Util.findTerritoryName(point, m_polygons, "there be dragons");
+      currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
       // If there isn't an existing array, create one
-      if (m_placements == null || m_placements.get(m_currentCountry) == null) {
-        m_currentPlacements = new ArrayList<>();
+      if (placements == null || placements.get(currentCountry) == null) {
+        currentPlacements = new ArrayList<>();
       } else {
-        m_currentPlacements = new ArrayList<>(m_placements.get(m_currentCountry));
+        currentPlacements = new ArrayList<>(placements.get(currentCountry));
       }
-      JOptionPane.showMessageDialog(this, m_currentCountry);
+      JOptionPane.showMessageDialog(this, currentCountry);
     } else if (!rightMouse && ctrlDown) {
-      if (m_currentPlacements != null) {
-        m_currentPlacements.add(point);
+      if (currentPlacements != null) {
+        currentPlacements.add(point);
       }
     } else if (rightMouse && ctrlDown) {
-      if (m_currentPlacements != null) {
+      if (currentPlacements != null) {
         // If there isn't an existing hashmap, create one
-        if (m_placements == null) {
-          m_placements = new HashMap<>();
+        if (placements == null) {
+          placements = new HashMap<>();
         }
-        m_placements.put(m_currentCountry, m_currentPlacements);
-        m_currentPlacements = new ArrayList<>();
-        System.out.println("done:" + m_currentCountry);
+        placements.put(currentCountry, currentPlacements);
+        currentPlacements = new ArrayList<>();
+        System.out.println("done:" + currentCountry);
       }
     } else if (rightMouse) {
-      if (m_currentPlacements != null && !m_currentPlacements.isEmpty()) {
-        m_currentPlacements.remove(m_currentPlacements.size() - 1);
+      if (currentPlacements != null && !currentPlacements.isEmpty()) {
+        currentPlacements.remove(currentPlacements.size() - 1);
       }
     }
     repaint();

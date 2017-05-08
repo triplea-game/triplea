@@ -65,14 +65,14 @@ public class PolygonGrabber extends JFrame {
   private static boolean s_islandMode;
   private final JCheckBoxMenuItem modeItem;
   // the current set of polyongs
-  private List<Polygon> m_current;
+  private List<Polygon> current;
   // holds the map image
   // private Image m_image;
-  private BufferedImage m_bufferedImage;
+  private BufferedImage bufferedImage;
   // maps String -> List of polygons
-  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
+  private Map<String, List<Polygon>> polygons = new HashMap<>();
   // holds the centers for the polygons
-  private Map<String, Point> m_centers;
+  private Map<String, Point> centers;
   private final JLabel location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -145,7 +145,7 @@ public class PolygonGrabber extends JFrame {
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Centers : " + file.getPath());
-        m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(file.getPath()));
+        centers = PointFileReaderWriter.readOneToOne(new FileInputStream(file.getPath()));
       } catch (final IOException ex1) {
         System.out.println("Something wrong with Centers file");
         ex1.printStackTrace();
@@ -156,7 +156,7 @@ public class PolygonGrabber extends JFrame {
         final String centerPath = new FileOpen("Select A Center File", s_mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
-          m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+          centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
         } else {
           System.out.println("You must specify a centers file.");
           System.out.println("Shutting down.");
@@ -193,9 +193,9 @@ public class PolygonGrabber extends JFrame {
       }
     });
     // set up the image panel size dimensions ...etc
-    imagePanel.setMinimumSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
-    imagePanel.setPreferredSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
-    imagePanel.setMaximumSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
+    imagePanel.setMinimumSize(new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
+    imagePanel.setPreferredSize(new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
+    imagePanel.setMaximumSize(new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
     // set up the layout manager
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
@@ -214,15 +214,15 @@ public class PolygonGrabber extends JFrame {
               + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
               + "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
               + "</html>"));
-      m_current = new ArrayList<>();
-      final BufferedImage imageCopy = new BufferedImage(m_bufferedImage.getWidth(null),
-          m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      current = new ArrayList<>();
+      final BufferedImage imageCopy = new BufferedImage(bufferedImage.getWidth(null),
+          bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics g = imageCopy.getGraphics();
-      g.drawImage(m_bufferedImage, 0, 0, null);
-      final Iterator<String> territoryNames = m_centers.keySet().iterator();
+      g.drawImage(bufferedImage, 0, 0, null);
+      final Iterator<String> territoryNames = centers.keySet().iterator();
       while (territoryNames.hasNext()) {
         final String territoryName = territoryNames.next();
-        final Point center = m_centers.get(territoryName);
+        final Point center = centers.get(territoryName);
         System.out.println("Detecting Polygon for:" + territoryName);
         final Polygon p = findPolygon(center.x, center.y);
         // test if the poly contains the center point (this often fails when there is an island right above (because
@@ -235,7 +235,7 @@ public class PolygonGrabber extends JFrame {
         // make sure it gets
         // done properly
         boolean hasIslands = false;
-        for (final Point otherCenterPoint : m_centers.values()) {
+        for (final Point otherCenterPoint : centers.values()) {
           if (center.equals(otherCenterPoint)) {
             continue;
           }
@@ -255,7 +255,7 @@ public class PolygonGrabber extends JFrame {
         }
         final List<Polygon> polys = new ArrayList<>();
         polys.add(p);
-        m_polygons.put(territoryName, polys);
+        polygons.put(territoryName, polys);
       }
       g.dispose();
       imageCopy.flush();
@@ -307,8 +307,8 @@ public class PolygonGrabber extends JFrame {
   private void createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
     Util.ensureImageLoaded(image);
-    m_bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-    final Graphics g = m_bufferedImage.getGraphics();
+    bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    final Graphics g = bufferedImage.getGraphics();
     g.drawImage(image, 0, 0, this);
     g.dispose();
   }
@@ -332,8 +332,8 @@ public class PolygonGrabber extends JFrame {
       @Override
       public void paint(final Graphics g) {
         // super.paint(g);
-        g.drawImage(m_bufferedImage, 0, 0, this);
-        final Iterator<Entry<String, List<Polygon>>> iter = m_polygons.entrySet().iterator();
+        g.drawImage(bufferedImage, 0, 0, this);
+        final Iterator<Entry<String, List<Polygon>>> iter = polygons.entrySet().iterator();
         g.setColor(Color.red);
         while (iter.hasNext()) {
           final Collection<Polygon> polygons = iter.next().getValue();
@@ -354,8 +354,8 @@ public class PolygonGrabber extends JFrame {
           }
         } // while
         g.setColor(Color.red);
-        if (m_current != null) {
-          for (final Polygon item : m_current) {
+        if (current != null) {
+          for (final Polygon item : current) {
             g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
           } // while
         } // if
@@ -376,7 +376,7 @@ public class PolygonGrabber extends JFrame {
         return;
       }
       final FileOutputStream out = new FileOutputStream(polyName);
-      PointFileReaderWriter.writeOneToManyPolygons(out, m_polygons);
+      PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(polyName).getCanonicalPath());
@@ -397,7 +397,7 @@ public class PolygonGrabber extends JFrame {
         return;
       }
       final FileInputStream in = new FileInputStream(polyName);
-      m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       repaint();
     } catch (final FileNotFoundException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
@@ -422,19 +422,19 @@ public class PolygonGrabber extends JFrame {
     if (p == null) {
       return;
     }
-    if (rightMouse && m_current != null) { // right click and list of polys is not empty
+    if (rightMouse && current != null) { // right click and list of polys is not empty
       doneCurrentGroup();
     } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
       System.out.println("rejecting");
       return;
     } else if (ctrlDown) {
-      if (m_current == null) {
-        m_current = new ArrayList<>();
+      if (current == null) {
+        current = new ArrayList<>();
       }
-      m_current.add(p);
+      current.add(p);
     } else {
-      m_current = new ArrayList<>();
-      m_current.add(p);
+      current = new ArrayList<>();
+      current.add(p);
     }
     repaint();
   }
@@ -449,10 +449,10 @@ public class PolygonGrabber extends JFrame {
    * @return java.lang.boolean
    */
   private boolean pointInCurrentPolygon(final Point p) {
-    if (m_current == null) {
+    if (current == null) {
       return false;
     }
-    for (final Polygon item : m_current) {
+    for (final Polygon item : current) {
       if (item.contains(p)) {
         return true;
       }
@@ -467,23 +467,23 @@ public class PolygonGrabber extends JFrame {
    */
   private void doneCurrentGroup() throws HeadlessException {
     final JTextField text = new JTextField();
-    final Iterator<Entry<String, Point>> centersiter = m_centers.entrySet().iterator();
+    final Iterator<Entry<String, Point>> centersiter = centers.entrySet().iterator();
     guessCountryName(text, centersiter);
     final int option = JOptionPane.showConfirmDialog(this, text);
     // cancel = 2
     // no = 1
     // yes = 0
     if (option == 0) {
-      if (!m_centers.keySet().contains(text.getText())) {
+      if (!centers.keySet().contains(text.getText())) {
         // not a valid name
         JOptionPane.showMessageDialog(this, "not a valid name");
-        m_current = null;
+        current = null;
         return;
       }
-      m_polygons.put(text.getText(), new ArrayList<>(m_current));
-      m_current = null;
+      polygons.put(text.getText(), new ArrayList<>(current));
+      current = null;
     } else if (option > 0) {
-      m_current = null;
+      current = null;
     } else {
       System.out.println("something very invalid");
     }
@@ -503,7 +503,7 @@ public class PolygonGrabber extends JFrame {
     while (centersiter.hasNext()) {
       final Entry<String, Point> item = centersiter.next();
       final Point p = new Point(item.getValue());
-      for (final Polygon polygon : m_current) {
+      for (final Polygon polygon : current) {
         if (polygon.contains(p)) {
           options.add(item.getKey());
         } // if
@@ -547,7 +547,7 @@ public class PolygonGrabber extends JFrame {
     // with ARGB value of 00,FF,FF,FF to determine if it
     // it black or not.
     // maybe here ?
-    return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
+    return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
   private static boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
@@ -573,7 +573,7 @@ public class PolygonGrabber extends JFrame {
    * @return java.lang.boolean
    */
   private boolean inBounds(final int x, final int y) {
-    return x >= 0 && x < m_bufferedImage.getWidth(null) && y >= 0 && y < m_bufferedImage.getHeight(null);
+    return x >= 0 && x < bufferedImage.getWidth(null) && y >= 0 && y < bufferedImage.getHeight(null);
   }
 
   private static boolean inBounds(final int x, final int y, final Image image) {
@@ -615,7 +615,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   // used below
-  private final Point m_testPoint = new Point();
+  private final Point testPoint = new Point();
 
   /**
    * java.lang.boolean isOnEdge(java.lang.int, java.awt.Point)
@@ -629,10 +629,10 @@ public class PolygonGrabber extends JFrame {
    * @return java.lang.boolean
    */
   private boolean isOnEdge(final int direction, final Point currentPoint) {
-    m_testPoint.setLocation(currentPoint);
-    move(m_testPoint, direction);
-    return m_testPoint.x == 0 || m_testPoint.y == 0 || m_testPoint.y == m_bufferedImage.getHeight(this)
-        || m_testPoint.x == m_bufferedImage.getWidth(this) || isBlack(m_testPoint);
+    testPoint.setLocation(currentPoint);
+    move(testPoint, direction);
+    return testPoint.x == 0 || testPoint.y == 0 || testPoint.y == bufferedImage.getHeight(this)
+        || testPoint.x == bufferedImage.getWidth(this) || isBlack(testPoint);
   }
 
   private boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
@@ -640,8 +640,8 @@ public class PolygonGrabber extends JFrame {
     // we would like to just test if each point is both black and contained within the polygon, but contains counts the
     // borders,
     // so we have to turn the border edges a different color (then later back to black again) using a copy of the image
-    // final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null),
-    // m_bufferedImage.getHeight(null),
+    // final BufferedImage testImage = new BufferedImage(bufferedImage.getWidth(null),
+    // bufferedImage.getHeight(null),
     // BufferedImage.TYPE_INT_ARGB);
     imageCopyGraphics.setColor(Color.GREEN);
     imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);

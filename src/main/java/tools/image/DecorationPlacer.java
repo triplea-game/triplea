@@ -95,22 +95,21 @@ import games.strategy.util.Tuple;
 public class DecorationPlacer extends JFrame {
   private static final long serialVersionUID = 6385408390173085656L;
   // The map image will be stored here
-  private Image m_image;
+  private Image image;
   // hash map for image points
-  private Map<String, List<Point>> m_currentPoints = new HashMap<>();
+  private Map<String, List<Point>> currentPoints = new HashMap<>();
   // hash map for center points
-  private Map<String, Point> m_centers = new HashMap<>();
+  private Map<String, Point> centers = new HashMap<>();
   // hash map for polygon points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<>();
-  private final JLabel m_location = new JLabel();
+  private Map<String, List<Polygon>> polygons = new HashMap<>();
+  private final JLabel locationLabel = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static File s_currentImageFolderLocation = null;
   private static File s_currentImagePointsTextFile = null;
-  private Point m_currentMousePoint = new Point(0, 0);
-  private Triple<String, Image, Point> m_currentSelectedImage = null;
-  private Map<String, Tuple<Image, List<Point>>> m_currentImagePoints =
-      new HashMap<>();
+  private Point currentMousePoint = new Point(0, 0);
+  private Triple<String, Image, Point> currentSelectedImage = null;
+  private Map<String, Tuple<Image, List<Point>>> currentImagePoints = new HashMap<>();
   private static boolean s_highlightAll = false;
   private static boolean s_createNewImageOnRightClick = false;
   private static Image s_staticImageForPlacing = null;
@@ -198,7 +197,7 @@ public class DecorationPlacer extends JFrame {
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Centers : " + fileCenters.getPath());
-        m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(fileCenters.getPath()));
+        centers = PointFileReaderWriter.readOneToOne(new FileInputStream(fileCenters.getPath()));
       } catch (final IOException ex1) {
         System.out.println("Something wrong with Centers file");
         ex1.printStackTrace();
@@ -210,7 +209,7 @@ public class DecorationPlacer extends JFrame {
         final String centerPath = new FileOpen("Select A Center File", s_mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
-          m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+          centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
         } else {
           System.out.println("You must specify a centers file.");
           System.out.println("Shutting down.");
@@ -235,7 +234,7 @@ public class DecorationPlacer extends JFrame {
         "File Suggestion", 1) == 0) {
       try {
         System.out.println("Polygons : " + filePoly.getPath());
-        m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(filePoly.getPath()));
+        polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(filePoly.getPath()));
       } catch (final IOException ex1) {
         System.out.println("Something wrong with your Polygons file");
         ex1.printStackTrace();
@@ -247,7 +246,7 @@ public class DecorationPlacer extends JFrame {
         final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           System.out.println("Polygons : " + polyPath);
-          m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+          polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
         } else {
           System.out.println("You must specify a Polgyon file.");
           System.out.println("Shutting down.");
@@ -259,7 +258,7 @@ public class DecorationPlacer extends JFrame {
         System.exit(0);
       }
     }
-    m_image = createImage(mapName);
+    image = createImage(mapName);
     final JPanel imagePanel = createMainPanel();
     /*
      * Add a mouse listener to show
@@ -269,13 +268,13 @@ public class DecorationPlacer extends JFrame {
     imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-        m_location.setText((m_currentSelectedImage == null ? "" : m_currentSelectedImage.getFirst()) + "    x:"
+        locationLabel.setText((currentSelectedImage == null ? "" : currentSelectedImage.getFirst()) + "    x:"
             + e.getX() + " y:" + e.getY());
-        m_currentMousePoint = new Point(e.getPoint());
+        currentMousePoint = new Point(e.getPoint());
         DecorationPlacer.this.repaint();
       }
     });
-    m_location.setFont(new Font("Ariel", Font.BOLD, 16));
+    locationLabel.setFont(new Font("Ariel", Font.BOLD, 16));
     /*
      * Add a mouse listener to monitor
      * for right mouse button being
@@ -288,13 +287,13 @@ public class DecorationPlacer extends JFrame {
       }
     });
     // set up the image panel size dimensions ...etc
-    imagePanel.setMinimumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-    imagePanel.setPreferredSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-    imagePanel.setMaximumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+    imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+    imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+    imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
     // set up the layout manager
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-    this.getContentPane().add(m_location, BorderLayout.SOUTH);
+    this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
     // set up the actions
     final Action openAction = SwingAction.of("Load Image Locations", e -> loadImagesAndPoints());
     openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Image Points File");
@@ -341,7 +340,7 @@ public class DecorationPlacer extends JFrame {
         DecorationPlacer.this.repaint();
       }
     });
-    final Action clearAction = SwingAction.of("Clear All Current Points.", e -> m_currentImagePoints.clear());
+    final Action clearAction = SwingAction.of("Clear All Current Points.", e -> currentImagePoints.clear());
     clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');
@@ -391,13 +390,13 @@ public class DecorationPlacer extends JFrame {
     if (s_cheapMutex) {
       return;
     }
-    g.drawImage(m_image, 0, 0, this);
+    g.drawImage(image, 0, 0, this);
     g.setColor(Color.red);
-    for (final Entry<String, Tuple<Image, List<Point>>> entry : m_currentImagePoints.entrySet()) {
+    for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
       for (final Point p : entry.getValue().getSecond()) {
         g.drawImage(entry.getValue().getFirst(), p.x,
             p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)), null);
-        if (m_currentSelectedImage != null && m_currentSelectedImage.getThird().equals(p)) {
+        if (currentSelectedImage != null && currentSelectedImage.getThird().equals(p)) {
           g.setColor(Color.green);
           g.drawRect(p.x, p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
               entry.getValue().getFirst().getWidth(null), entry.getValue().getFirst().getHeight(null));
@@ -412,25 +411,25 @@ public class DecorationPlacer extends JFrame {
         }
       }
     }
-    if (m_currentSelectedImage != null) {
+    if (currentSelectedImage != null) {
       g.setColor(Color.green);
-      g.drawImage(m_currentSelectedImage.getSecond(), m_currentMousePoint.x,
-          m_currentMousePoint.y - (s_showFromTopLeft ? 0 : m_currentSelectedImage.getSecond().getHeight(null)), null);
+      g.drawImage(currentSelectedImage.getSecond(), currentMousePoint.x,
+          currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)), null);
       if (s_highlightAll) {
-        g.drawRect(m_currentMousePoint.x,
-            m_currentMousePoint.y - (s_showFromTopLeft ? 0 : m_currentSelectedImage.getSecond().getHeight(null)),
-            m_currentSelectedImage.getSecond().getWidth(null), m_currentSelectedImage.getSecond().getHeight(null));
+        g.drawRect(currentMousePoint.x,
+            currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)),
+            currentSelectedImage.getSecond().getWidth(null), currentSelectedImage.getSecond().getHeight(null));
       }
       if (s_showPointNames) {
-        g.drawString(m_currentSelectedImage.getFirst(), m_currentMousePoint.x,
-            m_currentMousePoint.y - (s_showFromTopLeft ? 0 : m_currentSelectedImage.getSecond().getHeight(null)));
+        g.drawString(currentSelectedImage.getFirst(), currentMousePoint.x,
+            currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)));
       }
     }
   }
 
   private void saveCurrentToMapPicture() {
     final BufferedImage bufferedImage =
-        new BufferedImage(m_image.getWidth(null), m_image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
     final Graphics g = bufferedImage.getGraphics();
     final boolean saveHighlight = s_highlightAll;
     final boolean saveNames = s_showPointNames;
@@ -440,7 +439,7 @@ public class DecorationPlacer extends JFrame {
     g.dispose();
     s_highlightAll = saveHighlight;
     s_showPointNames = saveNames;
-    m_image = bufferedImage;
+    image = bufferedImage;
   }
 
   /**
@@ -448,14 +447,14 @@ public class DecorationPlacer extends JFrame {
    * Saves the centers to disk.
    */
   private void saveImagePoints() {
-    m_currentPoints = new HashMap<>();
-    for (final Entry<String, Tuple<Image, List<Point>>> entry : m_currentImagePoints.entrySet()) {
+    currentPoints = new HashMap<>();
+    for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
       // remove duplicates
       final LinkedHashSet<Point> pointSet = new LinkedHashSet<>();
       pointSet.addAll(entry.getValue().getSecond());
       entry.getValue().getSecond().clear();
       entry.getValue().getSecond().addAll(pointSet);
-      m_currentPoints.put(entry.getKey(), entry.getValue().getSecond());
+      currentPoints.put(entry.getKey(), entry.getValue().getSecond());
     }
     try {
       final String fileName = new FileSave("Where To Save Image Points Text File?", JFileChooser.FILES_ONLY,
@@ -465,7 +464,7 @@ public class DecorationPlacer extends JFrame {
       }
       final FileOutputStream out = new FileOutputStream(fileName);
 
-      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(m_currentPoints));
+      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
 
       out.flush();
       out.close();
@@ -524,8 +523,8 @@ public class DecorationPlacer extends JFrame {
 
   private void loadImagesAndPoints() {
     s_cheapMutex = true;
-    m_currentImagePoints = new HashMap<>();
-    m_currentSelectedImage = null;
+    currentImagePoints = new HashMap<>();
+    currentSelectedImage = null;
     selectImagePointType();
     final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
     final Object[] pointsAreNamesOptions = {"Points end in .png", "Points do NOT end in .png"};
@@ -608,9 +607,9 @@ public class DecorationPlacer extends JFrame {
       if (centerName != null && centerName.getFile() != null && centerName.getFile().exists()
           && centerName.getPathString() != null) {
         final FileInputStream in = new FileInputStream(centerName.getPathString());
-        m_currentPoints = PointFileReaderWriter.readOneToMany(in);
+        currentPoints = PointFileReaderWriter.readOneToMany(in);
       } else {
-        m_currentPoints = new HashMap<>();
+        currentPoints = new HashMap<>();
       }
     } catch (final HeadlessException | IOException ex) {
       ClientLogger.logQuietly(ex);
@@ -641,8 +640,8 @@ public class DecorationPlacer extends JFrame {
     final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
         : (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     if (fillInAllTerritories) {
-      for (final Entry<String, Point> entry : m_centers.entrySet()) {
-        List<Point> points = m_currentPoints.get(entry.getKey());
+      for (final Entry<String, Point> entry : centers.entrySet()) {
+        List<Point> points = currentPoints.get(entry.getKey());
         if (points == null) {
           System.out.println("Did NOT find point for: " + entry.getKey());
           points = new ArrayList<>();
@@ -652,11 +651,11 @@ public class DecorationPlacer extends JFrame {
         } else {
           System.out.println("Found point for: " + entry.getKey());
         }
-        m_currentImagePoints.put(entry.getKey(), Tuple.of(s_staticImageForPlacing, points));
+        currentImagePoints.put(entry.getKey(), Tuple.of(s_staticImageForPlacing, points));
       }
     } else {
-      for (final Entry<String, List<Point>> entry : m_currentPoints.entrySet()) {
-        m_currentImagePoints.put(entry.getKey(),
+      for (final Entry<String, List<Point>> entry : currentPoints.entrySet()) {
+        currentImagePoints.put(entry.getKey(),
             Tuple.of(s_staticImageForPlacing, entry.getValue()));
       }
     }
@@ -667,7 +666,7 @@ public class DecorationPlacer extends JFrame {
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {
     final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
         : (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
-    final List<String> allTerritories = new ArrayList<>(m_centers.keySet());
+    final List<String> allTerritories = new ArrayList<>(centers.keySet());
     for (final File file : s_currentImageFolderLocation.listFiles()) {
       if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
         continue;
@@ -675,11 +674,11 @@ public class DecorationPlacer extends JFrame {
       final String imageName = file.getName();
       final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
       final Image image = createImage(file.getPath());
-      List<Point> points = (m_currentPoints != null
-          ? m_currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName)) : null);
+      List<Point> points = (currentPoints != null
+          ? currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName)) : null);
       if (points == null) {
         points = new ArrayList<>();
-        Point p = m_centers.get(possibleTerritoryName);
+        Point p = centers.get(possibleTerritoryName);
         if (p == null) {
           System.out.println("Did NOT find point for: " + possibleTerritoryName);
           points.add(new Point(50, 50));
@@ -693,7 +692,7 @@ public class DecorationPlacer extends JFrame {
       } else {
         allTerritories.remove(possibleTerritoryName);
       }
-      m_currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
+      currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
           Tuple.of(image, points));
     }
     if (!allTerritories.isEmpty() && s_imagePointType == ImagePointType.name_place) {
@@ -714,72 +713,72 @@ public class DecorationPlacer extends JFrame {
     if (s_cheapMutex) {
       return;
     }
-    if (!rightMouse && !ctrlDown && m_currentSelectedImage == null) {
+    if (!rightMouse && !ctrlDown && currentSelectedImage == null) {
       // find whatever image we are left clicking on
       Point testPoint = null;
-      for (final Entry<String, Tuple<Image, List<Point>>> entry : m_currentImagePoints.entrySet()) {
+      for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
         for (final Point p : entry.getValue().getSecond()) {
-          if (testPoint == null || p.distance(m_currentMousePoint) < testPoint.distance(m_currentMousePoint)) {
+          if (testPoint == null || p.distance(currentMousePoint) < testPoint.distance(currentMousePoint)) {
             testPoint = p;
-            m_currentSelectedImage = Triple.of(entry.getKey(), entry.getValue().getFirst(), p);
+            currentSelectedImage = Triple.of(entry.getKey(), entry.getValue().getFirst(), p);
           }
         }
       }
-    } else if (!rightMouse && !ctrlDown && m_currentSelectedImage != null) {
+    } else if (!rightMouse && !ctrlDown && currentSelectedImage != null) {
       // save the image
-      final Tuple<Image, List<Point>> imagePoints = m_currentImagePoints.get(m_currentSelectedImage.getFirst());
+      final Tuple<Image, List<Point>> imagePoints = currentImagePoints.get(currentSelectedImage.getFirst());
       final List<Point> points = imagePoints.getSecond();
-      points.remove(m_currentSelectedImage.getThird());
-      points.add(new Point(m_currentMousePoint));
-      m_currentImagePoints.put(m_currentSelectedImage.getFirst(),
-          Tuple.of(m_currentSelectedImage.getSecond(), points));
-      m_currentSelectedImage = null;
+      points.remove(currentSelectedImage.getThird());
+      points.add(new Point(currentMousePoint));
+      currentImagePoints.put(currentSelectedImage.getFirst(),
+          Tuple.of(currentSelectedImage.getSecond(), points));
+      currentSelectedImage = null;
     } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
-        && m_currentSelectedImage == null) {
+        && currentSelectedImage == null) {
       // create a new point here in this territory
-      final Optional<String> territoryName = Util.findTerritoryName(m_currentMousePoint, m_polygons);
+      final Optional<String> territoryName = Util.findTerritoryName(currentMousePoint, polygons);
       if (territoryName.isPresent()) {
         final List<Point> points = new ArrayList<>();
-        points.add(new Point(m_currentMousePoint));
-        m_currentImagePoints.put(territoryName.get(), Tuple.of(s_staticImageForPlacing, points));
+        points.add(new Point(currentMousePoint));
+        currentImagePoints.put(territoryName.get(), Tuple.of(s_staticImageForPlacing, points));
       }
     } else if (rightMouse && !ctrlDown && s_imagePointType.isCanHaveMultiplePoints()) {
       // if none selected find the image we are clicking on, and duplicate it (not replace/move it)
-      if (m_currentSelectedImage == null) {
+      if (currentSelectedImage == null) {
         Point testPoint = null;
-        for (final Entry<String, Tuple<Image, List<Point>>> entry : m_currentImagePoints.entrySet()) {
+        for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
           for (final Point p : entry.getValue().getSecond()) {
-            if (testPoint == null || p.distance(m_currentMousePoint) < testPoint.distance(m_currentMousePoint)) {
+            if (testPoint == null || p.distance(currentMousePoint) < testPoint.distance(currentMousePoint)) {
               testPoint = p;
-              m_currentSelectedImage =
+              currentSelectedImage =
                   Triple.of(entry.getKey(), entry.getValue().getFirst(), null);
             }
           }
         }
       } else {
-        m_currentSelectedImage = Triple.of(m_currentSelectedImage.getFirst(),
-            m_currentSelectedImage.getSecond(), null);
+        currentSelectedImage = Triple.of(currentSelectedImage.getFirst(),
+            currentSelectedImage.getSecond(), null);
       }
       // then save (same code as above for saving)
-      final Tuple<Image, List<Point>> imagePoints = m_currentImagePoints.get(m_currentSelectedImage.getFirst());
+      final Tuple<Image, List<Point>> imagePoints = currentImagePoints.get(currentSelectedImage.getFirst());
       final List<Point> points = imagePoints.getSecond();
-      points.remove(m_currentSelectedImage.getThird());
-      points.add(new Point(m_currentMousePoint));
-      m_currentImagePoints.put(m_currentSelectedImage.getFirst(),
-          Tuple.of(m_currentSelectedImage.getSecond(), points));
-      m_currentSelectedImage = null;
+      points.remove(currentSelectedImage.getThird());
+      points.add(new Point(currentMousePoint));
+      currentImagePoints.put(currentSelectedImage.getFirst(),
+          Tuple.of(currentSelectedImage.getSecond(), points));
+      currentSelectedImage = null;
     } else if (rightMouse && ctrlDown) {
       // must be right click AND ctrl down to delete an image
-      if (m_currentSelectedImage == null) {
+      if (currentSelectedImage == null) {
         return;
       }
-      final Tuple<Image, List<Point>> current = m_currentImagePoints.get(m_currentSelectedImage.getFirst());
+      final Tuple<Image, List<Point>> current = currentImagePoints.get(currentSelectedImage.getFirst());
       final List<Point> points = current.getSecond();
-      points.remove(m_currentSelectedImage.getThird());
+      points.remove(currentSelectedImage.getThird());
       if (points.isEmpty()) {
-        m_currentImagePoints.remove(m_currentSelectedImage.getFirst());
+        currentImagePoints.remove(currentSelectedImage.getFirst());
       }
-      m_currentSelectedImage = null;
+      currentSelectedImage = null;
     }
     repaint();
   }
@@ -915,17 +914,17 @@ enum ImagePointType {
           + "CTRL/SHIFT + Right Click = delete currently selected image point</html>");
 
   public static final int SPACE_BETWEEN_NAMES_AND_PUS = 32;
-  private final String m_fileName;
-  private final String m_folderName;
-  private final String m_imageName;
-  private final boolean m_useFolder;
-  private final boolean m_endInPNG;
-  private final boolean m_fillAll;
-  private final boolean m_canUseBottomLeftPoint;
-  private final boolean m_canHaveMultiplePoints;
-  private final boolean m_usesCentersPoint;
-  private final String m_description;
-  private final String m_instructions;
+  private final String fileName;
+  private final String folderName;
+  private final String imageName;
+  private final boolean useFolder;
+  private final boolean endInPNG;
+  private final boolean fillAll;
+  private final boolean canUseBottomLeftPoint;
+  private final boolean canHaveMultiplePoints;
+  private final boolean usesCentersPoint;
+  private final String description;
+  private final String instructions;
 
   protected static ImagePointType[] getTypes() {
     return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
@@ -936,60 +935,60 @@ enum ImagePointType {
       final boolean endInPNG, final boolean fillAll, final boolean canUseBottomLeftPoint,
       final boolean canHaveMultiplePoints, final boolean usesCentersPoint, final String description,
       final String instructions) {
-    m_fileName = fileName;
-    m_folderName = folderName;
-    m_imageName = imageName;
-    m_useFolder = useFolder;
-    m_endInPNG = endInPNG;
-    m_fillAll = fillAll;
-    m_canUseBottomLeftPoint = canUseBottomLeftPoint;
-    m_canHaveMultiplePoints = canHaveMultiplePoints;
-    m_usesCentersPoint = usesCentersPoint;
-    m_description = description;
-    m_instructions = instructions;
+    this.fileName = fileName;
+    this.folderName = folderName;
+    this.imageName = imageName;
+    this.useFolder = useFolder;
+    this.endInPNG = endInPNG;
+    this.fillAll = fillAll;
+    this.canUseBottomLeftPoint = canUseBottomLeftPoint;
+    this.canHaveMultiplePoints = canHaveMultiplePoints;
+    this.usesCentersPoint = usesCentersPoint;
+    this.description = description;
+    this.instructions = instructions;
   }
 
   public String getFileName() {
-    return m_fileName;
+    return fileName;
   }
 
   public String getFolderName() {
-    return m_folderName;
+    return folderName;
   }
 
   public String getImageName() {
-    return m_imageName;
+    return imageName;
   }
 
   public boolean isUseFolder() {
-    return m_useFolder;
+    return useFolder;
   }
 
   public boolean isEndInPNG() {
-    return m_endInPNG;
+    return endInPNG;
   }
 
   public boolean isFillAll() {
-    return m_fillAll;
+    return fillAll;
   }
 
   public boolean isCanUseBottomLeftPoint() {
-    return m_canUseBottomLeftPoint;
+    return canUseBottomLeftPoint;
   }
 
   public boolean isCanHaveMultiplePoints() {
-    return m_canHaveMultiplePoints;
+    return canHaveMultiplePoints;
   }
 
   public boolean isUsesCentersPoint() {
-    return m_usesCentersPoint;
+    return usesCentersPoint;
   }
 
   public String getDescription() {
-    return m_description;
+    return description;
   }
 
   public String getInstructions() {
-    return m_instructions;
+    return instructions;
   }
 }

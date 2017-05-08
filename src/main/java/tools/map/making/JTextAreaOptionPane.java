@@ -20,52 +20,52 @@ import javax.swing.WindowConstants;
  * A text area that can show updates scrolling by.
  */
 public class JTextAreaOptionPane {
-  private final JTextArea m_editor = new JTextArea();
-  private final JFrame m_windowFrame = new JFrame();
-  private final JButton m_okButton = new JButton();
-  private final boolean m_logToSystemOut;
-  private final WeakReference<Window> m_parentComponentReference;
-  private int m_counter;
-  private final CountDownLatch m_countDownLatch;
+  private final JTextArea editor = new JTextArea();
+  private final JFrame windowFrame = new JFrame();
+  private final JButton okButton = new JButton();
+  private final boolean logToSystemOut;
+  private final WeakReference<Window> parentComponentReference;
+  private int counter;
+  private final CountDownLatch countDownLatch;
 
   public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
       final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
       final int latchCount, final CountDownLatch countDownLatch) {
-    m_logToSystemOut = logToSystemOut;
-    m_countDownLatch = countDownLatch;
-    m_counter = latchCount;
-    m_parentComponentReference = new WeakReference<>(parentComponent);
-    m_windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    this.logToSystemOut = logToSystemOut;
+    this.countDownLatch = countDownLatch;
+    counter = latchCount;
+    parentComponentReference = new WeakReference<>(parentComponent);
+    windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (icon != null) {
-      m_windowFrame.setIconImage(icon);
+      windowFrame.setIconImage(icon);
     } else if (parentComponent != null && parentComponent.getIconImage() != null) {
-      m_windowFrame.setIconImage(parentComponent.getIconImage());
+      windowFrame.setIconImage(parentComponent.getIconImage());
     }
     final BorderLayout layout = new BorderLayout();
     layout.setHgap(30);
     layout.setVgap(30);
-    m_windowFrame.setLayout(layout);
-    m_windowFrame.setTitle(title);
+    windowFrame.setLayout(layout);
+    windowFrame.setTitle(title);
     final JLabel m_label = new JLabel();
     m_label.setText(labelText);
-    m_okButton.setText("OK");
-    m_okButton.setEnabled(false);
-    m_editor.setEditable(false);
-    // m_editor.setContentType("text/html");
-    m_editor.setText(initialEditorText);
-    if (m_logToSystemOut) {
+    okButton.setText("OK");
+    okButton.setEnabled(false);
+    editor.setEditable(false);
+    // editor.setContentType("text/html");
+    editor.setText(initialEditorText);
+    if (this.logToSystemOut) {
       System.out.println(initialEditorText);
     }
-    m_editor.setCaretPosition(0);
-    m_windowFrame.setPreferredSize(new Dimension(editorSizeX, editorSizeY));
-    m_windowFrame.getContentPane().add(m_label, BorderLayout.NORTH);
-    m_windowFrame.getContentPane().add(new JScrollPane(m_editor), BorderLayout.CENTER);
-    m_windowFrame.getContentPane().add(m_okButton, BorderLayout.SOUTH);
-    m_okButton.addActionListener(new ActionListener() {
+    editor.setCaretPosition(0);
+    windowFrame.setPreferredSize(new Dimension(editorSizeX, editorSizeY));
+    windowFrame.getContentPane().add(m_label, BorderLayout.NORTH);
+    windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
+    windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
+    okButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_countDownLatch != null) {
-          m_countDownLatch.countDown();
+        if (JTextAreaOptionPane.this.countDownLatch != null) {
+          JTextAreaOptionPane.this.countDownLatch.countDown();
         }
         dispose();
       }
@@ -73,33 +73,33 @@ public class JTextAreaOptionPane {
   }
 
   private void setWidgetActivation() {
-    if (m_counter <= 0) {
-      m_okButton.setEnabled(true);
+    if (counter <= 0) {
+      okButton.setEnabled(true);
     }
   }
 
   public void show() {
-    m_windowFrame.pack();
-    m_windowFrame.setLocationRelativeTo(m_parentComponentReference.get());
-    m_windowFrame.setVisible(true);
+    windowFrame.pack();
+    windowFrame.setLocationRelativeTo(parentComponentReference.get());
+    windowFrame.setVisible(true);
   }
 
   public void dispose() {
-    m_windowFrame.setVisible(false);
-    m_windowFrame.dispose();
+    windowFrame.setVisible(false);
+    windowFrame.dispose();
   }
 
   public void countDown() {
-    m_counter--;
+    counter--;
     setWidgetActivation();
   }
 
   public void append(final String text) {
-    if (m_logToSystemOut) {
+    if (logToSystemOut) {
       System.out.print(text);
     }
-    m_editor.append(text);
-    m_editor.setCaretPosition(m_editor.getText().length());
+    editor.append(text);
+    editor.setCaretPosition(editor.getText().length());
   }
 
   public void appendNewLine(final String text) {
