@@ -2043,7 +2043,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   // Beagle Code Called to Change Mapskin
-  public void updateMap(final String mapdir) throws IOException {
+  public void updateMap(final String mapdir) {
     uiContext.setMapDir(data, mapdir);
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {

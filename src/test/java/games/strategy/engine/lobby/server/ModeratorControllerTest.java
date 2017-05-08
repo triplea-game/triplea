@@ -60,7 +60,7 @@ public class ModeratorControllerTest {
   }
 
   @Test
-  public void testCantResetAdminPassword() throws UnknownHostException {
+  public void testCantResetAdminPassword() {
     MessageContext.setSenderNodeForThread(adminNode);
     final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
     assertNotNull(moderatorController.setPassword(adminNode, newPassword));
@@ -75,7 +75,7 @@ public class ModeratorControllerTest {
   }
 
   @Test
-  public void testAssertAdmin() throws UnknownHostException {
+  public void testAssertAdmin() {
     MessageContext.setSenderNodeForThread(adminNode);
     assertTrue(moderatorController.isAdmin());
   }

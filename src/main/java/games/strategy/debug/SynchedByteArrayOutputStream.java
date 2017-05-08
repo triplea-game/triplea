@@ -1,7 +1,6 @@
 package games.strategy.debug;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -17,7 +16,7 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
     m_mirror = mirror;
   }
 
-  public void write(final byte b) throws IOException {
+  public void write(final byte b) {
     synchronized (lock) {
       m_mirror.write(b);
       super.write(b);

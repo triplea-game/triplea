@@ -364,7 +364,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  protected void validateNames(final String[] terrList) throws GameParseException {
+  protected void validateNames(final String[] terrList) {
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.

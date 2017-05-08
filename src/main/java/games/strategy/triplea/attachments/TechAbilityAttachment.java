@@ -594,7 +594,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneForces(final String value) throws GameParseException {
+  public void setAirborneForces(final String value) {
     m_airborneForces = getBool(value);
   }
 
