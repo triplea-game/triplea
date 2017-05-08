@@ -243,26 +243,26 @@ class GameSettingsRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(comboBoxSettingName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(comboBoxSettingName, gbcTemplate);
 
-    final GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tValue = (GridBagConstraints) gbcTemplate.clone();
     gbc_tValue.gridx = 1;
     parent.add(textFieldValue, gbc_tValue);
 
-    final GridBagConstraints gbc_tEditable = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tEditable = (GridBagConstraints) gbcTemplate.clone();
     gbc_tEditable.gridx = 2;
     parent.add(comboBoxEditable, gbc_tEditable);
 
-    final GridBagConstraints gbc_tMinNumber = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tMinNumber = (GridBagConstraints) gbcTemplate.clone();
     gbc_tMinNumber.gridx = 3;
     parent.add(textFieldMinNumber, gbc_tMinNumber);
 
-    final GridBagConstraints gbc_tMaxNumber = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tMaxNumber = (GridBagConstraints) gbcTemplate.clone();
     gbc_tMaxNumber.gridx = 4;
     parent.add(textFieldMaxNumber, gbc_tMaxNumber);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 5;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

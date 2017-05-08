@@ -50,18 +50,18 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
     if (centerName.equals(selectedTerritory.orElse(""))) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
       final int xRectPadding = 2;
       final int yDiffCenterToRectTop = -6;
       final int yDiffCenterToStringBottom = 5;
-      g.fillRect(Math.max(0, x_text_start - xRectPadding), Math.max(0, item.y + yDiffCenterToRectTop),
+      g.fillRect(Math.max(0, textStartX - xRectPadding), Math.max(0, item.y + yDiffCenterToRectTop),
           (int) stringBounds.getWidth() + 2 * xRectPadding,
           (int) stringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(centerName, Math.max(0, x_text_start), item.y + yDiffCenterToStringBottom);
+      g.drawString(centerName, Math.max(0, textStartX), item.y + yDiffCenterToStringBottom);
     }
     g.setColor(Color.red);
   }

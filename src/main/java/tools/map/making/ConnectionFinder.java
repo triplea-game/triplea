@@ -364,17 +364,17 @@ public class ConnectionFinder {
    * Returns a scaled version of the given shape, calculated by the given scale factor.
    * The scaling will be calculated around the centroid of the shape.
    *
-   * @param xScaleFactor
+   * @param sx
    *        how much to scale on the x-axis
-   * @param yScaleFactor
+   * @param sy
    *        how much to scale on the y-axis
    * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
    */
-  private static Shape scale(final Shape currentPolygon, final double xScaleFactor, final double yScaleFactor) {
+  private static Shape scale(final Shape currentPolygon, final double sx, final double sy) {
     final Point2D centroid = getCentroid(currentPolygon);
-    final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - xScaleFactor) * centroid.getX(),
-        (1.0 - yScaleFactor) * centroid.getY());
-    transform.scale(xScaleFactor, yScaleFactor);
+    final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - sx) * centroid.getX(),
+        (1.0 - sy) * centroid.getY());
+    transform.scale(sx, sy);
     final Shape shape = transform.createTransformedShape(currentPolygon);
     return shape;
   }

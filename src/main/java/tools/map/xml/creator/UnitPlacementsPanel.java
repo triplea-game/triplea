@@ -57,7 +57,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
     final Map<String, Map<String, Integer>> placements = MapXmlHelper.getUnitPlacementsMap().get(centerName);
     String placementString = "";
     for (final Entry<String, Map<String, Integer>> placementEntry : placements.entrySet()) {
@@ -79,10 +79,10 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       final Rectangle2D centerStringBounds = fontMetrics.getStringBounds(centerName, g);
       final double wDiff = (centerStringBounds.getWidth() - placementStringBounds.getWidth()) / 2;
       g.setColor(Color.yellow);
-      g.fillRect(Math.max(0, x_text_start - 2 + (int) wDiff), item.y + 6, (int) placementStringBounds.getWidth() + 4,
+      g.fillRect(Math.max(0, textStartX - 2 + (int) wDiff), item.y + 6, (int) placementStringBounds.getWidth() + 4,
           (int) placementStringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(placementString, Math.max(0, x_text_start + (int) wDiff), item.y + 17);
+      g.drawString(placementString, Math.max(0, textStartX + (int) wDiff), item.y + 17);
     }
     g.setColor(Color.red);
   }

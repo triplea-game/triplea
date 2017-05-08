@@ -160,8 +160,8 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
   }
 }

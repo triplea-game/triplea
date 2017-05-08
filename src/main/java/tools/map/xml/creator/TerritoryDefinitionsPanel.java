@@ -30,7 +30,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
     final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition =
         MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
     if (territoryDefinition != null) {
@@ -43,7 +43,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definitionEntry : territoryDefinition
           .entrySet()) {
         if (definitionEntry.getValue()) {
-          final int x_value = x_text_start + oneCharacterWidthSpace * definitionCount;
+          final int x_value = textStartX + oneCharacterWidthSpace * definitionCount;
           String character = null;
           switch (definitionEntry.getKey()) {
             case IS_WATER:
