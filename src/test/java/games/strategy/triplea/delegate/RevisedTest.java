@@ -1457,6 +1457,7 @@ public class RevisedTest {
     assertError(error);
   }
 
+  @Test
   public void testTransportIsTransport() {
     assertTrue(Matches.UnitIsTransport.match(transport(gameData).create(british(gameData))));
     assertFalse(Matches.UnitIsTransport.match(infantry(gameData).create(british(gameData))));
