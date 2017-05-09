@@ -429,9 +429,9 @@ public class ValidateAttachmentsTest {
     return first + propertyName.substring(1);
   }
 
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String str) {
+    char first = str.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + str.substring(1);
   }
 }
