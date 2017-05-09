@@ -12,7 +12,6 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 public class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
   private static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
-  private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
   private static SaveGameFileChooser s_instance;
@@ -30,17 +29,6 @@ public class SaveGameFileChooser extends JFileChooser {
       }
     }
     return AUTOSAVE_FILE_NAME;
-  }
-
-  public static String getAutoSave2FileName() {
-    if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
-      if (saveSuffix.length() > 0) {
-        return saveSuffix + "_" + AUTOSAVE_2_FILE_NAME;
-      }
-    }
-    return AUTOSAVE_2_FILE_NAME;
   }
 
   public static String getAutoSaveOddFileName() {
