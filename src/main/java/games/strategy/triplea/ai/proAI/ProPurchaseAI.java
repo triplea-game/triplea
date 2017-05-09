@@ -82,7 +82,7 @@ public class ProPurchaseAI {
       ProLogger.debug("Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       for (final Territory fixTerr : rfactories) {
-        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
             .match(fixTerr)) {
           continue;
         }
@@ -99,7 +99,7 @@ public class ProPurchaseAI {
           if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
               .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
             continue;
           }

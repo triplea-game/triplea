@@ -836,7 +836,7 @@ public class WeakAI extends AbstractAI {
       // we should sort this
       Collections.shuffle(rfactories);
       for (final Territory fixTerr : rfactories) {
-        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
             .match(fixTerr)) {
           continue;
         }
@@ -869,7 +869,7 @@ public class WeakAI extends AbstractAI {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
               .match(capitol)) {
             continue;
           }
@@ -908,8 +908,7 @@ public class WeakAI extends AbstractAI {
             if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
               continue;
             }
-            if (!Matches
-                .territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+            if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
                 .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
               continue;
             }

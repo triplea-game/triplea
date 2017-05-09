@@ -917,7 +917,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
       final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit)) {
+        if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO).invert().match(unit)) {
           placeableUnits.remove(unit);
         }
       }
@@ -971,7 +971,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume = Match.getMatches(units, Matches.UnitConsumesUnitsOnCreation);
     for (final Unit unit : unitsWhichConsume) {
-      if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit)) {
+      if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO).invert().match(unit)) {
         weCanConsume = false;
       }
       if (!weCanConsume) {
@@ -1281,7 +1281,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       // remove any units that require other units to be consumed on creation (veqryn)
       if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit)
-          && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit)) {
+          && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO).invert().match(currentUnit)) {
         continue;
       }
       unitMapHeld.add(ua.getConstructionType(), 1);

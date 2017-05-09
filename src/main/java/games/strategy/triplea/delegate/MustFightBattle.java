@@ -819,7 +819,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), m_data, 1, false, true, true);
+        Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), 1, false, true, true);
         final List<Unit> sortedAttackingUnits = new ArrayList<>(Match.getMatches(m_attackingUnits, unitList));
         Collections.sort(sortedAttackingUnits, new UnitBattleComparator(false,
             BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
@@ -1230,7 +1230,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat =
         new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure,
-            Matches.unitIsBeingTransported().invert(), Matches.unitIsNotSubmerged(m_data));
+            Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert());
     if (games.strategy.triplea.Properties.getIgnoreSubInMovement(m_data)) {
       enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotSub);
     }
@@ -1764,7 +1764,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final CompositeMatch<Unit> alliedUnitsMatch = new CompositeMatchAnd<>();
     alliedUnitsMatch.add(Matches.isUnitAllied(player, m_data));
     alliedUnitsMatch.add(Matches.UnitIsNotLand);
-    alliedUnitsMatch.add(new InverseMatch<>(Matches.unitIsSubmerged(m_data)));
+    alliedUnitsMatch.add(Matches.UnitIsSubmerged.invert());
     final Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedUnitsMatch);
     // If transports are unescorted, check opposing forces to see if the Trns die automatically
     if (alliedTransports.size() == alliedUnits.size()) {
@@ -1772,7 +1772,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<>();
       enemyUnitsMatch.add(Matches.UnitIsNotLand);
       // enemyUnitsMatch.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
-      enemyUnitsMatch.add(Matches.unitIsNotSubmerged(m_data));
+      enemyUnitsMatch.add(Matches.UnitIsSubmerged.invert());
       enemyUnitsMatch.add(Matches.unitCanAttack(player));
       final Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
       // If there are attackers set their movement to 0 and kill the transports
@@ -1794,7 +1794,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty()) {
       return;
     }
-    final CompositeMatch<Unit> notSubmergedAndType = new CompositeMatchAnd<>(Matches.unitIsNotSubmerged(m_data));
+    final CompositeMatch<Unit> notSubmergedAndType = new CompositeMatchAnd<>(Matches.UnitIsSubmerged.invert());
     if (Matches.TerritoryIsLand.match(m_battleSite)) {
       notSubmergedAndType.add(Matches.UnitIsSea.invert());
     } else {
@@ -1804,12 +1804,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean hasUnitsThatCanRollLeft;
     if (attacker) {
       hasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, new CompositeMatchAnd<>(notSubmergedAndType,
-          Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
+          Matches.UnitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill = Match.getMatches(m_attackingUnits,
           new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
     } else {
       hasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, new CompositeMatchAnd<>(notSubmergedAndType,
-          Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
+          Matches.UnitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill = Match.getMatches(m_defendingUnits,
           new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
     }
@@ -1817,10 +1817,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean enemyHasUnitsThatCanRollLeft;
     if (enemy) {
       enemyHasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy, m_data)));
+          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy)));
     } else {
       enemyHasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy, m_data)));
+          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy)));
     }
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       remove(unitsToKill, bridge, m_battleSite, !attacker);
@@ -2328,7 +2328,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // still allow infrastructure type units that can provide support have combat abilities
     // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
     unitList.removeAll(Match.getMatches(unitList,
-        Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data,
+        Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(),
             (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits)
             .invert()));
     // remove any disabled units from combat
