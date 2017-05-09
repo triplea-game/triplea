@@ -1,5 +1,7 @@
 package games.strategy.triplea;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -63,7 +68,31 @@ public class ResourceLoader implements Closeable {
     return new ResourceLoader(mapName, dirs.toArray(new String[dirs.size()]));
   }
 
-  protected static String normalizeMapZipName(final String zipName) {
+  /**
+   * Returns a list of candidate zip files from which the specified map may be loaded.
+   *
+   * <p>
+   * The candidate zip files are returned in order of preference. That is, a candidate file earlier in the list should
+   * be preferred to a candidate file later in the list assuming they both exist.
+   * </p>
+   *
+   * @param mapName The map name; must not be {@code null}.
+   *
+   * @return A list of candidate zip files; never {@code null}.
+   */
+  public static List<File> getMapZipFileCandidates(final String mapName) {
+    checkNotNull(mapName);
+
+    final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
+    final String normalizedMapName = normalizeMapName(mapName);
+    return Arrays.asList(
+        new File(userMapsFolder, mapName + ".zip"),
+        new File(userMapsFolder, normalizedMapName + "-master.zip"),
+        new File(userMapsFolder, normalizedMapName + ".zip"));
+  }
+
+  @VisibleForTesting
+  static String normalizeMapName(final String zipName) {
     final StringBuilder sb = new StringBuilder();
     Character lastChar = null;
 
@@ -86,18 +115,10 @@ public class ResourceLoader implements Closeable {
     }
     // find the primary directory/file
     final String dirName = File.separator + mapName;
-    final String zipName = dirName + ".zip";
     final List<File> candidates = new ArrayList<>();
-    // prioritize user maps folder over root folder
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName + File.separator + "map"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), zipName));
-
-    final String normalizedZipName = normalizeMapZipName(zipName);
-
-    // clicking github 'clone or download' and downloading the zip gives a zip that ends with "-master.zip"
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizeMapZipName(mapName) + "-master.zip"));
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
+    candidates.addAll(getMapZipFileCandidates(mapName));
 
     final Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
     if (!match.isPresent()) {

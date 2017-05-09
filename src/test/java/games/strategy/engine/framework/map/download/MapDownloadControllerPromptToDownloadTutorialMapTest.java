@@ -14,7 +14,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController.Tutori
 import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class MapDownloadControllerTest {
+public final class MapDownloadControllerPromptToDownloadTutorialMapTest {
   @Mock
   private TutorialMapPreferences tutorialMapPreferences;
 
@@ -22,7 +22,7 @@ public final class MapDownloadControllerTest {
   private UserMaps userMaps;
 
   @Test
-  public void testShouldPromptToDownloadTutorialMap_ShouldReturnTrueWhenCanPromptToDownloadAndUserMapsIsEmpty() {
+  public void shouldPromptToDownloadTutorialMap_ShouldReturnTrueWhenCanPromptToDownloadAndUserMapsIsEmpty() {
     when(tutorialMapPreferences.canPromptToDownload()).thenReturn(true);
     when(userMaps.isEmpty()).thenReturn(true);
 
@@ -34,7 +34,7 @@ public final class MapDownloadControllerTest {
   }
 
   @Test
-  public void testShouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCanPromptToDownloadAndUserMapsIsNotEmpty() {
+  public void shouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCanPromptToDownloadAndUserMapsIsNotEmpty() {
     when(tutorialMapPreferences.canPromptToDownload()).thenReturn(true);
     when(userMaps.isEmpty()).thenReturn(false);
 
@@ -42,14 +42,14 @@ public final class MapDownloadControllerTest {
   }
 
   @Test
-  public void testShouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCannotPromptToDownload() {
+  public void shouldPromptToDownloadTutorialMap_ShouldReturnFalseWhenCannotPromptToDownload() {
     when(tutorialMapPreferences.canPromptToDownload()).thenReturn(false);
 
     assertThat(shouldPromptToDownloadTutorialMap(), is(false));
   }
 
   @Test
-  public void testPreventPromptToDownloadTutorialMap_ShouldChangePreventPromptToDownloadPreference() {
+  public void preventPromptToDownloadTutorialMap_ShouldChangePreventPromptToDownloadPreference() {
     preventPromptToDownloadTutorialMap();
 
     verify(tutorialMapPreferences).preventPromptToDownload();
