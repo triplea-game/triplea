@@ -113,8 +113,6 @@ public class MD5Crypt {
     if (magic == null) {
       throw new IllegalArgumentException("Null salt!");
     }
-    byte[] finalState;
-    long l;
     /*
      * Two MD5 hashes are used
      */
@@ -152,7 +150,7 @@ public class MD5Crypt {
     ctx1.update(salt.getBytes());
     ctx1.update(password.getBytes());
     // ctx1.Final();
-    finalState = ctx1.digest();
+    byte[] finalState = ctx1.digest();
     for (int pl = password.length(); pl > 0; pl -= 16) {
       ctx.update(finalState, 0, pl > 16 ? 16 : pl);
     }
@@ -210,7 +208,7 @@ public class MD5Crypt {
     /**
      * Build a 22 byte output string from the set: A-Za-z0-9./
      */
-    l = (bytes2u(finalState[0]) << 16) | (bytes2u(finalState[6]) << 8) | bytes2u(finalState[12]);
+    long l = (bytes2u(finalState[0]) << 16) | (bytes2u(finalState[6]) << 8) | bytes2u(finalState[12]);
     result.append(to64(l, 4));
     l = (bytes2u(finalState[1]) << 16) | (bytes2u(finalState[7]) << 8) | bytes2u(finalState[13]);
     result.append(to64(l, 4));

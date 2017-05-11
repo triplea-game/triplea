@@ -75,7 +75,7 @@ public class RouteTest {
   @Test
   public void testCorrectParameterHandling() {
     final MapPanel mockedMapPanel = mock(MapPanel.class);
-    MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
+    final MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);

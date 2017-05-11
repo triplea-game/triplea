@@ -1168,7 +1168,6 @@ public class TripleAFrame extends MainGameFrame {
         panel2.setBorder(BorderFactory.createEmptyBorder());
         panel2.setLayout(new FlowLayout());
         for (final Territory from : possibleScramblers.keySet()) {
-          JScrollPane chooserScrollPane;
           final JPanel panelChooser = new JPanel();
           panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
           panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
@@ -1184,7 +1183,7 @@ public class TripleAFrame extends MainGameFrame {
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
-          chooserScrollPane = new JScrollPane(panelChooser);
+          final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
           panel2.add(chooserScrollPane);
         }
         panel.add(panel2, BorderLayout.CENTER);
@@ -1256,7 +1255,6 @@ public class TripleAFrame extends MainGameFrame {
         final JLabel messageLabel = new JLabel(message);
         messageLabel.setFont(new Font("Arial", Font.ITALIC, 12));
         panel.add(messageLabel, BorderLayout.NORTH);
-        JScrollPane chooserScrollPane;
         final JPanel panelChooser = new JPanel();
         panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
         panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
@@ -1269,7 +1267,7 @@ public class TripleAFrame extends MainGameFrame {
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
-        chooserScrollPane = new JScrollPane(panelChooser);
+        final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
         panel.add(chooserScrollPane, BorderLayout.CENTER);
         final String optionSelect = "Select";
         final String optionNone = "None";

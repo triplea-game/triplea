@@ -139,11 +139,10 @@ public class MersenneTwister extends Random {
    * they're not *all* zero.
    */
   public synchronized void setSeed(final int[] array) {
-    int i, j, k;
     setSeed(19650218);
-    i = 1;
-    j = 0;
-    k = (N > array.length ? N : array.length);
+    int i = 1;
+    int j = 0;
+    int k = (N > array.length ? N : array.length);
     for (; k != 0; k--) {
       m_mt[i] = (m_mt[i] ^ ((m_mt[i - 1] ^ (m_mt[i - 1] >>> 30)) * 1664525)) + array[j] + j; /* non linear */
       m_mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
