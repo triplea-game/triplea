@@ -500,7 +500,7 @@ public class BattleTracker implements java.io.Serializable {
       // Also subtract transports & subs (if they can't control sea zones)
       totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand)
           - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
-          - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged(data));
+          - Match.countMatches(arrivedUnits, Matches.UnitIsSubmerged);
       // If transports are restricted from controlling sea zones, subtract them
       final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<>();
       transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
@@ -1162,7 +1162,7 @@ public class BattleTracker implements java.io.Serializable {
   private List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
-               Matches.UnitCanBeInBattle(true, !territory.isWater(), gameData, 1, false, true, true)));
+        Matches.UnitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
         TerritoryEffectHelper.getEffects(territory), gameData, false, false));

@@ -148,7 +148,7 @@ public class RocketsFireHelper {
 
   CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data) {
     return new CompositeMatchAnd<>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
-        Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged(data).invert(), Matches.unitHasNotMoved);
+        Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved);
   }
 
   private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player) {

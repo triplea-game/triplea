@@ -441,9 +441,9 @@ public class OddsCalculatorPanel extends JPanel {
       m_draw.setText(formatPercentage(results.get().getDrawPercent()));
       final boolean isLand = isLand();
       final List<Unit> mainCombatAttackers =
-          Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
+          Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, 1, false, true, true));
       final List<Unit> mainCombatDefenders =
-          Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
+          Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, 1, false, true, true));
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
       m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
@@ -480,7 +480,7 @@ public class OddsCalculatorPanel extends JPanel {
       units = Collections.emptyList();
     }
     final boolean isLand = isLand();
-    units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, false, false));
+    units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, 1, false, false, false));
     m_defendingUnitsPanel.init(getDefender(), units, isLand);
   }
 
@@ -489,7 +489,7 @@ public class OddsCalculatorPanel extends JPanel {
       units = Collections.emptyList();
     }
     final boolean isLand = isLand();
-    units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, false, false));
+    units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, 1, false, false, false));
     m_attackingUnitsPanel.init(getAttacker(), units, isLand);
   }
 
@@ -766,9 +766,9 @@ public class OddsCalculatorPanel extends JPanel {
       m_data.acquireReadLock();
       // do not include bombardment and aa guns in our "total" labels
       final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(),
-          Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
+          Matches.UnitCanBeInBattle(true, isLand, 1, false, true, true));
       final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(),
-          Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
+          Matches.UnitCanBeInBattle(false, isLand, 1, false, true, true));
       m_attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
       m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(),
@@ -966,7 +966,7 @@ class PlayerUnitsPanel extends JPanel {
     // they have other
     // combat abilities.
     rVal = Match.getMatches(rVal,
-        Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, m_data, 1, false, false, false));
+        Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, 1, false, false, false));
     return rVal;
   }
 

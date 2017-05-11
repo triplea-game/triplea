@@ -538,11 +538,11 @@ public class Matches {
   /**
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
    */
-  public static Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final GameData data) {
+  public static Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit unit) {
-        return Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, unit.getOwner(), data).match(unit.getType());
+        return Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, unit.getOwner()).match(unit.getType());
       }
     };
   }
@@ -550,9 +550,7 @@ public class Matches {
   /**
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
    */
-  private static Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack,
-      final PlayerID player,
-      final GameData data) {
+  private static Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player) {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType ut) {
@@ -1345,7 +1343,7 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        return data.getMap().getNeighbors(t, Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, unitMatch))
+        return data.getMap().getNeighbors(t, Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, unitMatch))
             .size() > 0;
       }
     };
@@ -1385,7 +1383,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> territoryIsOwnedAndHasOwnedUnitMatching(final GameData data, final PlayerID player,
+  public static Match<Territory> territoryIsOwnedAndHasOwnedUnitMatching(final PlayerID player,
       final Match<Unit> unitMatch) {
     return new Match<Territory>() {
       @Override
@@ -1398,8 +1396,7 @@ public class Matches {
     };
   }
 
-  public static Match<Territory> territoryHasOwnedIsFactoryOrCanProduceUnits(final GameData data,
-      final PlayerID player) {
+  public static Match<Territory> territoryHasOwnedIsFactoryOrCanProduceUnits(final PlayerID player) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -2147,7 +2144,7 @@ public class Matches {
   public static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data) {
     final CompositeMatch<Unit> match = new CompositeMatchAnd<>();
     match.add(enemyUnit(player, data));
-    match.add(new InverseMatch<>(unitIsSubmerged(data)));
+    match.add(UnitIsSubmerged.invert());
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -2365,23 +2362,12 @@ public class Matches {
     };
   }
 
-  public static Match<Unit> unitIsSubmerged(final GameData data) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return TripleAUnit.get(u).getSubmerged();
-      }
-    };
-  }
-
-  public static Match<Unit> unitIsNotSubmerged(final GameData data) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return !TripleAUnit.get(u).getSubmerged();
-      }
-    };
-  }
+  public static final Match<Unit> UnitIsSubmerged = new Match<Unit>() {
+    @Override
+    public boolean match(final Unit u) {
+      return TripleAUnit.get(u).getSubmerged();
+    }
+  };
 
   public static final Match<UnitType> UnitTypeIsSub = new Match<UnitType>() {
     @Override
@@ -2660,8 +2646,7 @@ public class Matches {
   };
 
   public static Match<Unit> UnitWhichConsumesUnitsHasRequiredUnits(
-      final Collection<Unit> unitsInTerritoryAtStartOfTurn,
-      final Territory territory) {
+      final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit unitWhichRequiresUnits) {
@@ -3335,19 +3320,19 @@ public class Matches {
   }
 
   public static Match<Unit> UnitCanBeInBattle(final boolean attack, final boolean isLandBattle,
-      final GameData data, final int battleRound, final boolean includeAttackersThatCanNotMove,
+      final int battleRound, final boolean includeAttackersThatCanNotMove,
       final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        return Matches.UnitTypeCanBeInBattle(attack, isLandBattle, u.getOwner(), data, battleRound,
+        return Matches.UnitTypeCanBeInBattle(attack, isLandBattle, u.getOwner(), battleRound,
             includeAttackersThatCanNotMove, doNotIncludeAA, doNotIncludeBombardingSeaUnits).match(u.getType());
       }
     };
   }
 
   public static Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final boolean isLandBattle,
-      final PlayerID player, final GameData data, final int battleRound, final boolean includeAttackersThatCanNotMove,
+      final PlayerID player, final int battleRound, final boolean includeAttackersThatCanNotMove,
       final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits) {
     return new Match<UnitType>() {
       @Override
@@ -3359,7 +3344,7 @@ public class Matches {
         // combat abilities.
         final Match<UnitType> supporterOrNotInfrastructure =
             new CompositeMatchOr<>(Matches.UnitTypeIsInfrastructure.invert(),
-                Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data));
+                Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player));
         final Match<UnitType> combat;
         if (attack) {
           // AND match
