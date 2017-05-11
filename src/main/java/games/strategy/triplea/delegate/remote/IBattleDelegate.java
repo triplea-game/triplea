@@ -7,7 +7,7 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
-public interface IBattleDelegate extends IRemote, IDelegate {
+public interface IBattleDelegate extends IAbstractForumPosterDelegate {
   /**
    * @return The battles currently waiting to be fought.
    */

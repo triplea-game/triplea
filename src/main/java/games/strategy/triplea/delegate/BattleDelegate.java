@@ -26,6 +26,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
@@ -168,6 +169,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
     m_needToCleanup = s.m_needToCleanup;
     m_currentBattle = s.m_currentBattle;
+  }
+
+  @Override
+  public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary) {
+    // nothing for now
+  }
+
+  @Override
+  public boolean getHasPostedTurnSummary() {
+    return false;
+  }
+
+  @Override
+  public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame) {
+    return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
   @Override
