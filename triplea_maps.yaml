@@ -720,7 +720,7 @@
 - mapName: Star Wars Galactic War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/StarWarsGalacticWar_mini.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -738,7 +738,7 @@
 - mapName: Star Wars Tatooine War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/StarWarsTatooineWar_mini.png
   description: |
     <br><b><em>by Frostion</em></b>
