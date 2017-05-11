@@ -74,17 +74,17 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelBuyQuantity, gridBadConstLabelBuyQuantity);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
     for (final Entry<String, List<Integer>> unitDefinition : MapXmlHelper.getUnitDefinitionsMap().entrySet()) {
       final GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gridBadConstLabelUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = rowIndex;
       final List<Integer> defintionValues = unitDefinition.getValue();
       final UnitDefinitionsRow newRow = new UnitDefinitionsRow(this, getOwnPanel(), unitDefinition.getKey(),
           defintionValues.get(0), defintionValues.get(1));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tUnitName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tUnitName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -121,7 +121,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 

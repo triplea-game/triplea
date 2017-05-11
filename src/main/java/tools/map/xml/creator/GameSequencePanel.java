@@ -56,15 +56,15 @@ public class GameSequencePanel extends DynamicRowsPanel {
     addLabelsRow(gbcDefault);
 
     // Add main input rows
-    int yValue = 1;
+    int rowIndex = 1;
     for (final Entry<String, List<String>> entry : MapXmlHelper.getGamePlaySequenceMap().entrySet()) {
-      addMainInputRow(gbcDefault, yValue, entry);
-      ++yValue;
+      addMainInputRow(gbcDefault, rowIndex, entry);
+      ++rowIndex;
     }
 
     addAddSequenceButton();
 
-    addFinalButtonRow(MapXmlUIHelper.getGBCCloneWith(gbcDefault, 0, yValue));
+    addFinalButtonRow(MapXmlUIHelper.getGBCCloneWith(gbcDefault, 0, rowIndex));
   }
 
   /**

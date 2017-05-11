@@ -77,17 +77,17 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
     // <3> Add Main Input Rows
     final String[] alliancesArray = alliances.toArray(new String[alliances.size()]);
-    int yValue = 1;
+    int rowIndex = 1;
     for (final String playerName : MapXmlHelper.getPlayerNames()) {
       final GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
       gbc_tPlayerName.gridx = 0;
-      gridBadConstLabelPlayerName.gridy = yValue;
+      gridBadConstLabelPlayerName.gridy = rowIndex;
       final PlayerAndAlliancesRow newRow = new PlayerAndAlliancesRow(this, getOwnPanel(), playerName,
           MapXmlHelper.getPlayerAllianceMap().get(playerName), alliancesArray,
           MapXmlHelper.getPlayerInitResourcesMap().get(playerName));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tPlayerName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tPlayerName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -216,7 +216,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
     gridBadConstButtonAddPlayer.gridx = 0;
-    gridBadConstButtonAddPlayer.gridy = yValue;
+    gridBadConstButtonAddPlayer.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddPlayer);
   }
 

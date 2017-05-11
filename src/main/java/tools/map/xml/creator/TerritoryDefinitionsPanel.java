@@ -35,7 +35,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
         MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
     if (territoryDefinition != null) {
       final int y_value = item.y + 10;
-      short definition_count = 0;
+      short definitionCount = 0;
       g.setFont(g.getFontMetrics().getFont().deriveFont(Font.BOLD));
       final FontMetrics fm = g.getFontMetrics();
       int h = fm.getAscent();
@@ -43,7 +43,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definitionEntry : territoryDefinition
           .entrySet()) {
         if (definitionEntry.getValue()) {
-          final int x_value = x_text_start + oneCharacterWidthSpace * definition_count;
+          final int x_value = x_text_start + oneCharacterWidthSpace * definitionCount;
           int w;
           String character = null;
           switch (definitionEntry.getKey()) {
@@ -71,7 +71,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
           h = fm.getAscent();
           g.drawString(character, x_value + 8 - (w / 2), y_value + 8 + (h / 2));
         }
-        ++definition_count;
+        ++definitionCount;
       }
       g.setColor(Color.red);
       g.setFont(g.getFontMetrics().getFont().deriveFont(Font.PLAIN));

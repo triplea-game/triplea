@@ -428,17 +428,17 @@ public class MapXmlCreator extends JFrame {
 
   private void createStepListPanel() {
     stepListPanel = new JPanel();
-    GameStep step_cur = null;
-    GameStep step_next = GAME_STEP_FIRST;
+    GameStep stepCur = null;
+    GameStep stepNext = GAME_STEP_FIRST;
     int stepCounter = 1;
-    while (step_cur != step_next) {
-      step_cur = step_next;
+    while (stepCur != stepNext) {
+      stepCur = stepNext;
       final GameStepLabel gameStepLabelCur =
-          new GameStepLabel(stepCounter + ": " + getGameStepName(step_cur), step_cur);
+          new GameStepLabel(stepCounter + ": " + getGameStepName(stepCur), stepCur);
       stepListPanel.add(gameStepLabelCur);
       stepList.add(gameStepLabelCur);
       ++stepCounter;
-      step_next = getNextGameStepTo(step_cur);
+      stepNext = getNextGameStepTo(stepCur);
     }
   }
 
