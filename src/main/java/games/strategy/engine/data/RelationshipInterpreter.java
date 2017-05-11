@@ -101,17 +101,6 @@ public class RelationshipInterpreter extends GameDataComponent {
     return false;
   }
 
-  public Set<PlayerID> getNeutralities(final PlayerID p1) {
-    final Set<PlayerID> neutrals = new HashSet<>();
-    for (final PlayerID player : getData().getPlayerList().getPlayers()) {
-      if (Matches.RelationshipTypeIsNeutral.match(getRelationshipType(p1, player))) {
-        neutrals.add(player);
-      }
-    }
-    neutrals.remove(p1);
-    return neutrals;
-  }
-
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerID p1, final PlayerID p2) {
     return Matches.RelationshipTypeCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
   }

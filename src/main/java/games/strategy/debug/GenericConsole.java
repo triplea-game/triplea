@@ -70,7 +70,7 @@ public abstract class GenericConsole extends JFrame {
   /**
    * Displays standard error to the console.
    */
-  public void displayStandardError() {
+  protected void displayStandardError() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
     final ThreadReader reader = new ThreadReader(out, m_text, true, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std err reader");
@@ -80,7 +80,7 @@ public abstract class GenericConsole extends JFrame {
     System.setErr(print);
   }
 
-  public void displayStandardOutput() {
+  protected void displayStandardOutput() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
     final ThreadReader reader = new ThreadReader(out, m_text, false, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std out reader");

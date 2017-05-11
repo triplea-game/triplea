@@ -41,7 +41,7 @@ public class AirThatCantLandUtilTest {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
-  public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
+  private static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
     for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
       if (entry.getKey().isBombingRun() == bombing) {
         if (entry.getValue().contains(territory)) {

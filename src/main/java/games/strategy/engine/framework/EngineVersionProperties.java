@@ -22,7 +22,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.util.Version;
 
-public class EngineVersionProperties {
+class EngineVersionProperties {
   private final Version latestVersionOut;
   private final String link;
   private final String linkAlt;
@@ -42,7 +42,7 @@ public class EngineVersionProperties {
     changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
   }
 
-  public static EngineVersionProperties contactServerForEngineVersionProperties() {
+  static EngineVersionProperties contactServerForEngineVersionProperties() {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
     final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
@@ -80,19 +80,19 @@ public class EngineVersionProperties {
     return props;
   }
 
-  public Version getLatestVersionOut() {
+  Version getLatestVersionOut() {
     return latestVersionOut;
   }
 
-  public String getLinkToDownloadLatestVersion() {
+  String getLinkToDownloadLatestVersion() {
     return link;
   }
 
-  public String getLinkAltToDownloadLatestVersion() {
+  String getLinkAltToDownloadLatestVersion() {
     return linkAlt;
   }
 
-  public String getChangeLogLink() {
+  String getChangeLogLink() {
     return changelogLink;
   }
 
@@ -122,7 +122,7 @@ public class EngineVersionProperties {
     return text.toString();
   }
 
-  public Component getOutOfDateComponent() {
+  Component getOutOfDateComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
     final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
     intro.setEditable(false);

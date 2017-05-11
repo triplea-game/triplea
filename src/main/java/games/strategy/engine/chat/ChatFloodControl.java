@@ -8,7 +8,7 @@ import java.util.Map;
  * sends more than "N" messages will be filtered until the next time window begins.
  *
  */
-public class ChatFloodControl {
+class ChatFloodControl {
   private static final int ONE_MINUTE = 60 * 1000;
   static final int EVENTS_PER_WINDOW = 20;
   static final int WINDOW = ONE_MINUTE;
@@ -16,7 +16,7 @@ public class ChatFloodControl {
   private final Map<String, Integer> messageCount = new HashMap<>();
   private long clearTime;
 
-  public ChatFloodControl() {
+  ChatFloodControl() {
     this(System.currentTimeMillis());
   }
 
@@ -24,7 +24,7 @@ public class ChatFloodControl {
     clearTime = initialClearTime;
   }
 
-  public boolean allow(final String from, final long now) {
+  boolean allow(final String from, final long now) {
     synchronized (lock) {
       // reset the window
       if (now > clearTime) {

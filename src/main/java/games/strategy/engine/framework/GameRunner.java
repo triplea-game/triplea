@@ -345,7 +345,7 @@ public class GameRunner {
     return arg.substring(index + 1);
   }
 
-  public static void setupLogging(GameMode gameMode) {
+  private static void setupLogging(GameMode gameMode) {
     if (gameMode == GameMode.SWING_CLIENT) {
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
@@ -565,7 +565,7 @@ public class GameRunner {
     startGame(System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), null, maxMemory);
   }
 
-  public static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
+  static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
     final List<String> commands = new ArrayList<>();
     if (maxMemory != null && maxMemory > (32 * 1024 * 1024)) {
       ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
@@ -686,7 +686,7 @@ public class GameRunner {
     ProcessRunnerUtil.exec(commands);
   }
 
-  public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
+  static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
     if (ClientContext.engineVersion().getVersion().equals(oldVersionNeeded, ignoreMicro)) {
       return System.getProperty("java.class.path");
     }

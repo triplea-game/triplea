@@ -108,14 +108,6 @@ public class GameProperties extends GameDataComponent {
     return (String) value;
   }
 
-  public Object get(final String key, final Object defaultValue) {
-    final Object value = get(key);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
-  }
-
   public void addEditableProperty(final IEditableProperty property) {
     // add to the editable properties
     editableProperties.put(property.getName(), property);

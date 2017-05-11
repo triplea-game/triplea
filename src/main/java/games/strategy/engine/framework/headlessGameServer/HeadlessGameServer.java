@@ -391,7 +391,7 @@ public class HeadlessGameServer {
     return m_shutDown;
   }
 
-  public HeadlessGameServer() {
+  private HeadlessGameServer() {
     super();
     if (s_instance != null) {
       throw new IllegalStateException("Instance already exists");
@@ -478,7 +478,7 @@ public class HeadlessGameServer {
     }
   }
 
-  public static String[] getProperties() {
+  private static String[] getProperties() {
     return new String[] {GameRunner.TRIPLEA_GAME_PROPERTY, GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
         GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
         GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
@@ -488,7 +488,7 @@ public class HeadlessGameServer {
         GameRunner.MAP_FOLDER};
   }
 
-  public String getStatus() {
+  String getStatus() {
     String message = "Server Start Date: " + m_startDate;
     final ServerGame game = getIGame();
     if (game != null) {
@@ -516,7 +516,7 @@ public class HeadlessGameServer {
     System.out.println(sb.toString());
   }
 
-  public synchronized void shutdown() {
+  synchronized void shutdown() {
     m_shutDown = true;
     printThreadDumpsAndStatus();
     try {
@@ -559,7 +559,7 @@ public class HeadlessGameServer {
     System.out.println("Shutdown Script Finished.");
   }
 
-  public void waitForUsersHeadless() {
+  private void waitForUsersHeadless() {
     setServerGame(null);
 
     final Runnable r = () -> {

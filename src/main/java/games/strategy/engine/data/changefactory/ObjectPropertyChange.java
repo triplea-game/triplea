@@ -14,7 +14,7 @@ public class ObjectPropertyChange extends Change {
   private final Object m_newValue;
   private final Object m_oldValue;
 
-  public ObjectPropertyChange(final Object object, final String property, final Object newValue) {
+  ObjectPropertyChange(final Object object, final String property, final Object newValue) {
     m_object = object;
     m_property = property.intern();
     m_newValue = newValue;
@@ -22,7 +22,7 @@ public class ObjectPropertyChange extends Change {
     m_oldValue = PropertyUtil.getPropertyFieldObject(property, object);
   }
 
-  public ObjectPropertyChange(final Object object, final String property, final Object newValue,
+  private ObjectPropertyChange(final Object object, final String property, final Object newValue,
       final Object oldValue) {
     m_object = object;
     // prevent multiple copies of the property names being held in the game

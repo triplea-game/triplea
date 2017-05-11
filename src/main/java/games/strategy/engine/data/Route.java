@@ -436,7 +436,7 @@ public class Route implements Serializable, Iterable<Territory> {
     return movementLeft;
   }
 
-  public ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
+  private ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
     final ResourceCollection col = new ResourceCollection(data);
     if (Matches.unitIsBeingTransported().match(unit)) {
       return col;

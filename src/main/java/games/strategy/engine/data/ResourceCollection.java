@@ -121,15 +121,9 @@ public class ResourceCollection extends GameDataComponent {
     subtract(resourceCollection.m_resources);
   }
 
-  public void subtract(final IntegerMap<Resource> cost) {
+  private void subtract(final IntegerMap<Resource> cost) {
     for (final Resource resource : cost.keySet()) {
       removeResource(resource, cost.getInt(resource));
-    }
-  }
-
-  public void subtract(final IntegerMap<Resource> cost, final int quantity) {
-    for (int i = 0; i < quantity; i++) {
-      subtract(cost);
     }
   }
 
@@ -190,7 +184,8 @@ public class ResourceCollection extends GameDataComponent {
     return toString(m_resources, getData(), ", ");
   }
 
-  public static String toString(final IntegerMap<Resource> resources, final GameData data, final String lineSeparator) {
+  private static String toString(final IntegerMap<Resource> resources, final GameData data,
+      final String lineSeparator) {
     if (resources == null || resources.isEmpty() || resources.allValuesEqual(0)) {
       return "nothing";
     }

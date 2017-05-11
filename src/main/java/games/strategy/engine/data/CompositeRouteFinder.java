@@ -46,7 +46,7 @@ public class CompositeRouteFinder {
     return result;
   }
 
-  public Route findRoute(final Territory start, final Territory end) {
+  Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
         ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<>(m_matches.keySet())));
     final HashMap<Territory, Integer> terScoreMap = CreateScoreMap();

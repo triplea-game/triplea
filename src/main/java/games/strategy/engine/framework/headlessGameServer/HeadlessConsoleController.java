@@ -24,20 +24,20 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-public class HeadlessConsoleController {
+class HeadlessConsoleController {
 
   private final HeadlessGameServer server;
   private final PrintStream out;
   private final BufferedReader in;
   private boolean m_chatMode = false;
 
-  public HeadlessConsoleController(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
+  HeadlessConsoleController(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
     this.out = checkNotNull(out);
     this.in = new BufferedReader(new InputStreamReader(checkNotNull(in)));
     this.server = checkNotNull(server);
   }
 
-  protected void process(final String command) {
+  void process(final String command) {
     if (command.equals("")) {
       return;
     }

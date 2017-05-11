@@ -123,7 +123,7 @@ public class WW2V3_41_Test {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
-  public static String fight(final BattleDelegate battle, final Territory territory) {
+  private static String fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
       if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
         return battle.fightBattle(territory, false, entry.getKey());

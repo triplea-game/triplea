@@ -1,7 +1,6 @@
 package games.strategy.debug;
 
 import java.io.PrintStream;
-import java.util.Set;
 
 public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
@@ -35,12 +34,5 @@ public class ClientLogger {
   public static void logError(final String msg, final Throwable e) {
     logError(msg);
     logError(e);
-  }
-
-  public static void logError(final String msg, final Set<Exception> exceptions) {
-    logError(msg);
-    for (final Exception e : exceptions) {
-      logError(e);
-    }
   }
 }

@@ -218,8 +218,7 @@ public class GameDataManager {
     saveGame(sink, data, true);
   }
 
-  public void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo)
-      throws IOException {
+  void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo) throws IOException {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);

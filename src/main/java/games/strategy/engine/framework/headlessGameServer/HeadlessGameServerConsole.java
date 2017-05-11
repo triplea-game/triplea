@@ -10,26 +10,26 @@ import games.strategy.util.ThreadUtil;
 /**
  * Terminal line console.
  */
-public class HeadlessGameServerConsole {
-  protected static final int LOOP_SLEEP_MS = 20;
+class HeadlessGameServerConsole {
+  static final int LOOP_SLEEP_MS = 20;
 
   private final PrintStream out;
   private final BufferedReader in;
   private final HeadlessConsoleController commandController;
   private boolean shutdown = false;
 
-  public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
+  HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out) {
     this(new BufferedReader(new InputStreamReader(in)), out, new HeadlessConsoleController(server, in, out));
   }
 
-  protected HeadlessGameServerConsole(final BufferedReader in, final PrintStream out,
+  HeadlessGameServerConsole(final BufferedReader in, final PrintStream out,
       final HeadlessConsoleController commandController) {
     this.out = out;
     this.in = in;
     this.commandController = commandController;
   }
 
-  public void start() {
+  void start() {
     final Thread t = new Thread(() -> printEvalLoop(), "Headless console eval print loop");
     t.setDaemon(true);
     t.start();
@@ -55,7 +55,7 @@ public class HeadlessGameServerConsole {
     }
   }
 
-  protected void shutdown() {
+  void shutdown() {
     this.shutdown = true;
   }
 }

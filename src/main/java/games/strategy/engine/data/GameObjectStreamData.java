@@ -45,7 +45,7 @@ public class GameObjectStreamData implements Externalizable {
     }
   }
 
-  public Named getReference(final GameData data) {
+  Named getReference(final GameData data) {
     if (data == null) {
       throw new IllegalArgumentException("Data cant be null");
     }
