@@ -25,17 +25,17 @@ public class RouteCalculatorTest {
 
   @Test
   public void testRouteTranslation() {
-    Point[] inputArray = new Point[] {p(1, 4), p(1001, 1001), p(600, 600)};
-    assertArrayEquals(new Point[] {p(1, 4), p(1, 1), p(-400, -400)},
+    Point[] inputArray = new Point[] {point(1, 4), point(1001, 1001), point(600, 600)};
+    assertArrayEquals(new Point[] {point(1, 4), point(1, 1), point(-400, -400)},
         new RouteCalculator(true, true, 1000, 1000).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {p(1, 4), p(1, 1001), p(-400, 600)},
+    assertArrayEquals(new Point[] {point(1, 4), point(1, 1001), point(-400, 600)},
         new RouteCalculator(true, false, 1000, 1000).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {p(1, 4), p(1001, 1), p(600, -400)},
+    assertArrayEquals(new Point[] {point(1, 4), point(1001, 1), point(600, -400)},
         new RouteCalculator(false, true, 1000, 1000).getTranslatedRoute(inputArray));
     assertArrayEquals(inputArray, new RouteCalculator(false, false, 1000, 1000).getTranslatedRoute(inputArray));
   }
 
-  private static Point p(double x, double y) {
+  private static Point point(double x, double y) {
     return new Point(x, y);
   }
 
@@ -45,7 +45,7 @@ public class RouteCalculatorTest {
     Point closestPoint = new Point(1, 1);
     List<Point> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
-      pool.add(p((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
+      pool.add(point((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
     }
     pool.add(closestPoint);
     assertEquals(closestPoint, RouteCalculator.getClosestPoint(origin, pool));
@@ -56,15 +56,15 @@ public class RouteCalculatorTest {
     List<Point> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of
     // x and y values 0, -mapWidth/height, +mapWidth/Height
-    possiblePoints.add(p(-1000, -1000));
-    possiblePoints.add(p(-1000, 0));
-    possiblePoints.add(p(-1000, 1000));
-    possiblePoints.add(p(0, -1000));
-    possiblePoints.add(p(0, 0));
-    possiblePoints.add(p(0, 1000));
-    possiblePoints.add(p(1000, -1000));
-    possiblePoints.add(p(1000, 0));
-    possiblePoints.add(p(1000, 1000));
+    possiblePoints.add(point(-1000, -1000));
+    possiblePoints.add(point(-1000, 0));
+    possiblePoints.add(point(-1000, 1000));
+    possiblePoints.add(point(0, -1000));
+    possiblePoints.add(point(0, 0));
+    possiblePoints.add(point(0, 1000));
+    possiblePoints.add(point(1000, -1000));
+    possiblePoints.add(point(1000, 0));
+    possiblePoints.add(point(1000, 1000));
     checkPoints(0, possiblePoints, true, true);
     checkPoints(6, possiblePoints, true, false);
     checkPoints(6, possiblePoints, false, true);
@@ -82,15 +82,15 @@ public class RouteCalculatorTest {
 
   @Test
   public void testMatrixTransposal() {
-    Point[] input = new Point[] {p(0, 0), p(1, 1)};
-    Point[] nw = new Point[] {p(-1000, -1000), p(-999, -999)};
-    Point[] n = new Point[] {p(0, -1000), p(1, -999)};
-    Point[] ne = new Point[] {p(1000, -1000), p(1001, -999)};
-    Point[] w = new Point[] {p(-1000, 0), p(-999, 1)};
-    Point[] e = new Point[] {p(1000, 0), p(1001, 1)};
-    Point[] sw = new Point[] {p(-1000, 1000), p(-999, 1001)};
-    Point[] s = new Point[] {p(0, 1000), p(1, 1001)};
-    Point[] se = new Point[] {p(1000, 1000), p(1001, 1001)};
+    Point[] input = new Point[] {point(0, 0), point(1, 1)};
+    Point[] nw = new Point[] {point(-1000, -1000), point(-999, -999)};
+    Point[] n = new Point[] {point(0, -1000), point(1, -999)};
+    Point[] ne = new Point[] {point(1000, -1000), point(1001, -999)};
+    Point[] w = new Point[] {point(-1000, 0), point(-999, 1)};
+    Point[] e = new Point[] {point(1000, 0), point(1001, 1)};
+    Point[] sw = new Point[] {point(-1000, 1000), point(-999, 1001)};
+    Point[] s = new Point[] {point(0, 1000), point(1, 1001)};
+    Point[] se = new Point[] {point(1000, 1000), point(1001, 1001)};
 
     List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
     // This may be changed along with the RouteOptimizer#getPossiblePoints method
