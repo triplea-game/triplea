@@ -25,7 +25,7 @@ import games.strategy.net.nio.QuarantineConversation.ACTION;
 /**
  * A thread to Decode messages from a reader.
  */
-public class Decoder {
+class Decoder {
   private static final Logger logger = Logger.getLogger(Decoder.class.getName());
   private final NIOReader reader;
   private volatile boolean running = true;
@@ -40,7 +40,7 @@ public class Decoder {
       new ConcurrentHashMap<>();
   private final Thread thread;
 
-  public Decoder(final NIOSocket nioSocket, final NIOReader reader, final IErrorReporter reporter,
+  Decoder(final NIOSocket nioSocket, final NIOReader reader, final IErrorReporter reporter,
       final IObjectStreamFactory objectStreamFactory, final String threadSuffix) {
     this.reader = reader;
     errorReporter = reporter;
@@ -50,7 +50,7 @@ public class Decoder {
     thread.start();
   }
 
-  public void shutDown() {
+  void shutDown() {
     running = false;
     thread.interrupt();
   }
@@ -189,7 +189,7 @@ public class Decoder {
    * writing of the full identifiers, and simply write a single
    * byte to show the type.
    */
-  public static byte getType(final Object msg) {
+  static byte getType(final Object msg) {
     if (msg instanceof HubInvoke) {
       return 1;
     } else if (msg instanceof SpokeInvoke) {
@@ -202,11 +202,11 @@ public class Decoder {
     return Byte.MAX_VALUE;
   }
 
-  public void add(final SocketChannel channel, final QuarantineConversation conversation) {
+  void add(final SocketChannel channel, final QuarantineConversation conversation) {
     quarantine.put(channel, conversation);
   }
 
-  public void closed(final SocketChannel channel) {
+  void closed(final SocketChannel channel) {
     // remove if it exists
     final QuarantineConversation conversation = quarantine.remove(channel);
     if (conversation != null) {

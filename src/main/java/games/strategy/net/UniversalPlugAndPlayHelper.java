@@ -2,14 +2,10 @@ package games.strategy.net;
 
 import java.awt.Component;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Enumeration;
 
 import javax.swing.JOptionPane;
@@ -55,7 +51,7 @@ public class UniversalPlugAndPlayHelper {
     return worked;
   }
 
-  public String attemptAddingPortForwarding(final JTextArea textArea) {
+  private String attemptAddingPortForwarding(final JTextArea textArea) {
     System.out.println("Starting Universal Plug and Play (UPnP) add port forward map script.");
     textArea.append("Starting Universal Plug and Play (UPnP) add port forward map script.\r\n");
     final String localError = findLocalInetAddress();
@@ -76,59 +72,6 @@ public class UniversalPlugAndPlayHelper {
       return addPortError;
     }
     textArea.append("Port Forwarding map added successfully.\r\n");
-    return null;
-  }
-
-  public String testConnection() {
-    System.out.println("Waiting for a connection");
-    final int internalPort = port;
-    boolean connection = false;
-    // boolean bytes = false;
-    try (ServerSocket ss = new ServerSocket(internalPort)) {
-      ss.setSoTimeout(5000);
-      try {
-        final Socket s = ss.accept();
-        connection = true;
-        final InputStream in = s.getInputStream();
-        while (in.available() > 0) {
-          System.out.println("byte : " + in.read());
-          // bytes = true;
-        }
-      } catch (final SocketTimeoutException stoe) {
-        System.out.println("Connection Test Timed Out. Port Forward may still work anyway.");
-        return "Connection Test Timed Out. Port Forward may still work anyway.";
-      }
-    } catch (final IOException e) {
-      System.out.println("Connection Test Timed Out. Port Forward may still work anyway. \r\n " + e.getMessage());
-      return "Connection Test Timed Out. Port Forward may still work anyway. \r\n " + e.getMessage();
-    }
-
-    if (!connection) {
-      System.out.println("Connection Test Timed Out. Port Forward may still work anyway.");
-      return "Connection Test Timed Out. Port Forward may still work anyway.";
-    }
-    System.out.println("Connection made!");
-    return null;
-  }
-
-  public String removePortForwardUPNP() {
-    System.out.println("Attempting to remove Port Forwarding");
-    final int externalPort = port;
-    boolean removed = false;
-    try {
-      removed = m_device.deletePortMapping(null, externalPort, "TCP");
-    } catch (final IOException e) {
-      System.out.println("Failed to remove port mapping! \r\n " + e.getMessage());
-      return "Failed to remove port mapping! \r\n " + e.getMessage();
-    } catch (final UPNPResponseException e) {
-      System.out.println("Failed to remove port mapping! \r\n " + e.getMessage());
-      return "Failed to remove port mapping! \r\n " + e.getMessage();
-    }
-    if (!removed) {
-      System.out.println("Failed to remove port mapping!");
-      return "Failed to remove port mapping!";
-    }
-    System.out.println("Success. Port Forwarding map removed.");
     return null;
   }
 

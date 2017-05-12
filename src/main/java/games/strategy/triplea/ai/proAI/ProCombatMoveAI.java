@@ -45,7 +45,7 @@ import games.strategy.util.Match;
 /**
  * Pro combat move AI.
  */
-public class ProCombatMoveAI {
+class ProCombatMoveAI {
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
 
@@ -57,12 +57,12 @@ public class ProCombatMoveAI {
   private boolean isDefensive;
   private boolean isBombing;
 
-  public ProCombatMoveAI(final ProAI ai) {
+  ProCombatMoveAI(final ProAI ai) {
     this.ai = ai;
     calc = ai.getCalc();
   }
 
-  public Map<Territory, ProTerritory> doCombatMove(final IMoveDelegate moveDel) {
+  Map<Territory, ProTerritory> doCombatMove(final IMoveDelegate moveDel) {
     ProLogger.info("Starting combat move phase");
 
     // Current data at the start of combat move
@@ -148,7 +148,7 @@ public class ProCombatMoveAI {
     return territoryManager.getAttackOptions().getTerritoryMap();
   }
 
-  public void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
+  void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {
     this.data = data;
     this.player = player;
@@ -177,7 +177,7 @@ public class ProCombatMoveAI {
     isBombing = false;
   }
 
-  public boolean isBombing() {
+  boolean isBombing() {
     return isBombing;
   }
 

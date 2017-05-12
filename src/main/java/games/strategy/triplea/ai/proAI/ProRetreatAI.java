@@ -42,15 +42,15 @@ import games.strategy.util.Match;
  * 2. attacker submerges sub at start or end of battle
  * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
  */
-public class ProRetreatAI {
+class ProRetreatAI {
 
   private final ProOddsCalculator calc;
 
-  public ProRetreatAI(final ProAI ai) {
+  ProRetreatAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public Territory retreatQuery(final GUID battleID, final Territory battleTerritory,
+  Territory retreatQuery(final GUID battleID, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories) {
 
     // Get battle data

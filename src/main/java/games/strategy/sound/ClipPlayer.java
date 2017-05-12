@@ -125,7 +125,7 @@ public class ClipPlayer {
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
 
-  public static synchronized ClipPlayer getInstance() {
+  static synchronized ClipPlayer getInstance() {
     if (clipPlayer == null) {
       clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
     }

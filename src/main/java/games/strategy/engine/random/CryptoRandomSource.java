@@ -32,7 +32,7 @@ public class CryptoRandomSource implements IRandomSource {
     return val & 0xff;
   }
 
-  public static int[] bytesToInts(final byte[] bytes) {
+  static int[] bytesToInts(final byte[] bytes) {
     final int[] rVal = new int[bytes.length / 4];
     for (int i = 0; i < rVal.length; i++) {
       rVal[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
@@ -41,7 +41,7 @@ public class CryptoRandomSource implements IRandomSource {
     return rVal;
   }
 
-  public static int[] xor(final int[] val1, final int[] val2, final int max) {
+  static int[] xor(final int[] val1, final int[] val2, final int max) {
     if (val1.length != val2.length) {
       throw new IllegalArgumentException("Arrays not of same length");
     }

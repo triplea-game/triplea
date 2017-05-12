@@ -328,14 +328,6 @@ public class TripleAUnit extends Unit {
     return getTransporting();
   }
 
-  public Unit getDependentOf() {
-    if (m_transportedBy != null) {
-      return m_transportedBy;
-    }
-    // TODO: add support for carriers as well
-    return null;
-  }
-
   public boolean getWasAmphibious() {
     return m_wasAmphibious;
   }
@@ -406,17 +398,6 @@ public class TripleAUnit extends Unit {
   public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t) {
     return Math.max(0,
         (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
-  }
-
-  public int getHowMuchShouldUnitBeRepairedToNotBeDisabled(final Unit u, final Territory t) {
-    final UnitAttachment ua = UnitAttachment.get(u.getType());
-    final int maxOperationalDamage = ua.getMaxOperationalDamage();
-    if (maxOperationalDamage < 0) {
-      return 0;
-    }
-    final TripleAUnit taUnit = (TripleAUnit) u;
-    final int currentDamage = taUnit.getUnitDamage();
-    return Math.max(0, currentDamage - maxOperationalDamage);
   }
 
   public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory,

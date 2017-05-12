@@ -27,15 +27,15 @@ import games.strategy.util.Match;
 /**
  * Pro politics AI.
  */
-public class ProPoliticsAI {
+class ProPoliticsAI {
 
   private final ProOddsCalculator calc;
 
-  public ProPoliticsAI(final ProAI ai) {
+  ProPoliticsAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public List<PoliticalActionAttachment> politicalActions() {
+  List<PoliticalActionAttachment> politicalActions() {
 
     final GameData data = ProData.getData();
     final PlayerID player = ProData.getPlayer();
@@ -168,7 +168,7 @@ public class ProPoliticsAI {
     return results;
   }
 
-  public void doActions(final List<PoliticalActionAttachment> actions) {
+  void doActions(final List<PoliticalActionAttachment> actions) {
     final GameData data = ProData.getData();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     for (final PoliticalActionAttachment action : actions) {

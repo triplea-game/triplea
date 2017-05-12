@@ -28,15 +28,15 @@ import games.strategy.util.Tuple;
 /**
  * Pro scramble AI.
  */
-public class ProScrambleAI {
+class ProScrambleAI {
 
   private final ProOddsCalculator calc;
 
-  public ProScrambleAI(final ProAI ai) {
+  ProScrambleAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
