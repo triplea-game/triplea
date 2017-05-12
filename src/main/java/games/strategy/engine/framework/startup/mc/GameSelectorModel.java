@@ -163,7 +163,7 @@ public class GameSelectorModel extends Observable {
     return m_data;
   }
 
-  public void setCanSelect(final boolean aBool) {
+  void setCanSelect(final boolean aBool) {
     synchronized (this) {
       m_canSelect = aBool;
     }
@@ -174,7 +174,7 @@ public class GameSelectorModel extends Observable {
     return m_canSelect;
   }
 
-  public void setIsHostHeadlessBot(final boolean aBool) {
+  void setIsHostHeadlessBot(final boolean aBool) {
     synchronized (this) {
       m_isHostHeadlessBot = aBool;
     }
@@ -185,7 +185,7 @@ public class GameSelectorModel extends Observable {
     return m_isHostHeadlessBot;
   }
 
-  public void setClientModelForHostBots(final ClientModel clientModel) {
+  void setClientModelForHostBots(final ClientModel clientModel) {
     synchronized (this) {
       m_clientModelForHostBots = clientModel;
     }
@@ -229,7 +229,7 @@ public class GameSelectorModel extends Observable {
     return m_gameVersion;
   }
 
-  public void setGameData(final GameData data) {
+  void setGameData(final GameData data) {
     synchronized (this) {
       if (data == null) {
         m_gameName = m_gameRound = m_gameVersion = "-";

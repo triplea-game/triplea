@@ -34,7 +34,7 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
  * until a new game has been started (TODO: check if the lobby
  * uses mainpanel at all)
  */
-public class MainPanel extends JPanel implements Observer {
+class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
@@ -49,7 +49,7 @@ public class MainPanel extends JPanel implements Observer {
 
   private boolean isChatShowing;
 
-  public MainPanel(final SetupPanelModel typePanelModel) {
+  MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
     final GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 

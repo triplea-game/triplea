@@ -431,15 +431,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     }
   }
 
-  public String getPlayerType(final String playerName) {
-    for (final PBEMLocalPlayerComboBoxSelector item : m_playerTypes) {
-      if (item.getPlayerName().equals(playerName)) {
-        return item.getPlayerType();
-      }
-    }
-    throw new IllegalStateException("No player found:" + playerName);
-  }
-
   private void layoutPlayerPanel(final SetupPanel parent) {
     final GameData data = m_gameSelectorModel.getGameData();
     m_localPlayerPanel.removeAll();

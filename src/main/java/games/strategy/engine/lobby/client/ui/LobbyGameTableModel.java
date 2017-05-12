@@ -18,7 +18,7 @@ import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.util.Tuple;
 
-public class LobbyGameTableModel extends AbstractTableModel {
+class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
@@ -31,7 +31,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final List<Tuple<GUID, GameDescription>> gameList;
   private final ILobbyGameBroadcaster lobbyGameBroadcaster;
 
-  public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+  LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
 
     gameList = new ArrayList<>();
@@ -90,7 +90,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     return lobbyGameBroadcaster;
   }
 
-  public GameDescription get(final int i) {
+  GameDescription get(final int i) {
     return gameList.get(i).getSecond();
   }
 
@@ -130,7 +130,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     return Column.values()[column].toString();
   }
 
-  public int getColumnIndex(final Column column) {
+  int getColumnIndex(final Column column) {
     return column.ordinal();
   }
 

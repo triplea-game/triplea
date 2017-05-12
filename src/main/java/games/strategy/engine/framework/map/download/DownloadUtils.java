@@ -54,7 +54,7 @@ public class DownloadUtils {
     }
   }
 
-  public static URL toURL(String url) {
+  static URL toURL(String url) {
     try {
       return new URL(url);
     } catch (MalformedURLException e) {
@@ -62,7 +62,7 @@ public class DownloadUtils {
     }
   }
 
-  public static void downloadFile(URL url, File targetFile) throws IOException {
+  static void downloadFile(URL url, File targetFile) throws IOException {
     FileOutputStream fos = new FileOutputStream(targetFile);
     url = getUrlFollowingRedirects(url);
     ReadableByteChannel rbc = Channels.newChannel(url.openStream());

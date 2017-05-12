@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import games.strategy.util.Version;
 
-public class MapDownloadList {
+class MapDownloadList {
 
   private final List<DownloadFileDescription> available = new ArrayList<>();
   private final List<DownloadFileDescription> installed = new ArrayList<>();
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
-  public MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
+  MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
@@ -30,15 +30,15 @@ public class MapDownloadList {
     }
   }
 
-  public List<DownloadFileDescription> getAvailable() {
+  List<DownloadFileDescription> getAvailable() {
     return available;
   }
 
-  public List<DownloadFileDescription> getInstalled() {
+  List<DownloadFileDescription> getInstalled() {
     return installed;
   }
 
-  public List<DownloadFileDescription> getOutOfDate() {
+  List<DownloadFileDescription> getOutOfDate() {
     return outOfDate;
   }
 }

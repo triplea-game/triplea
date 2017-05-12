@@ -25,8 +25,7 @@ public class NewGameChooserEntry {
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
-
-  public static Comparator<NewGameChooserEntry> getComparator() {
+  static Comparator<NewGameChooserEntry> getComparator() {
     return new Comparator<NewGameChooserEntry>() {
       @Override
       public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {

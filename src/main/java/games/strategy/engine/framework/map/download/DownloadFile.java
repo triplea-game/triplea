@@ -18,9 +18,9 @@ import games.strategy.engine.ClientFileSystemHelper;
  *
  * @see MapDownloadStrategy
  */
-public class DownloadFile {
+class DownloadFile {
 
-  public enum DownloadState {
+  enum DownloadState {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 
@@ -37,19 +37,19 @@ public class DownloadFile {
    * @param progressUpdateListener Called periodically while download progress is made.
    * @param completionListener Called when the File download is complete.
    */
-  public DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
+  DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
       final Runnable completionListener) {
     this(download, progressUpdateListener);
     this.addDownloadCompletedListener(completionListener);
   }
 
-  protected DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener) {
+  DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
     this.downloadCompletedListeners = new ArrayList<>();
   }
 
-  public void startAsyncDownload() {
+  void startAsyncDownload() {
     final File fileToDownloadTo = ClientFileSystemHelper.createTempFile();
     final FileSizeWatcher watcher = new FileSizeWatcher(fileToDownloadTo, progressUpdateListener);
     addDownloadCompletedListener(() -> watcher.stop());
@@ -95,29 +95,29 @@ public class DownloadFile {
 
   }
 
-  protected DownloadState getDownloadState() {
+  DownloadState getDownloadState() {
     return state;
   }
 
-  public void cancelDownload() {
+  void cancelDownload() {
     if (!isDone()) {
       state = DownloadState.CANCELLED;
     }
   }
 
-  public boolean isDone() {
+  boolean isDone() {
     return state == DownloadState.CANCELLED || state == DownloadState.DONE;
   }
 
-  public boolean isInProgress() {
+  boolean isInProgress() {
     return state == DownloadState.DOWNLOADING;
   }
 
-  public boolean isWaiting() {
+  boolean isWaiting() {
     return state == DownloadState.NOT_STARTED;
   }
 
-  public void addDownloadCompletedListener(final Runnable listener) {
+  void addDownloadCompletedListener(final Runnable listener) {
     downloadCompletedListeners.add(listener);
   }
 }

@@ -603,7 +603,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return chatPanel;
   }
 
-  public void disallowRemoveConnections() {
+  private void disallowRemoveConnections() {
     while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
       removeConnectionsLatch.countDown();
     }
@@ -617,7 +617,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     removeConnectionsLatch = null;
   }
 
-  public Map<String, String> getLocalPlayerTypes() {
+  private Map<String, String> getLocalPlayerTypes() {
     final Map<String, String> localPlayerMappings = new HashMap<>();
     if (data == null) {
       return localPlayerMappings;
