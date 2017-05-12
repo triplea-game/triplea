@@ -40,24 +40,23 @@ public final class MapDownloadControllerOutOfDateMapsTest {
 
   @Test
   public void getOutOfDateMapNames_ShouldIncludeMapWhenMapIsOutOfDate() {
-    final Collection<DownloadFileDescription> downloadFileDescriptions = givenLatestMapVersionIs(VERSION_2);
+    final Collection<DownloadFileDescription> downloads = givenLatestMapVersionIs(VERSION_2);
     givenDownloadedMapVersionIs(VERSION_1);
 
-    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
     assertThat(outOfDateMapNames, contains(MAP_NAME));
   }
 
   private static Collection<DownloadFileDescription> givenLatestMapVersionIs(final Version version) {
-    return givenDownloadFileDescription(newDownloadFileDescriptionWithVersion(version));
+    return givenDownload(newDownloadWithVersion(version));
   }
 
-  private static Collection<DownloadFileDescription> givenDownloadFileDescription(
-      final DownloadFileDescription downloadFileDescription) {
-    return Collections.singletonList(downloadFileDescription);
+  private static Collection<DownloadFileDescription> givenDownload(final DownloadFileDescription download) {
+    return Collections.singletonList(download);
   }
 
-  private static DownloadFileDescription newDownloadFileDescriptionWithVersion(final Version version) {
+  private static DownloadFileDescription newDownloadWithVersion(final Version version) {
     return new DownloadFileDescription(
         "url",
         "description",
@@ -73,26 +72,26 @@ public final class MapDownloadControllerOutOfDateMapsTest {
     when(downloadedMaps.getVersionForZipFile(MAP_ZIP_FILE_2)).thenReturn(Optional.of(version));
   }
 
-  private Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloadFileDescriptions) {
-    return MapDownloadController.getOutOfDateMapNames(downloadFileDescriptions, downloadedMaps);
+  private Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
+    return MapDownloadController.getOutOfDateMapNames(downloads, downloadedMaps);
   }
 
   @Test
   public void getOutOfDateMapNames_ShouldExcludeMapWhenMapIsUpToDate() {
-    final Collection<DownloadFileDescription> downloadFileDescriptions = givenLatestMapVersionIs(VERSION_1);
+    final Collection<DownloadFileDescription> downloads = givenLatestMapVersionIs(VERSION_1);
     givenDownloadedMapVersionIs(VERSION_1);
 
-    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
     assertThat(outOfDateMapNames, not(contains(MAP_NAME)));
   }
 
   @Test
   public void getOutOfDateMapNames_ShouldExcludeMapWhenDownloadedVersionIsUnknown() {
-    final Collection<DownloadFileDescription> downloadFileDescriptions = givenLatestMapVersionIs(VERSION_1);
+    final Collection<DownloadFileDescription> downloads = givenLatestMapVersionIs(VERSION_1);
     givenDownloadedMapVersionIsUnknown();
 
-    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
     assertThat(outOfDateMapNames, not(contains(MAP_NAME)));
   }
@@ -104,20 +103,20 @@ public final class MapDownloadControllerOutOfDateMapsTest {
 
   @Test
   public void getOutOfDateMapNames_ShouldExcludeMapWhenLatestVersionIsUnknown() {
-    final Collection<DownloadFileDescription> downloadFileDescriptions = givenLatestMapVersionIs(VERSION_UNKNOWN);
+    final Collection<DownloadFileDescription> downloads = givenLatestMapVersionIs(VERSION_UNKNOWN);
     givenDownloadedMapVersionIs(VERSION_1);
 
-    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
     assertThat(outOfDateMapNames, not(contains(MAP_NAME)));
   }
 
   @Test
-  public void getOutOfDateMapNames_ShouldExcludeMapWhenDownloadFileDescriptionIsNull() {
-    final Collection<DownloadFileDescription> downloadFileDescriptions = givenDownloadFileDescription(null);
+  public void getOutOfDateMapNames_ShouldExcludeMapWhenDownloadIsNull() {
+    final Collection<DownloadFileDescription> downloads = givenDownload(null);
     givenDownloadedMapVersionIs(VERSION_1);
 
-    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+    final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
     assertThat(outOfDateMapNames, empty());
   }

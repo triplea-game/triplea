@@ -88,17 +88,17 @@ public class MapDownloadListTest {
   @Test
   public void testOutOfDateExcluding() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
-    final DownloadFileDescription map1 = newMapWithUrl("url1");
-    final DownloadFileDescription map2 = newMapWithUrl("url2");
-    final DownloadFileDescription map3 = newMapWithUrl("url3");
-    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(map1, map2, map3), strategy);
+    final DownloadFileDescription download1 = newDownloadWithUrl("url1");
+    final DownloadFileDescription download2 = newDownloadWithUrl("url2");
+    final DownloadFileDescription download3 = newDownloadWithUrl("url3");
+    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
 
-    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(map1, map3));
+    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
-    assertThat(outOfDate, is(Arrays.asList(map2)));
+    assertThat(outOfDate, is(Arrays.asList(download2)));
   }
 
-  private static DownloadFileDescription newMapWithUrl(final String url) {
+  private static DownloadFileDescription newDownloadWithUrl(final String url) {
     return new DownloadFileDescription(
         url,
         "description",

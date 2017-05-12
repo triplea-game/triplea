@@ -49,9 +49,9 @@ public class MapDownloadController {
 
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      final Collection<DownloadFileDescription> downloadFileDescriptions =
+      final Collection<DownloadFileDescription> allDownloads =
           new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite()).getDownloads();
-      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
+      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
         text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
@@ -70,28 +70,24 @@ public class MapDownloadController {
     return false;
   }
 
-  private static Collection<String> getOutOfDateMapNames(
-      final Collection<DownloadFileDescription> downloadFileDescriptions) {
-    return getOutOfDateMapNames(downloadFileDescriptions, getDownloadedMaps());
+  private static Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
+    return getOutOfDateMapNames(downloads, getDownloadedMaps());
   }
 
   @VisibleForTesting
   static Collection<String> getOutOfDateMapNames(
-      final Collection<DownloadFileDescription> downloadFileDescriptions,
+      final Collection<DownloadFileDescription> downloads,
       final DownloadedMaps downloadedMaps) {
-    return downloadFileDescriptions.stream()
+    return downloads.stream()
         .filter(Objects::nonNull)
         .filter(it -> isMapOutOfDate(it, downloadedMaps))
         .map(DownloadFileDescription::getMapName)
         .collect(Collectors.toList());
   }
 
-  private static boolean isMapOutOfDate(
-      final DownloadFileDescription downloadFileDescription,
-      final DownloadedMaps downloadedMaps) {
-    final Optional<Version> latestVersion = Optional.ofNullable(downloadFileDescription.getVersion());
-    final Optional<Version> downloadedVersion =
-        getDownloadedVersion(downloadFileDescription.getMapName(), downloadedMaps);
+  private static boolean isMapOutOfDate(final DownloadFileDescription download, final DownloadedMaps downloadedMaps) {
+    final Optional<Version> latestVersion = Optional.ofNullable(download.getVersion());
+    final Optional<Version> downloadedVersion = getDownloadedVersion(download.getMapName(), downloadedMaps);
 
     final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
     latestVersion.ifPresent(latest -> {
