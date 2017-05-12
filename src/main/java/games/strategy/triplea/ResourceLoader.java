@@ -57,7 +57,7 @@ public class ResourceLoader implements Closeable {
       SwingComponents.promptUser("Download Map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
-          () -> DownloadMapsWindow.showDownloadMapsWindow(mapName));
+          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
 
       throw new MapNotFoundException();
     }

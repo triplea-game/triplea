@@ -530,7 +530,7 @@ public class GameRunner {
     messageBuilder.append("command if you don't want to do it now.)");
     messageBuilder.append("</html>");
     SwingComponents.promptUser("Welcome to TripleA", messageBuilder.toString(), () -> {
-      DownloadMapsWindow.showDownloadMapsWindow("Tutorial");
+      DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
     });
     return true;
   }

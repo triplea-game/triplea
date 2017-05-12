@@ -54,13 +54,14 @@ public class MapDownloadController {
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloadFileDescriptions);
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
-        text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br>");
-        text.append("Would you like to update (re-download) the following maps now?:<br><ul>");
+        text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
+        text.append("Would you like to update (re-download) the following maps now?<br><ul>");
         for (final String mapName : outOfDateMapNames) {
           text.append("<li> ").append(mapName).append("</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), DownloadMapsWindow::showDownloadMapsWindow);
+        SwingComponents.promptUser("Update Your Maps?", text.toString(),
+            () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
         return true;
       }
     } catch (final Exception e) {
