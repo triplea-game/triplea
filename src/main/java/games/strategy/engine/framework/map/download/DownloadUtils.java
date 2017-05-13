@@ -12,12 +12,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.system.HttpProxy;
 
-public class DownloadUtils {
-
+public final class DownloadUtils {
   private static Map<URL, Integer> downloadLengthCache = new HashMap<>();
 
+  private DownloadUtils() {}
 
   static Optional<Integer> getDownloadLength(URL url) {
     if (!downloadLengthCache.containsKey(url)) {
@@ -31,27 +44,59 @@ public class DownloadUtils {
     return Optional.of(downloadLengthCache.get(url));
   }
 
-  private static Optional<Integer> getDownloadLengthWithoutCache(URL url) {
-    try {
-      HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-      int responseCode = httpConn.getResponseCode();
-      // always check HTTP response code first
-      if (responseCode == HttpURLConnection.HTTP_OK) {
-        int length = httpConn.getContentLength();
-        if (length <= 0) {
-          return Optional.empty();
-        } else {
-          return Optional.of(httpConn.getContentLength());
-        }
-      } else {
-        ClientLogger.logQuietly("Unexpected response code:  " + responseCode);
-        return Optional.empty();
-      }
-    } catch (IOException e) {
-      ClientLogger.logQuietly("Failed to connect to: " + url + ", to get download size. Ignoring this error and will "
-          + "not display the map download size on the UI.", e);
+  private static Optional<Integer> getDownloadLengthWithoutCache(final URL url) {
+    try (final CloseableHttpClient client = newHttpClient()) {
+      return getLengthOfResourceAt(url.toString(), client);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(String.format("failed to get download length for '%s'", url), e);
       return Optional.empty();
     }
+  }
+
+  private static CloseableHttpClient newHttpClient() {
+    return HttpClients.custom()
+        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+        .build();
+  }
+
+  /**
+   * Gets the length of the resource at the specified URI.
+   *
+   * @param uri The resource URI; must not be {@code null}.
+   * @param client The client through which to connect; must not be {@code null}.
+   *
+   * @return The resource length or empty if the resource length is unknown; never {@code null}.
+   *
+   * @throws IOException If an error occurs while attempting to get the resource length.
+   */
+  @VisibleForTesting
+  static Optional<Integer> getLengthOfResourceAt(
+      final String uri,
+      final CloseableHttpClient client) throws IOException {
+    try (final CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode != HttpStatus.SC_OK) {
+        throw new IOException(String.format("unexpected status code (%d)", statusCode));
+      }
+
+      final HttpEntity entity = response.getEntity();
+      if (entity == null) {
+        throw new IOException("entity does not exist");
+      }
+
+      final long length = entity.getContentLength();
+      if (length > Integer.MAX_VALUE) {
+        throw new IOException("content length exceeds Integer.MAX_VALUE");
+      }
+
+      return (length >= 0L) ? Optional.of((int) length) : Optional.empty();
+    }
+  }
+
+  private static HttpRequestBase newHttpGetRequest(final String uri) {
+    final HttpGet request = new HttpGet(uri);
+    HttpProxy.addProxy(request);
+    return request;
   }
 
   static URL toURL(String url) {
@@ -96,5 +141,4 @@ public class DownloadUtils {
     }
     return url;
   }
-
 }
