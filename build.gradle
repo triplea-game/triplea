@@ -85,6 +85,7 @@ dependencies {
     compile files('lib/AppleJavaExtensions-1.6.jar')
     compile files('lib/upnp.jar')
 
+    testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
     testCompile 'org.apache.derby:derby:10.10.1.1'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.7.22'
