@@ -76,8 +76,10 @@ public class ProBidAI {
     final IntegerMap<ProductionRule> bestMaxUnits = new IntegerMap<>();
     final IntegerMap<ProductionRule> bestMobileAttack = new IntegerMap<>();
 
-    ProductionRule carrierRule = null, fighterRule = null;
-    int carrierFighterLimit = 0, maxFighterAttack = 0;
+    ProductionRule carrierRule = null;
+    ProductionRule fighterRule = null;
+    int carrierFighterLimit = 0;
+    int maxFighterAttack = 0;
     float averageSeaMove = 0;
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean isAmphib = isAmphibAttack(player, true);
@@ -188,7 +190,8 @@ public class ProBidAI {
     if (buyLimit == 0) {
       buyLimit = 1;
     }
-    boolean landPurchase = true, goTransports = false;
+    boolean landPurchase = true;
+    boolean goTransports = false;
     // boolean alreadyBought = false;
     final List<Territory> enemyTerritoryBorderingOurTerrs = getNeighboringEnemyLandTerritories(data, player);
     if (enemyTerritoryBorderingOurTerrs.isEmpty()) {
@@ -342,7 +345,8 @@ public class ProBidAI {
     }
     // find a land route to an enemy territory from our capitol
     boolean amphibPlayer = !hasLandRouteToEnemyOwnedCapitol(capitol, player, data);
-    int totProduction = 0, allProduction = 0;
+    int totProduction = 0;
+    int allProduction = 0;
     if (amphibPlayer) {
       final List<Territory> allFactories = findTersWithUnitsMatching(data, player, Matches.UnitCanProduceUnits);
       // allFactories.remove(capitol);
@@ -422,7 +426,8 @@ public class ProBidAI {
       bidLandTerr = capitol;
     }
     if (player.getUnits().someMatch(Matches.UnitIsSea)) {
-      Territory bidSeaTerr = null, bidTransTerr = null;
+      Territory bidSeaTerr = null;
+      Territory bidTransTerr = null;
       // CompositeMatch<Territory> enemyWaterTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
       // Matches.territoryHasEnemyUnits(player, data));
       final CompositeMatch<Territory> waterFactoryWaterTerr = new CompositeMatchAnd<>(Matches.TerritoryIsWater,
@@ -775,7 +780,8 @@ public class ProBidAI {
     int supportableInfCount = parameters.getInt("supportableInfCount");
     int infCount = parameters.getInt("infantry");
     int nonInfCount = parameters.getInt("nonInfantry");
-    int parametersChanged = 0, thisParametersChanged = 0;
+    int parametersChanged = 0;
+    int thisParametersChanged = 0;
     final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
     if (!(resourceOrUnit instanceof UnitType)) {
       return 0;
@@ -1392,8 +1398,12 @@ public class ProBidAI {
     }
     final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
     while (playerIter.hasNext()) {
-      float seaStrength = 0.0F, firstStrength = 0.0F, secondStrength = 0.0F, blitzStrength = 0.0F, strength = 0.0F,
-          airStrength = 0.0F;
+      float seaStrength = 0.0F;
+      float firstStrength = 0.0F;
+      float secondStrength = 0.0F;
+      float blitzStrength = 0.0F;
+      float strength = 0.0F;
+      float airStrength = 0.0F;
       ePlayer = playerIter.next();
       final CompositeMatch<Unit> enemyPlane =
           new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
@@ -1406,7 +1416,8 @@ public class ProBidAI {
       final CompositeMatch<Unit> aTransport =
           new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
-      int maxFighterDistance = 0, maxBomberDistance = 0;
+      int maxFighterDistance = 0;
+      int maxBomberDistance = 0;
       // should change this to read production frontier and tech
       // reality is 99% of time units considered will have full move.
       // and likely player will have at least 1 max move plane.
@@ -1487,7 +1498,8 @@ public class ProBidAI {
               }
             }
             final List<Unit> loadedUnits = new ArrayList<>();
-            int availInf = 0, availOther = 0;
+            int availInf = 0;
+            int availOther = 0;
             for (final Unit xTrans : transports) {
               final Collection<Unit> thisTransUnits = TransportTracker.transporting(xTrans);
               if (thisTransUnits == null) {
@@ -1495,7 +1507,8 @@ public class ProBidAI {
                 availOther += 1;
                 continue;
               } else {
-                int Inf = 2, Other = 1;
+                int Inf = 2;
+                int Other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
                   if (Matches.UnitIsInfantry.match(checkUnit)) {
                     Inf--;
@@ -1781,7 +1794,8 @@ public class ProBidAI {
     final IntegerMap<Unit> unitDistance = new IntegerMap<>();
     final List<Unit> units = new ArrayList<>();
     final Queue<Territory> q = new LinkedList<>();
-    Territory lz = null, ac = null;
+    Territory lz = null;
+    Territory ac = null;
     final CompositeMatch<Unit> enemyPlane =
         new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
     final CompositeMatch<Unit> enemyCarrier =
@@ -2016,14 +2030,16 @@ public class ProBidAI {
     final CompositeMatch<Unit> seaUnit = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea);
     final CompositeMatch<Unit> airUnit = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
     final CompositeMatch<Unit> seaAirUnit = new CompositeMatchOr<>(seaUnit, airUnit);
-    Territory seaPlaceAt = null, bestSeaPlaceAt = null;
+    Territory seaPlaceAt = null;
+    Territory bestSeaPlaceAt = null;
     Territory xPlace = null;
     if (landTerr == null) {
       return seaPlaceAt;
     }
     final Set<Territory> seaNeighbors = data.getMap().getNeighbors(landTerr, ourSeaTerr);
     // float eStrength = 0.0F;
-    float minStrength = 1000.0F, maxStrength = -1000.0F;
+    float minStrength = 1000.0F;
+    float maxStrength = -1000.0F;
     for (final Territory t : seaNeighbors) { // give preference to territory with units
       float enemyStrength = getStrengthOfPotentialAttackers(t, data, player, tFirst, true, null);
       final float extraEnemy = strength(t.getUnits().getMatches(Matches.enemyUnit(player, data)), true, true, tFirst);
