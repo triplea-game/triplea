@@ -30,7 +30,7 @@ public class TechAttachment extends DefaultAttachment {
     return attachment;
   }
 
-  public static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
+  static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);

@@ -42,16 +42,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // set "actionAccept" to "UK" so UK can accept this action to go through.
   protected ArrayList<PlayerID> m_actionAccept = new ArrayList<>();
 
-  public static Match<AbstractUserActionAttachment> isSatisfiedMatch(
-      final HashMap<ICondition, Boolean> testedConditions) {
-    return new Match<AbstractUserActionAttachment>() {
-      @Override
-      public boolean match(final AbstractUserActionAttachment value) {
-        return value.isSatisfied(testedConditions);
-      }
-    };
-  }
-
   /**
    * @return true if there is no condition to this action or if the condition is satisfied.
    */

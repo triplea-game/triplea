@@ -180,7 +180,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return true;
   }
 
-  public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
+  static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
     setupUnitsInSameTerritoryBattles(battleTracker, aBridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, aBridge);
     // these are "blitzed" and "conquered" territories without a fight, without a pending
@@ -189,7 +189,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     resetMaxScrambleCount(aBridge);
   }
 
-  public static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
+  private static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
     // these are air battle and air raids where there is no defender, probably because no
     // air is in range to defend
     battleTracker.clearEmptyAirBattleAttacks(aBridge);
@@ -1448,7 +1448,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     markDamaged(damagedMap, bridge, true);
   }
 
-  public static void markDamaged(final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge,
+  private static void markDamaged(final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge,
       final boolean addPreviousHits) {
     final Set<Unit> units = new HashSet<>(damagedMap.keySet());
     if (addPreviousHits) {

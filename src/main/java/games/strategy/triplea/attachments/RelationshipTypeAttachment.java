@@ -55,7 +55,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment) {
+  static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment) {
     final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
