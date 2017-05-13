@@ -294,7 +294,7 @@ public class MapXmlCreator extends JFrame {
     start();
   }
 
-  public static void start() {
+  private static void start() {
     SwingUtilities.invokeLater(() -> {
       final MapXmlCreator creator = new MapXmlCreator();
       creator.setSize(800, 600);
@@ -305,7 +305,7 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  public MapXmlCreator() {
+  MapXmlCreator() {
     super("TripleA Map XML Creator");
 
     mapFolderLocation = getDefaultMapFolderLocation();
@@ -938,7 +938,7 @@ public class MapXmlCreator extends JFrame {
     stepTitleLabel.setText(title);
   }
 
-  public void setAutoFillAction(final AbstractAction action) {
+  void setAutoFillAction(final AbstractAction action) {
     for (final ActionListener actionListener : autoFillButton.getActionListeners()) {
       autoFillButton.removeActionListener(actionListener);
     }
@@ -1027,7 +1027,7 @@ public class MapXmlCreator extends JFrame {
   }
 
 
-  public void setAutoFillActionListener(final ActionListener autoFillActionListener) {
+  void setAutoFillActionListener(final ActionListener autoFillActionListener) {
     if (autoFillActionListener == null) {
       autoFillButton.setEnabled(false);
     } else {
@@ -1108,7 +1108,7 @@ public class MapXmlCreator extends JFrame {
     stepActionPanel.add(tabbedPane, BorderLayout.CENTER);
   }
 
-  public void showHTML(final String htmlString, final String title) {
+  private void showHTML(final String htmlString, final String title) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -1199,7 +1199,7 @@ public class MapXmlCreator extends JFrame {
     }
   }
 
-  public static GameStep loadXmlFromFilePath(final String gameXMLPath)
+  private static GameStep loadXmlFromFilePath(final String gameXMLPath)
       throws SAXException, IOException, ParserConfigurationException {
     final FileInputStream in = new FileInputStream(gameXMLPath);
 

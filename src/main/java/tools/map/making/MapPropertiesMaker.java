@@ -101,7 +101,7 @@ public class MapPropertiesMaker extends JFrame {
     }
   } // end main
 
-  public MapPropertiesMaker() {
+  private MapPropertiesMaker() {
     super("Map Properties Maker");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.getContentPane().setLayout(new BorderLayout());

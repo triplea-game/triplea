@@ -68,7 +68,7 @@ public class DoubleTextField extends JTextField {
     }
   }
 
-  public void setMax(final double max) {
+  private void setMax(final double max) {
     if (max < m_min) {
       throw new IllegalArgumentException(
           "Max cant be less than min. Current Min: " + m_min + ", Current Max: " + m_max + ", New Max: " + max);
@@ -83,7 +83,7 @@ public class DoubleTextField extends JTextField {
     m_terr = terr;
   }
 
-  public void setMin(final double min) {
+  private void setMin(final double min) {
     if (min > m_max) {
       throw new IllegalArgumentException(
           "Min cant be greater than max. Current Max: " + m_max + ", Current Min: " + m_min + ", New Min: " + min);

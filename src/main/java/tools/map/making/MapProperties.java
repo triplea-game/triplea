@@ -49,7 +49,7 @@ public class MapProperties {
   public Color screenshotTitleColor = Color.black;
   public int screenshotTitleFontSize = 20;
 
-  public MapProperties() {
+  MapProperties() {
     super();
     // fill the color map
     colorMap.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));

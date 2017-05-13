@@ -24,7 +24,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     IS_WATER, IS_VICTORY_CITY, IMPASSABLE, IS_CAPITAL
   }
 
-  public static String getDefinitionString(final DEFINITION def) {
+  static String getDefinitionString(final DEFINITION def) {
     switch (def) {
       case IS_WATER:
         return TERRITORY_DEFINITION_IS_WATER;
@@ -40,7 +40,7 @@ public class TerritoryDefinitionDialog extends JDialog {
     }
   }
 
-  public static DEFINITION valueOf(final String defString) {
+  static DEFINITION valueOf(final String defString) {
     if (defString.equals(TERRITORY_DEFINITION_IS_WATER)) {
       return DEFINITION.IS_WATER;
     } else if (defString.equals(TERRITORY_DEFINITION_IS_VICTORY_CITY)) {

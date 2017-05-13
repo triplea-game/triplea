@@ -28,7 +28,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel)) {
       me = Optional.of(new PlayerSequencePanel(mapXmlCreator.getStepActionPanel()));
     }

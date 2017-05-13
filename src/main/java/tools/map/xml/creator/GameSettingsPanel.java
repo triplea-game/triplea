@@ -54,7 +54,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     NORMAL, PER_PLAYER, PER_ALLY
   }
 
-  public static SETTING_TYPE getSettingType(final String setting) {
+  private static SETTING_TYPE getSettingType(final String setting) {
     if (setting.endsWith(" bid")) {
       return SETTING_TYPE.PER_PLAYER;
     } else if (setting.endsWith(" Honorable Victory VCs")) {
@@ -75,7 +75,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel)) {
       me = Optional.of(new GameSettingsPanel(mapXmlCreator.getStepActionPanel()));
     }

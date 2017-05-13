@@ -81,7 +81,7 @@ public class MapCreator extends JFrame {
     creator.setVisible(true);
   }
 
-  public MapCreator() {
+  private MapCreator() {
     super("TripleA Map Creator");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // components

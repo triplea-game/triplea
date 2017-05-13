@@ -179,7 +179,7 @@ public class DecorationPlacer extends JFrame {
     }
   } // end main
 
-  public DecorationPlacer(final String mapName) {
+  private DecorationPlacer(final String mapName) {
     super("Decoration Placer");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLocationRelativeTo(null);

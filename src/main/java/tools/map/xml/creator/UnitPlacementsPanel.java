@@ -45,7 +45,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
   private UnitPlacementsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final UnitPlacementsPanel panel = new UnitPlacementsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());

@@ -218,12 +218,6 @@ public class SwingComponents {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, msg));
   }
 
-  public static JFrame newJFrameWithCloseAction(final Runnable closeListener) {
-    final JFrame frame = new JFrame();
-    addWindowCloseListener(frame, closeListener);
-    return frame;
-  }
-
   public static void addWindowCloseListener(final Window window, final Runnable closeAction) {
     window.addWindowListener(new WindowAdapter() {
       @Override

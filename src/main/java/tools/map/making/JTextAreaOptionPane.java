@@ -94,7 +94,7 @@ public class JTextAreaOptionPane {
     setWidgetActivation();
   }
 
-  public void append(final String text) {
+  void append(final String text) {
     if (logToSystemOut) {
       System.out.print(text);
     }
