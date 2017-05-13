@@ -454,7 +454,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
 
-  public static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
+  private static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
     return new KeyListener() {
       private boolean blockInputs = false;
       private long timeSinceLastPressEvent = 0;
@@ -663,7 +663,7 @@ public class TripleAFrame extends MainGameFrame {
     }
   };
 
-  public void clearStatusMessage() {
+  void clearStatusMessage() {
     if (status == null) {
       return;
     }
@@ -1375,16 +1375,6 @@ public class TripleAFrame extends MainGameFrame {
     return selected.get();
   }
 
-  public static int save(final String filename, final GameData m_data) {
-    try (FileOutputStream fos = new FileOutputStream(filename); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-      oos.writeObject(m_data);
-      return 0;
-    } catch (final Throwable t) {
-      System.err.println(t.getMessage());
-      return -1;
-    }
-  }
-
   GameStepListener m_stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
@@ -1802,7 +1792,7 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-  public void showGame() {
+  private void showGame() {
     inGame = true;
     uiContext.setShowMapOnly(false);
     // Are we coming from showHistory mode or showMapOnly mode?
@@ -1850,7 +1840,7 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-  public void showMapOnly() {
+  private void showMapOnly() {
     // Are we coming from showHistory mode or showGame mode?
     if (inHistory) {
       inHistory = false;
@@ -1935,7 +1925,7 @@ public class TripleAFrame extends MainGameFrame {
     return showCommentLogButtonModel;
   }
 
-  public boolean getEditMode() {
+  private boolean getEditMode() {
     boolean isEditMode = false;
     // use GameData from mapPanel since it will follow current history node
     mapPanel.getData().acquireReadLock();

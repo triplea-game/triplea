@@ -42,7 +42,7 @@ public class Tile {
   private final Lock m_lock = new ReentrantLock();
   private final List<IDrawable> m_contents = new ArrayList<>();
 
-  public Tile(final Rectangle bounds, final int x, final int y, final double scale) {
+  Tile(final Rectangle bounds, final int x, final int y, final double scale) {
     // s_logger.log(Level.FINER, "Tile created for:" + bounds);
     m_bounds = bounds;
     m_x = x;
@@ -144,7 +144,7 @@ public class Tile {
     stopWatch.done();
   }
 
-  public void addDrawables(final Collection<IDrawable> drawables) {
+  void addDrawables(final Collection<IDrawable> drawables) {
     acquireLock();
     try {
       m_contents.addAll(drawables);
@@ -154,7 +154,7 @@ public class Tile {
     }
   }
 
-  public void addDrawable(final IDrawable d) {
+  void addDrawable(final IDrawable d) {
     acquireLock();
     try {
       m_contents.add(d);
@@ -164,17 +164,7 @@ public class Tile {
     }
   }
 
-  public void removeDrawable(final IDrawable d) {
-    acquireLock();
-    try {
-      m_contents.remove(d);
-      m_isDirty = true;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  public void removeDrawables(final Collection<IDrawable> c) {
+  void removeDrawables(final Collection<IDrawable> c) {
     acquireLock();
     try {
       m_contents.removeAll(c);
@@ -184,7 +174,7 @@ public class Tile {
     }
   }
 
-  public void clear() {
+  void clear() {
     acquireLock();
     try {
       m_contents.clear();
@@ -194,7 +184,7 @@ public class Tile {
     }
   }
 
-  public List<IDrawable> getDrawables() {
+  List<IDrawable> getDrawables() {
     acquireLock();
     try {
       return new ArrayList<>(m_contents);

@@ -73,7 +73,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     });
   }
 
-  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
+  Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
     m_territoryChoices = territoryChoices;
     m_unitChoices = unitChoices;

@@ -115,7 +115,7 @@ public class BattleDisplay extends JPanel {
   private final Action m_nullAction = SwingAction.of(" ", e -> {
   });
 
-  public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
+  BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleID,
       final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType,
@@ -152,7 +152,7 @@ public class BattleDisplay extends JPanel {
     initLayout();
   }
 
-  public void cleanUp() {
+  void cleanUp() {
     m_actionButton.setAction(m_nullAction);
     m_steps.deactivate();
     m_mapPanel.getUIContext().removeActive(m_steps);
@@ -254,7 +254,7 @@ public class BattleDisplay extends JPanel {
     return dependentUnitsReturned;
   }
 
-  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
+  void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
     m_casualties.setNotification(dice, killed, damaged, dependents);
@@ -267,7 +267,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
+  void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     m_casualties.setNotificationShort(killed, dependents);
     m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
@@ -279,7 +279,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
+  void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     if (player.equals(m_defender)) {
       if (removedUnits != null) {
@@ -335,7 +335,7 @@ public class BattleDisplay extends JPanel {
   }
 
 
-  public void endBattle(final String message, final Window enclosingFrame) {
+  void endBattle(final String message, final Window enclosingFrame) {
     m_steps.walkToLastStep();
     final Action close = SwingAction.of(message + " : (Press Space to Close)", e -> enclosingFrame.setVisible(false));
     SwingUtilities.invokeLater(() -> m_actionButton.setAction(close));
@@ -346,7 +346,7 @@ public class BattleDisplay extends JPanel {
     m_attackerModel.notifyRetreat(retreating);
   }
 
-  public Territory getRetreat(final String message, final Collection<Territory> possible, final boolean submerge) {
+  Territory getRetreat(final String message, final Collection<Territory> possible, final boolean submerge) {
     if (!submerge || possible.size() > 1) {
       return getRetreatInternal(message, possible);
     } else {
@@ -500,7 +500,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
+  CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
       final int count, final String message, final DiceRoll dice, final PlayerID hit,
       final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     if (SwingUtilities.isEventDispatchThread()) {
@@ -679,13 +679,13 @@ public class BattleDisplay extends JPanel {
     m_steps.setStep(step);
   }
 
-  public void battleInfo(final DiceRoll message, final String step) {
+  void battleInfo(final DiceRoll message, final String step) {
     setStep(step);
     m_dicePanel.setDiceRoll(message);
     m_actionLayout.show(m_actionPanel, DICE_KEY);
   }
 
-  public void battleInfo(final String message, final String step) {
+  void battleInfo(final String message, final String step) {
     m_messageLabel.setText(message);
     setStep(step);
     m_actionLayout.show(m_actionPanel, MESSAGE_KEY);

@@ -18,7 +18,7 @@ public abstract class MapTileDrawable implements IDrawable {
   protected final IUIContext m_uiContext;
   protected boolean m_unscaled;
 
-  public MapTileDrawable(final int x, final int y, final IUIContext uiContext) {
+  protected MapTileDrawable(final int x, final int y, final IUIContext uiContext) {
     m_x = x;
     m_y = y;
     m_uiContext = uiContext;

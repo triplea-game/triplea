@@ -111,7 +111,7 @@ public class ActionButtons extends JPanel {
     });
   }
 
-  public void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName) {
+  void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName) {
     m_movePanel.setNonCombat(nonCombat);
     final boolean airBorne = stepName.endsWith("AirborneCombatMove");
     final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));

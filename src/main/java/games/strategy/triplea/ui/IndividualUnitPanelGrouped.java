@@ -163,7 +163,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
-  public Map<String, IntegerMap<Unit>> getSelected() {
+  Map<String, IntegerMap<Unit>> getSelected() {
     final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<>();
     for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
       selectedUnits.put(entry.getFirst(), entry.getSecond().getSelected());

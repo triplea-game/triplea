@@ -402,7 +402,7 @@ public class HistoryLog extends JFrame {
     printTerritorySummary(players, territories);
   }
 
-  public void printTerritorySummary(final GameData data) {
+  private void printTerritorySummary(final GameData data) {
     Collection<Territory> territories;
     PlayerID player;
     data.acquireReadLock();

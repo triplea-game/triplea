@@ -44,8 +44,7 @@ public class HelpMenu {
   private final IUIContext iuiContext;
   private final GameData gameData;
 
-  public HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
-      final Color backgroundColor) {
+  HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData, final Color backgroundColor) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 

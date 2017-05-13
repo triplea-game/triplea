@@ -269,7 +269,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public FightBattleDetails waitForBattleSelection() {
+  FightBattleDetails waitForBattleSelection() {
     waitForRelease();
     if (m_fightBattleMessage != null) {
       getMap().centerOn(m_fightBattleMessage.getWhere());

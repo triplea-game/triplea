@@ -13,8 +13,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 
-public class TerritoryOverLayDrawable implements IDrawable {
-  public static enum OP {
+class TerritoryOverLayDrawable implements IDrawable {
+  static enum OP {
     FILL, DRAW
   }
 
@@ -22,13 +22,13 @@ public class TerritoryOverLayDrawable implements IDrawable {
   private final Color m_color;
   private final OP m_op;
 
-  public TerritoryOverLayDrawable(final Color color, final String name, final OP op) {
+  TerritoryOverLayDrawable(final Color color, final String name, final OP op) {
     m_color = color;
     m_territoryName = name;
     m_op = op;
   }
 
-  public TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final OP op) {
+  TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final OP op) {
     m_color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     m_territoryName = name;
     m_op = op;

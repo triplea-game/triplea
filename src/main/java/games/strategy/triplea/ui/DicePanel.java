@@ -31,7 +31,7 @@ public class DicePanel extends JPanel {
     removeAll();
   }
 
-  public void setDiceRollForBombing(final List<Die> dice, final int cost) {
+  void setDiceRollForBombing(final List<Die> dice, final int cost) {
     removeAll();
     add(create(dice));
     add(Box.createVerticalGlue());

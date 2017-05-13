@@ -51,13 +51,13 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
-public class ExportMenu {
+class ExportMenu {
 
   private final TripleAFrame frame;
   private final GameData gameData;
   private final IUIContext iuiContext;
 
-  public ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     gameData = frame.getGame().getData();
     iuiContext = frame.getUIContext();
