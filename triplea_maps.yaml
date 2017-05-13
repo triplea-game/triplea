@@ -1545,6 +1545,7 @@
 - mapName: Empire
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/empire/archive/master.zip
+  version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_empire_mini.png
   description: |
     <br>
