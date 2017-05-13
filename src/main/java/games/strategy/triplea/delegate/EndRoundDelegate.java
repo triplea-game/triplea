@@ -349,7 +349,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return games.strategy.triplea.Properties.getTriggeredVictory(getData());
   }
 
-  public int getProduction(final PlayerID id) {
+  private int getProduction(final PlayerID id) {
     int sum = 0;
     final Iterator<Territory> territories = getData().getMap().iterator();
     while (territories.hasNext()) {

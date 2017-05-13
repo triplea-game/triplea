@@ -161,7 +161,7 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
-  public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
+  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
       if (m_dependentUnits.get(holder) != null) {

@@ -86,7 +86,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     this(data, false);
   }
 
-  public OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+  OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     m_data = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
       m_isDataSet = true;
@@ -275,7 +275,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return rVal;
   }
 
-  public static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
+  static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
     if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
       return true;
     }

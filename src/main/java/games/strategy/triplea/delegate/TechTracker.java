@@ -73,7 +73,7 @@ public class TechTracker implements java.io.Serializable {
     advance.perform(player, bridge);
   }
 
-  public static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
+  static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
       final TechAdvance advance) {
     Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {

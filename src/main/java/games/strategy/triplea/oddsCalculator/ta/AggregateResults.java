@@ -65,7 +65,7 @@ public class AggregateResults implements Serializable {
     return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
   }
 
-  public double getAverageAttackingUnitsLeft() {
+  double getAverageAttackingUnitsLeft() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -109,7 +109,7 @@ public class AggregateResults implements Serializable {
     return defenderLost - attackerLost;
   }
 
-  public double getAverageAttackingUnitsLeftWhenAttackerWon() {
+  double getAverageAttackingUnitsLeftWhenAttackerWon() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -127,7 +127,7 @@ public class AggregateResults implements Serializable {
     return count / total;
   }
 
-  public double getAverageDefendingUnitsLeft() {
+  double getAverageDefendingUnitsLeft() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -138,7 +138,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  public double getAverageDefendingUnitsLeftWhenDefenderWon() {
+  double getAverageDefendingUnitsLeftWhenDefenderWon() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -169,7 +169,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  public double getDefenderWinPercent() {
+  double getDefenderWinPercent() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -197,7 +197,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  public double getDrawPercent() {
+  double getDrawPercent() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
