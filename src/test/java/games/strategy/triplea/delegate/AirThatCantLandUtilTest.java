@@ -317,7 +317,9 @@ public class AirThatCantLandUtilTest {
     assertEquals(expectedCountCanada, postCountInt);
   }
 
-  /** @deprecated Use a mock object instead. */
+  /**
+   * @deprecated Use a mock object instead.
+   */
   @Deprecated
   private static ITripleAPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
