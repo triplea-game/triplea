@@ -4,13 +4,11 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
@@ -72,9 +70,7 @@ final class MapDownloadProgressPanel extends JPanel {
       // space at the end of the label so the text does not end right at the progress bar
       labels.put(download, new JLabel(download.getMapName() + "  "));
       final JProgressBar progressBar = new JProgressBar();
-      progressBar.setStringPainted(true);
       progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
-
       progressBars.put(download, progressBar);
     }
 
@@ -96,13 +92,13 @@ final class MapDownloadProgressPanel extends JPanel {
       if (download.getMapName().isEmpty()) {
         continue;
       }
-      final JProgressBar progressBar = progressBars.get(download);
-      final Consumer<Integer> progressListener = s -> SwingUtilities.invokeLater(() -> progressBar.setValue(s));
-      final Runnable completionListener =
-          () -> SwingUtilities.invokeLater(() -> progressBar.setValue(progressBar.getMaximum()));
 
-
-      downloadCoordinator.accept(download, progressListener, completionListener, progressBar);
+      final MapDownloadProgressListener progressListener = new MapDownloadProgressListener(progressBars.get(download));
+      downloadCoordinator.accept(
+          download,
+          () -> progressListener.downloadStarted(download.newURL()),
+          progressListener::downloadUpdated,
+          progressListener::downloadCompleted);
     }
   }
 }

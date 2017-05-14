@@ -28,13 +28,13 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 
 public final class DownloadUtils {
-  private static Map<URL, Integer> downloadLengthCache = new HashMap<>();
+  private static final Map<URL, Long> downloadLengthCache = new HashMap<>();
 
   private DownloadUtils() {}
 
-  static Optional<Integer> getDownloadLength(URL url) {
+  static Optional<Long> getDownloadLength(final URL url) {
     if (!downloadLengthCache.containsKey(url)) {
-      Optional<Integer> length = getDownloadLengthWithoutCache(url);
+      final Optional<Long> length = getDownloadLengthWithoutCache(url);
       if (length.isPresent()) {
         downloadLengthCache.put(url, length.get());
       } else {
@@ -44,7 +44,7 @@ public final class DownloadUtils {
     return Optional.of(downloadLengthCache.get(url));
   }
 
-  private static Optional<Integer> getDownloadLengthWithoutCache(final URL url) {
+  private static Optional<Long> getDownloadLengthWithoutCache(final URL url) {
     try (final CloseableHttpClient client = newHttpClient()) {
       return getLengthOfResourceAt(url.toString(), client);
     } catch (final IOException e) {
@@ -70,7 +70,7 @@ public final class DownloadUtils {
    * @throws IOException If an error occurs while attempting to get the resource length.
    */
   @VisibleForTesting
-  static Optional<Integer> getLengthOfResourceAt(
+  static Optional<Long> getLengthOfResourceAt(
       final String uri,
       final CloseableHttpClient client) throws IOException {
     try (final CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
@@ -85,11 +85,7 @@ public final class DownloadUtils {
       }
 
       final long length = entity.getContentLength();
-      if (length > Integer.MAX_VALUE) {
-        throw new IOException("content length exceeds Integer.MAX_VALUE");
-      }
-
-      return (length >= 0L) ? Optional.of((int) length) : Optional.empty();
+      return (length >= 0L) ? Optional.of(length) : Optional.empty();
     }
   }
 

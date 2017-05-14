@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
 
 import games.strategy.debug.ClientLogger;
@@ -13,39 +14,30 @@ import games.strategy.debug.ClientLogger;
 /**
  * Keeps track of the state for a file download from a URL.
  * This class notifies listeners as appropriate while download state changes.
- * A 'DownloadStrategy' does the heavy lifting URL download work.
- *
- * @see MapDownloadStrategy
  */
-class DownloadFile {
-
+final class DownloadFile {
   enum DownloadState {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 
-  private final List<Runnable> downloadCompletedListeners;
-  private final Consumer<Integer> progressUpdateListener;
+  private final List<Runnable> downloadCompletedListeners = new ArrayList<>();
+  private final Consumer<Long> progressUpdateListener;
   private final DownloadFileDescription downloadDescription;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
   /**
-   * Creates a new FileDownload object.
+   * Creates a new DownloadFile object.
    * Does not actually start the download, call 'startAsyncDownload()' to start the download.
    *
    * @param download The details of what to download
    * @param progressUpdateListener Called periodically while download progress is made.
    * @param completionListener Called when the File download is complete.
    */
-  DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
+  DownloadFile(final DownloadFileDescription download, final Consumer<Long> progressUpdateListener,
       final Runnable completionListener) {
-    this(download, progressUpdateListener);
-    this.addDownloadCompletedListener(completionListener);
-  }
-
-  DownloadFile(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener) {
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
-    this.downloadCompletedListeners = new ArrayList<>();
+    addDownloadCompletedListener(completionListener);
   }
 
   /**
@@ -59,7 +51,6 @@ class DownloadFile {
     state = DownloadState.DOWNLOADING;
     createDownloadThread(fileToDownloadTo).start();
   }
-
 
   /*
    * Creates a thread that will download to a target temporary file, and once
@@ -95,9 +86,9 @@ class DownloadFile {
       // notify listeners we finished the download
       downloadCompletedListeners.forEach(e -> e.run());
     });
-
   }
 
+  @VisibleForTesting
   DownloadState getDownloadState() {
     return state;
   }
@@ -120,7 +111,7 @@ class DownloadFile {
     return state == DownloadState.NOT_STARTED;
   }
 
-  void addDownloadCompletedListener(final Runnable listener) {
+  private void addDownloadCompletedListener(final Runnable listener) {
     downloadCompletedListeners.add(listener);
   }
 }

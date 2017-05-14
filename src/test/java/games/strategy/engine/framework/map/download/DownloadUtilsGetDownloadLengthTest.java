@@ -54,12 +54,12 @@ public final class DownloadUtilsGetDownloadLengthTest {
   public void getLengthOfResourceAt_ShouldReturnLengthWhenLengthIsPositive() throws Exception {
     when(entity.getContentLength()).thenReturn(42L);
 
-    final Optional<Integer> length = getLengthOfResourceAt();
+    final Optional<Long> length = getLengthOfResourceAt();
 
-    assertThat(length, is(Optional.of(42)));
+    assertThat(length, is(Optional.of(42L)));
   }
 
-  private Optional<Integer> getLengthOfResourceAt() throws Exception {
+  private Optional<Long> getLengthOfResourceAt() throws Exception {
     return DownloadUtils.getLengthOfResourceAt("some://uri", client);
   }
 
@@ -67,9 +67,9 @@ public final class DownloadUtilsGetDownloadLengthTest {
   public void getLengthOfResourceAt_ShouldReturnLengthWhenLengthIsZero() throws Exception {
     when(entity.getContentLength()).thenReturn(0L);
 
-    final Optional<Integer> length = getLengthOfResourceAt();
+    final Optional<Long> length = getLengthOfResourceAt();
 
-    assertThat(length, is(Optional.of(0)));
+    assertThat(length, is(Optional.of(0L)));
   }
 
   @Test
@@ -98,19 +98,8 @@ public final class DownloadUtilsGetDownloadLengthTest {
   public void getLengthOfResourceAt_ShouldReturnEmptyWhenLengthIsUnknown() throws Exception {
     when(entity.getContentLength()).thenReturn(-1L);
 
-    final Optional<Integer> length = getLengthOfResourceAt();
+    final Optional<Long> length = getLengthOfResourceAt();
 
     assertThat(length, is(Optional.empty()));
-  }
-
-  @Test
-  public void getLengthOfResourceAt_ShouldThrowExceptionWhenLengthIsGreaterThanMaximum() {
-    when(entity.getContentLength()).thenReturn(Integer.MAX_VALUE + 1L);
-
-    catchException(() -> getLengthOfResourceAt());
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(IOException.class)),
-        hasMessageThat(containsString("content length"))));
   }
 }
