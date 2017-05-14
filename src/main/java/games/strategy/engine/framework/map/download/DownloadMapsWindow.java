@@ -335,35 +335,36 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
-    final String DOUBLE_SPACE = "&nbsp;&nbsp;";
+    final String doubleSpace = "&nbsp;&nbsp;";
 
-    final long mapSize;
-    String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion();
+    final StringBuilder sb = new StringBuilder();
+    sb.append("<html>" + map.getMapName() + doubleSpace + " v" + map.getVersion());
 
+    final Optional<Long> mapSize;
     if (action == MapAction.INSTALL) {
       if (map.newURL() == null) {
-        mapSize = 0L;
+        mapSize = Optional.empty();
       } else {
-        mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
+        mapSize = DownloadUtils.getDownloadLength(map.newURL());
       }
     } else {
-      mapSize = map.getInstallLocation().length();
+      mapSize = Optional.of(map.getInstallLocation().length());
     }
+    mapSize.ifPresent(size -> {
+      sb.append(doubleSpace + " (" + createSizeLabel(size) + ")");
+    });
 
-    if (mapSize > 0) {
-      labelText += DOUBLE_SPACE + " (" + createSizeLabel(mapSize) + ")";
-    }
-
-    labelText += "<br/>";
+    sb.append("<br/>");
 
     if (action == MapAction.INSTALL) {
-      labelText += map.getUrl();
+      sb.append(map.getUrl());
     } else {
-      labelText += map.getInstallLocation().getAbsolutePath();
+      sb.append(map.getInstallLocation().getAbsolutePath());
     }
 
-    labelText += "</html>";
-    return labelText;
+    sb.append("</html>");
+
+    return sb.toString();
   }
 
   private static String createSizeLabel(final long bytes) {

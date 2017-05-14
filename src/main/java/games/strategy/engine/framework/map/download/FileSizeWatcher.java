@@ -10,13 +10,12 @@ import games.strategy.util.ThreadUtil;
  * the file is polled in a new thread for its file size which is then passed to the
  * consumer.
  */
-class FileSizeWatcher {
-
+final class FileSizeWatcher {
   private final File fileToWatch;
-  private final Consumer<Integer> progressListener;
-  private boolean stop = false;
+  private final Consumer<Long> progressListener;
+  private volatile boolean stop = false;
 
-  FileSizeWatcher(final File fileToWatch, final Consumer<Integer> progressListener) {
+  FileSizeWatcher(final File fileToWatch, final Consumer<Long> progressListener) {
     this.fileToWatch = fileToWatch;
     this.progressListener = progressListener;
     (new Thread(createRunner())).start();
@@ -29,7 +28,7 @@ class FileSizeWatcher {
   private Runnable createRunner() {
     return () -> {
       while (!stop) {
-        progressListener.accept((int) fileToWatch.length());
+        progressListener.accept(fileToWatch.length());
         if (!ThreadUtil.sleep(50)) {
           break;
         }

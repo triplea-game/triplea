@@ -3,13 +3,9 @@ package games.strategy.engine.framework.map.download;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -71,16 +67,20 @@ public class DownloadCoordinator {
   }
 
   /**
-   * Queues up a download request, sending notification to a progress listener and a final notification
-   * to a download complete listener.
+   * Queues up a download request, sending notification when the download is started, when the download progress is
+   * updated, and when the download is complete.
    *
    * @param download A single map download to queue, may or may not be started immediately.
+   * @param startedListener A listener that is called when this specific download is started.
    * @param progressUpdateListener A listener for progress updates, the value passed to the progress listener will be
    *        the size of the downloaded file in bytes.
    * @param completionListener A listener that is called when this specific download finishes.
    */
-  public void accept(final DownloadFileDescription download, final Consumer<Integer> progressUpdateListener,
-      final Runnable completionListener, final JProgressBar progressBar) {
+  void accept(
+      final DownloadFileDescription download,
+      final Runnable startedListener,
+      final Consumer<Long> progressUpdateListener,
+      final Runnable completionListener) {
     // To avoid double acceptance, hold a lock while we check the 'downloadSet'
     synchronized (this) {
       if (downloadSet.contains(download)) {
@@ -89,18 +89,9 @@ public class DownloadCoordinator {
         downloadSet.add(download);
       }
     }
-    DownloadFile downloadFile = new DownloadFile(download, progressUpdateListener, completionListener);
-    Runnable progressBarStarter = () -> {
-      final Optional<Integer> length = DownloadUtils.getDownloadLength(download.newURL());
-      if (length.isPresent()) {
-        SwingUtilities.invokeLater(() -> {
-          progressBar.setMinimum(0);
-          progressBar.setMaximum(length.get());
-        });
-      }
-    };
-    downloadMap.put(downloadFile, progressBarStarter);
 
+    final DownloadFile downloadFile = new DownloadFile(download, progressUpdateListener, completionListener);
+    downloadMap.put(downloadFile, startedListener);
   }
 
   /**
