@@ -31,15 +31,23 @@ public class FileSave {
     });
   }
 
-  public FileSave(final String title, final int JFileChooserFileSelectionMode, final File selectedFile,
+  /**
+   * @param fileSelectionMode The type of files to be displayed. Must be one of {@link JFileChooser#FILES_ONLY},
+   *        {@link JFileChooser#DIRECTORIES_ONLY}, or {@link JFileChooser#FILES_AND_DIRECTORIES}.
+   */
+  public FileSave(final String title, final int fileSelectionMode, final File selectedFile,
       final File currentDirectory) {
-    this(title, null, currentDirectory, JFileChooserFileSelectionMode, selectedFile, null);
+    this(title, null, currentDirectory, fileSelectionMode, selectedFile, null);
   }
 
-  public FileSave(final String title, final String name, final File currentDirectory,
-      final int JFileChooserFileSelectionMode, final File selectedFile, final FileFilter fileFilter) {
+  /**
+   * @param fileSelectionMode The type of files to be displayed. Must be one of {@link JFileChooser#FILES_ONLY},
+   *        {@link JFileChooser#DIRECTORIES_ONLY}, or {@link JFileChooser#FILES_AND_DIRECTORIES}.
+   */
+  public FileSave(final String title, final String name, final File currentDirectory, final int fileSelectionMode,
+      final File selectedFile, final FileFilter fileFilter) {
     final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooserFileSelectionMode);
+    chooser.setFileSelectionMode(fileSelectionMode);
     chooser.setDialogTitle(title);
     if (selectedFile != null) {
       chooser.setSelectedFile(selectedFile);

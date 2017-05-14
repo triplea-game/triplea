@@ -172,18 +172,18 @@ class PlayerAndAlliancesRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldPlayerName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldPlayerName, gbcTemplate);
 
-    final GridBagConstraints gbc_tPlayerAlliance = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tPlayerAlliance = (GridBagConstraints) gbcTemplate.clone();
     gbc_tPlayerAlliance.gridx = 1;
     parent.add(comboBoxPlayerAlliance, gbc_tPlayerAlliance);
 
-    final GridBagConstraints gbc_tInitialResource = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tInitialResource = (GridBagConstraints) gbcTemplate.clone();
     gbc_tInitialResource.gridx = 2;
     parent.add(textFieldInitialResource, gbc_tInitialResource);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 3;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

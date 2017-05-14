@@ -108,7 +108,7 @@ public abstract class DynamicRow {
 
   protected abstract ArrayList<JComponent> getComponentList();
 
-  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template);
+  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate);
 
   protected abstract void adaptRowSpecifics(final DynamicRow newRow);
 

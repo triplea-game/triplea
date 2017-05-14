@@ -69,7 +69,7 @@ public abstract class ImageScrollPanePanel {
   protected abstract void paintPreparation(final Map<String, Point> centers);
 
   protected abstract void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start);
+      final Point item, final int textStartX);
 
   protected abstract void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers);
 

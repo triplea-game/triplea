@@ -34,7 +34,7 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
 
     String ownership = MapXmlHelper.getTerritoryOwnershipsMap().get(centerName);
     if (ownership == null) {
@@ -44,10 +44,10 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
     final Rectangle2D centerStringBounds = fontMetrics.getStringBounds(centerName, g);
     final double wDiff = (centerStringBounds.getWidth() - prodStringBounds.getWidth()) / 2;
     g.setColor(Color.yellow);
-    g.fillRect(Math.max(0, x_text_start - 2 + (int) wDiff), item.y + 6, (int) prodStringBounds.getWidth() + 4,
+    g.fillRect(Math.max(0, textStartX - 2 + (int) wDiff), item.y + 6, (int) prodStringBounds.getWidth() + 4,
         (int) prodStringBounds.getHeight());
     g.setColor(Color.red);
-    g.drawString(ownership, Math.max(0, x_text_start + (int) wDiff), item.y + 17);
+    g.drawString(ownership, Math.max(0, textStartX + (int) wDiff), item.y + 17);
     g.setColor(Color.red);
   }
 

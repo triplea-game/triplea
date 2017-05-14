@@ -81,14 +81,14 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int xTextStart) {
+      final Point item, final int textStartX) {
     if (selectedLandTerritories.contains(centerName) || selectedWaterTerritories.contains(centerName)) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
-      g.fillRect(Math.max(0, xTextStart - 2), Math.max(0, item.y - 6), (int) stringBounds.getWidth() + 4,
+      g.fillRect(Math.max(0, textStartX - 2), Math.max(0, item.y - 6), (int) stringBounds.getWidth() + 4,
           (int) stringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(centerName, Math.max(0, xTextStart), item.y + 5);
+      g.drawString(centerName, Math.max(0, textStartX), item.y + 5);
     }
     g.setColor(Color.red);
   }
@@ -151,7 +151,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   public static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
-      final String text, final int xOffset) {
+      final String text, final int textX) {
     g2d.translate((float) x, (float) y);
     if (radianAngle > PI_HALF) {
       radianAngle -= Math.PI;
@@ -159,7 +159,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
       radianAngle += Math.PI;
     }
     g2d.rotate(radianAngle);
-    g2d.drawString(text, xOffset, -2);
+    g2d.drawString(text, textX, -2);
     g2d.rotate(-radianAngle);
     g2d.translate(-(float) x, -(float) y);
   }
