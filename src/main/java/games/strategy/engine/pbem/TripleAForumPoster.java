@@ -75,8 +75,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   private String uploadSavegame(CloseableHttpClient client, String token) throws Exception {
     HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", m_saveGameFile, ContentType.create("application/triplea-savegame"),
-            m_saveGameFileName)
+        .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
         .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);
