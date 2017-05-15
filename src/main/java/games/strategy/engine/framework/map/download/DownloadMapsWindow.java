@@ -342,11 +342,8 @@ public class DownloadMapsWindow extends JFrame {
 
     final Optional<Long> mapSize;
     if (action == MapAction.INSTALL) {
-      if (map.newURL() == null) {
-        mapSize = Optional.empty();
-      } else {
-        mapSize = DownloadUtils.getDownloadLength(map.newURL());
-      }
+      final String mapUrl = map.getUrl();
+      mapSize = (mapUrl != null) ? DownloadUtils.getDownloadLength(mapUrl) : Optional.empty();
     } else {
       mapSize = Optional.of(map.getInstallLocation().length());
     }

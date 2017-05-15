@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import java.net.URL;
 import java.util.Optional;
 
 import javax.swing.JProgressBar;
@@ -26,7 +25,7 @@ final class MapDownloadProgressListener {
     this.progressBar = progressBar;
   }
 
-  void downloadStarted(final URL url) {
+  void downloadStarted(final String uri) {
     SwingUtilities.invokeLater(() -> {
       progressBar.setMinimum(MIN_PROGRESS_VALUE);
       progressBar.setMaximum(MAX_PROGRESS_VALUE);
@@ -34,7 +33,7 @@ final class MapDownloadProgressListener {
       progressBar.setStringPainted(false);
     });
 
-    downloadLength = DownloadUtils.getDownloadLength(url);
+    downloadLength = DownloadUtils.getDownloadLength(uri);
   }
 
   void downloadUpdated(final long currentLength) {
