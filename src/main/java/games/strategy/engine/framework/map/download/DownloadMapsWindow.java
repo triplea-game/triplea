@@ -306,6 +306,10 @@ public class DownloadMapsWindow extends JFrame {
       final JList<String> gamesList, final List<DownloadFileDescription> maps, final MapAction action,
       final JLabel mapSizeLabelToUpdate) {
     return e -> {
+      if (e.getValueIsAdjusting()) {
+        return;
+      }
+
       final int index = gamesList.getSelectedIndex();
 
       final boolean somethingIsSelected = index >= 0;
