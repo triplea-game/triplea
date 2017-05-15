@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -60,9 +59,9 @@ final class DownloadFile {
   private Thread createDownloadThread(final File fileToDownloadTo) {
     return new Thread(() -> {
       if (state != DownloadState.CANCELLED) {
-        final URL url = downloadDescription.newURL();
+        final String url = downloadDescription.getUrl();
         try {
-          DownloadUtils.downloadFile(url, fileToDownloadTo);
+          DownloadUtils.downloadToFile(url, fileToDownloadTo);
         } catch (final Exception e) {
           ClientLogger.logError("Failed to download: " + url, e);
         }

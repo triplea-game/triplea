@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.net.URL;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -82,13 +81,6 @@ class DownloadFileDescription {
 
   MapCategory getMapCategory() {
     return mapCategory;
-  }
-
-  URL newURL() {
-    if (url == null) {
-      return null;
-    }
-    return DownloadUtils.toURL(url);
   }
 
   boolean isMap() {
