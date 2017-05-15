@@ -99,7 +99,7 @@ public final class DownloadUtils {
 
   private static CloseableHttpClient newHttpClient() {
     return HttpClients.custom()
-        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build())
         .build();
   }
 
