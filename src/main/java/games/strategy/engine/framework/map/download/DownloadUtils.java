@@ -1,23 +1,23 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -109,46 +109,47 @@ public final class DownloadUtils {
     return request;
   }
 
-  static URL toURL(String url) {
-    try {
-      return new URL(url);
-    } catch (MalformedURLException e) {
-      throw new IllegalStateException("Invalid URL: " + url, e);
+  /**
+   * Downloads the resource at the specified URI to the specified file.
+   *
+   * @param uri The resource URI; must not be {@code null}.
+   * @param file The file that will receive the resource; must not be {@code null}.
+   *
+   * @throws IOException If an error occurs during the download.
+   */
+  public static void downloadToFile(final String uri, final File file) throws IOException {
+    checkNotNull(uri);
+    checkNotNull(file);
+
+    try (final FileOutputStream os = new FileOutputStream(file);
+        final CloseableHttpClient client = newHttpClient()) {
+      downloadToFile(uri, os, client);
     }
   }
 
-  static void downloadFile(URL url, File targetFile) throws IOException {
-    FileOutputStream fos = new FileOutputStream(targetFile);
-    url = getUrlFollowingRedirects(url);
-    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-    fos.close();
-  }
+  @VisibleForTesting
+  static void downloadToFile(
+      final String uri,
+      final FileOutputStream os,
+      final CloseableHttpClient client) throws IOException {
+    try (final CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode != HttpStatus.SC_OK) {
+        throw new IOException(String.format("unexpected status code (%d)", statusCode));
+      }
 
-  public static void downloadFile(String urlString, File targetFile) throws IOException {
-    downloadFile(getUrlFollowingRedirects(urlString), targetFile);
-  }
+      final HttpEntity entity = response.getEntity();
+      if (entity == null) {
+        throw new IOException("entity is missing");
+      }
 
-  private static URL getUrlFollowingRedirects(String possibleRedirectionUrl) throws IOException {
-    URL url = new URL(possibleRedirectionUrl);
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    int status = conn.getResponseCode();
-    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-        || status == HttpURLConnection.HTTP_SEE_OTHER) {
-      // update the URL if we were redirected
-      url = new URL(conn.getHeaderField("Location"));
+      os.getChannel().transferFrom(Channels.newChannel(entity.getContent()), 0L, Long.MAX_VALUE);
     }
-    return url;
   }
 
-  private static URL getUrlFollowingRedirects(URL url) throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    int status = conn.getResponseCode();
-    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-        || status == HttpURLConnection.HTTP_SEE_OTHER) {
-      // update the URL if we were redirected
-      url = new URL(conn.getHeaderField("Location"));
-    }
-    return url;
+  private static HttpRequestBase newHttpGetRequest(final String uri) {
+    final HttpGet request = new HttpGet(uri);
+    HttpProxy.addProxy(request);
+    return request;
   }
 }

@@ -198,7 +198,7 @@ public class MetaSetupPanel extends SetupPanel {
     final File file = ClientFileSystemHelper.createTempFile();
     try {
       try {
-        DownloadUtils.downloadFile(lobbyPropsUrl, file);
+        DownloadUtils.downloadToFile(lobbyPropsUrl, file);
       } catch (final IOException e) {
         ClientLogger.logQuietly(
             String.format(
