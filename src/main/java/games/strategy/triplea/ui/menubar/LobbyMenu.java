@@ -341,7 +341,7 @@ public class LobbyMenu extends JMenuBar {
 
   private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to host");
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HOSTING));
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE));
     parentMenu.add(hostingLink);
 
     final JMenuItem helpPageLink = new JMenuItem("Help Page");
