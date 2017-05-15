@@ -6,9 +6,7 @@ public enum UrlConstants {
   LOBBY_PROPS("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml"),
   PAYPAL_DONATE("https://sourceforge.net/donate/index.php?group_id=44492"),
   GITHUB_HELP("http://www.triplea-game.org/help/"),
-  GITHUB_HOSTING("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-td4074312.html#a4085700"),
-  SF_PORT_FORWARDING(
-      "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html"),
+  HOSTING_GUIDE("https://forums.triplea-game.org/topic/100"),
   TRIPLEA_FORUM("http://forums.triplea-game.org/"),
   TRIPLEA_LOBBY_RULES("https://forums.triplea-game.org/topic/4"),
   LATEST_GAME_DOWNLOAD_WEBSITE("http://www.triplea-game.org/download"),
