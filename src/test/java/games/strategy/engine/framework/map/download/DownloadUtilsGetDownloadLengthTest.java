@@ -14,7 +14,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.apache.http.HttpEntity;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -31,7 +32,7 @@ public final class DownloadUtilsGetDownloadLengthTest {
   private CloseableHttpClient client;
 
   @Mock
-  private HttpEntity entity;
+  private Header contentLengthHeader;
 
   @Mock
   private CloseableHttpResponse response;
@@ -45,14 +46,14 @@ public final class DownloadUtilsGetDownloadLengthTest {
   @Before
   public void setUp() throws Exception {
     when(client.execute(any())).thenReturn(response);
-    when(response.getEntity()).thenReturn(entity);
+    when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(contentLengthHeader);
     when(response.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldReturnLengthWhenLengthIsPositive() throws Exception {
-    when(entity.getContentLength()).thenReturn(42L);
+  public void getLengthOfResourceAt_ShouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
+    when(contentLengthHeader.getValue()).thenReturn("42");
 
     final Optional<Long> length = getLengthOfResourceAt();
 
@@ -61,15 +62,6 @@ public final class DownloadUtilsGetDownloadLengthTest {
 
   private Optional<Long> getLengthOfResourceAt() throws Exception {
     return DownloadUtils.getLengthOfResourceAt("some://uri", client);
-  }
-
-  @Test
-  public void getLengthOfResourceAt_ShouldReturnLengthWhenLengthIsZero() throws Exception {
-    when(entity.getContentLength()).thenReturn(0L);
-
-    final Optional<Long> length = getLengthOfResourceAt();
-
-    assertThat(length, is(Optional.of(0L)));
   }
 
   @Test
@@ -84,22 +76,32 @@ public final class DownloadUtilsGetDownloadLengthTest {
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldThrowExceptionWhenEntityIsAbsent() {
-    when(response.getEntity()).thenReturn(null);
+  public void getLengthOfResourceAt_ShouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
+    when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(null);
+
+    final Optional<Long> length = getLengthOfResourceAt();
+
+    assertThat(length, is(Optional.empty()));
+  }
+
+  @Test
+  public void getLengthOfResourceAt_ShouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
+    when(contentLengthHeader.getValue()).thenReturn(null);
 
     catchException(() -> getLengthOfResourceAt());
 
     assertThat(caughtException(), allOf(
         is(instanceOf(IOException.class)),
-        hasMessageThat(containsString("entity"))));
+        hasMessageThat(containsString("content length header value is absent"))));
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldReturnEmptyWhenLengthIsUnknown() throws Exception {
-    when(entity.getContentLength()).thenReturn(-1L);
+  public void getLengthOfResourceAt_ShouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
+    when(contentLengthHeader.getValue()).thenReturn("value");
 
-    final Optional<Long> length = getLengthOfResourceAt();
+    catchException(() -> getLengthOfResourceAt());
 
-    assertThat(length, is(Optional.empty()));
+    assertThat(caughtException(), is(instanceOf(IOException.class)));
+    assertThat(caughtException().getCause(), is(instanceOf(NumberFormatException.class)));
   }
 }
