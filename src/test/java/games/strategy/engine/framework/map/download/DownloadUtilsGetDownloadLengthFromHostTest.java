@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class DownloadUtilsGetDownloadLengthTest {
+public final class DownloadUtilsGetDownloadLengthFromHostTest {
   @Mock
   private CloseableHttpClient client;
 
@@ -52,23 +52,23 @@ public final class DownloadUtilsGetDownloadLengthTest {
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
+  public void shouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
     when(contentLengthHeader.getValue()).thenReturn("42");
 
-    final Optional<Long> length = getLengthOfResourceAt();
+    final Optional<Long> length = getDownloadLengthFromHost();
 
     assertThat(length, is(Optional.of(42L)));
   }
 
-  private Optional<Long> getLengthOfResourceAt() throws Exception {
-    return DownloadUtils.getLengthOfResourceAt("some://uri", client);
+  private Optional<Long> getDownloadLengthFromHost() throws Exception {
+    return DownloadUtils.getDownloadLengthFromHost("some://uri", client);
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldThrowExceptionWhenStatusCodeIsNotOk() {
+  public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
     when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-    catchException(() -> getLengthOfResourceAt());
+    catchException(() -> getDownloadLengthFromHost());
 
     assertThat(caughtException(), allOf(
         is(instanceOf(IOException.class)),
@@ -76,19 +76,19 @@ public final class DownloadUtilsGetDownloadLengthTest {
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
+  public void shouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
     when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(null);
 
-    final Optional<Long> length = getLengthOfResourceAt();
+    final Optional<Long> length = getDownloadLengthFromHost();
 
     assertThat(length, is(Optional.empty()));
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
+  public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
     when(contentLengthHeader.getValue()).thenReturn(null);
 
-    catchException(() -> getLengthOfResourceAt());
+    catchException(() -> getDownloadLengthFromHost());
 
     assertThat(caughtException(), allOf(
         is(instanceOf(IOException.class)),
@@ -96,10 +96,10 @@ public final class DownloadUtilsGetDownloadLengthTest {
   }
 
   @Test
-  public void getLengthOfResourceAt_ShouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
+  public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
     when(contentLengthHeader.getValue()).thenReturn("value");
 
-    catchException(() -> getLengthOfResourceAt());
+    catchException(() -> getDownloadLengthFromHost());
 
     assertThat(caughtException(), is(instanceOf(IOException.class)));
     assertThat(caughtException().getCause(), is(instanceOf(NumberFormatException.class)));
