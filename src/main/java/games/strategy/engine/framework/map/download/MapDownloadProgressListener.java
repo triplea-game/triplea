@@ -40,11 +40,13 @@ final class MapDownloadProgressListener {
   }
 
   void downloadUpdated(final long currentLength) {
-    downloadLength.ifPresent(totalLength -> SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(false);
-      progressBar.setValue((int) (currentLength * MAX_PROGRESS_VALUE / totalLength));
-      progressBar.setStringPainted(true);
-    }));
+    if (currentLength > 0) {
+      downloadLength.ifPresent(totalLength -> SwingUtilities.invokeLater(() -> {
+        progressBar.setIndeterminate(false);
+        progressBar.setValue((int) (currentLength * MAX_PROGRESS_VALUE / totalLength));
+        progressBar.setStringPainted(true);
+      }));
+    }
   }
 
   void downloadCompleted() {
