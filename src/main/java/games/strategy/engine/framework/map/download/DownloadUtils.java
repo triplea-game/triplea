@@ -12,12 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.http.HttpEntity;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -73,24 +74,33 @@ public final class DownloadUtils {
   static Optional<Long> getLengthOfResourceAt(
       final String uri,
       final CloseableHttpClient client) throws IOException {
-    try (final CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
+    try (final CloseableHttpResponse response = client.execute(newHttpHeadRequest(uri))) {
       final int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode != HttpStatus.SC_OK) {
         throw new IOException(String.format("unexpected status code (%d)", statusCode));
       }
 
-      final HttpEntity entity = response.getEntity();
-      if (entity == null) {
-        throw new IOException("entity does not exist");
+      final Header header = response.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
+      // NB: it is legal for a server to respond with "Transfer-Encoding: chunked" instead of Content-Length
+      if (header == null) {
+        return Optional.empty();
       }
 
-      final long length = entity.getContentLength();
-      return (length >= 0L) ? Optional.of(length) : Optional.empty();
+      final String encodedLength = header.getValue();
+      if (encodedLength == null) {
+        throw new IOException("content length header value is absent");
+      }
+
+      try {
+        return Optional.of(Long.parseLong(encodedLength));
+      } catch (final NumberFormatException e) {
+        throw new IOException(e);
+      }
     }
   }
 
-  private static HttpRequestBase newHttpGetRequest(final String uri) {
-    final HttpGet request = new HttpGet(uri);
+  private static HttpRequestBase newHttpHeadRequest(final String uri) {
+    final HttpHead request = new HttpHead(uri);
     HttpProxy.addProxy(request);
     return request;
   }
