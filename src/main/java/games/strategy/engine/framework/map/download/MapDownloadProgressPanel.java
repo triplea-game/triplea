@@ -96,7 +96,7 @@ final class MapDownloadProgressPanel extends JPanel {
       final MapDownloadProgressListener progressListener = new MapDownloadProgressListener(progressBars.get(download));
       downloadCoordinator.accept(
           download,
-          () -> progressListener.downloadStarted(download.newURL()),
+          () -> progressListener.downloadStarted(download.getUrl()),
           progressListener::downloadUpdated,
           progressListener::downloadCompleted);
     }

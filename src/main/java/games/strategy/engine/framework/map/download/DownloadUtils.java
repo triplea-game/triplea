@@ -28,27 +28,27 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 
 public final class DownloadUtils {
-  private static final Map<URL, Long> downloadLengthCache = new HashMap<>();
+  private static final Map<String, Long> downloadLengthCache = new HashMap<>();
 
   private DownloadUtils() {}
 
-  static Optional<Long> getDownloadLength(final URL url) {
-    if (!downloadLengthCache.containsKey(url)) {
-      final Optional<Long> length = getDownloadLengthWithoutCache(url);
+  static Optional<Long> getDownloadLength(final String uri) {
+    if (!downloadLengthCache.containsKey(uri)) {
+      final Optional<Long> length = getDownloadLengthWithoutCache(uri);
       if (length.isPresent()) {
-        downloadLengthCache.put(url, length.get());
+        downloadLengthCache.put(uri, length.get());
       } else {
         return Optional.empty();
       }
     }
-    return Optional.of(downloadLengthCache.get(url));
+    return Optional.of(downloadLengthCache.get(uri));
   }
 
-  private static Optional<Long> getDownloadLengthWithoutCache(final URL url) {
+  private static Optional<Long> getDownloadLengthWithoutCache(final String uri) {
     try (final CloseableHttpClient client = newHttpClient()) {
-      return getLengthOfResourceAt(url.toString(), client);
+      return getLengthOfResourceAt(uri, client);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(String.format("failed to get download length for '%s'", url), e);
+      ClientLogger.logQuietly(String.format("failed to get download length for '%s'", uri), e);
       return Optional.empty();
     }
   }
