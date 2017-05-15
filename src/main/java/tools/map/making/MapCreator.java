@@ -58,16 +58,16 @@ public class MapCreator extends JFrame {
   private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static boolean s_runUtilitiesAsSeperateProcesses = true;
-  final JPanel m_mainPanel;
-  final JPanel m_sidePanel;
-  final JButton m_part1;
-  final JButton m_part2;
-  final JButton m_part3;
-  final JButton m_part4;
-  final JPanel m_panel1 = new JPanel();
-  final JPanel m_panel2 = new JPanel();
-  final JPanel m_panel3 = new JPanel();
-  final JPanel m_panel4 = new JPanel();
+  final JPanel mainPanel;
+  final JPanel sidePanel;
+  final JButton part1;
+  final JButton part2;
+  final JButton part3;
+  final JButton part4;
+  final JPanel panel1 = new JPanel();
+  final JPanel panel2 = new JPanel();
+  final JPanel panel3 = new JPanel();
+  final JPanel panel4 = new JPanel();
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
@@ -85,34 +85,34 @@ public class MapCreator extends JFrame {
     super("TripleA Map Creator");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // components
-    m_mainPanel = new JPanel();
-    m_sidePanel = new JPanel();
-    m_part1 = new JButton("Step 1: Map Properties");
-    m_part2 = new JButton("Step 2: Map Utilities");
-    m_part3 = new JButton("Step 3: Game XML");
-    m_part4 = new JButton("Other: Optional Things");
-    m_sidePanel.setLayout(new BoxLayout(m_sidePanel, BoxLayout.PAGE_AXIS));
-    m_sidePanel.add(Box.createVerticalGlue());
-    m_sidePanel.add(m_part1);
-    m_part1.setAlignmentX(Component.CENTER_ALIGNMENT);
-    m_sidePanel.add(Box.createVerticalGlue());
-    m_sidePanel.add(m_part2);
-    m_part2.setAlignmentX(Component.CENTER_ALIGNMENT);
-    m_sidePanel.add(Box.createVerticalGlue());
-    m_sidePanel.add(m_part3);
-    m_part3.setAlignmentX(Component.CENTER_ALIGNMENT);
-    m_sidePanel.add(Box.createVerticalGlue());
-    m_sidePanel.add(m_part4);
-    m_part4.setAlignmentX(Component.CENTER_ALIGNMENT);
-    m_sidePanel.add(Box.createVerticalGlue());
+    mainPanel = new JPanel();
+    sidePanel = new JPanel();
+    part1 = new JButton("Step 1: Map Properties");
+    part2 = new JButton("Step 2: Map Utilities");
+    part3 = new JButton("Step 3: Game XML");
+    part4 = new JButton("Other: Optional Things");
+    sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
+    sidePanel.add(Box.createVerticalGlue());
+    sidePanel.add(part1);
+    part1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(Box.createVerticalGlue());
+    sidePanel.add(part2);
+    part2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(Box.createVerticalGlue());
+    sidePanel.add(part3);
+    part3.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(Box.createVerticalGlue());
+    sidePanel.add(part4);
+    part4.setAlignmentX(Component.CENTER_ALIGNMENT);
+    sidePanel.add(Box.createVerticalGlue());
     createPart1Panel();
     createPart2Panel();
     createPart3Panel();
     createPart4Panel();
-    m_part1.addActionListener(SwingAction.of("Part 1", e -> setupMainPanel(m_panel1)));
-    m_part2.addActionListener(SwingAction.of("Part 2", e -> setupMainPanel(m_panel2)));
-    m_part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(m_panel3)));
-    m_part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(m_panel4)));
+    part1.addActionListener(SwingAction.of("Part 1", e -> setupMainPanel(panel1)));
+    part2.addActionListener(SwingAction.of("Part 2", e -> setupMainPanel(panel2)));
+    part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(panel3)));
+    part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(panel4)));
     // set up the menu actions
     final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
@@ -128,15 +128,15 @@ public class MapCreator extends JFrame {
     menuBar.add(fileMenu);
     // set up the layout manager
     this.getContentPane().setLayout(new BorderLayout());
-    this.getContentPane().add(new JScrollPane(m_sidePanel), BorderLayout.WEST);
-    this.getContentPane().add(new JScrollPane(m_mainPanel), BorderLayout.CENTER);
+    this.getContentPane().add(new JScrollPane(sidePanel), BorderLayout.WEST);
+    this.getContentPane().add(new JScrollPane(mainPanel), BorderLayout.CENTER);
     // now set up the main screen
-    setupMainPanel(m_panel1);
+    setupMainPanel(panel1);
   }
 
   private void setupMainPanel(final JPanel panel) {
-    m_mainPanel.removeAll();
-    m_mainPanel.add(panel);
+    mainPanel.removeAll();
+    mainPanel.add(panel);
     setWidgetActivation();
   }
 
@@ -150,16 +150,16 @@ public class MapCreator extends JFrame {
       });
       return;
     }
-    m_mainPanel.validate();
-    m_mainPanel.repaint();
+    mainPanel.validate();
+    mainPanel.repaint();
     this.validate();
     this.repaint();
   }
 
   private void createPart1Panel() {
-    m_panel1.removeAll();
-    m_panel1.setLayout(new BoxLayout(m_panel1, BoxLayout.PAGE_AXIS));
-    m_panel1.add(Box.createVerticalStrut(30));
+    panel1.removeAll();
+    panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
+    panel1.add(Box.createVerticalStrut(30));
     final JTextArea text = new JTextArea(12, 10);
     text.setWrapStyleWord(true);
     text.setLineWrap(true);
@@ -178,9 +178,9 @@ public class MapCreator extends JFrame {
         + "\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling "
         + "in the details below, before moving on to 'Step 2' and running the map utilities.");
     final JScrollPane scrollText = new JScrollPane(text);
-    m_panel1.add(scrollText);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
+    panel1.add(scrollText);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
     final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
     helpButton.addActionListener(new ActionListener() {
       @Override
@@ -194,9 +194,9 @@ public class MapCreator extends JFrame {
         }
       }
     });
-    m_panel1.add(helpButton);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("Click button to select where your map folder is:"));
+    panel1.add(helpButton);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.add(new JLabel("Click button to select where your map folder is:"));
     final JButton mapFolderButton = new JButton("Select Map Folder");
     mapFolderButton.addActionListener(SwingAction.of("Select Map Folder", e -> {
       final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
@@ -208,10 +208,10 @@ public class MapCreator extends JFrame {
         }
       }
     }));
-    m_panel1.add(mapFolderButton);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));
-    m_panel1.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
+    panel1.add(mapFolderButton);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));
+    panel1.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
     final JTextField unitZoomText = new JTextField("" + s_unit_zoom);
     unitZoomText.setMaximumSize(new Dimension(100, 20));
     unitZoomText.addFocusListener(new FocusListener() {
@@ -229,9 +229,9 @@ public class MapCreator extends JFrame {
         unitZoomText.setText("" + s_unit_zoom);
       }
     });
-    m_panel1.add(unitZoomText);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("Set the width of the unit images: "));
+    panel1.add(unitZoomText);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.add(new JLabel("Set the width of the unit images: "));
     final JTextField unitWidthText = new JTextField("" + s_unit_width);
     unitWidthText.setMaximumSize(new Dimension(100, 20));
     unitWidthText.addFocusListener(new FocusListener() {
@@ -249,9 +249,9 @@ public class MapCreator extends JFrame {
         unitWidthText.setText("" + s_unit_width);
       }
     });
-    m_panel1.add(unitWidthText);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("Set the height of the unit images: "));
+    panel1.add(unitWidthText);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.add(new JLabel("Set the height of the unit images: "));
     final JTextField unitHeightText = new JTextField("" + s_unit_height);
     unitHeightText.setMaximumSize(new Dimension(100, 20));
     unitHeightText.addFocusListener(new FocusListener() {
@@ -269,12 +269,12 @@ public class MapCreator extends JFrame {
         unitHeightText.setText("" + s_unit_height);
       }
     });
-    m_panel1.add(unitHeightText);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1
+    panel1.add(unitHeightText);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1
         .add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>"
             + "This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
-    m_panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
+    panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
     final JTextField memoryText = new JTextField("" + (s_memory / (1024 * 1024)));
     memoryText.setMaximumSize(new Dimension(100, 20));
     memoryText.addFocusListener(new FocusListener() {
@@ -291,22 +291,22 @@ public class MapCreator extends JFrame {
         memoryText.setText("" + (s_memory / (1024 * 1024)));
       }
     });
-    m_panel1.add(memoryText);
+    panel1.add(memoryText);
     final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
     runTypeBox.setSelected(s_runUtilitiesAsSeperateProcesses);
     runTypeBox.addActionListener(SwingAction.of("Run All Utilities as Separate Processes",
         e -> s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected()));
-    m_panel1.add(runTypeBox);
-    m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.validate();
+    panel1.add(runTypeBox);
+    panel1.add(Box.createVerticalStrut(30));
+    panel1.validate();
   }
 
   private void createPart2Panel() {
-    m_panel2.removeAll();
-    m_panel2.setLayout(new BoxLayout(m_panel2, BoxLayout.PAGE_AXIS));
-    m_panel2.add(Box.createVerticalStrut(30));
-    m_panel2.add(new JLabel("Map Skin Utilities:"));
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.removeAll();
+    panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
+    panel2.add(Box.createVerticalStrut(30));
+    panel2.add(new JLabel("Map Skin Utilities:"));
+    panel2.add(Box.createVerticalStrut(30));
     final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
     mapPropertiesMakerButton.addActionListener(SwingAction.of("Run the Map Properties Maker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -320,8 +320,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel2.add(mapPropertiesMakerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(mapPropertiesMakerButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton centerPickerButton = new JButton("Run the Center Picker");
     centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -335,8 +335,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel2.add(centerPickerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(centerPickerButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton polygonGrabberButton = new JButton("Run the Polygon Grabber");
     polygonGrabberButton.addActionListener(SwingAction.of("Run the Polygon Grabber", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -351,8 +351,8 @@ public class MapCreator extends JFrame {
       }
 
     }));
-    m_panel2.add(polygonGrabberButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(polygonGrabberButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton autoPlacerButton = new JButton("Run the Automatic Placement Finder");
     autoPlacerButton.addActionListener(SwingAction.of("Run the Automatic Placement Finder", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -367,8 +367,8 @@ public class MapCreator extends JFrame {
       }
 
     }));
-    m_panel2.add(autoPlacerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(autoPlacerButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton placementPickerButton = new JButton("Run the Placement Picker");
     placementPickerButton.addActionListener(SwingAction.of("Run the Placement Picker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -382,8 +382,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel2.add(placementPickerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(placementPickerButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
     tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -401,8 +401,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel2.add(tileBreakerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
+    panel2.add(tileBreakerButton);
+    panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
     decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -420,18 +420,18 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel2.add(decorationPlacerButton);
-    m_panel2.add(Box.createVerticalStrut(30));
-    m_panel2.validate();
+    panel2.add(decorationPlacerButton);
+    panel2.add(Box.createVerticalStrut(30));
+    panel2.validate();
   }
 
   private void createPart3Panel() {
-    m_panel3.removeAll();
-    m_panel3.setLayout(new BoxLayout(m_panel3, BoxLayout.PAGE_AXIS));
-    m_panel3.add(Box.createVerticalStrut(30));
-    m_panel3.add(new JLabel("Game XML Utilities:"));
-    m_panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
-    m_panel3.add(Box.createVerticalStrut(30));
+    panel3.removeAll();
+    panel3.setLayout(new BoxLayout(panel3, BoxLayout.PAGE_AXIS));
+    panel3.add(Box.createVerticalStrut(30));
+    panel3.add(new JLabel("Game XML Utilities:"));
+    panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
+    panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
     connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -449,17 +449,17 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel3.add(connectionFinderButton);
-    m_panel3.add(Box.createVerticalStrut(30));
-    m_panel3.validate();
+    panel3.add(connectionFinderButton);
+    panel3.add(Box.createVerticalStrut(30));
+    panel3.validate();
   }
 
   private void createPart4Panel() {
-    m_panel4.removeAll();
-    m_panel4.setLayout(new BoxLayout(m_panel4, BoxLayout.PAGE_AXIS));
-    m_panel4.add(Box.createVerticalStrut(30));
-    m_panel4.add(new JLabel("Other or Optional Utilities:"));
-    m_panel4.add(Box.createVerticalStrut(30));
+    panel4.removeAll();
+    panel4.setLayout(new BoxLayout(panel4, BoxLayout.PAGE_AXIS));
+    panel4.add(Box.createVerticalStrut(30));
+    panel4.add(new JLabel("Other or Optional Utilities:"));
+    panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
     reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -477,8 +477,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel4.add(reliefBreakerButton);
-    m_panel4.add(Box.createVerticalStrut(30));
+    panel4.add(reliefBreakerButton);
+    panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
     imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -496,8 +496,8 @@ public class MapCreator extends JFrame {
         }).start();
       }
     }));
-    m_panel4.add(imageShrinkerButton);
-    m_panel4.add(Box.createVerticalStrut(30));
+    panel4.add(imageShrinkerButton);
+    panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
     tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", e -> {
       if (s_runUtilitiesAsSeperateProcesses) {
@@ -516,9 +516,9 @@ public class MapCreator extends JFrame {
       }
 
     }));
-    m_panel4.add(tileImageReconstructorButton);
-    m_panel4.add(Box.createVerticalStrut(30));
-    m_panel4.validate();
+    panel4.add(tileImageReconstructorButton);
+    panel4.add(Box.createVerticalStrut(30));
+    panel4.validate();
   }
 
   private static void runUtility(final Class<?> javaClass) {
