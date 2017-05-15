@@ -8,9 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -29,49 +29,47 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 
 public final class DownloadUtils {
-  private static final Map<String, Long> downloadLengthCache = new HashMap<>();
+  @VisibleForTesting
+  static final ConcurrentMap<String, Long> downloadLengthsByUri = new ConcurrentHashMap<>();
 
   private DownloadUtils() {}
 
+  /**
+   * Gets the download length for the resource at the specified URI.
+   *
+   * <p>
+   * This method is thread safe.
+   * </p>
+   *
+   * @param uri The resource URI; must not be {@code null}.
+   *
+   * @return The download length (in bytes) or empty if unknown; never {@code null}.
+   */
   static Optional<Long> getDownloadLength(final String uri) {
-    if (!downloadLengthCache.containsKey(uri)) {
-      final Optional<Long> length = getDownloadLengthWithoutCache(uri);
-      if (length.isPresent()) {
-        downloadLengthCache.put(uri, length.get());
-      } else {
-        return Optional.empty();
-      }
-    }
-    return Optional.of(downloadLengthCache.get(uri));
+    return getDownloadLengthFromCache(uri, DownloadUtils::getDownloadLengthFromHost);
   }
 
-  private static Optional<Long> getDownloadLengthWithoutCache(final String uri) {
+  @VisibleForTesting
+  static Optional<Long> getDownloadLengthFromCache(final String uri, final DownloadLengthSupplier supplier) {
+    return Optional.ofNullable(downloadLengthsByUri.computeIfAbsent(uri, k -> supplier.get(k).orElse(null)));
+  }
+
+  @VisibleForTesting
+  interface DownloadLengthSupplier {
+    Optional<Long> get(String uri);
+  }
+
+  private static Optional<Long> getDownloadLengthFromHost(final String uri) {
     try (final CloseableHttpClient client = newHttpClient()) {
-      return getLengthOfResourceAt(uri, client);
+      return getDownloadLengthFromHost(uri, client);
     } catch (final IOException e) {
       ClientLogger.logQuietly(String.format("failed to get download length for '%s'", uri), e);
       return Optional.empty();
     }
   }
 
-  private static CloseableHttpClient newHttpClient() {
-    return HttpClients.custom()
-        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
-        .build();
-  }
-
-  /**
-   * Gets the length of the resource at the specified URI.
-   *
-   * @param uri The resource URI; must not be {@code null}.
-   * @param client The client through which to connect; must not be {@code null}.
-   *
-   * @return The resource length or empty if the resource length is unknown; never {@code null}.
-   *
-   * @throws IOException If an error occurs while attempting to get the resource length.
-   */
   @VisibleForTesting
-  static Optional<Long> getLengthOfResourceAt(
+  static Optional<Long> getDownloadLengthFromHost(
       final String uri,
       final CloseableHttpClient client) throws IOException {
     try (final CloseableHttpResponse response = client.execute(newHttpHeadRequest(uri))) {
@@ -97,6 +95,12 @@ public final class DownloadUtils {
         throw new IOException(e);
       }
     }
+  }
+
+  private static CloseableHttpClient newHttpClient() {
+    return HttpClients.custom()
+        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+        .build();
   }
 
   private static HttpRequestBase newHttpHeadRequest(final String uri) {
