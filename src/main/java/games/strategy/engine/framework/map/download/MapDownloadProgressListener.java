@@ -19,13 +19,16 @@ final class MapDownloadProgressListener {
 
   private final JProgressBar progressBar;
 
+  private final String uri;
+
   private volatile Optional<Long> downloadLength = Optional.empty();
 
-  MapDownloadProgressListener(final JProgressBar progressBar) {
+  MapDownloadProgressListener(final String uri, final JProgressBar progressBar) {
     this.progressBar = progressBar;
+    this.uri = uri;
   }
 
-  void downloadStarted(final String uri) {
+  void downloadStarted() {
     SwingUtilities.invokeLater(() -> {
       progressBar.setMinimum(MIN_PROGRESS_VALUE);
       progressBar.setMaximum(MAX_PROGRESS_VALUE);
