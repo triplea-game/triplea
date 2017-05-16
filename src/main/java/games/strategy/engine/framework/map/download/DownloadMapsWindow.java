@@ -340,7 +340,7 @@ public class DownloadMapsWindow extends JFrame {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>" + map.getMapName() + doubleSpace + " v" + map.getVersion());
+    sb.append("<html>").append(map.getMapName()).append(doubleSpace).append(" v").append(map.getVersion());
 
     final Optional<Long> mapSize;
     if (action == MapAction.INSTALL) {
@@ -349,11 +349,9 @@ public class DownloadMapsWindow extends JFrame {
     } else {
       mapSize = Optional.of(map.getInstallLocation().length());
     }
-    mapSize.ifPresent(size -> {
-      sb.append(doubleSpace + " (" + createSizeLabel(size) + ")");
-    });
+    mapSize.ifPresent(size -> sb.append(doubleSpace).append(" (").append(createSizeLabel(size)).append(")"));
 
-    sb.append("<br/>");
+    sb.append("<br>");
 
     if (action == MapAction.INSTALL) {
       sb.append(map.getUrl());
