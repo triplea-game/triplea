@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -28,8 +29,6 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.google.common.io.Files;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class DownloadUtilsDownloadToFileTest {
@@ -85,7 +84,7 @@ public final class DownloadUtilsDownloadToFileTest {
   }
 
   private byte[] fileContent() throws Exception {
-    return Files.toByteArray(file);
+    return Files.readAllBytes(file.toPath());
   }
 
   @Test
