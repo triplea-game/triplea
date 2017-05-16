@@ -306,24 +306,22 @@ public class DownloadMapsWindow extends JFrame {
       final JList<String> gamesList, final List<DownloadFileDescription> maps, final MapAction action,
       final JLabel mapSizeLabelToUpdate) {
     return e -> {
-      if (e.getValueIsAdjusting()) {
-        return;
-      }
+      if (!e.getValueIsAdjusting()) {
+        final int index = gamesList.getSelectedIndex();
 
-      final int index = gamesList.getSelectedIndex();
+        final boolean somethingIsSelected = index >= 0;
+        if (somethingIsSelected) {
+          final String mapName = gamesList.getModel().getElementAt(index);
 
-      final boolean somethingIsSelected = index >= 0;
-      if (somethingIsSelected) {
-        final String mapName = gamesList.getModel().getElementAt(index);
-
-        // find the map description by map name and update the map download detail panel
-        final Optional<DownloadFileDescription> map =
-            maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
-        if (map.isPresent()) {
-          final String text = map.get().toHtmlString();
-          descriptionPanel.setText(text);
-          descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-          updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+          // find the map description by map name and update the map download detail panel
+          final Optional<DownloadFileDescription> map =
+              maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
+          if (map.isPresent()) {
+            final String text = map.get().toHtmlString();
+            descriptionPanel.setText(text);
+            descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+            updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+          }
         }
       }
     };
