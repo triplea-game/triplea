@@ -1062,10 +1062,10 @@
     <br>Filesize is huge, at 64mb, so it may take a while to download.  Now comes with relief tiles, thx dagon.
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
-  version: 1
 - mapName: New World Order Lebowski Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
+  version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_nwo_1939_lebowski_mini.png
   description: |
     <br>
