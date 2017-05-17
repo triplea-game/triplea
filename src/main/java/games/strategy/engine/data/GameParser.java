@@ -30,6 +30,7 @@ import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -54,12 +55,26 @@ import games.strategy.util.Version;
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
-  private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
+  private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
-  private final String mapName;
+  private final String mapPathName;
+  private final String mapCodeName;
 
-  public GameParser(final String mapName) {
-    this.mapName = mapName;
+  /**
+   * Constructor for GameParser class. Useless comment to suppress checkstyle warning.
+   */
+  public GameParser(final String pathName) {
+    this.mapPathName = pathName;
+    final String directory = ClientFileSystemHelper.getUserMapsFolder().toString();
+    final int startPosn = pathName.indexOf(directory);
+    if (startPosn < 0) {
+      mapCodeName = pathName;
+      return;
+    }
+    final int nextPosn = startPosn + directory.length() + 1;
+    final int slash = pathName.indexOf(File.separator, nextPosn);
+    final int master = pathName.indexOf("-master", nextPosn);
+    mapCodeName = pathName.substring(nextPosn, master < 0 ? (slash >= 0 ? slash : 1) : slash < master ? slash : master);
   }
 
   /**
@@ -80,7 +95,7 @@ public class GameParser {
     try {
       doc = getDocument(stream);
     } catch (final IOException | ParserConfigurationException e) {
-      throw new IllegalStateException("Error parsing: " + mapName, e);
+      throw new IllegalStateException("Error parsing: " + mapPathName, e);
     }
     final Element root = doc.getDocumentElement();
     data = new GameData();
@@ -96,8 +111,8 @@ public class GameParser {
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any
     // SAX errors we need to show
-    if (!errorsSAX.isEmpty()) {
-      for (final SAXParseException error : errorsSAX) {
+    if (!errorsSax.isEmpty()) {
+      for (final SAXParseException error : errorsSax) {
         System.err.println("SAXParseException: game: "
             + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
             + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
@@ -167,8 +182,8 @@ public class GameParser {
     try {
       validate();
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error parsing: " + mapName, e);
-      throw new GameParseException(mapName, e.getMessage());
+      ClientLogger.logQuietly("Error parsing: " + mapPathName, e);
+      throw new GameParseException(mapPathName, e.getMessage());
     }
     return data;
   }
@@ -227,7 +242,7 @@ public class GameParser {
       for (final PlayerID player2 : data.getPlayerList()) {
         // See if there is a relationship between them
         if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
-          throw new GameParseException(mapName,
+          throw new GameParseException(mapPathName,
               "No relation set for: " + player.getName() + " and " + player2.getName());
           // or else throw an exception!
         }
@@ -248,7 +263,8 @@ public class GameParser {
     final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
-      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
+      throw new RuntimeException(
+        "Map: " + mapPathName + ", " + String.format("Could not find in classpath %s", dtdFile));
     }
     final String dtdSystem = url.toExternalForm();
     final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
@@ -256,17 +272,17 @@ public class GameParser {
     builder.setErrorHandler(new ErrorHandler() {
       @Override
       public void fatalError(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
 
       @Override
       public void error(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
 
       @Override
       public void warning(final SAXParseException exception) {
-        errorsSAX.add(exception);
+        errorsSax.add(exception);
       }
     });
     return builder.parse(input, system);
@@ -280,7 +296,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final PlayerID player = data.getPlayerList().getPlayerID(name);
     if (player == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find player. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find player. name:" + name);
     }
     return player;
   }
@@ -298,7 +314,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final RelationshipType relation = data.getRelationshipTypeList().getRelationshipType(name);
     if (relation == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find relation name:" + name);
+      throw new GameParseException(mapPathName, "Could not find relation name:" + name);
     }
     return relation;
   }
@@ -308,7 +324,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final TerritoryEffect effect = data.getTerritoryEffectList().get(name);
     if (effect == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find territoryEffect name:" + name);
+      throw new GameParseException(mapPathName, "Could not find territoryEffect name:" + name);
     }
     return effect;
   }
@@ -321,7 +337,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(name);
     if (productionRule == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production rule. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find production rule. name:" + name);
     }
     return productionRule;
   }
@@ -334,7 +350,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final RepairRule repairRule = data.getRepairRuleList().getRepairRule(name);
     if (repairRule == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production rule. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find production rule. name:" + name);
     }
     return repairRule;
   }
@@ -347,7 +363,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final Territory territory = data.getMap().getTerritory(name);
     if (territory == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find territory. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find territory. name:" + name);
     }
     return territory;
   }
@@ -360,7 +376,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final UnitType type = data.getUnitTypeList().getUnitType(name);
     if (type == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find unitType. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find unitType. name:" + name);
     }
     return type;
   }
@@ -376,7 +392,7 @@ public class GameParser {
       type = data.getTechnologyFrontier().getAdvanceByProperty(name);
     }
     if (type == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find technology. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find technology. name:" + name);
     }
     return type;
   }
@@ -389,7 +405,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final IDelegate delegate = data.getDelegateList().getDelegate(name);
     if (delegate == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find delegate. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find delegate. name:" + name);
     }
     return delegate;
   }
@@ -402,7 +418,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final Resource resource = data.getResourceList().getResource(name);
     if (resource == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find resource. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find resource. name:" + name);
     }
     return resource;
   }
@@ -415,7 +431,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final ProductionFrontier productionFrontier = data.getProductionFrontierList().getProductionFrontier(name);
     if (productionFrontier == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production frontier. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find production frontier. name:" + name);
     }
     return productionFrontier;
   }
@@ -428,7 +444,7 @@ public class GameParser {
     final String name = element.getAttribute(attribute);
     final RepairFrontier repairFrontier = data.getRepairFrontierList().getRepairFrontier(name);
     if (repairFrontier == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production frontier. name:" + name);
+      throw new GameParseException(mapPathName, "Could not find production frontier. name:" + name);
     }
     return repairFrontier;
   }
@@ -444,12 +460,12 @@ public class GameParser {
       instance = instanceClass.newInstance();
     // a lot can go wrong, the following list is just a subset of potential pitfalls
     } catch (final ClassNotFoundException cnfe) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
+      throw new GameParseException(mapPathName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
     } catch (final IllegalAccessException iae) {
-      throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
+      throw new GameParseException(mapPathName, "Constructor could not be accessed ->" + iae.getMessage());
     }
     return instance;
   }
@@ -472,11 +488,11 @@ public class GameParser {
       if (optional) {
         return null;
       }
-      throw new GameParseException(mapName, "No child called " + name);
+      throw new GameParseException(mapPathName, "No child called " + name);
     }
     // too many found
     if (children.size() > 1) {
-      throw new GameParseException(mapName, "Too many children named " + name);
+      throw new GameParseException(mapPathName, "Too many children named " + name);
     }
     return children.get(0);
   }
@@ -527,7 +543,7 @@ public class GameParser {
     final String className = ((Element) loader).getAttribute("javaClass");
     final Object instance = getInstance(className);
     if (!(instance instanceof IGameLoader)) {
-      throw new GameParseException(mapName, "Loader must implement IGameLoader.  Class Name:" + className);
+      throw new GameParseException(mapPathName, "Loader must implement IGameLoader.  Class Name:" + className);
     }
     data.setGameLoader((IGameLoader) instance);
   }
@@ -571,7 +587,7 @@ public class GameParser {
     } else if (horizontalConnections.equals("explicit")) {
       horizontalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     boolean verticalConnectionsImplict;
@@ -580,7 +596,7 @@ public class GameParser {
     } else if (verticalConnections.equals("explicit")) {
       verticalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           "vertical-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     boolean diagonalConnectionsImplict;
@@ -589,21 +605,21 @@ public class GameParser {
     } else if (diagonalConnections.equals("explicit")) {
       diagonalConnectionsImplict = false;
     } else {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final int x_size = Integer.valueOf(xs);
-    int y_size;
+    final int xSize = Integer.valueOf(xs);
+    int yySize;                                 // ySize or y_size == checkstyle violation
     if (ys != null) {
-      y_size = Integer.valueOf(ys);
+      yySize = Integer.valueOf(ys);
     } else {
-      y_size = 0;
+      yySize = 0;
     }
-    map.setGridDimensions(x_size, y_size);
+    map.setGridDimensions(xSize, yySize);
     if (gridType.equals("square")) {
       // Add territories
-      for (int y = 0; y < y_size; y++) {
-        for (int x = 0; x < x_size; x++) {
+      for (int y = 0; y < yySize; y++) {
+        for (int x = 0; x < xSize; x++) {
           boolean isWater;
           isWater = water.contains(x + "-" + y);
           final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
@@ -618,32 +634,32 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < yySize; y++) {
+          for (int x = 0; x < xSize - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y));
           }
         }
       }
       // Add any implicit vertical connections
       if (verticalConnectionsImplict) {
-        for (int x = 0; x < x_size; x++) {
-          for (int y = 0; y < y_size - 1; y++) {
+        for (int x = 0; x < xSize; x++) {
+          for (int y = 0; y < yySize - 1; y++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x, y + 1));
           }
         }
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < y_size - 1; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < yySize - 1; y++) {
+          for (int x = 0; x < xSize - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y + 1));
           }
         }
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < y_size - 1; y++) {
-          for (int x = 1; x < x_size; x++) {
+        for (int y = 0; y < yySize - 1; y++) {
+          for (int x = 1; x < xSize; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x - 1, y + 1));
           }
         }
@@ -651,8 +667,8 @@ public class GameParser {
       // This type is a triangular grid of points and lines, used for in several rail games
     } else if (gridType.equals("points-and-lines")) {
       // Add territories
-      for (int y = 0; y < y_size; y++) {
-        for (int x = 0; x < x_size; x++) {
+      for (int y = 0; y < yySize; y++) {
+        for (int x = 0; x < xSize; x++) {
           final boolean isWater = false;
           if (!water.contains(x + "-" + y)) {
             final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
@@ -668,8 +684,8 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < yySize; y++) {
+          for (int x = 0; x < xSize - 1; x++) {
             final Territory from = map.getTerritoryFromCoordinates(x, y);
             final Territory to = map.getTerritoryFromCoordinates(x + 1, y);
             if (from != null && to != null) {
@@ -680,8 +696,8 @@ public class GameParser {
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 1; y < yySize; y++) {
+          for (int x = 0; x < xSize - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
@@ -700,8 +716,8 @@ public class GameParser {
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 1; y < yySize; y++) {
+          for (int x = 0; x < xSize - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x - 1, y - 1);
@@ -926,6 +942,7 @@ public class GameParser {
       data.getProperties()
           .addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
     }
+    properties.set(Constants.MAP_NAME, mapCodeName);    // Overwrite map name with containing folder
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
@@ -933,7 +950,7 @@ public class GameParser {
     // what type
     final List<Node> children = getNonTextNodes(property);
     if (children.size() != 1) {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           "Editable properties must have exactly 1 child specifying the type. Number of children found:"
               + children.size() + " for node:" + property.getNodeName());
     }
@@ -963,7 +980,7 @@ public class GameParser {
     } else if (childName.equals("string")) {
       editableProperty = new StringProperty(name, null, defaultValue);
     } else {
-      throw new GameParseException(mapName, "Unrecognized property type:" + childName);
+      throw new GameParseException(mapPathName, "Unrecognized property type:" + childName);
     }
     data.getProperties().addEditableProperty(editableProperty);
   }
@@ -986,7 +1003,7 @@ public class GameParser {
       XmlGameElementMapper elementMapper = new XmlGameElementMapper();
 
       IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
-          () -> new GameParseException(mapName, "Class <" + className + "> is not a delegate."));
+          () -> new GameParseException(mapPathName, "Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
       if (displayName == null) {
@@ -1018,7 +1035,7 @@ public class GameParser {
       if (current.hasAttribute("maxRunCount")) {
         final int runCount = Integer.parseInt(current.getAttribute("maxRunCount"));
         if (runCount <= 0) {
-          throw new GameParseException(mapName, "maxRunCount must be positive");
+          throw new GameParseException(mapPathName, "maxRunCount must be positive");
         }
         step.setMaxRunCount(runCount);
       }
@@ -1072,7 +1089,7 @@ public class GameParser {
 
   private void parseCosts(final ProductionRule rule, final List<Element> elements) throws GameParseException {
     if (elements.size() == 0) {
-      throw new GameParseException(mapName, "no costs  for rule:" + rule.getName());
+      throw new GameParseException(mapPathName, "no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
       final Resource resource = getResource(current, "resource", true);
@@ -1083,7 +1100,7 @@ public class GameParser {
 
   private void parseRepairCosts(final RepairRule rule, final List<Element> elements) throws GameParseException {
     if (elements.size() == 0) {
-      throw new GameParseException(mapName, "no costs  for rule:" + rule.getName());
+      throw new GameParseException(mapPathName, "no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
       final Resource resource = getResource(current, "resource", true);
@@ -1094,7 +1111,7 @@ public class GameParser {
 
   private void parseResults(final ProductionRule rule, final List<Element> elements) throws GameParseException {
     if (elements.size() == 0) {
-      throw new GameParseException(mapName, "no results  for rule:" + rule.getName());
+      throw new GameParseException(mapPathName, "no results  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
@@ -1105,7 +1122,7 @@ public class GameParser {
       }
       if (result == null) {
         throw new GameParseException(
-            "mapName, Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+            "mapPathName, Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       rule.addResult(result, quantity);
@@ -1114,7 +1131,7 @@ public class GameParser {
 
   private void parseRepairResults(final RepairRule rule, final List<Element> elements) throws GameParseException {
     if (elements.size() == 0) {
-      throw new GameParseException(mapName, "no results  for rule:" + rule.getName());
+      throw new GameParseException(mapPathName, "no results  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
@@ -1124,7 +1141,7 @@ public class GameParser {
         result = getUnitType(current, "resourceOrUnit", false);
       }
       if (result == null) {
-        throw new GameParseException(mapName,
+        throw new GameParseException(mapPathName,
             "Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
@@ -1228,7 +1245,7 @@ public class GameParser {
         ta = data.getTechnologyFrontier().getAdvanceByName(current.getAttribute("name"));
       }
       if (ta == null) {
-        throw new GameParseException(mapName, "Technology not found :" + current.getAttribute("name"));
+        throw new GameParseException(mapPathName, "Technology not found :" + current.getAttribute("name"));
       }
       frontier.addAdvance(ta);
     }
@@ -1249,9 +1266,8 @@ public class GameParser {
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
-      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
-          .orElseThrow(
-              () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
+      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data).orElseThrow(
+          () -> new GameParseException(mapPathName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 
       final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
@@ -1278,15 +1294,15 @@ public class GameParser {
     } else if (type.equals("technology")) {
       returnVal = getTechnology(element, name, true);
     } else {
-      throw new GameParseException(mapName, "Type not found to attach to:" + type);
+      throw new GameParseException(mapPathName, "Type not found to attach to:" + type);
     }
     return returnVal;
   }
 
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String str) {
+    char first = str.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + str.substring(1);
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
@@ -1299,11 +1315,11 @@ public class GameParser {
       try {
         name = current.getAttribute("name");
         if (name.length() == 0) {
-          throw new GameParseException(mapName, "Option name with 0 length");
+          throw new GameParseException(mapPathName, "Option name with 0 length");
         }
         setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
       } catch (final NoSuchMethodException nsme) {
-        throw new GameParseException(mapName, "The following option name of " + attachment.getName() + " of class "
+        throw new GameParseException(mapPathName, "The following option name of " + attachment.getName() + " of class "
             + attachment.getClass().getName().substring(attachment.getClass().getName().lastIndexOf('.') + 1)
             + " are either misspelled or exist only in a future version of TripleA. Setter: " + name);
       }
@@ -1321,11 +1337,11 @@ public class GameParser {
         final Object[] args = {itemValues};
         setter.invoke(attachment, args);
       } catch (final IllegalAccessException iae) {
-        throw new GameParseException(mapName,
+        throw new GameParseException(mapPathName,
             "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
       } catch (final InvocationTargetException ite) {
         ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName,
+        throw new GameParseException(mapPathName,
             "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
       }
       options.add(Tuple.of(name, itemValues));
@@ -1402,7 +1418,7 @@ public class GameParser {
       if (hitsTakenString != null && hitsTakenString.trim().length() > 0) {
         hits = Integer.parseInt(hitsTakenString);
         if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
-          throw new GameParseException(mapName,
+          throw new GameParseException(mapPathName,
               "hitsTaken cannot be less than zero or greater than one less than total hitpPoints");
         }
       } else {
@@ -1412,7 +1428,7 @@ public class GameParser {
       if (unitDamageString != null && unitDamageString.trim().length() > 0) {
         unitDamage = Integer.parseInt(unitDamageString);
         if (unitDamage < 0) {
-          throw new GameParseException(mapName, "unitDamage cannot be less than zero");
+          throw new GameParseException(mapPathName, "unitDamage cannot be less than zero");
         }
       } else {
         unitDamage = 0;
@@ -1449,7 +1465,7 @@ public class GameParser {
       }
     }
     if (!errors.isEmpty()) {
-      throw new GameParseException(mapName,
+      throw new GameParseException(mapPathName,
           data.getGameName() + " does not have unit attachments for: " + MyFormatter.defaultNamedToTextList(errors));
     }
   }
