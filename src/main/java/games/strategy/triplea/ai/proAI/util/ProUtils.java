@@ -168,13 +168,13 @@ public class ProUtils {
   public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player,
       final Territory t) {
     final Set<Territory> landTerritories =
-        data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+        data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     final List<Territory> enemyLandTerritories =
         Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       final int distance = data.getMap().getDistance(t, enemyLandTerritory,
-          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
       if (distance < minDistance) {
         minDistance = distance;
       }
@@ -189,7 +189,7 @@ public class ProUtils {
   public static int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player,
       final Territory t, final Map<Territory, Double> territoryValueMap) {
     final Set<Territory> landTerritories =
-        data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+        data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     final List<Territory> enemyLandTerritories =
         Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
     int minDistance = 10;
@@ -198,7 +198,7 @@ public class ProUtils {
         continue;
       }
       int distance = data.getMap().getDistance(t, enemyLandTerritory,
-          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
       if (enemyLandTerritory.getOwner().isNull()) {
         distance++;
       }

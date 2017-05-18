@@ -51,8 +51,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryCanPotentiallyMoveAirUnits(final PlayerID player, final GameData data,
-      final boolean isCombatMove) {
+  public static Match<Territory> territoryCanPotentiallyMoveAirUnits(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -92,7 +91,7 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryCanPotentiallyMoveSpecificLandUnit(final PlayerID player, final GameData data,
-      final boolean isCombatMove, final Unit u) {
+      final Unit u) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -118,8 +117,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryCanPotentiallyMoveLandUnits(final PlayerID player, final GameData data,
-      final boolean isCombatMove) {
+  public static Match<Territory> territoryCanPotentiallyMoveLandUnits(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -311,7 +309,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryHasInfraFactoryAndIsLand(final PlayerID player) {
+  public static Match<Territory> territoryHasInfraFactoryAndIsLand() {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -329,14 +327,14 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(player), Matches.isTerritoryEnemy(player, data));
+            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(), Matches.isTerritoryEnemy(player, data));
         return match.match(t);
       }
     };
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(final PlayerID player,
-      final GameData data, final List<PlayerID> players, final List<Territory> territoriesThatCantBeHeld) {
+      final List<PlayerID> players, final List<Territory> territoriesThatCantBeHeld) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
@@ -345,7 +343,7 @@ public class ProMatches {
         final Match<Territory> enemyOrOwnedCantBeHeld =
             new CompositeMatchOr<>(Matches.isTerritoryOwnedBy(players), ownedAndCantBeHeld);
         final Match<Territory> match =
-            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(player), enemyOrOwnedCantBeHeld);
+            new CompositeMatchAnd<>(territoryHasInfraFactoryAndIsLand(), enemyOrOwnedCantBeHeld);
         return match.match(t);
       }
     };
@@ -437,7 +435,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Territory> territoryHasNeighborOwnedByAndHasLandUnit(final GameData data, final PlayerID player,
+  public static Match<Territory> territoryHasNeighborOwnedByAndHasLandUnit(final GameData data,
       final List<PlayerID> players) {
     return new Match<Territory>() {
       @Override
@@ -873,7 +871,7 @@ public class ProMatches {
     };
   }
 
-  public static Match<Unit> unitIsOwnedNotLand(final PlayerID player, final GameData data) {
+  public static Match<Unit> unitIsOwnedNotLand(final PlayerID player) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -937,7 +935,7 @@ public class ProMatches {
    *        territory we are testing for required units
    * @return whether the territory contains one of the required combos of units
    */
-  public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final PlayerID player, final Territory t) {
+  public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit unitWhichRequiresUnits) {

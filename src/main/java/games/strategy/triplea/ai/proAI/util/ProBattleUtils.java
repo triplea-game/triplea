@@ -230,8 +230,7 @@ public class ProBattleUtils {
       }
     }
     for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
-      myUnitsInSeaTerritories
-          .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
+      myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player)));
       myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
       alliedUnitsInSeaTerritories
           .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
