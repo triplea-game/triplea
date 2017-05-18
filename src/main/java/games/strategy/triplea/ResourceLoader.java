@@ -97,6 +97,7 @@ public class ResourceLoader implements Closeable {
 
     // clicking github 'clone or download' and downloading the zip gives a zip that ends with "-master.zip"
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizeMapZipName(mapName) + "-master.zip"));
+    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), mapName + "-master.zip"));
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), normalizedZipName));
 
     final Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
