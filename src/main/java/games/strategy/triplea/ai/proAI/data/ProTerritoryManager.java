@@ -546,7 +546,7 @@ public class ProTerritoryManager {
             ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, myLandUnit));
         if (isIgnoringRelationships) {
           possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range,
-              ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, data, isCombatMove, myLandUnit));
+              ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, data, myLandUnit));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -660,7 +660,7 @@ public class ProTerritoryManager {
             ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove));
         if (isIgnoringRelationships) {
           possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range,
-              ProMatches.territoryCanPotentiallyMoveAirUnits(player, data, isCombatMove));
+              ProMatches.territoryCanPotentiallyMoveAirUnits(player, data));
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
@@ -741,7 +741,7 @@ public class ProTerritoryManager {
           ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove), moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
         unloadAmphibTerritoryMatch = new CompositeMatchAnd<>(
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, isCombatMove), moveAmphibToTerritoryMatch);
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data), moveAmphibToTerritoryMatch);
       }
 
       // Check each transport unit individually since they can have different ranges
@@ -1011,7 +1011,7 @@ public class ProTerritoryManager {
       boolean isEnemyCapitalOrFactory = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (!t.getOwner().isNull()
-          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))) {
+          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().match(t))) {
         isEnemyCapitalOrFactory = true;
       }
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory

@@ -202,7 +202,7 @@ public class ProCombatMoveAI {
           !data.getMap().getNeighbors(t, Matches.territoryIs(ProData.myCapital)).isEmpty();
       final int isNotNeutralAdjacentToMyCapital =
           (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player, data).match(t)) ? 1 : 0;
-      final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 1 : 0;
+      final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 1 : 0;
       final int isFFA = ProUtils.isFFA(data, player) ? 1 : 0;
 
       // Determine production value and if it is an enemy capital
@@ -401,7 +401,7 @@ public class ProCombatMoveAI {
 
       // Add strategic value for factories
       int isFactory = 0;
-      if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t)) {
+      if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
         isFactory = 1;
       }
 
@@ -911,7 +911,7 @@ public class ProCombatMoveAI {
         final int isLand = !t.isWater() ? 1 : 0;
         final int isCanHold = canHold ? 1 : 0;
         final int isCantHoldAmphib = !canHold && !patd.getAmphibAttackMap().isEmpty() ? 1 : 0;
-        final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 1 : 0;
+        final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 1 : 0;
         final int isFFA = ProUtils.isFFA(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
         double capitalValue = 0;

@@ -70,7 +70,7 @@ public class ProRetreatAI {
 
     // Determine if it has a factory
     int isFactory = 0;
-    if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(battleTerritory)) {
+    if (ProMatches.territoryHasInfraFactoryAndIsLand().match(battleTerritory)) {
       isFactory = 1;
     }
 
