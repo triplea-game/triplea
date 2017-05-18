@@ -231,7 +231,7 @@ public class DownloadMapsWindow extends JFrame {
     return main;
   }
 
-  private DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps,
+  private static DownloadFileDescription determineCurrentMapSelection(final List<DownloadFileDescription> maps,
       final Optional<String> mapToSelect) {
     checkArgument(maps.size() > 0);
     if (mapToSelect.isPresent()) {

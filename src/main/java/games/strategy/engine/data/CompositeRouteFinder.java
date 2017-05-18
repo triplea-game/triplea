@@ -38,7 +38,7 @@ public class CompositeRouteFinder {
     s_logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
-  private HashSet<Territory> ToHashSet(final Collection<Territory> ters) {
+  private static HashSet<Territory> ToHashSet(final Collection<Territory> ters) {
     final HashSet<Territory> result = new HashSet<>();
     for (final Territory ter : ters) {
       result.add(ter);
@@ -95,7 +95,7 @@ public class CompositeRouteFinder {
     return AssembleRoute(start, end, previous);
   }
 
-  private Route AssembleRoute(final Territory start, final Territory end,
+  private static Route AssembleRoute(final Territory start, final Territory end,
       final HashMap<Territory, Territory> previous) {
     final List<Territory> routeTers = new ArrayList<>();
     Territory curTer = end;

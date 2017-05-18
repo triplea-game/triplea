@@ -1810,7 +1810,7 @@ public class ProPurchaseAI {
     }
   }
 
-  private void addUnitsToPlaceTerritory(final ProPlaceTerritory placeTerritory, final List<Unit> unitsToPlace,
+  private static void addUnitsToPlaceTerritory(final ProPlaceTerritory placeTerritory, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
@@ -1831,7 +1831,7 @@ public class ProPurchaseAI {
     }
   }
 
-  private void setCantHoldPlaceTerritory(final ProPlaceTerritory placeTerritory,
+  private static void setCantHoldPlaceTerritory(final ProPlaceTerritory placeTerritory,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
@@ -1846,7 +1846,7 @@ public class ProPurchaseAI {
     }
   }
 
-  private List<ProPurchaseTerritory> getPurchaseTerritories(final ProPlaceTerritory placeTerritory,
+  private static List<ProPurchaseTerritory> getPurchaseTerritories(final ProPlaceTerritory placeTerritory,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
     final List<ProPurchaseTerritory> territories = new ArrayList<>();
     for (final Territory t : purchaseTerritories.keySet()) {
@@ -1859,7 +1859,7 @@ public class ProPurchaseAI {
     return territories;
   }
 
-  private void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
+  private static void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
       final List<Unit> unitList = new ArrayList<>();
       unitList.add(unit);

@@ -89,7 +89,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private void deleteToken(CloseableHttpClient client, int userID, String token)
+  private static void deleteToken(CloseableHttpClient client, int userID, String token)
       throws ClientProtocolException, IOException {
     HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userID + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
@@ -102,7 +102,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     return jsonObject.getInt("uid");
   }
 
-  private void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws JSONException, Exception {
+  private static void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws JSONException, Exception {
     if (jsonObject.has("message")) {
       throw new Exception(jsonObject.getString("message"));
     }
@@ -114,7 +114,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private JSONObject login(CloseableHttpClient client, List<NameValuePair> entity)
+  private static JSONObject login(CloseableHttpClient client, List<NameValuePair> entity)
       throws ClientProtocolException, IOException {
     HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
     post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
@@ -181,7 +181,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     return HelpSupport.loadHelp("tripleaForum.html");
   }
 
-  private void addTokenHeader(HttpRequestBase request, String token) {
+  private static void addTokenHeader(HttpRequestBase request, String token) {
     request.addHeader("Authorization", "Bearer " + token);
   }
 }

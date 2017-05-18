@@ -14,12 +14,12 @@ import java.util.Comparator;
  * Collections.sort(your list, new AlphanumComparator());
  */
 public class AlphanumComparator implements Comparator<String> {
-  private boolean isDigit(final char ch) {
+  private static boolean isDigit(final char ch) {
     return ch >= 48 && ch <= 57;
   }
 
   /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
-  private String getChunk(final String s, final int slength, int marker) {
+  private static String getChunk(final String s, final int slength, int marker) {
     final StringBuilder chunk = new StringBuilder();
     char c = s.charAt(marker);
     chunk.append(c);

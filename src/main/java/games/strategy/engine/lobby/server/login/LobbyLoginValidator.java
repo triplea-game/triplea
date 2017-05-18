@@ -64,8 +64,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient, final String clientName,
-      final String hashedMac) {
+  private static String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient,
+      final String clientName, final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }
@@ -147,7 +147,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return (sb.toString());
   }
 
-  private List<String> getBadWords() {
+  private static List<String> getBadWords() {
     return new BadWordController().list();
   }
 

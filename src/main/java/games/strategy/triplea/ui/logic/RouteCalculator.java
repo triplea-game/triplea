@@ -141,7 +141,7 @@ public class RouteCalculator {
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines
    */
-  private List<Line> getNormalizedLines(double[] xcoords, double[] ycoords) {
+  private static List<Line> getNormalizedLines(double[] xcoords, double[] ycoords) {
     List<Line> lines = new ArrayList<>();
     Point previousPoint = null;
     for (int i = 0; i < xcoords.length; i++) {

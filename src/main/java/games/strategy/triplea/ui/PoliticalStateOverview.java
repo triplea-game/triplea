@@ -179,7 +179,7 @@ public class PoliticalStateOverview extends JPanel {
    *        which relationship to get the color for
    * @return the color to represent this relationship
    */
-  private Color getRelationshipTypeColor(final RelationshipType relType) {
+  private static Color getRelationshipTypeColor(final RelationshipType relType) {
     final String archeType = relType.getRelationshipTypeAttachment().getArcheType();
     if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_ALLIED)) {
       return Color.green;

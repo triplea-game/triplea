@@ -243,11 +243,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
   }
 
-  private int getEconomicVictoryAmount(final GameData data, final String alliance) {
+  private static int getEconomicVictoryAmount(final GameData data, final String alliance) {
     return data.getProperties().get(alliance + " Economic Victory", 200);
   }
 
-  private int getVCAmount(final GameData data, final String alliance, final String type) {
+  private static int getVCAmount(final GameData data, final String alliance, final String type) {
     int defaultVC = 20;
     if (type.equals(" Total Victory VCs")) {
       defaultVC = 18;

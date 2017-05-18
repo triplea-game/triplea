@@ -58,7 +58,7 @@ public class WeakAI extends AbstractAI {
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
 
-  private Route getAmphibRoute(final PlayerID player, final GameData data) {
+  private static Route getAmphibRoute(final PlayerID player, final GameData data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
@@ -84,7 +84,7 @@ public class WeakAI extends AbstractAI {
     return route;
   }
 
-  private boolean isAmphibAttack(final PlayerID player, final GameData data) {
+  private static boolean isAmphibAttack(final PlayerID player, final GameData data) {
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     // we dont own our own capitol
     if (capitol == null || !capitol.getOwner().equals(player)) {
@@ -212,7 +212,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void populateTransportUnloadNonCom(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void populateTransportUnloadNonCom(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
@@ -233,7 +233,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private List<Unit> load2Transports(final List<Unit> transportsToLoad) {
+  private static List<Unit> load2Transports(final List<Unit> transportsToLoad) {
     final List<Unit> units = new ArrayList<>();
     for (final Unit transport : transportsToLoad) {
       final Collection<Unit> landunits = TransportTracker.transporting(transport);
@@ -265,8 +265,8 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void moveCombatSea(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-      final PlayerID player, final Route amphibRoute, final int maxTrans) {
+  private static void moveCombatSea(final GameData data, final List<Collection<Unit>> moveUnits,
+      final List<Route> moveRoutes, final PlayerID player, final Route amphibRoute, final int maxTrans) {
     // TODO workaround - should check if amphibRoute is in moveRoutes
     if (moveRoutes.size() == 2) {
       moveRoutes.remove(1);
@@ -302,7 +302,7 @@ public class WeakAI extends AbstractAI {
    *        -
    *        if -1 unlimited
    */
-  private void populateNonCombatSea(final boolean nonCombat, final GameData data,
+  private static void populateNonCombatSea(final boolean nonCombat, final GameData data,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     Territory firstSeaZoneOnAmphib = null;
@@ -341,7 +341,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
+  private static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player) {
     final Match<Territory> routeCond =
         new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
@@ -360,7 +360,7 @@ public class WeakAI extends AbstractAI {
     return r;
   }
 
-  private void populateCombatMoveSea(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void populateCombatMoveSea(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     for (final Territory t : data.getMap()) {
@@ -409,7 +409,7 @@ public class WeakAI extends AbstractAI {
   }
 
   // searches for amphibious attack on empty territory
-  private Route getAlternativeAmphibRoute(final PlayerID player, final GameData data) {
+  private static Route getAlternativeAmphibRoute(final PlayerID player, final GameData data) {
     if (!isAmphibAttack(player, data)) {
       return null;
     }
@@ -550,7 +550,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void populateCombatMove(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void populateCombatMove(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     populateBomberCombat(data, moveUnits, moveRoutes, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
@@ -714,7 +714,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void populateBomberCombat(final GameData data, final List<Collection<Unit>> moveUnits,
+  private static void populateBomberCombat(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player,
         Matches.UnitCanProduceUnitsAndCanBeDamaged);
@@ -731,7 +731,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private int countTransports(final GameData data, final PlayerID player) {
+  private static int countTransports(final GameData data, final PlayerID player) {
     final CompositeMatchAnd<Unit> ownedTransport =
         new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player));
     int sum = 0;
@@ -741,7 +741,7 @@ public class WeakAI extends AbstractAI {
     return sum;
   }
 
-  private int countLandUnits(final GameData data, final PlayerID player) {
+  private static int countLandUnits(final GameData data, final PlayerID player) {
     final CompositeMatchAnd<Unit> ownedLandUnit =
         new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.unitIsOwnedBy(player));
     int sum = 0;

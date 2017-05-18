@@ -70,8 +70,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     return Arrays.asList(files);
   }
 
-
-  private Set<NewGameChooserEntry> parseMapFiles() {
+  private static Set<NewGameChooserEntry> parseMapFiles() {
     final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
     for (final File map : allMapFiles()) {
       if (map.isDirectory()) {
@@ -82,7 +81,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     }
     return parsedMapSet;
   }
-
 
   private static List<NewGameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;

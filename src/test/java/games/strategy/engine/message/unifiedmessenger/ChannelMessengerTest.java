@@ -123,7 +123,7 @@ public class ChannelMessengerTest {
     assertCallCountIs(subscribor3, 1);
   }
 
-  private void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub) {
+  private static void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub) {
     int waitCount = 0;
     while (waitCount < 10 && !hub.hasImplementors(descriptor.getName())) {
       ThreadUtil.sleep(100);

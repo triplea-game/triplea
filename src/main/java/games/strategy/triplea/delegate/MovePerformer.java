@@ -297,7 +297,7 @@ public class MovePerformer implements Serializable {
     return mustFightThrough;
   }
 
-  private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
+  private static Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
       final GameData data) {
     return ChangeFactory.removeResourceCollection(id,
         Route.getMovementFuelCostCharge(units, route, id, data /* , mustFight */));

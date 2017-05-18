@@ -312,7 +312,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  private void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge, final PlayerID player) {
+  private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge,
+      final PlayerID player) {
     final GameData data = aBridge.getData();
     final Match<Unit> crippledAlliedCarriersMatch = new CompositeMatchAnd<>(Matches.isUnitAllied(player, data),
         Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
@@ -345,7 +346,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  private Change giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player) {
+  private static Change giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player) {
     final GameData data = aBridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {

@@ -108,7 +108,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
    * We assume that all transportable units in the sea are in a transport, no
    * exceptions.
    */
-  private void initTransportedLandUnits(final IDelegateBridge aBridge) {
+  private static void initTransportedLandUnits(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     // check every territory
     boolean historyItemCreated = false;
@@ -165,7 +165,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge) {
+  private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     if (!games.strategy.triplea.Properties.getDisabledPlayersAssetsDeleted(data)) {
       return;
@@ -200,7 +200,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initSkipUnusedBids(final GameData data) {
+  private static void initSkipUnusedBids(final GameData data) {
     // we have a lot of bid steps, 12 for pact of steel
     // in multi player this can be time consuming, since each vm
     // must be notified (and have its ui) updated for each step,
@@ -214,7 +214,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initTech(final IDelegateBridge bridge) {
+  private static void initTech(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
     while (players.hasNext()) {
@@ -230,7 +230,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initDestroyerArtillery(final IDelegateBridge aBridge) {
+  private static void initDestroyerArtillery(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
     if (!isWW2V2(data) && addArtilleryAndDestroyers) {
@@ -263,7 +263,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initShipyards(final IDelegateBridge aBridge) {
+  private static void initShipyards(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
     if (useShipyards) {
@@ -295,11 +295,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private boolean isWW2V2(final GameData data) {
+  private static boolean isWW2V2(final GameData data) {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  private void initTwoHitBattleship(final IDelegateBridge aBridge) {
+  private static void initTwoHitBattleship(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
     final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
@@ -314,7 +314,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private void initOriginalOwner(final IDelegateBridge aBridge) {
+  private static void initOriginalOwner(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final CompositeChange changes = new CompositeChange();
     for (final Territory current : data.getMap()) {

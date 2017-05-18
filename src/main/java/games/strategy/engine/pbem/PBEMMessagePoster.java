@@ -184,7 +184,7 @@ public class PBEMMessagePoster implements Serializable {
    *        the string to transform
    * @return the transformed string
    */
-  private String convertToHtml(final String string) {
+  private static String convertToHtml(final String string) {
     return "<pre><br/>" + string.replaceAll("\n", "<br/>") + "<br/></pre>";
   }
 

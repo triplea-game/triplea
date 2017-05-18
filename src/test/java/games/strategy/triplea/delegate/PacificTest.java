@@ -103,7 +103,7 @@ public class PacificTest extends DelegateTest {
     delegate.start();
   }
 
-  private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
+  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
     final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {

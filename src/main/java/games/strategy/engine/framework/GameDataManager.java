@@ -192,7 +192,7 @@ public class GameDataManager {
      */
   }
 
-  private void loadDelegates(final ObjectInputStream input, final GameData data)
+  private static void loadDelegates(final ObjectInputStream input, final GameData data)
       throws ClassNotFoundException, IOException {
     for (Object endMarker = input.readObject(); !endMarker.equals(DELEGATE_LIST_END); endMarker = input.readObject()) {
       final String name = (String) input.readObject();
@@ -241,7 +241,7 @@ public class GameDataManager {
     }
   }
 
-  private void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
+  private static void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
     final Iterator<IDelegate> iter = data.getDelegateList().iterator();
     while (iter.hasNext()) {
       out.writeObject(DELEGATE_START);

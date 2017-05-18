@@ -598,7 +598,7 @@ public class PolygonGrabber extends JFrame {
    * @param java
    *        .lang.int direction the specified direction to move
    */
-  private void move(final Point p, final int direction) {
+  private static void move(final Point p, final int direction) {
     if (direction < 0 || direction > 7) {
       throw new IllegalArgumentException("Not a direction :" + direction);
     }
@@ -635,7 +635,7 @@ public class PolygonGrabber extends JFrame {
         || testPoint.x == bufferedImage.getWidth(this) || isBlack(testPoint);
   }
 
-  private boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
+  private static boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
       final Graphics imageCopyGraphics) {
     // we would like to just test if each point is both black and contained within the polygon, but contains counts the
     // borders,

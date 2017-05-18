@@ -329,7 +329,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
    * @param newTerrIsWater - IS_WATER property of base territory
    * @param terrCanals - list of canals the base territory is linked to
    */
-  private List<String> getCanalsLinkedToTerritory(final String newTerrName, final boolean newTerrIsWater) {
+  private static List<String> getCanalsLinkedToTerritory(final String newTerrName, final boolean newTerrIsWater) {
     final List<String> terrCanals = new ArrayList<>();
     if (newTerrIsWater) {
       for (final Entry<String, CanalTerritoriesTuple> canalDef : MapXmlHelper.getCanalDefinitionsMap()
@@ -361,7 +361,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   /**
    * @return suggested canal name.
    */
-  private String getSuggestedCanalName() {
+  private static String getSuggestedCanalName() {
     String suggestedCanalName;
     int counter = MapXmlHelper.getCanalDefinitionsMap().size();
     do {
@@ -403,7 +403,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     return neighborsByType;
   }
 
-  private Set<String> getCommonNeighborsOfType(final Set<String> terrList, final boolean typeIsWater) {
+  private static Set<String> getCommonNeighborsOfType(final Set<String> terrList, final boolean typeIsWater) {
     final Set<String> commonNeighborsOfType = new TreeSet<>();
     final Map<String, Collection<String>> neighborsMap = getNeighborsMapWaterDefinitionBeing(terrList, typeIsWater);
     commonNeighborsOfType.addAll(neighborsMap.values().iterator().next());
@@ -424,7 +424,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
    * @return map of terrList list territory entry -> neighbor territories with/without (defined by typeIsWater) IS_WATER
    *         property
    */
-  private Map<String, Collection<String>> getNeighborsMapWaterDefinitionBeing(final Set<String> terrList,
+  private static Map<String, Collection<String>> getNeighborsMapWaterDefinitionBeing(final Set<String> terrList,
       final boolean typeIsWater) {
     final Map<String, Collection<String>> neighborsMap = Maps.newHashMap();
     for (final String terr : terrList) {

@@ -190,7 +190,7 @@ public class MapRouteDrawer {
    * @param yOffset The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
+  private static void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
       final double yOffset, final double scale) {
     graphics.draw(
         new Line2D.Double(
@@ -345,7 +345,8 @@ public class MapRouteDrawer {
    * @param curMovement How many territories the unit traveled so far
    * @param maxMovement How many territories is allowed to travel. Is empty when the unit traveled too far
    */
-  private void createMovementLeftImage(final BufferedImage image, final String curMovement, final String maxMovement) {
+  private static void createMovementLeftImage(final BufferedImage image, final String curMovement,
+      final String maxMovement) {
     final Graphics2D textG2D = image.createGraphics();
     textG2D.setColor(Color.YELLOW);
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));

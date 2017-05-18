@@ -84,7 +84,7 @@ public class ProOddsCalculator {
     return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
-  private ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
+  private static ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits) {
     final GameData data = ProData.getData();
 

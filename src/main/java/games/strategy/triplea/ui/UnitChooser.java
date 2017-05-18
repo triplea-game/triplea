@@ -183,7 +183,7 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  private IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories) {
+  private static IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories) {
     final IntegerMap<UnitCategory> defaultValues = new IntegerMap<>();
     for (final UnitCategory category : categories) {
       final int defaultValue = category.getUnits().size();

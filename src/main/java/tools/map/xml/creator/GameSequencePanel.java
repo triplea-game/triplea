@@ -154,7 +154,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
     gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }
 
-  private void setGamePlaySequenceMapToDefault() {
+  private static void setGamePlaySequenceMapToDefault() {
     MapXmlHelper.clearGamePlaySequence();
     MapXmlHelper.getGamePlaySequenceMap().put("bid",
         Arrays.asList("BidPurchaseDelegate", "Bid Purchase"));

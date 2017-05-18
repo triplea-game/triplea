@@ -749,7 +749,7 @@ public class AirBattle extends AbstractBattle {
     removeFromDependents(killed, bridge, dependentBattles, false);
   }
 
-  private void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName,
+  private static void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName,
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
     getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.emptyMap());

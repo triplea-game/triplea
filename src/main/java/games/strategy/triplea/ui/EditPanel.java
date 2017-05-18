@@ -540,7 +540,7 @@ public class EditPanel extends ActionPanel {
     setWidgetActivation();
   }
 
-  private void sortUnitsToRemove(final List<Unit> units) {
+  private static void sortUnitsToRemove(final List<Unit> units) {
     if (units.isEmpty()) {
       return;
     }

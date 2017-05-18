@@ -125,7 +125,7 @@ public class TerritoryNameDrawable implements IDrawable {
    * that location. If there isn't any rectangles that can fit the name then default back to the
    * bounding rectangle.
    */
-  private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
+  private static Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {
 
     // Find bounding rectangle and parameters for creating a grid (20 x 20) across the territory
@@ -166,7 +166,7 @@ public class TerritoryNameDrawable implements IDrawable {
     return result;
   }
 
-  private boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
+  private static boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
       final MapData mapData) {
     final List<Polygon> polygons = mapData.getPolygons(territory.getName());
     for (final Polygon polygon : polygons) {
@@ -177,7 +177,7 @@ public class TerritoryNameDrawable implements IDrawable {
     return false;
   }
 
-  private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
+  private static void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
       final String prod, final boolean drawFromTopLeft) {
     int yNormal = y;
     if (img == null) {

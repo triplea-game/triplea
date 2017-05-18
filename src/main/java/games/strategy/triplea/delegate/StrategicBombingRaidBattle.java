@@ -447,11 +447,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(m_data);
   }
 
-  private boolean isLimitSBRDamagePerTurn(final GameData data) {
+  private static boolean isLimitSBRDamagePerTurn(final GameData data) {
     return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
   }
 
-  private boolean isPUCap(final GameData data) {
+  private static boolean isPUCap(final GameData data) {
     return games.strategy.triplea.Properties.getPUCap(data);
   }
 

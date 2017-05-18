@@ -21,7 +21,7 @@ import games.strategy.triplea.delegate.InitializationDelegate;
 public class PlayerOrder {
   private final List<PlayerID> m_playerSet = new ArrayList<>();
 
-  private <E> Set<E> removeDups(final Collection<E> c) {
+  private static <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
