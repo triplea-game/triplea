@@ -301,8 +301,7 @@ public class ProNonCombatMoveAI {
     final List<Territory> result = new ArrayList<>(territoriesToDefendWithOneUnit);
 
     // Sort units by number of defend options and cost
-    final Map<Unit, Set<Territory>> sortedUnitMoveOptions =
-        ProSortMoveOptionsUtils.sortUnitMoveOptions(player, unitMoveMap);
+    final Map<Unit, Set<Territory>> sortedUnitMoveOptions = ProSortMoveOptionsUtils.sortUnitMoveOptions(unitMoveMap);
 
     // Set unit with the fewest move options in each territory
     for (final Unit unit : sortedUnitMoveOptions.keySet()) {
@@ -362,8 +361,8 @@ public class ProNonCombatMoveAI {
       patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
       final List<Unit> minDefendingUnitsAndNotAA =
           Match.getMatches(patd.getCantMoveUnits(), Matches.UnitIsAAforAnything.invert());
-      final ProBattleResult minResult = calc.calculateBattleResults(player, t, new ArrayList<>(enemyAttackingUnits),
-          minDefendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+      final ProBattleResult minResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
+          minDefendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
       if (minResult.getTUVSwing() <= 0 && !minDefendingUnitsAndNotAA.isEmpty()) {
         ProLogger.debug("Territory=" + t.getName() + ", CanHold=true" + ", MinDefenders="
@@ -378,8 +377,8 @@ public class ProNonCombatMoveAI {
       defendingUnits.addAll(patd.getMaxAmphibUnits());
       defendingUnits.addAll(patd.getCantMoveUnits());
       final List<Unit> defendingUnitsAndNotAA = Match.getMatches(defendingUnits, Matches.UnitIsAAforAnything.invert());
-      final ProBattleResult result = calc.calculateBattleResults(player, t, new ArrayList<>(enemyAttackingUnits),
-          defendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+      final ProBattleResult result = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
+          defendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       int isFactory = 0;
       if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
         isFactory = 1;
@@ -606,7 +605,7 @@ public class ProNonCombatMoveAI {
 
       // Sort units by number of defend options and cost
       final Map<Unit, Set<Territory>> sortedUnitMoveOptions =
-          ProSortMoveOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
+          ProSortMoveOptionsUtils.sortUnitMoveOptions(unitDefendOptions);
 
       // Set enough units in territories to have at least a chance of winning
       for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
@@ -648,7 +647,7 @@ public class ProNonCombatMoveAI {
             defendingUnits = moveMap.get(t).getAllDefenders();
           }
           if (moveMap.get(t).getBattleResult() == null) {
-            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                 moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
           }
           final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -700,7 +699,7 @@ public class ProNonCombatMoveAI {
             defendingUnits = moveMap.get(t).getAllDefenders();
           }
           if (moveMap.get(t).getBattleResult() == null) {
-            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                 moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
           }
           final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -746,7 +745,7 @@ public class ProNonCombatMoveAI {
             if (!TransportTracker.isTransporting(transport)) {
               final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
               if (moveMap.get(t).getBattleResult() == null) {
-                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
               }
               final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -790,7 +789,7 @@ public class ProNonCombatMoveAI {
         for (final Territory t : amphibMoveOptions.get(transport)) {
           final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
           if (moveMap.get(t).getBattleResult() == null) {
-            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+            moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                 moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
           }
           final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -878,8 +877,8 @@ public class ProNonCombatMoveAI {
 
         // Find defense result and hold value based on used defenders TUV
         final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
-        moveMap.get(t).setBattleResult(calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-            defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
+        moveMap.get(t).setBattleResult(calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+            defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
         final ProBattleResult result = patd.getBattleResult();
         int isFactory = 0;
         if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
@@ -1350,7 +1349,7 @@ public class ProNonCombatMoveAI {
               final List<Unit> defendingUnits =
                   Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
               if (moveMap.get(t).getBattleResult() == null) {
-                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
               }
               final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -1394,7 +1393,7 @@ public class ProNonCombatMoveAI {
               final List<Unit> defendingUnits =
                   Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
               if (moveMap.get(t).getBattleResult() == null) {
-                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(player, t,
+                moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
               }
               final ProBattleResult result = moveMap.get(t).getBattleResult();
@@ -1506,8 +1505,8 @@ public class ProNonCombatMoveAI {
 
         // Find result with temp units
         final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
-        moveMap.get(t).setBattleResult(calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-            defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
+        moveMap.get(t).setBattleResult(calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+            defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
         final ProBattleResult result = moveMap.get(t).getBattleResult();
         int isWater = 0;
         if (t.isWater()) {
@@ -1519,8 +1518,8 @@ public class ProNonCombatMoveAI {
         // Find min result without temp units
         final List<Unit> minDefendingUnits = new ArrayList<>(defendingUnits);
         minDefendingUnits.removeAll(moveMap.get(t).getTempUnits());
-        final ProBattleResult minResult = calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-            minDefendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false);
+        final ProBattleResult minResult = calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+            minDefendingUnits, moveMap.get(t).getMaxEnemyBombardUnits());
 
         // Check if territory is worth defending with temp units
         if (holdValue > minResult.getTUVSwing()) {
@@ -1753,8 +1752,8 @@ public class ProNonCombatMoveAI {
         final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
         defendingUnits.add(u);
         if (moveMap.get(t).getBattleResult() == null) {
-          moveMap.get(t).setBattleResult(calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-              defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
+          moveMap.get(t).setBattleResult(calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+              defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
         }
         final ProBattleResult result = moveMap.get(t).getBattleResult();
         ProLogger.trace(t + ", TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
@@ -1766,8 +1765,8 @@ public class ProNonCombatMoveAI {
 
         // Determine if territory can be held with owned units
         final List<Unit> myDefenders = Match.getMatches(defendingUnits, Matches.unitIsOwnedBy(player));
-        final ProBattleResult result2 = calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-            myDefenders, moveMap.get(t).getMaxEnemyBombardUnits(), false);
+        final ProBattleResult result2 = calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+            myDefenders, moveMap.get(t).getMaxEnemyBombardUnits());
         int cantHoldWithoutAllies = 0;
         if (result2.getWinPercentage() >= ProData.minWinPercentage || result2.getTUVSwing() > 0) {
           cantHoldWithoutAllies = 1;
@@ -1872,8 +1871,8 @@ public class ProNonCombatMoveAI {
             // Check if territory is safe after all current moves
             if (moveMap.get(t).getBattleResult() == null) {
               final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
-              moveMap.get(t).setBattleResult(calc.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(),
-                  defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
+              moveMap.get(t).setBattleResult(calc.calculateBattleResults(t, moveMap.get(t).getMaxEnemyUnits(),
+                  defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
             }
             final ProBattleResult result = moveMap.get(t).getBattleResult();
             if (result.getWinPercentage() >= ProData.minWinPercentage || result.getTUVSwing() > 0) {

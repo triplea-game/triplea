@@ -49,8 +49,7 @@ public class ProScrambleAI {
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
-    final ProBattleResult minResult =
-        calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+    final ProBattleResult minResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger
         .debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
     if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
@@ -77,8 +76,7 @@ public class ProScrambleAI {
       possibleMaxScramblerMap.put(t, canScrambleAir);
     }
     defenders.addAll(allScramblers);
-    final ProBattleResult maxResult =
-        calc.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
+    final ProBattleResult maxResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger
         .debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
@@ -106,7 +104,7 @@ public class ProScrambleAI {
 
     // Sort units by number of defend options and cost
     final Map<Unit, Set<Territory>> sortedUnitDefendOptions =
-        ProSortMoveOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
+        ProSortMoveOptionsUtils.sortUnitMoveOptions(unitDefendOptions);
 
     // Add one scramble unit at a time and check if final result is better than min result
     final List<Unit> unitsToScramble = new ArrayList<>();
@@ -115,7 +113,7 @@ public class ProScrambleAI {
       unitsToScramble.add(u);
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
       currentDefenders.addAll(unitsToScramble);
-      result = calc.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
+      result = calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);
       ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
       if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {

@@ -88,7 +88,7 @@ public class Utils {
   }
 
   // returns all territories that are water territories (veqryn)
-  public static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr) {
+  public static List<Territory> onlyWaterTerr(final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<>(allTerr);
     final Iterator<Territory> wFIter = water.iterator();
     while (wFIter.hasNext()) {
@@ -104,8 +104,7 @@ public class Utils {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned.
    */
-  public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
-      final Match<Unit> unitCondition) {
+  public static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();

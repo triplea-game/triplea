@@ -835,7 +835,7 @@ public class ProTerritoryManager {
 
               // Add to transport map
               proTransportData.addTerritories(amphibTerritories, myUnitsToLoadTerritories);
-              proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories, data);
+              proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories);
             }
           }
           currentTerritories.clear();
@@ -995,14 +995,13 @@ public class ProTerritoryManager {
       if (isIgnoringRelationships) {
         defenders = new ArrayList<>(t.getUnits().getUnits());
       }
-      patd.setMaxBattleResult(
-          calc.estimateAttackBattleResults(player, t, patd.getMaxUnits(), defenders, new HashSet<>()));
+      patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
-        patd.setMaxBattleResult(calc.estimateAttackBattleResults(player, t, new ArrayList<>(combinedUnits), defenders,
+        patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(combinedUnits), defenders,
             patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
@@ -1046,7 +1045,7 @@ public class ProTerritoryManager {
             final Set<Unit> enemyDefendersBeforeStrafe = new HashSet<>(defenders);
             enemyDefendersBeforeStrafe.addAll(additionalEnemyDefenders);
             final ProBattleResult result =
-                calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(alliedUnits),
+                calc.estimateAttackBattleResults(t, new ArrayList<>(alliedUnits),
                     new ArrayList<>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
             if (result.getWinPercentage() < ProData.winPercentage) {
               patd.setStrafing(true);
@@ -1054,13 +1053,13 @@ public class ProTerritoryManager {
               // Try to strafe to allow allies to conquer territory
               final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
               combinedUnits.addAll(patd.getMaxAmphibUnits());
-              final ProBattleResult strafeResult = calc.callBattleCalculator(player, t, new ArrayList<>(combinedUnits),
+              final ProBattleResult strafeResult = calc.callBattleCalculator(t, new ArrayList<>(combinedUnits),
                   defenders, patd.getMaxBombardUnits(), true);
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe = new HashSet<>(strafeResult.getAverageDefendersRemaining());
               enemyDefendersAfterStrafe.addAll(additionalEnemyDefenders);
-              patd.setMaxBattleResult(calc.estimateAttackBattleResults(alliedPlayer, t, new ArrayList<>(alliedUnits),
+              patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(alliedUnits),
                   new ArrayList<>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
 
 

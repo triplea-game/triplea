@@ -545,6 +545,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
 
   /**
    * No need to override this.
+   *
+   * @param endTurnForumPosterDelegate The delegate to end the turn with.
+   * @param data The game data.
+   * @param player The player whose turn is ending.
    */
   protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
       final PlayerID player) {

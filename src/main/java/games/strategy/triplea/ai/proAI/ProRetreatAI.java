@@ -50,8 +50,8 @@ public class ProRetreatAI {
     calc = ai.getCalc();
   }
 
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
-      final Collection<Territory> possibleTerritories, final String message) {
+  public Territory retreatQuery(final GUID battleID, final Territory battleTerritory,
+      final Collection<Territory> possibleTerritories) {
 
     // Get battle data
     final GameData data = ProData.getData();
@@ -65,8 +65,7 @@ public class ProRetreatAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResult result =
-        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<>(), isAttacker);
+    final ProBattleResult result = calc.calculateBattleResults(battleTerritory, attackers, defenders, new HashSet<>());
 
     // Determine if it has a factory
     int isFactory = 0;
