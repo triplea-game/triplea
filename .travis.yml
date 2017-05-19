@@ -1,8 +1,4 @@
 language: java
-addons:
-  apt:
-     packages:
-         - sshpass
 jdk:
 - oraclejdk8
 install: true
@@ -32,15 +28,6 @@ before_deploy:
 ## Push a tag to github, will trigger the releases process
 - chmod +x ./.travis/push_tag && ./.travis/push_tag
 - chmod +x ./.travis/push_maps_yaml && ./.travis/push_maps_yaml
-## rest is commented out, work in progress.. does not work and needs some debugging.
-#- echo "showing build artifacts" && ls build/distributions/
-#- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-#- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
-#- export SSHPASS=$DEPLOY_PASS
-#- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
-#- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST 'bash -s' < ./.travis/update_maps
 deploy:
   provider: releases
   api_key:
