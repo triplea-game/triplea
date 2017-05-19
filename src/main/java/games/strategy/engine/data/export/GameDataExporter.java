@@ -91,7 +91,7 @@ public class GameDataExporter {
     }
   }
 
-  private String playertechs(final GameData data) {
+  private static String playertechs(final GameData data) {
     final StringBuffer returnValue = new StringBuffer();
     for (final PlayerID player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
@@ -116,7 +116,7 @@ public class GameDataExporter {
     return returnValue.toString();
   }
 
-  private String technologies(final GameData data) {
+  private static String technologies(final GameData data) {
     final StringBuffer returnValue = new StringBuffer();
     if (data.getTechnologyFrontier().getTechs().size() > 0) {
       returnValue.append("        <technologies>\n");
@@ -344,8 +344,8 @@ public class GameDataExporter {
     xmlfile.append("    </attachmentList>\n");
   }
 
-  private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues,
-      final IAttachment attachment) {
+  private static String printAttachmentOptionsBasedOnOriginalXML(
+      final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
     if (attachmentPlusValues.isEmpty()) {
       return "";
     }

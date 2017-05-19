@@ -2777,7 +2777,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   /**
    * Returns a map of transport -> collection of transported units.
    */
-  private Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
+  private static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return TransportTracker.transporting(units);
   }
 }

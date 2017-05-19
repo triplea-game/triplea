@@ -71,7 +71,7 @@ public class RouteCalculatorTest {
     checkPoints(8, possiblePoints, false, false);
   }
 
-  private void checkPoints(int offset, List<Point> expected, boolean isInfiniteX, boolean isInfiniteY) {
+  private static void checkPoints(int offset, List<Point> expected, boolean isInfiniteX, boolean isInfiniteY) {
     List<Point> calculatedPoints =
         new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point());
     assertEquals(expected.size(), calculatedPoints.size() + offset);

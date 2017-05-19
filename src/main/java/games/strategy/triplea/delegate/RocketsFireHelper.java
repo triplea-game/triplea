@@ -38,35 +38,35 @@ import games.strategy.util.Match;
  * Logic to fire rockets.
  */
 public class RocketsFireHelper {
-  private boolean isWW2V2(final GameData data) {
+  private static boolean isWW2V2(final GameData data) {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  private boolean isAllRocketsAttack(final GameData data) {
+  private static boolean isAllRocketsAttack(final GameData data) {
     return games.strategy.triplea.Properties.getAllRocketsAttack(data);
   }
 
-  private boolean isRocketsCanFlyOverImpassables(final GameData data) {
+  private static boolean isRocketsCanFlyOverImpassables(final GameData data) {
     return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
   }
 
-  private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
+  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
-  private boolean isRocketAttacksPerFactoryInfinite(final GameData data) {
+  private static boolean isRocketAttacksPerFactoryInfinite(final GameData data) {
     return games.strategy.triplea.Properties.getRocketAttacksPerFactoryInfinite(data);
   }
 
-  private boolean isPUCap(final GameData data) {
+  private static boolean isPUCap(final GameData data) {
     return games.strategy.triplea.Properties.getPUCap(data);
   }
 
-  private boolean isLimitRocketDamagePerTurn(final GameData data) {
+  private static boolean isLimitRocketDamagePerTurn(final GameData data) {
     return games.strategy.triplea.Properties.getLimitRocketDamagePerTurn(data);
   }
 
-  private boolean isLimitRocketDamageToProduction(final GameData data) {
+  private static boolean isLimitRocketDamageToProduction(final GameData data) {
     return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(data);
   }
 
@@ -151,7 +151,8 @@ public class RocketsFireHelper {
         Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved);
   }
 
-  private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player) {
+  private static Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data,
+      final PlayerID player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
@@ -174,7 +175,7 @@ public class RocketsFireHelper {
     return hasFactory;
   }
 
-  private Territory getTarget(final Collection<Territory> targets, final IDelegateBridge bridge,
+  private static Territory getTarget(final Collection<Territory> targets, final IDelegateBridge bridge,
       final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
@@ -441,7 +442,7 @@ public class RocketsFireHelper {
     }
   }
 
-  private ITripleAPlayer getRemote(final IDelegateBridge bridge) {
+  private static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
     return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 }

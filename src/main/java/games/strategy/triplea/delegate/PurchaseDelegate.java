@@ -323,7 +323,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
   };
 
-  private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
+  private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {
@@ -353,7 +353,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return costs;
   }
 
-  private IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
+  private static IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {

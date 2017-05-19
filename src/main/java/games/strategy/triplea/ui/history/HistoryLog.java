@@ -508,7 +508,7 @@ public class HistoryLog extends JFrame {
   }
 
   // copied from StatPanel
-  private int getProduction(final PlayerID player, final GameData data) {
+  private static int getProduction(final PlayerID player, final GameData data) {
     int rVal = 0;
     final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
     while (iter.hasNext()) {

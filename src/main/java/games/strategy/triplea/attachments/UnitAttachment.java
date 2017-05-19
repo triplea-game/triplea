@@ -2725,7 +2725,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  private boolean playerHasRockets(final PlayerID player) {
+  private static boolean playerHasRockets(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -2733,7 +2733,7 @@ public class UnitAttachment extends DefaultAttachment {
     return ta.getRocket();
   }
 
-  private boolean playerHasMechInf(final PlayerID player) {
+  private static boolean playerHasMechInf(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -2741,7 +2741,7 @@ public class UnitAttachment extends DefaultAttachment {
     return ta.getMechanizedInfantry();
   }
 
-  private boolean playerHasParatroopers(final PlayerID player) {
+  private static boolean playerHasParatroopers(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;

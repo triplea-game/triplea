@@ -196,7 +196,7 @@ public abstract class ImageScrollPanePanel {
     };
   }
 
-  private Dimension getImageDimension(final Image mapImage) {
+  private static Dimension getImageDimension(final Image mapImage) {
     return new Dimension(mapImage.getWidth(mapXmlCreator), mapImage.getHeight(mapXmlCreator));
   }
 

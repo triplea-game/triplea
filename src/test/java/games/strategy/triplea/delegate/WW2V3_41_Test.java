@@ -1693,7 +1693,7 @@ public class WW2V3_41_Test {
   /*
    * Add Utilities here
    */
-  private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
+  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
     final Iterator<UnitType> iter = units.keySet().iterator();
     final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
     while (iter.hasNext()) {

@@ -835,7 +835,7 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  private void showInfoMessageOfAvailableGameSettingsChoices() {
+  private static void showInfoMessageOfAvailableGameSettingsChoices() {
     /*
      * Build alphabetically sorted table in HTML of the setting names
      * in which the first letter is displayed bigger in case it is
@@ -868,7 +868,7 @@ public class MapXmlCreator extends JFrame {
         sb.toString(), "List Of Available Game Settings Choices");
   }
 
-  private void showInfoMessage(final String message, final String title) {
+  private static void showInfoMessage(final String message, final String title) {
     JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
   }
 

@@ -503,7 +503,7 @@ public class ProBidAI {
     }
   }
 
-  private void placeSeaUnits(final boolean bid, final GameData data, final Territory seaPlaceAttack,
+  private static void placeSeaUnits(final boolean bid, final GameData data, final Territory seaPlaceAttack,
       final Territory seaPlaceTrans, final IAbstractPlaceDelegate placeDelegate, final PlayerID player) {
     final CompositeMatch<Unit> attackUnit = new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsNotTransport);
     final List<Unit> seaUnits = player.getUnits().getMatches(attackUnit);
@@ -569,7 +569,7 @@ public class ProBidAI {
     }
   }
 
-  private void placeAllWeCanOn(final boolean bid, final GameData data, final Territory factoryPlace,
+  private static void placeAllWeCanOn(final boolean bid, final GameData data, final Territory factoryPlace,
       final Territory placeAt, final IAbstractPlaceDelegate placeDelegate, final PlayerID player) {
     final CompositeMatch<Unit> landOrAir = new CompositeMatchOr<>(Matches.UnitIsAir, Matches.UnitIsLand);
     if (factoryPlace != null) { // place a factory?
@@ -607,7 +607,7 @@ public class ProBidAI {
     }
   }
 
-  private void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
+  private static void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
       final List<Unit> unitList = new ArrayList<>();
       unitList.add(unit);

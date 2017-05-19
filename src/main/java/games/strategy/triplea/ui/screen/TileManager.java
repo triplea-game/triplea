@@ -327,7 +327,8 @@ public class TileManager {
     m_territoryTiles.put(territory.getName(), drawnOn);
   }
 
-  private void drawTerritoryEffects(final Territory territory, final MapData mapData, final Set<IDrawable> drawing) {
+  private static void drawTerritoryEffects(final Territory territory, final MapData mapData,
+      final Set<IDrawable> drawing) {
     final Iterator<Point> effectPoints = mapData.getTerritoryEffectPoints(territory).iterator();
     Point drawingPoint = effectPoints.next();
     for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(territory)) {

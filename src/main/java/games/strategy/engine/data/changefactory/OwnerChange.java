@@ -32,14 +32,14 @@ class OwnerChange extends Change {
     m_old = oldOwner;
   }
 
-  private String getName(final PlayerID player) {
+  private static String getName(final PlayerID player) {
     if (player == null) {
       return null;
     }
     return player.getName();
   }
 
-  private PlayerID getPlayerID(final String name, final GameData data) {
+  private static PlayerID getPlayerID(final String name, final GameData data) {
     if (name == null) {
       return null;
     }

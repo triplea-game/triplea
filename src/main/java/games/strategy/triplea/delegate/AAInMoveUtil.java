@@ -243,7 +243,7 @@ class AAInMoveUtil implements Serializable {
     }
   }
 
-  private PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
+  private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
       if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
         return territory.getOwner();

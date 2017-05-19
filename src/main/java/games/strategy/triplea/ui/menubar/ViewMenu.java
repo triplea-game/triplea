@@ -535,8 +535,8 @@ public class ViewMenu {
     }), setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group, final Action action,
-      final boolean selected) {
+  private static JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group,
+      final Action action, final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);

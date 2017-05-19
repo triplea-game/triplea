@@ -229,11 +229,9 @@ public class MapData implements Closeable {
     }
   }
 
-
-  private String constructTerritoryNameImagePath(final String baseName) {
+  private static String constructTerritoryNameImagePath(final String baseName) {
     return "territoryNames/" + baseName + ".png";
   }
-
 
   private Map<Image, List<Point>> loadDecorations() {
     final URL decorationsFileUrl = m_resourceLoader.getResource(DECORATIONS_FILE);
@@ -516,7 +514,7 @@ public class MapData implements Closeable {
     verifyKeys(data, m_place, "place");
   }
 
-  private void verifyKeys(final GameData data, final Map<String, ?> aMap, final String dataTypeForErrorMessage)
+  private static void verifyKeys(final GameData data, final Map<String, ?> aMap, final String dataTypeForErrorMessage)
       throws IllegalStateException {
     final StringBuilder errors = new StringBuilder();
     final Iterator<String> iter = aMap.keySet().iterator();

@@ -481,7 +481,7 @@ public class GameParser {
     return children.get(0);
   }
 
-  private List<Element> getChildren(final String name, final Node node) {
+  private static List<Element> getChildren(final String name, final Node node) {
     final ArrayList<Element> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
@@ -493,7 +493,7 @@ public class GameParser {
     return found;
   }
 
-  private List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
+  private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
     final List<Node> rVal = getNonTextNodes(node);
     final Iterator<Node> iter = rVal.iterator();
     while (iter.hasNext()) {
@@ -504,7 +504,7 @@ public class GameParser {
     return rVal;
   }
 
-  private List<Node> getNonTextNodes(final Node node) {
+  private static List<Node> getNonTextNodes(final Node node) {
     final ArrayList<Node> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
     for (int i = 0; i < children.getLength(); ++i) {
@@ -721,7 +721,7 @@ public class GameParser {
     }
   }
 
-  private Set<String> parseGridWater(final List<Element> waterNodes) {
+  private static Set<String> parseGridWater(final List<Element> waterNodes) {
     final Set<String> set = new HashSet<>();
     for (final Element current : waterNodes) {
       final int x = Integer.valueOf(current.getAttribute("x"));
@@ -1026,7 +1026,7 @@ public class GameParser {
     }
   }
 
-  private Properties pareStepProperties(final List<Element> properties) {
+  private static Properties pareStepProperties(final List<Element> properties) {
     final Properties rVal = new Properties();
     for (final Element stepProperty : properties) {
       final String name = stepProperty.getAttribute("name");

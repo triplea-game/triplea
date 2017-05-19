@@ -232,7 +232,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return null;
   }
 
-  private String getFightingWord(final IBattle battle) {
+  private static String getFightingWord(final IBattle battle) {
     return battle.getBattleType().toString();
   }
 
@@ -241,7 +241,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return m_battleTracker.getPendingBattleSites();
   }
 
-  private boolean isShoreBombardPerGroundUnitRestricted(final GameData data) {
+  private static boolean isShoreBombardPerGroundUnitRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
   }
 
@@ -302,7 +302,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   /**
    * Sort the specified units in preferred movement or unload order.
    */
-  private void sortUnitsToBombard(final List<Unit> units, final PlayerID player) {
+  private static void sortUnitsToBombard(final List<Unit> units, final PlayerID player) {
     if (units.isEmpty()) {
       return;
     }

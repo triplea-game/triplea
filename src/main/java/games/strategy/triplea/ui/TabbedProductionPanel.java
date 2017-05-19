@@ -97,7 +97,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     }
   }
 
-  private int largestList(final List<Tuple<String, List<Rule>>> ruleLists) {
+  private static int largestList(final List<Tuple<String, List<Rule>>> ruleLists) {
     int largestList = 0;
     for (final Tuple<String, List<Rule>> tuple : ruleLists) {
       if (largestList < tuple.getSecond().size()) {

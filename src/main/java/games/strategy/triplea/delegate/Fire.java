@@ -253,7 +253,7 @@ public class Fire implements IExecutable {
     stack.push(rollDice);
   }
 
-  private boolean isTransportCasualtiesRestricted(final GameData data) {
+  private static boolean isTransportCasualtiesRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
   }
 }

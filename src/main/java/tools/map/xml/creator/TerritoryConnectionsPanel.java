@@ -105,7 +105,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   }
 
-  private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, final int scalePixels,
+  private static void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, final int scalePixels,
       final double minOverlap) {
     MapXmlHelper.clearTerritoryConnections();
     Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.FINE,
@@ -149,7 +149,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         "finished scanning");
   }
 
-  private Map<String, List<Area>> getTerritoryAreasFromPolygons() {
+  private static Map<String, List<Area>> getTerritoryAreasFromPolygons() {
     final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
     for (final String territoryName : polygons.keySet()) {
       final List<Polygon> listOfPolygons = polygons.get(territoryName);

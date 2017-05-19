@@ -299,7 +299,7 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  private void markWasInCombat(final Collection<Unit> units, final IDelegateBridge bridge,
+  private static void markWasInCombat(final Collection<Unit> units, final IDelegateBridge bridge,
       final UndoableMove changeTracker) {
     if (units == null) {
       return;
@@ -1044,7 +1044,7 @@ public class BattleTracker implements java.io.Serializable {
     return m_bombardedFromTerritories.contains(territory);
   }
 
-  private boolean isPacificTheater(final GameData data) {
+  private static boolean isPacificTheater(final GameData data) {
     return data.getProperties().get(Constants.PACIFIC_THEATER, false);
   }
 
@@ -1159,7 +1159,7 @@ public class BattleTracker implements java.io.Serializable {
          });
   }
 
-  private List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
+  private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
         Matches.UnitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));

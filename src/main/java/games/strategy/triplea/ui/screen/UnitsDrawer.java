@@ -238,7 +238,7 @@ public class UnitsDrawer implements IDrawable {
     return "UnitsDrawer for " + count + " " + MyFormatter.pluralize(unitType) + " in  " + territoryName;
   }
 
-  private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
+  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 

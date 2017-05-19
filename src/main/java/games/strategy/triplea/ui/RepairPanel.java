@@ -101,7 +101,7 @@ public class RepairPanel extends ActionPanel {
   };
 
   // Spin through the territories to get this.
-  private int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> m_repair) {
+  private static int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> m_repair) {
     final Collection<Unit> units = m_repair.keySet();
     final Iterator<Unit> iter = units.iterator();
     int totalValues = 0;

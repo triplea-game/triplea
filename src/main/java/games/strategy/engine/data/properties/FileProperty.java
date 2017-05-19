@@ -117,7 +117,7 @@ public class FileProperty extends AEditableProperty {
   /**
    * Prompts the user to select a file.
    */
-  private File getFileUsingDialog(final String... acceptableSuffixes) {
+  private static File getFileUsingDialog(final String... acceptableSuffixes) {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
