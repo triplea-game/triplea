@@ -31,13 +31,7 @@ public class DbUserController implements UserDao {
    * We use this datasource for reading, we always write to it, any errors during read/write are considered
    * critical (on the other hand secondary DAO read/write errors can be logged and ignored)
    */
-  private static final UserDao primaryDao;
-
-
-  static {
-    primaryDao = determinePrimaryDataSource();
-  }
-
+  private static final UserDao primaryDao = determinePrimaryDataSource();
 
   private static UserDao determinePrimaryDataSource() {
     List<UserDao> primaryDataSourceCandidates = implementations.stream()
