@@ -18,6 +18,9 @@ public interface UserDao {
     return validateUserName(userName);
   }
 
+  /**
+   * @return null if user name is valid, otherwise returns an error message
+   */
   static String validateUserName(String userName) {
     // is this a valid user?
     if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
@@ -43,5 +46,5 @@ public interface UserDao {
 
   boolean login(String userName, String hashedPassword);
 
-  DBUser getUser(String userName);
+  DbUser getUser(String userName);
 }

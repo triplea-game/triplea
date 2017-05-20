@@ -14,7 +14,7 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
@@ -42,7 +42,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
-    final String password = new DBUserController().getPassword(userName);
+    final String password = new DbUserController().getPassword(userName);
     final Map<String, String> rVal = new HashMap<>();
     if (password != null) {
       rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password));
@@ -153,7 +153,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
-    final DBUserController userController = new DBUserController();
+    final DbUserController userController = new DbUserController();
     if (!userController.login(clientName, propertiesReadFromClient.get(HASHED_PASSWORD_KEY))) {
       if (userController.doesUserExist(clientName)) {
         return "Incorrect password";
@@ -166,7 +166,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
-    if (new DBUserController().doesUserExist(userName)) {
+    if (new DbUserController().doesUserExist(userName)) {
       return "Can't login anonymously, username already exists";
     }
     // If this is a lobby watcher, use a different set of validation
@@ -192,7 +192,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
     final String email = propertiesReadFromClient.get(EMAIL_KEY);
     final String hashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     final String error = UserDao.validate(userName, email, hashedPassword);
     if (error != null) {
       return error;

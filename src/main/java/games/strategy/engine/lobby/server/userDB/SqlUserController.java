@@ -40,7 +40,7 @@ public class SqlUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public DBUser getUser(String userName) {
+  public DbUser getUser(String userName) {
     return null;
   }
 }

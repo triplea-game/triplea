@@ -28,8 +28,7 @@ import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUser;
 import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
@@ -379,7 +378,7 @@ public class LobbyMenu extends JMenuBar {
   private void updateAccountDetails() {
     final IUserManager manager =
         (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
-    final DBUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
+    final DbUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
       JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);
       return;

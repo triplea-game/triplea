@@ -13,14 +13,14 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
-public class DBUserControllerTest {
+public class DbUserControllerTest {
 
   @Test
   public void testCreate() throws Exception {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     final String password = MD5Crypt.crypt(name);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     controller.createUser(name, email, password, false);
     assertTrue(controller.doesUserExist(name));
 
@@ -38,10 +38,10 @@ public class DBUserControllerTest {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     final String password = MD5Crypt.crypt(name);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     controller.createUser(name, email, password, false);
     assertTrue(controller.doesUserExist(name));
-    final DBUser user = controller.getUser(name);
+    final DbUser user = controller.getUser(name);
     assertEquals(user.getName(), name);
     assertEquals(user.getEmail(), email);
     assertEquals(user.isAdmin(), false);
@@ -52,7 +52,7 @@ public class DBUserControllerTest {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     final String password = MD5Crypt.crypt(name);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     controller.createUser(name, email, password, false);
     try {
       controller.createUser(name, email, password, false);
@@ -67,7 +67,7 @@ public class DBUserControllerTest {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     final String password = MD5Crypt.crypt(name);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     controller.createUser(name, email, password, false);
     // advance the clock so we can see the login time
     long loginTimeMustBeAfter = System.currentTimeMillis();
@@ -91,7 +91,7 @@ public class DBUserControllerTest {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     final String password = MD5Crypt.crypt(name);
-    final DBUserController controller = new DBUserController();
+    final DbUserController controller = new DbUserController();
     controller.createUser(name, email, password, false);
     assertTrue(controller.doesUserExist(name));
     final String password2 = MD5Crypt.crypt("foo");

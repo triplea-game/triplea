@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;

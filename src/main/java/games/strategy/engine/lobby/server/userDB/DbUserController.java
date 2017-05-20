@@ -1,12 +1,12 @@
 package games.strategy.engine.lobby.server.userDB;
 
-import com.google.common.base.Preconditions;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Preconditions;
 
 
 /**
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  *  This is a migration tool, to go from one data source to another. When we switch over completely
  *  we can simplify and write/read to the primary datasource directly.
  */
-public class DBUserController implements UserDao {
-  private static final Logger logger = Logger.getLogger(DBUserController.class.getName());
+public class DbUserController implements UserDao {
+  private static final Logger logger = Logger.getLogger(DbUserController.class.getName());
 
   private static final Collection<UserDaoPrimarySecondary> implementations = Arrays.asList(
       new DerbyUserController(),
@@ -105,7 +105,7 @@ public class DBUserController implements UserDao {
    * @return null if no such user.
    */
   @Override
-  public DBUser getUser(final String userName) {
+  public DbUser getUser(final String userName) {
     return primaryDao.getUser(userName);
   }
 

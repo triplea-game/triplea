@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @Deprecated
 public class DerbyUserController implements UserDaoPrimarySecondary {
 
-  private static final Logger s_logger = Logger.getLogger(DBUserController.class.getName());
+  private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
   @Override
   public boolean isPrimary() {
@@ -33,13 +33,13 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, userName);
       final ResultSet rs = ps.executeQuery();
-      String rVal = null;
+      String returnValue = null;
       if (rs.next()) {
-        rVal = rs.getString(1);
+        returnValue = rs.getString(1);
       }
       rs.close();
       ps.close();
-      return rVal;
+      return returnValue;
     } catch (final SQLException sqle) {
       s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
@@ -68,6 +68,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
     }
   }
 
+  @Override
   public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin) {
     final String validationErrors = UserDao.validate(name, email, hashedPassword);
     if (validationErrors != null) {
@@ -155,7 +156,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public DBUser getUser(final String userName) {
+  public DbUser getUser(final String userName) {
     final String sql = "select * from ta_users where username = ?";
     final Connection con = Database.getConnection();
     try {
@@ -165,7 +166,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       if (!rs.next()) {
         return null;
       }
-      final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
+      final DbUser user = new DbUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
           rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
       rs.close();
       ps.close();
