@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.ui.Util;
 
 public class CreateUpdateAccountPanel extends JPanel {
@@ -112,8 +113,8 @@ public class CreateUpdateAccountPanel extends JPanel {
     if (!games.strategy.util.Util.isMailValid(m_email.getText())) {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (DBUserController.validateUserName(m_userName.getText()) != null) {
-      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(m_userName.getText()), "Invalid Username",
+    } else if (UserDao.validateUserName(m_userName.getText()) != null) {
+      JOptionPane.showMessageDialog(this, UserDao.validateUserName(m_userName.getText()), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length == 0) {

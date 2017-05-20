@@ -15,6 +15,7 @@ import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
@@ -175,12 +176,12 @@ public class LobbyLoginValidator implements ILoginValidator {
         return "Lobby watcher usernames must end with 'lobby_watcher'";
       }
       final String hostName = userName.substring(0, userName.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
-      final String issue = DBUserController.validateUserName(hostName);
+      final String issue = UserDao.validateUserName(hostName);
       if (issue != null) {
         return issue;
       }
     } else {
-      final String issue = DBUserController.validateUserName(userName);
+      final String issue = UserDao.validateUserName(userName);
       if (issue != null) {
         return issue;
       }
@@ -192,7 +193,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     final String email = propertiesReadFromClient.get(EMAIL_KEY);
     final String hashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
     final DBUserController controller = new DBUserController();
-    final String error = controller.validate(userName, email, hashedPassword);
+    final String error = UserDao.validate(userName, email, hashedPassword);
     if (error != null) {
       return error;
     }

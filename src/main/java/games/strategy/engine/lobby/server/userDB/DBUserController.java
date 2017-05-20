@@ -1,116 +1,78 @@
 package games.strategy.engine.lobby.server.userDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.logging.Level;
+import com.google.common.base.Preconditions;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
-import games.strategy.util.MD5Crypt;
-import games.strategy.util.Util;
 
-public class DBUserController {
-  private static final Logger s_logger = Logger.getLogger(DBUserController.class.getName());
+/**
+ * Interface for interacting with database user operations. For example, add user, delete user..
+ */
+/*
+ * TODO: datasource migration note, from derby (java DB) to MySQL
+ *  This class is currently set up to write and read from multiple data sources.
+ *  This is a migration tool, to go from one data source to another. When we switch over completely
+ *  we can simplify and write/read to the primary datasource directly.
+ */
+public class DBUserController implements UserDao {
+  private static final Logger logger = Logger.getLogger(DBUserController.class.getName());
+
+  private static final Collection<UserDaoPrimarySecondary> implementations = Arrays.asList(
+      new DerbyUserController(),
+      new SqlUserController()
+  );
 
   /**
-   * @return if this user is valid.
+   * Stores a convenience reference to the authoritative DAO implementation.
+   * We use this datasource for reading, we always write to it, any errors during read/write are considered
+   * critical (on the other hand secondary DAO read/write errors can be logged and ignored)
    */
-  public String validate(final String userName, final String email, final String hashedPassword) {
-    if (email == null || !Util.isMailValid(email)) {
-      return "Invalid email address";
-    }
-    if (hashedPassword == null || hashedPassword.length() < 3 || !hashedPassword.startsWith(MD5Crypt.MAGIC)) {
-      return "Invalid password";
-    }
-    return validateUserName(userName);
+  private static final UserDao primaryDao;
+
+
+  static {
+    primaryDao = determinePrimaryDataSource();
   }
 
-  public static String validateUserName(final String userName) {
-    // is this a valid user?
-    if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
-      return "Usernames must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
-    }
-    if (userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
-      return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
-    }
-    if (userName.toLowerCase().contains("admin")) {
-      return "Username can't contain the word admin";
-    }
-    return null;
+
+  private static UserDao determinePrimaryDataSource() {
+    List<UserDao> primaryDataSourceCandidates = implementations.stream()
+        .filter(UserDaoPrimarySecondary::isPrimary)
+        .collect(Collectors.toList());
+
+    Preconditions.checkState(
+        primaryDataSourceCandidates.size() == 1,
+        "Startup Assumption - exactly one UserDao implementation is 'primary'");
+
+    return primaryDataSourceCandidates.get(0);
   }
 
-  public static void main(final String[] args) throws SQLException {
-    Database.getConnection().close();
-  }
 
   /**
    * @return null if the user does not exist.
    */
+  @Override
   public String getPassword(final String userName) {
-    final String sql = "select password from ta_users where username = ?";
-    final Connection con = Database.getConnection();
-    try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      String rVal = null;
-      if (rs.next()) {
-        rVal = rs.getString(1);
-      }
-      rs.close();
-      ps.close();
-      return rVal;
-    } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
+    return primaryDao.getPassword(userName);
   }
 
+  @Override
   public boolean doesUserExist(final String userName) {
-    final String sql = "select username from ta_users where upper(username) = upper(?)";
-    final Connection con = Database.getConnection();
-    try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      final boolean found = rs.next();
-      rs.close();
-      ps.close();
-      return found;
-    } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
+    return primaryDao.doesUserExist(userName);
   }
 
+  @Override
   public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = validate(name, email, hashedPassword);
-    if (validationErrors != null) {
-      throw new IllegalStateException(validationErrors);
-    }
-    final Connection con = Database.getConnection();
+    primaryDao.updateUser(name, email, hashedPassword, admin);
     try {
-      final PreparedStatement ps =
-          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
-      ps.setString(1, hashedPassword);
-      ps.setString(2, email);
-      ps.setBoolean(3, admin);
-      ps.setString(4, name);
-      ps.execute();
-      ps.close();
-      con.commit();
-    } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error updating name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
+      implementations.forEach(dao -> dao.updateUser(name, email, hashedPassword, admin));
+    } catch(Exception e) {
+      logger.warning(
+          "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
     }
   }
 
@@ -118,36 +80,15 @@ public class DBUserController {
    * Create a user in the database.
    * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
    */
-  public void createUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = validate(name, email, hashedPassword);
-    if (validationErrors != null) {
-      throw new IllegalStateException(validationErrors);
-    }
-    if (doesUserExist(name)) {
-      throw new IllegalStateException("That user name has already been taken");
-    }
-    final Connection con = Database.getConnection();
+  @Override
+  public void createUser(final String name, final String email, final String hashedPassword,
+      final boolean admin) {
+    primaryDao.createUser(name, email, hashedPassword, admin);
     try {
-      final PreparedStatement ps = con.prepareStatement(
-          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
-      ps.setString(1, name);
-      ps.setString(2, hashedPassword);
-      ps.setString(3, email);
-      ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-      ps.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-      ps.setInt(6, admin ? 1 : 0);
-      ps.execute();
-      ps.close();
-      con.commit();
-    } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        s_logger.info("Tried to create duplicate user for name:" + name + " error:" + sqle.getMessage());
-        throw new IllegalStateException("That user name is already taken");
-      }
-      s_logger.log(Level.SEVERE, "Error inserting name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
+      implementations.forEach(dao -> dao.createUser(name, email, hashedPassword, admin));
+    } catch (Exception e ) {
+      logger.warning(
+          "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
     }
   }
 
@@ -155,56 +96,17 @@ public class DBUserController {
    * Validate the username password, returning true if the user is able to login.
    * This has the side effect of updating the users last login time.
    */
+  @Override
   public boolean login(final String userName, final String hashedPassword) {
-    final Connection con = Database.getConnection();
-    try {
-      PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");
-      ps.setString(1, userName);
-      ps.setString(2, hashedPassword);
-      final ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        return false;
-      }
-      ps.close();
-      rs.close();
-      // update last login time
-      ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ? ");
-      ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-      ps.setString(2, userName);
-      ps.execute();
-      ps.close();
-      return true;
-    } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword, sqle);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
+    return primaryDao.login(userName, hashedPassword);
   }
 
   /**
    * @return null if no such user.
    */
+  @Override
   public DBUser getUser(final String userName) {
-    final String sql = "select * from ta_users where username = ?";
-    final Connection con = Database.getConnection();
-    try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        return null;
-      }
-      final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
-          rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
-      rs.close();
-      ps.close();
-      return user;
-    } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
+    return primaryDao.getUser(userName);
   }
+
 }
