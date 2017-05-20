@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -50,6 +51,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.delegate.MoveDelegate;
 
 /**
  * Represents a running game.
@@ -346,42 +348,19 @@ public class ServerGame extends AbstractGame {
     }
   }
 
-  private void autoSave() {
+  private void autoSave(final String fileName) {
     SaveGameFileChooser.ensureMapsFolderExists();
-    final File f1 =
-        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-    final File f2 =
-        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
-    final File f;
-    if (f1.lastModified() > f2.lastModified()) {
-      f = f2;
-    } else {
-      f = f1;
+    final File autoSaveDir = new File(ClientContext.folderSettings().getSaveGamePath()
+        + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
+    if (!autoSaveDir.exists()) {
+      autoSaveDir.mkdirs();
     }
-
-    try (FileOutputStream out = new FileOutputStream(f)) {
-      saveGame(out);
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    saveGame(new File(autoSaveDir, fileName));
   }
 
-  private void autoSaveRound() {
-    SaveGameFileChooser.ensureMapsFolderExists();
-    final File autosaveFile;
-    if (m_data.getSequence().getRound() % 2 == 0) {
-      autosaveFile =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
-    } else {
-      autosaveFile =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
-    }
-
-    try (FileOutputStream out = new FileOutputStream(autosaveFile)) {
-      saveGame(out);
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+  private void autoSaveBefore(final IDelegate currentDelegate) {
+    final String stepName = currentDelegate.getName();
+    autoSave("autosaveBefore" + stepName.substring(0,1).toUpperCase() + stepName.substring(1) + ".tsvg");
   }
 
   @Override
@@ -416,7 +395,19 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
+    final GameStep currentStep = m_data.getSequence().getStep();
+    final IDelegate currentDelegate = currentStep.getDelegate();
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     startStep(stepIsRestoredFromSavedGame);
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     if (m_isGameOver) {
       return;
     }
@@ -424,25 +415,34 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
-    final boolean autoSaveAfterDelegateDone = endStep();
+    // save after the step has advanced
+    // otherwise, the delegate will execute again.
+    final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
+    if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
+      autoSave("autosaveAfter" + currentStep.getName().substring(0,1).toUpperCase()
+          + currentStep.getName().substring(1) + ".tsvg");
+    }
+    endStep();
     if (m_isGameOver) {
       return;
     }
     if (m_data.getSequence().next()) {
       m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
-      autoSaveRound();
+      autoSave(m_data.getSequence().getRound() % 2 == 0
+          ? SaveGameFileChooser.getAutoSaveEvenFileName() : SaveGameFileChooser.getAutoSaveOddFileName());
     }
-    // save after the step has advanced
-    // otherwise, the delegate will execute again.
-    if (autoSaveAfterDelegateDone) {
-      autoSave();
+    if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
+      final String typeName = currentDelegate.getClass().getTypeName();
+      final String phaseName = typeName.substring(typeName.lastIndexOf('.')+1).replaceFirst("Delegate$","");
+      autoSave("autosaveAfter" + phaseName.substring(0,1).toUpperCase() + phaseName.substring(1) + ".tsvg");
     }
   }
 
   /**
    * @return true if the step should autosave.
    */
-  private boolean endStep() {
+  private void endStep() {
     m_delegateExecutionManager.enterDelegateExecution();
     try {
       getCurrentStep().getDelegate().end();
@@ -450,12 +450,6 @@ public class ServerGame extends AbstractGame {
       m_delegateExecutionManager.leaveDelegateExecution();
     }
     getCurrentStep().incrementRunCount();
-    if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class)) {
-      if (m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private void startPersistentDelegates() {
@@ -484,13 +478,6 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
-    if (!stepIsRestoredFromSavedGame) {
-      if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class)) {
-        if (m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
-          autoSave();
-        }
-      }
-    }
     final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
         new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     if (m_delegateRandomSource == null) {

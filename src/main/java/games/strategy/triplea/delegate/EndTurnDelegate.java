@@ -43,7 +43,7 @@ import games.strategy.util.ThreadUtil;
  * At the end of the turn collect income.
  */
 @MapSupport
-@AutoSave(afterStepEnd = true)
+@AutoSave(afterStepStart = true)
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
