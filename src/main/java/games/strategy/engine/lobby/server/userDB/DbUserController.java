@@ -64,7 +64,7 @@ public class DbUserController implements UserDao {
     primaryDao.updateUser(name, email, hashedPassword, admin);
     try {
       implementations.forEach(dao -> dao.updateUser(name, email, hashedPassword, admin));
-    } catch(Exception e) {
+    } catch (Exception e) {
       logger.warning(
           "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
     }
@@ -80,7 +80,7 @@ public class DbUserController implements UserDao {
     primaryDao.createUser(name, email, hashedPassword, admin);
     try {
       implementations.forEach(dao -> dao.createUser(name, email, hashedPassword, admin));
-    } catch (Exception e ) {
+    } catch (Exception e) {
       logger.warning(
           "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
     }
