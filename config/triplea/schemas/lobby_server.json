@@ -30,7 +30,7 @@
       },
       "message": {
         "description": "The message displayed when a user connects to an available lobby server",
-        "type": "string"
+        "type": ["string", "null"]
       },
       "error_message": {
         "description": "The message displayed when a user connects to an unavailable lobby server",
