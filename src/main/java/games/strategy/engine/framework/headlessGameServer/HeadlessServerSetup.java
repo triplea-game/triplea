@@ -31,7 +31,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private final GameSelectorModel m_gameSelectorModel;
   private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
 
-  public HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel) {
+  HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel) {
     m_model = model;
     m_gameSelectorModel = gameSelectorModel;
     m_model.setRemoteModelListener(this);
@@ -41,7 +41,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     internalPlayerListChanged();
   }
 
-  public void createLobbyWatcher() {
+  void createLobbyWatcher() {
     if (m_lobbyWatcher != null) {
       m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null,
           m_lobbyWatcher.getInGameLobbyWatcher()));
@@ -49,7 +49,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     }
   }
 
-  public synchronized void repostLobbyWatcher(final IGame iGame) {
+  synchronized void repostLobbyWatcher(final IGame iGame) {
     if (iGame != null) {
       return;
     }
@@ -63,7 +63,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     createLobbyWatcher();
   }
 
-  public void shutDownLobbyWatcher() {
+  void shutDownLobbyWatcher() {
     if (m_lobbyWatcher != null) {
       m_lobbyWatcher.shutDown();
     }

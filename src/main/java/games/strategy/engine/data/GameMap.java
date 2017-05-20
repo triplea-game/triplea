@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import games.strategy.triplea.delegate.Matches;
@@ -42,26 +41,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     m_gridDimensions = gridDimensions;
   }
 
-  public int getXDimension() {
-    if (m_gridDimensions == null || m_gridDimensions.length < 1) {
-      return 0;
-    }
-    return m_gridDimensions[0];
-  }
-
-  public int getYDimension() {
-    if (m_gridDimensions == null || m_gridDimensions.length < 2) {
-      return 0;
-    }
-    return m_gridDimensions[1];
-  }
-
   public Territory getTerritoryFromCoordinates(final int... coordinate) {
     return getTerritoryFromCoordinates(true, coordinate);
   }
 
-  // public Territory getTerritoryFromCoordinates(int xCoordinate, int yCoordinate)
-  public Territory getTerritoryFromCoordinates(final boolean allowNull, final int... coordinate) {
+  private Territory getTerritoryFromCoordinates(final boolean allowNull, final int... coordinate) {
     if (m_gridDimensions == null) {
       if (allowNull) {
         return null;
@@ -149,7 +133,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return 0;
   };
 
-  public boolean isCoordinateValid(final int... coordinate) {
+  boolean isCoordinateValid(final int... coordinate) {
     if (coordinate.length != m_gridDimensions.length) {
       return false;
     }
@@ -168,29 +152,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     m_territories.add(t1);
     m_connections.put(t1, Collections.emptySet());
     m_territoryLookup.put(t1.getName(), t1);
-  }
-
-  public void removeTerritory(final Territory t1) {
-    if (!m_territories.contains(t1)) {
-      throw new IllegalArgumentException("Map does not contain " + t1.getName());
-    }
-    m_territories.remove(t1);
-    m_connections.remove(t1);
-    m_territoryLookup.remove(t1.getName());
-    // remove territory from other connections
-    final Map<Territory, Set<Territory>> tempConnections = new HashMap<>();
-    for (final Entry<Territory, Set<Territory>> entry : m_connections.entrySet()) {
-      if (entry.getValue().contains(t1)) {
-        final Set<Territory> current = entry.getValue();
-        final Set<Territory> modified = new HashSet<>(current);
-        modified.remove(t1);
-        tempConnections.put(entry.getKey(), modified);
-      }
-    }
-    // preserve unmodifiable nature
-    for (final Entry<Territory, Set<Territory>> entry : tempConnections.entrySet()) {
-      m_connections.put(entry.getKey(), Collections.unmodifiableSet(entry.getValue()));
-    }
   }
 
   /**

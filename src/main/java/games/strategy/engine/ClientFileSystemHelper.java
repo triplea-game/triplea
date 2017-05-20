@@ -41,8 +41,7 @@ public final class ClientFileSystemHelper {
     return getRootRelativeToClassFile(fileName);
   }
 
-
-  public static String getGameRunnerFileLocation(final String runnerClassName) {
+  private static String getGameRunnerFileLocation(final String runnerClassName) {
     final URL url = GameRunner.class.getResource(runnerClassName);
     String fileName = url.getFile();
 

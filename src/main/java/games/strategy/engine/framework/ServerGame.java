@@ -393,7 +393,7 @@ public class ServerGame extends AbstractGame {
     }
   }
 
-  public void saveGame(final OutputStream out) throws IOException {
+  private void saveGame(final OutputStream out) throws IOException {
     try {
       if (!m_delegateExecutionManager.blockDelegateExecution(6000)) {
         throw new IOException("Could not lock delegate execution");

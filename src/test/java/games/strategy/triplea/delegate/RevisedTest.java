@@ -53,7 +53,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Before;
@@ -77,7 +76,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
@@ -110,18 +108,6 @@ public class RevisedTest {
 
   private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
-  }
-
-  public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
-    for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
-      if (entry.getKey().isBombingRun() == bombing) {
-        if (entry.getValue().contains(territory)) {
-          return battle.fightBattle(territory, bombing, entry.getKey());
-        }
-      }
-    }
-    throw new IllegalStateException(
-        "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
   }
 
   @Test

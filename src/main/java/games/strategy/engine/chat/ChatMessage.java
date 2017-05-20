@@ -1,26 +1,25 @@
 package games.strategy.engine.chat;
 
-
-public class ChatMessage {
+class ChatMessage {
   private final String message;
   private final String from;
   private final boolean isMyMessage;
 
-  public ChatMessage(final String message, final String from, final boolean isMyMessage) {
+  ChatMessage(final String message, final String from, final boolean isMyMessage) {
     this.message = message;
     this.from = from;
     this.isMyMessage = isMyMessage;
   }
 
-  public String getFrom() {
+  String getFrom() {
     return from;
   }
 
-  public boolean isMyMessage() {
+  boolean isMyMessage() {
     return isMyMessage;
   }
 
-  public String getMessage() {
+  String getMessage() {
     return message;
   }
 }

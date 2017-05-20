@@ -36,7 +36,7 @@ public class UnitType extends NamedAttachable {
     return create(quantity, owner, isTemp, 0, 0);
   }
 
-  public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken,
+  List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken,
       final int bombingUnitDamage) {
     final List<Unit> collection = new ArrayList<>();
     for (int i = 0; i < quantity; i++) {

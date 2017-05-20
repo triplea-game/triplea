@@ -31,7 +31,7 @@ public class ComboProperty<T> extends AEditableProperty {
   }
 
   @SuppressWarnings("unchecked")
-  public ComboProperty(final String name, final String description, final T defaultValue,
+  private ComboProperty(final String name, final String description, final T defaultValue,
       final Collection<T> possibleValues, final boolean allowNone) {
     super(name, description);
     if (!allowNone && !possibleValues.contains(defaultValue) && defaultValue == null) {

@@ -75,7 +75,7 @@ public class Chat {
     return rVal;
   }
 
-  public String getNotesForNode(final INode node) {
+  String getNotesForNode(final INode node) {
     final LinkedHashSet<String> notes = notesMap.get(node);
     if (notes == null) {
       return null;
@@ -184,7 +184,7 @@ public class Chat {
     }
   }
 
-  public void sendSlap(final String playerName) {
+  void sendSlap(final String playerName) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
         .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
@@ -214,7 +214,7 @@ public class Chat {
     }
   }
 
-  public void setIgnored(final INode node, final boolean isIgnored) {
+  void setIgnored(final INode node, final boolean isIgnored) {
     if (isIgnored) {
       ignoreList.add(node.getName());
     } else {

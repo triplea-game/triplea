@@ -18,12 +18,6 @@ public class TechnologyFrontierList extends GameDataComponent {
     m_technologyFrontiers.add(tf);
   }
 
-  public void addTechnologyFrontier(final List<TechnologyFrontier> tfs) {
-    for (final TechnologyFrontier tf : tfs) {
-      m_technologyFrontiers.add(tf);
-    }
-  }
-
   public int size() {
     return m_technologyFrontiers.size();
   }

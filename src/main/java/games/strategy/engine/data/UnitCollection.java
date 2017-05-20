@@ -56,7 +56,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     return m_units.size();
   }
 
-  public int getUnitCount(final UnitType type) {
+  int getUnitCount(final UnitType type) {
     int count = 0;
     final Iterator<Unit> iterator = m_units.iterator();
     while (iterator.hasNext()) {
@@ -79,7 +79,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     return count;
   }
 
-  public int getUnitCount(final PlayerID owner) {
+  int getUnitCount(final PlayerID owner) {
     int count = 0;
     final Iterator<Unit> iterator = m_units.iterator();
     while (iterator.hasNext()) {

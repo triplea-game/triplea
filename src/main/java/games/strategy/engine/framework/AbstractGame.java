@@ -42,7 +42,7 @@ public abstract class AbstractGame implements IGame {
   protected boolean m_firstRun = true;
   protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<>();
 
-  public AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
+  protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     m_data = data;
     m_messenger = messengers.getMessenger();

@@ -82,7 +82,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     return text.getText();
   }
 
-  public void shutDown() {
+  void shutDown() {
     if (chat != null) {
       chat.removeChatListener(this);
       cleanupKeyMap();
@@ -92,7 +92,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     this.removeAll();
   }
 
-  public void setChat(final Chat chat) {
+  void setChat(final Chat chat) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingAction.invokeAndWait(() -> setChat(chat));
       return;
