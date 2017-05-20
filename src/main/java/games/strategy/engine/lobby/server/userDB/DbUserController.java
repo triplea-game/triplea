@@ -63,6 +63,7 @@ public class DbUserController implements UserDao {
   public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin) {
     primaryDao.updateUser(name, email, hashedPassword, admin);
     try {
+      // TODO : if there is a timeout on failure, this may need to be done on a background thread
       implementations.forEach(dao -> dao.updateUser(name, email, hashedPassword, admin));
     } catch (Exception e) {
       logger.warning(
@@ -79,6 +80,7 @@ public class DbUserController implements UserDao {
       final boolean admin) {
     primaryDao.createUser(name, email, hashedPassword, admin);
     try {
+      // TODO : if there is a timeout on failure, this may need to be done on a background thread
       implementations.forEach(dao -> dao.createUser(name, email, hashedPassword, admin));
     } catch (Exception e) {
       logger.warning(
