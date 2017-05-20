@@ -613,7 +613,7 @@ public class WeakAI extends AbstractAI {
       // next take territories with largest PU value
       return ta2.getProduction() - ta1.getProduction();
     });
-    final List<Territory> isWaterTerr = Utils.onlyWaterTerr(data, enemyOwned);
+    final List<Territory> isWaterTerr = Utils.onlyWaterTerr(enemyOwned);
     enemyOwned.removeAll(isWaterTerr);
     // first find the territories we can just walk into
     for (final Territory enemy : enemyOwned) {
@@ -818,7 +818,7 @@ public class WeakAI extends AbstractAI {
     final CompositeMatch<Unit> ourFactories =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits);
     final List<Territory> rfactories =
-        Match.getMatches(Utils.findUnitTerr(data, player, ourFactories), Matches.isTerritoryOwnedBy(player));
+        Match.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
         && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {

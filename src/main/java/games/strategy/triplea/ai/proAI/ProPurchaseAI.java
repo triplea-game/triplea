@@ -344,8 +344,8 @@ public class ProPurchaseAI {
         // Find current battle result
         final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-        final ProBattleResult result = calc.calculateBattleResults(player, t, new ArrayList<>(enemyAttackingUnits),
-            placeTerritory.getDefendingUnits(), enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+        final ProBattleResult result = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
+            placeTerritory.getDefendingUnits(), enemyAttackOptions.getMax(t).getMaxBombardUnits());
         placeTerritory.setMinBattleResult(result);
         double holdValue = 0;
         if (t.isWater()) {
@@ -518,8 +518,8 @@ public class ProPurchaseAI {
           enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
           final List<Unit> defenders = new ArrayList<>(placeTerritory.getDefendingUnits());
           defenders.addAll(unitsToPlace);
-          finalResult = calc.calculateBattleResults(player, t, new ArrayList<>(enemyAttackingUnits), defenders,
-              enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+          finalResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits), defenders,
+              enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
           // Break if it can be held
           if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
@@ -823,7 +823,7 @@ public class ProPurchaseAI {
         final List<Unit> defenders = t.getUnits().getMatches(Matches.isUnitAllied(player, data));
         final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-        final ProBattleResult result = calc.estimateDefendBattleResults(player, t, new ArrayList<>(enemyAttackingUnits),
+        final ProBattleResult result = calc.estimateDefendBattleResults(t, new ArrayList<>(enemyAttackingUnits),
             defenders, enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Check if it can't be held or if it can then that it wasn't conquered this turn
@@ -1055,8 +1055,8 @@ public class ProPurchaseAI {
         final List<Unit> unitsToPlace = new ArrayList<>();
         final List<Unit> initialDefendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
         initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
-        ProBattleResult result = calc.calculateBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
-            initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+        ProBattleResult result = calc.calculateBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
+            initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
                 && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
@@ -1120,7 +1120,7 @@ public class ProPurchaseAI {
             final List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
             defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
             defendingUnits.addAll(unitsToPlace);
-            result = calc.estimateDefendBattleResults(player, t, enemyAttackOptions.getMax(t).getMaxUnits(),
+            result = calc.estimateDefendBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
                 defendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
@@ -1747,8 +1747,8 @@ public class ProPurchaseAI {
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         final List<Unit> defenders = new ArrayList<>(placeTerritory.getDefendingUnits());
         defenders.addAll(unitsToPlace);
-        finalResult = calc.calculateBattleResults(player, t, new ArrayList<>(enemyAttackingUnits), defenders,
-            enemyAttackOptions.getMax(t).getMaxBombardUnits(), false);
+        finalResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits), defenders,
+            enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Break if it can be held
         if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)

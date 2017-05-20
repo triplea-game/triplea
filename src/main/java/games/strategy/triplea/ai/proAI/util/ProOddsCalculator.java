@@ -39,7 +39,7 @@ public class ProOddsCalculator {
     isCanceled = true;
   }
 
-  public ProBattleResult estimateAttackBattleResults(final PlayerID player, final Territory t,
+  public ProBattleResult estimateAttackBattleResults(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
@@ -52,10 +52,10 @@ public class ProOddsCalculator {
     if (strengthDifference < 45) {
       return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
-  public ProBattleResult estimateDefendBattleResults(final PlayerID player, final Territory t,
+  public ProBattleResult estimateDefendBattleResults(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
@@ -70,18 +70,17 @@ public class ProOddsCalculator {
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits, new ArrayList<>(), 1);
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
-  public ProBattleResult calculateBattleResults(final PlayerID player, final Territory t,
-      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
-      final boolean isAttacker) {
+  public ProBattleResult calculateBattleResults(final Territory t,
+      final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
     if (result != null) {
       return result;
     }
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits,
@@ -104,12 +103,12 @@ public class ProOddsCalculator {
   }
 
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits,
+  public ProBattleResult callBattleCalculator(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
-    return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
-  public ProBattleResult callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits,
+  public ProBattleResult callBattleCalculator(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits, final Set<Unit> bombardingUnits, final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();
 

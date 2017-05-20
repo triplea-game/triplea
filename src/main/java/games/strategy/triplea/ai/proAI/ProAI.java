@@ -306,7 +306,7 @@ public class ProAI extends AbstractAI {
       return null;
     }
     calc.setData(getGameData());
-    return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
+    return retreatAI.retreatQuery(battleID, battleTerritory, possibleTerritories);
   }
 
   @Override
@@ -451,8 +451,7 @@ public class ProAI extends AbstractAI {
     calc.setData(getGameData());
 
     // Calculate battle results
-    final ProBattleResult result =
-        calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<>(), true);
+    final ProBattleResult result = calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     return result.getTUVSwing() > 0;
   }

@@ -34,7 +34,7 @@ public class ProBattleUtils {
   public static final int SHORT_RANGE = 2;
   public static final int MEDIUM_RANGE = 3;
 
-  public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
+  public static boolean checkForOverwhelmingWin(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
     final GameData data = ProData.getData();
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
@@ -33,8 +32,7 @@ public class ProTransport {
     }
   }
 
-  public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories,
-      final GameData data) {
+  public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
     for (final Territory attackTerritory : attackTerritories) {
       if (seaTransportMap.containsKey(attackTerritory)) {
         seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);

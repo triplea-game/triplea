@@ -25,8 +25,7 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
  */
 public class ProSortMoveOptionsUtils {
 
-  public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final PlayerID player,
-      final Map<Unit, Set<Territory>> unitAttackOptions) {
+  public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final Map<Unit, Set<Territory>> unitAttackOptions) {
 
     final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
     Collections.sort(list, (o1, o2) -> {
@@ -61,7 +60,7 @@ public class ProSortMoveOptionsUtils {
       for (final Territory t : o1.getValue()) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
+          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
               patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
         }
         if (!patd.isCurrentlyWins()) {
@@ -72,7 +71,7 @@ public class ProSortMoveOptionsUtils {
       for (final Territory t : o2.getValue()) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
+          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
               patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
         }
         if (!patd.isCurrentlyWins()) {
@@ -110,7 +109,7 @@ public class ProSortMoveOptionsUtils {
       for (final Territory t : o1.getValue()) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
+          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
               patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
         }
         if (!patd.isCurrentlyWins()) {
@@ -121,7 +120,7 @@ public class ProSortMoveOptionsUtils {
       for (final Territory t : o2.getValue()) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(player, t, patd.getUnits(),
+          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
               patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
         }
         if (!patd.isCurrentlyWins()) {
