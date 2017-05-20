@@ -34,7 +34,7 @@ public class DbUserController implements UserDao {
   private static final UserDao primaryDao = determinePrimaryDataSource();
 
   private static UserDao determinePrimaryDataSource() {
-    List<UserDao> primaryDataSourceCandidates = implementations.stream()
+    final List<UserDao> primaryDataSourceCandidates = implementations.stream()
         .filter(UserDaoPrimarySecondary::isPrimary)
         .collect(Collectors.toList());
 
