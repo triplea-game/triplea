@@ -35,7 +35,7 @@ public final class LocalSystemChecker {
   private static SystemCheck defaultFileSystemCheck() {
     return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
-        File.createTempFile("prefix", "suffix");
+        File.createTempFile("prefix", "suffix").delete();
       } catch (final IOException e) {
         Throwables.propagate(e);
       }
