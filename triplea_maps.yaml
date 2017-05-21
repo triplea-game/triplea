@@ -2,7 +2,7 @@
 # This file is read live by the game whenever you click 'download maps'. Updating this file on the
 # github server will have immediate effect on all game installations. Be careful to not break old
 # game engine versions when adding new fields (but note, unrecognized yaml field names are simply ignored)
-# 
+#
 #
 # Map Property Descriptions:
 #
@@ -26,7 +26,7 @@
 #         and image are printed automatically and do not need to be included in the description
 #
 # img: A URL to a thumbnail of the map. This image is shown as part of the map download description
-# 
+#
 #
 - mapName: Tutorial
   mapCategory: BEST
@@ -88,61 +88,64 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
-    <br> <em><b><font size="6">Created by Rolf Larsson and Hepster</font></b></em>
+    <br><em><b><font size="6">Created by Rolf Larsson and Hepster</font></b></em>
     <br>
-    <br> <em><b><font size="5">Map and Mechanics by Rolf Larsson</font></b></em>
-    <br> <em><b><font size="5">Graphics by Hepster</font></b></em>
+    <br><em><b><font size="5">Map and Mechanics by Rolf Larsson</font></b></em>
+    <br><em><b><font size="5">Graphics by Hepster</font></b></em>
     <br>
     <br>
-        <p>
-    <br><b><em>December 1941</em></b>
-    <br><b>The winter has stopped all actions of the Wehrmacht in front of Moscow. Russian elite troops from Siberia prepare for a conterattack.
+    <br>
+    <b><em>December 1941</em></b>
+    <br>
+    <b>The winter has stopped all actions of the Wehrmacht in front of Moscow. Russian elite troops from Siberia prepare for a conterattack.
     <br>Japan is determined to rule the Pacific and gain the ressorces needed by force. The Imperial Fleet is on its way to attack Pearl Harbour.
     <br>Roosevelt eager to enter the war for the Allies, will get his Casus Belli. China is fighting to survive a Japanese assault on its mainland.
     <br>Italy is determined to restore a Roman like dominion in the Mediterranean Sea, while British forces try to hold on to their territory all
-    <br>over the globe.The events in December 1941 turn the conflicts into a total World War for the 2nd time.
-        </b>
+    <br>over the globe.The events in December 1941 turn the conflicts into a total World War for the 2nd time.</b>
     <br>
-    <br><b>There is a very good manual included within the zip. If you do not know how to get to it, you can download it here:
+    <br>
+    <b>There is a very good manual included within the zip. If you do not know how to get to it, you can download it here:
     <br>http://sourceforge.net/projects/tripleamaps/files/rules/TotalWorldWarManual.pdf</b>
     <br>
     <br><b>Triplea 1.6.1.4 is required at least for the included Tournament Edition.</b>
     <br><b>Triplea 1.7.0.3 is required at least.</b>
     <br>
-        <p> <a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p><a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
     <br>
-        <ul>
-        <li><b>Terrain - modifications for unitvalues and -abilities</b></li>
-        <li><b>A real Technologytree and Researchsystem</b></li>
-        <li><b>A 12 sided Dice based Unitsystem</b></li>
-        <li><b>New units like Heavy Tanks unlocked by technologies</b></li>
-        <li><b>Beautiful ingame newspaper images</b></li>
-        <li><b>Advanced Minor concept/use of local resources</b></li>
-        <li><b>Optional Politics ( ever wanted to be allied with Spain in a ww2 scenario? )</b></li>
-        <li><b>Advanced Productionsystem</b></li>
-        <li><b>Advanced Constructionsystem with Material and Engineers</b></li>
-        <li><b>Scorched Earth - Production buildings get reduced or destroyed</b></li>
-        <li><b>Freedom of play - no rewards/national objectives needed to force a player into any direction</b></li>
-        <li><b>Advanced Infrastructure( destroy your enemies Buildings by Bombing Raids)</b></li>
-        <li><b>Custom Options like National Technolgy advantages</b></li>
-        <li><b>Historical events( Pearl Harbour, Battle of Java Sea,...) and historical accurate setup as much as possible!</b></li>
-        <li><b>and many more...</b></li>
-        </UL><br/>
-        <p> <a name="Nations and Turn order"><font size="6"><b><em>Nations and Turn order</em></b></font></a></p>
+    <ul>
+      <li><b>Terrain - modifications for unitvalues and -abilities</b></li>
+      <li><b>A real Technologytree and Researchsystem</b></li>
+      <li><b>A 12 sided Dice based Unitsystem</b></li>
+      <li><b>New units like Heavy Tanks unlocked by technologies</b></li>
+      <li><b>Beautiful ingame newspaper images</b></li>
+      <li><b>Advanced Minor concept/use of local resources</b></li>
+      <li><b>Optional Politics ( ever wanted to be allied with Spain in a ww2 scenario? )</b></li>
+      <li><b>Advanced Productionsystem</b></li>
+      <li><b>Advanced Constructionsystem with Material and Engineers</b></li>
+      <li><b>Scorched Earth - Production buildings get reduced or destroyed</b></li>
+      <li><b>Freedom of play - no rewards/national objectives needed to force a player into any direction</b></li>
+      <li><b>Advanced Infrastructure( destroy your enemies Buildings by Bombing Raids)</b></li>
+      <li><b>Custom Options like National Technolgy advantages</b></li>
+      <li><b>Historical events( Pearl Harbour, Battle of Java Sea,...) and historical accurate setup as much as possible!</b></li>
+      <li><b>and many more...</b></li>
+    </ul>
     <br>
-        <ul>
-        <li><b>Germany</b> ( Vichy France, Danube Axis, Finnland)</li>
-        <li><b>Russia</b></li>
-        <li><b>Brazil</b> (Neutral-AI as long as not allied)</li>
-        <li><b>Japan</b> ( Manchuria, Thailand)</li>
-        <li><b>China</b></li>
-        <li><b>Spain</b> (Neutral-AI as long as not allied)</li>
-        <li><b>Britain</b> ( Canada, Egypt, South Africa, India, Australia)</li>
-        <li><b>Sweden</b> (Neutral-AI as long as not allied)</li>
-        <li><b>Italy</b></li>
-        <li><b>Usa</b></li>
-        <li><b>Turkey</b> (Neutral-AI as long as not allied)</li>
-        </UL><br/>
+    <p> <a name="Nations and Turn order"><font size="6"><b><em>Nations and Turn order</em></b></font></a></p>
+    <br>
+    <ul>
+      <li><b>Germany</b> ( Vichy France, Danube Axis, Finnland)</li>
+      <li><b>Russia</b></li>
+      <li><b>Brazil</b> (Neutral-AI as long as not allied)</li>
+      <li><b>Japan</b> ( Manchuria, Thailand)</li>
+      <li><b>China</b></li>
+      <li><b>Spain</b> (Neutral-AI as long as not allied)</li>
+      <li><b>Britain</b> ( Canada, Egypt, South Africa, India, Australia)</li>
+      <li><b>Sweden</b> (Neutral-AI as long as not allied)</li>
+      <li><b>Italy</b></li>
+      <li><b>Usa</b></li>
+      <li><b>Turkey</b> (Neutral-AI as long as not allied)</li>
+    </ul>
+    <br>
     <br><b>Smaller Nations ( those in brackets like Finnland) have their own territory, income and production, but their forces are beeing controlled and moved by their major power.<b>
     <br><b>This allows to play only the majorpowers without having too many nations to be played, but have a realistic use of local resources.<b>
     <br>
@@ -167,33 +170,37 @@
     <br>Play either the Union or the Confederacy to determine the fate of the American Republic.
     <br>
     <br>
-    <br><b>A House Divided (primary game):</b><ul>
-          <li>Operational scale map, spanning 3 campaign theaters.</li>
-          <li>Heavy focus on economic, geography, and logistics.</li>
-          <li>12 sided dice.</li>
-          <li>Fully functional and cuttable railroad lines.</li>
-          <li>Deep, upgradable infrastructure tree.</li>
-          <li>5 resource types, collected from upgradable economic infrastructure, not territory value.</li>
-          <li>Assymmetric victory conditions.</li>
-          <li>Manpower limitations keeps size of armies under realistic control.</li>
-          <li>Only 2 rounds of combat per battle, instead of fight to the death.</li>
-          <li>Can take loans and repay with interest.</li>
-          <li>Unit upkeep costs: troops consume supplies every turn.</li>
-          <li>Unit fuel costs: troops consume require supplies to campaign.</li>
-          <li>Blockade causes inflation and reduces resource production.</li>
-          <li>Low force-to-space-ratio: relatively small stacks roaming the vast American lands, especially in the West.</li>
-          <li>Confederate "Forced March": extra non combat move resets movement counters.</li>
-          <li>"Union logistics": supply depots, shipyards, and railyards provide additional movement.</li>
-          <li>River forts control waterway navigation.</li>
-          <li>Offensive and defensive bonuses and penalties from leadership and constructed fieldworks.</li>
-          <li>Leadership points gained from battlefield experience.</li>
-          <li>Optional commander labels for additional immersion.</li>
-          </ul>
     <br>
-    <br>Also includes--<b>Eastern Campaigns:</b><ul>
-          <li>Most of the features of A House Divided, but on the smaller Eastern Theater only.</li>
-          <li>An "entry-level" way for new players to learn the game mechanics.</li>
-          </ul>
+    <b>A House Divided (primary game):</b>
+    <ul>
+      <li>Operational scale map, spanning 3 campaign theaters.</li>
+      <li>Heavy focus on economic, geography, and logistics.</li>
+      <li>12 sided dice.</li>
+      <li>Fully functional and cuttable railroad lines.</li>
+      <li>Deep, upgradable infrastructure tree.</li>
+      <li>5 resource types, collected from upgradable economic infrastructure, not territory value.</li>
+      <li>Assymmetric victory conditions.</li>
+      <li>Manpower limitations keeps size of armies under realistic control.</li>
+      <li>Only 2 rounds of combat per battle, instead of fight to the death.</li>
+      <li>Can take loans and repay with interest.</li>
+      <li>Unit upkeep costs: troops consume supplies every turn.</li>
+      <li>Unit fuel costs: troops consume require supplies to campaign.</li>
+      <li>Blockade causes inflation and reduces resource production.</li>
+      <li>Low force-to-space-ratio: relatively small stacks roaming the vast American lands, especially in the West.</li>
+      <li>Confederate "Forced March": extra non combat move resets movement counters.</li>
+      <li>"Union logistics": supply depots, shipyards, and railyards provide additional movement.</li>
+      <li>River forts control waterway navigation.</li>
+      <li>Offensive and defensive bonuses and penalties from leadership and constructed fieldworks.</li>
+      <li>Leadership points gained from battlefield experience.</li>
+      <li>Optional commander labels for additional immersion.</li>
+    </ul>
+    <br>
+    <br>
+    Also includes--<b>Eastern Campaigns:</b>
+    <ul>
+      <li>Most of the features of A House Divided, but on the smaller Eastern Theater only.</li>
+      <li>An "entry-level" way for new players to learn the game mechanics.</li>
+    </ul>
     <br>
     <br>
 - mapName: World At War
@@ -230,11 +237,11 @@
 - mapName: Diplomacy
   mapCategory: BEST
   url: https://github.com/triplea-maps/diplomacy/archive/master.zip
-  version: 2 
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_diplomacy_mini.png
   description: |
     <br>An adaptation of the game "Diplomacy" for TripleA.
-    <br>Includes 3 Free-For-All (ffa) games, and 1 normal 
+    <br>Includes 3 Free-For-All (ffa) games, and 1 normal
     <br>
     <br>1) Diplomacy
     <br>This is as close as TripleA lets us come to the real Diplomacy board game. Uses some complex rules, be sure to read the game notes.
@@ -246,7 +253,7 @@
     <br>This is the Diplomacy map of Europe, with "Great War" units.  Also very easy to learn.
     <br>
     <br>4) Diplomacy: WW1
-    <br>Unlike the other 3, this is a normal non-ffa game.  It pits Germany, Austria, and Turkey, against France, England, and Russia.  (Italy is neutral)  
+    <br>Unlike the other 3, this is a normal non-ffa game.  It pits Germany, Austria, and Turkey, against France, England, and Russia.  (Italy is neutral)
         It uses Diplomacy style units, Armies and Navies, with 3 territory types: Land, Sea, and Coastal.
     <br>
     <br>
@@ -288,7 +295,7 @@
   description: |
     <br>
     <h2>1942</h2>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1942_mini.png" />
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1942_mini.png">
     <br>
     <br>A new edition of World War II with new tech and units. Includes the two starting scenarios 1941 and 1942.
 - mapName: World War II v4
@@ -298,7 +305,7 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_1942_mini.png
   description: |
     <br>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_ffa_mini.png" />
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_ffa_mini.png">
     <br>
     <br>The latest edition of World War II. Starting in 1942 with the World War II v3 rule set and a map similar to World War II v2 Revised.
     <br>Includes two 6-Army-Free-For-All variants.
@@ -400,7 +407,7 @@
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
   version: 3
   img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/AoT_mini.png
-  description: |  
+  description: |
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This is an 8 player map with two alliances.
@@ -418,33 +425,33 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_big_world2_mini.png
   description: |
-    <br>Version 6.1.2, last update 2015.1.2 for engine 1.8.0.5 
-    <br>Mod done by Prussia. 
+    <br>Version 6.1.2, last update 2015.1.2 for engine 1.8.0.5
+    <br>Mod done by Prussia.
     <br>Suggestions to y3364andy@hotmail.com
     <br>
-    <br>a.) Content: 
-    <br>Includes 2 scenarios of Big World 2 
-    <br>Big World 2 : Balance of Power 
-    <br>Big World 2 : Rise of the Axis 
+    <br>a.) Content:
+    <br>Includes 2 scenarios of Big World 2
+    <br>Big World 2 : Balance of Power
+    <br>Big World 2 : Rise of the Axis
     <br>
-    <br>b.) Rough overview: 
-    <br>This is a World War 2 themed global map like ww2v3, ww2 revised, Big World 1942 and TWW. This is an averaged sized map. The game play is slower than ww2v3 and ww2 revised, but far faster than NWO and TWW. The game can be decided as quickly as round 6 (appromimately 3 hours) but could sometimes drag on to rounds 10+ between experienced players. 
+    <br>b.) Rough overview:
+    <br>This is a World War 2 themed global map like ww2v3, ww2 revised, Big World 1942 and TWW. This is an averaged sized map. The game play is slower than ww2v3 and ww2 revised, but far faster than NWO and TWW. The game can be decided as quickly as round 6 (appromimately 3 hours) but could sometimes drag on to rounds 10+ between experienced players.
     <br>
-    <br>Features common in both scenarios 
-    <br>- give players a choice of v3 style or NWO/revised style transport and submarine rules. 
-    <br>- automatically balances starting position under either v3 style or revised rules 
-    <br>- optional national objectives for extra income 
-    <br>- optional national advatages for unique units or abilities 
-    <br>- optional balanced techs. Each tech is more-or-less balanced so that no single tech is overpowered. 
-    <br>- been in development since 2011, playtested over 4 years for balance. 
+    <br>Features common in both scenarios
+    <br>- give players a choice of v3 style or NWO/revised style transport and submarine rules.
+    <br>- automatically balances starting position under either v3 style or revised rules
+    <br>- optional national objectives for extra income
+    <br>- optional national advatages for unique units or abilities
+    <br>- optional balanced techs. Each tech is more-or-less balanced so that no single tech is overpowered.
+    <br>- been in development since 2011, playtested over 4 years for balance.
     <br>
-    <br>Big World 2 : Balance of Power 
-    <br>This map develops from Big World : 1942 v3 rules by Prussia, Veqryn, Bung, Pulicat et al. The scenario is set at the turning point of WW2 with the battles of Stalingrad and Midway imminent. Experienced players on Big World : 1942 or its variants should have very little problem playing this map. Playable nations are Russia, Germany, Britain, Italy, China, Japan and USA. 
+    <br>Big World 2 : Balance of Power
+    <br>This map develops from Big World : 1942 v3 rules by Prussia, Veqryn, Bung, Pulicat et al. The scenario is set at the turning point of WW2 with the battles of Stalingrad and Midway imminent. Experienced players on Big World : 1942 or its variants should have very little problem playing this map. Playable nations are Russia, Germany, Britain, Italy, China, Japan and USA.
     <br>
-    <br>Big World 2: Rise of the Axis 
-    <br>This is a 1939 scenario. One Unique feature is the inclusion of the French, who are likely to survive until at least the second round. It is more cost-efficient for Germany to capture Poland before France. Other historical events such as Germany's Axis alliance, Vichy France Surrender and Pearl Harbor are also depicted. This map offers a great variety of strategies for the Axis. 
+    <br>Big World 2: Rise of the Axis
+    <br>This is a 1939 scenario. One Unique feature is the inclusion of the French, who are likely to survive until at least the second round. It is more cost-efficient for Germany to capture Poland before France. Other historical events such as Germany's Axis alliance, Vichy France Surrender and Pearl Harbor are also depicted. This map offers a great variety of strategies for the Axis.
     <br>
-    <br>c.) General tips: 
+    <br>c.) General tips:
     <br>Refer to game notes.
     <br>
   version: 1
@@ -470,9 +477,9 @@
     <br> by Veqryn</em></b>
     <br>
     <br>May 31, 1916, the two greatest navies in the world set sail to meet in the greatest and only full-scale clash of battleships in history.
-    <br>The German High Seas Fleet planned to use its scouting battlecruisers to draw the Royal Navy's battlecruiser group of the Grand Fleet into a trap and 
-        destroy it before the rest of the Grand Fleet could arrive.  The Royal Navy seeked to cut the germans off from their port, then use their numerical 
-        advantage to annihilate the Germans.  
+    <br>The German High Seas Fleet planned to use its scouting battlecruisers to draw the Royal Navy's battlecruiser group of the Grand Fleet into a trap and
+        destroy it before the rest of the Grand Fleet could arrive.  The Royal Navy seeked to cut the germans off from their port, then use their numerical
+        advantage to annihilate the Germans.
     <br>
     <br><b>TO WIN:</b>
     <br>Move an Admiral (your flag) into the enemy's capital.
@@ -482,16 +489,16 @@
     <br><b>HOW TO PLAY:</b>
     <br>This is a tactical game, which means each piece represents a single ship, instead of a navy.
     <br>Each nation is broken up into 2 players: Movement and Armament (Attack).
-    <br>The Movement player first moves all of that nations ships around, as well as buying and placing any new ships, Then the Attack player moves 
+    <br>The Movement player first moves all of that nations ships around, as well as buying and placing any new ships, Then the Attack player moves
         the Shells, Torpedos, and Depth Charges to attack the enemy ships.  The Attack player is simulating the ships firing their weapons at the enemy.
-    <br>The armament (ammunition) used to attack the enemy is used up in the first round of battle and 'dies'.  
+    <br>The armament (ammunition) used to attack the enemy is used up in the first round of battle and 'dies'.
     <br>Then, the Armament player then simulates the ships reloading their weapons, by placing new ammunition on each ship.
     <br>
-    <br>In order to make this a tactical game, we need to give players a good reason to spread out their fleets.  
+    <br>In order to make this a tactical game, we need to give players a good reason to spread out their fleets.
         Here are 2 very good reasons to spread out your ships:
     <br>1. You can only Reload (Place) up to 2 new shells/ammunition per turn PER HEX (any, every, and all hexes).
     <br>2. You may have NO MORE THAN 4 ships per hex, (Max of 4 ships per hex. Only applies to ships, does NOT apply to ammunition).
-    <br>So this means that if you have 4 ships in a hex, and all of them fire at the enemy, you will only be able to 'reload' 2 of the ships. 
+    <br>So this means that if you have 4 ships in a hex, and all of them fire at the enemy, you will only be able to 'reload' 2 of the ships.
         So next round, the 2 you did not reload will not be able to fire at the enemy.
     <br>Both rules are enforced by the game engine.
     <br>
@@ -500,7 +507,7 @@
     <br><b>1)</b> You can Place up to 2 new shells per turn PER HEX (any and all hex), so you may wish to keep your units spread out.
     <br><b>2)</b> You may have NO MORE THAN 4 ships per hex, (max of 4 ships per hex).
     <br><b>3)</b> You can ONLY attack submarines with Depth Charges.
-    <br><b>4)</b> Only Submarines may carry Torpedos, and Torpedos may not travel through targets to get to a further target (Torpedos hit the first target in their 
+    <br><b>4)</b> Only Submarines may carry Torpedos, and Torpedos may not travel through targets to get to a further target (Torpedos hit the first target in their
         path, while shells can fly over targets to reach further targets).
     <br><b>5)</b> Battleships have 2 hit points, but do <b>NOT repair</b>.  All other ships have 1 hit point.
     <br>
@@ -513,11 +520,11 @@
     <br>
     <br>
     <br><b>TIPS:</b>
-    <br><b>*</b> To switch between a Shell and a Depth Charge, just fire your shell/charge into the ocean during the combat-move phase, then place the new 
+    <br><b>*</b> To switch between a Shell and a Depth Charge, just fire your shell/charge into the ocean during the combat-move phase, then place the new
         shell/charge onto the ship during the placement phase.
     <br><b>*</b> You may Attack a sea hex with as many shells/charges/torpedoes as you want, (The stack limit is only on "Placing", which is basically just "reloading").
     <br><b>*</b> Ramming into ships is pointless, your ramming ship will die and not do any damage to the rammed ship (This is intentional).
-    <br><b>*</b> Cruisers and Battlecruisers are the most effective means of hunting subs.  Destroyers can not carry Depth Charges (in ww1 destroyers were 
+    <br><b>*</b> Cruisers and Battlecruisers are the most effective means of hunting subs.  Destroyers can not carry Depth Charges (in ww1 destroyers were
         anti-tboat units, not anti-sub units, destroyers did not become anti-sub units until ww2).
     <br><b>*</b> You get +1 movement when moving away from your factory / naval base.
     <br><b>*</b> To see the big picture, try using "Map Zoom" from the View menu at the top of the screen.
@@ -527,12 +534,12 @@
     <br>Use of Edit Mode (not necessary):
     <br>You do not need to use edit mode to play. You can follow all the rules and never have to use edit mode once.
     <br>
-    <br>* To move subborn ships with the correct shells attached.  Example: sometimes when you have multiple ship types and multiple shell types in the same hex, and you try to 
-        move a ship, the game grabs the wrong shell to go with it.  If this happens, undo and try again moving just 1 ship at a time.  If this still does not work, use 
-        edit mode's movement feature to move what you want where it is allowed to go.  (To do this, go into edit mode, then click the action tab on the right by 
+    <br>* To move subborn ships with the correct shells attached.  Example: sometimes when you have multiple ship types and multiple shell types in the same hex, and you try to
+        move a ship, the game grabs the wrong shell to go with it.  If this happens, undo and try again moving just 1 ship at a time.  If this still does not work, use
+        edit mode's movement feature to move what you want where it is allowed to go.  (To do this, go into edit mode, then click the action tab on the right by
         the stats tab, then edit mode will allow you to move units).  This is very rare, as moving ships 1 at a time solves the problem most of the time.
     <br>
-    <br>* To switch from a Shell to a Depth Charge, or from a Depth Charge to a Shell.  The preferred method is to fire your shells/charges into the ocean and let 
+    <br>* To switch from a Shell to a Depth Charge, or from a Depth Charge to a Shell.  The preferred method is to fire your shells/charges into the ocean and let
         them die, then place a new shell/depth charge on the ship during the placement phase (therefore it is not needed to use edit mode).
     <br>
     <br>
@@ -557,9 +564,9 @@
   version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_red_sun_over_china_mini.png
   description: |
-    <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938. 
+    <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938.
     <br>Will the Japanese and their allies push into the interior of China or will the Nationalist and Communist Chinese and their allies resist the onslaught?
-    <br>Red Sun Over China 
+    <br>Red Sun Over China
     <br> by Pulicat
     <br>
     <br>Alson contains a second  Warlords FFA
@@ -571,24 +578,25 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_mini.png
   description: |
     <br>
-        <CENTER>
-        <b><font size="12"> Feudal Japan </font></b>
+    <center>
+      <b><font size="12"> Feudal Japan </font></b>
+      <br>
+      <br>
+    </center>
+    <br><em><b><font size="3">Designed by Rolf Larsson</font></b></em>
     <br>
-    <br> </CENTER>
-    <br> <em><b><font size="3">Designed by Rolf Larsson</font></b></em>
-    <br>
-        <p>
-    <br><b>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
-    <br>In this game (inspired by the Shogun/Samurai Swords board game) you control one of 17 historical clans struggling for the domination of Japan.
-    <br>The map expands the ideas of the board game with: Cavalry, Ships, Objectives and Alliances.
-    <br>Each clan starts with only his captial and claims more and more territories from his foe.
-    <br>After a few rounds of easy expanding into passive minor Clan territories, the real fight for domination starts.
-    <br>Each Clan fights for its own and most of them will be controlled by the AI to make it lively and every game unique.
-    <br>The AI gets many useful boni (all optional) and is challenging for a single player match, too.
-    <br>Defeat your rivals and claim the title of Shogun for your clan! There is much to be conquered!</b>
-    <br>
-    <br>Requires Triplea 1.6.1 or higher
-        </p>
+    <p>
+      <br><b>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
+      <br>In this game (inspired by the Shogun/Samurai Swords board game) you control one of 17 historical clans struggling for the domination of Japan.
+      <br>The map expands the ideas of the board game with: Cavalry, Ships, Objectives and Alliances.
+      <br>Each clan starts with only his captial and claims more and more territories from his foe.
+      <br>After a few rounds of easy expanding into passive minor Clan territories, the real fight for domination starts.
+      <br>Each Clan fights for its own and most of them will be controlled by the AI to make it lively and every game unique.
+      <br>The AI gets many useful boni (all optional) and is challenging for a single player match, too.
+      <br>Defeat your rivals and claim the title of Shogun for your clan! There is much to be conquered!</b>
+      <br>
+      <br>Requires Triplea 1.6.1 or higher
+    </p>
 - mapName: Battle of Aventurica
   mapCategory: GOOD
   url: https://github.com/triplea-maps/battle_of_aventurica/archive/master.zip
@@ -605,28 +613,28 @@
   version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_wars_mini.png
   description: |
-    <br>by Panguitch 
-    <br>Version 1.0 for TripleA 1.8.0.5 
-    <br>Suggestions to ghpanguitch@gmail.com 
+    <br>by Panguitch
+    <br>Version 1.0 for TripleA 1.8.0.5
+    <br>Suggestions to ghpanguitch@gmail.com
     <br>
-    <br>a.) Content 
-    <br>Contains one xml (Greyhawk Wars) with 10 factions, 3 alliances, and a built in free-for-all option. 
+    <br>a.) Content
+    <br>Contains one xml (Greyhawk Wars) with 10 factions, 3 alliances, and a built in free-for-all option.
     <br>
-    <br>b.) Rough overview: 
-    <br>Greyhawk Wars is an immersive strategy game based on the World of Greyhawk, the classic setting of Dungeons & Dragons. Inspired by an out-of-print tabletop wargame and built on the TripleA engine, Greyhawk Wars offers world-spanning conflict, diverse factions, and flexible opportunities for conquest and diplomacy. Central to the game are the individual personalities who lead each faction, recruiting mercenaries and seeking magical artifacts to tilt the balance of power in their favor. 
+    <br>b.) Rough overview:
+    <br>Greyhawk Wars is an immersive strategy game based on the World of Greyhawk, the classic setting of Dungeons & Dragons. Inspired by an out-of-print tabletop wargame and built on the TripleA engine, Greyhawk Wars offers world-spanning conflict, diverse factions, and flexible opportunities for conquest and diplomacy. Central to the game are the individual personalities who lead each faction, recruiting mercenaries and seeking magical artifacts to tilt the balance of power in their favor.
     <br>
-    <br>c.) General tips: 
-    <br>Hard AI is recommended. Human players must select the "I am Human" option to enable certain features for their faction. Consult the game notes for further tips, rules, and details, or visit the development forum: http://tinyurl.com/ghwars 
-    <br>    
+    <br>c.) General tips:
+    <br>Hard AI is recommended. Human players must select the "I am Human" option to enable certain features for their faction. Consult the game notes for further tips, rules, and details, or visit the development forum: http://tinyurl.com/ghwars
+    <br>
 - mapName: Greyhawk
   mapCategory: GOOD
   url: https://github.com/triplea-maps/greyhawk/archive/master.zip
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_greyhawk_mini.png
   description: |
-    <br>by Panguitch 
-    <br>Version 0.9.9 
-    <br>Suggestions to ghpanguitch@gmail.com 
+    <br>by Panguitch
+    <br>Version 0.9.9
+    <br>Suggestions to ghpanguitch@gmail.com
     <br>
     <br>This version of Greyhawk continues to function, but is being deprecated. Please install the new, massively revised Greyhawk Wars: http://tinyurl.com/ghwars
     <br>
@@ -635,7 +643,7 @@
   url: https://github.com/triplea-maps/caribbean_trade_war/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/CaribbeanTradeWar_mini.png
-  description: |  
+  description: |
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This is a 6 player map with two alliances.
@@ -656,19 +664,19 @@
   description: |
     <br>
         An Anachronistic 20th century scenario based roughly on the years 1890-1914.
-        3 Player version - First team to achieve 500 production wins.     
-        All territories have production capacity and units can be placed in any territory that you control. Each faction has a starting bid, with placement capped at the 
-        territories production value.     
-        In an AI game, the human player should save their bid as the computer.      Ships must be placed in sea zones that are adjacent to a controlled territory or island.      
-        This is a full alliance set up, but the map is designed to be edited.    Some friendly factions can be left to the AI if desired.   
-        More to come later.     
-               -Triplelk (Jason Clark) and Surtur  
+        3 Player version - First team to achieve 500 production wins.
+        All territories have production capacity and units can be placed in any territory that you control. Each faction has a starting bid, with placement capped at the
+        territories production value.
+        In an AI game, the human player should save their bid as the computer.      Ships must be placed in sea zones that are adjacent to a controlled territory or island.
+        This is a full alliance set up, but the map is designed to be edited.    Some friendly factions can be left to the AI if desired.
+        More to come later.
+               -Triplelk (Jason Clark) and Surtur
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
   version: 3
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png
-  description: |  
+  description: |
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This is a 6 player map with two alliances.
@@ -691,16 +699,16 @@
   description: |
     <br> by Geno33 (bpbull@shaw.ca)
     <br>
-    <br>From the creator: "This is an adaptation of the board game Twilight Imperium and it plays quite a bit differently from Axis and Allies. I primarily made this as an 
+    <br>From the creator: "This is an adaptation of the board game Twilight Imperium and it plays quite a bit differently from Axis and Allies. I primarily made this as an
         alternative for the HTML PBEM TI systems that exist, and allow groups of people to play real TI long distance with only one copy of the game.
     <br>But, even without all the cards that come with the game, it stands alone just fine as a good game by it's own right."
     <br>
-    <br>EB: "I am taking a risk here, putting it in the main section right away, since I did not test this mod. But it is so awesomely well done, looking great, perfect documention, 
+    <br>EB: "I am taking a risk here, putting it in the main section right away, since I did not test this mod. But it is so awesomely well done, looking great, perfect documention,
         and it is also based on an established board game, that I trust it in terms of balance and mechanics."
     <br>
     <br>if you play it, help it be perfected by giving feedback!
 - mapName: Star Trek Dilithium War
-  mapCategory: GOOD 
+  mapCategory: GOOD
   url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/StarTrek_mini.png
@@ -766,14 +774,14 @@
     <br>
 - mapName: Big World Variations
   url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
-  version: 2 
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_big_world_mini.png
   description: |
-    <br>Variations of BigWorld. 
+    <br>Variations of BigWorld.
     <br>
     <br>1. June 1942, by Prussia, with a focus on implementing the new technology from v3, as well as national objectives, and new units.
     <br>
-    <br>2. Small's 1939, by Smallman, has many neutrals to consider taking over for extra income. Mod balanced for dice and ll, with good strategy variety. 
+    <br>2. Small's 1939, by Smallman, has many neutrals to consider taking over for extra income. Mod balanced for dice and ll, with good strategy variety.
         Has been around for years and balanced tested over 100 times, was edited from Nekahnets original 1939 version.
     <br>
     <br>3. NekahNet's 1939, by NekahNet, with increased territory income and a focus on historical accuracy and balance.
@@ -800,16 +808,16 @@
     <br>You must have TripleA 1.5.x.x or later installed in order to use these game variants, as only triplea 1.5 or later come with "new_world_order" and the needed unit images.
 - mapName: Pact of Steel Variations
   url: https://github.com/triplea-maps/pact_of_steel_variations/archive/master.zip
-  version: 2 
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_pact_of_steel_china_added_mini.png
   description: |
     <br>
     <br>1. adoy's version of PoS with China added.
-    <br>   This is a variation of Pact of Steel. China has been made its own seperate power, and it has been attempted to rebalance the game accordingly. Their capital is on 
+    <br>   This is a variation of Pact of Steel. China has been made its own seperate power, and it has been attempted to rebalance the game accordingly. Their capital is on
         Sinkiang. Sinkiang is now a Victory City and is worth 3 PU's. Central United States is now worth 5 PU's. China goes after Japan and before the United States. Enjoy!
     <br>
-    <br>2. Pact of Steel China Added game with WWII v3 rules. 
-    <br>   This mod uses the Pact of Steel map with the new rule structure from World War II v3 and China as an additional Ally.  Original POS by: Black Elk, Madmat, Beagle and 
+    <br>2. Pact of Steel China Added game with WWII v3 rules.
+    <br>   This mod uses the Pact of Steel map with the new rule structure from World War II v3 and China as an additional Ally.  Original POS by: Black Elk, Madmat, Beagle and
             Cousin Joe POS China Added by: Adoya http://adoyaaa.blogspot.com WWIIv3 Rules update by SirAdamTheGreat Last edited Dec29, 2009.
     <br>
 - mapName: World War II Revised Variations
@@ -898,7 +906,7 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_siegSkin2_mini.png
   description: |
-    <div style="text-align: left;">     
+    <div style="text-align: left;">
     <br>
     <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
     <br>Alternative Relief Tiles for NWO
@@ -965,50 +973,50 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png
   description: |
     <br>
-    <br>v3 Variants of World At War (original map by Sieg) 
-    <br>Version 1.7.5, last update 2017.03.16 for engine 1.9.0.0 
-    <br>Mod done by sneakingcoward. 
-    <br>Suggestions to wgbt@gmx.at 
-    <br>Game is continuously played by PBEM. Gamers state, that it is one of the best games listed at the depot. 
+    <br>v3 Variants of World At War (original map by Sieg)
+    <br>Version 1.7.5, last update 2017.03.16 for engine 1.9.0.0
+    <br>Mod done by sneakingcoward.
+    <br>Suggestions to wgbt@gmx.at
+    <br>Game is continuously played by PBEM. Gamers state, that it is one of the best games listed at the depot.
     <br>
-    <br>a.) Content: 
-    <br>Includes 3 Mods of WAW. 
-    <br>World at War Variant - v3 ... (with Japan as 2 parties Yamamoto and Hisaichi) 
+    <br>a.) Content:
+    <br>Includes 3 Mods of WAW.
+    <br>World at War Variant - v3 ... (with Japan as 2 parties Yamamoto and Hisaichi)
     <br>World at War Variant - FUEL-AA-Range ... (with Japanese as only 1 combined party)
     <br>World at War Variant - vXXX ... (with Japanese as only 1 combined party)
     <br>
-    <br>b.) Rough overview: 
-    <br>Detailed description inside game notes, following is a rough overview. 
+    <br>b.) Rough overview:
+    <br>Detailed description inside game notes, following is a rough overview.
     <br>
-    <br>All Variants use v3 rules and include: 
-    <br>- paratroopers 
-    <br>- air+sea+land transports, also landing boats, generally proper transport concept 
-    <br>- construction unit 
-    <br>- ability to destroy structures with strategic bombing raid (SBR) 
-    <br>- destroy structures at a retreat 
-    <br>- fighter escorting+intercepting and air battle before normal battle 
-    <br>- battle rounds limit 
-    <br>- multiple hitPoints 
-    <br>- Turn order, which combines axis+allies parties and is therefore perfect for PBEM. 
+    <br>All Variants use v3 rules and include:
+    <br>- paratroopers
+    <br>- air+sea+land transports, also landing boats, generally proper transport concept
+    <br>- construction unit
+    <br>- ability to destroy structures with strategic bombing raid (SBR)
+    <br>- destroy structures at a retreat
+    <br>- fighter escorting+intercepting and air battle before normal battle
+    <br>- battle rounds limit
+    <br>- multiple hitPoints
+    <br>- Turn order, which combines axis+allies parties and is therefore perfect for PBEM.
     <br>
-    <br>The FUEL-AA-Range mod uses additional: 
-    <br>- "Change unit owners" from Brit&US to Rus&CN and Rus to CN 
-    <br>- Fighter scrambling with radar 
-    <br>- Fighter can also do SBR to train, radar, construction and not intercepted planes 
-    <br>- Fuel consumption for production+movement, incl. refineries 
-    <br>- AntiAir (AA) separated to combat- (hit 1 of 6) and bombing raid- (hit 1 of 12) AA 
+    <br>The FUEL-AA-Range mod uses additional:
+    <br>- "Change unit owners" from Brit&US to Rus&CN and Rus to CN
+    <br>- Fighter scrambling with radar
+    <br>- Fighter can also do SBR to train, radar, construction and not intercepted planes
+    <br>- Fuel consumption for production+movement, incl. refineries
+    <br>- AntiAir (AA) separated to combat- (hit 1 of 6) and bombing raid- (hit 1 of 12) AA
     <br>- Airbase enables full range for planes
     <br>
     <br>The vXXX mod uses additional:
     <br>- Recruits
     <br>- SBR of ships
-    <br>- Slightly modified setup for this variant 
+    <br>- Slightly modified setup for this variant
     <br>
-    <br>c.) General tips: 
-    <br>Due to the wide range of possibilities its more a game for experienced players (typical rounds 30). 
-    <br>Specially the supply strategy is crucial for this mod with air+sea+land transport units. 
-    <br>The combination of all possible features enables almost a real handling of warfare. 
-    <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely. 
+    <br>c.) General tips:
+    <br>Due to the wide range of possibilities its more a game for experienced players (typical rounds 30).
+    <br>Specially the supply strategy is crucial for this mod with air+sea+land transport units.
+    <br>The combination of all possible features enables almost a real handling of warfare.
+    <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely.
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
     <br>
 - mapName: World War2010
@@ -1021,7 +1029,7 @@
     <br>
     <br>The nations of the Shanghai Cooperation Organization (SCO) have moved their troops towards the borders with the North Atlantic Treaty Organization (NATO).
     <br>
-    <br>A minor conflict between their respective allies, the Peace and Security Council (PSC) of the African Union and the Union of South American Nations (USAN), will set the 
+    <br>A minor conflict between their respective allies, the Peace and Security Council (PSC) of the African Union and the Union of South American Nations (USAN), will set the
         world on fire...
     <br>
     <br>Map designed and created by: Bas71.
@@ -1032,7 +1040,7 @@
     <br>* The alliance organizations in this map, are actual alliances.
     <br>* The production-value per territory is based on the actual GDP, the natural resources, and the size and growth of their populations.
     <br>* The starting units are based on the actual military strength of each territory.
-    <br>* Neutral territories are powerful, yet interesting to conquer due to their strategic positions and/or production-values. 
+    <br>* Neutral territories are powerful, yet interesting to conquer due to their strategic positions and/or production-values.
     <br>
 - mapName: Global War
   mapCategory: EXPERIMENTAL
@@ -1043,7 +1051,7 @@
     <br>Global War
     <br>Created by Dagon81
     <br>
-    <br>This has to be one of the best looking world maps I've seen.  Scale is a bit bigger than Big World and Ultimate World, but smaller than Domination.  Includes a v3 
+    <br>This has to be one of the best looking world maps I've seen.  Scale is a bit bigger than Big World and Ultimate World, but smaller than Domination.  Includes a v3
         rules version by veqryn.
     <br>
     <br>Filesize is huge, 33mb, so may take a while to download. External sf.net link used. If download does not work, please visit this website:
@@ -1188,10 +1196,10 @@
   description: |
     <br> by sieg
     <br>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_alt_mini2.png" />
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_alt_mini2.png">
     <br>
     <br>
-    <br>Very flexible package of small tactical hex-maps. Both good for fast games as well as well suited for modding. Only needs better adaption to the new TripleA to be 
+    <br>Very flexible package of small tactical hex-maps. Both good for fast games as well as well suited for modding. Only needs better adaption to the new TripleA to be
         elevated, but runs well as it is and was already popular.
     <br>
 - mapName: Neuschwabenland
@@ -1213,9 +1221,9 @@
   description: |
     <br>created by demagogue
     <br>
-    <br>Cold War Asia (1948) covers three interconnected civil wars between pro-democracy and pro-communist forces following the end of WWII, circa 1947 to 1948 and extending past the 1950 Chinese Revolution, the Korean War, and the First Indochina War. Victory Condition... An alliance occupies 10 of the 11 Victory Cities. 
+    <br>Cold War Asia (1948) covers three interconnected civil wars between pro-democracy and pro-communist forces following the end of WWII, circa 1947 to 1948 and extending past the 1950 Chinese Revolution, the Korean War, and the First Indochina War. Victory Condition... An alliance occupies 10 of the 11 Victory Cities.
     <br>
-    <br>A second alternate history variant adds a hypothetical where the US did not drop nuclear weapons on Japan in 1945 and Japan was occupied by the US and USSR following WWII. This variant covers four interconnected civil wars, the three mentioned above plus an alternative history Japan civil war. Victory Condition... An alliance occupies 15 of the 16 Victory Cities. 
+    <br>A second alternate history variant adds a hypothetical where the US did not drop nuclear weapons on Japan in 1945 and Japan was occupied by the US and USSR following WWII. This variant covers four interconnected civil wars, the three mentioned above plus an alternative history Japan civil war. Victory Condition... An alliance occupies 15 of the 16 Victory Cities.
 - mapName: Camp David
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/camp_david/archive/master.zip
@@ -1224,9 +1232,9 @@
   description: |
     <br>By Bas71
     <br>
-    <br>On 29 November 1947 the United Nations General Assembly approved a plan to resolve the Arab-Jewish conflict by 
-        partitioning Palestine into two states, one Jewish and one Arab. After the Arab rejection of this plan, Egypt, Iraq, Jordan, Lebanon 
-        and Syria invaded the territory of the former British Mandate of Palestine. The war concluded with the 1949 Armistice Agreements, but it 
+    <br>On 29 November 1947 the United Nations General Assembly approved a plan to resolve the Arab-Jewish conflict by
+        partitioning Palestine into two states, one Jewish and one Arab. After the Arab rejection of this plan, Egypt, Iraq, Jordan, Lebanon
+        and Syria invaded the territory of the former British Mandate of Palestine. The war concluded with the 1949 Armistice Agreements, but it
         did not mark the end of the Arab-Israeli conflict. Three more wars would follow.
     <br>
     <br>The Camp David map consists of the four Arab - Israeli wars:
@@ -1244,7 +1252,7 @@
   description: |
     <br>October 1962: Cuban Missle Crisis
     <br>
-    <br>Instead of following demands by the U.S. to remove missles in Cuba, Cuba is alligned with the United Soviet Socialist Republics(USSR) to not follow those orders, 
+    <br>Instead of following demands by the U.S. to remove missles in Cuba, Cuba is alligned with the United Soviet Socialist Republics(USSR) to not follow those orders,
         which then leads to war between the North Atlantic Trade Organisation(NATO) members and the Warsaw-Pact members including Cuba.
     <br>
     <br>created by ???
@@ -1258,10 +1266,10 @@
   description: |
     <br>Created by Doctor Che
     <br>
-    <br>The Great Northern War (1700-21) ended the Swedish Empire, leaving Russia dominant in the Baltic Sea and a major 
+    <br>The Great Northern War (1700-21) ended the Swedish Empire, leaving Russia dominant in the Baltic Sea and a major
         player in European politics. The war began as a coordinated attack on Sweden by the coalition in 1700 and ended
-        in 1721 with the Treaty of Nystad and the Stockholm treaties. It was fought between a coalition of Russia, Denmark-Norway, 
-        and Saxony (also the Polish-Lithuanian Commonwealth from 1701 and Prussia and Hanover from 1715) and many smaller 
+        in 1721 with the Treaty of Nystad and the Stockholm treaties. It was fought between a coalition of Russia, Denmark-Norway,
+        and Saxony (also the Polish-Lithuanian Commonwealth from 1701 and Prussia and Hanover from 1715) and many smaller
         northgerman states on one side and Sweden, which was partially helped by the Ottoman Empire (who later left the war) on the other.
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn
@@ -1272,9 +1280,9 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_age_of_the_sturlungs_mini.png
   description: |
     <br>
-        this scenario loosely based somewhere around  the year 1226.   
-        it is in  an early part of a bloody civil war in Iceland.     
-        In 1218 Snorri Sturluson (chieftain of the vestur-Sturlugar) became a vassal of King Hakon of Norway.    
+        this scenario loosely based somewhere around  the year 1226.
+        it is in  an early part of a bloody civil war in Iceland.
+        In 1218 Snorri Sturluson (chieftain of the vestur-Sturlugar) became a vassal of King Hakon of Norway.
         After Snorri returned  home to Iceland he quickly began, expending his rule of domain and/or trying to bring Iceland under the sovereignty of the king of Norway.
 - mapName: First Punic War
   mapCategory: EXPERIMENTAL
@@ -1327,13 +1335,13 @@
     <br>Contributions by Frostion
     <br>If you have any suggestions, find alkexr on the triplea dev forum.
     <br>
-    <br>A game about a war in Tolkien's Middle Earth where the mightiest realms of the Third Age fight for the victory in the struggle between Good and Evil. 
+    <br>A game about a war in Tolkien's Middle Earth where the mightiest realms of the Third Age fight for the victory in the struggle between Good and Evil.
     <br>
-    <br>The game features 
-    <br>- a large map with hundreds of territories and many factions 
-    <br>- different territory effects with major impact on battles 
-    <br>- various unit abilities: there is more difference between units than just attack/defense/movement stats 
-    <br>- Free For All game option 
+    <br>The game features
+    <br>- a large map with hundreds of territories and many factions
+    <br>- different territory effects with major impact on battles
+    <br>- various unit abilities: there is more difference between units than just attack/defense/movement stats
+    <br>- Free For All game option
     <br>
     <br>Read game notes before playing, unless you want to have your strongest units killed by some unexpected enemy ability.
 - mapName: 1914-COW-Empires
@@ -1342,19 +1350,19 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_1914_cow_empires_mini.png
   description: |
-    <br>Version 1.0, last update 2014.12.07 for engine 1.8.0.3 
-    <br>Game done by RogerCooper 
-    <br>Suggestions to RogerCoop@aol.com 
+    <br>Version 1.0, last update 2014.12.07 for engine 1.8.0.3
+    <br>Game done by RogerCooper
+    <br>Suggestions to RogerCoop@aol.com
     <br>
-    <br>a.) Content: 
-    <br>1 Game 
-    <br>1914-COW-Empires 
+    <br>a.) Content:
+    <br>1 Game
+    <br>1914-COW-Empires
     <br>
-    <br>b.) Rough overview: 
-    <br>A WW1 scenario using the Napoleonic Empires map and military/economic data from the Correlates of War database. 
+    <br>b.) Rough overview:
+    <br>A WW1 scenario using the Napoleonic Empires map and military/economic data from the Correlates of War database.
     <br>
-    <br>c.) General tips: 
-    <br>Read game notes before playing. 
+    <br>c.) General tips:
+    <br>Read game notes before playing.
     <br>
 - mapName: Blue vs Gray
   mapCategory: EXPERIMENTAL
@@ -1362,33 +1370,33 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_blue_vs_gray_mini.png
   description: |
-    <br>Version 1.0.4, last update 2015.01.03 for engine 1.8.0.5 
-    <br>Game done by humbabba 
-    <br>Suggestions to humbabba@gmail.com 
+    <br>Version 1.0.4, last update 2015.01.03 for engine 1.8.0.5
+    <br>Game done by humbabba
+    <br>Suggestions to humbabba@gmail.com
     <br>
-    <br>a.) Content: 
-    <br>1 Game 
-    <br>Blue vs. Gray 
+    <br>a.) Content:
+    <br>1 Game
+    <br>Blue vs. Gray
     <br>
-    <br>b.) Rough overview: 
-    <br>A strategic-level Civil War scenario adapted from a simple-yet-elegant 
-    <br>board game. Two players face off as the North and the South in the 
-    <br>American Civil War of 1861-65. Each has control of infantry and 
-    <br>cavalry units, which can be upgraded to stronger versions after 
-    <br>winning battles. Three generals -- Lee, Grant, and Sherman -- are also 
-    <br>featured. Players fight for control of territory with very different 
-    <br>victory objectives. 
+    <br>b.) Rough overview:
+    <br>A strategic-level Civil War scenario adapted from a simple-yet-elegant
+    <br>board game. Two players face off as the North and the South in the
+    <br>American Civil War of 1861-65. Each has control of infantry and
+    <br>cavalry units, which can be upgraded to stronger versions after
+    <br>winning battles. Three generals -- Lee, Grant, and Sherman -- are also
+    <br>featured. Players fight for control of territory with very different
+    <br>victory objectives.
     <br>
-    <br>Much of the game is about maneuvering, as better position can trump 
-    <br>superior firepower, and things evolve in surprising ways. A system for 
-    <br>rail and river movement really mixes things up, and cavalry can jump 
-    <br>over defenders to wreak havoc behind enemy lines. 
+    <br>Much of the game is about maneuvering, as better position can trump
+    <br>superior firepower, and things evolve in surprising ways. A system for
+    <br>rail and river movement really mixes things up, and cavalry can jump
+    <br>over defenders to wreak havoc behind enemy lines.
     <br>
-    <br>The North has lots of advantages, but the South has more ways to win, 
-    <br>giving each side a distinct flavor. 
+    <br>The North has lots of advantages, but the South has more ways to win,
+    <br>giving each side a distinct flavor.
     <br>
-    <br>c) General tips: 
-    <br>AI play is not possible; human-vs.-human play only, online or via email. 
+    <br>c) General tips:
+    <br>AI play is not possible; human-vs.-human play only, online or via email.
     <br>
 - mapName: Ur Quan War Masters Edition
   mapCategory: EXPERIMENTAL
@@ -1397,25 +1405,25 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_ur-quan_slave_war_masters_edition_mini.png
   description: |
     <br>
-    <br>Ur-Quan Slave War: Masters Edition 
-    <br>Version 1.0, last update 2015.4.12 for engine 1.8.0.5 
-    <br>Game done by DrSeptapus 
-    <br>Suggestions to gontoben@hotmail.com 
+    <br>Ur-Quan Slave War: Masters Edition
+    <br>Version 1.0, last update 2015.4.12 for engine 1.8.0.5
+    <br>Game done by DrSeptapus
+    <br>Suggestions to gontoben@hotmail.com
     <br>
-    <br>a.) Content: 
-    <br>Includes 1 Game. 
-    <br>Ur-Quan Slave War: Masters Edition 
+    <br>a.) Content:
+    <br>Includes 1 Game.
+    <br>Ur-Quan Slave War: Masters Edition
     <br>
-    <br>b.) Rough overview: 
-    <br>If you are a fan of Star Control you will quickly notice this map is made with love from a fanboi. You will see every ship featured in Star Control 2, including the ones only available in super melee like the Androsynth Guardian. This map does play differently than most space maps however in that every tile is a land tile and all ships are considered land units(except 2 air units). This may seem odd but is mostly canonical since in Star Control 2 you knew a system was owned by a specific race because they had ships in the system, not because of soldiers on the planets. 
+    <br>b.) Rough overview:
+    <br>If you are a fan of Star Control you will quickly notice this map is made with love from a fanboi. You will see every ship featured in Star Control 2, including the ones only available in super melee like the Androsynth Guardian. This map does play differently than most space maps however in that every tile is a land tile and all ships are considered land units(except 2 air units). This may seem odd but is mostly canonical since in Star Control 2 you knew a system was owned by a specific race because they had ships in the system, not because of soldiers on the planets.
     <br>
-    <br>The game features 
-    <br>- 15 major factions and 3 minor factions available 
-    <br>- 218 tiles(one for each solar system featured in Star Control 2's galaxy map) 
-    <br>- and 34 units including special one time use ships like the Sa-Matra 
+    <br>The game features
+    <br>- 15 major factions and 3 minor factions available
+    <br>- 218 tiles(one for each solar system featured in Star Control 2's galaxy map)
+    <br>- and 34 units including special one time use ships like the Sa-Matra
     <br>
-    <br>c.) General tips: 
-    <br>Read game notes before playing. 
+    <br>c.) General tips:
+    <br>Read game notes before playing.
     <br>
 - mapName: Steampunk
   mapCategory: EXPERIMENTAL
@@ -1424,22 +1432,22 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_Steampunk_mini.png
   description: |
     <br>
-    <br>Large Map of 1915 Earth with some fictional locations. 
-    <br>Version 1.1, last update May 2015 for engine 1.8.0.5 
-    <br>Game done by Patrick Brady 
-    <br>Suggestions to Tekumel1@yahoo.com 
-    <br>a.) Content: 
-    <br>Includes 1 Game. 
-    <br>Steampunk 1915 
+    <br>Large Map of 1915 Earth with some fictional locations.
+    <br>Version 1.1, last update May 2015 for engine 1.8.0.5
+    <br>Game done by Patrick Brady
+    <br>Suggestions to Tekumel1@yahoo.com
+    <br>a.) Content:
+    <br>Includes 1 Game.
+    <br>Steampunk 1915
     <br>
-    <br>b.) Rough overview: 
-    <br>This is the First World War with added Martians. Every nation has special units, map altered in line with fictional locations from period literature.  This has Captain Nemo’s Nautilus and Martian Tripods. 
+    <br>b.) Rough overview:
+    <br>This is the First World War with added Martians. Every nation has special units, map altered in line with fictional locations from period literature.  This has Captain Nemo’s Nautilus and Martian Tripods.
     <br>
-    <br>The game features 
-    <br>- a large map with hundreds of territories and many factions   
-    <br>- various unit abilities and special units.   
+    <br>The game features
+    <br>- a large map with hundreds of territories and many factions
+    <br>- various unit abilities and special units.
     <br>
-    <br>c.) General tips: 
+    <br>c.) General tips:
     <br>An extensive manual is provided in the .zip file. Special units can be powerful.
     <br>
 - mapName: Domination 1914 Blood And Steel
@@ -1448,40 +1456,40 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_blood_and_steel_mini.png
   description: |
-    <br>by Navalland 
-    <br>Version 1.0 for TripleA 1.8.0.5 
-    <br>Suggestions to anillyuksell@hotmail.com 
+    <br>by Navalland
+    <br>Version 1.0 for TripleA 1.8.0.5
+    <br>Suggestions to anillyuksell@hotmail.com
     <br>
-    <br>"Domination 1914 Blood And Steel" is a realistic First World War immersive grand strategy wargame, based on the military conflict between two opposite sides. Germany, Austria, Ottomans, Bulgaria and Bolsheviks are Central Powers. Americans, British, French, Russia, Serbia, Romania, Greece and Japan are Allied. The various countries join the war at different times. Italy can join Central Powers or Allied, depending on Central Powers' achievements. 
+    <br>"Domination 1914 Blood And Steel" is a realistic First World War immersive grand strategy wargame, based on the military conflict between two opposite sides. Germany, Austria, Ottomans, Bulgaria and Bolsheviks are Central Powers. Americans, British, French, Russia, Serbia, Romania, Greece and Japan are Allied. The various countries join the war at different times. Italy can join Central Powers or Allied, depending on Central Powers' achievements.
     <br>
-    <br>Available politic panel and actions to declare war on some neutral countries. Different units for different countries. And different technologies for different countries. Featuring convoy zones, harbours, airfields and dogfighting. 
+    <br>Available politic panel and actions to declare war on some neutral countries. Different units for different countries. And different technologies for different countries. Featuring convoy zones, harbours, airfields and dogfighting.
     <br>
-    <br>Highly dynamic gameplay. The war extending over the immense spaces of Africa, East Asia and Pacific, yet of scarce or no economic value. Europe is where the future of the World shall be forged, with steel and blood... 
-    <br>        
+    <br>Highly dynamic gameplay. The war extending over the immense spaces of Africa, East Asia and Pacific, yet of scarce or no economic value. Europe is where the future of the World shall be forged, with steel and blood...
+    <br>
 - mapName: Invasion USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
   version: 2
   description: |
     UNDER SIEGE: America is an updated mod for Hobbes__ map Invasion USA
-    <br />Objective:
-    <br />	Americans maintain 13 Victory Cities through 12 rounds.
-    <br />	Invader capture and control 18 or more Victory Cities before the end of round 12.
-    <br />
-    <br />Units:
-    <br />	Militia			(3)5/3/1/-(-)  Americans only. Attacks at 5 unless stacked with no militia units.
-    <br />	Infantry		 3/3/1/3 (24)
-    <br />	Mechanized		 3/3/2/4  (9)
-    <br />	Armor			 5/5/2/5 (12)
-    <br />	Helicopter       5/5/4/8  (9)
-    <br />	Bomber			 7/7/6/12 (6)
-    <br />	Strike			 7/0/99/-/-		Americans only.
+    <br>Objective:
+    <br>	Americans maintain 13 Victory Cities through 12 rounds.
+    <br>	Invader capture and control 18 or more Victory Cities before the end of round 12.
+    <br>
+    <br>Units:
+    <br>	Militia			(3)5/3/1/-(-)  Americans only. Attacks at 5 unless stacked with no militia units.
+    <br>	Infantry		 3/3/1/3 (24)
+    <br>	Mechanized		 3/3/2/4  (9)
+    <br>	Armor			 5/5/2/5 (12)
+    <br>	Helicopter       5/5/4/8  (9)
+    <br>	Bomber			 7/7/6/12 (6)
+    <br>	Strike			 7/0/99/-/-		Americans only.
 - mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
   version: 6
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
-  description: |  
+  description: |
     <br><b><em>by Frostion</em></b>
     <br>
     <br>This map features 3 major Axis players and 6 major Allied.
@@ -1495,7 +1503,7 @@
     <br>Enjoy custom map sounds and nation specific music.
     <br>
     <br>Don’t forget to give your feedback on this BETA-stage map.
-    <br>Visit the TripleA forum and find the Iron War thread.    
+    <br>Visit the TripleA forum and find the Iron War thread.
     <br>
     <br>
 - mapName: Feudal Japan Warlords
@@ -1507,24 +1515,25 @@
     <br>
     <br><b><font size="12"> Feudal Japan Warlords </font></b>
     <br>
-    <br> </CENTER>
-    <br> <em><b><font size="6">Created by Rolf Larsson </font></b></em>
+    <br>
+    <br><em><b><font size="6">Created by Rolf Larsson </font></b></em>
     <br>
     <br><b>Inspired by Shogun, Samurai Swords, Ikusa boardgames, this map is done in tripleastyle, adding
     <br>Ships, Seazones, Cavalry and changes a few other things.</b>
     <br>
-    <p> <a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p><a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
     <br>
-        <ul>
-        <li><b>2, 3, 4 or 5 players, free for all</b></li>
-        <li><b>Rotating turnorder</b></li>
-        <li><b>Ninjas and Ronins</b></li>
-        <li><b>Daimyo experience</b></li>
-        <li><b>Guardvalues vs. assassination attempts</b></li>
-        <li><b>Boardgame like maximums for units</b></li>
-        <li><b>Random dealt territories or picked from start</b></li>
-        <li><b>and some more...</b></li>
-        </UL><br/>
+    <ul>
+      <li><b>2, 3, 4 or 5 players, free for all</b></li>
+      <li><b>Rotating turnorder</b></li>
+      <li><b>Ninjas and Ronins</b></li>
+      <li><b>Daimyo experience</b></li>
+      <li><b>Guardvalues vs. assassination attempts</b></li>
+      <li><b>Boardgame like maximums for units</b></li>
+      <li><b>Random dealt territories or picked from start</b></li>
+      <li><b>and some more...</b></li>
+    </ul>
+    <br>
 - mapName: War of the Relics
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/war_of_the_relics/archive/master.zip
@@ -1534,7 +1543,7 @@
     <br>
     <br>Warning: This slow to load (can be ~30seconds per player)
     <br>
-    <br>The War of the Relics is complex medieval-themed strategy game in which two players build factions of noble lords who use powerful titles and offices to gain strength and crush the opposition. 
+    <br>The War of the Relics is complex medieval-themed strategy game in which two players build factions of noble lords who use powerful titles and offices to gain strength and crush the opposition.
     <br>Each lord can recruit sworn troops, mercenaries, druids, and ships to his cause, taking over castles and towns via title or conquest.
     <br>Three sacred relics must be gathered to a player's faction to anoint one of its nobles as the new king.
     <br>A system of random events can thwart the best-laid plans at the most inconvenient times.
@@ -1551,7 +1560,7 @@
     <br>
     <br>Empire
     <br>
-    <br>Empire is a free-for-all strategy game set in the late Roman Empire as various caesars take the field to win dominance. Inspired by a once-popular board game. 
+    <br>Empire is a free-for-all strategy game set in the late Roman Empire as various caesars take the field to win dominance. Inspired by a once-popular board game.
     <br>Each caesar starts off in one of six provinces of the empire with a small army and a fortified city.
     <br>Using his limited supply of generals to lead his troops, each expands and tries to outdo and eliminate the competition - conquer a rival caesar, and you get all his territory and troops as well.
     <br>Along the way, build and fortify cities, send war galleys across the Mediterranean, ransom or execute captive generals, and cope with rampant inflation as the cost of war doubles and triples.
@@ -1673,12 +1682,12 @@
   description: |
     <br>Created by Pulicat
     <br>The zombie apocalypse has arrived!
-    <br>Zombies have spread to most of the main population centers in the United States and are threatening to take over the rest. 
+    <br>Zombies have spread to most of the main population centers in the United States and are threatening to take over the rest.
         Can the US military and bands of survivalist militias contain and exterminate the zombie plague, or will this be the end of civilization as we know it?
     <br>
     <br>abandoned
     <br>
-  version: 2 
+  version: 2
 - mapName: Hex Globe10
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hex_globe10/archive/master.zip
@@ -1688,7 +1697,7 @@
     <br>
   version: 1
 - mapName: Domination 1914 No Mans Land
-  mapCategory: GOOD 
+  mapCategory: GOOD
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
   version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png
@@ -1714,8 +1723,8 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_jurassic_mini.png
   description: |
     <br>
-    <p><b>Welcome to the world of dead reptiles and avian ancestors.</b>
-    <p><br>The map is a low resolution image produced from NASA topological data.
+    <p><b>Welcome to the world of dead reptiles and avian ancestors.</b></p>
+    <p><br>The map is a low resolution image produced from NASA topological data.</p>
     <br>The globe was rotated to center Iceland on the equator before slicing it open and laying it flat.
     <br>This reduces distortions for all land, since only water remains at the poles.
     <br>A small section of turf around Greenland is used for JURASSIC.  Greenland's massive ice block makes it the perfect volcano for the Dimorphodon, one of the first Pterosaurs.
@@ -1788,9 +1797,9 @@
     <br>
     <br>
     <br>
-    <br>The TripleA Map Image Extractor found in the 'Additional Utilities' folder can be used to re-create the map image by using the map's base tiles and 
+    <br>The TripleA Map Image Extractor found in the 'Additional Utilities' folder can be used to re-create the map image by using the map's base tiles and
         pasting them together. Having the map image can help you later on when you are making a mod.
-    <br>The TripleA Map Resizer And Shifter found in the 'Additional Utilities' folder can be used to resize any map you choose by simply choosing the map, 
+    <br>The TripleA Map Resizer And Shifter found in the 'Additional Utilities' folder can be used to resize any map you choose by simply choosing the map,
         setting the scale amount or new dimensions, and having the program do the rest. You can also use it to shift the map by a specified amount.
     <br>
     <br>Please report any errors that you find at http://code.google.com/p/tmapc/issues/list
@@ -1805,9 +1814,9 @@
   description: |
     <br>A VERY simple map.
     <br>Purpose: use these files to make your first map.  If you can make a map out of it, then you can do anything.
-    <br>Basically, many people try to make these big elaborate maps as their very first map, and it often does not turn out well.  They get frustrated, have tons of bugs, and 
-        can't get the game to work (my very first map did not run either...).  
-    <br>So the idea here is that you can take all these files, run them through the map creator, and in 20 minutes you will have a working map.  If you can make it work without bugs, 
+    <br>Basically, many people try to make these big elaborate maps as their very first map, and it often does not turn out well.  They get frustrated, have tons of bugs, and
+        can't get the game to work (my very first map did not run either...).
+    <br>So the idea here is that you can take all these files, run them through the map creator, and in 20 minutes you will have a working map.  If you can make it work without bugs,
         and it runs, then you better understand the development process for maps and go apply what you learned here to the map you always wanted to make.
     <br>
     <br>Created by Veqryn
