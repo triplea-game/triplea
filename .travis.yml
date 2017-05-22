@@ -2,6 +2,10 @@ language: java
 jdk:
 - oraclejdk8
 install: true
+addons:
+  apt:
+    packages:
+      - python3
 script:
 ## validate yamls before we do anything else
 - ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
