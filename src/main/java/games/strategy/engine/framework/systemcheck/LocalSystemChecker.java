@@ -30,8 +30,8 @@ public final class LocalSystemChecker {
   private static SystemCheck defaultNetworkCheck() {
     return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
-        final URL url = new URL("http://www.github.com");
-        url.openConnection();
+        final URL url = new URL("https://github.com");
+        url.openConnection().connect();
       } catch (final Exception e) {
         Throwables.propagate(e);
       }
