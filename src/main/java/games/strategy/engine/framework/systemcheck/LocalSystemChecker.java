@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -19,6 +20,11 @@ public final class LocalSystemChecker {
 
   public LocalSystemChecker() {
     this(ImmutableSet.of(defaultNetworkCheck(), defaultFileSystemCheck()));
+  }
+
+  @VisibleForTesting
+  LocalSystemChecker(final Set<SystemCheck> checks) {
+    systemChecks = checks;
   }
 
   private static SystemCheck defaultNetworkCheck() {
@@ -40,11 +46,6 @@ public final class LocalSystemChecker {
         Throwables.propagate(e);
       }
     });
-  }
-
-
-  protected LocalSystemChecker(final Set<SystemCheck> checks) {
-    systemChecks = checks;
   }
 
   /** Return any exceptions encountered while running each check. */
