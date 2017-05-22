@@ -183,7 +183,7 @@ public class GameRunner {
     showMainFrame();
     new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
     HttpProxy.setupProxies();
-    checkLocalSystem();
+    new Thread(GameRunner::checkLocalSystem).start();
     new Thread(() -> checkForUpdates()).start();
     handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
