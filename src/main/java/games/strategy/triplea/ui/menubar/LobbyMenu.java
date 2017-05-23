@@ -28,8 +28,8 @@ import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
@@ -149,7 +149,7 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (DBUserController.validateUserName(name1) != null) {
+      if (UserDao.validateUserName(name1) != null) {
         if (JOptionPane.showConfirmDialog(m_frame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
@@ -221,7 +221,7 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (DBUserController.validateUserName(name1) != null) {
+      if (UserDao.validateUserName(name1) != null) {
         if (JOptionPane.showConfirmDialog(m_frame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
@@ -378,7 +378,7 @@ public class LobbyMenu extends JMenuBar {
   private void updateAccountDetails() {
     final IUserManager manager =
         (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
-    final DBUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
+    final DbUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
       JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);
       return;
