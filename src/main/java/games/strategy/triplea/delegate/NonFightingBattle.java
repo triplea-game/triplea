@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -32,10 +33,19 @@ import games.strategy.util.Util;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
+  private Set<Territory> m_attackingFrom;
+  private Collection<Territory> m_amphibiousAttackFrom;
+  private Map<Territory, Collection<Unit>> m_attackingFromMap;
 
+  /**
+   *  Constructor. Suppress checkstyle warning.
+   */
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
-    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    super(battleSite, attacker, battleTracker, data);
+    m_attackingFromMap = new HashMap<>();
+    m_attackingFrom = new HashSet<>();
+    m_amphibiousAttackFrom = new ArrayList<>();
   }
 
   @Override
@@ -161,7 +171,10 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
-  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
+  /**
+   *  Add dependent Units. Uninformative comment to suppress checkstyle warning.
+   */
+  public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
       if (m_dependentUnits.get(holder) != null) {
@@ -170,5 +183,29 @@ public class NonFightingBattle extends DependentBattle {
         m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
       }
     }
+  }
+
+  /**
+   *  Return attacking from Collection.
+   */
+  @Override
+  public Collection<Territory> getAttackingFrom() {
+    return m_attackingFrom;
+  }
+
+  /**
+   *  Return attacking from Map.
+   */
+  @Override
+  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+    return m_attackingFromMap;
+  }
+
+  /**
+   * @return territories where there are amphibious attacks.
+   */
+  @Override
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return m_amphibiousAttackFrom;
   }
 }
