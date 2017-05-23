@@ -25,8 +25,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal =
-        new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
+    final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
     final List<Territory> capitalsListOwned =
         new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
@@ -293,13 +292,25 @@ public class TerritoryAttachment extends DefaultAttachment {
 
 
   /**
-   * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
-   * territory to be equal to the
-   * String value passed.
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the string value passed. This method is
+   * used when parsing game XML since it passes string values.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
     m_production = getInt(value);
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
+  }
+
+  /**
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the Integer value passed. This method is
+   * used when working with game history since it passes Integer values.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setProduction(final Integer value) {
+    m_production = value;
     // do NOT remove. unitProduction should always default to production
     m_unitProduction = m_production;
   }
