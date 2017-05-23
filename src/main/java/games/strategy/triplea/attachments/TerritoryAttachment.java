@@ -25,8 +25,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal =
-        new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
+    final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
     final List<Territory> capitalsListOwned =
         new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
@@ -300,6 +299,13 @@ public class TerritoryAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
     m_production = getInt(value);
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setProduction(final Integer value) {
+    m_production = value;
     // do NOT remove. unitProduction should always default to production
     m_unitProduction = m_production;
   }
