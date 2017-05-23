@@ -51,7 +51,6 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.delegate.MoveDelegate;
 
 /**
  * Represents a running game.
@@ -434,7 +433,7 @@ public class ServerGame extends AbstractGame {
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
       final String typeName = currentDelegate.getClass().getTypeName();
-      final String phaseName = typeName.substring(typeName.lastIndexOf('.')+1).replaceFirst("Delegate$","");
+      final String phaseName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
       autoSave("autosaveAfter" + phaseName.substring(0,1).toUpperCase() + phaseName.substring(1) + ".tsvg");
     }
   }

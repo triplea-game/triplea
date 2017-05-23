@@ -19,7 +19,7 @@ public interface UserDao {
   }
 
   /**
-   * @return null if user name is valid, otherwise returns an error message
+   * @return null if user name is valid, otherwise returns an error message.
    */
   static String validateUserName(String userName) {
     // is this a valid user?

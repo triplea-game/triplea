@@ -10,7 +10,7 @@ public class DbUser {
   private final Date joined;
 
   /**
-   * All-arg value object constructor
+   * All-arg value object constructor.
    */
   public DbUser(final String name, final String email, final boolean isAdmin, final Date lastLogin, final Date joined) {
     this.name = name;
