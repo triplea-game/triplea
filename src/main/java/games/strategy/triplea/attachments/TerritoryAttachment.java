@@ -292,9 +292,9 @@ public class TerritoryAttachment extends DefaultAttachment {
 
 
   /**
-   * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
-   * territory to be equal to the
-   * String value passed.
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the string value passed. This method is
+   * used when parsing game XML since it passes string values.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
@@ -303,6 +303,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_unitProduction = m_production;
   }
 
+  /**
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the Integer value passed. This method is
+   * used when working with game history since it passes Integer values.
+   */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final Integer value) {
     m_production = value;
