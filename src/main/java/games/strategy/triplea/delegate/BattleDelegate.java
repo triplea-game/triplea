@@ -60,6 +60,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToRecordBattleStatistics = true;
   private boolean m_needToCheckDefendingPlanesCanLand = true;
   private boolean m_needToCleanup = true;
+  private RocketsFireHelper rocketHelper;
   protected IBattle m_currentBattle = null;
 
   /**
@@ -78,14 +79,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     super.start();
     // we may start multiple times due to loading after saving
     // only initialize once
+    final PlayerID player = m_bridge.getPlayerID();
     if (m_needToInitialize) {
       doInitialize(m_battleTracker, m_bridge);
       m_needToInitialize = false;
     }
+    // Ideally this could be included in the save game but this breaks backwards compatibility
     // do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
     // the order of all of this stuff matters quite a bit.
     if (m_needToScramble) {
+      rocketHelper = new RocketsFireHelper(m_bridge, getData(), player);
+      // TODO: Save rocketHelper in tsvg file and move rocketHelper.fireRockets() to after SBR. Requires version bump.
       doScrambling();
+      rocketHelper.fireRockets();
       m_needToScramble = false;
     }
     if (m_needToKamikazeSuicideAttacks) {

@@ -29,6 +29,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.RocketsFireHelper.RocketType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -197,12 +198,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // WW2V2/WW2V3, fires at end of combat move
     // WW2V1, fires at end of non combat move
-    if (GameStepPropertiesHelper.isFireRockets(data)) {
-      if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID())) {
-        final RocketsFireHelper helper = new RocketsFireHelper();
-        helper.fireRockets(m_bridge, m_bridge.getPlayerID());
-        m_needToDoRockets = false;
-      }
+    if (m_needToDoRockets && GameStepPropertiesHelper.isNonCombatMove(data, true)) {
+      new RocketsFireHelper(m_bridge, m_bridge.getPlayerID(), RocketType.ww2v1);
+      m_needToDoRockets = false;
     }
 
     // do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round,

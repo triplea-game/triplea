@@ -14947,9 +14947,6 @@
     <property name="All Rockets Attack" value="true" editable="false">
       <boolean/>
     </property>
-    <property name="Rocket Attacks Per Factory Infinite" value="true" editable="false">
-      <boolean/>
-    </property>
     <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
       <boolean/>
     </property>

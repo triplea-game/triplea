@@ -89,7 +89,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   // bombingBonus and bombingMaxDieSides
   private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<>();
   private int m_rocketDistance = 0;
-  private int m_rocketNumberPerTerritory = 0;
+  private int m_rocketNumberPerTerritory = 1;
   private HashMap<UnitType, HashSet<String>> m_unitAbilitiesGained = new HashMap<>();
   private boolean m_airborneForces = false;
   private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<>();
@@ -524,8 +524,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketNumberPerTerritory(final String value) throws GameParseException {
     final int v = getInt(value);
-    if (v < 0 || v > 200) {
-      throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
+    if (v < -1 || v > 200) {
+      throw new GameParseException("rocketNumberPerTerritory must be between -1 and 200" + thisErrorMsg());
     }
     m_rocketNumberPerTerritory = v;
   }

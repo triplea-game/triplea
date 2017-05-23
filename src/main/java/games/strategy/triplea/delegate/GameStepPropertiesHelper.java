@@ -129,8 +129,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat
-   * move for WW2v1.
+   * Fire rockets after phase is over. This method is here for legacy support. Ideally, all maps with rockets will set
+   * PROPERTY_fireRockets for move and battle phases
    */
   static boolean isFireRockets(final GameData data) {
     final boolean isFireRockets;
@@ -139,8 +139,9 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_fireRockets);
       if (prop != null) {
         isFireRockets = Boolean.parseBoolean(prop);
-      } else if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) {
-        isFireRockets = isCombatDelegate(data);
+      } else if (data.getSequence().getStep().getDelegate().getName().compareTo("battle") == 0) {
+        isFireRockets =
+          games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data);
       } else {
         isFireRockets = isNonCombatDelegate(data);
       }
@@ -346,6 +347,7 @@ public class GameStepPropertiesHelper {
   }
 
   private static boolean isCombatDelegate(final GameData data) {
+    // NonCombatMove endsWith CombatMove so check for NCM first
     if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) {
       return false;
     } else if (data.getSequence().getStep().getName().endsWith("CombatMove")) {

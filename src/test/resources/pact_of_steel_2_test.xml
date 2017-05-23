@@ -4965,10 +4965,6 @@
                 </property>
 
                         <!-- if true allows infinite attacks against a factory by many rockets, if false,will only allow a max of 1 rocket to attack each factory -->
-                <property name="Rocket Attacks Per Factory Infinite" value="false" editable="false">
-                        <boolean/>
-                </property>
-
                 <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
                         <boolean/>
                 </property>
