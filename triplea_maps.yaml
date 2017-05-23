@@ -79,9 +79,9 @@
 - mapName: The Pact of Steel
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_pact_of_steel/archive/master.zip
-  version: 1
+  version: 2
   description: |
-    <br>Revised World War II map with Italian Axis Power
+    <br>Revised World War II map with Italian Axis Power, also includes Pact of Steel 2 that is used to demonstrate engine features
 - mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
