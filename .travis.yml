@@ -3,10 +3,6 @@ jdk:
 - oraclejdk8
 install: true
 script:
-## validate yamls before we do anything else
-- ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
-- ruby -e "require 'yaml';puts YAML.load_file('./lobby_server.yaml')" > /dev/null || exit 1
-## run the gradle build
 - ./gradlew --no-daemon check
 after_success:
 - chmod +x ./.travis/update_checkstyle_thresholds && ./.travis/update_checkstyle_thresholds

@@ -1,0 +1,29 @@
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.github.fge.jsonschema.main.JsonSchemaFactory
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.8.1'
+        classpath group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.8'
+        classpath group: 'com.github.fge', name: 'json-schema-validator', version: '2.2.6'
+    }
+}
+
+ext.validateYaml = { yamlFile, jsonSchemaFile ->
+    def yamlMapper = new ObjectMapper(new YAMLFactory())
+    def yaml = yamlMapper.readTree(yamlFile)
+
+    def jsonMapper = new ObjectMapper()
+    def yamlSchema = jsonMapper.readTree(jsonSchemaFile)
+    def schema = JsonSchemaFactory.byDefault().getJsonSchema(yamlSchema)
+
+    def report = schema.validate(yaml, true)
+    if (!report.success) {
+        throw new GradleException("$yamlFile: $report")
+    }
+}
