@@ -68,7 +68,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private static final long serialVersionUID = 5879502298361231540L;
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
+  private Set<Territory> m_attackingFrom = new HashSet<>();
+  private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
@@ -88,15 +91,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int m_maxRounds;
 
+  /**
+   *  Constructor. Suppress checkstyle warning.
+   */
   public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data,
       final BattleTracker battleTracker) {
-    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    super(battleSite, attacker, battleTracker, data);
     m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
     if (battleSite.isWater()) {
       m_maxRounds = games.strategy.triplea.Properties.getSeaBattleRounds(data);
     } else {
       m_maxRounds = games.strategy.triplea.Properties.getLandBattleRounds(data);
     }
+    m_attackingFromMap = new HashMap<>();
+    m_attackingFrom = new HashSet<>();
+    m_amphibiousAttackFrom = new ArrayList<>();
   }
 
   public void resetDefendingUnits(final PlayerID attacker, final GameData data) {
@@ -2779,5 +2788,29 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return TransportTracker.transporting(units);
+  }
+
+  /**
+   *  Return attacking from Collection.
+   */
+  @Override
+  public Collection<Territory> getAttackingFrom() {
+    return m_attackingFrom;
+  }
+
+  /**
+   *  Return attacking from Map.
+   */
+  @Override
+  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+    return m_attackingFromMap;
+  }
+
+  /**
+   * @return territories where there are amphibious attacks.
+   */
+  @Override
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return m_amphibiousAttackFrom;
   }
 }
