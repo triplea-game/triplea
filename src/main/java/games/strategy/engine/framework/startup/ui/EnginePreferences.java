@@ -50,7 +50,7 @@ import tools.map.xml.creator.MapXmlCreator;
 /**
  * Class for holding various engine related options and preferences.
  */
-public class EnginePreferences extends JDialog {
+class EnginePreferences extends JDialog {
   private static final long serialVersionUID = 5071190543005064757L;
   private final Frame m_parentFrame;
   private JButton m_okButton;
@@ -368,7 +368,7 @@ public class EnginePreferences extends JDialog {
 
   private void setWidgetActivation() {}
 
-  public static void showEnginePreferences(final JComponent parent) {
+  static void showEnginePreferences(final JComponent parent) {
     final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
     final EnginePreferences enginePrefs = new EnginePreferences(parentFrame);
     enginePrefs.pack();

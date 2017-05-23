@@ -219,7 +219,7 @@ public class Database {
     return props;
   }
 
-  public static void backup() {
+  static void backup() {
     final String backupDirName =
         "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
     final File backupRootDir = getBackupDir();

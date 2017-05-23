@@ -39,8 +39,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     SUCCESS, ERROR
   }
 
-
-  public NewGameChooserModel() {
+  NewGameChooserModel() {
     final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
     final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);

@@ -130,7 +130,7 @@ public class InGameLobbyWatcher {
     return name;
   }
 
-  public void setGame(final IGame game) {
+  void setGame(final IGame game) {
     if (m_game != null) {
       m_game.removeGameStepListener(m_gameStepListener);
     }
@@ -158,7 +158,7 @@ public class InGameLobbyWatcher {
     }
   }
 
-  public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
+  InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher) {
     m_messenger = messenger;
     m_remoteMessenger = remoteMessenger;
@@ -261,7 +261,7 @@ public class InGameLobbyWatcher {
     new Thread(r).start();
   }
 
-  public void setGameSelectorModel(final GameSelectorModel model) {
+  void setGameSelectorModel(final GameSelectorModel model) {
     cleanUpGameModelListener();
     if (model != null) {
       m_gameSelectorModel = model;
@@ -294,7 +294,7 @@ public class InGameLobbyWatcher {
     }
   }
 
-  public void shutDown() {
+  void shutDown() {
     m_shutdown = true;
     m_messenger.removeErrorListener(m_messengerErrorListener);
     m_messenger.shutDown();
@@ -309,7 +309,7 @@ public class InGameLobbyWatcher {
     return !m_shutdown;
   }
 
-  public void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
+  void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
     synchronized (m_mutex) {
       m_gameDescription.setStatus(status);
       if (game == null) {
@@ -330,14 +330,14 @@ public class InGameLobbyWatcher {
     return m_gameDescription;
   }
 
-  public void setGameComments(final String comments) {
+  void setGameComments(final String comments) {
     synchronized (m_mutex) {
       m_gameDescription.setComment(comments);
       postUpdate();
     }
   }
 
-  public void setPassworded(final boolean passworded) {
+  void setPassworded(final boolean passworded) {
     synchronized (m_mutex) {
       m_gameDescription.setPassworded(passworded);
       postUpdate();

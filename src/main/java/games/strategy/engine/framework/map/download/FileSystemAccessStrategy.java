@@ -15,11 +15,11 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
-public class FileSystemAccessStrategy {
+class FileSystemAccessStrategy {
 
-  public FileSystemAccessStrategy() {}
+  FileSystemAccessStrategy() {}
 
-  public Optional<Version> getMapVersion(final String mapName) {
+  Optional<Version> getMapVersion(final String mapName) {
     final File potentialFile = new File(mapName);
 
     if (!potentialFile.exists()) {
@@ -34,7 +34,7 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
+  static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
             + formatMapList(toRemove, map -> map.getMapName()) + "</html>",

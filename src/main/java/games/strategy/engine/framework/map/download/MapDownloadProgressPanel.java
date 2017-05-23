@@ -18,7 +18,7 @@ import games.strategy.ui.SwingComponents;
 
 
 /** A small non-modal window that holds the progress bars for the current and pending map downloads. */
-public final class MapDownloadProgressPanel extends JPanel {
+final class MapDownloadProgressPanel extends JPanel {
 
   private static final long serialVersionUID = -7288639737337542689L;
 
@@ -35,19 +35,15 @@ public final class MapDownloadProgressPanel extends JPanel {
   private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
   private final Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
 
-
-
-  public MapDownloadProgressPanel(final JFrame parent) {
+  MapDownloadProgressPanel(final JFrame parent) {
     downloadCoordinator = new DownloadCoordinator();
   }
 
-
-  public void cancel() {
+  void cancel() {
     downloadCoordinator.cancelDownloads();
   }
 
-
-  public void download(List<DownloadFileDescription> newDownloads) {
+  void download(List<DownloadFileDescription> newDownloads) {
     final List<DownloadFileDescription> brandNewDownloads = new ArrayList<>();
     for (final DownloadFileDescription download : newDownloads) {
       if (!downloadList.contains(download) && !download.getMapName().isEmpty()) {

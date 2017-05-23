@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +60,7 @@ public class MutedMacController {
     }
   }
 
-  public void removeMutedMac(final String mac) {
+  private void removeMutedMac(final String mac) {
     s_logger.fine("Removing muted mac:" + mac);
     final Connection con = Database.getConnection();
     try {
@@ -123,40 +121,5 @@ public class MutedMacController {
       result = -1;
     }
     return result;
-  }
-
-  public List<String> getMacsThatAreStillMuted(final List<String> macs) {
-    final List<String> results = new ArrayList<>();
-    final String sql = "select mac, mute_till from muted_macs where mac = ?";
-    final Connection con = Database.getConnection();
-    try {
-      for (final String mac : macs) {
-        boolean found = false;
-        boolean expired = false;
-        final PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, mac);
-        final ResultSet rs = ps.executeQuery();
-        found = rs.next();
-        // If the mute has expired, allow the mac
-        if (found) {
-          final Timestamp muteTill = rs.getTimestamp(2);
-          if (muteTill != null && muteTill.getTime() < System.currentTimeMillis()) {
-            s_logger.fine("Mute expired for: " + mac);
-            expired = true;
-          }
-        }
-        rs.close();
-        ps.close();
-        if (found && !expired) {
-          results.add(mac);
-        }
-      }
-    } catch (final SQLException sqle) {
-      s_logger.info("Error testing whether macs were muted: " + macs);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
-    return results;
   }
 }

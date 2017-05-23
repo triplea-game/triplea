@@ -38,7 +38,7 @@ import games.strategy.net.Node;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.MD5Crypt;
 
-public class LobbyGamePanel extends JPanel {
+class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
   private JButton m_hostGame;
   private JButton m_joinGame;
@@ -48,7 +48,7 @@ public class LobbyGamePanel extends JPanel {
   private JTable m_gameTable;
   private TableSorter m_tableSorter;
 
-  public LobbyGamePanel(final Messengers messengers) {
+  LobbyGamePanel(final Messengers messengers) {
     m_messengers = messengers;
     createComponents();
     layoutComponents();
@@ -123,7 +123,7 @@ public class LobbyGamePanel extends JPanel {
     add(toolBar, BorderLayout.SOUTH);
   }
 
-  public boolean isAdmin() {
+  boolean isAdmin() {
     return ((IModeratorController) m_messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName())).isAdmin();
   }

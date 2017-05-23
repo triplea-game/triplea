@@ -19,13 +19,13 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-public class LobbyGameController implements ILobbyGameController {
+class LobbyGameController implements ILobbyGameController {
   private static final Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
   private final Object m_mutex = new Object();
   private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
   private final ILobbyGameBroadcaster m_broadcaster;
 
-  public LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
+  LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
     m_broadcaster = broadcaster;
     final IMessenger m_messenger = messenger;
     ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener() {
@@ -105,7 +105,7 @@ public class LobbyGameController implements ILobbyGameController {
     }
   }
 
-  public void register(final IRemoteMessenger remote) {
+  void register(final IRemoteMessenger remote) {
     remote.registerRemote(this, GAME_CONTROLLER_REMOTE);
   }
 
