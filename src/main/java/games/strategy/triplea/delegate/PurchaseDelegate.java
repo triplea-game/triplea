@@ -28,6 +28,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -89,7 +90,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
         }
       }
-      giveBonusIncomeToAI();
+      giveBonusIncome();
       m_needToInitialize = false;
     }
   }
@@ -385,24 +386,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return returnString.toString();
   }
 
-  private void giveBonusIncomeToAI() {
+  private void giveBonusIncome() {
     // TODO and other resources?
-    if (!m_player.isAI()) {
-      return;
-    }
     final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
     if (currentPUs <= 0) {
       return;
     }
-    int toGive = 0;
-    final int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
-    if (bonusPercent != 0) {
-      toGive += (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
-      if (toGive == 0 && bonusPercent > 0 && currentPUs > 0) {
-        toGive += 1;
-      }
-    }
-    toGive += games.strategy.triplea.Properties.getAIBonusIncomeFlatRate(getData());
+    final int bonusPercent = Properties.getBonusIncomePercentage(m_player, getData());
+    int toGive = (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
     if (toGive + currentPUs < 0) {
       toGive = currentPUs * -1;
     }
@@ -410,7 +401,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       return;
     }
     m_bridge.getHistoryWriter()
-        .startEvent("Giving AI player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
+        .startEvent("Giving player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
     m_bridge.addChange(
         ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
   }
