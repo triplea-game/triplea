@@ -442,7 +442,7 @@ public class GameParser {
     try {
       final Class<?> instanceClass = Class.forName(className);
       instance = instanceClass.newInstance();
-    // a lot can go wrong, the following list is just a subset of potential pitfalls
+      // a lot can go wrong, the following list is just a subset of potential pitfalls
     } catch (final ClassNotFoundException cnfe) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
@@ -983,9 +983,9 @@ public class GameParser {
       final Element current = iterator.next();
       // load the class
       final String className = current.getAttribute("javaClass");
-      XmlGameElementMapper elementMapper = new XmlGameElementMapper();
+      final XmlGameElementMapper elementMapper = new XmlGameElementMapper();
 
-      IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
+      final IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
           () -> new GameParseException(mapName, "Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
@@ -1249,7 +1249,7 @@ public class GameParser {
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
-      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
+      final IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
           .orElseThrow(
               () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
