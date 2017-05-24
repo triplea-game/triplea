@@ -1,6 +1,7 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 
 /**
  * Provides typed access to the properties of GameData.
@@ -533,20 +534,8 @@ public class Properties implements Constants {
     return data.getProperties().get(USE_POLITICS, false);
   }
 
-  public static int getAIBonusIncomePercentage(final GameData data) {
-    return data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE, 0);
-  }
-
-  public static int getAIBonusIncomeFlatRate(final GameData data) {
-    return data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE, 0);
-  }
-
-  public static int getAIBonusAttack(final GameData data) {
-    return data.getProperties().get(AI_BONUS_ATTACK, 0);
-  }
-
-  public static int getAIBonusDefense(final GameData data) {
-    return data.getProperties().get(AI_BONUS_DEFENSE, 0);
+  public static int getBonusIncomePercentage(final PlayerID playerId, final GameData data) {
+    return data.getProperties().get(playerId.getName() + BONUS_INCOME_PERCENTAGE, 0);
   }
 
   public static int getRelationshipsLastExtraRounds(final GameData data) {
