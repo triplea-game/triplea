@@ -1406,11 +1406,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttack(final PlayerID player) {
-    int attackValue =
+    final int attackValue =
         m_attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
-    if (attackValue > 0 && player.isAI()) {
-      attackValue += games.strategy.triplea.Properties.getAIBonusAttack(getData());
-    }
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
   }
 
@@ -1457,9 +1454,6 @@ public class UnitAttachment extends DefaultAttachment {
     if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player)) {
       final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(getData());
       defenseValue += bonus;
-    }
-    if (defenseValue > 0 && player.isAI()) {
-      defenseValue += games.strategy.triplea.Properties.getAIBonusDefense(getData());
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
   }
