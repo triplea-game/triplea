@@ -87,11 +87,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final String transcriptText;
       if (blockadeLoss == 0) {
         transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
-            + total + MyFormatter.pluralize(" PU", total) + " total";
+            + total + MyFormatter.pluralize(" PU", total);
       } else {
         transcriptText =
             m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss
-                + " lost to blockades)" + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
+                + " lost to blockades)" + "; end with " + total + MyFormatter.pluralize(" PU", total);
       }
       m_bridge.getHistoryWriter().startEvent(transcriptText);
       endTurnReport.append(transcriptText).append("<br />");
@@ -101,7 +101,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         total += bonds;
         toAdd += bonds;
         final String bondText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds)
-            + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
+            + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total);
         m_bridge.getHistoryWriter().startEvent(bondText);
         endTurnReport.append("<br />").append(bondText).append("<br />");
       }
@@ -120,6 +120,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       endTurnReport.append("<br />").append(addOtherResources(m_bridge));
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
+      final int puIncome = Math.max(0, m_player.getResources().getQuantity(PUs) - leftOverPUs);
+      endTurnReport.append("<br />").append(giveBonusIncomePercentage(puIncome));
+
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
@@ -166,6 +169,23 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     m_needToInitialize = false;
     showEndTurnReport(endTurnReport.toString());
+  }
+
+  private String giveBonusIncomePercentage(final int puIncome) {
+    // TODO and other resources?
+    final int bonusPercent = Properties.getBonusIncomePercentage(m_player, getData());
+    final int bonusIncome = (int) Math.round(((double) puIncome * (double) bonusPercent / 100));
+    if (bonusIncome == 0) {
+      return "";
+    }
+    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final int total = m_player.getResources().getQuantity(PUs) + bonusIncome;
+    final String message = "Giving player bonus income (" + bonusPercent + "%) of " + bonusIncome
+        + MyFormatter.pluralize(" PU", bonusIncome) + "; end with " + total + MyFormatter.pluralize(" PU", total);
+    m_bridge.getHistoryWriter().startEvent(message);
+    m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player,
+        getData().getResourceList().getResource(Constants.PUS), bonusIncome));
+    return message;
   }
 
   protected void showEndTurnReport(final String endTurnReport) {

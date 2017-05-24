@@ -26,9 +26,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -90,7 +88,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
         }
       }
-      giveBonusIncome();
       m_needToInitialize = false;
     }
   }
@@ -386,25 +383,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return returnString.toString();
   }
 
-  private void giveBonusIncome() {
-    // TODO and other resources?
-    final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
-    if (currentPUs <= 0) {
-      return;
-    }
-    final int bonusPercent = Properties.getBonusIncomePercentage(m_player, getData());
-    int toGive = (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
-    if (toGive + currentPUs < 0) {
-      toGive = currentPUs * -1;
-    }
-    if (toGive == 0) {
-      return;
-    }
-    m_bridge.getHistoryWriter()
-        .startEvent("Giving player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
-    m_bridge.addChange(
-        ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
-  }
 }
 
 
