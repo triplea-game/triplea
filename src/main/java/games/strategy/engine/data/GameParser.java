@@ -41,6 +41,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -908,8 +909,8 @@ public class GameParser {
         }
       }
     }
-    data.getPlayerList().forEach(playerId -> data.getProperties()
-        .addEditableProperty(new NumberProperty(playerId.getName() + " Bonus Income Percentage", null, 1000, -100, 0)));
+    data.getPlayerList().forEach(playerId -> data.getProperties().addEditableProperty(
+        new NumberProperty(playerId.getName() + Constants.BONUS_INCOME_PERCENTAGE, null, 1000, -100, 0)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
