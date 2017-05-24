@@ -41,7 +41,6 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -909,23 +908,8 @@ public class GameParser {
         }
       }
     }
-    // add properties for all triplea related maps here:
-    if (!runningList.contains(Constants.AI_BONUS_INCOME_FLAT_RATE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, null, 40, -20, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, null, 200, -100, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_ATTACK)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, null, data.getDiceSides(), 0, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_DEFENSE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
-    }
+    data.getPlayerList().forEach(playerId -> data.getProperties()
+        .addEditableProperty(new NumberProperty(playerId.getName() + " Bonus Income Percentage", null, 1000, -100, 0)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
