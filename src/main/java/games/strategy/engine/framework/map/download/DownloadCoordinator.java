@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -63,7 +64,7 @@ public class DownloadCoordinator {
     for (final Map.Entry<DownloadFile, Runnable> download : downloadMap.entrySet()) {
       if (download.getKey().isWaiting()) {
         new Thread(download.getValue()).start();
-        download.getKey().startAsyncDownload();
+        download.getKey().startAsyncDownload(ClientFileSystemHelper.createTempFile());
         break;
       }
     }

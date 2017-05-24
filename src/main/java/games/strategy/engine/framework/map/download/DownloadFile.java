@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import com.google.common.io.Files;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientFileSystemHelper;
 
 /**
  * Keeps track of the state for a file download from a URL.
@@ -49,8 +48,12 @@ class DownloadFile {
     this.downloadCompletedListeners = new ArrayList<>();
   }
 
-  void startAsyncDownload() {
-    final File fileToDownloadTo = ClientFileSystemHelper.createTempFile();
+  /**
+   * @param fileToDownloadTo The intermediate file to which the download is saved; must not be {@code null}. If the
+   *        download is successful, this file will be moved to the install location. If the download is cancelled, this
+   *        file <strong>WILL NOT</strong> be deleted.
+   */
+  void startAsyncDownload(final File fileToDownloadTo) {
     final FileSizeWatcher watcher = new FileSizeWatcher(fileToDownloadTo, progressUpdateListener);
     addDownloadCompletedListener(() -> watcher.stop());
     state = DownloadState.DOWNLOADING;
