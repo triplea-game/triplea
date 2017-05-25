@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -116,13 +117,16 @@ public class ProPurchaseUtils {
     return purchaseOptions;
   }
 
-  public static ProPurchaseOption randomizePurchaseOption(final Map<ProPurchaseOption, Double> purchaseEfficiencies,
-      final String type) {
+  public static Optional<ProPurchaseOption> randomizePurchaseOption(
+      final Map<ProPurchaseOption, Double> purchaseEfficiencies, final String type) {
 
     ProLogger.trace("Select purchase option for " + type);
     double totalEfficiency = 0;
     for (final Double efficiency : purchaseEfficiencies.values()) {
       totalEfficiency += efficiency;
+    }
+    if (totalEfficiency == 0) {
+      return Optional.empty();
     }
     final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<>();
     double upperBound = 0.0;
@@ -136,10 +140,10 @@ public class ProPurchaseUtils {
     ProLogger.trace("Random number: " + randomNumber);
     for (final ProPurchaseOption ppo : purchasePercentages.keySet()) {
       if (randomNumber <= purchasePercentages.get(ppo)) {
-        return ppo;
+        return Optional.of(ppo);
       }
     }
-    return purchasePercentages.keySet().iterator().next();
+    return Optional.of(purchasePercentages.keySet().iterator().next());
   }
 
   public static List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t,
