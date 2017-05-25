@@ -3,6 +3,7 @@ package games.strategy.engine.framework.systemcheck;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -30,8 +31,11 @@ public final class LocalSystemChecker {
   private static SystemCheck defaultNetworkCheck() {
     return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
+        final int connectTimeoutInMilliseconds = 20000;
         final URL url = new URL("https://github.com");
-        url.openConnection().connect();
+        final URLConnection urlConnection = url.openConnection();
+        urlConnection.setConnectTimeout(connectTimeoutInMilliseconds);
+        urlConnection.connect();
       } catch (final Exception e) {
         Throwables.propagate(e);
       }
