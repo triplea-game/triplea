@@ -1,15 +1,28 @@
 #!/usr/bin/python3
 import yaml
 import sys
+import os
 
-with open(sys.argv[1], 'r') as stream:
+if len(sys.argv) != 3:
+	print("Usage: " + sys.argv[0] +" [Source_File] [Target_Dir]");
+	exit(1);
+sourceFile = sys.argv[1];
+targetDir = sys.argv[2];
+if not os.path.isfile(sourceFile):
+	print("'" + sourceFile + "' is not a File");
+	exit(1);
+if not os.path.isdir(targetDir):
+	print("'" + targetDir + "' is not a directory");
+	exit(1);
+
+with open(sourceFile, 'r') as stream:
 	try:
 		for map in yaml.safe_load(stream):
 			for key, value in map.items():
 				if isinstance(value, str):
 					map[key] = value.strip();
 			map['slug'] = map['mapName'].lower().replace(' ', '-');
-			with open(sys.argv[2] + map['slug'] + '.html', 'w+') as mapFile:
+			with open(os.path.join(targetDir, map['slug'] + '.html'), 'w+') as mapFile:
 				mapFile.write('---\n');
 				map['title'] = map['mapName'] + ' | TripleA Map';
 				description = map.pop('description', '');
