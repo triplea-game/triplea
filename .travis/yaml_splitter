@@ -1,14 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 import yaml
+import sys
 
-with open('./triplea_maps.yaml', 'r') as stream:
+with open(sys.argv[1], 'r') as stream:
 	try:
 		for map in yaml.safe_load(stream):
 			for key, value in map.items():
 				if isinstance(value, str):
 					map[key] = value.strip();
 			map['slug'] = map['mapName'].lower().replace(' ', '-');
-			with open('./website/_maps/' + map['slug'] + '.html', 'w+') as mapFile:
+			with open(sys.argv[2] + map['slug'] + '.html', 'w+') as mapFile:
 				mapFile.write('---\n');
 				map['title'] = map['mapName'] + ' | TripleA Map';
 				description = map.pop('description', '');
