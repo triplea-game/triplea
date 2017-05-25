@@ -8,7 +8,7 @@ import games.strategy.triplea.help.HelpSupport;
 public class GmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
 
-  public GmailEmailSender() {
+  GmailEmailSender() {
     setHost("smtp.gmail.com");
     setPort(587);
     setEncryption(Encryption.TLS);

@@ -53,7 +53,7 @@ import games.strategy.util.Match;
 /**
  * Pro purchase AI.
  */
-public class ProPurchaseAI {
+class ProPurchaseAI {
 
   private final ProOddsCalculator calc;
   private GameData data;
@@ -62,11 +62,11 @@ public class ProPurchaseAI {
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
 
-  public ProPurchaseAI(final ProAI ai) {
+  ProPurchaseAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public int repair(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
+  int repair(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
       final PlayerID player) {
 
     ProLogger.info("Repairing factories with PUsRemaining=" + PUsRemaining);
@@ -121,7 +121,7 @@ public class ProPurchaseAI {
     return PUsRemaining;
   }
 
-  public Map<Territory, ProPurchaseTerritory> purchase(final IPurchaseDelegate purchaseDelegate,
+  Map<Territory, ProPurchaseTerritory> purchase(final IPurchaseDelegate purchaseDelegate,
       final GameData startOfTurnData) {
 
     // Current data fields
@@ -213,7 +213,7 @@ public class ProPurchaseAI {
     return purchaseTerritories;
   }
 
-  public void place(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+  void place(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final IAbstractPlaceDelegate placeDelegate) {
     ProLogger.info("Starting place phase");
 

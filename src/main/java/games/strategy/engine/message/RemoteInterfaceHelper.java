@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
 
-public class RemoteInterfaceHelper {
+class RemoteInterfaceHelper {
   private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
 
-  public static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
+  static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
     if (s_logger.isLoggable(Level.FINEST)) {
@@ -40,7 +40,7 @@ public class RemoteInterfaceHelper {
     throw new IllegalStateException("Method not found");
   }
 
-  public static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
+  static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
     if (s_logger.isLoggable(Level.FINEST)) {

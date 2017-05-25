@@ -198,7 +198,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   // which can be very slow
   private final List<String> m_liveMutedUsernames = new ArrayList<>();
 
-  public boolean IsUsernameMuted(final String username) {
+  private boolean IsUsernameMuted(final String username) {
     synchronized (m_cachedListLock) {
       return m_liveMutedUsernames.contains(username);
     }
@@ -223,7 +223,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
 
-  public boolean IsMacMuted(final String mac) {
+  private boolean IsMacMuted(final String mac) {
     synchronized (m_cachedListLock) {
       return m_liveMutedMacAddresses.contains(mac);
     }

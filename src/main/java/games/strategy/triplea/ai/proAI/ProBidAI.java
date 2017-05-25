@@ -45,13 +45,13 @@ import games.strategy.util.Match;
 /**
  * Pro bid AI.
  */
-public class ProBidAI {
+class ProBidAI {
 
   private static final int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
 
   private GameData data;
 
-  public void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
+  void bid(int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
       final PlayerID player) {
     ProLogger.info("Starting bid purchase phase");
 
@@ -367,7 +367,7 @@ public class ProBidAI {
   }
 
   // TODO: Rewrite this as its from the old AI
-  public void bidPlace(final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+  void bidPlace(final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
     ProLogger.info("Starting bid place phase");
     // if we have purchased a factory, it will be a priority for placing units
     // should place most expensive on it

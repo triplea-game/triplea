@@ -37,7 +37,7 @@ public final class SoundOptions {
     parentPanel.add(soundOptions);
   }
 
-  public SoundOptions(final JComponent parent) {
+  private SoundOptions(final JComponent parent) {
     clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";

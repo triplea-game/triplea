@@ -25,7 +25,7 @@ public class RandomStatsDetails implements Serializable {
   private final DiceStatistic m_totalStats;
   private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<>();
 
-  public RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {
+  RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {
     m_data = randomStats;
     m_totalMap = new IntegerMap<>();
     for (final Entry<PlayerID, IntegerMap<Integer>> entry : m_data.entrySet()) {
@@ -139,7 +139,7 @@ public class RandomStatsDetails implements Serializable {
     return sb.toString();
   }
 
-  public static String getAllStatsString(final RandomStatsDetails details, final String indentation) {
+  static String getAllStatsString(final RandomStatsDetails details, final String indentation) {
     if (details.getTotalStats().getTotal() <= 0) {
       return "";
     }
@@ -187,7 +187,7 @@ public class RandomStatsDetails implements Serializable {
     return panel;
   }
 
-  public static JPanel getAllStats(final RandomStatsDetails details) {
+  static JPanel getAllStats(final RandomStatsDetails details) {
     final Insets insets = new Insets(2, 2, 2, 2);
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());

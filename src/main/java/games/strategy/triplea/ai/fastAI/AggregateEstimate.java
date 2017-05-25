@@ -21,7 +21,7 @@ public class AggregateEstimate extends AggregateResults {
   private final List<Unit> remainingAttackingUnits;
   private final List<Unit> remainingDefendingUnits;
 
-  public AggregateEstimate(final int battleRoundsFought, final double winPercentage,
+  AggregateEstimate(final int battleRoundsFought, final double winPercentage,
       final List<Unit> remainingAttackingUnits, final List<Unit> remainingDefendingUnits) {
     super(1);
     this.battleRoundsFought = battleRoundsFought;

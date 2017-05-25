@@ -1,6 +1,5 @@
 package games.strategy.engine.message.unifiedmessenger;
 
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -323,16 +322,6 @@ public class UnifiedMessenger {
         m_results.put(methodID, results.results);
         m_pendingInvocations.remove(methodID).countDown();
       }
-    }
-  }
-
-  public void dumpState(final PrintStream stream) {
-    synchronized (m_endPointMutex) {
-      stream.println("Local Endpoints:" + m_localEndPoints);
-    }
-    synchronized (m_endPointMutex) {
-      stream.println("Remote nodes with implementors:" + m_results);
-      stream.println("Remote nodes with implementors:" + m_pendingInvocations);
     }
   }
 

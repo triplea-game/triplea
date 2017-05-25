@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * The packet is written over the network as 32 bits indicating the size in bytes, then the data itself.
  * </p>
  */
-public class SocketWriteData {
+class SocketWriteData {
   private static final Logger s_logger = Logger.getLogger(SocketWriteData.class.getName());
   private static final AtomicInteger s_counter = new AtomicInteger();
   private final ByteBuffer m_size;
@@ -27,7 +27,7 @@ public class SocketWriteData {
   // how many times we called write before we finished writing ourselves
   private int m_writeCalls = 0;
 
-  public SocketWriteData(final byte[] data, int count) {
+  SocketWriteData(final byte[] data, int count) {
     m_content = ByteBuffer.allocate(count);
     m_content.put(data, 0, count);
     m_size = ByteBuffer.allocate(4);
@@ -40,18 +40,18 @@ public class SocketWriteData {
     m_content.flip();
   }
 
-  public int size() {
+  int size() {
     return m_size.capacity() + m_content.capacity();
   }
 
-  public int getWriteCalls() {
+  int getWriteCalls() {
     return m_writeCalls;
   }
 
   /**
    * @return true if the write has written the entire message.
    */
-  public boolean write(final SocketChannel channel) throws IOException {
+  boolean write(final SocketChannel channel) throws IOException {
     m_writeCalls++;
     if (m_size.hasRemaining()) {
       final int count = channel.write(m_size);

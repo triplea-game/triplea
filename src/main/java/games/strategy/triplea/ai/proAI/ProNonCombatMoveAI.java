@@ -52,7 +52,7 @@ import games.strategy.util.Match;
 /**
  * Pro non-combat move AI.
  */
-public class ProNonCombatMoveAI {
+class ProNonCombatMoveAI {
 
   private final ProOddsCalculator calc;
   private GameData data;
@@ -60,15 +60,15 @@ public class ProNonCombatMoveAI {
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
-  public ProNonCombatMoveAI(final ProAI ai) {
+  ProNonCombatMoveAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public Map<Territory, ProTerritory> simulateNonCombatMove(final IMoveDelegate moveDel) {
+  Map<Territory, ProTerritory> simulateNonCombatMove(final IMoveDelegate moveDel) {
     return doNonCombatMove(null, null, moveDel);
   }
 
-  public Map<Territory, ProTerritory> doNonCombatMove(Map<Territory, ProTerritory> factoryMoveMap,
+  Map<Territory, ProTerritory> doNonCombatMove(Map<Territory, ProTerritory> factoryMoveMap,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel) {
     ProLogger.info("Starting non-combat move phase");
 
@@ -167,7 +167,7 @@ public class ProNonCombatMoveAI {
     return factoryMoveMap;
   }
 
-  public void doMove(final Map<Territory, ProTerritory> moveMap, final IMoveDelegate moveDel, final GameData data,
+  void doMove(final Map<Territory, ProTerritory> moveMap, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {
 
     this.data = data;
