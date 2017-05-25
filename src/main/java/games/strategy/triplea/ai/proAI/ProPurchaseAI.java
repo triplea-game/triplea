@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
@@ -479,14 +480,9 @@ public class ProPurchaseAI {
         // Purchase necessary defenders
         while (true) {
 
-          // Remove options that cost too many resources or production
+          // Select purchase option
           ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, purchaseOptionsForTerritory,
               resourceTracker, remainingUnitProduction, unitsToPlace, purchaseTerritories);
-          if (purchaseOptionsForTerritory.isEmpty()) {
-            break;
-          }
-
-          // Select purchase option
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
             if (isLand) {
@@ -496,8 +492,12 @@ public class ProPurchaseAI {
                   needDestroyer, unusedCarrierCapacity, unusedLocalCarrierCapacity));
             }
           }
-          final ProPurchaseOption selectedOption =
+          final Optional<ProPurchaseOption> optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
+          if (!optionalSelectedOption.isPresent()) {
+            break;
+          }
+          final ProPurchaseOption selectedOption = optionalSelectedOption.get();
           if (selectedOption.isDestroyer()) {
             needDestroyer = false;
           }
@@ -738,29 +738,33 @@ public class ProPurchaseAI {
             remainingUnitProduction, unitsToPlace, purchaseTerritories);
 
         // Select purchase option
-        ProPurchaseOption selectedOption = null;
+        Optional<ProPurchaseOption> optionalSelectedOption = Optional.empty();
         if (!selectFodderUnit && attackAndDefenseDifference > 0 && !landDefenseOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landDefenseOptions) {
             defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          selectedOption = ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
+          optionalSelectedOption = ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
         } else if (!selectFodderUnit && !landAttackOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landAttackOptions) {
             attackEfficiencies.put(ppo, ppo.getAttackEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          selectedOption = ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
+          optionalSelectedOption = ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
         } else if (!landFodderOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> fodderEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landFodderOptions) {
             fodderEfficiencies.put(ppo, ppo.getFodderEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
-          selectedOption = ProPurchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
-          addedFodderUnits += selectedOption.getQuantity();
-        } else {
+          optionalSelectedOption = ProPurchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
+          if (optionalSelectedOption.isPresent()) {
+            addedFodderUnits += optionalSelectedOption.get().getQuantity();
+          }
+        }
+        if (!optionalSelectedOption.isPresent()) {
           break;
         }
+        final ProPurchaseOption selectedOption = optionalSelectedOption.get();
 
         // Create new temp units
         resourceTracker.purchase(selectedOption);
@@ -1078,13 +1082,6 @@ public class ProPurchaseAI {
           // Purchase enough sea defenders to hold territory
           while (true) {
 
-            // Remove options that cost too much PUs or production
-            ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, seaPurchaseOptionsForTerritory,
-                resourceTracker, remainingUnitProduction, unitsToPlace, purchaseTerritories);
-            if (seaPurchaseOptionsForTerritory.isEmpty()) {
-              break;
-            }
-
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
                 && (result.getTUVSwing() < -1 || result.getWinPercentage() < ProData.winPercentage)) {
@@ -1092,13 +1089,19 @@ public class ProPurchaseAI {
             }
 
             // Select purchase option
+            ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, seaPurchaseOptionsForTerritory,
+                resourceTracker, remainingUnitProduction, unitsToPlace, purchaseTerritories);
             final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
             for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory) {
               defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace,
                   needDestroyer, unusedCarrierCapacity, unusedLocalCarrierCapacity));
             }
-            final ProPurchaseOption selectedOption =
+            final Optional<ProPurchaseOption> optionalSelectedOption =
                 ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
+            if (!optionalSelectedOption.isPresent()) {
+              break;
+            }
+            final ProPurchaseOption selectedOption = optionalSelectedOption.get();
             if (selectedOption.isDestroyer()) {
               needDestroyer = false;
             }
@@ -1220,26 +1223,25 @@ public class ProPurchaseAI {
         seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
         while (true) {
 
-          // Remove options that cost too much PUs or production
-          ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, seaPurchaseOptionsForTerritory,
-              resourceTracker, remainingUnitProduction, unitsToPlace, purchaseTerritories);
-          if (seaPurchaseOptionsForTerritory.isEmpty()) {
-            break;
-          }
-
           // If I have naval attack/defense superiority then break
           if (ProBattleUtils.territoryHasLocalNavalSuperiority(t, player, purchaseTerritories, unitsToPlace)) {
             break;
           }
 
           // Select purchase option
+          ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, seaPurchaseOptionsForTerritory,
+              resourceTracker, remainingUnitProduction, unitsToPlace, purchaseTerritories);
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory) {
             defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer,
                 unusedCarrierCapacity, unusedLocalCarrierCapacity));
           }
-          final ProPurchaseOption selectedOption =
+          final Optional<ProPurchaseOption> optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
+          if (!optionalSelectedOption.isPresent()) {
+            break;
+          }
+          final ProPurchaseOption selectedOption = optionalSelectedOption.get();
           if (selectedOption.isDestroyer()) {
             needDestroyer = false;
           }
@@ -1344,26 +1346,23 @@ public class ProPurchaseAI {
             // Purchase units until transport is full
             while (transportCapacity > 0) {
 
-              // Remove options that cost too much PUs or production
+              // Select amphib purchase option and add units
               ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, amphibPurchaseOptionsForTerritory,
                   resourceTracker, remainingUnitProduction, amphibUnitsToPlace, purchaseTerritories);
-              if (amphibPurchaseOptionsForTerritory.isEmpty()) {
-                break;
-              }
-
-              // Find amphib purchase option
               final Map<ProPurchaseOption, Double> amphibEfficiencies = new HashMap<>();
               for (final ProPurchaseOption ppo : amphibPurchaseOptionsForTerritory) {
                 if (ppo.getTransportCost() <= transportCapacity) {
                   amphibEfficiencies.put(ppo, ppo.getAmphibEfficiency(data, ownedLocalAmphibUnits, amphibUnitsToPlace));
                 }
               }
-              if (amphibEfficiencies.isEmpty()) {
+              final Optional<ProPurchaseOption> optionalSelectedOption =
+                  ProPurchaseUtils.randomizePurchaseOption(amphibEfficiencies, "Amphib");
+              if (!optionalSelectedOption.isPresent()) {
                 break;
               }
+              final ProPurchaseOption ppo = optionalSelectedOption.get();
 
-              // Select amphib purchase option and add units
-              final ProPurchaseOption ppo = ProPurchaseUtils.randomizePurchaseOption(amphibEfficiencies, "Amphib");
+              // Add amphib unit
               final List<Unit> amphibUnits = ppo.getUnitType().create(ppo.getQuantity(), player, true);
               amphibUnitsToPlace.addAll(amphibUnits);
               resourceTracker.purchase(ppo);
@@ -1374,21 +1373,20 @@ public class ProPurchaseAI {
             transportsThatNeedUnits.remove(transport);
           } else {
 
-            // Remove options that cost too much PUs or production
+            // Select purchase option
             ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData,
                 seaTransportPurchaseOptionsForTerritory, resourceTracker, remainingUnitProduction,
                 transportUnitsToPlace, purchaseTerritories);
-            if (seaTransportPurchaseOptionsForTerritory.isEmpty()) {
-              break;
-            }
-
-            // Select purchase option
             final Map<ProPurchaseOption, Double> transportEfficiencies = new HashMap<>();
             for (final ProPurchaseOption ppo : seaTransportPurchaseOptionsForTerritory) {
               transportEfficiencies.put(ppo, ppo.getTransportEfficiency(data));
             }
-            final ProPurchaseOption ppo =
+            final Optional<ProPurchaseOption> optionalSelectedOption =
                 ProPurchaseUtils.randomizePurchaseOption(transportEfficiencies, "Sea Transport");
+            if (!optionalSelectedOption.isPresent()) {
+              break;
+            }
+            final ProPurchaseOption ppo = optionalSelectedOption.get();
 
             // Add transports
             final List<Unit> transports = ppo.getUnitType().create(ppo.getQuantity(), player, true);
@@ -1520,21 +1518,20 @@ public class ProPurchaseAI {
       int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
       while (true) {
 
-        // Remove options that cost too much PUs or production
+        // Select purchase option
         ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, purchaseOptionsForTerritory,
             resourceTracker, remainingUnitProduction, new ArrayList<>(), purchaseTerritories);
-        if (purchaseOptionsForTerritory.isEmpty()) {
-          break;
-        }
-
-        // Select purchase option
         final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           defenseEfficiencies.put(ppo, Math.pow(ppo.getCost(), 2)
               * ppo.getDefenseEfficiency2(1, data, ownedLocalUnits, placeTerritory.getPlaceUnits()));
         }
-        final ProPurchaseOption selectedOption =
+        final Optional<ProPurchaseOption> optionalSelectedOption =
             ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
+        if (!optionalSelectedOption.isPresent()) {
+          break;
+        }
+        final ProPurchaseOption selectedOption = optionalSelectedOption.get();
 
         // Purchase unit
         resourceTracker.purchase(selectedOption);
