@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
+import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
@@ -181,6 +183,7 @@ public class GameRunner {
     showMainFrame();
     new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
     HttpProxy.setupProxies();
+    new Thread(GameRunner::checkLocalSystem).start();
     new Thread(() -> checkForUpdates()).start();
     handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
   }
@@ -194,6 +197,16 @@ public class GameRunner {
     });
   }
 
+  private static void checkLocalSystem() {
+    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
+    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
+    if (!exceptions.isEmpty()) {
+      final String msg = String.format(
+          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
+          exceptions.size(), localSystemChecker.getStatusMessage());
+      ClientLogger.logError(msg, exceptions);
+    }
+  }
 
   /**
    * Move command line arguments to System.properties

@@ -3,8 +3,10 @@ package games.strategy.engine.framework.systemcheck;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -21,11 +23,19 @@ public final class LocalSystemChecker {
     this(ImmutableSet.of(defaultNetworkCheck(), defaultFileSystemCheck()));
   }
 
+  @VisibleForTesting
+  LocalSystemChecker(final Set<SystemCheck> checks) {
+    systemChecks = checks;
+  }
+
   private static SystemCheck defaultNetworkCheck() {
     return new SystemCheck("Can connect to github.com (check network connection)", () -> {
       try {
-        final URL url = new URL("http://www.github.com");
-        url.openConnection();
+        final int connectTimeoutInMilliseconds = 20000;
+        final URL url = new URL("https://github.com");
+        final URLConnection urlConnection = url.openConnection();
+        urlConnection.setConnectTimeout(connectTimeoutInMilliseconds);
+        urlConnection.connect();
       } catch (final Exception e) {
         Throwables.propagate(e);
       }
@@ -35,16 +45,11 @@ public final class LocalSystemChecker {
   private static SystemCheck defaultFileSystemCheck() {
     return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
-        File.createTempFile("prefix", "suffix");
+        File.createTempFile("prefix", "suffix").delete();
       } catch (final IOException e) {
         Throwables.propagate(e);
       }
     });
-  }
-
-
-  protected LocalSystemChecker(final Set<SystemCheck> checks) {
-    systemChecks = checks;
   }
 
   /** Return any exceptions encountered while running each check. */
