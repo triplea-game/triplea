@@ -454,7 +454,6 @@
     <br>c.) General tips:
     <br>Refer to game notes.
     <br>
-  version: 1
 - mapName: Ultimate World
   mapCategory: GOOD
   url: https://github.com/triplea-maps/ultimate_world/archive/master.zip
@@ -1550,7 +1549,6 @@
     <br>
     <br>by humbabba
     <br>
-  version: 1
 - mapName: Empire
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/empire/archive/master.zip
@@ -1610,7 +1608,6 @@
     <br>and simply unpack those into your new Elemental_Forces folder from above. Delete
     <br>Elemental_Forces.zip when ready.
     <br>
-  version: 1
 - mapName: Game of Thrones
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/game_of_thrones/archive/master.zip
@@ -1677,7 +1674,7 @@
 - mapName: Zombieland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/zombieland/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_zombieland_mini.png
   description: |
     <br>Created by Pulicat
@@ -1687,7 +1684,6 @@
     <br>
     <br>abandoned
     <br>
-  version: 2
 - mapName: Hex Globe10
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hex_globe10/archive/master.zip

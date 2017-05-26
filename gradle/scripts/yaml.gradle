@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.github.fge.jsonschema.main.JsonSchemaFactory
+import org.yaml.snakeyaml.LoaderOptions
+import org.yaml.snakeyaml.Yaml
 
 buildscript {
     repositories {
@@ -11,10 +13,24 @@ buildscript {
         classpath group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.8.1'
         classpath group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.8'
         classpath group: 'com.github.fge', name: 'json-schema-validator', version: '2.2.6'
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.18'
     }
 }
 
-ext.validateYaml = { yamlFile, jsonSchemaFile ->
+// Temporary until SnakeYAML defaults to no duplicate keys per YAML 1.2 spec
+// https://bitbucket.org/asomov/snakeyaml/issues/337/option-to-disallow-duplicate-keys
+def validateHasNoDuplicateKeys(yamlFile) {
+    def loaderOptions = new LoaderOptions()
+    loaderOptions.setAllowDuplicateKeys(false)
+    def yaml = new Yaml(loaderOptions)
+    try {
+        yamlFile.withInputStream { yaml.load(it) }
+    } catch (Exception e) {
+        throw new GradleException("$yamlFile: ${e.message}", e)
+    }
+}
+
+def validateSchema(yamlFile, jsonSchemaFile) {
     def yamlMapper = new ObjectMapper(new YAMLFactory())
     def yaml = yamlMapper.readTree(yamlFile)
 
@@ -26,4 +42,9 @@ ext.validateYaml = { yamlFile, jsonSchemaFile ->
     if (!report.success) {
         throw new GradleException("$yamlFile: $report")
     }
+}
+
+ext.validateYaml = { yamlFile, jsonSchemaFile ->
+    validateHasNoDuplicateKeys(yamlFile)
+    validateSchema(yamlFile, jsonSchemaFile)
 }
