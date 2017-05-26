@@ -13,6 +13,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -67,7 +68,6 @@ import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -148,7 +148,6 @@ import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.ImageScrollModel;
-import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -1986,29 +1985,30 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
-    final AtomicReference<ScrollableTextField> textRef = new AtomicReference<>();
-    final AtomicReference<JPanel> panelRef = new AtomicReference<>();
+    final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
+    final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      final ScrollableTextField text = new ScrollableTextField(0, fighters.size());
-      text.setBorder(new EmptyBorder(8, 8, 8, 8));
-      panel.add(text, BorderLayout.CENTER);
-      panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"),
-          BorderLayout.NORTH);
-      panelRef.set(panel);
-      textRef.set(text);
-      panelRef.set(panel);
+      final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), data, false, uiContext);
+      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+      final int availHeight = screenResolution.height - 120;
+      final int availWidth = screenResolution.width - 40;
+      final JScrollPane scroll = new JScrollPane(chooser);
+      scroll.setBorder(BorderFactory.createEmptyBorder());
+      scroll.setPreferredSize(new Dimension(
+          (scroll.getPreferredSize().width > availWidth ? availWidth
+              : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
+          (scroll.getPreferredSize().height > availHeight ? availHeight
+              : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+      panelRef.set(scroll);
+      chooserRef.set(chooser);
     });
-    final int choice = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(), "Place fighters on new carrier?",
-        JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new String[] {"OK", "Cancel"}, "OK",
-        getUIContext().getCountDownLatchHandler());
-    if (choice == 0) {
-      // arrayList.subList() is not serializable
-      return new ArrayList<>(new ArrayList<>(fighters).subList(0, textRef.get().getValue()));
-    } else {
-      return new ArrayList<>(0);
+    final int option = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(),
+        "Move fighters to carrier", JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
+        new String[] {"OK", "Cancel"}, "OK", getUIContext().getCountDownLatchHandler());
+    if (option == JOptionPane.OK_OPTION) {
+      return chooserRef.get().getSelected();
     }
+    return new ArrayList<>();
   }
 
   public BattlePanel getBattlePanel() {
