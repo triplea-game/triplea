@@ -3,6 +3,9 @@ import yaml
 import sys
 import os
 
+# This script splits the triplea_maps.yaml file into multiple files which can be handled by jekyll
+# This way we can have a page for each map without having to manage each one individually
+
 if len(sys.argv) != 3:
 	print("Usage: " + sys.argv[0] +" [Source_File] [Target_Dir]");
 	exit(1);
@@ -26,7 +29,7 @@ with open(sourceFile, 'r') as stream:
 				mapFile.write('---\n');
 				map['title'] = map['mapName'] + ' | TripleA Map';
 				description = map.pop('description', '');
-				map['dlurl'] = map.pop('url', '');
+				map['downloadUrl'] = map.pop('url', '');
 				yaml.dump(map, mapFile, default_flow_style=False);
 				mapFile.write('---\n');
 				mapFile.write(description);
