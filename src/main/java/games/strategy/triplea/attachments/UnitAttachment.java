@@ -56,7 +56,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
+  static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
     final UnitAttachment rVal = (UnitAttachment) type.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
@@ -2277,16 +2277,6 @@ public class UnitAttachment extends DefaultAttachment {
     m_typeAA = "AA";
   }
 
-  public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets,
-      final Match<Unit> typeOfAA, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
-    final Set<String> rVal = new HashSet<>();
-    for (final Unit u : Match.getMatches(aaUnits,
-        Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA, airborneTechTargetsAllowed))) {
-      rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
-    }
-    return rVal;
-  }
-
   public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified) {
     final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
@@ -2706,7 +2696,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
+  private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
     final List<Territory> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist

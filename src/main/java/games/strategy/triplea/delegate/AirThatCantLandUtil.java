@@ -35,7 +35,7 @@ public class AirThatCantLandUtil {
     return games.strategy.triplea.Properties.getLandExistingFightersOnNewCarriers(data);
   }
 
-  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
+  Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
     final GameData data = m_bridge.getData();
     final Collection<Territory> cantLand = new ArrayList<>();
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
@@ -52,7 +52,7 @@ public class AirThatCantLandUtil {
     return cantLand;
   }
 
-  public void removeAirThatCantLand(final PlayerID player, final boolean spareAirInSeaZonesBesideFactories) {
+  void removeAirThatCantLand(final PlayerID player, final boolean spareAirInSeaZonesBesideFactories) {
     final GameData data = m_bridge.getData();
     final GameMap map = data.getMap();
     final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();

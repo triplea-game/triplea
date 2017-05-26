@@ -56,7 +56,7 @@ public class ProPurchaseOption {
   private boolean isAttackSupport;
   private boolean isDefenseSupport;
 
-  public ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
+  ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
       final GameData data) {
     this.productionRule = productionRule;
     this.unitType = unitType;

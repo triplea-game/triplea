@@ -47,7 +47,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return returnList;
   }
 
-  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
+  static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
     final UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(

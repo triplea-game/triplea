@@ -1344,7 +1344,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return unitsAllowed;
   }
 
-  public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
+  int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
     final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
     if (/* !ua.getIsFactory() && */(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1)) {
@@ -1395,7 +1395,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     };
   }
 
-  public boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
+  private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
     if (!isUnitPlacementRestrictions() || !Match.someMatch(units, Matches.UnitRequiresUnitsOnCreation)) {
       return true;
     }
@@ -1528,7 +1528,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return unitsAtStartOfTurnInTO;
   }
 
-  public Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to) {
+  private Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to) {
     if (to == null) {
       return new ArrayList<>();
     }

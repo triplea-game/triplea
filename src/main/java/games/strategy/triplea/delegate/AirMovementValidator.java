@@ -38,7 +38,7 @@ public class AirMovementValidator {
   // any owned air units that are in sea zones without carriers. these would be air units that have already been moved
   // this turn, and
   // therefore would need pickup.
-  public static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units,
+  static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units,
       final Route route, final PlayerID player, final MoveValidationResult result) {
     // First check if we even need to check
     if (getEditMode(data) || // Edit Mode, no need to check
@@ -706,7 +706,7 @@ public class AirMovementValidator {
     return 0;
   }
 
-  public static int carrierCost(final Collection<Unit> units) {
+  static int carrierCost(final Collection<Unit> units) {
     int sum = 0;
     for (final Unit unit : units) {
       sum += carrierCost(unit);
@@ -714,7 +714,7 @@ public class AirMovementValidator {
     return sum;
   }
 
-  public static int carrierCost(final Unit unit) {
+  private static int carrierCost(final Unit unit) {
     if (Matches.UnitCanLandOnCarrier.match(unit)) {
       return UnitAttachment.get(unit.getType()).getCarrierCost();
     }

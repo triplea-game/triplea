@@ -147,7 +147,7 @@ public class ProPurchaseOptionMap {
     return new ArrayList<>(landOptions);
   }
 
-  public List<ProPurchaseOption> getSeaOptions() {
+  private List<ProPurchaseOption> getSeaOptions() {
     final Set<ProPurchaseOption> seaOptions = new HashSet<>();
     seaOptions.addAll(seaDefenseOptions);
     seaOptions.addAll(seaTransportOptions);
