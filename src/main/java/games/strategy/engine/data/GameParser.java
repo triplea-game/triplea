@@ -910,7 +910,7 @@ public class GameParser {
       }
     }
     data.getPlayerList().forEach(playerId -> data.getProperties().addEditableProperty(
-        new NumberProperty(playerId.getName() + Constants.BONUS_INCOME_PERCENTAGE, null, 1000, -100, 0)));
+        new NumberProperty(Constants.getBonusIncomePercentageFor(playerId), null, 1000, -100, 0)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)

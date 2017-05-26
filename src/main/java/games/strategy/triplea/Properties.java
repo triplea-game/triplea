@@ -535,7 +535,7 @@ public class Properties implements Constants {
   }
 
   public static int getBonusIncomePercentage(final PlayerID playerId, final GameData data) {
-    return data.getProperties().get(playerId.getName() + BONUS_INCOME_PERCENTAGE, 0);
+    return data.getProperties().get(Constants.getBonusIncomePercentageFor(playerId), 0);
   }
 
   public static int getRelationshipsLastExtraRounds(final GameData data) {
