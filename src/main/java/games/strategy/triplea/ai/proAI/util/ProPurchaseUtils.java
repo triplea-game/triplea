@@ -215,7 +215,6 @@ public class ProPurchaseUtils {
       final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, 1, true);
       purchaseTerritories.put(t, ppt);
       ProLogger.debug(ppt.toString());
-      System.out.println(ppt.toString());
     }
     return purchaseTerritories;
   }
