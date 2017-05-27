@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -44,10 +46,10 @@ import games.strategy.util.Match;
 public class ProPurchaseUtils {
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
-      final List<ProPurchaseOption> purchaseOptions, final Territory t) {
+      final List<ProPurchaseOption> purchaseOptions, final Territory t, final boolean isBid) {
     final List<ProPurchaseOption> result = new ArrayList<>();
     for (final ProPurchaseOption ppo : purchaseOptions) {
-      if (canTerritoryUsePurchaseOption(player, ppo, t)) {
+      if (canTerritoryUsePurchaseOption(player, ppo, t, isBid)) {
         result.add(ppo);
       }
     }
@@ -55,18 +57,22 @@ public class ProPurchaseUtils {
   }
 
   private static boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo,
-      final Territory t) {
+      final Territory t, final boolean isBid) {
     if (ppo == null) {
       return false;
     }
     final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
-    return canUnitsBePlaced(units, player, t);
+    return canUnitsBePlaced(units, player, t, isBid);
   }
 
-  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t) {
+  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
+      final boolean isBid) {
     final GameData data = ProData.getData();
 
-    final AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
+    AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
+    if (isBid) {
+      placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
+    }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAI(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
     final String s = placeDelegate.canUnitsBePlaced(t, units, player);
@@ -156,7 +162,7 @@ public class ProPurchaseUtils {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final int PUsRemaining = player.getResources().getQuantity(PUs);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
-        findPurchaseOptionsForTerritory(player, landPurchaseOptions, t);
+        findPurchaseOptionsForTerritory(player, landPurchaseOptions, t, false);
     ProPurchaseOption bestDefenseOption = null;
     double maxDefenseEfficiency = 0;
     for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
@@ -188,6 +194,35 @@ public class ProPurchaseUtils {
       ProLogger.debug("Potential purchased defenders: " + placeUnits);
     }
     return placeUnits;
+  }
+
+  public static Map<Territory, ProPurchaseTerritory> findBidTerritories(final PlayerID player) {
+
+    ProLogger.info("Find all bid territories");
+    final GameData data = ProData.getData();
+
+    // Find all territories that I can place units on
+    final Set<Territory> ownedOrHasUnitTerritories =
+        new HashSet<Territory>(data.getMap().getTerritoriesOwnedBy(player));
+    ownedOrHasUnitTerritories.addAll(ProData.myUnitTerritories);
+    final List<Territory> potentialTerritories = Match.getMatches(ownedOrHasUnitTerritories,
+        Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, false, false,
+            false));
+
+    // Create purchase territory holder for each factory territory
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
+    for (final Territory t : potentialTerritories) {
+      final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, 1, true);
+      purchaseTerritories.put(t, ppt);
+      ProLogger.debug(ppt.toString());
+    }
+    return purchaseTerritories;
+  }
+
+  public static void incrementBidTerritories(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
+      ppt.setUnitProduction(ppt.getUnitProduction() + 1);
+    }
   }
 
   public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
