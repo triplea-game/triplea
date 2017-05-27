@@ -203,7 +203,7 @@ public class ProPurchaseUtils {
 
     // Find all territories that I can place units on
     final Set<Territory> ownedOrHasUnitTerritories =
-        new HashSet<Territory>(data.getMap().getTerritoriesOwnedBy(player));
+        new HashSet<>(data.getMap().getTerritoriesOwnedBy(player));
     ownedOrHasUnitTerritories.addAll(ProData.myUnitTerritories);
     final List<Territory> potentialTerritories = Match.getMatches(ownedOrHasUnitTerritories,
         Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, false, false,
