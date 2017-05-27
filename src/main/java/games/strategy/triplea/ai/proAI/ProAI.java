@@ -70,7 +70,6 @@ public class ProAI extends AbstractAI {
   private final ProRetreatAI retreatAI;
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
-  private final ProBidAI bidAI;
 
   // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
@@ -88,7 +87,6 @@ public class ProAI extends AbstractAI {
     retreatAI = new ProRetreatAI(this);
     scrambleAI = new ProScrambleAI(this);
     politicsAI = new ProPoliticsAI(this);
-    bidAI = new ProBidAI();
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
