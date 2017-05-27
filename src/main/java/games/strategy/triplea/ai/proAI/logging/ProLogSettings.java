@@ -24,7 +24,7 @@ public class ProLogSettings implements Serializable {
   private static ProLogSettings s_lastSettings = null;
   private static String PROGRAM_SETTINGS = "Program Settings";
 
-  public static ProLogSettings loadSettings() {
+  static ProLogSettings loadSettings() {
     if (s_lastSettings == null) {
       ProLogSettings result = new ProLogSettings();
       try {
@@ -45,7 +45,7 @@ public class ProLogSettings implements Serializable {
     }
   }
 
-  public static void saveSettings(final ProLogSettings settings) {
+  static void saveSettings(final ProLogSettings settings) {
     s_lastSettings = settings;
     try (final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
         ObjectOutputStream outputStream = new ObjectOutputStream(pool);) {

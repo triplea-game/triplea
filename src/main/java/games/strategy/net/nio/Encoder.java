@@ -14,19 +14,19 @@ import games.strategy.net.Node;
 /**
  * Encodes data to be written by a writer.
  */
-public class Encoder {
+class Encoder {
   private static final Logger s_logger = Logger.getLogger(Encoder.class.getName());
   private final NIOWriter m_writer;
   private final IObjectStreamFactory m_objectStreamFactory;
   private final NIOSocket m_nioSocket;
 
-  public Encoder(final NIOSocket nioSocket, final NIOWriter writer, final IObjectStreamFactory objectStreamFactory) {
+  Encoder(final NIOSocket nioSocket, final NIOWriter writer, final IObjectStreamFactory objectStreamFactory) {
     m_nioSocket = nioSocket;
     m_writer = writer;
     m_objectStreamFactory = objectStreamFactory;
   }
 
-  public void write(final SocketChannel to, final MessageHeader header) {
+  void write(final SocketChannel to, final MessageHeader header) {
     if (s_logger.isLoggable(Level.FINEST)) {
       s_logger.log(Level.FINEST, "Encoding msg:" + header + " to:" + to);
     }

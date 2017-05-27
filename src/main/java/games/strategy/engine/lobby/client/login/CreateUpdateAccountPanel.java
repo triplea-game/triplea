@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.ui.Util;
 
 public class CreateUpdateAccountPanel extends JPanel {
@@ -28,20 +28,20 @@ public class CreateUpdateAccountPanel extends JPanel {
     CANCEL, OK
   }
 
-  private JDialog m_dialog;
-  private JTextField m_userName;
-  private JTextField m_email;
-  private JPasswordField m_password;
-  private JPasswordField m_password2;
-  private JButton m_okButton;
-  private JButton m_cancelButton;
-  private ReturnValue m_returnValue;
+  private JDialog dialog;
+  private JTextField userNameField;
+  private JTextField emailField;
+  private JPasswordField passwordField;
+  private JPasswordField passwordConfirmField;
+  private JButton okButton;
+  private JButton cancelButton;
+  private ReturnValue returnValue;
 
-  public static CreateUpdateAccountPanel newUpdatePanel(final DBUser user) {
+  public static CreateUpdateAccountPanel newUpdatePanel(final DbUser user) {
     final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
-    panel.m_userName.setText(user.getName());
-    panel.m_userName.setEditable(false);
-    panel.m_email.setText(user.getEmail());
+    panel.userNameField.setText(user.getName());
+    panel.userNameField.setEditable(false);
+    panel.emailField.setText(user.getEmail());
     return panel;
   }
 
@@ -58,12 +58,12 @@ public class CreateUpdateAccountPanel extends JPanel {
   }
 
   private void createComponents() {
-    m_userName = new JTextField();
-    m_email = new JTextField();
-    m_password = new JPasswordField();
-    m_password2 = new JPasswordField();
-    m_cancelButton = new JButton("Cancel");
-    m_okButton = new JButton("OK");
+    userNameField = new JTextField();
+    emailField = new JTextField();
+    passwordField = new JPasswordField();
+    passwordConfirmField = new JPasswordField();
+    cancelButton = new JButton("Cancel");
+    okButton = new JButton("OK");
   }
 
   private void layoutComponents(final boolean create) {
@@ -75,84 +75,84 @@ public class CreateUpdateAccountPanel extends JPanel {
     main.setLayout(new GridBagLayout());
     main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
-    main.add(m_userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    main.add(userNameField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(10, 5, 0, 40), 0, 0));
     main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    main.add(passwordField, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(5, 5, 0, 40), 0, 0));
     main.add(new JLabel("Re-type Password:"), new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password2, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(5, 5, 0, 40), 0, 0));
+    main.add(passwordConfirmField, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
     main.add(new JLabel("Email:"), new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 20, 15, 0), 0, 0));
-    main.add(m_email, new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    main.add(emailField, new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(5, 5, 15, 40), 0, 0));
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-    buttons.add(m_okButton);
-    buttons.add(m_cancelButton);
+    buttons.add(okButton);
+    buttons.add(cancelButton);
     add(buttons, BorderLayout.SOUTH);
   }
 
   private void setupListeners() {
-    m_cancelButton.addActionListener(e -> m_dialog.setVisible(false));
-    m_okButton.addActionListener(e -> okPressed());
+    cancelButton.addActionListener(e -> dialog.setVisible(false));
+    okButton.addActionListener(e -> okPressed());
   }
 
   private void okPressed() {
-    if (!Arrays.equals(m_password.getPassword(), m_password2.getPassword())) {
+    if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())) {
       JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match",
           JOptionPane.ERROR_MESSAGE);
-      m_password.setText("");
-      m_password2.setText("");
+      passwordField.setText("");
+      passwordConfirmField.setText("");
       return;
     }
-    if (!games.strategy.util.Util.isMailValid(m_email.getText())) {
+    if (!games.strategy.util.Util.isMailValid(emailField.getText())) {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (DBUserController.validateUserName(m_userName.getText()) != null) {
-      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(m_userName.getText()), "Invalid Username",
+    } else if (UserDao.validateUserName(userNameField.getText()) != null) {
+      JOptionPane.showMessageDialog(this, UserDao.validateUserName(userNameField.getText()), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (m_password.getPassword().length == 0) {
+    } else if (passwordField.getPassword().length == 0) {
       JOptionPane.showMessageDialog(this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (m_password.getPassword().length < 3) {
+    } else if (passwordField.getPassword().length < 3) {
       JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid password",
           JOptionPane.ERROR_MESSAGE);
       return;
     }
-    m_returnValue = ReturnValue.OK;
-    m_dialog.setVisible(false);
+    returnValue = ReturnValue.OK;
+    dialog.setVisible(false);
   }
 
   private void setWidgetActivation() {}
 
   public ReturnValue show(final Window parent) {
-    m_dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
-    m_dialog.getContentPane().add(this);
-    m_dialog.pack();
-    m_dialog.setLocationRelativeTo(parent);
-    m_dialog.setVisible(true);
-    m_dialog.dispose();
-    m_dialog = null;
-    if (m_returnValue == null) {
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
+    dialog.getContentPane().add(this);
+    dialog.pack();
+    dialog.setLocationRelativeTo(parent);
+    dialog.setVisible(true);
+    dialog.dispose();
+    dialog = null;
+    if (returnValue == null) {
       return ReturnValue.CANCEL;
     }
-    return m_returnValue;
+    return returnValue;
   }
 
   public String getPassword() {
-    return new String(m_password.getPassword());
+    return new String(passwordField.getPassword());
   }
 
   public String getEmail() {
-    return m_email.getText();
+    return emailField.getText();
   }
 
   public String getUserName() {
-    return m_userName.getText();
+    return userNameField.getText();
   }
 }

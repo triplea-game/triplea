@@ -12,11 +12,11 @@ import games.strategy.engine.ClientContext;
 import games.strategy.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
-public class DownloadFileProperties {
-  protected static final String VERSION_PROPERTY = "map.version";
+class DownloadFileProperties {
+  static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
-  public static DownloadFileProperties loadForZip(final File zipFile) {
+  static DownloadFileProperties loadForZip(final File zipFile) {
     if (!fromZip(zipFile).exists()) {
       return new DownloadFileProperties();
     }
@@ -29,7 +29,7 @@ public class DownloadFileProperties {
     return rVal;
   }
 
-  public static void saveForZip(final File zipFile, final DownloadFileProperties props) {
+  static void saveForZip(final File zipFile, final DownloadFileProperties props) {
     try (final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.props.store(fos, null);
     } catch (final IOException e) {
@@ -37,13 +37,13 @@ public class DownloadFileProperties {
     }
   }
 
-  public DownloadFileProperties() {}
+  DownloadFileProperties() {}
 
   private static File fromZip(final File zipFile) {
     return new File(zipFile.getAbsolutePath() + ".properties");
   }
 
-  public Version getVersion() {
+  Version getVersion() {
     if (!props.containsKey(VERSION_PROPERTY)) {
       return null;
     }
@@ -56,7 +56,7 @@ public class DownloadFileProperties {
     }
   }
 
-  public void setFrom(final DownloadFileDescription selected) {
+  void setFrom(final DownloadFileDescription selected) {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
     props.setProperty("download.time", new Date().toString());

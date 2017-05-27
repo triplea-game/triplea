@@ -8,47 +8,24 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
-import games.strategy.util.MD5Crypt;
-import games.strategy.util.Util;
+/**
+ * TODO: legacy, migrate away, can be removed when no longer needs to be primary.
+ * @deprecated Avoid using this class, we are trying to move away from Derby DB to a different datasource.
+ */
+@Deprecated
+public class DerbyUserController implements UserDaoPrimarySecondary {
 
-public class DBUserController {
-  private static final Logger s_logger = Logger.getLogger(DBUserController.class.getName());
+  private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
-  /**
-   * @return if this user is valid.
-   */
-  public String validate(final String userName, final String email, final String hashedPassword) {
-    if (email == null || !Util.isMailValid(email)) {
-      return "Invalid email address";
-    }
-    if (hashedPassword == null || hashedPassword.length() < 3 || !hashedPassword.startsWith(MD5Crypt.MAGIC)) {
-      return "Invalid password";
-    }
-    return validateUserName(userName);
-  }
-
-  public static String validateUserName(final String userName) {
-    // is this a valid user?
-    if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
-      return "Usernames must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
-    }
-    if (userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
-      return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
-    }
-    if (userName.toLowerCase().contains("admin")) {
-      return "Username can't contain the word admin";
-    }
-    return null;
-  }
-
-  public static void main(final String[] args) throws SQLException {
-    Database.getConnection().close();
+  @Override
+  public boolean isPrimary() {
+    return true;
   }
 
   /**
    * @return null if the user does not exist.
    */
+  @Override
   public String getPassword(final String userName) {
     final String sql = "select password from ta_users where username = ?";
     final Connection con = Database.getConnection();
@@ -56,13 +33,13 @@ public class DBUserController {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, userName);
       final ResultSet rs = ps.executeQuery();
-      String rVal = null;
+      String returnValue = null;
       if (rs.next()) {
-        rVal = rs.getString(1);
+        returnValue = rs.getString(1);
       }
       rs.close();
       ps.close();
-      return rVal;
+      return returnValue;
     } catch (final SQLException sqle) {
       s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
@@ -71,6 +48,7 @@ public class DBUserController {
     }
   }
 
+  @Override
   public boolean doesUserExist(final String userName) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
     final Connection con = Database.getConnection();
@@ -90,8 +68,9 @@ public class DBUserController {
     }
   }
 
+  @Override
   public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = validate(name, email, hashedPassword);
+    final String validationErrors = UserDao.validate(name, email, hashedPassword);
     if (validationErrors != null) {
       throw new IllegalStateException(validationErrors);
     }
@@ -114,12 +93,9 @@ public class DBUserController {
     }
   }
 
-  /**
-   * Create a user in the database.
-   * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
-   */
+  @Override
   public void createUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = validate(name, email, hashedPassword);
+    final String validationErrors = UserDao.validate(name, email, hashedPassword);
     if (validationErrors != null) {
       throw new IllegalStateException(validationErrors);
     }
@@ -151,10 +127,7 @@ public class DBUserController {
     }
   }
 
-  /**
-   * Validate the username password, returning true if the user is able to login.
-   * This has the side effect of updating the users last login time.
-   */
+  @Override
   public boolean login(final String userName, final String hashedPassword) {
     final Connection con = Database.getConnection();
     try {
@@ -182,10 +155,8 @@ public class DBUserController {
     }
   }
 
-  /**
-   * @return null if no such user.
-   */
-  public DBUser getUser(final String userName) {
+  @Override
+  public DbUser getUser(final String userName) {
     final String sql = "select * from ta_users where username = ?";
     final Connection con = Database.getConnection();
     try {
@@ -195,7 +166,7 @@ public class DBUserController {
       if (!rs.next()) {
         return null;
       }
-      final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
+      final DbUser user = new DbUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
           rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
       rs.close();
       ps.close();

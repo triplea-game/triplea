@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +61,7 @@ public class MutedUsernameController {
     }
   }
 
-  public void removeMutedUsername(final String username) {
+  private void removeMutedUsername(final String username) {
     s_logger.fine("Removing muted username:" + username);
     final Connection con = Database.getConnection();
     try {
@@ -124,40 +122,5 @@ public class MutedUsernameController {
       result = -1;
     }
     return result;
-  }
-
-  public List<String> getUsernamesThatAreStillMuted(final List<String> usernames) {
-    final List<String> results = new ArrayList<>();
-    final String sql = "select username, mute_till from muted_usernames where username = ?";
-    final Connection con = Database.getConnection();
-    try {
-      for (final String username : usernames) {
-        boolean found = false;
-        boolean expired = false;
-        final PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, username);
-        final ResultSet rs = ps.executeQuery();
-        found = rs.next();
-        // If the mute has expired, allow the username
-        if (found) {
-          final Timestamp muteTill = rs.getTimestamp(2);
-          if (muteTill != null && muteTill.getTime() < System.currentTimeMillis()) {
-            s_logger.fine("Mute expired for: " + username);
-            expired = true;
-          }
-        }
-        rs.close();
-        ps.close();
-        if (found && !expired) {
-          results.add(username);
-        }
-      }
-    } catch (final SQLException sqle) {
-      s_logger.info("Error testing whether usernames were muted: " + usernames);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
-    }
-    return results;
   }
 }

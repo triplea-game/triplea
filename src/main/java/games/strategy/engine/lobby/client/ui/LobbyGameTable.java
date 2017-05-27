@@ -12,14 +12,14 @@ import javax.swing.table.TableModel;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.GUID;
 
-public class LobbyGameTable extends JTable {
+class LobbyGameTable extends JTable {
   private static final long serialVersionUID = 8632519876114231003L;
   private GUID m_selectedGame;
   private boolean inTableChange = false;
   private final Font m_defaultFont = UIManager.getDefaults().getFont("Table.font");
   private final Font m_italicFont = new Font(m_defaultFont.getFamily(), Font.ITALIC, m_defaultFont.getSize());
 
-  public LobbyGameTable(final TableModel model) {
+  LobbyGameTable(final TableModel model) {
     super(model);
     getSelectionModel().addListSelectionListener(e -> {
       if (!inTableChange) {

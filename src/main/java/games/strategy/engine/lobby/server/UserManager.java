@@ -2,8 +2,8 @@ package games.strategy.engine.lobby.server;
 
 import java.util.logging.Logger;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
@@ -27,7 +27,7 @@ public class UserManager implements IUserManager {
       return "Sorry, but I can't let you do that";
     }
     try {
-      new DBUserController().updateUser(userName, emailAddress, hashedPassword, false);
+      new DbUserController().updateUser(userName, emailAddress, hashedPassword, false);
     } catch (final IllegalStateException e) {
       return e.getMessage();
     }
@@ -38,12 +38,12 @@ public class UserManager implements IUserManager {
    * Update the user info, returning an error string if an error occurs.
    */
   @Override
-  public DBUser getUserInfo(final String userName) {
+  public DbUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
       s_logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return new DBUserController().getUser(userName);
+    return new DbUserController().getUser(userName);
   }
 }

@@ -63,7 +63,7 @@ public class BannedUsernameController {
     }
   }
 
-  public void removeBannedUsername(final String username) {
+  private void removeBannedUsername(final String username) {
     s_logger.fine("Removing banned username:" + username);
     final Connection con = Database.getConnection();
     try {

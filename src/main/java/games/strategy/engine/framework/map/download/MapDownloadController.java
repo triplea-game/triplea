@@ -1,20 +1,23 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
-
+import games.strategy.util.Version;
 
 /** Controller for in-game map download actions. */
 public class MapDownloadController {
@@ -46,19 +49,19 @@ public class MapDownloadController {
 
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      final List<DownloadFileDescription> downloads =
+      final Collection<DownloadFileDescription> allDownloads =
           new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite()).getDownloads();
-
-      final Collection<String> outOfDateMaps = populateOutOfDateMapsListing(downloads);
-      if (!outOfDateMaps.isEmpty()) {
-        final StringBuilder text =
-            new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
-                + "<br>Would you like to update (re-download) the following maps now?:<br><ul>");
-        for (final String map : outOfDateMaps) {
-          text.append("<li> ").append(map).append("</li>");
+      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
+      if (!outOfDateMapNames.isEmpty()) {
+        final StringBuilder text = new StringBuilder();
+        text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
+        text.append("Would you like to update (re-download) the following maps now?<br><ul>");
+        for (final String mapName : outOfDateMapNames) {
+          text.append("<li> ").append(mapName).append("</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(), DownloadMapsWindow::showDownloadMapsWindow);
+        SwingComponents.promptUser("Update Your Maps?", text.toString(),
+            () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
         return true;
       }
     } catch (final Exception e) {
@@ -67,23 +70,61 @@ public class MapDownloadController {
     return false;
   }
 
+  private static Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
+    return getOutOfDateMapNames(downloads, getDownloadedMaps());
+  }
 
-  private static Collection<String> populateOutOfDateMapsListing(
-      final Collection<DownloadFileDescription> gamesDownloadFileDescriptions) {
+  @VisibleForTesting
+  static Collection<String> getOutOfDateMapNames(
+      final Collection<DownloadFileDescription> downloads,
+      final DownloadedMaps downloadedMaps) {
+    return downloads.stream()
+        .filter(Objects::nonNull)
+        .filter(it -> isMapOutOfDate(it, downloadedMaps))
+        .map(DownloadFileDescription::getMapName)
+        .collect(Collectors.toList());
+  }
 
-    final Collection<String> listingToBeAddedTo = new ArrayList<>();
+  private static boolean isMapOutOfDate(final DownloadFileDescription download, final DownloadedMaps downloadedMaps) {
+    final Optional<Version> latestVersion = Optional.ofNullable(download.getVersion());
+    final Optional<Version> downloadedVersion = getDownloadedVersion(download.getMapName(), downloadedMaps);
 
-    for (final DownloadFileDescription d : gamesDownloadFileDescriptions) {
-      if (d != null) {
-        final File installed = new File(ClientFileSystemHelper.getUserMapsFolder(), d.getMapName() + ".zip");
-        if (installed.exists()) {
-          if (d.getVersion() != null && d.getVersion().isGreaterThan(DownloadMapsWindow.getVersion(installed), true)) {
-            listingToBeAddedTo.add(d.getMapName());
-          }
-        }
+    final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
+    latestVersion.ifPresent(latest -> {
+      downloadedVersion.ifPresent(downloaded -> {
+        mapOutOfDate.set(latest.isGreaterThan(downloaded));
+      });
+    });
+    return mapOutOfDate.get();
+  }
+
+  private static Optional<Version> getDownloadedVersion(final String mapName, final DownloadedMaps downloadedMaps) {
+    return downloadedMaps.getZipFileCandidates(mapName).stream()
+        .map(downloadedMaps::getVersionForZipFile)
+        .filter(Optional::isPresent)
+        .findFirst()
+        .orElseGet(Optional::empty);
+  }
+
+  @VisibleForTesting
+  interface DownloadedMaps {
+    Optional<Version> getVersionForZipFile(File mapZipFile);
+
+    List<File> getZipFileCandidates(String mapName);
+  }
+
+  private static DownloadedMaps getDownloadedMaps() {
+    return new DownloadedMaps() {
+      @Override
+      public Optional<Version> getVersionForZipFile(final File mapZipFile) {
+        return Optional.ofNullable(DownloadFileProperties.loadForZip(mapZipFile).getVersion());
       }
-    }
-    return listingToBeAddedTo;
+
+      @Override
+      public List<File> getZipFileCandidates(final String mapName) {
+        return ResourceLoader.getMapZipFileCandidates(mapName);
+      }
+    };
   }
 
   /**

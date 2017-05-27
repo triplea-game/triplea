@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,5 +83,28 @@ public class MapDownloadListTest {
 
     final List<DownloadFileDescription> outOfDate = testObj.getOutOfDate();
     assertThat(outOfDate.size(), is(1));
+  }
+
+  @Test
+  public void testOutOfDateExcluding() {
+    when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
+    final DownloadFileDescription download1 = newDownloadWithUrl("url1");
+    final DownloadFileDescription download2 = newDownloadWithUrl("url2");
+    final DownloadFileDescription download3 = newDownloadWithUrl("url3");
+    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+
+    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
+
+    assertThat(outOfDate, is(Arrays.asList(download2)));
+  }
+
+  private static DownloadFileDescription newDownloadWithUrl(final String url) {
+    return new DownloadFileDescription(
+        url,
+        "description",
+        "mapName",
+        MAP_VERSION,
+        DownloadFileDescription.DownloadType.MAP,
+        DownloadFileDescription.MapCategory.BEST);
   }
 }

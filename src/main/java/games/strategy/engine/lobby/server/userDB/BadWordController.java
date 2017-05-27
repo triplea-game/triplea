@@ -38,7 +38,7 @@ public class BadWordController {
     }
   }
 
-  public void removeBannedWord(final String word) {
+  void removeBannedWord(final String word) {
     s_logger.fine("Removing banned word:" + word);
     final Connection con = Database.getConnection();
     try {

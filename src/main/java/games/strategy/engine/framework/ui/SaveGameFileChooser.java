@@ -60,7 +60,7 @@ public class SaveGameFileChooser extends JFileChooser {
     return s_instance;
   }
 
-  public SaveGameFileChooser() {
+  private SaveGameFileChooser() {
     super();
     setFileFilter(m_gameDataFileFilter);
     ensureMapsFolderExists();

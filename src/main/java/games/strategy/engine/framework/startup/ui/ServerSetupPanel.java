@@ -71,7 +71,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     internalPlayerListChanged();
   }
 
-  public void createLobbyWatcher() {
+  void createLobbyWatcher() {
     if (m_lobbyWatcher != null) {
       m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this,
           m_lobbyWatcher.getInGameLobbyWatcher()));
@@ -93,7 +93,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     createLobbyWatcher();
   }
 
-  public void shutDownLobbyWatcher() {
+  void shutDownLobbyWatcher() {
     if (m_lobbyWatcher != null) {
       m_lobbyWatcher.shutDown();
     }

@@ -16,10 +16,16 @@ plugins {
     id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
+apply from: 'gradle/scripts/yaml.gradle'
+
 version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
+
+ext {
+    schemasDir = file('config/triplea/schemas')
+}
 
 compileJava {
     options.encoding = 'UTF-8'
@@ -34,6 +40,10 @@ targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.incremental = true
+}
+
+check {
+    dependsOn 'validateYamls'
 }
 
 checkstyle {
@@ -95,6 +105,13 @@ git {
         directory assetsDirectory
         branch 'master'
         singleBranch true
+    }
+}
+
+task validateYamls(group: 'verification', description: 'Validates YAML files.') {
+    doLast {
+        validateYaml(file('lobby_server.yaml'), file("$schemasDir/lobby_server.json"))
+        validateYaml(file('triplea_maps.yaml'), file("$schemasDir/triplea_maps.json"))
     }
 }
 

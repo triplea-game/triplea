@@ -1,5 +1,7 @@
 package games.strategy.triplea;
 
+import games.strategy.engine.data.PlayerID;
+
 /**
  * Constants used throughout the game.
  */
@@ -192,10 +194,6 @@ public interface Constants {
       "Damage From Bombing Done To Units Instead Of Territories";
   String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
   String UNITS_CAN_BE_CHANGED_ON_CAPTURE = "Units Can Be Changed On Capture";
-  String AI_BONUS_INCOME_PERCENTAGE = "AI Bonus Income Percentage";
-  String AI_BONUS_INCOME_FLAT_RATE = "AI Bonus Income Flat Rate";
-  String AI_BONUS_ATTACK = "AI Bonus Attack";
-  String AI_BONUS_DEFENSE = "AI Bonus Defense";
   String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
   String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
   String RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Raids May Be Preceeded By Air Battles";
@@ -257,4 +255,9 @@ public interface Constants {
 
   String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
   String CONSTRUCTION_TYPE_FACTORY = "factory";
+
+  public static String getBonusIncomePercentageFor(final PlayerID playerId) {
+    return playerId.getName() + " Bonus Income Percentage";
+  }
+
 }

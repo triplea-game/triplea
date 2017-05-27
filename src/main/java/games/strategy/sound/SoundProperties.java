@@ -13,7 +13,7 @@ import games.strategy.util.UrlStreams;
 /**
  * sounds.properties file helper class
  */
-public class SoundProperties {
+class SoundProperties {
   // Filename
   private static final String PROPERTY_FILE = "sounds.properties";
   static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
@@ -24,7 +24,7 @@ public class SoundProperties {
   private static long timestamp = 0;
   private final Properties m_properties = new Properties();
 
-  protected SoundProperties(final ResourceLoader loader) {
+  SoundProperties(final ResourceLoader loader) {
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
@@ -38,7 +38,7 @@ public class SoundProperties {
     }
   }
 
-  public static SoundProperties getInstance(final ResourceLoader loader) {
+  static SoundProperties getInstance(final ResourceLoader loader) {
     // cache properties for 1 second
     if (s_op == null || Calendar.getInstance().getTimeInMillis() > timestamp + 1000) {
       s_op = new SoundProperties(loader);
@@ -47,14 +47,14 @@ public class SoundProperties {
     return s_op;
   }
 
-  public String getDefaultEraFolder() {
+  String getDefaultEraFolder() {
     return getProperty(PROPERTY_DEFAULT_FOLDER, DEFAULT_ERA_FOLDER);
   }
 
   /**
    * @return The string property, or null if not found.
    */
-  public String getProperty(final String key) {
+  String getProperty(final String key) {
     return m_properties.getProperty(key);
   }
 

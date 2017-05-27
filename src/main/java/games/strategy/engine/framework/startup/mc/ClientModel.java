@@ -128,7 +128,7 @@ public class ClientModel implements IMessengerErrorListener {
     return props;
   }
 
-  public boolean createClientMessenger(Component ui) {
+  boolean createClientMessenger(Component ui) {
     m_gameDataOnStartup = m_gameSelectorModel.getGameData();
     m_gameSelectorModel.setCanSelect(false);
     ui = JOptionPane.getFrameForComponent(ui);
@@ -196,7 +196,7 @@ public class ClientModel implements IMessengerErrorListener {
     return (IServerStartupRemote) m_remoteMessenger.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
-  public List<String> getAvailableServerGames() {
+  List<String> getAvailableServerGames() {
     final Set<String> games = getServerStartup().getAvailableGames();
     if (games == null) {
       return new ArrayList<>();
@@ -423,7 +423,7 @@ public class ClientModel implements IMessengerErrorListener {
     return m_chatPanel;
   }
 
-  public boolean getIsServerHeadlessTest() {
+  boolean getIsServerHeadlessTest() {
     final IServerStartupRemote serverRemote = getServerStartup();
     if (serverRemote != null) {
       m_hostIsHeadlessBot = serverRemote.getIsServerHeadless();

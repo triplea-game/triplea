@@ -1,18 +1,21 @@
 package games.strategy.engine.framework.map.download;
 
+import static games.strategy.util.PredicateUtils.not;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import games.strategy.util.Version;
 
-public class MapDownloadList {
+class MapDownloadList {
 
   private final List<DownloadFileDescription> available = new ArrayList<>();
   private final List<DownloadFileDescription> installed = new ArrayList<>();
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
-  public MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
+  MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
@@ -30,15 +33,21 @@ public class MapDownloadList {
     }
   }
 
-  public List<DownloadFileDescription> getAvailable() {
+  List<DownloadFileDescription> getAvailable() {
     return available;
   }
 
-  public List<DownloadFileDescription> getInstalled() {
+  List<DownloadFileDescription> getInstalled() {
     return installed;
   }
 
-  public List<DownloadFileDescription> getOutOfDate() {
+  List<DownloadFileDescription> getOutOfDate() {
     return outOfDate;
+  }
+
+  List<DownloadFileDescription> getOutOfDateExcluding(final List<DownloadFileDescription> excluded) {
+    return outOfDate.stream()
+        .filter(not(excluded::contains))
+        .collect(Collectors.toList());
   }
 }

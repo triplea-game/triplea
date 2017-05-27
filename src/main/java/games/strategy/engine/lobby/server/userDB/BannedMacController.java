@@ -62,7 +62,7 @@ public class BannedMacController {
     }
   }
 
-  public void removeBannedMac(final String mac) {
+  private void removeBannedMac(final String mac) {
     s_logger.fine("Removing banned mac:" + mac);
     final Connection con = Database.getConnection();
     try {

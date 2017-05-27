@@ -37,9 +37,9 @@ import games.strategy.util.Match;
 /**
  * Pro tech AI.
  */
-public final class ProTechAI {
+final class ProTechAI {
 
-  public static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
     if (!games.strategy.triplea.Properties.getWW2V3TechModel(data)) {
       return;
     }

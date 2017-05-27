@@ -66,7 +66,7 @@ public class BattleCalculator {
   // can tell what dice is for who
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
-  public static void sortPreBattle(final List<Unit> units) {
+  static void sortPreBattle(final List<Unit> units) {
     final Comparator<Unit> comparator = (u1, u2) -> {
       if (u1.getUnitType().equals(u2.getUnitType())) {
         return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
@@ -89,7 +89,7 @@ public class BattleCalculator {
     return rVal;
   }
 
-  public static int getTotalHitpointsLeft(final Unit unit) {
+  private static int getTotalHitpointsLeft(final Unit unit) {
     if (unit == null) {
       return 0;
     }
@@ -1228,7 +1228,7 @@ public class BattleCalculator {
     return false;
   }
 
-  public static int getRolls(final Collection<Unit> units, final PlayerID id,
+  private static int getRolls(final Collection<Unit> units, final PlayerID id,
       final boolean defend, final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -1243,14 +1243,14 @@ public class BattleCalculator {
     return count;
   }
 
-  public static int getRolls(final Collection<Unit> units, final PlayerID id, final boolean defend,
+  static int getRolls(final Collection<Unit> units, final PlayerID id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
     return getRolls(units, id, defend, bombing, new HashSet<>(),
         new IntegerMap<>(), new HashSet<>(),
         new IntegerMap<>(), territoryEffects);
   }
 
-  public static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
+  private static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
       final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -1289,7 +1289,7 @@ public class BattleCalculator {
     return rolls;
   }
 
-  public static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
+  static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
     return getRolls(unit, id, defend, bombing, new HashSet<>(),
         new IntegerMap<>(), new HashSet<>(),

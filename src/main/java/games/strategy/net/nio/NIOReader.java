@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * Data is read in packets, and placed in the output queye.<br>
  * Packets are placed in the output queue in order they are read from the socket.
  */
-public class NIOReader {
+class NIOReader {
   private static final Logger logger = Logger.getLogger(NIOReader.class.getName());
   private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
@@ -34,7 +34,7 @@ public class NIOReader {
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
   private long totalBytes;
 
-  public NIOReader(final IErrorReporter reporter, final String threadSuffix) {
+  NIOReader(final IErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();
@@ -46,7 +46,7 @@ public class NIOReader {
     t.start();
   }
 
-  public void shutDown() {
+  void shutDown() {
     running = false;
     try {
       selector.close();
@@ -55,7 +55,7 @@ public class NIOReader {
     }
   }
 
-  public void add(final SocketChannel channel) {
+  void add(final SocketChannel channel) {
     synchronized (socketsToAddMutex) {
       socketsToAdd.add(channel);
       selector.wakeup();
@@ -165,11 +165,11 @@ public class NIOReader {
     return packet;
   }
 
-  public SocketReadData take() throws InterruptedException {
+  SocketReadData take() throws InterruptedException {
     return outputQueue.take();
   }
 
-  public void closed(final SocketChannel channel) {
+  void closed(final SocketChannel channel) {
     reading.remove(channel);
   }
 }

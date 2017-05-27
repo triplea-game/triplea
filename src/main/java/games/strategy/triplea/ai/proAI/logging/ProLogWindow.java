@@ -19,16 +19,16 @@ import games.strategy.ui.SwingAction;
 /**
  * GUI class used to display logging window and logging settings.
  */
-public class ProLogWindow extends javax.swing.JDialog {
+class ProLogWindow extends javax.swing.JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
   /** Creates new form ProLogWindow. */
-  public ProLogWindow(final TripleAFrame frame) {
+  ProLogWindow(final TripleAFrame frame) {
     super(frame);
     initComponents();
   }
 
-  public void clear() {
+  void clear() {
     this.dispose();
     v_tabPaneMain = null;
     v_logHolderTabbedPane = null;
@@ -252,7 +252,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
   }
 
-  public ProLogSettings createSettings() {
+  ProLogSettings createSettings() {
     final ProLogSettings settings = new ProLogSettings();
     settings.EnableAILogging = v_enableAILogging.isSelected();
     if (v_logDepth.getSelectedIndex() == 0) {
@@ -356,7 +356,7 @@ public class ProLogWindow extends javax.swing.JDialog {
 
   private JTextArea currentLogTextArea = null;
 
-  public void addMessage(final Level level, final String message) {
+  void addMessage(final Level level, final String message) {
     try {
       if (currentLogTextArea == null) {
         currentLogTextArea = v_aiOutputLogArea;
@@ -367,7 +367,7 @@ public class ProLogWindow extends javax.swing.JDialog {
     }
   }
 
-  public void notifyNewRound(final int roundNumber, final String name) {
+  void notifyNewRound(final int roundNumber, final String name) {
     SwingAction.invokeAndWait(() -> {
       final JPanel newPanel = new JPanel();
       final JScrollPane newScrollPane = new JScrollPane();

@@ -13,7 +13,7 @@ import games.strategy.util.Version;
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to install it,
  * version, etc..
  */
-public class DownloadFileDescription {
+class DownloadFileDescription {
   private final String url;
   private final String description;
   private final String mapName;
@@ -23,12 +23,12 @@ public class DownloadFileDescription {
   private final String img;
 
 
-  public enum DownloadType {
+  enum DownloadType {
     MAP, MAP_SKIN, MAP_TOOL
   }
 
 
-  public enum MapCategory {
+  enum MapCategory {
     BEST("High Quality"),
     GOOD("Good Quality"),
     DEVELOPMENT("In Development"),
@@ -48,12 +48,12 @@ public class DownloadFileDescription {
 
   }
 
-  public DownloadFileDescription(final String url, final String description, final String mapName,
+  DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, final DownloadType downloadType, final MapCategory mapCategory) {
     this(url,description, mapName, version, downloadType, mapCategory, "");
   }
 
-  public DownloadFileDescription(final String url, final String description, final String mapName,
+  DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, final DownloadType downloadType, final MapCategory mapCategory, final String img) {
     this.url = url;
     this.description = description;
@@ -64,49 +64,49 @@ public class DownloadFileDescription {
     this.img = img;
   }
 
-  public String getUrl() {
+  String getUrl() {
     return url;
   }
 
-  public String getDescription() {
+  String getDescription() {
     return description;
   }
 
-  public String getMapName() {
+  String getMapName() {
     return mapName;
   }
 
-  public Version getVersion() {
+  Version getVersion() {
     return version;
   }
 
-  public MapCategory getMapCategory() {
+  MapCategory getMapCategory() {
     return mapCategory;
   }
 
-  public URL newURL() {
+  URL newURL() {
     if (url == null) {
       return null;
     }
     return DownloadUtils.toURL(url);
   }
 
-  public boolean isMap() {
+  boolean isMap() {
     return downloadType == DownloadType.MAP;
   }
 
-  public boolean isMapSkin() {
+  boolean isMapSkin() {
     return downloadType == DownloadType.MAP_SKIN;
   }
 
-  public boolean isMapTool() {
+  boolean isMapTool() {
     return downloadType == DownloadType.MAP_TOOL;
   }
 
   /**
    * @return Name of the zip file.
    */
-  public String getMapZipFileName() {
+  String getMapZipFileName() {
     if (url != null && url.contains("/")) {
       return url.substring(url.lastIndexOf('/') + 1, url.length());
     } else {
@@ -115,7 +115,7 @@ public class DownloadFileDescription {
   }
 
   /** Translates the stored URL into a github new issue link. */
-  public String getFeedbackUrl() {
+  String getFeedbackUrl() {
     if (url.contains("github.com") && url.contains("/releases/")) {
       return url.substring(0, url.indexOf("/releases/")) + "/issues/new";
     } else {
@@ -124,7 +124,7 @@ public class DownloadFileDescription {
   }
 
   /** File reference for where to install the file. */
-  public File getInstallLocation() {
+  File getInstallLocation() {
     String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ? "-master" : "";
     String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
     return new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
@@ -135,7 +135,7 @@ public class DownloadFileDescription {
     return MoreObjects.toStringHelper(this).addValue(url).addValue(mapName).addValue(version).toString();
   }
 
-  public String toHtmlString() {
+  String toHtmlString() {
     String text = "<h1>" + getMapName() + "</h1>\n";
     if (!img.isEmpty()) {
       text += "<img src='" + img + "' />\n";

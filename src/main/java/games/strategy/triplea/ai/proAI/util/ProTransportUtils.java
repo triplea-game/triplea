@@ -39,17 +39,6 @@ public class ProTransportUtils {
     return maxMovement;
   }
 
-  public static int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t) {
-    final GameData data = ProData.getData();
-    int numUnitsToLoad = 0;
-    final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
-    for (final Territory neighbor : neighbors) {
-      numUnitsToLoad +=
-          Match.getMatches(neighbor.getUnits().getUnits(), ProMatches.unitIsOwnedTransportableUnit(player)).size();
-    }
-    return numUnitsToLoad;
-  }
-
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value) {

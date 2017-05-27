@@ -25,20 +25,20 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 
-public class LoginPanel extends JPanel {
+class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
   private static final Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
 
-  public static enum ReturnValue {
+  static enum ReturnValue {
     CANCEL, LOGON, CREATE_ACCOUNT
   }
 
-  public static final String LAST_LOGIN_NAME_PREF = "LAST_LOGIN_NAME_PREF";
-  public static final String ANONYMOUS_LOGIN_PREF = "ANONYMOUS_LOGIN_PREF";
+  static final String LAST_LOGIN_NAME_PREF = "LAST_LOGIN_NAME_PREF";
+  static final String ANONYMOUS_LOGIN_PREF = "ANONYMOUS_LOGIN_PREF";
   private JDialog m_dialog;
   private JPasswordField m_password;
   private JTextField m_userName;
@@ -48,7 +48,7 @@ public class LoginPanel extends JPanel {
   private JButton m_logon;
   private JButton m_cancel;
 
-  public LoginPanel() {
+  LoginPanel() {
     createComponents();
     layoutComponents();
     setupListeners();
@@ -125,8 +125,8 @@ public class LoginPanel extends JPanel {
   private void logonPressed() {
     final String userName = m_userName.getText();
     final boolean anonymous = m_anonymous.isSelected();
-    if (DBUserController.validateUserName(userName) != null) {
-      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(userName), "Invalid Username",
+    if (UserDao.validateUserName(userName) != null) {
+      JOptionPane.showMessageDialog(this, UserDao.validateUserName(userName), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length == 0 && !anonymous) {
@@ -142,7 +142,7 @@ public class LoginPanel extends JPanel {
     m_dialog.setVisible(false);
   }
 
-  public static void storePrefs(final String userName, final boolean anonymous) {
+  static void storePrefs(final String userName, final boolean anonymous) {
     final Preferences prefs = Preferences.userNodeForPackage(LoginPanel.class);
     prefs.put(LAST_LOGIN_NAME_PREF, userName);
     prefs.putBoolean(ANONYMOUS_LOGIN_PREF, anonymous);
@@ -164,19 +164,19 @@ public class LoginPanel extends JPanel {
     }
   }
 
-  public boolean isAnonymous() {
+  boolean isAnonymous() {
     return m_anonymous.isSelected();
   }
 
-  public String getUserName() {
+  String getUserName() {
     return m_userName.getText();
   }
 
-  public String getPassword() {
+  String getPassword() {
     return new String(m_password.getPassword());
   }
 
-  public ReturnValue show(final Window parent) {
+  ReturnValue show(final Window parent) {
     m_dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
     m_dialog.getContentPane().add(this);
     m_dialog.pack();

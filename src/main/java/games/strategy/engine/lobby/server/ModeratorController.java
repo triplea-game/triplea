@@ -4,8 +4,8 @@ import java.util.Date;
 
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.MessageContext;
@@ -298,8 +298,8 @@ public class ModeratorController extends AbstractModeratorController {
   @Override
   public boolean isPlayerAdmin(final INode node) {
     final String name = getRealName(node);
-    final DBUserController controller = new DBUserController();
-    final DBUser user = controller.getUser(name);
+    final DbUserController controller = new DbUserController();
+    final DbUser user = controller.getUser(name);
     if (user == null) {
       return false;
     }

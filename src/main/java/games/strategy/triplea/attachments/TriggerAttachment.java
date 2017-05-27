@@ -189,7 +189,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return collectTestsForAllTriggers(toFirePossible, aBridge, null, null);
   }
 
-  public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
+  static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
       final IDelegateBridge aBridge, final HashSet<ICondition> allConditionsNeededSoFar,
       final HashMap<ICondition, Boolean> allConditionsTestedSoFar) {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment
