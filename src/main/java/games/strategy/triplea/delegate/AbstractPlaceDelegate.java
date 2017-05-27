@@ -196,7 +196,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   @Override
-  public String placeUnits(final Collection<Unit> units, final Territory at, BidMode bidMode) {
+  public String placeUnits(final Collection<Unit> units, final Territory at, final BidMode bidMode) {
     if (units == null || units.isEmpty()) {
       return null;
     }
@@ -509,12 +509,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return null;
     }
     final List<Unit> fighters = producer.getUnits().getMatches(ownedFighters);
-    while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity) {
-      fighters.remove(0);
-    }
-    if (fighters.size() == 0) {
-      return null;
-    }
     final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
       return null;
@@ -1350,7 +1344,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return unitsAllowed;
   }
 
-  public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
+  int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
     final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
     if (/* !ua.getIsFactory() && */(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1)) {
@@ -1401,7 +1395,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     };
   }
 
-  public boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
+  private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
     if (!isUnitPlacementRestrictions() || !Match.someMatch(units, Matches.UnitRequiresUnitsOnCreation)) {
       return true;
     }
@@ -1534,7 +1528,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return unitsAtStartOfTurnInTO;
   }
 
-  public Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to) {
+  private Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to) {
     if (to == null) {
       return new ArrayList<>();
     }
@@ -1591,12 +1585,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * The rule is that new fighters can be produced on new carriers. This does
-   * not allow for fighters to be produced on old carriers.
+   * not allow for fighters to be produced on old carriers. THIS ISN'T CORRECT.
    */
   protected String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units) {
     final int cost = AirMovementValidator.carrierCost(units);
     int capacity = AirMovementValidator.carrierCapacity(units, to);
     capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
+    // TODO: This method considers existing carriers but not existing air units
     if (cost > capacity) {
       return "Not enough new carriers to land all the fighters";
     }

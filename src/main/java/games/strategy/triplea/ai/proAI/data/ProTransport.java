@@ -14,13 +14,13 @@ public class ProTransport {
   private Map<Territory, Set<Territory>> transportMap;
   private Map<Territory, Set<Territory>> seaTransportMap;
 
-  public ProTransport(final Unit transport) {
+  ProTransport(final Unit transport) {
     this.transport = transport;
     transportMap = new HashMap<>();
     seaTransportMap = new HashMap<>();
   }
 
-  public void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
+  void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
     for (final Territory attackTerritory : attackTerritories) {
       if (transportMap.containsKey(attackTerritory)) {
         transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
@@ -32,7 +32,7 @@ public class ProTransport {
     }
   }
 
-  public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
+  void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
     for (final Territory attackTerritory : attackTerritories) {
       if (seaTransportMap.containsKey(attackTerritory)) {
         seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);

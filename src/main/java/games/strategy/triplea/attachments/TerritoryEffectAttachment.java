@@ -45,7 +45,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment) {
+  static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment) {
     final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(

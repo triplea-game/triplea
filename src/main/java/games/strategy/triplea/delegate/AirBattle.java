@@ -51,7 +51,7 @@ public class AirBattle extends AbstractBattle {
   // -1 would mean forever until one side is eliminated. (default is 1 round)
   protected final int m_maxRounds;
 
-  public AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
+  AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
@@ -115,7 +115,7 @@ public class AirBattle extends AbstractBattle {
     return;
   }
 
-  public boolean shouldFightAirBattle() {
+  private boolean shouldFightAirBattle() {
     if (m_isBombingRun) {
       return Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
     } else {
@@ -262,7 +262,7 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  private List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
     final List<String> steps = new ArrayList<>();
     if (showFirstRun) {
       steps.add(AIR_BATTLE);
@@ -391,7 +391,7 @@ public class AirBattle extends AbstractBattle {
     m_battleTracker.removeBattle(AirBattle.this);
   }
 
-  public void finishBattleAndRemoveFromTrackerHeadless(final IDelegateBridge bridge) {
+  void finishBattleAndRemoveFromTrackerHeadless(final IDelegateBridge bridge) {
     makeBattle(bridge);
     m_whoWon = WhoWon.ATTACKER;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
@@ -649,7 +649,7 @@ public class AirBattle extends AbstractBattle {
     };
   }
 
-  public static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
+  static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
@@ -689,7 +689,7 @@ public class AirBattle extends AbstractBattle {
     };
   }
 
-  public static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
+  static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
       final GameData data, final boolean bombing) {
     final boolean canScrambleToAirBattle = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
     final Match<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
@@ -712,7 +712,7 @@ public class AirBattle extends AbstractBattle {
             Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }
 
-  public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
+  static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
     int rolls = 0;
     for (final Unit u : units) {
       rolls += getAirBattleRolls(u, defending);
@@ -720,7 +720,7 @@ public class AirBattle extends AbstractBattle {
     return rolls;
   }
 
-  public static int getAirBattleRolls(final Unit unit, final boolean defending) {
+  static int getAirBattleRolls(final Unit unit, final boolean defending) {
     if (defending) {
       if (!unitHasAirDefenseGreaterThanZero().match(unit)) {
         return 0;

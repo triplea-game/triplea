@@ -56,7 +56,7 @@ public class ProPurchaseUtils {
     return result;
   }
 
-  public static boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo,
+  private static boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo,
       final Territory t, final boolean isBid) {
     if (ppo == null) {
       return false;
@@ -253,7 +253,7 @@ public class ProPurchaseUtils {
     return purchaseTerritories;
   }
 
-  public static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
+  private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
 
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
         Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());

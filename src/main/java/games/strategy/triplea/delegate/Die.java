@@ -20,7 +20,7 @@ public class Die implements java.io.Serializable {
     this(value, -1, DieType.MISS);
   }
 
-  public Die(final int value, final int rolledAt, final DieType type) {
+  Die(final int value, final int rolledAt, final DieType type) {
     m_type = type;
     m_value = value;
     m_rolledAt = rolledAt;

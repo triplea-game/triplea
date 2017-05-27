@@ -205,7 +205,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return m_gameProperty;
   }
 
-  public boolean getGamePropertyState(final GameData data) {
+  boolean getGamePropertyState(final GameData data) {
     if (m_gameProperty == null) {
       return false;
     }

@@ -442,7 +442,7 @@ public class GameParser {
     try {
       final Class<?> instanceClass = Class.forName(className);
       instance = instanceClass.newInstance();
-    // a lot can go wrong, the following list is just a subset of potential pitfalls
+      // a lot can go wrong, the following list is just a subset of potential pitfalls
     } catch (final ClassNotFoundException cnfe) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
     } catch (final InstantiationException ie) {
@@ -909,23 +909,8 @@ public class GameParser {
         }
       }
     }
-    // add properties for all triplea related maps here:
-    if (!runningList.contains(Constants.AI_BONUS_INCOME_FLAT_RATE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, null, 40, -20, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, null, 200, -100, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_ATTACK)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, null, data.getDiceSides(), 0, 0));
-    }
-    if (!runningList.contains(Constants.AI_BONUS_DEFENSE)) {
-      data.getProperties()
-          .addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
-    }
+    data.getPlayerList().forEach(playerId -> data.getProperties().addEditableProperty(
+        new NumberProperty(Constants.getBonusIncomePercentageFor(playerId), null, 1000, -100, 0)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
@@ -983,9 +968,9 @@ public class GameParser {
       final Element current = iterator.next();
       // load the class
       final String className = current.getAttribute("javaClass");
-      XmlGameElementMapper elementMapper = new XmlGameElementMapper();
+      final XmlGameElementMapper elementMapper = new XmlGameElementMapper();
 
-      IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
+      final IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
           () -> new GameParseException(mapName, "Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
@@ -1249,7 +1234,7 @@ public class GameParser {
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
-      IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
+      final IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
           .orElseThrow(
               () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);

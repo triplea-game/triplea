@@ -90,7 +90,7 @@ public class DiceRoll implements Externalizable {
     return Tuple.of(highestAttack, chosenDiceSize);
   }
 
-  public static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA,
+  static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA,
       final Collection<Unit> validAttackingUnitsForThisRoll) {
     if (defendingEnemyAA.isEmpty() || validAttackingUnitsForThisRoll.isEmpty()) {
       return 0;
@@ -113,7 +113,7 @@ public class DiceRoll implements Externalizable {
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
-  public static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll,
+  static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll,
       final Collection<Unit> defendingAAForThisRoll, final IDelegateBridge bridge, final Territory location,
       final boolean defending) {
     {
@@ -838,7 +838,7 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
+  static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final String annotation) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<>(unitsList);
@@ -1049,18 +1049,7 @@ public class DiceRoll implements Externalizable {
     return ra.getNegateDominatingFirstRoundAttack();
   }
 
-  public static boolean isAmphibious(final Collection<Unit> m_units) {
-    final Iterator<Unit> unitIter = m_units.iterator();
-    while (unitIter.hasNext()) {
-      final TripleAUnit checkedUnit = (TripleAUnit) unitIter.next();
-      if (checkedUnit.getWasAmphibious()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
+  static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));
     if (battle != null) {

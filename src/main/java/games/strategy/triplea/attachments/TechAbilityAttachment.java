@@ -888,7 +888,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   // Static Methods for interpreting data in attachments
-  public static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -899,7 +899,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -910,7 +910,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getMovementBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getMovementBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -921,7 +921,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -932,7 +932,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getAirAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getAirAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -943,7 +943,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getAirDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getAirDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -1181,7 +1181,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -1192,7 +1192,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
+  static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
