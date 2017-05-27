@@ -1802,11 +1802,11 @@
     <br>Feel free to post any questions or suggestions you have on the TripleA forum at http://triplea.sourceforge.net/mywiki/Forum#nabble-td2578942
     <br>If you would like to download the latest version of the program, visit http://code.google.com/p/tmapc/downloads/list
     <br>You can also view the source code for the program at http://code.google.com/p/tmapc/source/browse/
-- mapName: Map Making Tutorial Map
-  url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/Map_Making_Tutorial_Map.zip
+- mapName: Map Making Tutorial
+  url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
   mapType: MAP_TOOL
-  img: http://tripleamaps.sourceforge.net/images/TripleA_map_making_tutorial_map_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/map_making_tutorial/master/description/MapMakingTutorial_mini.png
   description: |
     <br>A VERY simple map.
     <br>Purpose: use these files to make your first map.  If you can make a map out of it, then you can do anything.
