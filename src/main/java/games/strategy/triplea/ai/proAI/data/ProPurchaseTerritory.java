@@ -18,15 +18,22 @@ public class ProPurchaseTerritory {
 
   public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
       final int unitProduction) {
+    this(territory, data, player, unitProduction, false);
+  }
+
+  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
+      final int unitProduction, final boolean isBid) {
     this.territory = territory;
     this.unitProduction = unitProduction;
     canPlaceTerritories = new ArrayList<>();
     canPlaceTerritories.add(new ProPlaceTerritory(territory));
-    if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(territory)) {
-      for (final Territory t : data.getMap().getNeighbors(territory, Matches.TerritoryIsWater)) {
-        if (Properties.getWW2V2(data) || Properties.getUnitPlacementInEnemySeas(data)
-            || !t.getUnits().someMatch(Matches.enemyUnit(player, data))) {
-          canPlaceTerritories.add(new ProPlaceTerritory(t));
+    if (!isBid) {
+      if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(territory)) {
+        for (final Territory t : data.getMap().getNeighbors(territory, Matches.TerritoryIsWater)) {
+          if (Properties.getWW2V2(data) || Properties.getUnitPlacementInEnemySeas(data)
+              || !t.getUnits().someMatch(Matches.enemyUnit(player, data))) {
+            canPlaceTerritories.add(new ProPlaceTerritory(t));
+          }
         }
       }
     }
