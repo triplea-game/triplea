@@ -16,7 +16,7 @@ public class ProResourceTracker {
   }
 
   public ProResourceTracker(final int pus, final GameData data) {
-    resources = new IntegerMap<Resource>();
+    resources = new IntegerMap<>();
     resources.add(data.getResourceList().getResource(Constants.PUS), pus);
   }
 

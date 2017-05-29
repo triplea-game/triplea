@@ -124,9 +124,9 @@ class ProPurchaseAI {
 
   /**
    * Default settings for bidding:
-   * 1) Limit one bid unit in a territory or sea zone (until set in all territories then 2, etc)
+   * 1) Limit one bid unit in a territory or sea zone (until set in all territories then 2, etc).
    * 2) The nation placing a unit in a territory or sea zone must have started with a unit in said territory or sea zone
-   * prior to placing the bid
+   * prior to placing the bid.
    */
   Map<Territory, ProPurchaseTerritory> bid(final int pus, final IPurchaseDelegate purchaseDelegate,
       final GameData startOfTurnData) {
@@ -201,7 +201,7 @@ class ProPurchaseAI {
         break;
       }
       previousNumUnits = numUnits;
-      ProPurchaseUtils.incrementBidTerritories(purchaseTerritories);
+      ProPurchaseUtils.incrementUnitProductionForBidTerritories(purchaseTerritories);
     }
 
     // Determine final count of each production rule

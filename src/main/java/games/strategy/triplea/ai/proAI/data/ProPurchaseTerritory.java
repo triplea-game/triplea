@@ -21,6 +21,15 @@ public class ProPurchaseTerritory {
     this(territory, data, player, unitProduction, false);
   }
 
+  /**
+   * Create data structure for tracking unit purchase and list of place territories.
+   * 
+   * @param territory - production territory
+   * @param data - current game data
+   * @param player - AI player who is purchasing
+   * @param unitProduction - max unit production for territory
+   * @param isBid - true when bid phase, false when normal purchase phase
+   */
   public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
       final int unitProduction, final boolean isBid) {
     this.territory = territory;
