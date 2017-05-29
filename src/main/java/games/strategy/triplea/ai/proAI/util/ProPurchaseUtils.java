@@ -196,6 +196,12 @@ public class ProPurchaseUtils {
     return placeUnits;
   }
 
+  /**
+   * Find all territories that bid units can be placed in and initialize data holders for them.
+   * 
+   * @param player - current AI player
+   * @return - map of all available purchase and place territories
+   */
   public static Map<Territory, ProPurchaseTerritory> findBidTerritories(final PlayerID player) {
 
     ProLogger.info("Find all bid territories");
@@ -219,10 +225,9 @@ public class ProPurchaseUtils {
     return purchaseTerritories;
   }
 
-  public static void incrementBidTerritories(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-    for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
-      ppt.setUnitProduction(ppt.getUnitProduction() + 1);
-    }
+  public static void incrementUnitProductionForBidTerritories(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    purchaseTerritories.values().forEach(ppt -> ppt.setUnitProduction(ppt.getUnitProduction() + 1));
   }
 
   public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
