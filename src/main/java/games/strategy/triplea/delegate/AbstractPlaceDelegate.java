@@ -213,10 +213,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    while (true) {
-      if (unitsLeftToPlace.isEmpty() || producers.isEmpty()) {
-        break;
-      }
+    while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
 
       // Get next producer territory
       Territory producer = producers.get(0);
@@ -229,9 +226,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       producers.remove(producer);
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
-      if (maxPlaceable == 0 && bidMode == BidMode.NOT_BID) {
-        continue;
-      } else if (maxPlaceable == 0) {
+      if (maxPlaceable == 0) {
+        if (bidMode == BidMode.NOT_BID) {
+          continue;
+        }
         maxPlaceable = 1;
       }
 
