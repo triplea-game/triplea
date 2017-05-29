@@ -172,7 +172,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - a collection of Territories, the possible territories to produce units
    * @param unitTerritory
    *        - where units are being placed
-   * @return the territory selected as the producer
+   * @return the territory selected as the producer or null if no selection
    */
   Territory selectProducerTerritoryForUnits(Collection<Territory> candidates, Territory unitTerritory);
 

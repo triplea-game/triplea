@@ -1987,7 +1987,7 @@ public class TripleAFrame extends MainGameFrame {
    *        - list of producer territories to choose from
    * @param unitTerritory
    *        - territory units are being placed
-   * @return territory selected to use for production
+   * @return territory selected to use for production or null if one isn't selected
    */
   public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
       final Territory unitTerritory) {
@@ -2006,7 +2006,7 @@ public class TripleAFrame extends MainGameFrame {
       final JScrollPane scroll = new JScrollPane(list);
       panel.add(scroll, BorderLayout.CENTER);
       panel.add(BorderLayout.NORTH, new JLabel("Producer territory for units in " + unitTerritory.getName()));
-      final String[] options = {"OK", "Canel"};
+      final String[] options = {"OK", "Cancel"};
       final String message = "Select Producer Territory";
       final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);

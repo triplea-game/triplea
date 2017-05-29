@@ -272,7 +272,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
-      SwingComponents.showDialog("Too many units placed", "Placed above max placement");
+      SwingComponents.showDialog("Unit Placement Canceled", "Not enough unit production territories available");
     }
 
     // play a sound
