@@ -213,10 +213,20 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    for (final Territory producer : producers) {
-      if (unitsLeftToPlace.isEmpty()) {
+    while (true) {
+      if (unitsLeftToPlace.isEmpty() || producers.isEmpty()) {
         break;
       }
+
+      // Get next producer territory
+      Territory producer = producers.get(0);
+      if (producers.size() > 1) {
+        producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
+        if (producer == null) {
+          break;
+        }
+      }
+      producers.remove(producer);
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0 && bidMode == BidMode.NOT_BID) {
