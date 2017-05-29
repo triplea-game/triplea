@@ -490,7 +490,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   private void place() {
-    boolean bid = GameStepPropertiesHelper.isBid(getGameData());
+    final boolean bid = GameStepPropertiesHelper.isBid(getGameData());
     if (getPlayerBridge().isGameOver()) {
       return;
     }
@@ -625,6 +625,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   @Override
   public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from) {
     return ui.getRocketAttack(candidates, from);
+  }
+
+  @Override
+  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
+      final Territory unitTerritory) {
+    return ui.selectProducerTerritoryForUnits(candidates, unitTerritory);
   }
 
   @Override

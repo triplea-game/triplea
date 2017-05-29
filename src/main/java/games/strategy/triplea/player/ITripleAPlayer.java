@@ -166,6 +166,17 @@ public interface ITripleAPlayer extends IRemotePlayer {
   Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from);
 
   /**
+   * Choose which territory to produce units from. Used when multiple factories are available for sea zones.
+   * 
+   * @param candidates
+   *        - a collection of Territories, the possible territories to produce units
+   * @param unitTerritory
+   *        - where units are being placed
+   * @return the territory selected as the producer
+   */
+  Territory selectProducerTerritoryForUnits(Collection<Territory> candidates, Territory unitTerritory);
+
+  /**
    * Get the fighters to move to a newly produced carrier.
    *
    * @param fightersThatCanBeMoved

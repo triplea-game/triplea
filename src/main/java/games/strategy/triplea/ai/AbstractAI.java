@@ -159,6 +159,12 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
+  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
+      final Territory unitTerritory) {
+    return candidates.iterator().next();
+  }
+
+  @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
     final List<Unit> rVal = new ArrayList<>();
