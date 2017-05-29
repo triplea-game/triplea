@@ -204,23 +204,36 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (error != null) {
       return error;
     }
-    // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " +
-    // player.getName());
     final List<Territory> producers = getAllProducers(at, m_player, units);
     producers.sort(getBestProducerComparator(at, units, m_player));
-    // System.out.println("Producers: " + producers);
     final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, m_player, true);
-    // System.out.println("Max Place Map: " + maxPlaceableMap);
-    final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
-    unitsLeftToPlace.sort(getUnitConstructionComparator());
+
     // sort both producers and units so that the "to/at" territory comes first, and so that all constructions come first
     // this is because the PRODUCER for ALL CONSTRUCTIONS must be the SAME as the TERRITORY they are going into
-    for (final Territory producer : producers) {
-      if (unitsLeftToPlace.isEmpty()) {
-        break;
-      }
-      // units may have special restrictions like RequiresUnits
+    final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
+    unitsLeftToPlace.sort(getUnitConstructionComparator());
 
+    while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
+
+      // Get next producer territory
+      Territory producer = producers.get(0);
+      if (producers.size() > 1) {
+        producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
+        if (producer == null) {
+          break;
+        }
+      }
+      producers.remove(producer);
+
+      int maxPlaceable = maxPlaceableMap.getInt(producer);
+      if (maxPlaceable == 0) {
+        if (bidMode == BidMode.NOT_BID) {
+          continue;
+        }
+        maxPlaceable = 1;
+      }
+
+      // units may have special restrictions like RequiresUnits
       final List<Unit> unitsCanBePlacedByThisProducer;
       if (bidMode == BidMode.BID) {
         unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
@@ -231,14 +244,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
 
       unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
-
-      int maxPlaceable = maxPlaceableMap.getInt(producer);
-      if (maxPlaceable == 0 && bidMode == BidMode.NOT_BID) {
-        continue;
-      } else if (maxPlaceable == 0) {
-        maxPlaceable = 1;
-      }
-
       final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
       // don't forget that -1 == infinite
       if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size()) {
@@ -265,9 +270,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       performPlaceFrom(producer, placedUnits, at, m_player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
+
     if (!unitsLeftToPlace.isEmpty()) {
-      SwingComponents.showDialog("Too many units placed", "Placed above max placement");
+      SwingComponents.showDialog("Unit Placement Canceled", "Not enough unit production territories available");
     }
+
     // play a sound
     if (Match.someMatch(units, Matches.UnitIsInfrastructure)) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
