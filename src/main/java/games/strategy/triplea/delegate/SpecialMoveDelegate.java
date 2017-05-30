@@ -163,7 +163,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return null;
   }
 
-  public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
+  static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
       final PlayerID player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();

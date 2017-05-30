@@ -271,7 +271,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return change;
   }
 
-  public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
+  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
       if (m_dependentUnits.get(holder) != null) {
@@ -286,7 +286,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
   }
 
-  public void updateDefendingAAUnits() {
+  private void updateDefendingAAUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
@@ -300,7 +300,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collections.reverse(m_defendingAAtypes);
   }
 
-  public void updateOffensiveAAUnits() {
+  private void updateOffensiveAAUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
     canFire.addAll(m_attackingUnits);
     canFire.addAll(m_attackingWaitingToDie);
@@ -478,7 +478,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
   }
 
-  public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAA()) {
       for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
@@ -1573,7 +1573,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return change;
   }
 
-  public void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
+  void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
     final Collection<Unit> transports = Match.getMatches(units, Matches.UnitCanTransport);
     // Put units back on their transports
     for (final Unit transport : transports) {
@@ -2401,7 +2401,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   // Figure out what units a transport is transported and has unloaded
-  public Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
+  private Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
     if (m_headless) {
       return Collections.emptyList();
     }
@@ -2637,7 +2637,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_battleTracker.addToDefendingAirThatCanNotLand(m_defendingAir, m_battleSite);
   }
 
-  public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
+  static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
       final Territory battleSite, final PlayerID attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
@@ -2702,7 +2702,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   // In an amphibious assault, sort on who is unloading from xports first
   // This will allow the marines with higher scores to get killed last
-  public void sortAmphib(final List<Unit> units, final GameData data) {
+  private void sortAmphib(final List<Unit> units, final GameData data) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
     final Comparator<Unit> comparator = (u1, u2) -> {
       int amphibComp = 0;

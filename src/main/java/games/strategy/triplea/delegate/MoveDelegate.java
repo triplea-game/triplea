@@ -278,7 +278,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  public static Change getResetUnitStateChange(final GameData data) {
+  static Change getResetUnitStateChange(final GameData data) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
       final TripleAUnit taUnit = TripleAUnit.get(u);
@@ -395,7 +395,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  public static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player) {
+  static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player) {
     final GameData data = aBridge.getData();
     final boolean repairOnlyOwn =
         games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
@@ -568,7 +568,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return null;
   }
 
-  public static Collection<Territory> getEmptyNeutral(final Route route) {
+  static Collection<Territory> getEmptyNeutral(final Route route) {
     final Match<Territory> emptyNeutral =
         new CompositeMatchAnd<>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);

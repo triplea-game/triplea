@@ -60,7 +60,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     return !getValidActions().isEmpty();
   }
 
-  public HashMap<ICondition, Boolean> getTestedConditions() {
+  private HashMap<ICondition, Boolean> getTestedConditions() {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
         new HashSet<>(UserActionAttachment.getUserActionAttachments(m_player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);

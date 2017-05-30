@@ -23,7 +23,7 @@ import games.strategy.util.Triple;
 /**
  * Provides some static methods for validating game edits.
  */
-public class EditValidator {
+class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
     final String result = null;
     /*
@@ -49,8 +49,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory,
-      final PlayerID player) {
+  static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
     String result = null;
     if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
@@ -62,7 +61,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
     String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -128,8 +127,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveUnits(final GameData data, final Territory territory,
-      final Collection<Unit> units) {
+  static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
     String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -160,8 +158,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs,
-      final PlayerID player) {
+  static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -186,8 +183,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs,
-      final PlayerID player) {
+  static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -215,7 +211,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+  static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
@@ -246,7 +242,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+  static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
@@ -279,7 +275,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangePoliticalRelationships(final GameData data,
+  static String validateChangePoliticalRelationships(final GameData data,
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {

@@ -56,7 +56,7 @@ public class UndoableMove extends AbstractUndoableMove {
     return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
   }
 
-  public String getReasonCantUndo() {
+  String getReasonCantUndo() {
     if (m_reasonCantUndo != null) {
       return m_reasonCantUndo;
     } else if (!m_dependOnMe.isEmpty()) {
@@ -184,13 +184,6 @@ public class UndoableMove extends AbstractUndoableMove {
         m_iDependOn.add(other);
         other.m_dependOnMe.add(this);
       }
-    }
-  }
-
-  // for use with airborne moving
-  public void addDependency(final List<UndoableMove> undoableMoves) {
-    for (final UndoableMove other : undoableMoves) {
-      addDependency(other);
     }
   }
 
