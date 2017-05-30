@@ -22,7 +22,7 @@ public class UnitsThatCantFightUtil {
   }
 
   // TODO Used to notify of kamikazi attacks
-  public Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
+  Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
     final CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<>();
     enemyAttackUnits.add(Matches.enemyUnit(player, m_data));
     enemyAttackUnits.add(Matches.unitCanAttack(player));

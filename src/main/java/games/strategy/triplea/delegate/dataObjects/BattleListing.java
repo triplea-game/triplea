@@ -32,14 +32,6 @@ public class BattleListing implements Serializable {
     return m_battles;
   }
 
-  public Set<Territory> getAllBattleTerritories() {
-    final Set<Territory> territories = new HashSet<>();
-    for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
-      territories.addAll(entry.getValue());
-    }
-    return territories;
-  }
-
   public Set<Territory> getNormalBattlesIncludingAirBattles() {
     final Set<Territory> territories = new HashSet<>();
     for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
@@ -54,16 +46,6 @@ public class BattleListing implements Serializable {
     final Set<Territory> territories = new HashSet<>();
     for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
       if (entry.getKey().isBombingRun()) {
-        territories.addAll(entry.getValue());
-      }
-    }
-    return territories;
-  }
-
-  public Set<Territory> getAirBattles() {
-    final Set<Territory> territories = new HashSet<>();
-    for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
-      if (entry.getKey().isAirPreBattleOrPreRaid()) {
         territories.addAll(entry.getValue());
       }
     }

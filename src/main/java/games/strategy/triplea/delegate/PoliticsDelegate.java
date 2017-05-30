@@ -516,7 +516,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  public static void chainAlliancesTogether(final IDelegateBridge aBridge) {
+  static void chainAlliancesTogether(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
       return;
@@ -581,7 +581,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  public static void givesBackOriginalTerritories(final IDelegateBridge aBridge) {
+  private static void givesBackOriginalTerritories(final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();

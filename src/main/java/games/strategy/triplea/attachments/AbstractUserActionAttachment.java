@@ -11,7 +11,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.util.Match;
 
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment.

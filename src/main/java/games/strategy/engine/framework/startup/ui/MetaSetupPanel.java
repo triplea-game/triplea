@@ -176,16 +176,7 @@ public class MetaSetupPanel extends SetupPanel {
   private static LobbyServerProperties getLobbyServerProperties() {
     final PropertyReader propReader = ClientContext.propertyReader();
     final String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
-
-    final File propFile = ClientFileSystemHelper.createTempFile();
-    try {
-      DownloadUtils.downloadFile(urlProp, propFile);
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(
-          "Failed to download lobby server props file: " + urlProp + ", using the backup local property file instead.",
-          e);
-    }
-    Optional<List<Map<String, Object>>> yamlDataObj = loadYaml(propFile);
+    Optional<List<Map<String, Object>>> yamlDataObj = loadRemoteLobbyServerProperties(urlProp);
     if (!yamlDataObj.isPresent()) {
       // try reading properties from the local file as a backup
       final String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
@@ -201,6 +192,24 @@ public class MetaSetupPanel extends SetupPanel {
 
     final LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
     return lobbyProps;
+  }
+
+  private static Optional<List<Map<String, Object>>> loadRemoteLobbyServerProperties(final String lobbyPropsUrl) {
+    final File file = ClientFileSystemHelper.createTempFile();
+    try {
+      try {
+        DownloadUtils.downloadFile(lobbyPropsUrl, file);
+      } catch (final IOException e) {
+        ClientLogger.logQuietly(
+            String.format(
+                "Failed to download lobby server props file (%s); using the backup local property file instead.",
+                lobbyPropsUrl),
+            e);
+      }
+      return loadYaml(file);
+    } finally {
+      file.delete();
+    }
   }
 
   private static Map<String, Object> matchCurrentVersion(final List<Map<String, Object>> lobbyProps) {

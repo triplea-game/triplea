@@ -79,7 +79,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 
-public class OddsCalculatorPanel extends JPanel {
+class OddsCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";
   private final Window m_parent;
@@ -129,7 +129,7 @@ public class OddsCalculatorPanel extends JPanel {
   private JList<String> m_territoryEffectsJList;
   private final WidgetChangedListener m_listenerPlayerUnitsPanel = () -> setWidgetActivation();
 
-  public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
+  OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
       final Window parent) {
     m_data = data;
     m_context = context;
@@ -188,7 +188,7 @@ public class OddsCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  public void shutdown() {
+  void shutdown() {
     try {
       // use this if not using a static calc, so that we gc the calc and shutdown all threads.
       // must be shutdown, as it has a thread pool per each instance.
@@ -465,12 +465,12 @@ public class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  public String formatPercentage(final double percentage) {
+  String formatPercentage(final double percentage) {
     final NumberFormat format = new DecimalFormat("%");
     return format.format(percentage);
   }
 
-  public String formatValue(final double value) {
+  String formatValue(final double value) {
     final NumberFormat format = new DecimalFormat("#0.##");
     return format.format(value);
   }
@@ -758,7 +758,7 @@ public class OddsCalculatorPanel extends JPanel {
     m_time.setText(blank);
   }
 
-  public void setWidgetActivation() {
+  void setWidgetActivation() {
     m_keepOneAttackingLandUnitCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
     m_amphibiousCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
     final boolean isLand = isLand();
@@ -815,7 +815,7 @@ public class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  public void selectCalculateButton() {
+  void selectCalculateButton() {
     m_calculateButton.requestFocus();
   }
 
