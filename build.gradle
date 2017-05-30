@@ -74,10 +74,14 @@ sourceSets {
     integTest {
         java.srcDir 'src/integ_test/java'
         resources.srcDir 'src/integ_test/resources'
+
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
     }
 }
 
 dependencies {
+    compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.guava:guava:19.0'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
@@ -98,16 +102,6 @@ dependencies {
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.7.22'
     testCompile 'junit:junit:4.12'
-
-    integTestCompile sourceSets.main.output
-    integTestCompile sourceSets.test.output
-
-    integTestCompile configurations.compile
-    integTestCompile configurations.testCompile
-
-    integTestRuntime configurations.runtime
-    integTestRuntime configurations.testRuntime
-
 }
 
 test {
@@ -123,11 +117,11 @@ task integTest(type: Test) {
     testClassesDir = sourceSets.integTest.output.classesDir
     classpath = sourceSets.integTest.runtimeClasspath
 
-    binResultsDir = file("$buildDir/integration-test-results/binary/integTest")
+    binResultsDir = file("$buildDir/integration_test_results/binary/integTest")
 
     reports {
-        html.destination = "$buildDir/reports/integration-test"
-        junitXml.destination = "$buildDir/integration-test-results"
+        reports.html.destination = file("${reports.html.destination}/$name")
+        reports.junitXml.destination = file("${reports.junitXml.destination}/$name")
     }
 
     mustRunAfter tasks.test
