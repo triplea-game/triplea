@@ -10,6 +10,7 @@ git config --global user.name "tripleabuilderbot"
 git clone --quiet https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/triplea-game.github.io.git website 2>&1 > /dev/null
 
 #Split the yaml file into multiple files
+chmod +x ./.travis/yaml_splitter
 ./.travis/yaml_splitter ./triplea_maps.yaml ./website/_maps/
 
 ## do git stuff, check if there is a diff, if so, commit and push it
