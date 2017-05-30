@@ -69,6 +69,14 @@ jar {
 repositories {
     jcenter()
 }
+
+sourceSets {
+    integTest {
+        java.srcDir 'src/integ_test/java'
+        resources.srcDir 'src/integ_test/resources'
+    }
+}
+
 dependencies {
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.guava:guava:19.0'
@@ -90,6 +98,16 @@ dependencies {
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.7.22'
     testCompile 'junit:junit:4.12'
+
+    integTestCompile sourceSets.main.output
+    integTestCompile sourceSets.test.output
+
+    integTestCompile configurations.compile
+    integTestCompile configurations.testCompile
+
+    integTestRuntime configurations.runtime
+    integTestRuntime configurations.testRuntime
+
 }
 
 test {
@@ -97,6 +115,25 @@ test {
         exceptionFormat = 'full'
     }
 }
+
+task integTest(type: Test) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Runs the integration tests.'
+
+    testClassesDir = sourceSets.integTest.output.classesDir
+    classpath = sourceSets.integTest.runtimeClasspath
+
+    binResultsDir = file("$buildDir/integration-test-results/binary/integTest")
+
+    reports {
+        html.destination = "$buildDir/reports/integration-test"
+        junitXml.destination = "$buildDir/integration-test-results"
+    }
+
+    mustRunAfter tasks.test
+}
+
+check.dependsOn integTest
 
 
 def assetsDirectory = file("${buildDir}/assets")
