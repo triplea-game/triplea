@@ -14,9 +14,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JFileChooser;
-
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.util.ThreadUtil;
@@ -72,9 +69,17 @@ public class Database {
   }
 
   public static Connection getConnection() {
+    final String url = "jdbc:derby:ta_users;create=true";
+    return getConnection(url, getDbProps());
+  }
+
+  public static Connection getPostgresConnection() {
+    return getConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
+  }
+
+  public static Connection getConnection(final String url, final Properties props) {
     ensureDbIsSetup();
     Connection conn = null;
-    final Properties props = getDbProps();
     /*
      * The connection specifies create=true to cause
      * the database to be created. To remove the database,
@@ -84,7 +89,6 @@ public class Database {
      * derby.system.home points to, or the current
      * directory if derby.system.home is not set.
      */
-    final String url = "jdbc:derby:ta_users;create=true";
     try {
       conn = DriverManager.getConnection(url, props);
     } catch (final SQLException e) {
@@ -219,6 +223,16 @@ public class Database {
     return props;
   }
 
+  private static Properties getPostgresDbProps() {
+    // These are the default values used by travis
+    // TODO: decide how to handle production values
+    final Properties props = new Properties();
+    props.put("user", "postgres");
+    props.put("password", "");
+    return props;
+  }
+
+
   static void backup() {
     final String backupDirName =
         "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
@@ -255,27 +269,5 @@ public class Database {
       }
     }
     s_logger.info("Databse shut down");
-  }
-
-  /**
-   * Restore the database.
-   */
-  public static void main(final String[] args) {
-    ensureDbIsSetup();
-    final JFileChooser chooser = new JFileChooser(Database.getBackupDir());
-    chooser.setMultiSelectionEnabled(false);
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    final int rVal = chooser.showOpenDialog(null);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-      final File f = chooser.getSelectedFile();
-      if (!f.exists() && f.isDirectory()) {
-        throw new IllegalStateException("Does not exist, or not a directory");
-      }
-      try {
-        Database.restoreFromBackup(chooser.getSelectedFile());
-      } catch (final SQLException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
   }
 }
