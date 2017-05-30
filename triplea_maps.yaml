@@ -110,7 +110,7 @@
     <br><b>Triplea 1.6.1.4 is required at least for the included Tournament Edition.</b>
     <br><b>Triplea 1.7.0.3 is required at least.</b>
     <br>
-    <p><a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p><a id="Features"><font size="6"><b><em>Features</em></b></font></a></p>
     <br>
     <ul>
       <li><b>Terrain - modifications for unitvalues and -abilities</b></li>
@@ -130,7 +130,7 @@
       <li><b>and many more...</b></li>
     </ul>
     <br>
-    <p> <a name="Nations and Turn order"><font size="6"><b><em>Nations and Turn order</em></b></font></a></p>
+    <p> <a id="Nations and Turn order"><font size="6"><b><em>Nations and Turn order</em></b></font></a></p>
     <br>
     <ul>
       <li><b>Germany</b> ( Vichy France, Danube Axis, Finnland)</li>
@@ -906,13 +906,13 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_siegSkin2_mini.png
   description: |
     <div style="text-align: left;">
-    <br>
-    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
-    <br>Alternative Relief Tiles for NWO
-    <br>by sieg
-    <br>
-    <div style="text-align: left;">
-    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    	<br>
+    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<br>Alternative Relief Tiles for NWO
+    	<br>by sieg
+    	<br>
+    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    </div>
 - mapName: New World Order-skin pulicat 1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_pulicat_1/archive/master.zip
@@ -920,13 +920,13 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_pulicatSkin_mini.png
   description: |
     <div style="text-align: left;">
-    <br>
-    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
-    <br>Alternative Relief Tiles for NWO
-    <br>by pulicat
-    <br>
-    <div style="text-align: left;">
-    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    	<br>
+    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<br>Alternative Relief Tiles for NWO
+    	<br>by pulicat
+    	<br>
+    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    </div>
 - mapName: New World Order-skin gudkarma 1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/new_world_order-skin_gudkarma_1/archive/master.zip
@@ -934,13 +934,13 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_new_world_order_gudkarmaSkin_mini.png
   description: |
     <div style="text-align: left;">
-    <br>
-    <h1 style="text-align: left;font-size:120%;color:000000">#NEW WORLD ORDER#</h1>
-    <br>Alternative Relief Tiles for NWO
-    <br>by gudkarma
-    <br>
-    <div style="text-align: left;">
-    <br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    	<br>
+    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<br>Alternative Relief Tiles for NWO
+    	<br>by gudkarma
+    	<br>
+    	<br>Just install them like a map, by selecting them for downloading. Once installed, the alternative relief Tiles are available from the TripleA menu under "View"/"Map Skins".
+    </div>
 - mapName: Diplomacy-Map Skin1
   mapType: MAP_SKIN
   url: https://github.com/triplea-maps/diplomacy-map_skin1/archive/master.zip
@@ -1520,7 +1520,7 @@
     <br><b>Inspired by Shogun, Samurai Swords, Ikusa boardgames, this map is done in tripleastyle, adding
     <br>Ships, Seazones, Cavalry and changes a few other things.</b>
     <br>
-    <p><a name="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p><a id="Features"><font size="6"><b><em>Features</em></b></font></a></p>
     <br>
     <ul>
       <li><b>2, 3, 4 or 5 players, free for all</b></li>
