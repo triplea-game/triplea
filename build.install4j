@@ -397,7 +397,7 @@
                             </object>
                           </void>
                           <void property="value">
-                            <string>"${installer:sys.installationDir}\TripleA.exe,1"</string>
+                            <string>"${installer:sys.installationDir}\TripleA.exe,0"</string>
                           </void>
                         </object>
                       </java>
@@ -419,6 +419,81 @@
                           </void>
                           <void property="value">
                             <string>"${installer:sys.installationDir}\TripleA.exe" "%1"</string>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition />
+                  </action>
+                  <action name="" id="220" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol Handler">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                          <void property="script">
+                            <object class="com.install4j.api.beans.ScriptProperty">
+                              <void property="value">
+                                <string>if(Util.isLinux()){
+    File shareFolder = new File("~/.local/share");
+    if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+        File applicationsDir = new File(shareFolder, "applications");
+        if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+            applicationsDir.mkdirs();
+        }
+        File desktopFile = Arrays.stream(applicationsDir.listFiles(new FilenameFilter(){
+            @Override
+            public boolean accept(File dir, String name){
+                return name.matches("TripleA[\\-0-9\\.]*\\.desktop");
+            }
+        })).findAny().get();
+        File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+        if(!desktopFile.exists()){
+            return false;
+        }
+        if(!mimeappsFile.exists()){
+            mimeappsFile.createNewFile();
+        }
+        String mimeType = "x-scheme-handler/triplea";
+        StringBuilder builder = new StringBuilder();
+        try(Scanner scanner = new Scanner(desktopFile)){
+            String mimeTypePrefix = "MimeType=";
+            while(scanner.hasNextLine()){
+                String nextLine = scanner.nextLine();
+                if(!nextLine.startsWith(mimeTypePrefix)){
+                    builder.append(nextLine).append('\n');
+                }
+            }
+            builder.append(mimeTypePrefix).append(mimeType);
+        }
+        try(PrintWriter writer = new PrintWriter(desktopFile)){
+            writer.println(builder.toString());
+        }
+        builder = new StringBuilder();
+        try(Scanner scanner = new Scanner(mimeappsFile)){
+            boolean isSetup = false;
+            String defaultApplicationString = "[Default Applications]";
+            String mimeTypePrefix = mimeType + "=";
+            while(scanner.hasNextLine()){
+                String nextLine = scanner.nextLine();
+                if(!nextLine.startsWith(mimeTypePrefix)){
+                    builder.append(nextLine).append('\n');
+                }
+                if(nextLine.equalsIgnoreCase(defaultApplicationString)){
+                    isSetup = true;
+                }
+            }
+            if(!isSetup){
+                builder.insert(0, defaultApplicationString + "\n");
+            }
+            builder.append(mimeTypePrefix).append(desktopFile.getName());
+        }
+        try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+            writer.println(builder.toString());
+        }
+    }
+}
+return true;</string>
+                              </void>
+                            </object>
                           </void>
                         </object>
                       </java>
@@ -639,6 +714,50 @@
                         <object class="java.lang.Enum" method="valueOf">
                           <class>com.install4j.api.windows.RegistryRoot</class>
                           <string>HKEY_CLASSES_ROOT</string>
+                        </object>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition />
+              </action>
+              <action name="" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol Handler">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                      <void property="script">
+                        <object class="com.install4j.api.beans.ScriptProperty">
+                          <void property="value">
+                            <string>if(Util.isLinux()){
+    File shareFolder = new File("~/.local/share");
+    if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+        File applicationsDir = new File(shareFolder, "applications");
+        if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+            return true;
+        }
+        File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+        if(!mimeappsFile.exists()){
+            return true;
+        }
+        String mimeType = "x-scheme-handler/triplea";
+        StringBuilder builder = new StringBuilder();
+        try(Scanner scanner = new Scanner(mimeappsFile)){
+            boolean isSetup = false;
+            String mimeTypePrefix = mimeType + "=";
+            while(scanner.hasNextLine()){
+                String nextLine = scanner.nextLine();
+                if(!nextLine.startsWith(mimeTypePrefix)){
+                    builder.append(nextLine).append('\n');
+                }
+            }
+        }
+        try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+            writer.println(builder.toString());
+        }
+    }
+}
+return true;</string>
+                          </void>
                         </object>
                       </void>
                     </object>
