@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
       - python3
+      - python3-yaml
 install: true
 script:
 - ./gradlew --no-daemon check
