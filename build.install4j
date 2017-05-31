@@ -433,7 +433,8 @@
                             <object class="com.install4j.api.beans.ScriptProperty">
                               <void property="value">
                                 <string>if(Util.isLinux()){
-    File shareFolder = new File("~/.local/share");
+    String home = System.getProperty("user.home");
+    File shareFolder = new File(home + "/.local/share");
     if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
         File applicationsDir = new File(shareFolder, "applications");
         if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
@@ -729,7 +730,8 @@ return true;</string>
                         <object class="com.install4j.api.beans.ScriptProperty">
                           <void property="value">
                             <string>if(Util.isLinux()){
-    File shareFolder = new File("~/.local/share");
+    String home = System.getProperty("user.home");
+    File shareFolder = new File(home + "/.local/share");
     if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
         File applicationsDir = new File(shareFolder, "applications");
         if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
