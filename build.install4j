@@ -459,7 +459,9 @@
             String mimeTypePrefix = "MimeType=";
             while(scanner.hasNextLine()){
                 String nextLine = scanner.nextLine();
-                if(!nextLine.startsWith(mimeTypePrefix)){
+                if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
+                    builder.append(nextLine).append(" \"%u\"\n");
+                } else if(!nextLine.startsWith(mimeTypePrefix)){
                     builder.append(nextLine).append('\n');
                 }
             }
