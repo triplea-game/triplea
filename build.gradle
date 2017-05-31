@@ -93,6 +93,8 @@ dependencies {
 }
 
 test {
+    exclude '**/*Tests.class'
+
     testLogging {
         exceptionFormat = 'full'
     }
