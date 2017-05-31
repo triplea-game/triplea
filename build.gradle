@@ -1,18 +1,10 @@
-buildscript {
-    repositories {
-        maven { url 'http://maven.ej-technologies.com/repository' }
-    }
-    dependencies {
-        classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.install4j.gradle' version '6.1.2'
     id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
@@ -192,8 +184,6 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 }
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
-
-apply plugin: 'install4j'
 
 task copyJRE(type: Copy, dependsOn: [updateAssets]) {
     from "${assetsDirectory}/install4j/windows-x86-1.8.0_66.tar.gz"
