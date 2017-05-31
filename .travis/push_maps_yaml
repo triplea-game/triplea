@@ -16,7 +16,8 @@ chmod +x ./.travis/yaml_splitter
 ## do git stuff, check if there is a diff, if so, commit and push it
 cd website
 if ! git diff-index --quiet HEAD --; then
-  git commit _data/triplea_maps.yaml -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
+  git add _maps/*
+  git commit -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
   git push -fq origin master 2>&1 > /dev/null
 fi
 
