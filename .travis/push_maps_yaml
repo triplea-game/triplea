@@ -17,7 +17,7 @@ chmod +x ./.travis/yaml_splitter
 cd website
 if ! git diff-index --quiet HEAD --; then
   git add _maps/*
-  git commit -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
+  git commit -m "Bot: update map files after game engine build $TAGGED_VERSION"
   git push -fq origin master 2>&1 > /dev/null
 fi
 
