@@ -92,7 +92,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private final int m_maxRounds;
 
   /**
-   *  Constructor. Suppress checkstyle warning.
+   * Constructor. Suppress checkstyle warning.
    */
   public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data,
       final BattleTracker battleTracker) {
@@ -828,23 +828,23 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), 1, false, true, true);
+        final Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), 1, false, true, true);
         final List<Unit> sortedAttackingUnits = new ArrayList<>(Match.getMatches(m_attackingUnits, unitList));
         Collections.sort(sortedAttackingUnits, new UnitBattleComparator(false,
             BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
             TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
         Collections.reverse(sortedAttackingUnits);
-        if (DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits, false, false,
-                m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) > 0) {
+        if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits,
+            false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null),
+            m_data) > 0) {
           final List<Unit> sortedDefendingUnits = new ArrayList<>(Match.getMatches(m_defendingUnits, unitList));
           Collections.sort(sortedDefendingUnits, new UnitBattleComparator(false,
-                 BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
-                 TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+              BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
+              TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
           Collections.reverse(sortedDefendingUnits);
-          if (DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits, m_defendingUnits, false, false,
-                  m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) == 0) {
+          if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits,
+              m_defendingUnits, false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite),
+              false, null), m_data) == 0) {
             remove(m_defendingUnits, bridge, m_battleSite, true);
           }
         }
@@ -894,8 +894,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               defenderWins(bridge);
             }
           }
-        // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
-        // and infrastructure.
+          // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
+          // and infrastructure.
         } else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
           if (isTransportCasualtiesRestricted()) {
             // If there are undefended attacking transports, determine if they automatically die
@@ -1178,7 +1178,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstDefendingSubs() {
-    /* Attacker subs fire
+    /*
+     * Attacker subs fire
      *
      * calculate here, this holds for the fight round, but can't be computed later
      * since destroyers may die
@@ -2655,7 +2656,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!carriers.isEmpty() && !games.strategy.triplea.Properties.getAlliedAirIndependent(data)) {
       final Match<Unit> alliedFighters = new CompositeMatchAnd<>(Matches.isUnitAllied(attacker, data),
           Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
-      final Collection<Unit> alliedAirInTerr = Match.getMatches(battleSite.getUnits().getUnits(), alliedFighters);
+      final Collection<Unit> alliedAirInTerr = Match.getMatches(attackingUnits, alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
         final TripleAUnit taUnit = (TripleAUnit) fighter;
         if (taUnit.getTransportedBy() != null) {
@@ -2691,10 +2692,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     clearWaitingToDie(bridge);
     m_isOver = true;
     m_battleTracker.removeBattle(this);
+
+    // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
         clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
+    }
+    final CompositeChange clearAlliedAirRetreated =
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_battleSite, m_attacker, m_data);
+    if (!clearAlliedAirRetreated.isEmpty()) {
+      bridge.addChange(clearAlliedAirRetreated);
     }
   }
 
@@ -2791,7 +2799,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   *  Return attacking from Collection.
+   * Return attacking from Collection.
    */
   @Override
   public Collection<Territory> getAttackingFrom() {
@@ -2799,7 +2807,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   *  Return attacking from Map.
+   * Return attacking from Map.
    */
   @Override
   public Map<Territory, Collection<Unit>> getAttackingFromMap() {
