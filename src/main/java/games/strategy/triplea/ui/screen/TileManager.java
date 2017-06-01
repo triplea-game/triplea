@@ -150,7 +150,7 @@ public class TileManager {
     Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
   }
 
-  public Collection<UnitsDrawer> getUnitDrawables() {
+  Collection<UnitsDrawer> getUnitDrawables() {
     acquireLock();
     try {
       return new ArrayList<>(m_allUnitDrawables);
@@ -235,7 +235,7 @@ public class TileManager {
     }
   }
 
-  public void updateTerritory(final Territory territory, final GameData data, final MapData mapData) {
+  private void updateTerritory(final Territory territory, final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
       acquireLock();

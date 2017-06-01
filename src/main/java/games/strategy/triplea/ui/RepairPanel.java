@@ -68,7 +68,7 @@ public class RepairPanel extends ActionPanel {
         () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : "")));
   }
 
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+  HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
     m_bid = bid;
     m_allowedPlayersToRepair = allowedPlayersToRepair;

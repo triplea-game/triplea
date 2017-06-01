@@ -58,7 +58,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
 
-public class ViewMenu {
+class ViewMenu {
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
@@ -66,7 +66,7 @@ public class ViewMenu {
   private final TripleAFrame frame;
   private final IUIContext uiContext;
 
-  public ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     this.uiContext = frame.getUIContext();
     gameData = frame.getGame().getData();

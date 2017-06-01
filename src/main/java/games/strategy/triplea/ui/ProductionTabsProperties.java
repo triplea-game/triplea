@@ -66,7 +66,7 @@ public class ProductionTabsProperties {
     return new ProductionTabsProperties(playerId, mRules);
   }
 
-  public List<Tuple<String, List<Rule>>> getRuleLists() {
+  List<Tuple<String, List<Rule>>> getRuleLists() {
     if (m_ruleLists != null) {
       return m_ruleLists;
     }

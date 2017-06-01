@@ -8,8 +8,8 @@ import javax.swing.JMenuItem;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingComponents;
 
-public class WebHelpMenu {
-  public WebHelpMenu(final TripleAMenuBar menuBar) {
+class WebHelpMenu {
+  WebHelpMenu(final TripleAMenuBar menuBar) {
     final JMenu web = new JMenu("Web");
     web.setMnemonic(KeyEvent.VK_W);
     menuBar.add(web);

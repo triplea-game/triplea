@@ -46,7 +46,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   protected Integer scrollBarPreviousValue = null;
   protected Integer previousVisibleIndex = null;
 
-  public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
+  protected AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
     m_data = data;
     m_movePanel = movePanel;
     m_moves = Collections.emptyList();
@@ -57,7 +57,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     SwingUtilities.invokeLater(() -> initLayout());
   }
 
-  public void undoMoves(final Map<Territory, List<Unit>> highlightUnitByTerritory) {
+  void undoMoves(final Map<Territory, List<Unit>> highlightUnitByTerritory) {
     final Set<Unit> units = Sets.newHashSet();
     for (final List<Unit> highlightedUnits : highlightUnitByTerritory.values()) {
       units.addAll(highlightedUnits);

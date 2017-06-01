@@ -18,7 +18,7 @@ import javax.swing.ScrollPaneConstants;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.ui.SwingAction;
 
-public class DiceChooser extends JPanel {
+class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;
   private final IUIContext m_uiContext;
   private JPanel m_dicePanel;
@@ -33,7 +33,7 @@ public class DiceChooser extends JPanel {
   // private final GameData m_data;
   private int m_diceSides = 6;
 
-  public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
+  DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
       final int diceSides) {
     m_uiContext = uiContext;
     m_numRolls = numRolls;
@@ -47,15 +47,7 @@ public class DiceChooser extends JPanel {
     createComponents();
   }
 
-  public void clear() {
-    m_dicePanel.removeAll();
-    for (int i = 0; i < m_diceCount; i++) {
-      m_random[i] = 0;
-    }
-    m_diceCount = 0;
-  }
-
-  public int[] getDice() {
+  int[] getDice() {
     if (m_diceCount < m_numRolls) {
       return null;
     }

@@ -89,7 +89,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   private ObjectiveTableModel m_objectiveModel;
   private IDelegateBridge m_dummyDelegate;
 
-  public ObjectivePanel(final GameData data) {
+  ObjectivePanel(final GameData data) {
     super(data);
     m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
     initLayout();

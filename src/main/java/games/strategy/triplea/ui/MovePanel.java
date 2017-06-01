@@ -1423,7 +1423,7 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
   }
 
-  public KeyListener getCustomKeyListeners() {
+  KeyListener getCustomKeyListeners() {
     return new KeyListener() {
       @Override
       public void keyTyped(final KeyEvent e) {}

@@ -57,7 +57,7 @@ public class UnitChooser extends JPanel {
     this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
+  UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext) {
     m_dependents = dependent;
@@ -72,7 +72,7 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext) {
@@ -85,7 +85,7 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext, final Match<Collection<Unit>> match) {
@@ -108,7 +108,7 @@ public class UnitChooser extends JPanel {
     m_selectNoneButton.setVisible(false);
   }
 
-  public void setMaxAndShowMaxButton(final int max) {
+  void setMaxAndShowMaxButton(final int max) {
     m_total = max;
     m_textFieldListener.changedValue(null);
     m_autoSelectButton.setText("Max");

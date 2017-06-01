@@ -71,7 +71,7 @@ public class TechPanel extends ActionPanel {
     return "TechPanel";
   }
 
-  public TechRoll waitForTech() {
+  TechRoll waitForTech() {
     if (getAvailableTechs().isEmpty()) {
       return null;
     }

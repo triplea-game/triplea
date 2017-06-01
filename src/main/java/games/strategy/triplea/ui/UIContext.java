@@ -50,7 +50,7 @@ public class UIContext extends AbstractUIContext {
   // protected final MainGameFrame m_frame;
   protected Cursor m_cursor = Cursor.getDefaultCursor();
 
-  public UIContext() {
+  UIContext() {
     super();
     m_mapImage = new MapImage();
     // m_frame = frame;

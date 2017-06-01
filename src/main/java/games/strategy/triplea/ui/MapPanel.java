@@ -244,7 +244,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   // Beagle Code used to chnage map skin
-  public void changeImage(final Dimension newDimensions) {
+  void changeImage(final Dimension newDimensions) {
     m_model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
     tileManager.createTiles(new Rectangle(newDimensions), m_data, uiContext.getMapData());
     tileManager.resetTiles(m_data, uiContext.getMapData());
@@ -438,7 +438,7 @@ public class MapPanel extends ImageScrollerLargeView {
     });
   }
 
-  public void setGameData(final GameData data) {
+  void setGameData(final GameData data) {
     // clean up any old listeners
     if (m_data != null) {
       m_data.removeTerritoryListener(TERRITORY_LISTENER);
@@ -712,7 +712,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  public Image getTerritoryImage(final Territory territory) {
+  Image getTerritoryImage(final Territory territory) {
     getData().acquireReadLock();
     try {
       return tileManager.createTerritoryImage(territory, m_data, uiContext.getMapData());
@@ -721,7 +721,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  public Image getTerritoryImage(final Territory territory, final Territory focusOn) {
+  Image getTerritoryImage(final Territory territory, final Territory focusOn) {
     getData().acquireReadLock();
     try {
       return tileManager.createTerritoryImage(territory, focusOn, m_data, uiContext.getMapData());
@@ -756,7 +756,7 @@ public class MapPanel extends ImageScrollerLargeView {
     repaint();
   }
 
-  public void initSmallMap() {
+  void initSmallMap() {
     final Iterator<Territory> territories = m_data.getMap().getTerritories().iterator();
     while (territories.hasNext()) {
       final Territory territory = territories.next();
@@ -769,7 +769,7 @@ public class MapPanel extends ImageScrollerLargeView {
     smallMapImageManager.updateOffscreenImage(uiContext.getMapImage().getSmallMapImage());
   }
 
-  public void setMouseShadowUnits(final Collection<Unit> units) {
+  void setMouseShadowUnits(final Collection<Unit> units) {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
@@ -826,7 +826,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext;
   }
 
-  public void hideMouseCursor() {
+  void hideMouseCursor() {
     if (hiddenCursor == null) {
       hiddenCursor = getToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR),
           new Point(0, 0), "Hidden");
