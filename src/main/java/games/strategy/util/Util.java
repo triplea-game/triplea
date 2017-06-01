@@ -116,19 +116,10 @@ public class Util {
   private Util() {}
 
   /**
-   * allow multiple fully qualified email addresses separated by spaces, or a blank string.
+   * Basic check if an email address string looks correct.
    */
   public static boolean isMailValid(final String emailAddress) {
-    final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
-    final String ATOM = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
-    final String WORD = "(?:" + ATOM + "|" + QUOTEDSTRING + ")";
-    final String SUBDOMAIN = "(?:" + ATOM + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
-    final String DOMAIN = SUBDOMAIN + "(?:\\." + SUBDOMAIN + ")*";
-    final String LOCALPART = WORD + "(?:\\." + WORD + ")*";
-    final String EMAIL = LOCALPART + "@" + DOMAIN;
-    // String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
-    final String regex = "(\\s*" + EMAIL + "\\s*)*";
-    return emailAddress.matches(regex);
+    return emailAddress != null && emailAddress.contains("@") && emailAddress.length() > 3;
   }
 
   public static String createUniqueTimeStamp() {
