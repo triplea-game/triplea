@@ -214,7 +214,7 @@ public class PoliticalStateOverview extends JPanel {
     this.revalidate();
   }
 
-  public Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges() {
+  Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges() {
     if (!m_editable) {
       return null;
     }

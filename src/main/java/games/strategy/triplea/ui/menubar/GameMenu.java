@@ -40,14 +40,14 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
-public class GameMenu {
+class GameMenu {
 
   private final TripleAFrame frame;
   private final IUIContext iuiContext;
   private final GameData gameData;
   private final IGame game;
 
-  public GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();

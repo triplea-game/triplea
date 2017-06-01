@@ -18,30 +18,15 @@ import games.strategy.engine.data.Unit;
  */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
-  protected Map<Territory, Collection<Unit>> m_attackingFromMap;
-  protected Set<Territory> m_attackingFrom;
-  private Collection<Territory> m_amphibiousAttackFrom;
 
   DependentBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
-      final boolean isBombingRun, final BattleType battleType, final GameData data) {
-    super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
-    m_attackingFromMap = new HashMap<>();
-    m_attackingFrom = new HashSet<>();
-    m_amphibiousAttackFrom = new ArrayList<>();
+      final GameData data) {
+    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
   }
 
-  public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
-  }
+  public abstract Collection<Territory> getAttackingFrom();
 
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
-  }
+  public abstract Map<Territory, Collection<Unit>> getAttackingFromMap();
 
-  /**
-   * @return territories where there are amphibious attacks.
-   */
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
-  }
+  public abstract Collection<Territory> getAmphibiousAttackTerritories();
 }

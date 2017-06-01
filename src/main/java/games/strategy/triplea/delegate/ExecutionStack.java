@@ -31,7 +31,7 @@ public class ExecutionStack implements Serializable {
   private IExecutable m_current;
   private final Stack<IExecutable> m_stack = new Stack<>();
 
-  public void execute(final IDelegateBridge bridge) {
+  void execute(final IDelegateBridge bridge) {
     // we were interrupted before, resume where we left off
     if (m_current != null) {
       m_stack.push(m_current);
@@ -43,7 +43,7 @@ public class ExecutionStack implements Serializable {
     m_current = null;
   }
 
-  public void push(final Collection<IExecutable> executables) {
+  void push(final Collection<IExecutable> executables) {
     for (final IExecutable ex : executables) {
       push(ex);
     }

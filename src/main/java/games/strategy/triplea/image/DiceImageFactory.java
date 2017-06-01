@@ -102,7 +102,7 @@ public class DiceImageFactory {
     }
   }
 
-  public Image getDieImage(final int i, final Die.DieType type) {
+  private Image getDieImage(final int i, final Die.DieType type) {
     if (i <= 0) {
       throw new IllegalArgumentException("die must be greater than 0, not:" + i);
     }

@@ -53,7 +53,7 @@ public class PlacePanel extends AbstractMovePanel {
         .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
-  public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
+  PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
     setUp(playerBridge);
     // workaround: meant to be in setUpSpecific, but it requires a variable
     refreshActionLabelText(bid);

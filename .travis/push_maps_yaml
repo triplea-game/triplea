@@ -9,16 +9,16 @@ git config --global user.name "tripleabuilderbot"
 ## clone the website repo, suppress any output
 git clone --quiet https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/triplea-game.github.io.git website 2>&1 > /dev/null
 
-## copy in the new maps.yaml
-cp ./triplea_maps.yaml ./website/_data/
+#Split the yaml file into multiple files
+chmod +x ./.travis/yaml_splitter
+./.travis/yaml_splitter ./triplea_maps.yaml ./website/_maps/
 
 ## do git stuff, check if there is a diff, if so, commit and push it
 cd website
-UPDATED=1; git status | grep "nothing to commit" && UPDATED=0
-
-if [ "$UPDATED" -eq 1 ]; then
-  git commit _data/triplea_maps.yaml -m "Bot: update triplea_maps.yaml after game engine build $TAGGED_VERSION"
-  git push -fq origin master 2>&1 > /dev/null 
+if ! git diff-index --quiet HEAD --; then
+  git add _maps/*
+  git commit -m "Bot: update map files after game engine build $TAGGED_VERSION"
+  git push -fq origin master 2>&1 > /dev/null
 fi
 
 cd ..

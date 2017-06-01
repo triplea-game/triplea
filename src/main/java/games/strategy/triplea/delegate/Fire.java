@@ -48,7 +48,7 @@ public class Fire implements IExecutable {
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
 
-  public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
+  Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
       final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits, final String stepName,
       final String text, final MustFightBattle battle, final boolean defending,
       final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack, final boolean headless,

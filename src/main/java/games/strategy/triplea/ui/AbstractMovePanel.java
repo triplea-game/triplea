@@ -65,7 +65,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     }
   };
 
-  public AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+  protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
     m_CANCEL_MOVE_ACTION.setEnabled(false);
@@ -310,7 +310,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     // used by some subclasses
   }
 
-  public final MoveDescription waitForMove(final IPlayerBridge bridge) {
+  final MoveDescription waitForMove(final IPlayerBridge bridge) {
     setUp(bridge);
     waitForRelease();
     cleanUp();

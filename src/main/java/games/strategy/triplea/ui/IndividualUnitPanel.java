@@ -133,7 +133,7 @@ public class IndividualUnitPanel extends JPanel {
     return m_max;
   }
 
-  public void setMaxAndUpdate(final int newMax) {
+  void setMaxAndUpdate(final int newMax) {
     m_max = newMax;
     updateLeft();
     m_textFieldPurelyForListening.setValue(0);
@@ -188,7 +188,7 @@ public class IndividualUnitPanel extends JPanel {
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
-  public IntegerMap<Unit> getSelected() {
+  IntegerMap<Unit> getSelected() {
     final IntegerMap<Unit> selectedUnits = new IntegerMap<>();
     for (final SingleUnitPanel entry : m_entries) {
       selectedUnits.put(entry.getUnit(), entry.getCount());

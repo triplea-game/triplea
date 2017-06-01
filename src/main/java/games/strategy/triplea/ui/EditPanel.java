@@ -66,7 +66,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
-public class EditPanel extends ActionPanel {
+class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;
   private TripleAFrame m_frame;
   private Action m_performMoveAction;
@@ -88,7 +88,7 @@ public class EditPanel extends ActionPanel {
   private Territory m_selectedTerritory = null;
   private Territory m_currentTerritory = null;
 
-  public EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+  EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     m_frame = frame;
     final JLabel m_actionLabel = new JLabel();

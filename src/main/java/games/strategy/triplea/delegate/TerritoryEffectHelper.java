@@ -25,7 +25,7 @@ public class TerritoryEffectHelper {
     }
   }
 
-  public static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects,
+  static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects,
       final boolean defending) {
     if (type == null || effects == null || effects.isEmpty()) {
       return 0;
@@ -75,7 +75,7 @@ public class TerritoryEffectHelper {
     return rVal;
   }
 
-  public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Collection<Territory> steps) {
+  static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Collection<Territory> steps) {
     final Set<UnitType> rVal = new HashSet<>();
     for (final Territory location : steps) {
       rVal.addAll(getUnitTypesForUnitsNotAllowedIntoTerritory(location));

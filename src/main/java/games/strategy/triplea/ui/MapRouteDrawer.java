@@ -45,7 +45,7 @@ public class MapRouteDrawer {
   private final MapData mapData;
   private final MapPanel mapPanel;
 
-  public MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
+  MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
     routeCalculator = new RouteCalculator(mapData.scrollWrapX(), mapData.scrollWrapY(), mapPanel.getImageWidth(),
         mapPanel.getImageHeight());
     this.mapData = checkNotNull(mapData);

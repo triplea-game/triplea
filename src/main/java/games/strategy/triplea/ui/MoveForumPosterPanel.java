@@ -12,7 +12,7 @@ import games.strategy.ui.SwingAction;
 public class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 
-  public MoveForumPosterPanel(final GameData data, final MapPanel map) {
+  MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
     m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());

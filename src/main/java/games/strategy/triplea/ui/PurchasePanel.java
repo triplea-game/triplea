@@ -99,7 +99,7 @@ public class PurchasePanel extends ActionPanel {
         () -> actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : "")));
   }
 
-  public IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {
+  IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {
     m_bid = bid;
     refreshActionLabelText();
     // automatically "click" the buy button for us!

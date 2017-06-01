@@ -205,7 +205,7 @@ public class UnitsDrawer implements IDrawable {
     }
   }
 
-  public Tuple<Territory, List<Unit>> getUnits(final GameData data) {
+  Tuple<Territory, List<Unit>> getUnits(final GameData data) {
     // note - it may be the case where the territory is being changed as a result
     // to a mouse click, and the map units haven't updated yet, so the unit count
     // from the territory wont match the units in count

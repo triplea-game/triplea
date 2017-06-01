@@ -52,7 +52,7 @@ public class CommentPanel extends JPanel {
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
 
-  public CommentPanel(final TripleAFrame frame, final GameData data) {
+  CommentPanel(final TripleAFrame frame, final GameData data) {
     m_frame = frame;
     m_data = data;
     init();

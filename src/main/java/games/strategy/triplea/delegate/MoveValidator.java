@@ -1412,7 +1412,7 @@ public class MoveValidator {
     return carrierMustMoveWith(units, start.getUnits().getUnits(), data, player);
   }
 
-  public static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units,
+  static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units,
       final Collection<Unit> startUnits, final GameData data, final PlayerID player) {
     // we want to get all air units that are owned by our allies
     // but not us that can land on a carrier
@@ -1453,7 +1453,7 @@ public class MoveValidator {
     return mapping;
   }
 
-  public static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom,
+  private static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom,
       final PlayerID playerWhoIsDoingTheMovement, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
     final Collection<Unit> canCarry = new ArrayList<>();

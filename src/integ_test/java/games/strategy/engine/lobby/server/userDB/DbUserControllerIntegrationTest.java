@@ -13,7 +13,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
-public class DbUserControllerTest {
+public class DbUserControllerIntegrationTest {
 
   @Test
   public void testCreate() throws Exception {

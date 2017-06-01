@@ -13,7 +13,7 @@ public class RouteDescription {
   private final Point m_end;
   private final Image m_cursorImage;
 
-  public RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
+  RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
     m_route = route;
     m_start = start;
     m_end = end;

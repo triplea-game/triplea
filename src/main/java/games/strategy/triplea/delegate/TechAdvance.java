@@ -182,7 +182,7 @@ public abstract class TechAdvance extends NamedAttachable {
     return ta;
   }
 
-  public static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player) {
+  static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;

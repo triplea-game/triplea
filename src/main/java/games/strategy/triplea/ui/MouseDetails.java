@@ -13,7 +13,7 @@ public class MouseDetails {
   // this is in absolute pixels of the unscaled map
   private final double m_y;
 
-  public MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
+  MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
     super();
     m_mouseEvent = mouseEvent;
     m_x = x;

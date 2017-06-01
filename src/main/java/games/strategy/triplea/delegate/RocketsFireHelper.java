@@ -72,7 +72,7 @@ public class RocketsFireHelper {
 
   public RocketsFireHelper() {}
 
-  public void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
+  void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
     final GameData data = bridge.getData();
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
     if (rocketTerritories.isEmpty()) {

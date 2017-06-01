@@ -68,7 +68,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private static final long serialVersionUID = 5879502298361231540L;
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
+  private Set<Territory> m_attackingFrom = new HashSet<>();
+  private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
@@ -88,15 +91,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int m_maxRounds;
 
+  /**
+   * Constructor. Suppress checkstyle warning.
+   */
   public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data,
       final BattleTracker battleTracker) {
-    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    super(battleSite, attacker, battleTracker, data);
     m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
     if (battleSite.isWater()) {
       m_maxRounds = games.strategy.triplea.Properties.getSeaBattleRounds(data);
     } else {
       m_maxRounds = games.strategy.triplea.Properties.getLandBattleRounds(data);
     }
+    m_attackingFromMap = new HashMap<>();
+    m_attackingFrom = new HashSet<>();
+    m_amphibiousAttackFrom = new ArrayList<>();
   }
 
   public void resetDefendingUnits(final PlayerID attacker, final GameData data) {
@@ -271,7 +280,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return change;
   }
 
-  public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
+  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
       if (m_dependentUnits.get(holder) != null) {
@@ -286,7 +295,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
   }
 
-  public void updateDefendingAAUnits() {
+  private void updateDefendingAAUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
@@ -300,7 +309,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collections.reverse(m_defendingAAtypes);
   }
 
-  public void updateOffensiveAAUnits() {
+  private void updateOffensiveAAUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
     canFire.addAll(m_attackingUnits);
     canFire.addAll(m_attackingWaitingToDie);
@@ -478,7 +487,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
   }
 
-  public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAA()) {
       for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
@@ -819,23 +828,23 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), 1, false, true, true);
+        final Match<Unit> unitList = Matches.UnitCanBeInBattle(true, !m_battleSite.isWater(), 1, false, true, true);
         final List<Unit> sortedAttackingUnits = new ArrayList<>(Match.getMatches(m_attackingUnits, unitList));
         Collections.sort(sortedAttackingUnits, new UnitBattleComparator(false,
             BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
             TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
         Collections.reverse(sortedAttackingUnits);
-        if (DiceRoll.getTotalPower(
-            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits, false, false,
-                m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) > 0) {
+        if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits,
+            false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null),
+            m_data) > 0) {
           final List<Unit> sortedDefendingUnits = new ArrayList<>(Match.getMatches(m_defendingUnits, unitList));
           Collections.sort(sortedDefendingUnits, new UnitBattleComparator(false,
-                 BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
-                 TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+              BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
+              TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
           Collections.reverse(sortedDefendingUnits);
-          if (DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits, m_defendingUnits, false, false,
-                  m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) == 0) {
+          if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits,
+              m_defendingUnits, false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite),
+              false, null), m_data) == 0) {
             remove(m_defendingUnits, bridge, m_battleSite, true);
           }
         }
@@ -885,8 +894,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               defenderWins(bridge);
             }
           }
-        // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
-        // and infrastructure.
+          // changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns,
+          // and infrastructure.
         } else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0) {
           if (isTransportCasualtiesRestricted()) {
             // If there are undefended attacking transports, determine if they automatically die
@@ -1169,7 +1178,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstDefendingSubs() {
-    /* Attacker subs fire
+    /*
+     * Attacker subs fire
      *
      * calculate here, this holds for the fight round, but can't be computed later
      * since destroyers may die
@@ -1573,7 +1583,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return change;
   }
 
-  public void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
+  void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
     final Collection<Unit> transports = Match.getMatches(units, Matches.UnitCanTransport);
     // Put units back on their transports
     for (final Unit transport : transports) {
@@ -2401,7 +2411,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   // Figure out what units a transport is transported and has unloaded
-  public Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
+  private Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
     if (m_headless) {
       return Collections.emptyList();
     }
@@ -2637,7 +2647,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_battleTracker.addToDefendingAirThatCanNotLand(m_defendingAir, m_battleSite);
   }
 
-  public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
+  static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
       final Territory battleSite, final PlayerID attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
@@ -2646,7 +2656,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!carriers.isEmpty() && !games.strategy.triplea.Properties.getAlliedAirIndependent(data)) {
       final Match<Unit> alliedFighters = new CompositeMatchAnd<>(Matches.isUnitAllied(attacker, data),
           Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
-      final Collection<Unit> alliedAirInTerr = Match.getMatches(battleSite.getUnits().getUnits(), alliedFighters);
+      final Collection<Unit> alliedAirInTerr = Match.getMatches(attackingUnits, alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
         final TripleAUnit taUnit = (TripleAUnit) fighter;
         if (taUnit.getTransportedBy() != null) {
@@ -2682,10 +2692,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     clearWaitingToDie(bridge);
     m_isOver = true;
     m_battleTracker.removeBattle(this);
+
+    // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
         clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
+    }
+    final CompositeChange clearAlliedAirRetreated =
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_battleSite, m_attacker, m_data);
+    if (!clearAlliedAirRetreated.isEmpty()) {
+      bridge.addChange(clearAlliedAirRetreated);
     }
   }
 
@@ -2702,7 +2719,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   // In an amphibious assault, sort on who is unloading from xports first
   // This will allow the marines with higher scores to get killed last
-  public void sortAmphib(final List<Unit> units, final GameData data) {
+  private void sortAmphib(final List<Unit> units, final GameData data) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
     final Comparator<Unit> comparator = (u1, u2) -> {
       int amphibComp = 0;
@@ -2779,5 +2796,29 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return TransportTracker.transporting(units);
+  }
+
+  /**
+   * Return attacking from Collection.
+   */
+  @Override
+  public Collection<Territory> getAttackingFrom() {
+    return m_attackingFrom;
+  }
+
+  /**
+   * Return attacking from Map.
+   */
+  @Override
+  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+    return m_attackingFromMap;
+  }
+
+  /**
+   * @return territories where there are amphibious attacks.
+   */
+  @Override
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return m_amphibiousAttackFrom;
   }
 }

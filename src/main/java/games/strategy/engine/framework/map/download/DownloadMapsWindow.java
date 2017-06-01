@@ -306,20 +306,22 @@ public class DownloadMapsWindow extends JFrame {
       final JList<String> gamesList, final List<DownloadFileDescription> maps, final MapAction action,
       final JLabel mapSizeLabelToUpdate) {
     return e -> {
-      final int index = gamesList.getSelectedIndex();
+      if (!e.getValueIsAdjusting()) {
+        final int index = gamesList.getSelectedIndex();
 
-      final boolean somethingIsSelected = index >= 0;
-      if (somethingIsSelected) {
-        final String mapName = gamesList.getModel().getElementAt(index);
+        final boolean somethingIsSelected = index >= 0;
+        if (somethingIsSelected) {
+          final String mapName = gamesList.getModel().getElementAt(index);
 
-        // find the map description by map name and update the map download detail panel
-        final Optional<DownloadFileDescription> map =
-            maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
-        if (map.isPresent()) {
-          final String text = map.get().toHtmlString();
-          descriptionPanel.setText(text);
-          descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-          updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+          // find the map description by map name and update the map download detail panel
+          final Optional<DownloadFileDescription> map =
+              maps.stream().filter(mapDescription -> mapDescription.getMapName().equals(mapName)).findFirst();
+          if (map.isPresent()) {
+            final String text = map.get().toHtmlString();
+            descriptionPanel.setText(text);
+            descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+            updateMapUrlAndSizeLabel(map.get(), action, mapSizeLabelToUpdate);
+          }
         }
       }
     };
@@ -335,35 +337,31 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
-    final String DOUBLE_SPACE = "&nbsp;&nbsp;";
+    final String doubleSpace = "&nbsp;&nbsp;";
 
-    final long mapSize;
-    String labelText = "<html>" + map.getMapName() + DOUBLE_SPACE + " v" + map.getVersion();
+    final StringBuilder sb = new StringBuilder();
+    sb.append("<html>").append(map.getMapName()).append(doubleSpace).append(" v").append(map.getVersion());
+
+    final Optional<Long> mapSize;
+    if (action == MapAction.INSTALL) {
+      final String mapUrl = map.getUrl();
+      mapSize = (mapUrl != null) ? DownloadUtils.getDownloadLength(mapUrl) : Optional.empty();
+    } else {
+      mapSize = Optional.of(map.getInstallLocation().length());
+    }
+    mapSize.ifPresent(size -> sb.append(doubleSpace).append(" (").append(createSizeLabel(size)).append(")"));
+
+    sb.append("<br>");
 
     if (action == MapAction.INSTALL) {
-      if (map.newURL() == null) {
-        mapSize = 0L;
-      } else {
-        mapSize = DownloadUtils.getDownloadLength(map.newURL()).orElse(-1);
-      }
+      sb.append(map.getUrl());
     } else {
-      mapSize = map.getInstallLocation().length();
+      sb.append(map.getInstallLocation().getAbsolutePath());
     }
 
-    if (mapSize > 0) {
-      labelText += DOUBLE_SPACE + " (" + createSizeLabel(mapSize) + ")";
-    }
+    sb.append("</html>");
 
-    labelText += "<br/>";
-
-    if (action == MapAction.INSTALL) {
-      labelText += map.getUrl();
-    } else {
-      labelText += map.getInstallLocation().getAbsolutePath();
-    }
-
-    labelText += "</html>";
-    return labelText;
+    return sb.toString();
   }
 
   private static String createSizeLabel(final long bytes) {

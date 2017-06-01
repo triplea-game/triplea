@@ -20,13 +20,13 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.SwingAction;
 
-public class FileMenu {
+class FileMenu {
 
   private final GameData gameData;
   private final TripleAFrame frame;
   private final IGame game;
 
-  public FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
@@ -58,7 +58,7 @@ public class FileMenu {
     return menuFileSave;
   }
 
-  protected JMenuItem addPostPBEM() {
+  JMenuItem addPostPBEM() {
     final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
       if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
@@ -84,7 +84,7 @@ public class FileMenu {
     return menuPBEM;
   }
 
-  protected void addExitMenu(final JMenu parentMenu) {
+  void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = SystemProperties.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
