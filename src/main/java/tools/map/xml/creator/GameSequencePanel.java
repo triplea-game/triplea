@@ -25,7 +25,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSequencePanel)) {
       me = Optional.of(new GameSequencePanel(mapXmlCreator.getStepActionPanel()));
     }

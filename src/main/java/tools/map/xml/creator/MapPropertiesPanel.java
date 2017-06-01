@@ -21,7 +21,7 @@ import tools.image.FileOpen;
 
 public class MapPropertiesPanel {
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
 
     if (!MapXmlHelper.getXmlStringsMap().containsKey("info_@name")) {
       for (final String newKey : new String[] {"info_@name", "info_@version"}) {
@@ -196,7 +196,7 @@ public class MapPropertiesPanel {
     return new int[] {32, 32, 32, 32, 32, 32, 32, 0};
   }
 
-  public static void selectCentersFile() {
+  static void selectCentersFile() {
     final FileOpen centersSelection = new FileOpen("Select center.txte File", MapXmlCreator.mapImageFile, ".txt");
     if (centersSelection.getFile() != null) {
       final File mapCentersFile = centersSelection.getFile();
@@ -211,7 +211,7 @@ public class MapPropertiesPanel {
     }
   }
 
-  public static void selectMapImageFile() {
+  static void selectMapImageFile() {
     final FileOpen mapSelection = new FileOpen("Select Map Image File", MapXmlCreator.mapImageFile, ".gif", ".png");
     if (mapSelection.getFile() != null) {
 

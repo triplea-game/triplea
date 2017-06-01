@@ -42,7 +42,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   private CanalDefinitionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final CanalDefinitionsPanel panel = new CanalDefinitionsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());
@@ -110,7 +110,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   }
 
-  public void paintOwnSpecificsToLandTerritories(final Graphics g, final Map<String, Point> centers,
+  private void paintOwnSpecificsToLandTerritories(final Graphics g, final Map<String, Point> centers,
       final Entry<String, CanalTerritoriesTuple> canalDef) {
     g.setColor(Color.GREEN);
     final Set<String> terrLandSet = canalDef.getValue().getLandTerritories();
@@ -125,7 +125,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
   }
 
-  public void paintOwnSpecificsToWaterTerritories(final Map<String, Point> centers, final Graphics2D g2d,
+  private void paintOwnSpecificsToWaterTerritories(final Map<String, Point> centers, final Graphics2D g2d,
       final FontMetrics fontMetrics, final Set<String> terrSet1, final Set<String> remainingTerrs,
       final String canalName) {
     g2d.setColor(Color.BLUE);
@@ -150,7 +150,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
   }
 
-  public static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
+  private static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
       final String text, final int textX) {
     g2d.translate((float) x, (float) y);
     if (radianAngle > PI_HALF) {

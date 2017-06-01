@@ -44,43 +44,7 @@ public class MapXmlData {
     initialize();
   }
 
-  public MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
-      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap,
-      final Map<String, Set<String>> territoryConnectionsMap, final List<String> playerNames,
-      final Map<String, String> playerAllianceMap,
-      final Map<String, Integer> playerInitResourcesMap, final Map<String, List<Integer>> unitDefinitionsMap,
-      final Map<String, List<String>> gamePlaySequenceMap,
-      final Map<String, Triple<String, String, Integer>> playerSequenceMap,
-      final Map<String, List<String>> technologyDefinitionsMap, final Map<String, List<String>> productionFrontiersMap,
-      final Map<String, List<String>> unitAttachmentsMap, final Map<String, Integer> territoyProductionsMap,
-      final Map<String, CanalTerritoriesTuple> canalDefinitionsMap,
-      final Map<String, String> territoryOwnershipsMap,
-      final Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap,
-      final Map<String, List<String>> gameSettingsMap,
-      final String notes, final File mapXMLFile) {
-    this.xmlStringsMap = xmlStringsMap;
-    this.resourceList = resourceList;
-    this.territoryDefintionsMap = territoryDefintionsMap;
-    this.territoryConnectionsMap = territoryConnectionsMap;
-    this.playerNames = playerNames;
-    this.playerAllianceMap = playerAllianceMap;
-    this.playerInitResourcesMap = playerInitResourcesMap;
-    this.unitDefinitionsMap = unitDefinitionsMap;
-    this.gamePlaySequenceMap = gamePlaySequenceMap;
-    this.playerSequenceMap = playerSequenceMap;
-    this.technologyDefinitionsMap = technologyDefinitionsMap;
-    this.productionFrontiersMap = productionFrontiersMap;
-    this.unitAttachmentsMap = unitAttachmentsMap;
-    this.territoyProductionsMap = territoyProductionsMap;
-    this.canalDefinitionsMap = canalDefinitionsMap;
-    this.territoryOwnershipsMap = territoryOwnershipsMap;
-    this.unitPlacementsMap = unitPlacementsMap;
-    this.gameSettingsMap = gameSettingsMap;
-    this.notes = notes;
-    this.mapXMLFile = mapXMLFile;
-  }
-
-  public void initialize() {
+  void initialize() {
     getXmlStringsMap().clear();
     getResourceList().clear();
     getPlayerNames().clear();

@@ -1,7 +1,6 @@
 package games.strategy.util;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**
@@ -88,7 +87,7 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(other, false);
   }
 
-  public int compareTo(final Object o, final boolean ignoreMicro) {
+  private int compareTo(final Object o, final boolean ignoreMicro) {
     if (o == null) {
       return -1;
     }
@@ -99,7 +98,7 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(other, ignoreMicro);
   }
 
-  public int compareTo(final Version other, final boolean ignoreMicro) {
+  private int compareTo(final Version other, final boolean ignoreMicro) {
     if (other == null) {
       return -1;
     }
@@ -137,25 +136,6 @@ public class Version implements Serializable, Comparable<Object> {
 
   public boolean isLessThan(final Version other) {
     return compareTo(other, false) > 0;
-  }
-
-  public static Comparator<Version> getHighestToLowestComparator() {
-    return (v1, v2) -> {
-      if (v1 == null && v2 == null) {
-        return 0;
-      } else if (v1 == null) {
-        return 1;
-      } else if (v2 == null) {
-        return -1;
-      }
-      if (v1.equals(v2, false)) {
-        return 0;
-      } else if (v1.isGreaterThan(v2, false)) {
-        return -1;
-      } else {
-        return 1;
-      }
-    };
   }
 
   public String toStringFull(final String separator) {

@@ -22,7 +22,7 @@ public class TerritoryOwnershipPanel extends ImageScrollPanePanel {
 
   private TerritoryOwnershipPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final TerritoryOwnershipPanel panel = new TerritoryOwnershipPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());

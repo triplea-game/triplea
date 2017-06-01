@@ -39,13 +39,6 @@ public class IntTextField extends JTextField {
     setMax(max);
   }
 
-  public IntTextField(final int min, final int max, final int current) {
-    this();
-    setMin(min);
-    setMax(max);
-    setValue(current);
-  }
-
   public IntTextField(final int min, final int max, final int current, final int columns) {
     super(columns);
     initTextField();

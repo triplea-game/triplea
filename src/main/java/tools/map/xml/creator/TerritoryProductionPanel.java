@@ -19,7 +19,7 @@ public class TerritoryProductionPanel extends ImageScrollPanePanel {
 
   private TerritoryProductionPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final TerritoryProductionPanel panel = new TerritoryProductionPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());

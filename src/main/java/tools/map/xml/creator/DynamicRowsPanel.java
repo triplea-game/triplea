@@ -92,7 +92,7 @@ public abstract class DynamicRowsPanel {
     me.get().initializeSpecifics();
   }
 
-  public void removeComponents(final ArrayList<JComponent> componentList) {
+  void removeComponents(final ArrayList<JComponent> componentList) {
     for (final JComponent component : componentList) {
       ownPanel.remove(component);
     }
@@ -143,7 +143,7 @@ public abstract class DynamicRowsPanel {
     }
   }
 
-  public void removeFinalButtonRow() {
+  void removeFinalButtonRow() {
     for (final JButton button : finalRowButtons) {
       ownPanel.remove(button);
     }

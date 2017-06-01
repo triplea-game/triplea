@@ -34,8 +34,7 @@ public class FileOpen {
     this(title, currentDirectory, null, extensions);
   }
 
-  public FileOpen(final String title, final File currentDirectory, final File selectedFile,
-      final String... extensions) {
+  FileOpen(final String title, final File currentDirectory, final File selectedFile, final String... extensions) {
     final JFileChooser chooser = new JFileChooser();
     chooser.setDialogTitle(title);
     if (selectedFile != null) {

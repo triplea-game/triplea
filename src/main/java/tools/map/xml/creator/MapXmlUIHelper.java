@@ -38,8 +38,7 @@ public class MapXmlUIHelper {
         messageType, JOptionPane.NO_OPTION);
   }
 
-
-  public static void addNewFocusListenerForTextField(final JTextField textField, final Runnable r) {
+  static void addNewFocusListenerForTextField(final JTextField textField, final Runnable r) {
     textField.addFocusListener(new FocusListener() {
 
       @Override
@@ -157,7 +156,7 @@ public class MapXmlUIHelper {
     return gbcNew;
   }
 
-  public static FileOpen selectFile(final String filename, final File currentDirectory, final String... extensions) {
+  static FileOpen selectFile(final String filename, final File currentDirectory, final String... extensions) {
     final FileOpen gameXmlFileOpen =
         new FileOpen("Load " + filename, currentDirectory, MapXmlCreator.FILE_NAME_ENDING_XML);
     if (gameXmlFileOpen.getPathString() != null) {

@@ -8,10 +8,8 @@ import java.util.List;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Util;
 
 public class UnitCategory implements Comparable<Object> {
@@ -31,18 +29,6 @@ public class UnitCategory implements Comparable<Object> {
   private int m_bombingDamage = 0;
   private boolean m_disabled = false;
 
-  public UnitCategory(final Unit unit) {
-    final TripleAUnit taUnit = (TripleAUnit) unit;
-    m_type = taUnit.getType();
-    m_owner = taUnit.getOwner();
-    m_movement = -1;
-    m_transportCost = -1;
-    m_damaged = taUnit.getHits();
-    m_bombingDamage = taUnit.getUnitDamage();
-    m_disabled = Matches.UnitIsDisabled.match(unit);
-    m_dependents = Collections.emptyList();
-  }
-
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
     this(unit, dependents, movement, 0, 0, false, transportCost);
   }
@@ -55,7 +41,7 @@ public class UnitCategory implements Comparable<Object> {
     m_owner = owner;
   }
 
-  public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged,
+  UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged,
       final int bombingDamage, final boolean disabled, final int transportCost) {
     m_type = unit.getType();
     m_movement = movement;
@@ -115,24 +101,10 @@ public class UnitCategory implements Comparable<Object> {
         && other.m_disabled == this.m_disabled;
   }
 
-  public boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
+  private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
     final boolean equalsIgnoreDamaged = other.m_type.equals(this.m_type) && other.m_movement == this.m_movement
         && other.m_owner.equals(this.m_owner) && Util.equals(this.m_dependents, other.m_dependents);
     return equalsIgnoreDamaged;
-  }
-
-  public boolean equalsIgnoreMovement(final UnitCategory other) {
-    final boolean equalsIgnoreMovement = other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner)
-        && other.m_damaged == this.m_damaged && other.m_bombingDamage == this.m_bombingDamage
-        && other.m_disabled == this.m_disabled && Util.equals(this.m_dependents, other.m_dependents);
-    return equalsIgnoreMovement;
-  }
-
-  public boolean equalsIgnoreDependents(final UnitCategory other) {
-    final boolean equalsIgnoreDependents = other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner)
-        && other.m_movement == this.m_movement && other.m_damaged == this.m_damaged
-        && other.m_bombingDamage == this.m_bombingDamage && other.m_disabled == this.m_disabled;
-    return equalsIgnoreDependents;
   }
 
   @Override

@@ -79,14 +79,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     m_values.put(key, obj);
   }
 
-  public void putAll(final Collection<T> keys, final int value) {
-    final Integer obj = Integer.valueOf(value);
-    final Iterator<T> iter = keys.iterator();
-    while (iter.hasNext()) {
-      put(iter.next(), obj);
-    }
-  }
-
   public void addAll(final Collection<T> keys, final int value) {
     final Iterator<T> iter = keys.iterator();
     while (iter.hasNext()) {
@@ -274,15 +266,9 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     return sum;
   }
 
-  public void add(final LinkedIntegerMap<T> map) {
+  private void add(final LinkedIntegerMap<T> map) {
     for (final T key : map.keySet()) {
       add(key, map.getInt(key));
-    }
-  }
-
-  public void subtract(final LinkedIntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      add(key, -map.getInt(key));
     }
   }
 
@@ -315,7 +301,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     return true;
   }
 
-  public LinkedIntegerMap<T> copy() {
+  private LinkedIntegerMap<T> copy() {
     final LinkedIntegerMap<T> copy = new LinkedIntegerMap<>();
     copy.add(this);
     return copy;
@@ -335,25 +321,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
-  public boolean someKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
-      if (matcher.match(obj)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public boolean allKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
-      if (!matcher.match(obj)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public Collection<T> getKeyMatches(final Match<T> matcher) {
+  private Collection<T> getKeyMatches(final Match<T> matcher) {
     final Collection<T> values = new ArrayList<>();
     for (final T obj : m_values.keySet()) {
       if (matcher.match(obj)) {
@@ -361,16 +329,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
       }
     }
     return values;
-  }
-
-  public int sumMatches(final Match<T> matcher) {
-    int sum = 0;
-    for (final T obj : m_values.keySet()) {
-      if (matcher.match(obj)) {
-        sum += getInt(obj);
-      }
-    }
-    return sum;
   }
 
   public void removeNonMatchingKeys(final Match<T> aMatch) {
