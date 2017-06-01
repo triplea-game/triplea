@@ -31,8 +31,8 @@ public class TestUtil {
   public static int getUniquePort() {
     // store/get from SystemProperties
     // to get around junit reloading
-    final String KEY = "triplea.test.port";
-    String prop = System.getProperties().getProperty(KEY);
+    final String key = "triplea.test.port";
+    String prop = System.getProperties().getProperty(key);
     if (prop == null) {
       // start off with something fairly random, between 12000 - 14000
       prop = Integer.toString(12000 + (int) (Math.random() % 2000));
@@ -42,7 +42,7 @@ public class TestUtil {
     if (val > 15000) {
       val = 12000;
     }
-    System.getProperties().put(KEY, "" + val);
+    System.getProperties().put(key, "" + val);
     return val;
   }
 

@@ -583,10 +583,10 @@ public class RevisedTest {
     // make sure the transport was unloaded
     assertTrue(moveDelegate.getMovesMade().get(1).wasTransportUnloaded(transport));
     // try to unload the other infantry somewhere else, an error occurs
-    final Route sz5ToEE = new Route();
-    sz5ToEE.setStart(sz5);
-    sz5ToEE.add(eastEurope);
-    error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
+    final Route sz5ToEastEurope = new Route();
+    sz5ToEastEurope.setStart(sz5);
+    sz5ToEastEurope.add(eastEurope);
+    error = moveDelegate.move(infantry.subList(1, 2), sz5ToEastEurope);
     assertNotNull(error, error);
     assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
     // end the round
@@ -601,7 +601,7 @@ public class RevisedTest {
     // a new round, the move should work
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
+    error = moveDelegate.move(infantry.subList(1, 2), sz5ToEastEurope);
     assertNull(error);
   }
 
@@ -741,7 +741,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAAOwnership() {
+  public void testAntiAirOwnership() {
     // Set up players
     // PlayerID british = GameDataTestUtil.british(gameData);
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
@@ -1088,7 +1088,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsAndBBOnDestroyerAndSubs() {
+  public void testAttackSubsAndBattleshipOnDestroyerAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1187,7 +1187,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsAndDestroyerOnBBAndSubs() {
+  public void testAttackSubsAndDestroyerOnBatleshipAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);

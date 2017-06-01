@@ -45,10 +45,10 @@ public class VaultTest {
     serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
     clientMessenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-    final UnifiedMessenger serverUM = new UnifiedMessenger(serverMessenger);
-    final UnifiedMessenger clientUM = new UnifiedMessenger(clientMessenger);
-    serverVault = new Vault(new ChannelMessenger(serverUM));
-    clientVault = new Vault(new ChannelMessenger(clientUM));
+    final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
+    final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
+    serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));
+    clientVault = new Vault(new ChannelMessenger(clientUnifiedMessenger));
     Thread.yield();
   }
 

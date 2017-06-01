@@ -18,8 +18,8 @@ public class EngineVersionTest {
 
   @Test
   public void testVersionParsingStopsAtFourNumbers() {
-    final String EXPECTED_OUTPUT = "1.2.3.4";
-    String input = EXPECTED_OUTPUT + ".5";
+    final String expectedOutput = "1.2.3.4";
+    String input = expectedOutput + ".5";
 
 
     EngineVersion testObj = createTestObj(input);
@@ -28,7 +28,7 @@ public class EngineVersionTest {
             + "return '1.2.3.4'",
         testObj.getVersion(), is(new Version(1, 2, 3, 4)));
 
-    input = EXPECTED_OUTPUT;
+    input = expectedOutput;
     testObj = createTestObj(input);
     assertThat(
         "We wrote to property file version:'1.2.3.4', and expect to get the same value back when reading from property "

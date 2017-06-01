@@ -97,7 +97,7 @@ public class LHTRTest {
   }
 
   @Test
-  public void testAAGunsDontFireNonCombat() {
+  public void testAntiAirGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
@@ -149,7 +149,7 @@ public class LHTRTest {
   }
 
   @Test
-  public void testLHTRBombingRaid() {
+  public void testLhtrBombingRaid() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
@@ -186,7 +186,7 @@ public class LHTRTest {
   }
 
   @Test
-  public void testLHTRBombingRaid2Bombers() {
+  public void testLhtrBombingRaid2Bombers() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerID germans = GameDataTestUtil.germans(gameData);

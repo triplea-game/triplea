@@ -14,7 +14,7 @@ public interface ITestDelegateBridge extends IDelegateBridge {
    * Changing the player has the effect of commiting the current transaction.
    * Player is initialized to the player specified in the xml data.
    */
-  void setPlayerID(PlayerID playerId);
+  void setPlayerId(PlayerID playerId);
 
   void setStepName(String name);
 

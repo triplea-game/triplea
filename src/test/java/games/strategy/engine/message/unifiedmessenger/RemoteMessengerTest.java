@@ -172,13 +172,13 @@ public class RemoteMessengerTest {
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
-      final UnifiedMessenger serverUM = new UnifiedMessenger(server);
-      unifiedMessengerHub = serverUM.getHub();
-      final RemoteMessenger serverRM = new RemoteMessenger(serverUM);
-      final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
+      final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
+      unifiedMessengerHub = serverUnifiedMessenger.getHub();
+      final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
+      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       // register it on the server
       final TestRemote testRemote = new TestRemote();
-      serverRM.registerRemote(testRemote, test);
+      serverRemoteMessenger.registerRemote(testRemote, test);
       // since the registration must go over a socket
       // and through a couple threads, wait for the
       // client to get it
@@ -188,7 +188,7 @@ public class RemoteMessengerTest {
         ThreadUtil.sleep(50);
       }
       // call it on the client
-      final int rVal = ((ITestRemote) clientRM.getRemote(test)).increment(1);
+      final int rVal = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, rVal);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
@@ -215,14 +215,14 @@ public class RemoteMessengerTest {
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
-      final RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger(server));
+      final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(server));
       final TestRemote testRemote = new TestRemote();
-      serverRM.registerRemote(testRemote, test);
-      final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
+      serverRemoteMessenger.registerRemote(testRemote, test);
+      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       // call it on the client
       // should be no need to wait since the constructor should not
       // reutrn until the initial state of the messenger is good
-      final int rVal = ((ITestRemote) clientRM.getRemote(test)).increment(1);
+      final int rVal = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, rVal);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
@@ -242,14 +242,14 @@ public class RemoteMessengerTest {
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
-      final UnifiedMessenger serverUM = new UnifiedMessenger(server);
-      final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
-      clientRM.registerRemote(new TestRemote(), test);
-      serverUM.getHub().waitForNodesToImplement(test.getName());
-      assertTrue(serverUM.getHub().hasImplementors(test.getName()));
+      final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
+      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
+      clientRemoteMessenger.registerRemote(new TestRemote(), test);
+      serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
+      assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       client.shutDown();
       ThreadUtil.sleep(200);
-      assertTrue(!serverUM.getHub().hasImplementors(test.getName()));
+      assertTrue(!serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -267,9 +267,9 @@ public class RemoteMessengerTest {
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
-      final UnifiedMessenger serverUM = new UnifiedMessenger(server);
-      final RemoteMessenger serverRM = new RemoteMessenger(serverUM);
-      final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
+      final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
+      final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
+      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       final Object lock = new Object();
       final AtomicBoolean started = new AtomicBoolean(false);
       final IFoo foo = new IFoo() {
@@ -285,15 +285,15 @@ public class RemoteMessengerTest {
           }
         }
       };
-      clientRM.registerRemote(foo, test);
-      serverUM.getHub().waitForNodesToImplement(test.getName());
-      assertTrue(serverUM.getHub().hasImplementors(test.getName()));
+      clientRemoteMessenger.registerRemote(foo, test);
+      serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
+      assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       final AtomicReference<ConnectionLostException> rme = new AtomicReference<>(null);
       final Runnable r = new Runnable() {
         @Override
         public void run() {
           try {
-            final IFoo remoteFoo = (IFoo) serverRM.getRemote(test);
+            final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
             remoteFoo.foo();
           } catch (final ConnectionLostException e) {
             rme.set(e);
