@@ -40,10 +40,10 @@ public class DbUserController implements UserDao {
     this(
         new DerbyUserController(
             UserDaoPrimarySecondary.Role.PRIMARY,
-            () -> Database.getDerbyConnection()),
+            Database::getDerbyConnection),
         new DerbyUserController(
             UserDaoPrimarySecondary.Role.SECONDARY,
-            () -> Database.getPostgresConnection()));
+            Database::getPostgresConnection));
   }
 
   /**
