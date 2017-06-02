@@ -123,7 +123,7 @@ public class PlaceDelegateTest extends DelegateTest {
   }
 
   @Test
-  public void testCantPlaceAAWhenOneAlreadyThere() {
+  public void testCantPlaceAntiAirWhenOneAlreadyThere() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
     final String response = delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
@@ -131,7 +131,7 @@ public class PlaceDelegateTest extends DelegateTest {
   }
 
   @Test
-  public void testCantPlaceTwoAA() {
+  public void testCantPlaceTwoAntiAir() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 2);
     final String response = delegate.canUnitsBePlaced(westCanada, getUnits(map, british), british);

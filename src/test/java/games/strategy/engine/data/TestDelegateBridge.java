@@ -85,7 +85,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
    * Player is initialized to the player specified in the xml data.
    */
   @Override
-  public void setPlayerID(final PlayerID playerId) {
+  public void setPlayerId(final PlayerID playerId) {
     this.playerId = playerId;
   }
 
