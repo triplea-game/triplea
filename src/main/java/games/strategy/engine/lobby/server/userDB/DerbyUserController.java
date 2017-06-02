@@ -79,7 +79,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   public void updateUser(final DbUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    final Connection con = Database.getDerbyConnection();
+    final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps =
           con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
