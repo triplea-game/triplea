@@ -17,9 +17,9 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
   private JLabel m_actionLabel;
   protected IPlayerBridge m_bridge;
-  private PBEMMessagePoster m_poster;
+  PBEMMessagePoster m_poster;
   private TripleAFrame m_frame;
-  private ForumPosterComponent m_forumPosterComponent;
+  ForumPosterComponent m_forumPosterComponent;
 
   AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
