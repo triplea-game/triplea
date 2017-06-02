@@ -346,12 +346,12 @@
                       <java class="java.beans.XMLDecoder">
                         <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
                           <void property="keyName">
-                            <string>triplea</string>
+                            <string>Software\Classes\triplea</string>
                           </void>
                           <void property="registryRoot">
                             <object class="java.lang.Enum" method="valueOf">
                               <class>com.install4j.api.windows.RegistryRoot</class>
-                              <string>HKEY_CLASSES_ROOT</string>
+                              <string>HKEY_CURRENT_USER</string>
                             </object>
                           </void>
                           <void property="value">
@@ -367,12 +367,12 @@
                       <java class="java.beans.XMLDecoder">
                         <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
                           <void property="keyName">
-                            <string>triplea</string>
+                            <string>Software\Classes\triplea</string>
                           </void>
                           <void property="registryRoot">
                             <object class="java.lang.Enum" method="valueOf">
                               <class>com.install4j.api.windows.RegistryRoot</class>
-                              <string>HKEY_CLASSES_ROOT</string>
+                              <string>HKEY_CURRENT_USER</string>
                             </object>
                           </void>
                           <void property="valueName">
@@ -388,12 +388,12 @@
                       <java class="java.beans.XMLDecoder">
                         <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
                           <void property="keyName">
-                            <string>triplea\DefaultIcon</string>
+                            <string>Software\Classes\triplea\DefaultIcon</string>
                           </void>
                           <void property="registryRoot">
                             <object class="java.lang.Enum" method="valueOf">
                               <class>com.install4j.api.windows.RegistryRoot</class>
-                              <string>HKEY_CLASSES_ROOT</string>
+                              <string>HKEY_CURRENT_USER</string>
                             </object>
                           </void>
                           <void property="value">
@@ -409,12 +409,12 @@
                       <java class="java.beans.XMLDecoder">
                         <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
                           <void property="keyName">
-                            <string>triplea\shell\open\command</string>
+                            <string>Software\Classes\triplea\shell\open\command</string>
                           </void>
                           <void property="registryRoot">
                             <object class="java.lang.Enum" method="valueOf">
                               <class>com.install4j.api.windows.RegistryRoot</class>
-                              <string>HKEY_CLASSES_ROOT</string>
+                              <string>HKEY_CURRENT_USER</string>
                             </object>
                           </void>
                           <void property="value">
@@ -711,7 +711,7 @@ return true;</string>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction">
                       <void property="keyName">
-                        <string>triplea</string>
+                        <string>Software\Classes\triplea</string>
                       </void>
                       <void property="onlyIfEmpty">
                         <boolean>false</boolean>
@@ -719,7 +719,7 @@ return true;</string>
                       <void property="registryRoot">
                         <object class="java.lang.Enum" method="valueOf">
                           <class>com.install4j.api.windows.RegistryRoot</class>
-                          <string>HKEY_CLASSES_ROOT</string>
+                          <string>HKEY_CURRENT_USER</string>
                         </object>
                       </void>
                     </object>
