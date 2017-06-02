@@ -180,13 +180,13 @@ public class LobbyLoginValidator implements ILoginValidator {
       final String hostName = userName.substring(0, userName.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
 
       if (!DbUser.isValidUserName(hostName)) {
-        return DbUser.getInvalidUserNameReason(hostName);
+        return DbUser.getUserNameValidationErrorMessage(hostName);
       }
     } else {
       if (DbUser.isValidUserName(userName)) {
         return null;
       } else {
-        return DbUser.getInvalidUserNameReason(userName);
+        return DbUser.getUserNameValidationErrorMessage(userName);
       }
     }
     return null;

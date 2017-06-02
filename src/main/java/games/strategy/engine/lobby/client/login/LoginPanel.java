@@ -126,7 +126,7 @@ class LoginPanel extends JPanel {
     final String userName = m_userName.getText();
     final boolean anonymous = m_anonymous.isSelected();
     if (!DbUser.isValidUserName(userName)) {
-      JOptionPane.showMessageDialog(this, DbUser.getInvalidUserNameReason(userName), "Invalid Username",
+      JOptionPane.showMessageDialog(this, DbUser.getUserNameValidationErrorMessage(userName), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length == 0 && !anonymous) {

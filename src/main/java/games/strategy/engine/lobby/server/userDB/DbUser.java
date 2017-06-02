@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
 import com.google.common.base.Preconditions;
+
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.Util;
 
@@ -18,12 +19,15 @@ public class DbUser {
 
   public static class UserName {
     public final String value;
+
     public UserName(String name) {
       this.value = name;
     }
   }
+
   public static class UserEmail {
     public final String value;
+
     public UserEmail(String email) {
       this.value = email;
     }
@@ -49,10 +53,7 @@ public class DbUser {
   public boolean isValid() {
     return getValidationErrorMessage() == null;
   }
-  /**
-   * @return if this user is valid.
-   */
-  // TODO: test me
+
   public String getValidationErrorMessage() {
     if (email == null || email.isEmpty() || !Util.isMailValid(email)) {
       return "Invalid email address";
@@ -66,9 +67,9 @@ public class DbUser {
   }
 
   /**
-   * @return null if user name is valid, otherwise returns an error message.
+   * @return null if user name is valid otherwise returns an error message String.
    */
-  public static String getInvalidUserNameReason(String userName) {
+  public static String getUserNameValidationErrorMessage(String userName) {
     Preconditions.checkState(!isValidUserName(userName));
     return userNameValidation(userName);
   }

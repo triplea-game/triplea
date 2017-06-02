@@ -112,7 +112,7 @@ public class CreateUpdateAccountPanel extends JPanel {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (!DbUser.isValidUserName(userNameField.getText())) {
-      JOptionPane.showMessageDialog(this, DbUser.getInvalidUserNameReason(userNameField.getText()), "Invalid Username",
+      JOptionPane.showMessageDialog(this, DbUser.getUserNameValidationErrorMessage(userNameField.getText()), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (passwordField.getPassword().length == 0) {
