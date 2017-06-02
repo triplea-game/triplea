@@ -53,8 +53,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
   }
 
-  public boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
-    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData());
+  private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
   /**
