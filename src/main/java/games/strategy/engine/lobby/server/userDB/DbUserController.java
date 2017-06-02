@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
+import static games.strategy.util.PredicateUtils.not;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.stream.Collectors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-
 /**
  * Interface for interacting with database user operations. For example, add user, delete user..
  */
@@ -18,8 +19,8 @@ import com.google.common.base.Preconditions;
  *  This class is currently set up to write and read from multiple data sources.
  *  This is a migration tool, to go from one data source to another. When we switch over completely
  *  we can simplify and write/read to the primary datasource directly.
+ * TODO: rename to: UserController
  */
-// TODO: rename to: UserController
 public class DbUserController implements UserDao {
   private static final Logger logger = Logger.getLogger(DbUserController.class.getName());
 
@@ -60,7 +61,7 @@ public class DbUserController implements UserDao {
     primaryDao = primaryDaoList.get(0);
 
     secondaryDaoSet = Arrays.stream(userDaos)
-        .filter(dao -> !dao.isPrimary())
+        .filter(not(UserDaoPrimarySecondary::isPrimary))
         .collect(Collectors.toSet());
   }
 
@@ -101,8 +102,8 @@ public class DbUserController implements UserDao {
     try {
       new Thread(() -> secondaryDaoSet.forEach(dao -> dao.createUser(user, password)));
     } catch (Exception e) {
-      logger.warning(
-          "Secondary datasource failure, this is okay if we are still setting up a new datasource, error: " + e.getMessage());
+      logger.warning("Secondary datasource failure, this is okay if we are still setting "
+          + "up a new datasource, error: " + e.getMessage());
     }
   }
 
