@@ -8,9 +8,19 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
-
 public class DbUserTest {
+
+  private static void verifyValid(DbUser validDbUser) {
+    assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
+        validDbUser.getValidationErrorMessage(), nullValue());
+    assertThat(validDbUser.isValid(), is(true));
+  }
+
+  private static void verifyInvalid(DbUser invalidDbUser) {
+    assertThat("DbUser values were expected to be invalid: " + invalidDbUser,
+        invalidDbUser.isValid(), is(false));
+    assertThat(invalidDbUser.getValidationErrorMessage(), not(emptyString()));
+  }
 
   @Test
   public void valueObjectPropertiesAreSet() {
@@ -51,12 +61,6 @@ public class DbUserTest {
             new DbUser.UserEmail(TestData.email)));
   }
 
-  private static void verifyValid(DbUser validDbUser) {
-    assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
-        validDbUser.getValidationErrorMessage(), nullValue());
-    assertThat(validDbUser.isValid(), is(true));
-  }
-
   @Test
   public void inValidDbUser() {
     verifyInvalid(
@@ -71,11 +75,6 @@ public class DbUserTest {
 
   }
 
-  private static void verifyInvalid(DbUser invalidDbUser) {
-    assertThat("DbUser values were expected to be invalid: " + invalidDbUser,
-        invalidDbUser.isValid(), is(false));
-    assertThat(invalidDbUser.getValidationErrorMessage(), not(emptyString()));
-  }
   private interface TestData {
     String name = "abc";
     String email = "email@abc.com";
