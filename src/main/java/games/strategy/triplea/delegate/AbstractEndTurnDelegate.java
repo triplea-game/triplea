@@ -33,6 +33,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.util.AiBonusIncomeUtils;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -65,6 +66,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final GameData data = m_bridge.getData();
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+    final IntegerMap<Resource> leftOverResources = m_bridge.getPlayerID().getResources().getResourcesCopy();
     super.start();
     if (!m_needToInitialize) {
       return;
@@ -120,8 +122,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       endTurnReport.append("<br />").append(addOtherResources(m_bridge));
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
-      final int puIncome = Math.max(0, m_player.getResources().getQuantity(PUs) - leftOverPUs);
-      endTurnReport.append("<br />").append(giveBonusIncomePercentage(puIncome));
+      final IntegerMap<Resource> income = m_player.getResources().getResourcesCopy();
+      income.subtract(leftOverResources);
+      endTurnReport.append("<br />").append(AiBonusIncomeUtils.addAiBonusIncome(income, m_bridge, m_player));
 
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
@@ -169,23 +172,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     m_needToInitialize = false;
     showEndTurnReport(endTurnReport.toString());
-  }
-
-  private String giveBonusIncomePercentage(final int puIncome) {
-    // TODO and other resources?
-    final int bonusPercent = Properties.getBonusIncomePercentage(m_player, getData());
-    final int bonusIncome = (int) Math.round(((double) puIncome * (double) bonusPercent / 100));
-    if (bonusIncome == 0) {
-      return "";
-    }
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-    final int total = m_player.getResources().getQuantity(PUs) + bonusIncome;
-    final String message = "Giving player bonus income (" + bonusPercent + "%) of " + bonusIncome
-        + MyFormatter.pluralize(" PU", bonusIncome) + "; end with " + total + MyFormatter.pluralize(" PU", total);
-    m_bridge.getHistoryWriter().startEvent(message);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player,
-        getData().getResourceList().getResource(Constants.PUS), bonusIncome));
-    return message;
   }
 
   protected void showEndTurnReport(final String endTurnReport) {
