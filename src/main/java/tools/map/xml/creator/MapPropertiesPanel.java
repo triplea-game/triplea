@@ -86,31 +86,31 @@ public class MapPropertiesPanel {
     stepActionPanel.add(labelMapNameExample, gridBadConstLabelMapNameExample);
 
     // Map Version
-    stepActionPanel.add(labelMapVersion, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 2, 2));
+    stepActionPanel.add(labelMapVersion, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 2, 2));
 
     textFieldMapVersion.addFocusListener(FocusListenerFocusLost
         .withAction(() -> MapXmlHelper.putXmlStrings("info_@version", textFieldMapVersion.getText())));
     textFieldMapVersion.setMaximumSize(new Dimension(0, 0));
     textFieldMapVersion.setColumns(columns);
-    stepActionPanel.add(textFieldMapVersion, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 2));
+    stepActionPanel.add(textFieldMapVersion, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 1, 2));
 
 
-    stepActionPanel.add(labelMapVersionExample, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 2));
+    stepActionPanel.add(labelMapVersionExample, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapNameExample, 2, 2));
 
     // Resource Name
-    stepActionPanel.add(labelResourceName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 3));
+    stepActionPanel.add(labelResourceName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 0, 3));
 
     textFieldResourceName.addFocusListener(FocusListenerFocusLost
         .withAction(() -> MapXmlHelper.addResourceList(0, textFieldResourceName.getText())));
     textFieldResourceName.setMaximumSize(new Dimension(0, 0));
     textFieldResourceName.setColumns(columns);
-    stepActionPanel.add(textFieldResourceName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 3));
+    stepActionPanel.add(textFieldResourceName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 1, 3));
 
     stepActionPanel.add(labelResourceNameExample,
-        MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 3));
+        MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapNameExample, 2, 3));
 
     // Map Image File
-    stepActionPanel.add(labelMapImageFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 4));
+    stepActionPanel.add(labelMapImageFile, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 0, 4));
 
     textFieldMapImageFile.setEnabled(false);
     textFieldMapImageFile.setMaximumSize(new Dimension(0, 0));
@@ -121,7 +121,7 @@ public class MapPropertiesPanel {
         buttonSelectMapImageFile.doClick();
       }
     });
-    stepActionPanel.add(textFieldMapImageFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 4));
+    stepActionPanel.add(textFieldMapImageFile, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 1, 4));
 
     buttonSelectMapImageFile.addActionListener(SwingAction.of("Select Map Image File", e -> {
       selectMapImageFile();
@@ -148,10 +148,10 @@ public class MapPropertiesPanel {
       }
     }));
     stepActionPanel.add(buttonSelectMapImageFile,
-        MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 4));
+        MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapNameExample, 2, 4));
 
     // Map Centers File
-    stepActionPanel.add(labelCentersFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 5));
+    stepActionPanel.add(labelCentersFile, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 0, 5));
 
     textFieldCentersFile.setEnabled(false);
     textFieldCentersFile.setMaximumSize(new Dimension(0, 0));
@@ -162,7 +162,7 @@ public class MapPropertiesPanel {
         buttonSelectCentersFile.doClick();
       }
     });
-    stepActionPanel.add(textFieldCentersFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 5));
+    stepActionPanel.add(textFieldCentersFile, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 1, 5));
 
     buttonSelectCentersFile.addActionListener(SwingAction.of("Select Centers File", e -> {
       selectCentersFile();
@@ -170,20 +170,20 @@ public class MapPropertiesPanel {
         textFieldWaterFilter.setEnabled(true);
       }
     }));
-    stepActionPanel.add(buttonSelectCentersFile, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 5));
+    stepActionPanel.add(buttonSelectCentersFile, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapNameExample, 2, 5));
 
     // Water Territory Filter
     stepActionPanel.add(labelWaterFilter,
-        MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 0, 6, GridBagConstraints.NORTHWEST));
+        MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 0, 6, GridBagConstraints.NORTHWEST));
 
     textFieldWaterFilter.setEnabled(MapXmlCreator.mapCentersFile != null);
     textFieldWaterFilter.addFocusListener(
         FocusListenerFocusLost.withAction(() -> MapXmlCreator.waterFilterString = textFieldWaterFilter.getText()));
     textFieldWaterFilter.setColumns(columns);
     textFieldWaterFilter.setMaximumSize(textFieldWaterFilter.getPreferredSize());
-    stepActionPanel.add(textFieldWaterFilter, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapName, 1, 6));
+    stepActionPanel.add(textFieldWaterFilter, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapName, 1, 6));
 
-    stepActionPanel.add(labelWaterFilterExample, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelMapNameExample, 2, 6));
+    stepActionPanel.add(labelWaterFilterExample, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelMapNameExample, 2, 6));
 
     mapXmlCreator.setAutoFillActionListener(null);
   }

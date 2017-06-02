@@ -34,7 +34,7 @@ class PlayerSequenceRow extends DynamicRow {
     Dimension dimension = textFieldSequenceName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldSequenceName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
       final String inputText = textFieldSequenceName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;
@@ -79,7 +79,7 @@ class PlayerSequenceRow extends DynamicRow {
     dimension = textFieldMaxCount.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMaxCount.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
       final String inputText = textFieldMaxCount.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);

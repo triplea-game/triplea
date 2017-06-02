@@ -95,7 +95,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     final JButton buttonAddAlliance = new JButton("Add Alliance");
     final JButton buttonRemoveAlliance = new JButton("Remove Alliance");
 
-    buttonAddPlayer.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddPlayer.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddPlayer.addActionListener(SwingAction.of("Add Player", e -> {
       String newPlayerName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new player name:",
           "Player" + (MapXmlHelper.getPlayerNames().size() + 1));
@@ -141,7 +141,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddPlayer);
 
-    buttonAddAlliance.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddAlliance.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddAlliance.addActionListener(SwingAction.of("Add Alliance", e -> {
       String newAllianceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new alliance name:",
           "Alliance" + (alliances.size() + 1));
@@ -170,7 +170,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddAlliance);
 
-    buttonRemoveAlliance.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonRemoveAlliance.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonRemoveAlliance.setEnabled(alliances.size() > 1);
     buttonRemoveAlliance.addActionListener(SwingAction.of("Remove Alliance", e -> {
       final String removeAllianceName = (String) JOptionPane.showInputDialog(getOwnPanel(),

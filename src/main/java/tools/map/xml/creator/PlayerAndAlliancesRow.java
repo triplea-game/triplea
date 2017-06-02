@@ -40,7 +40,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
     Dimension dimension = textFieldPlayerName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldPlayerName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldPlayerName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldPlayerName, () -> {
       final String inputText = textFieldPlayerName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;

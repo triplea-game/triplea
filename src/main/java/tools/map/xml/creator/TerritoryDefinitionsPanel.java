@@ -31,7 +31,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
       final Point item, final int textStartX) {
-    final Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoryDefinition =
+    final Map<TerritoryDefinitionDialog.Definition, Boolean> territoryDefinition =
         MapXmlHelper.getTerritoryDefintionsMap().get(centerName);
     if (territoryDefinition != null) {
       final int y_value = item.y + 10;
@@ -40,7 +40,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       final FontMetrics fm = g.getFontMetrics();
       int h = fm.getAscent();
       final int oneCharacterWidthSpace = 17;
-      for (final Entry<TerritoryDefinitionDialog.DEFINITION, Boolean> definitionEntry : territoryDefinition
+      for (final Entry<TerritoryDefinitionDialog.Definition, Boolean> definitionEntry : territoryDefinition
           .entrySet()) {
         if (definitionEntry.getValue()) {
           final int x_value = textStartX + oneCharacterWidthSpace * definitionCount;
@@ -62,7 +62,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
               g.setColor(Color.green);
               break;
             default:
-              throw new IllegalStateException("No valid value for " + TerritoryDefinitionDialog.DEFINITION.class);
+              throw new IllegalStateException("No valid value for " + TerritoryDefinitionDialog.Definition.class);
           }
           g.fillOval(x_value, y_value, 16, 16);
           g.setColor(Color.red);
@@ -81,16 +81,16 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
   protected void paintPreparation(final Map<String, Point> centers) {
     if (!MapXmlCreator.waterFilterString.isEmpty() && MapXmlHelper.getTerritoryDefintionsMap().isEmpty()) {
       for (final String centerName : centers.keySet()) {
-        final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> territoyDefintion =
+        final HashMap<TerritoryDefinitionDialog.Definition, Boolean> territoyDefintion =
             Maps.newHashMap();
         if (centerName.startsWith(MapXmlCreator.waterFilterString)) {
-          territoyDefintion.put(TerritoryDefinitionDialog.DEFINITION.IS_WATER, true);
+          territoyDefintion.put(TerritoryDefinitionDialog.Definition.IS_WATER, true);
         }
         MapXmlHelper.putTerritoryDefintions(centerName, territoyDefintion);
       }
     } else {
       for (final String centerName : centers.keySet()) {
-        final HashMap<TerritoryDefinitionDialog.DEFINITION, Boolean> territoyDefintion =
+        final HashMap<TerritoryDefinitionDialog.Definition, Boolean> territoyDefintion =
             Maps.newHashMap();
         MapXmlHelper.putTerritoryDefintions(centerName, territoyDefintion);
       }
@@ -122,7 +122,7 @@ class TerritoryDefinitionsPanel extends ImageScrollPanePanel {
       centers.put(territoryNameNew, centers.get(territoryName));
     } else {
       SwingUtilities.invokeLater(() -> {
-        Map<TerritoryDefinitionDialog.DEFINITION, Boolean> territoyDefintions =
+        Map<TerritoryDefinitionDialog.Definition, Boolean> territoyDefintions =
             MapXmlHelper.getTerritoryDefintionsMap().get(territoryName);
         if (territoyDefintions == null) {
           territoyDefintions = Maps.newHashMap();

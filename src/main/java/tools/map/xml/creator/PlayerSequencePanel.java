@@ -105,7 +105,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddSequence = new JButton("Add Sequence");
 
-    buttonAddSequence.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       String newSequenceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",
           "Sequence" + (MapXmlHelper.getPlayerSequenceMap().size() + 1));

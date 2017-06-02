@@ -126,11 +126,11 @@ public abstract class DynamicRowsPanel {
 
     final int countPlayers = countRows();
     newRow.addToParentComponentWithGbc(ownPanel, countPlayers,
-        MapXmlUIHelper.getGbcDefaultTemplateWith(0, countPlayers));
+        MapXmlUiHelper.getGbcDefaultTemplateWith(0, countPlayers));
     rows.add(newRow);
 
     final int finalButtonGridY = countPlayers + 1;
-    addFinalButtonRow(MapXmlUIHelper.getGbcDefaultTemplateWith(0, finalButtonGridY));
+    addFinalButtonRow(MapXmlUiHelper.getGbcDefaultTemplateWith(0, finalButtonGridY));
   }
 
   protected void addFinalButtonRow(final GridBagConstraints gbcTemplate) {

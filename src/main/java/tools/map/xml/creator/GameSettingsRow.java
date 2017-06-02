@@ -176,7 +176,7 @@ class GameSettingsRow extends DynamicRow {
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMinNumber.setPreferredSize(dimension);
     textFieldMinNumber.setEnabled(!isBoolean);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMinNumber, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMinNumber, () -> {
       final String inputText = textFieldMinNumber.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -205,7 +205,7 @@ class GameSettingsRow extends DynamicRow {
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMaxNumber.setPreferredSize(dimension);
     textFieldMaxNumber.setEnabled(!isBoolean);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxNumber, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxNumber, () -> {
       final String inputText = textFieldMaxNumber.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
