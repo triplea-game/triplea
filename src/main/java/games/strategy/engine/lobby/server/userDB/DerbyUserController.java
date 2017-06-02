@@ -119,7 +119,8 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      // TODO: let's instead first check if the user exists, if we do that then we can just treat this as a normal error.
+      // TODO: let's instead first check if the user exists, if we do that then we can just
+      // treat this as a normal error.
       if (sqle.getErrorCode() == 30000) {
         s_logger.info("Tried to create duplicate user for name:" + user.name + " error:" + sqle.getMessage());
         throw new IllegalStateException("That user name is already taken");
