@@ -100,7 +100,7 @@ public class DbUserController implements UserDao {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
     primaryDao.createUser(user, password);
     try {
-      new Thread(() -> secondaryDaoSet.forEach(dao -> dao.createUser(user, password)));
+      new Thread(() -> secondaryDaoSet.forEach(dao -> dao.createUser(user, password))).start();
     } catch (Exception e) {
       logger.warning("Secondary datasource failure, this is okay if we are still setting "
           + "up a new datasource, error: " + e.getMessage());
