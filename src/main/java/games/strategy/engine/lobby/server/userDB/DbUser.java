@@ -54,6 +54,10 @@ public class DbUser {
     return getValidationErrorMessage() == null;
   }
 
+  /**
+   * Returns an error message String if there are validation errors.
+   * Otherwise returns null.
+   */
   public String getValidationErrorMessage() {
     if (email == null || email.isEmpty() || !Util.isMailValid(email)) {
       return "Invalid email address";

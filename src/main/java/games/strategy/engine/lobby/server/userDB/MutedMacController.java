@@ -86,6 +86,9 @@ public class MutedMacController {
     return muteTill > System.currentTimeMillis();
   }
 
+  /**
+   * Returns epoch milli second timestamp of when a mute expires or negative one if there is no mute.
+   */
   public long getMacUnmuteTime(final String mac) {
     long result = -1;
     boolean expired = false;

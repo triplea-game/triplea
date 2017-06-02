@@ -87,6 +87,9 @@ public class MutedUsernameController {
     return muteTill > System.currentTimeMillis();
   }
 
+  /**
+   * Returns epoch milli's of when mute expires, or negative one if there is no active mute.
+   */
   public long getUsernameUnmuteTime(final String username) {
     long result = -1;
     boolean expired = false;
