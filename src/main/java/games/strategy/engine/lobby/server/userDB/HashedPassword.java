@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
 import com.google.common.base.Strings;
+
 import games.strategy.util.MD5Crypt;
 
 public class HashedPassword {
