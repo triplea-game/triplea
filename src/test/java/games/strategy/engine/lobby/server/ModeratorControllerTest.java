@@ -17,8 +17,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.lobby.server.userDB.DbUser;
-import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
+import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
