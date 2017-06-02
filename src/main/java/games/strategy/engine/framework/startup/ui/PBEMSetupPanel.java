@@ -573,16 +573,14 @@ class PBEMLocalPlayerComboBoxSelector {
     m_parent.notifyObservers();
   }
 
-  /**
-   * A cache for serialized beans that should be stored locally.
-   * This is used to store settings which are not game related, and should therefore not go into the options cache
-   * This is often used by editors to remember previous values
-   */
-
 }
 
 
-/** A bean cache used by PBEMSetupPanel. */
+/**
+ * A cache for serialized beans that should be stored locally.
+ * This is used to store settings which are not game related, and should therefore not go into the options cache
+ * This is often used by editors to remember previous values
+ */
 enum LocalBeanCache {
   INSTANCE;
   private final File m_file;
