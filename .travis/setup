@@ -5,11 +5,10 @@ if [ -z "$INSTALL4J_LICENSE" ]; then
  exit -1
 fi
 
-export ASSET_URL="http://github.com/triplea-game/assets/blob/master/install4j"
 mkdir -p ~/.install4j6/jres
 
 echo "Downloading and installing install4j"
-wget -O install4j_unix.sh $ASSET_URL/install4j_unix_6_1_2.sh?raw=true
+wget -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_6_1_5.sh
 chmod +x install4j_unix.sh
 ./install4j_unix.sh -q
 
