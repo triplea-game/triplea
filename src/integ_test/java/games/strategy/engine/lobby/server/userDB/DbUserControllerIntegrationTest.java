@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.function.Supplier;
 
 import org.junit.Test;
 
@@ -19,12 +20,12 @@ public class DbUserControllerIntegrationTest {
   @Test
   public void testCreate() throws Exception {
     DbUser user = createUser();
-    int startCount = getUserCount(Database.getDerbyConnection());
+    int startCount = getUserCount(() -> Database.getDerbyConnection());
 
     final DbUserController controller = new DbUserController();
     controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
 
-    int endCount = getUserCount(Database.getDerbyConnection());
+    int endCount = getUserCount(() -> Database.getDerbyConnection());
     assertEquals(endCount, startCount + 1);
     assertTrue(controller.doesUserExist(user.name));
   }
@@ -37,11 +38,14 @@ public class DbUserControllerIntegrationTest {
         new DbUser.UserEmail(email));
   }
 
-  private static int getUserCount(final Connection connection) throws Exception {
+  private static int getUserCount(final Supplier<Connection> connection) throws Exception {
+    final Connection dbConnection = connection.get();
     final String sql = "select count(*) from TA_USERS";
-    final ResultSet rs = connection.createStatement().executeQuery(sql);
+    final ResultSet rs = connection.get().createStatement().executeQuery(sql);
     assertTrue(rs.next());
-    return rs.getInt(1);
+    int count = rs.getInt(1);
+    dbConnection.close();
+    return count;
   }
 
   @Test
