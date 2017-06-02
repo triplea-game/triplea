@@ -5,30 +5,37 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * TODO: legacy, migrate away, can be removed when no longer needs to be primary.
- * @deprecated Avoid using this class, we are trying to move away from Derby DB to a different datasource.
- */
-@Deprecated
+import com.google.common.base.Preconditions;
+
+// TODO: rename to DbUserController
 public class DerbyUserController implements UserDaoPrimarySecondary {
 
   private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
+  private final Supplier<Connection> connectionSupplier;
+  private final UserDaoPrimarySecondary.Role usageRole;
+
+  DerbyUserController(UserDaoPrimarySecondary.Role usageRole, Supplier<Connection> connectionSupplier) {
+    this.connectionSupplier = connectionSupplier;
+    this.usageRole = usageRole;
+  }
+
   @Override
   public boolean isPrimary() {
-    return true;
+    return usageRole == Role.PRIMARY;
   }
 
   /**
    * @return null if the user does not exist.
    */
   @Override
-  public String getPassword(final String userName) {
+  public HashedPassword getPassword(final String userName) {
     final String sql = "select password from ta_users where username = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, userName);
@@ -39,7 +46,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       }
       rs.close();
       ps.close();
-      return returnValue;
+      return new HashedPassword(returnValue);
     } catch (final SQLException sqle) {
       s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
@@ -51,7 +58,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   @Override
   public boolean doesUserExist(final String userName) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
-    final Connection con = Database.getConnection();
+    final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, userName);
@@ -69,24 +76,23 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = UserDao.validate(name, email, hashedPassword);
-    if (validationErrors != null) {
-      throw new IllegalStateException(validationErrors);
-    }
-    final Connection con = Database.getConnection();
+  public void updateUser(final DbUser user, final HashedPassword hashedPassword) {
+    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps =
           con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
-      ps.setString(1, hashedPassword);
-      ps.setString(2, email);
-      ps.setBoolean(3, admin);
-      ps.setString(4, name);
+      ps.setString(1, hashedPassword.value);
+      ps.setString(2, user.email);
+      ps.setBoolean(3, user.admin);
+      ps.setString(4, user.name);
       ps.execute();
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error updating name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
+      s_logger.log(Level.SEVERE,
+          "Error updating name:" + user.name + " email: " + user.email + " pwd: " + hashedPassword.value, sqle);
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -94,46 +100,48 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public void createUser(final String name, final String email, final String hashedPassword, final boolean admin) {
-    final String validationErrors = UserDao.validate(name, email, hashedPassword);
-    if (validationErrors != null) {
-      throw new IllegalStateException(validationErrors);
-    }
-    if (doesUserExist(name)) {
+  public void createUser(final DbUser user, final HashedPassword hashedPassword) {
+    Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
+    if (doesUserExist(user.name)) {
       throw new IllegalStateException("That user name has already been taken");
     }
-    final Connection con = Database.getConnection();
+    final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(
           "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
-      ps.setString(1, name);
-      ps.setString(2, hashedPassword);
-      ps.setString(3, email);
+      ps.setString(1, user.name);
+      ps.setString(2, hashedPassword.value);
+      ps.setString(3, user.email);
       ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
       ps.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-      ps.setInt(6, admin ? 1 : 0);
+      ps.setInt(6, user.admin ? 1 : 0);
       ps.execute();
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
+      // TODO: let's instead first check if the user exists, if we do that then we can just treat this as a normal error.
       if (sqle.getErrorCode() == 30000) {
-        s_logger.info("Tried to create duplicate user for name:" + name + " error:" + sqle.getMessage());
+        s_logger.info("Tried to create duplicate user for name:" + user.name + " error:" + sqle.getMessage());
         throw new IllegalStateException("That user name is already taken");
       }
-      s_logger.log(Level.SEVERE, "Error inserting name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      s_logger.log(
+          Level.SEVERE,
+          String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
+              user.name, user.email, hashedPassword.value.replaceAll(".", "*")),
+          sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
   }
 
   @Override
-  public boolean login(final String userName, final String hashedPassword) {
-    final Connection con = Database.getConnection();
+  public boolean login(final String userName, final HashedPassword hashedPassword) {
+    final Connection con = connectionSupplier.get();
     try {
       PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");
       ps.setString(1, userName);
-      ps.setString(2, hashedPassword);
+      ps.setString(2, hashedPassword.value);
       final ResultSet rs = ps.executeQuery();
       if (!rs.next()) {
         return false;
@@ -156,9 +164,9 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public DbUser getUser(final String userName) {
+  public DbUser getUserByName(final String userName) {
     final String sql = "select * from ta_users where username = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, userName);
@@ -166,8 +174,10 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       if (!rs.next()) {
         return null;
       }
-      final DbUser user = new DbUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
-          rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
+      final DbUser user = new DbUser(
+          new DbUser.UserName(rs.getString("username")),
+          new DbUser.UserEmail(rs.getString("email")),
+          rs.getBoolean("admin") ? DbUser.Role.ADMIN : DbUser.Role.NOT_ADMIN);
       rs.close();
       ps.close();
       return user;

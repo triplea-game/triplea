@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
@@ -35,7 +37,14 @@ public class ModeratorControllerTest {
   public void setUp() throws UnknownHostException {
     moderatorController = new ModeratorController(serverMessenger, null);
     final String adminName = Util.createUniqueTimeStamp();
-    new DbUserController().createUser(adminName, "n@n.n", MD5Crypt.crypt(adminName), true);
+
+    new DbUserController().createUser(
+        new DbUser(
+            new DbUser.UserName(adminName),
+            new DbUser.UserEmail("n@n.n"),
+            DbUser.Role.ADMIN),
+        new HashedPassword(MD5Crypt.crypt(adminName)));
+
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
   }
 

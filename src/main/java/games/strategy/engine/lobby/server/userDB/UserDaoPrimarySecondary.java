@@ -14,4 +14,8 @@ public interface UserDaoPrimarySecondary extends UserDao {
    * True if this is an authoritative data source.
    */
   boolean isPrimary();
+
+  enum Role {
+    PRIMARY, SECONDARY
+  }
 }

@@ -38,7 +38,7 @@ public class MutedMacController {
       muteTillTs = new Timestamp(muteTill.getTime());
     }
     s_logger.fine("Muting mac:" + mac);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)");
       ps.setString(1, mac);
@@ -62,7 +62,7 @@ public class MutedMacController {
 
   private void removeMutedMac(final String mac) {
     s_logger.fine("Removing muted mac:" + mac);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?");
       ps.setString(1, mac);
@@ -90,7 +90,7 @@ public class MutedMacController {
     long result = -1;
     boolean expired = false;
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, mac);

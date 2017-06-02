@@ -38,7 +38,7 @@ public class MutedUsernameController {
       muteTillTs = new Timestamp(muteTill.getTime());
     }
     s_logger.fine("Muting username:" + username);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps =
           con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)");
@@ -63,7 +63,7 @@ public class MutedUsernameController {
 
   private void removeMutedUsername(final String username) {
     s_logger.fine("Removing muted username:" + username);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?");
       ps.setString(1, username);
@@ -91,7 +91,7 @@ public class MutedUsernameController {
     long result = -1;
     boolean expired = false;
     final String sql = "select username, mute_till from muted_usernames where username = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, username);
