@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -54,33 +53,31 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
     final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
-    final String[] playerNames = data.getPlayerList().getNames();
+    final List<PlayerID> players = data.getPlayerList().getPlayers();
     // if the xml was created correctly, this list will be in turn order. we want to keep it that way.
     int gridx = 0;
     int gridy = 0;
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel("Use");
-      enableLabel.setForeground(Color.black);
       this.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     }
     final JLabel nameLabel = new JLabel("Name");
-    nameLabel.setForeground(Color.black);
     this.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel typeLabel = new JLabel("Type");
-    typeLabel.setForeground(Color.black);
     this.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel allianceLabel = new JLabel("Alliance");
-    allianceLabel.setForeground(Color.black);
     this.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    for (final String playerName : playerNames) {
+    final JLabel bonusLabel = new JLabel("Bonus Income Percentage");
+    this.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    for (final PlayerID player : players) {
       final PlayerComboBoxSelector selector =
-          new PlayerComboBoxSelector(playerName, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerName)),
-              playerTypes, this);
+          new PlayerComboBoxSelector(player, reloadSelections, disableable, playersEnablementListing,
+              data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, this, data.getProperties());
       m_playerTypes.add(selector);
       selector.layout(++gridy, this);
     }
