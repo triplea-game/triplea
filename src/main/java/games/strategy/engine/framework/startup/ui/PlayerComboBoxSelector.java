@@ -12,25 +12,36 @@ import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.triplea.Constants;
 
 class PlayerComboBoxSelector {
 
   private final JCheckBox enabledCheckBox;
+  private final PlayerID player;
   private final String playerName;
   private final JComboBox<String> playerTypes;
+  private final JComponent bonusIncomePercentage;
   private boolean enabled = true;
   private final JLabel name;
   private final JLabel alliances;
   private final Collection<String> disableable;
   private final SetupPanel parent;
+  private final GameProperties gameProperties;
 
-  PlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections,
+  PlayerComboBoxSelector(final PlayerID player, final Map<String, String> reloadSelections,
       final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
-      final Collection<String> playerAlliances, final String[] types, final SetupPanel parent) {
-    this.playerName = playerName;
+      final Collection<String> playerAlliances, final String[] types, final SetupPanel parent,
+      final GameProperties gameProperties) {
+    this.player = player;
     this.disableable = disableable;
     this.parent = parent;
+    this.gameProperties = gameProperties;
+    playerName = player.getName();
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
@@ -74,6 +85,9 @@ class PlayerComboBoxSelector {
     }
     alliances = new JLabel(alliancesLabelText);
 
+    bonusIncomePercentage =
+        gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)).getEditorComponent();
+
     setWidgetActivation();
   }
 
@@ -89,6 +103,8 @@ class PlayerComboBoxSelector {
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     container.add(alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    container.add(bonusIncomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 50, 5, 0), 0, 0));
   }
 
   String getPlayerName() {
