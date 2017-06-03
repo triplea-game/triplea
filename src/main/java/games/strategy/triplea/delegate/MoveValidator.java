@@ -557,7 +557,7 @@ public class MoveValidator {
       }
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.match(unit)) {
-          boolean unitOK = false;
+          boolean unitOk = false;
           if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit))
               && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit) && Matches.UnitIsInfantry
                   .match(unit))) {
@@ -568,11 +568,11 @@ public class MoveValidator {
             if (Match.someMatch(units, Matches.UnitIsAirTransport)) {
               for (final Unit airTransport : dependencies.keySet()) {
                 if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
-                  unitOK = true;
+                  unitOk = true;
                   break;
                 }
               }
-              if (!unitOK) {
+              if (!unitOk) {
                 result.addDisallowedUnit("Not all units have enough movement", unit);
               }
             } else {
@@ -581,11 +581,11 @@ public class MoveValidator {
           } else if (Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit)) {
             for (final Unit airTransport : dependencies.keySet()) {
               if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
-                unitOK = true;
+                unitOk = true;
                 break;
               }
             }
-            if (!unitOK) {
+            if (!unitOk) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
           } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit)
@@ -1497,7 +1497,7 @@ public class MoveValidator {
     // No neutral countries on route predicate
     final Match<Territory> noNeutral = Matches.TerritoryIsNeutralButNotWater.invert();
     // No aa guns on route predicate
-    final Match<Territory> noAA = Matches.territoryHasEnemyAAforAnything(player, data).invert();
+    final Match<Territory> noAntiAir = Matches.territoryHasEnemyAAforAnything(player, data).invert();
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
@@ -1582,15 +1582,15 @@ public class MoveValidator {
           // best if no enemy and no neutral
           new CompositeMatchAnd<>(noEnemy, noNeutral),
           // we will be satisfied if no aa and no neutral
-          new CompositeMatchAnd<>(noAA, noNeutral)));
+          new CompositeMatchAnd<>(noAntiAir, noNeutral)));
     } else {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral
           new CompositeMatchAnd<>(noEnemy, noNeutral),
           // we will be satisfied if no aa and no neutral
-          new CompositeMatchAnd<>(noAA, noNeutral),
+          new CompositeMatchAnd<>(noAntiAir, noNeutral),
           // single matches
-          noEnemy, noAA, noNeutral));
+          noEnemy, noAntiAir, noNeutral));
     }
     for (final Match<Territory> t : tests) {
       Match<Territory> testMatch = null;
