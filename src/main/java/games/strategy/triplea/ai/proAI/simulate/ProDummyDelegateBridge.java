@@ -31,8 +31,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final CompositeChange m_allChanges = new CompositeChange();
   private MustFightBattle m_battle = null;
 
-  public ProDummyDelegateBridge(final ProAI proAI, final PlayerID player, final GameData data) {
-    m_proAI = proAI;
+  public ProDummyDelegateBridge(final ProAI proAi, final PlayerID player, final GameData data) {
+    m_proAI = proAi;
     m_data = data;
     m_player = player;
   }

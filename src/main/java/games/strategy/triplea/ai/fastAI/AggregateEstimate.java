@@ -41,23 +41,23 @@ public class AggregateEstimate extends AggregateResults {
   }
 
   @Override
-  public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV,
-      final IntegerMap<UnitType> defenderCostsForTUV) {
-    final double attackerTUV = BattleCalculator.getTUV(remainingAttackingUnits, attackerCostsForTUV);
-    final double defenderTUV = BattleCalculator.getTUV(remainingDefendingUnits, defenderCostsForTUV);
-    return Tuple.of(attackerTUV, defenderTUV);
+  public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
+      final IntegerMap<UnitType> defenderCostsForTuv) {
+    final double attackerTuv = BattleCalculator.getTUV(remainingAttackingUnits, attackerCostsForTuv);
+    final double defenderTuv = BattleCalculator.getTUV(remainingDefendingUnits, defenderCostsForTuv);
+    return Tuple.of(attackerTuv, defenderTuv);
   }
 
   @Override
   public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
       final Collection<Unit> defenders, final GameData data) {
-    final IntegerMap<UnitType> attackerCostsForTUV = BattleCalculator.getCostsForTUV(attacker, data);
-    final IntegerMap<UnitType> defenderCostsForTUV = BattleCalculator.getCostsForTUV(defender, data);
-    final int attackerTotalTUV = BattleCalculator.getTUV(attackers, attackerCostsForTUV);
-    final int defenderTotalTUV = BattleCalculator.getTUV(defenders, defenderCostsForTUV);
-    final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTUV, defenderCostsForTUV);
-    final double attackerLost = attackerTotalTUV - average.getFirst();
-    final double defenderLost = defenderTotalTUV - average.getSecond();
+    final IntegerMap<UnitType> attackerCostsForTuv = BattleCalculator.getCostsForTUV(attacker, data);
+    final IntegerMap<UnitType> defenderCostsForTuv = BattleCalculator.getCostsForTUV(defender, data);
+    final int attackerTotalTuv = BattleCalculator.getTUV(attackers, attackerCostsForTuv);
+    final int defenderTotalTuv = BattleCalculator.getTUV(defenders, defenderCostsForTuv);
+    final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    final double attackerLost = attackerTotalTuv - average.getFirst();
+    final double defenderLost = defenderTotalTuv - average.getSecond();
     return defenderLost - attackerLost;
   }
 

@@ -90,9 +90,9 @@ final class ProTechAI {
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes, final List<Territory> ignoreTerr) {
     PlayerID ePlayer = null;
-    final List<PlayerID> qID = getEnemyPlayers(data, player);
+    final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
     final HashMap<PlayerID, Float> ePAttackMap = new HashMap<>();
-    final Iterator<PlayerID> playerIter = qID.iterator();
+    final Iterator<PlayerID> playerIter = enemyPlayers.iterator();
     if (location == null) {
       return -1000.0F;
     }
@@ -271,13 +271,13 @@ final class ProTechAI {
       ePAttackMap.put(ePlayer, strength);
     }
     float maxStrength = 0.0F;
-    for (final PlayerID xP : qID) {
+    for (final PlayerID xP : enemyPlayers) {
       if (ePAttackMap.get(xP) > maxStrength) {
         ePlayer = xP;
         maxStrength = ePAttackMap.get(xP);
       }
     }
-    for (final PlayerID xP : qID) {
+    for (final PlayerID xP : enemyPlayers) {
       if (ePlayer != xP) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += ePAttackMap.get(xP) * 0.40F;
