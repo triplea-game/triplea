@@ -25,7 +25,7 @@ import com.google.common.collect.Sets;
 
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
-import tools.map.xml.creator.TerritoryDefinitionDialog.DEFINITION;
+import tools.map.xml.creator.TerritoryDefinitionDialog.Definition;
 
 
 public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
@@ -49,7 +49,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     mapXmlCreator.setAutoFillAction(SwingAction.of(e -> {
       final int prevCanalCount = MapXmlHelper.getCanalDefinitionsMap().size();
       if (prevCanalCount > 0) {
-        if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Auto-Fill Warning",
+        if (JOptionPane.YES_OPTION != MapXmlUiHelper.showYesNoOptionDialog("Auto-Fill Warning",
             "All current canal definitions will be deleted.\rDo you want to continue with Auto-Fill?",
             JOptionPane.WARNING_MESSAGE)) {
           return;
@@ -177,7 +177,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
     final String newTerrName = newTerrNameOptional.get();
 
-    Boolean newTerrIsWater = MapXmlHelper.getTerritoryDefintionsMap().get(newTerrName).get(DEFINITION.IS_WATER);
+    Boolean newTerrIsWater = MapXmlHelper.getTerritoryDefintionsMap().get(newTerrName).get(Definition.IS_WATER);
     if (newTerrIsWater == null) {
       newTerrIsWater = false;
     }
@@ -309,7 +309,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   private void mouseRightClickedOnImage() {
     if (currentCanalName.isPresent()
         && (selectedLandTerritories.size() < 2 || selectedWaterTerritories.size() < 2)) {
-      if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Canal incomplete",
+      if (JOptionPane.YES_OPTION != MapXmlUiHelper.showYesNoOptionDialog("Canal incomplete",
           "Canal '" + currentCanalName + "' is incomplete. A canal needs at least 2 land and 2 water territories.\r"
               + "Do you want to continue to deselect the canal?",
           JOptionPane.WARNING_MESSAGE)) {
@@ -388,14 +388,14 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     final Set<String> neighbors = MapXmlHelper.getTerritoryConnectionsMap().get(newTerrName);
     for (final Entry<String, Set<String>> terrConnEntry : MapXmlHelper.getTerritoryConnectionsMap().entrySet()) {
       if (MapXmlHelper.getTerritoryDefintionsMap().get(terrConnEntry.getKey())
-          .get(DEFINITION.IS_WATER) == waterNeighbors
+          .get(Definition.IS_WATER) == waterNeighbors
           && terrConnEntry.getValue().contains(newTerrName)) {
         neighborsByType.add(terrConnEntry.getKey());
       }
     }
     if (neighbors != null) {
       for (final String neighbor : neighbors) {
-        if (MapXmlHelper.getTerritoryDefintionsMap().get(neighbor).get(DEFINITION.IS_WATER) == waterNeighbors) {
+        if (MapXmlHelper.getTerritoryDefintionsMap().get(neighbor).get(Definition.IS_WATER) == waterNeighbors) {
           neighborsByType.add(neighbor);
         }
       }
@@ -434,12 +434,12 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
       final String terr1 = terrConnEntry.getKey();
       if (terrList.contains(terr1)) {
         for (final String terr2 : terrConnEntry.getValue()) {
-          if (MapXmlHelper.getTerritoryDefintionsMap().get(terr2).get(DEFINITION.IS_WATER) == typeIsWater) {
+          if (MapXmlHelper.getTerritoryDefintionsMap().get(terr2).get(Definition.IS_WATER) == typeIsWater) {
             neighborsMap.get(terr1).add(terr2);
           }
         }
       } else {
-        if (MapXmlHelper.getTerritoryDefintionsMap().get(terr1).get(DEFINITION.IS_WATER) == typeIsWater) {
+        if (MapXmlHelper.getTerritoryDefintionsMap().get(terr1).get(Definition.IS_WATER) == typeIsWater) {
           final SortedSet<String> selectedTerritoriesCopy = new TreeSet<>(terrList);
           selectedTerritoriesCopy.retainAll(terrConnEntry.getValue());
           for (final String terr2 : selectedTerritoriesCopy) {

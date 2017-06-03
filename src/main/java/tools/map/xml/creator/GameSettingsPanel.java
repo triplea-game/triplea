@@ -49,23 +49,22 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       + "Damage From Bombing Done To Units Instead Of Territories, AA Territory Restricted, National Objectives, "
       + "Continuous Research";
 
-
-  public static enum SETTING_TYPE {
+  public enum SettingType {
     NORMAL, PER_PLAYER, PER_ALLY
   }
 
-  private static SETTING_TYPE getSettingType(final String setting) {
+  private static SettingType getSettingType(final String setting) {
     if (setting.endsWith(" bid")) {
-      return SETTING_TYPE.PER_PLAYER;
+      return SettingType.PER_PLAYER;
     } else if (setting.endsWith(" Honorable Victory VCs")) {
-      return SETTING_TYPE.PER_ALLY;
+      return SettingType.PER_ALLY;
     } else {
-      return SETTING_TYPE.NORMAL;
+      return SettingType.NORMAL;
     }
   }
 
   public static boolean isBoolean(final String setting) {
-    return (getSettingType(setting).equals(SETTING_TYPE.NORMAL) || setting.equals("MaxFactoriesPerTerritory"));
+    return (getSettingType(setting).equals(SettingType.NORMAL) || setting.equals("MaxFactoriesPerTerritory"));
     // TODO: maybe list is incomplete!
   }
 
@@ -166,7 +165,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddValue = new JButton("Add Game Setting");
 
-    buttonAddValue.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddValue.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddValue.addActionListener(SwingAction.of("Add Game Setting", e -> {
       final String suggestedSettingName = (String) JOptionPane.showInputDialog(getOwnPanel(),
           "Which game setting should be added?", "Choose Game Setting", JOptionPane.QUESTION_MESSAGE, null,

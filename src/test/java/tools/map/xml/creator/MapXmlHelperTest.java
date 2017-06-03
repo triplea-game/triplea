@@ -19,7 +19,7 @@ public final class MapXmlHelperTest {
     final String notes = "lorum<br/>ipsum";
     initMapXmlData().setNotes(notes);
 
-    final Document document = MapXmlHelper.getXMLDocument();
+    final Document document = MapXmlHelper.getXmlDocument();
 
     final NodeList nodes = selectNodes(document, "//property[@name=\"notes\"]/value/child::node()");
     assertThat(nodes.getLength(), is(1));

@@ -99,7 +99,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddTechnology = new JButton("Add Technology");
 
-    buttonAddTechnology.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddTechnology.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddTechnology.addActionListener(SwingAction.of("Add Technology", e -> {
       String newTechnologyName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new technology name:",
           "Technology" + (MapXmlHelper.getTechnologyDefinitionsMap().size() + 1));

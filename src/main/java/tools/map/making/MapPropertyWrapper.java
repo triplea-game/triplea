@@ -169,12 +169,12 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  public static PropertiesUI createPropertiesUI(final List<? extends IEditableProperty> properties,
+  public static PropertiesUI createPropertiesUi(final List<? extends IEditableProperty> properties,
       final boolean editable) {
     return new PropertiesUI(properties, editable);
   }
 
-  static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUI(final Object object,
+  static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
       final boolean editable) {
     final List<MapPropertyWrapper<?>> properties = createProperties(object);
     final PropertiesUI ui = new PropertiesUI(properties, editable);
@@ -189,7 +189,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
     final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
-    final PropertiesUI ui = createPropertiesUI(properties, true);
+    final PropertiesUI ui = createPropertiesUi(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().add(ui);

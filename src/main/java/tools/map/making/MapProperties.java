@@ -67,8 +67,8 @@ public class MapProperties {
     colorMap.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
   }
 
-  public Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUI(final boolean editable) {
-    return MapPropertyWrapper.createPropertiesUI(this, editable);
+  public Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUi(final boolean editable) {
+    return MapPropertyWrapper.createPropertiesUi(this, editable);
   }
 
   public void writePropertiesToObject(final List<MapPropertyWrapper<?>> properties) {

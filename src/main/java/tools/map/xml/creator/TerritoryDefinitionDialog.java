@@ -20,11 +20,11 @@ import javax.swing.border.EmptyBorder;
 
 
 public class TerritoryDefinitionDialog extends JDialog {
-  public static enum DEFINITION {
+  public static enum Definition {
     IS_WATER, IS_VICTORY_CITY, IMPASSABLE, IS_CAPITAL
   }
 
-  static String getDefinitionString(final DEFINITION def) {
+  static String getDefinitionString(final Definition def) {
     switch (def) {
       case IS_WATER:
         return TERRITORY_DEFINITION_IS_WATER;
@@ -36,22 +36,22 @@ public class TerritoryDefinitionDialog extends JDialog {
         return TERRITORY_DEFINITION_IS_CAPITAL;
       default:
         throw new IllegalArgumentException(
-            "Provided value is not valid for " + DEFINITION.class);
+            "Provided value is not valid for " + Definition.class);
     }
   }
 
-  static DEFINITION valueOf(final String defString) {
+  static Definition valueOf(final String defString) {
     if (defString.equals(TERRITORY_DEFINITION_IS_WATER)) {
-      return DEFINITION.IS_WATER;
+      return Definition.IS_WATER;
     } else if (defString.equals(TERRITORY_DEFINITION_IS_VICTORY_CITY)) {
-      return DEFINITION.IS_VICTORY_CITY;
+      return Definition.IS_VICTORY_CITY;
     } else if (defString.equals(TERRITORY_DEFINITION_IMPASSABLE)) {
-      return DEFINITION.IMPASSABLE;
+      return Definition.IMPASSABLE;
     } else if (defString.equals(TERRITORY_DEFINITION_IS_CAPITAL)) {
-      return DEFINITION.IS_CAPITAL;
+      return Definition.IS_CAPITAL;
     }
     throw new IllegalArgumentException(
-        "'" + defString + "' is not a valid string for " + DEFINITION.class);
+        "'" + defString + "' is not a valid string for " + Definition.class);
   }
 
   private static final long serialVersionUID = -2504102953599720855L;
@@ -60,16 +60,16 @@ public class TerritoryDefinitionDialog extends JDialog {
   public static final String TERRITORY_DEFINITION_IMPASSABLE = "isImpassable"; // typo in engine!!!
   public static final String TERRITORY_DEFINITION_IS_CAPITAL = "capital";
 
-  private final Map<DEFINITION, Boolean> properties;
+  private final Map<Definition, Boolean> properties;
   private final JButton okButton;
 
   TerritoryDefinitionDialog(final MapXmlCreator mapXmlCreator, final String territoryName,
-      final Map<DEFINITION, Boolean> properties) {
+      final Map<Definition, Boolean> properties) {
     this(mapXmlCreator, JOptionPane.getFrameForComponent(null), territoryName, properties);
   }
 
   private TerritoryDefinitionDialog(final MapXmlCreator mapXmlCreator, final Frame parentFrame,
-      final String territoryName, final Map<DEFINITION, Boolean> properties) {
+      final String territoryName, final Map<Definition, Boolean> properties) {
     super(parentFrame, "Edit Territory Definitions of " + territoryName, true);
     this.properties = properties;
     okButton = new JButton("OK");
@@ -113,30 +113,30 @@ public class TerritoryDefinitionDialog extends JDialog {
     buttonsPanel.add(new JLabel(" "));
     // add buttons here:
     final JCheckBox cbIsWater = new JCheckBox("is water territory");
-    final Boolean isWater = properties.get(DEFINITION.IS_WATER);
+    final Boolean isWater = properties.get(Definition.IS_WATER);
     cbIsWater.setSelected((isWater != null ? isWater : false));
-    cbIsWater.addActionListener(e -> properties.put(DEFINITION.IS_WATER, cbIsWater.isSelected()));
+    cbIsWater.addActionListener(e -> properties.put(Definition.IS_WATER, cbIsWater.isSelected()));
     buttonsPanel.add(cbIsWater);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbIsVictoryCity = new JCheckBox("is victory city");
-    final Boolean isVictoryCity = properties.get(DEFINITION.IS_VICTORY_CITY);
+    final Boolean isVictoryCity = properties.get(Definition.IS_VICTORY_CITY);
     cbIsVictoryCity.setSelected((isVictoryCity != null ? isVictoryCity : false));
-    cbIsVictoryCity.addActionListener(e -> properties.put(DEFINITION.IS_VICTORY_CITY, cbIsVictoryCity.isSelected()));
+    cbIsVictoryCity.addActionListener(e -> properties.put(Definition.IS_VICTORY_CITY, cbIsVictoryCity.isSelected()));
     buttonsPanel.add(cbIsVictoryCity);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbImpassable = new JCheckBox("is impassable");
-    final Boolean impassable = properties.get(DEFINITION.IMPASSABLE);
+    final Boolean impassable = properties.get(Definition.IMPASSABLE);
     cbImpassable.setSelected((impassable != null ? impassable : false));
-    cbImpassable.addActionListener(e -> properties.put(DEFINITION.IMPASSABLE, cbImpassable.isSelected()));
+    cbImpassable.addActionListener(e -> properties.put(Definition.IMPASSABLE, cbImpassable.isSelected()));
     buttonsPanel.add(cbImpassable);
     buttonsPanel.add(new JLabel(" "));
 
     final JCheckBox cbIsCapital = new JCheckBox("is capital");
-    final Boolean isCapital = properties.get(DEFINITION.IS_CAPITAL);
+    final Boolean isCapital = properties.get(Definition.IS_CAPITAL);
     cbIsCapital.setSelected((isCapital != null ? isCapital : false));
-    cbIsCapital.addActionListener(e -> properties.put(DEFINITION.IS_CAPITAL, cbIsCapital.isSelected()));
+    cbIsCapital.addActionListener(e -> properties.put(Definition.IS_CAPITAL, cbIsCapital.isSelected()));
     buttonsPanel.add(cbIsCapital);
 
     buttonsPanel.add(Box.createGlue());

@@ -100,7 +100,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddUnit = new JButton("Add Unit");
 
-    buttonAddUnit.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       final List<String> curr_playersUnitNames = MapXmlHelper.getProductionFrontiersMap().get(playerName);
 

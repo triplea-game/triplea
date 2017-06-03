@@ -32,7 +32,7 @@ class TechnologyDefinitionsRow extends DynamicRow {
     Dimension dimension = textFieldTechnologyName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
     textFieldTechnologyName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldTechnologyName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldTechnologyName, () -> {
       final String inputText = textFieldTechnologyName.getText().trim();
       final String curr_playerName = (String) comboBoxPlayerName.getSelectedItem();
       if (currentRowName.startsWith(inputText + "_")) {
