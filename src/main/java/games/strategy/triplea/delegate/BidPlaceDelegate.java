@@ -113,7 +113,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units,
       final PlayerID player) {
-    final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+    final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final CompositeMatch<Unit> groundUnits =
         // we add factories and constructions later
@@ -142,7 +142,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
       final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO).invert().match(unit)) {
+        if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);
         }
       }
