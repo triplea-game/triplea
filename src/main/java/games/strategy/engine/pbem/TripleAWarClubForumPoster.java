@@ -100,7 +100,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       final String s_forumId = "20";
       final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id="
           + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
-      String XOOPS_TOKEN_REQUEST;
+      String xoopsTokenRequest;
       HttpGet httpGet = new HttpGet(url);
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
@@ -113,7 +113,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (!m.matches()) {
           throw new Exception("Unable to find 'XOOPS_TOKEN_REQUEST' form field on reply page");
         }
-        XOOPS_TOKEN_REQUEST = m.group(1);
+        xoopsTokenRequest = m.group(1);
       }
 
       MultipartEntityBuilder builder = MultipartEntityBuilder.create()
@@ -121,7 +121,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
           .addTextBody("message", summary)
           .addTextBody("forum", s_forumId)
           .addTextBody("topic_id", m_topicId)
-          .addTextBody("XOOPS_TOKEN_REQUEST", XOOPS_TOKEN_REQUEST)
+          .addTextBody("XOOPS_TOKEN_REQUEST", xoopsTokenRequest)
           .addTextBody("xoops_upload_file[]", "userfile")
           .addTextBody("contents_submit", "Submit")
           .addTextBody("doxcode", "1")

@@ -43,14 +43,14 @@ public class TripleAForumPoster extends AbstractForumPoster {
     username = new BasicNameValuePair("username", getUsername());
     password = new BasicNameValuePair("password", getPassword());
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      int userID = getUserId(client);
-      String token = getToken(client, userID);
+      int userId = getUserId(client);
+      String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
         m_turnSummaryRef = "Sucessfully posted!";
         return true;
       } finally {
-        deleteToken(client, userID, token);
+        deleteToken(client, userId, token);
       }
     } catch (Exception e) {
       ClientLogger.logQuietly(e);
@@ -89,9 +89,9 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private static void deleteToken(CloseableHttpClient client, int userID, String token)
+  private static void deleteToken(CloseableHttpClient client, int userId, String token)
       throws ClientProtocolException, IOException {
-    HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userID + "/tokens/" + token);
+    HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
     client.execute(httpDelete);
   }
@@ -120,8 +120,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
-      return new JSONObject(rawJSON);
+      String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
+      return new JSONObject(rawJson);
     }
   }
 
@@ -130,8 +130,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     post.setEntity(new UrlEncodedFormEntity(Arrays.asList(password), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
-      JSONObject jsonObject = new JSONObject(rawJSON);
+      String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
+      JSONObject jsonObject = new JSONObject(rawJson);
       if (jsonObject.has("code")) {
         String code = jsonObject.getString("code");
         if (code.equalsIgnoreCase("ok")) {
@@ -139,7 +139,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         }
         throw new Exception("Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
       }
-      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJSON);
+      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJson);
     }
   }
 

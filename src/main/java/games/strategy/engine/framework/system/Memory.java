@@ -89,11 +89,11 @@ public class Memory {
     return maxMemorySet;
   }
 
-  public static Properties setMaxMemoryInMB(final int maxMemoryInMB) {
-    System.out.println("Setting max memory for TripleA to: " + maxMemoryInMB + "m");
+  public static Properties setMaxMemoryInMB(final int maxMemoryInMb) {
+    System.out.println("Setting max memory for TripleA to: " + maxMemoryInMb + "m");
     final Properties prop = new Properties();
     prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "false");
-    prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMB);
+    prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMb);
     return prop;
   }
 

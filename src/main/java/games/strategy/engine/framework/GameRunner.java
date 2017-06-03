@@ -686,14 +686,14 @@ public class GameRunner {
   }
 
   // newClassPath can be null
-  private static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
+  private static void joinGame(final int port, final String hostAddressIp, final String newClassPath,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
     commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIP);
+    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIp);
     commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
     commands.add(GameRunner.class.getName());
     ProcessRunnerUtil.exec(commands);

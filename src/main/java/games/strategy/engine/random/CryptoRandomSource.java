@@ -84,11 +84,11 @@ public class CryptoRandomSource implements IRandomSource {
     // generate numbers locally, and put them in the vault
     final int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
     // lock it so the client knows that its there, but cant read it
-    final VaultID localID = vault.lock(intsToBytes(localRandom));
+    final VaultID localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
         (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
-    final Object clientRandom = remote.generate(max, count, annotation, localID);
+    final Object clientRandom = remote.generate(max, count, annotation, localId);
     if (!(clientRandom instanceof int[])) {
       // Let the error be thrown
       System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max
@@ -96,7 +96,7 @@ public class CryptoRandomSource implements IRandomSource {
     }
     final int[] remoteNumbers = (int[]) clientRandom;
     // unlock ours, tell the client he can verify
-    vault.unlock(localID);
+    vault.unlock(localId);
     remote.verifyNumbers();
     // finally, we join the two together to get the real value
     return xor(localRandom, remoteNumbers, max);

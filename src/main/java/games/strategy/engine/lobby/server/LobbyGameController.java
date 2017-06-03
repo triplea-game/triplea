@@ -58,14 +58,14 @@ class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public void postGame(final GUID gameID, final GameDescription description) {
+  public void postGame(final GUID gameId, final GameDescription description) {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
     s_logger.info("Game added:" + description);
     synchronized (m_mutex) {
-      m_allGames.put(gameID, description);
+      m_allGames.put(gameId, description);
     }
-    m_broadcaster.gameUpdated(gameID, description);
+    m_broadcaster.gameUpdated(gameId, description);
   }
 
   private static void assertCorrectHost(final GameDescription description, final INode from) {
@@ -76,14 +76,14 @@ class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public void updateGame(final GUID gameID, final GameDescription description) {
+  public void updateGame(final GUID gameId, final GameDescription description) {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
     if (s_logger.isLoggable(Level.FINE)) {
       s_logger.fine("Game updated:" + description);
     }
     synchronized (m_mutex) {
-      final GameDescription oldDescription = m_allGames.get(gameID);
+      final GameDescription oldDescription = m_allGames.get(gameId);
       // out of order updates
       // ignore, we already have the latest
       if (oldDescription.getVersion() > description.getVersion()) {
@@ -92,9 +92,9 @@ class LobbyGameController implements ILobbyGameController {
       if (!oldDescription.getHostedBy().equals(description.getHostedBy())) {
         throw new IllegalStateException("Game modified by wrong host");
       }
-      m_allGames.put(gameID, description);
+      m_allGames.put(gameId, description);
     }
-    m_broadcaster.gameUpdated(gameID, description);
+    m_broadcaster.gameUpdated(gameId, description);
   }
 
   @Override
@@ -110,10 +110,10 @@ class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public String testGame(final GUID gameID) {
+  public String testGame(final GUID gameId) {
     GameDescription description;
     synchronized (m_mutex) {
-      description = m_allGames.get(gameID);
+      description = m_allGames.get(gameId);
     }
     if (description == null) {
       return "No such game found";

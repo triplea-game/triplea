@@ -502,24 +502,24 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerID = getCurrentStep().getPlayerID();
+    final PlayerID playerId = getCurrentStep().getPlayerID();
     // no player specified for the given step
-    if (playerID == null) {
+    if (playerId == null) {
       return;
     }
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final IGamePlayer player = m_gamePlayers.get(playerID);
+    final IGamePlayer player = m_gamePlayers.get(playerId);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
-      final INode destination = m_playerManager.getNode(playerID.getName());
+      final INode destination = m_playerManager.getNode(playerId.getName());
       final IGameStepAdvancer advancer =
           (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      advancer.startPlayerStep(getCurrentStep().getName(), playerID);
+      advancer.startPlayerStep(getCurrentStep().getName(), playerId);
     }
   }
 
