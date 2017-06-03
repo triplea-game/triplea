@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -29,7 +28,6 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.lobby.server.userDB.DbUser;
-import games.strategy.engine.lobby.server.userDB.UserDao;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
@@ -149,7 +147,7 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (UserDao.validateUserName(name1) != null) {
+      if (!DbUser.isValidUserName((name1))) {
         if (JOptionPane.showConfirmDialog(m_frame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
@@ -221,7 +219,7 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (UserDao.validateUserName(name1) != null) {
+      if (DbUser.isValidUserName(name1)) {
         if (JOptionPane.showConfirmDialog(m_frame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {

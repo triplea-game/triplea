@@ -68,16 +68,22 @@ public class Database {
     return dbRootDir;
   }
 
-  public static Connection getConnection() {
+  public static Connection getDerbyConnection() {
     final String url = "jdbc:derby:ta_users;create=true";
-    return getConnection(url, getDbProps());
+    return getDerbyConnection(url, getDbProps());
   }
 
   public static Connection getPostgresConnection() {
-    return getConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
+    Connection connection = getDerbyConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
+    try {
+      connection.setAutoCommit(false);
+    } catch (SQLException e) {
+      throw new RuntimeException("could not set autocommit to false on DB connection, connection not there?", e);
+    }
+    return connection;
   }
 
-  public static Connection getConnection(final String url, final Properties props) {
+  public static Connection getDerbyConnection(final String url, final Properties props) {
     ensureDbIsSetup();
     Connection conn = null;
     /*
@@ -243,7 +249,7 @@ public class Database {
       return;
     }
     s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
-    try (final Connection con = getConnection()) {
+    try (final Connection con = getDerbyConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
       final CallableStatement cs = con.prepareCall(sqlstmt);
