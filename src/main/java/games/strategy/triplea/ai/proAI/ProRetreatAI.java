@@ -50,14 +50,14 @@ class ProRetreatAI {
     calc = ai.getCalc();
   }
 
-  Territory retreatQuery(final GUID battleID, final Territory battleTerritory,
+  Territory retreatQuery(final GUID battleId, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories) {
 
     // Get battle data
     final GameData data = ProData.getData();
     final PlayerID player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
-    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // Get units and determine if attacker
     final boolean isAttacker = player.equals(battle.getAttacker());

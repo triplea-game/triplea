@@ -84,9 +84,9 @@ public class ProBattleUtils {
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.UnitIsTransportButNotCombatTransport.invert());
     }
-    final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
+    final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
-    return (2 * myHP) + myPower;
+    return (2 * myHitPoints) + myPower;
   }
 
   private static double estimatePower(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,

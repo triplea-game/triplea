@@ -561,10 +561,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     return ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
-        battleID, allowMultipleHitsPerUnit);
+        battleId, allowMultipleHitsPerUnit);
   }
 
   @Override
@@ -665,9 +665,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
-    return ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
+    return ui.getBattlePanel().getRetreat(battleId, message, possibleTerritories, submerge);
   }
 
   @Override

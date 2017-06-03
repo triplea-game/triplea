@@ -19,8 +19,8 @@ public class DefaultSoundChannel implements ISound {
 
 
   @Override
-  public void playSoundForAll(final String clipName, final PlayerID playerID) {
-    ClipPlayer.play(clipName, playerID);
+  public void playSoundForAll(final String clipName, final PlayerID playerId) {
+    ClipPlayer.play(clipName, playerId);
   }
 
   @Override

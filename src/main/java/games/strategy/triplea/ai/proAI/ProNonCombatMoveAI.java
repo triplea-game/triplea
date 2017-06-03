@@ -359,14 +359,14 @@ class ProNonCombatMoveAI {
       enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
       patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
       patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
-      final List<Unit> minDefendingUnitsAndNotAA =
+      final List<Unit> minDefendingUnitsAndNotAntiAir =
           Match.getMatches(patd.getCantMoveUnits(), Matches.UnitIsAAforAnything.invert());
       final ProBattleResult minResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
-          minDefendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits());
+          minDefendingUnitsAndNotAntiAir, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
-      if (minResult.getTUVSwing() <= 0 && !minDefendingUnitsAndNotAA.isEmpty()) {
+      if (minResult.getTUVSwing() <= 0 && !minDefendingUnitsAndNotAntiAir.isEmpty()) {
         ProLogger.debug("Territory=" + t.getName() + ", CanHold=true" + ", MinDefenders="
-            + minDefendingUnitsAndNotAA.size() + ", EnemyAttackers=" + enemyAttackingUnits.size() + ", win%="
+            + minDefendingUnitsAndNotAntiAir.size() + ", EnemyAttackers=" + enemyAttackingUnits.size() + ", win%="
             + minResult.getWinPercentage() + ", EnemyTUVSwing=" + minResult.getTUVSwing() + ", hasLandUnitRemaining="
             + minResult.isHasLandUnitRemaining());
         continue;
@@ -376,9 +376,10 @@ class ProNonCombatMoveAI {
       final Set<Unit> defendingUnits = new HashSet<>(patd.getMaxUnits());
       defendingUnits.addAll(patd.getMaxAmphibUnits());
       defendingUnits.addAll(patd.getCantMoveUnits());
-      final List<Unit> defendingUnitsAndNotAA = Match.getMatches(defendingUnits, Matches.UnitIsAAforAnything.invert());
+      final List<Unit> defendingUnitsAndNotAntiAir =
+          Match.getMatches(defendingUnits, Matches.UnitIsAAforAnything.invert());
       final ProBattleResult result = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
-          defendingUnitsAndNotAA, enemyAttackOptions.getMax(t).getMaxBombardUnits());
+          defendingUnitsAndNotAntiAir, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       int isFactory = 0;
       if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
         isFactory = 1;
@@ -387,14 +388,15 @@ class ProNonCombatMoveAI {
       if (t.equals(ProData.myCapital)) {
         isMyCapital = 1;
       }
-      final List<Unit> extraUnits = new ArrayList<>(defendingUnitsAndNotAA);
-      extraUnits.removeAll(minDefendingUnitsAndNotAA);
+      final List<Unit> extraUnits = new ArrayList<>(defendingUnitsAndNotAntiAir);
+      extraUnits.removeAll(minDefendingUnitsAndNotAntiAir);
       final double extraUnitValue = BattleCalculator.getTUV(extraUnits, ProData.unitValueMap);
       final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital);
-      if (minDefendingUnitsAndNotAA.size() != defendingUnitsAndNotAA.size()
+      if (minDefendingUnitsAndNotAntiAir.size() != defendingUnitsAndNotAntiAir.size()
           && (result.getTUVSwing() - holdValue) < minResult.getTUVSwing()) {
         ProLogger
-            .debug("Territory=" + t.getName() + ", CanHold=true" + ", MaxDefenders=" + defendingUnitsAndNotAA.size()
+            .debug("Territory=" + t.getName() + ", CanHold=true"
+                + ", MaxDefenders=" + defendingUnitsAndNotAntiAir.size()
                 + ", EnemyAttackers=" + enemyAttackingUnits.size() + ", minTUVSwing=" + minResult.getTUVSwing()
                 + ", win%=" + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing()
                 + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
@@ -403,7 +405,7 @@ class ProNonCombatMoveAI {
 
       // Can't hold territory
       patd.setCanHold(false);
-      ProLogger.debug("Can't hold Territory=" + t.getName() + ", MaxDefenders=" + defendingUnitsAndNotAA.size()
+      ProLogger.debug("Can't hold Territory=" + t.getName() + ", MaxDefenders=" + defendingUnitsAndNotAntiAir.size()
           + ", EnemyAttackers=" + enemyAttackingUnits.size() + ", minTUVSwing=" + minResult.getTUVSwing() + ", win%="
           + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing() + ", hasLandUnitRemaining="
           + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
@@ -506,13 +508,13 @@ class ProNonCombatMoveAI {
           && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.UnitIsLand) && cantMoveUnitValue < 5;
       if (!patd.isCanHold() || patd.getValue() <= 0 || isLandAndCanOnlyBeAttackedByAir || isNotFactoryAndShouldHold
           || canAlreadyBeHeld || isNotFactoryAndHasNoEnemyNeighbors || isNotFactoryAndOnlyAmphib) {
-        final double TUVSwing = minResult.getTUVSwing();
+        final double tuvSwing = minResult.getTUVSwing();
         final boolean hasRemainingLandUnit = minResult.isHasLandUnitRemaining();
         ProLogger.debug("Removing territory=" + t.getName() + ", value=" + patd.getValue() + ", CanHold="
             + patd.isCanHold() + ", isLandAndCanOnlyBeAttackedByAir=" + isLandAndCanOnlyBeAttackedByAir
             + ", isNotFactoryAndShouldHold=" + isNotFactoryAndShouldHold + ", canAlreadyBeHeld=" + canAlreadyBeHeld
             + ", isNotFactoryAndHasNoEnemyNeighbors=" + isNotFactoryAndHasNoEnemyNeighbors
-            + ", isNotFactoryAndOnlyAmphib=" + isNotFactoryAndOnlyAmphib + ", TUVSwing=" + TUVSwing
+            + ", isNotFactoryAndOnlyAmphib=" + isNotFactoryAndOnlyAmphib + ", tuvSwing=" + tuvSwing
             + ", hasRemainingLandUnit=" + hasRemainingLandUnit + ", maxEnemyUnits=" + patd.getMaxEnemyUnits().size());
         it.remove();
       }
@@ -1948,9 +1950,9 @@ class ProNonCombatMoveAI {
           // Find value and try to move to territory that doesn't already have AA
           final List<Unit> units = new ArrayList<>(moveMap.get(t).getCantMoveUnits());
           units.addAll(moveMap.get(t).getUnits());
-          final boolean hasAA = Match.someMatch(units, Matches.UnitIsAAforAnything);
+          final boolean hasAntiAir = Match.someMatch(units, Matches.UnitIsAAforAnything);
           double value = moveMap.get(t).getValue();
-          if (hasAA) {
+          if (hasAntiAir) {
             value *= 0.01;
           }
           ProLogger.trace(t.getName() + " has value=" + value);
