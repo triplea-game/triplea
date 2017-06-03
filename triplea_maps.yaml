@@ -88,10 +88,10 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
-    <br><em><b><font size="6">Created by Rolf Larsson and Hepster</font></b></em>
+    <br><em><b style="font-size: 6px;">Created by Rolf Larsson and Hepster</b></em>
     <br>
-    <br><em><b><font size="5">Map and Mechanics by Rolf Larsson</font></b></em>
-    <br><em><b><font size="5">Graphics by Hepster</font></b></em>
+    <br><em><b style="font-size: 5px;">Map and Mechanics by Rolf Larsson</b></em>
+    <br><em><b style="font-size: 5px;">Graphics by Hepster</b></em>
     <br>
     <br>
     <br>
@@ -110,7 +110,7 @@
     <br><b>Triplea 1.6.1.4 is required at least for the included Tournament Edition.</b>
     <br><b>Triplea 1.7.0.3 is required at least.</b>
     <br>
-    <p><a id="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p style="font-size: 6px;"><b><em>Features</em></b></p>
     <br>
     <ul>
       <li><b>Terrain - modifications for unitvalues and -abilities</b></li>
@@ -130,7 +130,7 @@
       <li><b>and many more...</b></li>
     </ul>
     <br>
-    <p> <a id="Nations and Turn order"><font size="6"><b><em>Nations and Turn order</em></b></font></a></p>
+    <p style="font-size: 6px;"> <b><em>Nations and Turn order</em></b></p>
     <br>
     <ul>
       <li><b>Germany</b> ( Vichy France, Danube Axis, Finnland)</li>
@@ -146,8 +146,8 @@
       <li><b>Turkey</b> (Neutral-AI as long as not allied)</li>
     </ul>
     <br>
-    <br><b>Smaller Nations ( those in brackets like Finnland) have their own territory, income and production, but their forces are beeing controlled and moved by their major power.<b>
-    <br><b>This allows to play only the majorpowers without having too many nations to be played, but have a realistic use of local resources.<b>
+    <br><b>Smaller Nations ( those in brackets like Finnland) have their own territory, income and production, but their forces are beeing controlled and moved by their major power.</b>
+    <br><b>This allows to play only the majorpowers without having too many nations to be played, but have a realistic use of local resources.</b>
     <br>
 - mapName: 270BC
   mapCategory: BEST
@@ -314,7 +314,7 @@
   description: |
     <br>
     <h2>1942</h2>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1942_mini.png">
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_1942_mini.png" alt="Thumbnail">
     <br>
     <br>A new edition of World War II with new tech and units. Includes the two starting scenarios 1941 and 1942.
 - mapName: World War II v4
@@ -324,7 +324,7 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_1942_mini.png
   description: |
     <br>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_ffa_mini.png">
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v4_ffa_mini.png" alt="Thumbnail">
     <br>
     <br>The latest edition of World War II. Starting in 1942 with the World War II v3 rule set and a map similar to World War II v2 Revised.
     <br>Includes two 6-Army-Free-For-All variants.
@@ -492,7 +492,7 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_battle_of_jutland_mini.png
   description: |
-    <br> by Veqryn</em></b>
+    <br> <b><em>by Veqryn</em></b>
     <br>
     <br>May 31, 1916, the two greatest navies in the world set sail to meet in the greatest and only full-scale clash of battleships in history.
     <br>The German High Seas Fleet planned to use its scouting battlecruisers to draw the Royal Navy's battlecruiser group of the Grand Fleet into a trap and
@@ -596,12 +596,12 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_mini.png
   description: |
     <br>
-    <center>
-      <b><font size="12"> Feudal Japan </font></b>
+    <span style="text-align: center;">
+      <b style="font-size: 12px;"> Feudal Japan </b>
       <br>
       <br>
-    </center>
-    <br><em><b><font size="3">Designed by Rolf Larsson</font></b></em>
+    </span>
+    <br><em><b style="font-size: 3px;">Designed by Rolf Larsson</b></em>
     <br>
     <p>
       <br><b>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
@@ -843,10 +843,10 @@
   version: 2
   description: |
     <br>6 army ffa
-    <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_ffa_mini.png" />
+    <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_ffa_mini.png" alt="Thumbnail">
     <br>
     <br>7 power ww2v2
-    <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_7power_mini.png" />
+    <br><img src="http://tripleamaps.sourceforge.net/images/TripleA_ww2v2_7power_mini.png" alt="Thumbnail">
     <br>
     <br>
     <br>1. Free-For-All for 6 players
@@ -926,7 +926,7 @@
   description: |
     <div style="text-align: left;">
     	<br>
-    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
     	<br>Alternative Relief Tiles for NWO
     	<br>by sieg
     	<br>
@@ -940,7 +940,7 @@
   description: |
     <div style="text-align: left;">
     	<br>
-    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
     	<br>Alternative Relief Tiles for NWO
     	<br>by pulicat
     	<br>
@@ -954,7 +954,7 @@
   description: |
     <div style="text-align: left;">
     	<br>
-    	<h1 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h1>
+    	<h2 style="text-align: left; font-size:120%; color: #000000;">#NEW WORLD ORDER#</h2>
     	<br>Alternative Relief Tiles for NWO
     	<br>by gudkarma
     	<br>
@@ -1214,7 +1214,7 @@
   description: |
     <br> by sieg
     <br>
-    <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_alt_mini2.png">
+    <img src="http://tripleamaps.sourceforge.net/images/TripleA_tactics_campaign_alt_mini2.png" alt="Thumbnail">
     <br>
     <br>
     <br>Very flexible package of small tactical hex-maps. Both good for fast games as well as well suited for modding. Only needs better adaption to the new TripleA to be
@@ -1531,15 +1531,15 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_warlords_mini.png
   description: |
     <br>
-    <br><b><font size="12"> Feudal Japan Warlords </font></b>
+    <br><b style="font-size: 12px;"> Feudal Japan Warlords </b>
     <br>
     <br>
-    <br><em><b><font size="6">Created by Rolf Larsson </font></b></em>
+    <br><em><b style="font-size: 6px;">Created by Rolf Larsson </b></em>
     <br>
     <br><b>Inspired by Shogun, Samurai Swords, Ikusa boardgames, this map is done in tripleastyle, adding
     <br>Ships, Seazones, Cavalry and changes a few other things.</b>
     <br>
-    <p><a id="Features"><font size="6"><b><em>Features</em></b></font></a></p>
+    <p style="font-size: 6px;"><a id="Features"><b><em>Features</em></b></a></p>
     <br>
     <ul>
       <li><b>2, 3, 4 or 5 players, free for all</b></li>
