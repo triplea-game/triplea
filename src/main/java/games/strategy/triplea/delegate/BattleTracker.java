@@ -547,23 +547,23 @@ public class BattleTracker implements java.io.Serializable {
     if (territory.getOwner().isNull() && !territory.isWater()
         && games.strategy.triplea.Properties.getNeutralCharge(data) >= 0) {
       final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-      final int PUChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);
-      final int PUChargeReal = Math.min(0, Math.max(PUChargeIdeal, -id.getResources().getQuantity(PUs)));
-      final Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, PUChargeReal);
+      final int puChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);
+      final int puChargeReal = Math.min(0, Math.max(puChargeIdeal, -id.getResources().getQuantity(PUs)));
+      final Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, puChargeReal);
       bridge.addChange(neutralFee);
       if (changeTracker != null) {
         changeTracker.addChange(neutralFee);
       }
-      if (PUChargeIdeal == PUChargeReal) {
-        bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUChargeReal + " "
-            + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName() + "s neutrality.");
+      if (puChargeIdeal == puChargeReal) {
+        bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -puChargeReal + " "
+            + MyFormatter.pluralize("PU", -puChargeReal) + " for violating " + territory.getName() + "s neutrality.");
       } else {
         System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
-            + PUChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
+            + puChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
         bridge.getHistoryWriter()
-            .addChildToEvent(id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal)
+            .addChildToEvent(id.getName() + " loses " + -puChargeReal + " " + MyFormatter.pluralize("PU", -puChargeReal)
                 + " for violating " + territory.getName() + "s neutrality.  Correct amount to charge is: "
-                + PUChargeIdeal + ".  Player should not have been able to make this attack!");
+                + puChargeIdeal + ".  Player should not have been able to make this attack!");
       }
     }
     // if its a capital we take the money
@@ -583,32 +583,32 @@ public class BattleTracker implements java.io.Serializable {
             .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-        final int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);
+        final int capturedPuCount = whoseCapital.getResources().getQuantity(PUs);
         if (pa != null) {
           if (isPacificTheater(data)) {
-            final Change changeVP =
-                ChangeFactory.attachmentPropertyChange(pa, (capturedPUCount + pa.getCaptureVps()), "captureVps");
-            bridge.addChange(changeVP);
+            final Change changeVp =
+                ChangeFactory.attachmentPropertyChange(pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
+            bridge.addChange(changeVp);
             if (changeTracker != null) {
-              changeTracker.addChange(changeVP);
+              changeTracker.addChange(changeVp);
             }
           }
         }
-        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPUCount);
+        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPuCount);
         bridge.addChange(remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
-          bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys " + capturedPUCount
-              + MyFormatter.pluralize("PU", capturedPUCount) + " while taking " + whoseCapital.getName() + " capital");
+          bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys " + capturedPuCount
+              + MyFormatter.pluralize("PU", capturedPuCount) + " while taking " + whoseCapital.getName() + " capital");
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
         } else {
-          bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedPUCount
-              + MyFormatter.pluralize("PU", capturedPUCount) + " while taking " + whoseCapital.getName() + " capital");
+          bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedPuCount
+              + MyFormatter.pluralize("PU", capturedPuCount) + " while taking " + whoseCapital.getName() + " capital");
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
-          final Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPUCount);
+          final Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPuCount);
           bridge.addChange(add);
           if (changeTracker != null) {
             changeTracker.addChange(add);

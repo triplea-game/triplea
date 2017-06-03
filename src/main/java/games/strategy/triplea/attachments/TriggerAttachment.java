@@ -2418,11 +2418,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           aBridge.addChange(
               ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
-          final String PUMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
+          final String puMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
               + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()
               + "; end with " + total + " " + t.getResource();
-          aBridge.getHistoryWriter().startEvent(PUMessage);
-          strbuf.append(PUMessage).append(" <br />");
+          aBridge.getHistoryWriter().startEvent(puMessage);
+          strbuf.append(puMessage).append(" <br />");
         }
       }
     }

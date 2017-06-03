@@ -749,13 +749,13 @@ public class AirBattle extends AbstractBattle {
     removeFromDependents(killed, bridge, dependentBattles, false);
   }
 
-  private static void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName,
+  private static void notifyCasualties(final GUID battleId, final IDelegateBridge bridge, final String stepName,
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
-    getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(),
+    getDisplay(bridge).casualtyNotification(battleId, stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.emptyMap());
     final Runnable r = () -> {
       try {
-        getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
+        getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
       }
@@ -763,7 +763,7 @@ public class AirBattle extends AbstractBattle {
     // execute in a seperate thread to allow either player to click continue first.
     final Thread t = new Thread(r, "Click to continue waiter");
     t.start();
-    getRemote(hitPlayer, bridge).confirmOwnCasualties(battleID, "Press space to continue");
+    getRemote(hitPlayer, bridge).confirmOwnCasualties(battleId, "Press space to continue");
     try {
       bridge.leaveDelegateExecution();
       t.join();

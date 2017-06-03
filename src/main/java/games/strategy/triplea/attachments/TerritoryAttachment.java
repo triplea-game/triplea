@@ -644,9 +644,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public String toStringForInfo(final boolean useHTML, final boolean includeAttachedToName) {
+  public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {
     final StringBuilder sb = new StringBuilder("");
-    final String br = (useHTML ? "<br>" : ", ");
+    final String br = (useHtml ? "<br>" : ", ");
     final Territory t = (Territory) this.getAttachedTo();
     if (t == null) {
       return sb.toString();
@@ -732,7 +732,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
       if (m_resources != null) {
-        if (useHTML) {
+        if (useHtml) {
           sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
               .append((m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {

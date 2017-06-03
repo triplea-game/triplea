@@ -807,16 +807,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     // check for battle stats
     if (objectiveMet && m_destroyedTUV != null) {
       final String[] s = m_destroyedTUV.split(":");
-      final int requiredDestroyedTUV = getInt(s[0]);
-      if (requiredDestroyedTUV >= 0) {
+      final int requiredDestroyedTuv = getInt(s[0]);
+      if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
-        final int destroyedTUVforThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
+        final int destroyedTuvForThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
             data.getBattleRecordsList(), 0, data.getSequence().getRound(), justCurrentRound, false);
-        if (requiredDestroyedTUV > destroyedTUVforThisRoundSoFar) {
+        if (requiredDestroyedTuv > destroyedTuvForThisRoundSoFar) {
           objectiveMet = false;
         }
         if (getCountEach()) {
-          m_eachMultiple = destroyedTUVforThisRoundSoFar;
+          m_eachMultiple = destroyedTuvForThisRoundSoFar;
         }
       }
     }

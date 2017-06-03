@@ -635,7 +635,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean fromIslandOnly = games.strategy.triplea.Properties.getScramble_From_Island_Only(data);
     final boolean toSeaOnly = games.strategy.triplea.Properties.getScramble_To_Sea_Only(data);
     final boolean toAnyAmphibious = games.strategy.triplea.Properties.getScrambleToAnyAmphibiousAssault(data);
-    final boolean toSBR = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
+    final boolean toSbr = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
     int maxScrambleDistance = 0;
     final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
     while (utIter.hasNext()) {
@@ -657,7 +657,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
         m_battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
-    if (toSBR) {
+    if (toSbr) {
       territoriesWithBattles
           .addAll(m_battleTracker.getPendingBattleSites().getStrategicBombingRaidsIncludingAirBattles());
     }
@@ -866,17 +866,17 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // after that is applied, we have to make a map of all dependencies
             final Map<Territory, Map<Unit, Collection<Unit>>> dependencies =
                 new HashMap<>();
-            final Map<Unit, Collection<Unit>> dependenciesForMFB =
+            final Map<Unit, Collection<Unit>> dependenciesForMfb =
                 TransportTracker.transporting(attackingUnits, attackingUnits);
             for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport)) {
               // however, the map we add to the newly created battle, cannot hold any units that are NOT in this
               // territory.
               // BUT it must still hold all transports
-              if (!dependenciesForMFB.containsKey(transport)) {
-                dependenciesForMFB.put(transport, new ArrayList<>());
+              if (!dependenciesForMfb.containsKey(transport)) {
+                dependenciesForMfb.put(transport, new ArrayList<>());
               }
             }
-            dependencies.put(to, dependenciesForMFB);
+            dependencies.put(to, dependenciesForMfb);
             for (final Territory t : neighborsLand) {
               // All other maps, must hold only the transported units that in their territory
               final Collection<Unit> allNeighborUnits =
