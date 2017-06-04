@@ -34,6 +34,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -217,7 +218,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
       // Get next producer territory
       Territory producer = producers.get(0);
-      if (producers.size() > 1) {
+      final boolean isCarrierLeftAndCanMoveExistingFightersToCarrier =
+          Match.someMatch(unitsLeftToPlace, Matches.UnitIsCarrier) && canMoveExistingFightersToNewCarriers()
+              && !Properties.getLHTRCarrierProductionRules(getData());
+      final boolean areAllRemainingSeaOrConstructionUnits =
+          m_player.getUnits().allMatch(new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction));
+      if (producers.size() > 1
+          && (isCarrierLeftAndCanMoveExistingFightersToCarrier || !areAllRemainingSeaOrConstructionUnits)) {
         producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
         if (producer == null) {
           break;
