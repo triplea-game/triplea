@@ -59,7 +59,7 @@ class FileMenu {
   }
 
   JMenuItem addPostPBEM() {
-    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
+    final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
       if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
@@ -78,10 +78,10 @@ class FileMenu {
         gameData.releaseReadLock();
       }
     }));
-    menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(
+    menuPbem.setMnemonic(KeyEvent.VK_P);
+    menuPbem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    return menuPBEM;
+    return menuPbem;
   }
 
   void addExitMenu(final JMenu parentMenu) {

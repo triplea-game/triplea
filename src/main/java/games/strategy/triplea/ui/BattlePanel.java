@@ -181,20 +181,20 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  private boolean ensureBattleIsDisplayed(final GUID battleID) {
+  private boolean ensureBattleIsDisplayed(final GUID battleId) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong threads");
     }
     GUID displayed = m_currentBattleDisplayed;
     int count = 0;
-    while (displayed == null || !battleID.equals(displayed)) {
+    while (displayed == null || !battleId.equals(displayed)) {
       count++;
       ThreadUtil.sleep(count);
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
         ErrorConsole.getConsole().dumpStacks();
         new IllegalStateException(
-            "battle not displayed, looking for:" + battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
+            "battle not displayed, looking for:" + battleId + " showing:" + m_currentBattleDisplayed).printStackTrace();
         return false;
       }
       displayed = m_currentBattleDisplayed;
@@ -206,11 +206,11 @@ public class BattlePanel extends ActionPanel {
     return m_battleFrame;
   }
 
-  public void listBattle(final GUID battleID, final List<String> steps) {
+  public void listBattle(final GUID battleId, final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
       final Runnable r = () -> {
         // recursive call
-        listBattle(battleID, steps);
+        listBattle(battleId, steps);
       };
       try {
         SwingUtilities.invokeLater(r);
@@ -226,7 +226,7 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  public void showBattle(final GUID battleID, final Territory location,
+  public void showBattle(final GUID battleId, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final PlayerID attacker, final PlayerID defender,
@@ -238,7 +238,7 @@ public class BattlePanel extends ActionPanel {
       }
       if (!getMap().getUIContext().getShowMapOnly()) {
         m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
-            killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
+            killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleId, BattlePanel.this.getMap(),
             isAmphibious, battleType, amphibiousLandAttackers);
         m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
         m_battleFrame.getContentPane().removeAll();
@@ -263,7 +263,7 @@ public class BattlePanel extends ActionPanel {
           m_battleFrame.setVisible(false);
         }
         m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        m_currentBattleDisplayed = battleID;
+        m_currentBattleDisplayed = battleId;
         SwingUtilities.invokeLater(() -> m_battleFrame.toFront());
       }
     });
@@ -353,14 +353,14 @@ public class BattlePanel extends ActionPanel {
 
   public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
       final int count, final String message, final DiceRoll dice, final PlayerID hit,
-      final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit) {
+      final CasualtyList defaultCasualties, final GUID battleId, final boolean allowMultipleHitsPerUnit) {
     // if the battle display is null, then this is an aa fire during move
-    if (battleID == null) {
+    if (battleId == null) {
       return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
           allowMultipleHitsPerUnit);
     } else {
       // something is wong
-      if (!ensureBattleIsDisplayed(battleID)) {
+      if (!ensureBattleIsDisplayed(battleId)) {
         System.out.println("Battle Not Displayed?? " + message);
         return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
       }
@@ -404,16 +404,16 @@ public class BattlePanel extends ActionPanel {
     return Util.runInSwingEventThread(task);
   }
 
-  public Territory getRetreat(final GUID battleID, final String message, final Collection<Territory> possible,
+  public Territory getRetreat(final GUID battleId, final String message, final Collection<Territory> possible,
       final boolean submerge) {
     // something is really wrong
-    if (!ensureBattleIsDisplayed(battleID)) {
+    if (!ensureBattleIsDisplayed(battleId)) {
       return null;
     }
     return m_battleDisplay.getRetreat(message, possible, submerge);
   }
 
-  public void gotoStep(final GUID battleID, final String step) {
+  public void gotoStep(final GUID battleId, final String step) {
     SwingUtilities.invokeLater(() -> {
       if (m_battleDisplay != null) {
         m_battleDisplay.setStep(step);
@@ -429,7 +429,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
+  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
     SwingUtilities.invokeLater(() -> {
       if (m_battleDisplay != null) {
         m_battleDisplay.bombingResults(dice, cost);

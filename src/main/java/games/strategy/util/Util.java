@@ -119,15 +119,15 @@ public class Util {
    * allow multiple fully qualified email addresses separated by spaces, or a blank string.
    */
   public static boolean isMailValid(final String emailAddress) {
-    final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
-    final String ATOM = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
-    final String WORD = "(?:" + ATOM + "|" + QUOTEDSTRING + ")";
-    final String SUBDOMAIN = "(?:" + ATOM + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
-    final String DOMAIN = SUBDOMAIN + "(?:\\." + SUBDOMAIN + ")*";
-    final String LOCALPART = WORD + "(?:\\." + WORD + ")*";
-    final String EMAIL = LOCALPART + "@" + DOMAIN;
+    final String quotedString = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
+    final String atom = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
+    final String word = "(?:" + atom + "|" + quotedString + ")";
+    final String subdomain = "(?:" + atom + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
+    final String domain = subdomain + "(?:\\." + subdomain + ")*";
+    final String localPart = word + "(?:\\." + word + ")*";
+    final String email = localPart + "@" + domain;
     // String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
-    final String regex = "(\\s*" + EMAIL + "\\s*)*";
+    final String regex = "(\\s*" + email + "\\s*)*";
     return emailAddress.matches(regex);
   }
 

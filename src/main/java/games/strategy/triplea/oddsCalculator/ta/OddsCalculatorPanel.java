@@ -775,10 +775,10 @@ class OddsCalculatorPanel extends JPanel {
           BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
       m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(),
           BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-      final int attackHP = BattleCalculator.getTotalHitpointsLeft(attackers);
-      final int defenseHP = BattleCalculator.getTotalHitpointsLeft(defenders);
-      m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
-      m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
+      final int attackHitPoints = BattleCalculator.getTotalHitpointsLeft(attackers);
+      final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
+      m_attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
+      m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(getAttacker(), m_data);
