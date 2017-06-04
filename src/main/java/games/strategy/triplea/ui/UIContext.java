@@ -106,10 +106,10 @@ public class UIContext extends AbstractUIContext {
     m_cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
     // URL's use "/" not "\"
-    final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
-    if (cursorURL != null) {
+    final URL cursorUrl = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
+    if (cursorUrl != null) {
       try {
-        final Image image = ImageIO.read(cursorURL);
+        final Image image = ImageIO.read(cursorUrl);
         if (image != null) {
           final Point hotSpot = new Point(m_mapData.getMapCursorHotspotX(), m_mapData.getMapCursorHotspotY());
           m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");

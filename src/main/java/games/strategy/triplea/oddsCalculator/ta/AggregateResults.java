@@ -79,18 +79,18 @@ public class AggregateResults implements Serializable {
   /**
    * First is Attacker, Second is Defender.
    */
-  public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV,
-      final IntegerMap<UnitType> defenderCostsForTUV) {
+  public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
+      final IntegerMap<UnitType> defenderCostsForTuv) {
     if (m_results.isEmpty()) { // can be empty!
       return Tuple.of(0.0, 0.0);
     }
-    double attackerTUV = 0;
-    double defenderTUV = 0;
+    double attackerTuv = 0;
+    double defenderTuv = 0;
     for (final BattleResults result : m_results) {
-      attackerTUV += BattleCalculator.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTUV);
-      defenderTUV += BattleCalculator.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTUV);
+      attackerTuv += BattleCalculator.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTuv);
+      defenderTuv += BattleCalculator.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTuv);
     }
-    return Tuple.of(attackerTUV / m_results.size(), defenderTUV / m_results.size());
+    return Tuple.of(attackerTuv / m_results.size(), defenderTuv / m_results.size());
   }
 
   public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
@@ -98,14 +98,14 @@ public class AggregateResults implements Serializable {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
-    final IntegerMap<UnitType> attackerCostsForTUV = BattleCalculator.getCostsForTUV(attacker, data);
-    final IntegerMap<UnitType> defenderCostsForTUV = BattleCalculator.getCostsForTUV(defender, data);
-    final int attackerTotalTUV = BattleCalculator.getTUV(attackers, attackerCostsForTUV);
-    final int defenderTotalTUV = BattleCalculator.getTUV(defenders, defenderCostsForTUV);
+    final IntegerMap<UnitType> attackerCostsForTuv = BattleCalculator.getCostsForTUV(attacker, data);
+    final IntegerMap<UnitType> defenderCostsForTuv = BattleCalculator.getCostsForTUV(defender, data);
+    final int attackerTuv = BattleCalculator.getTUV(attackers, attackerCostsForTuv);
+    final int defenderTuv = BattleCalculator.getTUV(defenders, defenderCostsForTuv);
     // could we possibly cause a bug by comparing UnitType's from one game data, to a different game data's UnitTypes?
-    final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTUV, defenderCostsForTUV);
-    final double attackerLost = attackerTotalTUV - average.getFirst();
-    final double defenderLost = defenderTotalTUV - average.getSecond();
+    final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    final double attackerLost = attackerTuv - average.getFirst();
+    final double defenderLost = defenderTuv - average.getSecond();
     return defenderLost - attackerLost;
   }
 

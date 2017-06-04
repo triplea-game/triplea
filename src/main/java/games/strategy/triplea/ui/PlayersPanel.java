@@ -18,12 +18,12 @@ public class PlayersPanel {
   public static void showPlayers(final IGame game, final Component parent) {
     JPanel panel = SwingComponents.newJPanelWithVerticalBoxLayout();
     for (final String player : game.getPlayerManager().getPlayers()) {
-      final PlayerID playerID = game.getData().getPlayerList().getPlayerID(player);
-      if (playerID.isAI()) {
-        panel.add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
+      final PlayerID playerId = game.getData().getPlayerList().getPlayerID(player);
+      if (playerId.isAI()) {
+        panel.add(new JLabel(playerId.getWhoAmI().split(":")[1] + " is " + playerId.getName(), JLabel.RIGHT));
       } else {
         panel.add(
-            new JLabel(game.getPlayerManager().getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
+            new JLabel(game.getPlayerManager().getNode(player).getName() + " is " + playerId.getName(), JLabel.RIGHT));
       }
     }
 

@@ -50,7 +50,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - can be null
    * @param defaultCasualties
    *        - default casualties as selected by the game
-   * @param battleID
+   * @param battleId
    *        - the battle we are fighting in, may be null if this is an aa casualty selection during a move
    * @param battlesite
    *        - the territory where this happened
@@ -61,7 +61,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
       String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
       Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers,
-      CasualtyList defaultCasualties, GUID battleID, Territory battlesite, boolean allowMultipleHitsPerUnit);
+      CasualtyList defaultCasualties, GUID battleId, Territory battlesite, boolean allowMultipleHitsPerUnit);
 
   /**
    * Select a fixed dice roll
@@ -218,7 +218,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Ask the player if he wishes to retreat.
    *
-   * @param battleID
+   * @param battleId
    *        - the battle
    * @param submerge
    *        - is submerging possible (means the retreat territory CAN be the current battle territory)
@@ -228,7 +228,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - user displayable message
    * @return the territory to retreat to, or null if the player doesnt wish to retreat
    */
-  Territory retreatQuery(GUID battleID, boolean submerge, Territory battleTerritory,
+  Territory retreatQuery(GUID battleId, boolean submerge, Territory battleTerritory,
       Collection<Territory> possibleTerritories, String message);
 
   /**

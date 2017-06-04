@@ -117,10 +117,10 @@ public class BattleDisplay extends JPanel {
 
   BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
-      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleID,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleId,
       final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
-    m_battleID = battleID;
+    m_battleID = battleId;
     m_defender = defender;
     m_attacker = attacker;
     m_location = territory;
@@ -215,12 +215,12 @@ public class BattleDisplay extends JPanel {
    *
    * @param aKilledUnits
    *        list of units killed
-   * @param aPlayerID
+   * @param playerId
    *        player kills belongs to
    */
-  private Collection<Unit> updateKilledUnits(final Collection<Unit> aKilledUnits, final PlayerID aPlayerID) {
+  private Collection<Unit> updateKilledUnits(final Collection<Unit> aKilledUnits, final PlayerID playerId) {
     final JPanel lCausalityPanel;
-    if (aPlayerID.equals(m_defender)) {
+    if (playerId.equals(m_defender)) {
       lCausalityPanel = m_casualtiesInstantPanelDefender;
     } else {
       lCausalityPanel = m_casualtiesInstantPanelAttacker;

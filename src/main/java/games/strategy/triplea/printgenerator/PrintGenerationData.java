@@ -38,11 +38,11 @@ public class PrintGenerationData {
   }
 
   /**
-   * @param samePUMap
+   * @param samePuMap
    *        the samePUMap to set.
    */
-  protected void setSamePUMap(final Map<Integer, Integer> samePUMap) {
-    m_SamePUMap = samePUMap;
+  protected void setSamePUMap(final Map<Integer, Integer> samePuMap) {
+    m_SamePUMap = samePuMap;
   }
 
   /**

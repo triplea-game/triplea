@@ -70,14 +70,14 @@ public class BattleRecord implements Serializable {
 
   @SerializationProxySupport
   private BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender,
-      final int attackerLostTUV,
-      final int defenderLostTUV, final BattleResultDescription battleResultDescription, final BattleType battleType,
+      final int attackerLostTuv,
+      final int defenderLostTuv, final BattleResultDescription battleResultDescription, final BattleType battleType,
       final BattleResults battleResults) {
     this.battleSite = battleSite;
     this.attacker = attacker;
     this.defender = defender;
-    this.attackerLostTUV = attackerLostTUV;
-    this.defenderLostTUV = defenderLostTUV;
+    this.attackerLostTUV = attackerLostTuv;
+    this.defenderLostTUV = defenderLostTuv;
     this.battleResultDescription = battleResultDescription;
     this.battleType = battleType;
     this.battleResults = battleResults;
@@ -136,11 +136,11 @@ public class BattleRecord implements Serializable {
     this.battleType = battleType;
   }
 
-  protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
+  protected void setResult(final PlayerID defender, final int attackerLostTuv, final int defenderLostTuv,
       final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     this.defender = defender;
-    this.attackerLostTUV = attackerLostTUV;
-    this.defenderLostTUV = defenderLostTUV;
+    this.attackerLostTUV = attackerLostTuv;
+    this.defenderLostTUV = defenderLostTuv;
     this.battleResultDescription = battleResultDescription;
     this.battleResults = battleResults;
   }
