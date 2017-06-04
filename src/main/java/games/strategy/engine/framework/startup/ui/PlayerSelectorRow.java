@@ -24,7 +24,7 @@ class PlayerSelectorRow {
   private final JCheckBox enabledCheckBox;
   private final String playerName;
   private final JComboBox<String> playerTypes;
-  private final JComponent bonusIncomePercentage;
+  private JComponent bonusIncomePercentage;
   private boolean enabled = true;
   private final JLabel name;
   private final JLabel alliances;
@@ -81,8 +81,12 @@ class PlayerSelectorRow {
     }
     alliances = new JLabel(alliancesLabelText);
 
-    bonusIncomePercentage =
-        gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)).getEditorComponent();
+    // TODO: remove null check for next incompatible release
+    bonusIncomePercentage = null;
+    if (gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)) != null) {
+      bonusIncomePercentage =
+          gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)).getEditorComponent();
+    }
 
     setWidgetActivation();
   }
@@ -99,8 +103,11 @@ class PlayerSelectorRow {
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     container.add(alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    container.add(bonusIncomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 50, 5, 0), 0, 0));
+    // TODO: remove null check for next incompatible release
+    if (bonusIncomePercentage != null) {
+      container.add(bonusIncomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 50, 5, 0), 0, 0));
+    }
   }
 
   String getPlayerName() {
