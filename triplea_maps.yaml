@@ -88,10 +88,10 @@
   version: 1
   img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
-    <br><em><b style="font-size: 6px;">Created by Rolf Larsson and Hepster</b></em>
+    <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
     <br>
-    <br><em><b style="font-size: 5px;">Map and Mechanics by Rolf Larsson</b></em>
-    <br><em><b style="font-size: 5px;">Graphics by Hepster</b></em>
+    <br><em><b style="font-size: large;">Map and Mechanics by Rolf Larsson</b></em>
+    <br><em><b style="font-size: large;">Graphics by Hepster</b></em>
     <br>
     <br>
     <br>
@@ -110,7 +110,7 @@
     <br><b>Triplea 1.6.1.4 is required at least for the included Tournament Edition.</b>
     <br><b>Triplea 1.7.0.3 is required at least.</b>
     <br>
-    <p style="font-size: 6px;"><b><em>Features</em></b></p>
+    <p style="font-size: x-large;"><b><em>Features</em></b></p>
     <br>
     <ul>
       <li><b>Terrain - modifications for unitvalues and -abilities</b></li>
@@ -130,7 +130,7 @@
       <li><b>and many more...</b></li>
     </ul>
     <br>
-    <p style="font-size: 6px;"> <b><em>Nations and Turn order</em></b></p>
+    <p style="font-size: x-large;"> <b><em>Nations and Turn order</em></b></p>
     <br>
     <ul>
       <li><b>Germany</b> ( Vichy France, Danube Axis, Finnland)</li>
@@ -596,12 +596,12 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_mini.png
   description: |
     <br>
-    <span style="text-align: center;">
-      <b style="font-size: 12px;"> Feudal Japan </b>
+    <div style="text-align: center;">
+      <b style="font-size: xx-large;"> Feudal Japan </b>
       <br>
       <br>
-    </span>
-    <br><em><b style="font-size: 3px;">Designed by Rolf Larsson</b></em>
+    </div>
+    <br><em><b style="font-size: small;">Designed by Rolf Larsson</b></em>
     <br>
     <p>
       <br><b>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
@@ -1531,15 +1531,15 @@
   img: http://tripleamaps.sourceforge.net/images/TripleA_feudal_japan_warlords_mini.png
   description: |
     <br>
-    <br><b style="font-size: 12px;"> Feudal Japan Warlords </b>
+    <br><b style="font-size: xx-large;"> Feudal Japan Warlords </b>
     <br>
     <br>
-    <br><em><b style="font-size: 6px;">Created by Rolf Larsson </b></em>
+    <br><em><b style="font-size: x-large;">Created by Rolf Larsson </b></em>
     <br>
     <br><b>Inspired by Shogun, Samurai Swords, Ikusa boardgames, this map is done in tripleastyle, adding
     <br>Ships, Seazones, Cavalry and changes a few other things.</b>
     <br>
-    <p style="font-size: 6px;"><a id="Features"><b><em>Features</em></b></a></p>
+    <p style="font-size: x-large;"><a id="Features"><b><em>Features</em></b></a></p>
     <br>
     <ul>
       <li><b>2, 3, 4 or 5 players, free for all</b></li>
