@@ -41,6 +41,8 @@ public class GameProperties extends GameDataComponent {
   // added.
   private final List<String> ordering = new ArrayList<>();
 
+  private final Map<String, IEditableProperty> playerProperties = new HashMap<>();
+
   /**
    * Creates a new instance of GameProperties.
    *
@@ -80,6 +82,9 @@ public class GameProperties extends GameDataComponent {
   public Object get(final String key) {
     if (editableProperties.containsKey(key)) {
       return editableProperties.get(key).getValue();
+    }
+    if (playerProperties.containsKey(key)) {
+      return playerProperties.get(key).getValue();
     }
     return constantProperties.get(key);
   }
@@ -127,6 +132,14 @@ public class GameProperties extends GameDataComponent {
       }
     }
     return properties;
+  }
+
+  public void addPlayerProperty(final IEditableProperty property) {
+    playerProperties.put(property.getName(), property);
+  }
+
+  public IEditableProperty getPlayerProperty(final String name) {
+    return playerProperties.get(name);
   }
 
   public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties)
