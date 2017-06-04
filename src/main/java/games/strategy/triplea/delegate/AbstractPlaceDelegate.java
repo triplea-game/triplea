@@ -34,7 +34,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -214,6 +213,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
+    final boolean hasRemainingProduction = (unitsLeftToPlace.size() < maxPlaceableMap.totalValues());
+    final List<Unit> remainingUnitsToPlace = new ArrayList<>(m_player.getUnits().getUnits());
+    remainingUnitsToPlace.removeAll(unitsLeftToPlace);
+    final boolean hasRemainingNonConstructionUnitsToPlace =
+        Match.someMatch(remainingUnitsToPlace, Matches.UnitIsNotConstruction);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
 
       // Get next producer territory
@@ -221,10 +225,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final boolean isCarrierLeftAndCanMoveExistingFightersToCarrier =
           Match.someMatch(unitsLeftToPlace, Matches.UnitIsCarrier) && canMoveExistingFightersToNewCarriers()
               && !Properties.getLHTRCarrierProductionRules(getData());
-      final boolean areAllRemainingSeaOrConstructionUnits =
-          m_player.getUnits().allMatch(new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction));
+      final boolean cantAdjustUnitPlacements =
+          isUnitPlacementRestrictions() && Match.someMatch(unitsLeftToPlace, Matches.UnitRequiresUnitsOnCreation);
       if (producers.size() > 1
-          && (isCarrierLeftAndCanMoveExistingFightersToCarrier || !areAllRemainingSeaOrConstructionUnits)) {
+          && (isCarrierLeftAndCanMoveExistingFightersToCarrier
+              || (hasRemainingProduction && hasRemainingNonConstructionUnitsToPlace && cantAdjustUnitPlacements))) {
         producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
         if (producer == null) {
           break;
