@@ -19,10 +19,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 
-class PlayerComboBoxSelector {
+class PlayerSelectorRow {
 
   private final JCheckBox enabledCheckBox;
-  private final PlayerID player;
   private final String playerName;
   private final JComboBox<String> playerTypes;
   private final JComponent bonusIncomePercentage;
@@ -31,16 +30,13 @@ class PlayerComboBoxSelector {
   private final JLabel alliances;
   private final Collection<String> disableable;
   private final SetupPanel parent;
-  private final GameProperties gameProperties;
 
-  PlayerComboBoxSelector(final PlayerID player, final Map<String, String> reloadSelections,
+  PlayerSelectorRow(final PlayerID player, final Map<String, String> reloadSelections,
       final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances, final String[] types, final SetupPanel parent,
       final GameProperties gameProperties) {
-    this.player = player;
     this.disableable = disableable;
     this.parent = parent;
-    this.gameProperties = gameProperties;
     playerName = player.getName();
     name = new JLabel(playerName + ":");
 

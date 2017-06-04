@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -42,7 +41,7 @@ public class GameProperties extends GameDataComponent {
   // added.
   private final List<String> ordering = new ArrayList<>();
 
-  private final Map<String, IEditableProperty> playerProperties = new LinkedHashMap<>();
+  private final Map<String, IEditableProperty> playerProperties = new HashMap<>();
 
   /**
    * Creates a new instance of GameProperties.
@@ -139,11 +138,6 @@ public class GameProperties extends GameDataComponent {
     playerProperties.put(property.getName(), property);
   }
 
-  /**
-   * Return list of player properties in the order they were added.
-   *
-   * @return a list of IEditableProperty
-   */
   public IEditableProperty getPlayerProperty(final String name) {
     return playerProperties.get(name);
   }

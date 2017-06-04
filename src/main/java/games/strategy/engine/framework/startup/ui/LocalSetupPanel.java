@@ -28,7 +28,7 @@ import games.strategy.engine.random.PlainRandomSource;
 public class LocalSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 2284030734590389060L;
   private final GameSelectorModel m_gameSelectorModel;
-  private final List<PlayerComboBoxSelector> m_playerTypes = new ArrayList<>();
+  private final List<PlayerSelectorRow> m_playerTypes = new ArrayList<>();
 
   public LocalSetupPanel(final GameSelectorModel model) {
     m_gameSelectorModel = model;
@@ -75,8 +75,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     this.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     for (final PlayerID player : players) {
-      final PlayerComboBoxSelector selector =
-          new PlayerComboBoxSelector(player, reloadSelections, disableable, playersEnablementListing,
+      final PlayerSelectorRow selector =
+          new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, this, data.getProperties());
       m_playerTypes.add(selector);
       selector.layout(++gridy, this);
@@ -104,7 +104,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       if (player.isPlayerEnabled()) {
         return true;
       }
@@ -142,7 +142,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final IRandomSource randomSource = new PlainRandomSource();
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }

@@ -70,7 +70,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final SelectAndViewEditor m_forumPosterEditor;
   private final SelectAndViewEditor m_emailSenderEditor;
   private final SelectAndViewEditor m_webPosterEditor;
-  private final List<PlayerComboBoxSelector> m_playerTypes = new ArrayList<>();
+  private final List<PlayerSelectorRow> m_playerTypes = new ArrayList<>();
   private final JPanel m_localPlayerPanel = new JPanel();
   private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 
@@ -308,7 +308,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       if (player.isPlayerEnabled()) {
         return true;
       }
@@ -401,7 +401,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
@@ -459,8 +459,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     m_localPlayerPanel.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     for (final PlayerID player : players) {
-      final PlayerComboBoxSelector selector =
-          new PlayerComboBoxSelector(player, reloadSelections, disableable, playersEnablementListing,
+      final PlayerSelectorRow selector =
+          new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, parent, data.getProperties());
       m_playerTypes.add(selector);
       selector.layout(++gridy, m_localPlayerPanel);
