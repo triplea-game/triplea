@@ -397,8 +397,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
     LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
-    final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
-    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
+    final String gameUuid = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
+    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUuid);
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : m_playerTypes) {

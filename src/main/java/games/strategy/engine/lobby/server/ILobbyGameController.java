@@ -10,9 +10,9 @@ public interface ILobbyGameController extends IRemote {
   RemoteName GAME_CONTROLLER_REMOTE = new RemoteName(
       "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE", ILobbyGameController.class);
 
-  void postGame(GUID gameID, GameDescription description);
+  void postGame(GUID gameId, GameDescription description);
 
-  void updateGame(GUID gameID, GameDescription description);
+  void updateGame(GUID gameId, GameDescription description);
 
   Map<GUID, GameDescription> listGames();
 
@@ -25,5 +25,5 @@ public interface ILobbyGameController extends IRemote {
    * This method may only be called by the node that is hosting this game.
    * </p>
    */
-  String testGame(GUID gameID);
+  String testGame(GUID gameId);
 }

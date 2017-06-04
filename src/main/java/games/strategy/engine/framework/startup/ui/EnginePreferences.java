@@ -255,8 +255,8 @@ class EnginePreferences extends JDialog {
       final Properties systemIni = GameRunner.getSystemIni();
       final int currentSetting = Memory.getMaxMemoryFromSystemIniFileInMB(systemIni);
       final boolean useDefault = Memory.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
-      final int currentMaxMemoryInMB = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
-      final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
+      final int currentMaxMemoryInMb = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
+      final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMb, 5);
       final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
       final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
       final ButtonGroup bgroup = new ButtonGroup();

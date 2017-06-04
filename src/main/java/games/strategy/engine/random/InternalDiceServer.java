@@ -33,8 +33,8 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameID,
-      final String gameUUID) throws IOException {
+  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
+      final String gameUuid) throws IOException {
     // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
     final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();

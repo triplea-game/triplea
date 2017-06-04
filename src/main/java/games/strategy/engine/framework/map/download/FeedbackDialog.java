@@ -23,8 +23,8 @@ public final class FeedbackDialog {
     final Optional<DownloadFileDescription> mapSelection = findFirstSelectedMap(selectedValuesList, maps);
 
     if (mapSelection.isPresent()) {
-      final String feedbackURL = mapSelection.get().getFeedbackUrl();
-      SwingComponents.newOpenUrlConfirmationDialog(feedbackURL);
+      final String feedbackUrl = mapSelection.get().getFeedbackUrl();
+      SwingComponents.newOpenUrlConfirmationDialog(feedbackUrl);
     } else {
       SwingComponents.newMessageDialog("To open the map feedback from in your web browser, please first select a map "
           + "title, and then click the feedback button again.");

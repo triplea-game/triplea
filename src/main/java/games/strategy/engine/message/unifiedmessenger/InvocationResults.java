@@ -16,15 +16,15 @@ public abstract class InvocationResults implements Externalizable {
 
   public InvocationResults() {}
 
-  public InvocationResults(final RemoteMethodCallResults results, final GUID methodCallID) {
+  public InvocationResults(final RemoteMethodCallResults results, final GUID methodCallId) {
     if (results == null) {
       throw new IllegalArgumentException("Null results");
     }
-    if (methodCallID == null) {
+    if (methodCallId == null) {
       throw new IllegalArgumentException("Null id");
     }
     this.results = results;
-    this.methodCallID = methodCallID;
+    this.methodCallID = methodCallId;
   }
 
   @Override

@@ -9,7 +9,7 @@ public interface IRemoteDiceServer extends IBean {
   /**
    * Post a request to the dice server, and return the resulting html page as a string.
    */
-  String postRequest(int max, int numDice, String subjectMessage, String gameID, String gameUUID)
+  String postRequest(int max, int numDice, String subjectMessage, String gameId, String gameUuid)
       throws IOException;
 
   /**

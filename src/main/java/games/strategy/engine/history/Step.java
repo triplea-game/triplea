@@ -43,11 +43,11 @@ class StepHistorySerializer implements SerializationWriter {
   private final PlayerID m_playerID;
   private final String m_displayName;
 
-  public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerID,
+  public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerId,
       final String displayName) {
     m_stepName = stepName;
     m_delegateName = delegateName;
-    m_playerID = playerID;
+    m_playerID = playerId;
     m_displayName = displayName;
   }
 

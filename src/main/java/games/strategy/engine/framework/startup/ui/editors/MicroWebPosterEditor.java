@@ -173,8 +173,8 @@ public class MicroWebPosterEditor extends EditorPanel {
       window.setVisible(false);
       window.dispose();
     });
-    final JButton btnOK = new JButton("Initialize");
-    btnOK.addActionListener(e -> {
+    final JButton btnOk = new JButton("Initialize");
+    btnOk.addActionListener(e -> {
       window.setVisible(false);
       window.dispose();
       final StringBuilder sb = new StringBuilder();
@@ -203,7 +203,7 @@ public class MicroWebPosterEditor extends EditorPanel {
             "Error", JOptionPane.INFORMATION_MESSAGE);
       }
     });
-    window.getContentPane().add(btnOK, new GridBagConstraints(0, m_parties.length + 1, 1, 1, 0, 0,
+    window.getContentPane().add(btnOk, new GridBagConstraints(0, m_parties.length + 1, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(30, 20, 20, 10), 0, 0));
     window.getContentPane().add(btnClose, new GridBagConstraints(1, m_parties.length + 1, 1, 1, 0, 0,
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(30, 10, 20, 20), 0, 0));
