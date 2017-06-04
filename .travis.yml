@@ -7,28 +7,25 @@ addons:
       - python3
       - python3-yaml
 install: true
-script:
-- ./gradlew --no-daemon check
-after_success:
-- chmod +x ./.travis/update_checkstyle_thresholds && ./.travis/update_checkstyle_thresholds
+after_success: ./.travis/update_checkstyle_thresholds
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
-- chmod +x ./.travis/setup && ./.travis/setup
+- ./.travis/setup
 ## Add the travis build number to the game engine version
 - GAME_CONFIG=game_engine.properties
 - ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
 - export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
 - sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
 ## Run the gradle release build process - creates the installers
-- ./gradlew --no-daemon release
+- ./gradlew release
 ### Debug, show the artifacts that have been built
 - ls build/releases/
 ### Rename the windows installers to have 32bit and 64bit extensions instead of 'x86'
 - mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
 - mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
 ## Push a tag to github, will trigger the releases process
-- chmod +x ./.travis/push_tag && ./.travis/push_tag
-- chmod +x ./.travis/push_maps_yaml && ./.travis/push_maps_yaml
+- ./.travis/push_tag
+- ./.travis/push_maps_yaml
 deploy:
   provider: releases
   api_key:
