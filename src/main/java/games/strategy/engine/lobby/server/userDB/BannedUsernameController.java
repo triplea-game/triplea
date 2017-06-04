@@ -40,7 +40,7 @@ public class BannedUsernameController {
       banTillTs = new Timestamp(banTill.getTime());
     }
     s_logger.fine("Banning username:" + username);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps =
           con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)");
@@ -65,7 +65,7 @@ public class BannedUsernameController {
 
   private void removeBannedUsername(final String username) {
     s_logger.fine("Removing banned username:" + username);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?");
       ps.setString(1, username);
@@ -89,7 +89,7 @@ public class BannedUsernameController {
     boolean expired = false;
     Timestamp banTill = null;
     final String sql = "select username, ban_till from banned_usernames where username = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, username);
