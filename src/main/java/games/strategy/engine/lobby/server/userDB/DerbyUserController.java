@@ -84,15 +84,16 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       final PreparedStatement ps =
           con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
       ps.setString(1, hashedPassword.value);
-      ps.setString(2, user.email);
-      ps.setBoolean(3, user.admin);
-      ps.setString(4, user.name);
+      ps.setString(2, user.getEmail());
+      ps.setBoolean(3, user.isAdmin());
+      ps.setString(4, user.getName());
       ps.execute();
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
       s_logger.log(Level.SEVERE,
-          "Error updating name:" + user.name + " email: " + user.email + " pwd: " + hashedPassword.value, sqle);
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.value,
+          sqle);
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -102,19 +103,19 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   @Override
   public void createUser(final DbUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
-    if (doesUserExist(user.name)) {
+    if (doesUserExist(user.getName())) {
       throw new IllegalStateException("That user name has already been taken");
     }
     final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(
           "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
-      ps.setString(1, user.name);
+      ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.value);
-      ps.setString(3, user.email);
+      ps.setString(3, user.getEmail());
       ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
       ps.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-      ps.setInt(6, user.admin ? 1 : 0);
+      ps.setInt(6, user.isAdmin() ? 1 : 0);
       ps.execute();
       ps.close();
       con.commit();
@@ -122,13 +123,13 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       // TODO: let's instead first check if the user exists, if we do that then we can just
       // treat this as a normal error.
       if (sqle.getErrorCode() == 30000) {
-        s_logger.info("Tried to create duplicate user for name:" + user.name + " error:" + sqle.getMessage());
+        s_logger.info("Tried to create duplicate user for name:" + user.getName() + " error:" + sqle.getMessage());
         throw new IllegalStateException("That user name is already taken");
       }
       s_logger.log(
           Level.SEVERE,
           String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
-              user.name, user.email, hashedPassword.value.replaceAll(".", "*")),
+              user.getName(), user.getEmail(), hashedPassword.value.replaceAll(".", "*")),
           sqle);
       throw new IllegalStateException(sqle);
     } finally {

@@ -20,14 +20,14 @@ public class DbUserControllerIntegrationTest {
   @Test
   public void testCreate() throws Exception {
     DbUser user = createUser();
-    int startCount = getUserCount(() -> Database.getDerbyConnection());
+    int startCount = getUserCount(Database::getDerbyConnection);
 
     final DbUserController controller = new DbUserController();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
+    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
-    int endCount = getUserCount(() -> Database.getDerbyConnection());
+    int endCount = getUserCount(Database::getDerbyConnection);
     assertEquals(endCount, startCount + 1);
-    assertTrue(controller.doesUserExist(user.name));
+    assertTrue(controller.doesUserExist(user.getName()));
   }
 
   private static DbUser createUser() {
@@ -43,8 +43,7 @@ public class DbUserControllerIntegrationTest {
       final String sql = "select count(*) from TA_USERS";
       final ResultSet rs = dbConnection.createStatement().executeQuery(sql);
       assertTrue(rs.next());
-      int count = rs.getInt(1);
-      return count;
+      return rs.getInt(1);
     }
   }
 
@@ -52,13 +51,13 @@ public class DbUserControllerIntegrationTest {
   public void testGet() throws Exception {
     final DbUser user = createUser();
     final DbUserController controller = new DbUserController();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
+    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
-    final DbUser loadedUser = controller.getUserByName(user.name);
+    final DbUser loadedUser = controller.getUserByName(user.getName());
 
-    assertEquals(loadedUser.name, user.name);
-    assertEquals(user.email, user.email);
-    assertEquals(user.admin, user.admin);
+    assertEquals(loadedUser.getName(), user.getName());
+    assertEquals(loadedUser.getEmail(), user.getEmail());
+    assertEquals(loadedUser.isAdmin(), user.isAdmin());
   }
 
   @Test
@@ -66,9 +65,9 @@ public class DbUserControllerIntegrationTest {
     final DbUser user = createUser();
     final DbUserController controller = new DbUserController();
 
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
+    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
-    assertTrue(controller.doesUserExist(user.name));
+    assertTrue(controller.doesUserExist(user.getName()));
   }
 
   @Test
@@ -76,10 +75,10 @@ public class DbUserControllerIntegrationTest {
     DbUser user = createUser();
 
     final DbUserController controller = new DbUserController();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
+    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
     try {
-      controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.name)));
+      controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
       fail("Should not be allowed to create a dupe user");
     } catch (final Exception expected) {
       // expected
@@ -90,7 +89,7 @@ public class DbUserControllerIntegrationTest {
   public void testLogin() throws Exception {
     DbUser user = createUser();
     final DbUserController controller = new DbUserController();
-    HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.name));
+    HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
     controller.createUser(user, password);
 
     // advance the clock so we can see the login time
@@ -99,10 +98,10 @@ public class DbUserControllerIntegrationTest {
       ThreadUtil.sleep(1);
     }
     loginTimeMustBeAfter = System.currentTimeMillis();
-    assertTrue(controller.login(user.name, password));
+    assertTrue(controller.login(user.getName(), password));
 
     try (final Connection con = Database.getDerbyConnection()) {
-      final String sql = " select * from TA_USERS where userName = '" + user.name + "'";
+      final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertTrue(rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
@@ -114,17 +113,17 @@ public class DbUserControllerIntegrationTest {
   @Test
   public void testUpdate() throws Exception {
     DbUser user = createUser();
-    HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.name));
+    HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
     final DbUserController controller = new DbUserController();
     controller.createUser(user, password);
-    assertTrue(controller.doesUserExist(user.name));
+    assertTrue(controller.doesUserExist(user.getName()));
     final String password2 = MD5Crypt.crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(
-        new DbUser(new DbUser.UserName(user.name), new DbUser.UserEmail(email2)),
+        new DbUser(new DbUser.UserName(user.getName()), new DbUser.UserEmail(email2)),
         new HashedPassword(password2));
     try (final Connection con = Database.getDerbyConnection()) {
-      final String sql = " select * from TA_USERS where userName = '" + user.name + "'";
+      final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));

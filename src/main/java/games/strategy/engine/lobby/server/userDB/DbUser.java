@@ -1,35 +1,62 @@
 package games.strategy.engine.lobby.server.userDB;
 
-import com.google.common.base.Preconditions;
+import java.util.Arrays;
+import java.util.Collection;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.Util;
 
-/**
- * Value object representing data needed to create a user in database.
- */
 public class DbUser {
-  public final String name;
-  public final String email;
-  public final boolean admin;
+  private final UserName userName;
+  private final UserEmail userEmail;
+  private final Role userRole;
+
+  @VisibleForTesting
+  static final Collection<String> forbiddenNameParts =
+      Arrays.asList(InGameLobbyWatcher.LOBBY_WATCHER_NAME, "admin");
 
   public enum Role {
     NOT_ADMIN, ADMIN
   }
 
+  /** Value object with validation methods. */
   public static class UserName {
-    public final String value;
+    public final String userName;
 
-    public UserName(String name) {
-      this.value = name;
+    public UserName(String userName) {
+      this.userName = userName;
+    }
+
+    String validate() {
+      if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
+        return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
+      }
+      if (userName.toLowerCase().contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME.toLowerCase())) {
+        return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
+      }
+      if (userName.toLowerCase().contains("admin")) {
+        return "Name can't contain the word admin";
+      }
+      return null;
     }
   }
 
-  public static class UserEmail {
-    public final String value;
 
-    public UserEmail(String email) {
-      this.value = email;
+
+  public static class UserEmail {
+    public final String userEmail;
+
+    public UserEmail(String userEmail) {
+      this.userEmail = userEmail;
+    }
+
+    String validate() {
+      if (userEmail == null || userEmail.isEmpty() || !Util.isMailValid(userEmail)) {
+        return "Invalid email address";
+      }
+      return null;
     }
   }
 
@@ -41,33 +68,43 @@ public class DbUser {
   }
 
 
+  public String getName() {
+    return userName.userName;
+  }
+
+  public String getEmail() {
+    return userEmail.userEmail;
+  }
+
+  public boolean isAdmin() {
+    return userRole == Role.ADMIN;
+  }
+
   /**
    * An all-args constructor.
    */
   public DbUser(UserName name, UserEmail email, Role role) {
-    this.name = name.value;
-    this.email = email.value;
-    this.admin = (role == Role.ADMIN);
+    this.userName = name;
+    this.userEmail = email;
+    this.userRole = role;
   }
 
   public boolean isValid() {
     return getValidationErrorMessage() == null;
   }
 
-  /**
-   * Returns an error message String if there are validation errors.
-   * Otherwise returns null.
-   */
-  public String getValidationErrorMessage() {
-    if (email == null || email.isEmpty() || !Util.isMailValid(email)) {
-      return "Invalid email address";
-    }
-
-    return userNameValidation(name);
+  public static boolean isValidUserName(String userName) {
+    return new UserName(userName).validate() == null;
   }
 
-  public static boolean isValidUserName(String userName) {
-    return userNameValidation(userName) != null;
+  /**
+   * Returns an error message String if there are validation errors, otherwise null.
+   */
+  public String getValidationErrorMessage() {
+    if (userName.validate() == null && userEmail.validate() == null) {
+      return null;
+    }
+    return userName.validate() + " " + userEmail.validate();
   }
 
   /**
@@ -84,30 +121,14 @@ public class DbUser {
    * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
    */
   public static String getUserNameValidationErrorMessage(String userName) {
-    Preconditions.checkState(!isValidUserName(userName));
-    return userNameValidation(userName);
+    return new UserName(userName).validate();
   }
 
-  private static String userNameValidation(String userName) {
-
-    // is this a valid user?
-    if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
-      return "Usernames must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
-    }
-    if (userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
-      return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
-    }
-    if (userName.toLowerCase().contains("admin")) {
-      return "Username can't contain the word admin";
-    }
-    return null;
-  }
 
   @Override
   public String toString() {
-    return "name: " + name
-        + ", email: " + email
-        + ", admin? " + admin;
+    return "name: " + userName.userName
+        + ", email: " + userEmail.userEmail
+        + ", role: " + userRole;
   }
-
 }

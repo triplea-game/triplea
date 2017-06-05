@@ -299,7 +299,7 @@ public class ModeratorController extends AbstractModeratorController {
   public boolean isPlayerAdmin(final INode node) {
     final String name = getRealName(node);
     final DbUser user = new DbUserController().getUserByName(name);
-    return user != null && user.admin;
+    return user != null && user.isAdmin();
   }
 
   @Override
