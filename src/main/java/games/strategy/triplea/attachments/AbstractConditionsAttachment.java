@@ -167,7 +167,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions.
    */
   @Override
-  public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
+  public boolean isSatisfied(
+      final HashMap<ICondition, Boolean> testedConditions,
+      final IDelegateBridge delegateBridge) {
     if (testedConditions == null) {
       throw new IllegalStateException("testedCondititions cannot be null");
     }
