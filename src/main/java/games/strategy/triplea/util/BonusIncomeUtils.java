@@ -8,14 +8,14 @@ import games.strategy.triplea.Properties;
 import games.strategy.util.IntegerMap;
 
 
-public class AiBonusIncomeUtils {
+public class BonusIncomeUtils {
 
   /**
    * Add AI bonus income based on the player's set percentage for all resources.
    * 
    * @return string that summarizes all the changes
    */
-  public static String addAiBonusIncome(final IntegerMap<Resource> income, final IDelegateBridge bridge,
+  public static String addBonusIncome(final IntegerMap<Resource> income, final IDelegateBridge bridge,
       final PlayerID player) {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
