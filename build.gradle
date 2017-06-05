@@ -34,24 +34,6 @@ tasks.withType(JavaCompile) {
     options.incremental = true
 }
 
-check {
-    dependsOn 'validateYamls'
-}
-
-checkstyle {
-    toolVersion = "7.6.1"
-}
-
-checkstyleMain {
-    maxWarnings = checkstyleMainMaxWarnings.toInteger()
-    source sourceSets.main.output.resourcesDir
-}
-
-checkstyleTest {
-    maxWarnings = checkstyleTestMaxWarnings.toInteger()
-    source sourceSets.test.output.resourcesDir
-}
-
 jar {
     manifest {
         attributes 'Main-Class': mainClassName, 'TripleA-Version': version
@@ -118,9 +100,6 @@ task integTest(type: Test) {
 
     mustRunAfter tasks.test
 }
-
-check.dependsOn integTest
-
 
 def assetsDirectory = file("${buildDir}/assets")
 git {
@@ -222,4 +201,27 @@ gradle.taskGraph.whenReady { graph ->
             it.project.install4j.installDir = file(project.install4jHomeDir)
         }
     })
+}
+
+check {
+    dependsOn 'integTest', 'validateYamls'
+}
+
+checkstyle {
+    toolVersion = "7.6.1"
+}
+
+checkstyleIntegTest {
+    maxWarnings = checkstyleIntegTestMaxWarnings.toInteger()
+    source sourceSets.integTest.output.resourcesDir
+}
+
+checkstyleMain {
+    maxWarnings = checkstyleMainMaxWarnings.toInteger()
+    source sourceSets.main.output.resourcesDir
+}
+
+checkstyleTest {
+    maxWarnings = checkstyleTestMaxWarnings.toInteger()
+    source sourceSets.test.output.resourcesDir
 }
