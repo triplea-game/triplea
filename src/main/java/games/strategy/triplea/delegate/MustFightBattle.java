@@ -837,13 +837,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits,
             false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null),
             m_data) > 0) {
-          final List<Unit> sortedDefendingUnits = new ArrayList<>(Match.getMatches(m_defendingUnits, unitList));
+          final Match<Unit> unitList2 = Matches.UnitCanBeInBattle(false, !m_battleSite.isWater(), 1, false, true, true);
+          final List<Unit> sortedDefendingUnits = new ArrayList<>(Match.getMatches(m_defendingUnits, unitList2));
           Collections.sort(sortedDefendingUnits, new UnitBattleComparator(false,
               BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
               TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
           Collections.reverse(sortedDefendingUnits);
           if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits,
-              m_defendingUnits, false, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite),
+              m_defendingUnits, true, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite),
               false, null), m_data) == 0) {
             remove(m_defendingUnits, bridge, m_battleSite, true);
           }
