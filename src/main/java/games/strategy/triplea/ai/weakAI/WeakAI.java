@@ -809,8 +809,8 @@ public class WeakAI extends AbstractAI {
       defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount();
     }
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int totPu = player.getResources().getQuantity(PUs);
-    int leftToSpend = totPu;
+    final int totalPu = player.getResources().getQuantity(PUs);
+    int leftToSpend = totalPu;
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
@@ -863,7 +863,7 @@ public class WeakAI extends AbstractAI {
       //
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
       // place all our units here
-      int maxUnits = (totPu - 1) / minimumUnitPrice;
+      int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
