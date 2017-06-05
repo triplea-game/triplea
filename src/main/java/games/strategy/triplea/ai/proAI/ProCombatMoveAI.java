@@ -629,7 +629,7 @@ class ProCombatMoveAI {
         }
 
         // Determine counter attack results for each transport territory
-        double totalEnemyTuvSwing = 0.0;
+        double enemyTuvSwing = 0.0;
         for (final Territory unloadTerritory : territoryTransportAndBombardMap.keySet()) {
           if (enemyAttackOptions.getMax(unloadTerritory) != null) {
             final List<Unit> enemyAttackers = enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
@@ -646,7 +646,7 @@ class ProCombatMoveAI {
                 territoryTransportAndBombardMap.get(unloadTerritory), new HashSet<>());
             final double minTuvSwing = Math.min(result.getTUVSwing(), minResult.getTUVSwing());
             if (minTuvSwing > 0) {
-              totalEnemyTuvSwing += minTuvSwing;
+              enemyTuvSwing += minTuvSwing;
             }
             ProLogger.trace(unloadTerritory + ", EnemyAttackers=" + enemyAttackers.size() + ", MaxDefenders="
                 + defenders.size() + ", MaxEnemyTUVSwing=" + result.getTUVSwing() + ", MinDefenders="
@@ -670,15 +670,15 @@ class ProCombatMoveAI {
           }
         }
         final double attackValue = result.getTUVSwing() + production * (1 + 3 * isEnemyCapital);
-        if (!patd.isStrafing() && (0.75 * totalEnemyTuvSwing) > attackValue) {
-          ProLogger.debug("Removing amphib territory: " + patd.getTerritory() + ", totalEnemyTUVSwing="
-              + totalEnemyTuvSwing + ", attackValue=" + attackValue);
+        if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
+          ProLogger.debug("Removing amphib territory: " + patd.getTerritory() + ", enemyTUVSwing="
+              + enemyTuvSwing + ", attackValue=" + attackValue);
           attackMap.get(t).getUnits().clear();
           attackMap.get(t).getAmphibAttackMap().clear();
           attackMap.get(t).getBombardTerritoryMap().clear();
         } else {
-          ProLogger.debug("Keeping amphib territory: " + patd.getTerritory() + ", totalEnemyTUVSwing="
-              + totalEnemyTuvSwing + ", attackValue=" + attackValue);
+          ProLogger.debug("Keeping amphib territory: " + patd.getTerritory() + ", enemyTUVSwing="
+              + enemyTuvSwing + ", attackValue=" + attackValue);
         }
       }
     }
