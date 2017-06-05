@@ -21,30 +21,20 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
   protected TripleAFrame m_frame;
   protected ForumPosterComponent m_forumPosterComponent;
 
-  public AbstractForumPosterPanel(final GameData data, final MapPanel map) {
+  AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     m_actionLabel = new JLabel();
   }
 
   private int getRound() {
-    int round = 0;
     final Object[] pathFromRoot = getData().getHistory().getLastNode().getPath();
-    final Object[] arr$ = pathFromRoot;
-    final int len$ = arr$.length;
-    int i$ = 0;
-    do {
-      if (i$ >= len$) {
-        break;
-      }
-      final Object pathNode = arr$[i$];
+    for (final Object pathNode : pathFromRoot) {
       final HistoryNode curNode = (HistoryNode) pathNode;
       if (curNode instanceof Round) {
-        round = ((Round) curNode).getRoundNo();
-        break;
+        return ((Round) curNode).getRoundNo();
       }
-      i$++;
-    } while (true);
-    return round;
+    }
+    return 0;
   }
 
   @Override
