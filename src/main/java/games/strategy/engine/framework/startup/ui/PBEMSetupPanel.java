@@ -455,9 +455,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final JLabel allianceLabel = new JLabel("Alliance");
     m_localPlayerPanel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    final JLabel bonusLabel = new JLabel("Bonus Income Percentage");
+    final JLabel bonusLabel = new JLabel("Income");
     m_localPlayerPanel.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+        GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
