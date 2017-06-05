@@ -217,7 +217,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return true;
   }
 
-  private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
+  private int rollWarBonds(final IDelegateBridge delegateBridge, final PlayerID player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -225,7 +225,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
     DiceRoll dice;
-    dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
@@ -234,7 +234,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return total;
   }
 
-  private String rollWarBondsForFriends(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
+  private String rollWarBondsForFriends(final IDelegateBridge delegateBridge, final PlayerID player,
+      final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -271,7 +272,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final String annotation =
         player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
-    final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    final DiceRoll dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int totalWarBonds = 0;
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
@@ -282,9 +283,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds)
             + " from War Bonds, giving the total to " + giveWarBondsTo.getName() + ", who ends with "
             + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
-    aBridge.getHistoryWriter().startEvent(transcriptText);
+    delegateBridge.getHistoryWriter().startEvent(transcriptText);
     final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
-    aBridge.addChange(change);
+    delegateBridge.addChange(change);
     getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
     return transcriptText + "<br />";
   }
