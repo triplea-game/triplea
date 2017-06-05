@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Strings;
@@ -210,8 +211,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       new DbUserController().createUser(user, password);
       return null;
     } catch (final IllegalStateException ise) {
-      s_logger.severe("Error creating user: " + user + ", err: " + ise.getMessage());
-      ise.printStackTrace();
+      s_logger.log(Level.SEVERE, "Error creating user: " + user + ", err: " + ise.getMessage(), ise);
       return ise.getMessage();
     }
   }
