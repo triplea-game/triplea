@@ -17,15 +17,21 @@ import games.strategy.util.Util;
 public class DbUserControllerIntegrationTest {
 
 
-  @Test
-  public void testCreate() throws Exception {
-    DbUser user = createUser();
-    int startCount = getUserCount(Database::getDerbyConnection);
 
-    final DbUserController controller = new DbUserController();
+  @Test
+  public void create() throws Exception {
+    testCreate(Database::getDerbyConnection, new DbUserController());
+    testCreate(Database::getPostgresConnection, new DbUserController(new DerbyUserController(
+        UserDaoPrimarySecondary.Role.PRIMARY, Database::getPostgresConnection)));
+  }
+
+  private void testCreate(Supplier<Connection> connectionSupplier, DbUserController controller) throws Exception {
+    DbUser user = createUser();
+    int startCount = getUserCount(connectionSupplier);
+
     controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
-    int endCount = getUserCount(Database::getDerbyConnection);
+    int endCount = getUserCount(connectionSupplier);
     assertEquals(endCount, startCount + 1);
     assertTrue(controller.doesUserExist(user.getName()));
   }
