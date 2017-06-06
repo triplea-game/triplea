@@ -28,7 +28,6 @@ deleteExistingTag() {
   ## sed is to mask out access token in case the https url is printed 
   git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --delete "refs/tags/$TAGGED_VERSION" \
      | sed 's|https://.*github|https://[secure]@github|'
-  git tag -d "$TAGGED_VERSION"
 
   echo "Done doing tag deletes, ignore any errors immediately above if there are any for failing to delete non-existent tags"
 } 
@@ -37,7 +36,7 @@ deleteExistingTag() {
 
 createTag() {
   echo -n "Tagging current branch .. "
-  git tag "$TAGGED_VERSION" -a -m "$TAGGED_VERSION"
+  git tag "$TAGGED_VERSION" -a -f -m "$TAGGED_VERSION"
   result=$?
   if [ "$result" == 0 ]; then
     echo "Success - created tag: $TAGGED_VERSION"
