@@ -21,8 +21,6 @@ public class DbUserControllerIntegrationTest {
   @Test
   public void create() throws Exception {
     testCreate(Database::getDerbyConnection, new DbUserController());
-    testCreate(Database::getPostgresConnection, new DbUserController(new DerbyUserController(
-        UserDaoPrimarySecondary.Role.PRIMARY, Database::getPostgresConnection)));
   }
 
   private void testCreate(Supplier<Connection> connectionSupplier, DbUserController controller) throws Exception {
