@@ -68,7 +68,7 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
+    } else if (player.isDefaultAi() || player.isNonPlayable()) {
       // the 4th in the list should be Pro AI (Hard AI)
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
     }

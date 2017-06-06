@@ -463,7 +463,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
           new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, parent, data.getProperties());
       m_playerTypes.add(selector);
-      selector.layout(++gridy, m_localPlayerPanel);
+      if (!player.isNonPlayable()) {
+        selector.layout(++gridy, m_localPlayerPanel);
+      }
     }
     m_localPlayerPanel.validate();
     m_localPlayerPanel.invalidate();
