@@ -42,7 +42,6 @@ import games.strategy.util.TimeManager;
 public class HeadlessGameServer {
 
   static final Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
-  static HeadlessGameServerConsole s_console = null;
   private static HeadlessGameServer s_instance = null;
   private final AvailableGames m_availableGames;
   private final GameSelectorModel m_gameSelectorModel;
@@ -389,7 +388,7 @@ public class HeadlessGameServer {
     }
     s_instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      System.out.println("Running ShutdownHook.");
+      s_logger.info("Running ShutdownHook.");
       shutdown();
     }));
     m_availableGames = new AvailableGames();
@@ -509,7 +508,6 @@ public class HeadlessGameServer {
 
   synchronized void shutdown() {
     m_shutDown = true;
-    printThreadDumpsAndStatus();
     try {
       if (m_lobbyWatcherResetupThread != null) {
         m_lobbyWatcherResetupThread.shutdown();
@@ -527,10 +525,7 @@ public class HeadlessGameServer {
     try {
       if (m_setupPanelModel != null) {
         final ISetupPanel setup = m_setupPanelModel.getPanel();
-        if (setup != null && setup instanceof ServerSetupPanel) {
-          // this is causing a deadlock when in a shutdown hook, due to swing/awt
-          // ((ServerSetupPanel) setup).shutDown();
-        } else if (setup != null && setup instanceof HeadlessServerSetup) {
+        if (setup != null && setup instanceof HeadlessServerSetup) {
           setup.shutDown();
         }
       }
