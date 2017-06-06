@@ -1733,7 +1733,7 @@ public class TripleAFrame extends MainGameFrame {
         data.acquireReadLock();
         // m_data.acquireWriteLock();
         try {
-          final File f = TripleAMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
+          final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
           if (f != null) {
             try (FileOutputStream fout = new FileOutputStream(f)) {
               final GameData datacopy = GameDataUtils.cloneGameData(data, true);

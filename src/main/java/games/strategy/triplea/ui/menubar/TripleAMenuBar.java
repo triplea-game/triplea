@@ -94,9 +94,14 @@ public class TripleAMenuBar extends JMenuBar {
     lobby.add(new RemoveGameFromLobbyAction(watcher));
   }
 
-
-  public static File getSaveGameLocationDialog(final Frame frame) {
-
+  /**
+   * Displays a file chooser dialog for the user to select the file to which the current game should be saved.
+   *
+   * @param frame The owner of the file chooser dialog; may be {@code null}.
+   *
+   * @return The file to which the current game should be saved or {@code null} if the user cancelled the operation.
+   */
+  public static File getSaveGameLocation(final Frame frame) {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
