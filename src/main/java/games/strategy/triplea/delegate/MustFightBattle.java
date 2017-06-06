@@ -1416,7 +1416,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (availableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
       return;
     }
+
+    // If attacker then add all owned units at battle site as some might have been removed from battle (infra)
     Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+    if (!defender) {
+      units = new HashSet<Unit>(units);
+      units.addAll(m_battleSite.getUnits().getMatches(Matches.unitIsOwnedBy(m_attacker)));
+    }
     if (subs) {
       units = Match.getMatches(units, Matches.UnitIsSub);
     } else if (planes) {
