@@ -25,6 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
@@ -134,7 +135,7 @@ public class GameSelectorModelTest {
     testObj.load((GameData) null, ".xml");
     assertThat(testObj.isSavedGame(), is(false));
 
-    testObj.load((GameData) null, "file.tsvg");
+    testObj.load((GameData) null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
   }
 

@@ -23,6 +23,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
@@ -370,13 +371,11 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private void saveAndEndGame(final INode node) {
-    final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
     SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = m_headless
         ? new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
-        : new File(ClientContext.folderSettings().getSaveGamePath(),
-            "connection_lost_on_" + format.format(new Date()) + ".tsvg");
+        : new File(ClientContext.folderSettings().getSaveGamePath(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {
@@ -398,6 +397,12 @@ public class ServerLauncher extends AbstractLauncher {
     } else {
       System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
     }
+  }
+
+  private static String getConnectionLostFileName() {
+    final DateFormat dateFormat = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
+    final String baseFileName = "connection_lost_on_" + dateFormat.format(new Date());
+    return GameDataFileUtils.addExtension(baseFileName);
   }
 }
 

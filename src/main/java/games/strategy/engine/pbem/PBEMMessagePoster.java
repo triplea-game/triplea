@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.MainGameFrame;
@@ -109,8 +110,8 @@ public class PBEMMessagePoster implements Serializable {
       saveGameSb.append(m_forumPoster.getTopicId()).append("_");
     }
     saveGameSb.append(m_currentPlayer.getName().substring(0, Math.min(3, m_currentPlayer.getName().length() - 1)))
-        .append(m_roundNumber).append(".tsvg");
-    final String saveGameName = saveGameSb.toString();
+        .append(m_roundNumber);
+    final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     if (m_forumPoster != null) {
       if (includeSaveGame) {
         m_forumPoster.addSaveGame(m_saveGameFile, saveGameName);
@@ -257,7 +258,7 @@ public class PBEMMessagePoster implements Serializable {
           postingDelegate.setHasPostedTurnSummary(true);
         }
         try {
-          saveGameFile = File.createTempFile("triplea", ".tsvg");
+          saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
           if (saveGameFile != null) {
             mainGameFrame.getGame().saveGame(saveGameFile);
             posterPbem.setSaveGame(saveGameFile);

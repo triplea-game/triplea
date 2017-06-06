@@ -53,6 +53,7 @@ import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -102,27 +103,18 @@ public class TripleAMenuBar extends JMenuBar {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-
-
       fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
-      fileDialog.setFilenameFilter((dir, name) -> {
-        // the extension should be .tsvg, but find svg extensions as well
-        return name.endsWith(".tsvg") || name.endsWith(".svg");
-      });
+      fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
-      String fileName = fileDialog.getFile();
-      final String dirName = fileDialog.getDirectory();
+
+      final String fileName = fileDialog.getFile();
       if (fileName == null) {
         return null;
-      } else {
-        if (!fileName.endsWith(".tsvg")) {
-          fileName += ".tsvg";
-        }
-        // If the user selects a filename that already exists,
-        // the AWT Dialog on Mac OS X will ask the user for confirmation
-        final File f = new File(dirName, fileName);
-        return f;
       }
+
+      // If the user selects a filename that already exists,
+      // the AWT Dialog on Mac OS X will ask the user for confirmation
+      return new File(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
     } else { // Non-Mac platforms should use the normal Swing JFileChooser
       final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
       final int rVal = fileChooser.showSaveDialog(frame);
@@ -140,9 +132,7 @@ public class TripleAMenuBar extends JMenuBar {
           return null;
         }
       }
-      if (!f.getName().toLowerCase().endsWith(".tsvg")) {
-        f = new File(f.getParent(), f.getName() + ".tsvg");
-      }
+      f = new File(f.getParent(), GameDataFileUtils.addExtensionIfAbsent(f.getName()));
       // A small warning so users will not over-write a file
       if (f.exists()) {
         final int choice =
