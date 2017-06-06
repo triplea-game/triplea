@@ -28,7 +28,7 @@ public class UnitCollectionTest {
   private UnitType unitTypeOne;
   private UnitType unitTypeTwo;
   @Mock
-  private final PlayerID defaultPlayerId = Mockito.spy(new PlayerID("Default Player", true, false, null));
+  private final PlayerID defaultPlayerId = Mockito.spy(new PlayerID("Default Player", true, false, false, false, null));
   @Mock
   private PlayerID otherPlayerId;
   private UnitCollection unitCollection;
