@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -44,7 +43,6 @@ import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
@@ -115,64 +113,6 @@ public class GameRunner {
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
 
 
-  private static void usage(GameMode gameMode) {
-    if (gameMode == GameMode.HEADLESS_BOT) {
-      System.out.println("\nUsage and Valid Arguments:\n"
-          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-          + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
-          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
-          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
-          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
-          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-          + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
-          + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-          + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
-          + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-          + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
-          + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
-          + "   " + MAP_FOLDER + "=mapFolder"
-          + "\n"
-          + "   You must start the Name and HostedBy with \"Bot\".\n"
-          + "   Game Comments must have this string in it: \"automated_host\".\n"
-          + "   You must include a support email for your host, so that you can be alerted by lobby admins when your "
-          + "host has an error."
-          + " (For example they may email you when your host is down and needs to be restarted.)\n"
-          + "   Support password is a remote access password that will allow lobby admins to remotely take the "
-          + "following actions: ban player, stop game, shutdown server."
-          + " (Please email this password to one of the lobby moderators, or private message an admin on the "
-          + "TripleaWarClub.org website forum.)\n");
-
-    } else {
-      System.out.println("Arguments\n"
-          + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-          + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
-          + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n"
-          + "   " + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n"
-          + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-          + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
-          + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
-          + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-          + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-          + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-          + "   " + HttpProxy.PROXY_HOST + "=<Proxy_Host>\n"
-          + "   " + HttpProxy.PROXY_PORT + "=<Proxy_Port>\n"
-          + "   " + Memory.TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
-          + "\n"
-          + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
-          + "taken as the name of the file to load.\n" + "\n" + "Example\n"
-          + "   to start a game using the given file:\n"
-          + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n" + "   or\n" + "\n"
-          + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n" + "   to connect to a remote host:\n" + "\n"
-          + "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
-          + "   to start a server with the given game\n" + "\n"
-          + "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan"
-          + "\n"
-          + "   to start a server, you can optionally password protect the game using triplea.server.password=foo");
-    }
-  }
 
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
@@ -185,7 +125,59 @@ public class GameRunner {
     HttpProxy.setupProxies();
     new Thread(GameRunner::checkLocalSystem).start();
     new Thread(() -> checkForUpdates()).start();
-    handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT);
+    if(!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT)) {
+      usage();
+      return;
+    }
+
+    final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
+    if (version != null && version.length() > 0) {
+      final Version testVersion;
+      try {
+        testVersion = new Version(version);
+        // if successful we don't do anything
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
+        if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
+          System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
+        }
+      } catch (final Exception e) {
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+      }
+    } else {
+      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+    }
+  }
+
+  private static void usage() {
+    System.out.println("\nUsage and Valid Arguments:\n"
+        + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+        + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
+        + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+        + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+        + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+        + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
+        + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+        + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+        + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+        + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+        + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
+        + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+        + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
+        + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
+        + "   " + MAP_FOLDER + "=mapFolder"
+        + "\n"
+        + "   You must start the Name and HostedBy with \"Bot\".\n"
+        + "   Game Comments must have this string in it: \"automated_host\".\n"
+        + "   You must include a support email for your host, so that you can be alerted by lobby admins when your "
+        + "host has an error."
+        + " (For example they may email you when your host is down and needs to be restarted.)\n"
+        + "   Support password is a remote access password that will allow lobby admins to remotely take the "
+        + "following actions: ban player, stop game, shutdown server."
+        + " (Please email this password to one of the lobby moderators, or private message an admin on the "
+        + "TripleaWarClub.org website forum.)\n");
   }
 
   private static void showMainFrame() {
@@ -208,155 +200,7 @@ public class GameRunner {
     }
   }
 
-  /**
-   * Move command line arguments to System.properties
-   */
-  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
-    if (args.length == 1 && !args[0].contains("=")) {
-      // assume a default single arg, convert the format so we can process as normally.
-      args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
-    }
 
-    boolean usagePrinted = false;
-    for (final String arg : args) {
-      String key;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        key = arg.substring(0, indexOf);
-      } else {
-        throw new IllegalArgumentException("Argument " + arg + " doesn't match pattern 'key=value'");
-      }
-      if (!setSystemProperty(key, getValue(arg), availableProperties)) {
-        System.out.println("Unrecogized:" + arg);
-        if (!usagePrinted) {
-          usagePrinted = true;
-          usage(gameMode);
-        }
-      }
-    }
-
-    if (gameMode == GameMode.HEADLESS_BOT) {
-      System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
-
-      boolean printUsage = false;
-      final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
-      final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
-      if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
-          || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_NAME_PROPERTY + " and " + GameRunner.LOBBY_GAME_HOSTED_BY
-                + " must start with \"Bot\" and be at least 7 characters long and be the same.");
-        printUsage = true;
-      }
-
-      final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
-      if (!comments.contains("automated_host")) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
-        printUsage = true;
-      }
-
-      final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
-      if (email.length() < 3 || !Util.isMailValid(email)) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
-        printUsage = true;
-      }
-
-      final String reconnection =
-          System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-      try {
-        final int reconnect = Integer.parseInt(reconnection);
-        if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
-          System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
-              + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-              + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-              + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
-          printUsage = true;
-        }
-      } catch (final NumberFormatException e) {
-        System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
-            + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-            + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-            + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
-        printUsage = true;
-      }
-      // no passwords allowed for bots
-      // take any actions or commit to preferences
-      final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
-      final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
-      if (clientWait.length() > 0) {
-        try {
-          final int wait = Integer.parseInt(clientWait);
-          GameRunner.setServerStartGameSyncWaitTime(wait);
-        } catch (final NumberFormatException e) {
-          System.out.println(
-              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-          printUsage = true;
-        }
-      }
-      if (observerWait.length() > 0) {
-        try {
-          final int wait = Integer.parseInt(observerWait);
-          GameRunner.setServerObserverJoinWaitTime(wait);
-        } catch (final NumberFormatException e) {
-          System.out.println(
-              "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-          printUsage = true;
-        }
-      }
-
-      if (printUsage || usagePrinted) {
-        usage(gameMode);
-        System.exit(-1);
-      }
-
-    } else {
-
-
-      final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
-      if (version != null && version.length() > 0) {
-        final Version testVersion;
-        try {
-          testVersion = new Version(version);
-          // if successful we don't do anything
-          System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-          if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
-            System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
-          }
-        } catch (final Exception e) {
-          System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-          System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
-        }
-      } else {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
-      }
-    }
-  }
-
-  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
-    for (final String property : availableProperties) {
-      if (key.equals(property)) {
-        if (property.equals(MAP_FOLDER)) {
-          SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
-        } else {
-          System.getProperties().setProperty(property, value);
-        }
-        System.out.println(property + ":" + value);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
-  }
 
   private static void setupLogging(GameMode gameMode) {
     if (gameMode == GameMode.SWING_CLIENT) {
