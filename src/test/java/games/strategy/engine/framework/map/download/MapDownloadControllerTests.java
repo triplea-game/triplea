@@ -29,7 +29,7 @@ import games.strategy.util.Version;
 @RunWith(Enclosed.class)
 public final class MapDownloadControllerTests {
   @RunWith(MockitoJUnitRunner.class)
-  public static final class GetOutOfDateMapNames {
+  public static final class GetOutOfDateMapNamesTest {
     private static final String MAP_NAME = "myMap";
 
     private static final File MAP_ZIP_FILE_1 = new File("file1.zip");
@@ -130,7 +130,7 @@ public final class MapDownloadControllerTests {
   }
 
   @RunWith(MockitoJUnitRunner.class)
-  public static final class PreventPromptToDownloadTutorialMap {
+  public static final class PreventPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
 
@@ -147,7 +147,7 @@ public final class MapDownloadControllerTests {
   }
 
   @RunWith(MockitoJUnitRunner.class)
-  public static final class ShouldPromptToDownloadTutorialMap {
+  public static final class ShouldPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
 
