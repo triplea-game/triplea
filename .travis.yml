@@ -4,8 +4,11 @@ jdk:
 addons:
   apt:
     packages:
+      # python for map file splitter
       - python3
       - python3-yaml
+      # cowsay output formatter, for better readability
+      - cowsay
 install: true
 after_success: ./.travis/update_checkstyle_thresholds
 before_deploy:

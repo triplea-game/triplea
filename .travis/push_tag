@@ -52,8 +52,6 @@ pushTag() {
 
   git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
   result=$?
-  # install cowsay result formatter, for better readability
-  sudo aptitude -y install cowsay
 
   if [ "$result" == 0 ]; then
     echo "Successfully pushed tag $TAGGED_VERSION to github!" | cowsay
