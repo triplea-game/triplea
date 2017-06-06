@@ -17,7 +17,6 @@ import java.util.Observer;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -249,27 +248,5 @@ public class GameSelectorModelTest {
   public void testGetGameVersion() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameVersion(), is(fakeGameVersion));
-  }
-
-  @Ignore
-  @Test
-  public void testLoadFromInputStream() {
-    // testObj.load(InputStream, string fileName);
-    // TODO
-  }
-
-
-  @Ignore
-  @Test
-  public void testLoadFromFile() {
-    // testObj.load(File, Component);
-    // TODO
-  }
-
-  @Ignore
-  @Test
-  public void testLoadDefaultGame() {
-    // testObj.loadDefaultGame(Component);
-    // TODO
   }
 }

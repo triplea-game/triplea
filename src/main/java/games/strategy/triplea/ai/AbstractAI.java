@@ -124,7 +124,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
@@ -188,7 +188,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
     return null;
   }
@@ -609,26 +609,25 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        int MAX_WAR_ACTIONS_PER_TURN =
-            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
-        if ((MAX_WAR_ACTIONS_PER_TURN > 0)
+        int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        if ((maxWarActionsPerTurn > 0)
             && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
                 / numPlayers < 0.4) {
           if (Math.random() < .9) {
-            MAX_WAR_ACTIONS_PER_TURN = 0;
+            maxWarActionsPerTurn = 0;
           } else {
-            MAX_WAR_ACTIONS_PER_TURN = 1;
+            maxWarActionsPerTurn = 1;
           }
         }
         final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
-        while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0) {
+        while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
           if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }
           i++;
-          if (i > MAX_WAR_ACTIONS_PER_TURN) {
+          if (i > maxWarActionsPerTurn) {
             break;
           }
           iPoliticsDelegate.attemptAction(action);
@@ -642,10 +641,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        final int MAX_OTHER_ACTIONS_PER_TURN =
+        final int maxOtherActionsPerTurn =
             (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
+        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
@@ -655,7 +654,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             continue;
           }
           i++;
-          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
+          if (i > maxOtherActionsPerTurn) {
             break;
           }
           iPoliticsDelegate.attemptAction(action);

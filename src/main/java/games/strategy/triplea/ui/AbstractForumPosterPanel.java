@@ -15,11 +15,11 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
 public abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
-  protected JLabel m_actionLabel;
+  private JLabel m_actionLabel;
   protected IPlayerBridge m_bridge;
-  protected PBEMMessagePoster m_poster;
-  protected TripleAFrame m_frame;
-  protected ForumPosterComponent m_forumPosterComponent;
+  PBEMMessagePoster m_poster;
+  private TripleAFrame m_frame;
+  ForumPosterComponent m_forumPosterComponent;
 
   AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);

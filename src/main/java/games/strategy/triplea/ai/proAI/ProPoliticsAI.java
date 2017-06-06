@@ -144,10 +144,10 @@ class ProPoliticsAI {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         final double random = Math.random();
-        final int MAX_OTHER_ACTIONS_PER_TURN =
+        final int maxOtherActionsPerTurn =
             (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
+        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
@@ -157,7 +157,7 @@ class ProPoliticsAI {
             continue;
           }
           i++;
-          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
+          if (i > maxOtherActionsPerTurn) {
             break;
           }
           results.add(action);

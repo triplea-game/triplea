@@ -716,10 +716,10 @@ class ProPurchaseAI {
       final boolean enemyCanBomb =
           Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
       final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
-      final boolean hasAABombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly);
+      final boolean hasAntiAirBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly);
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed
-          + ", hasAABombingDefense=" + hasAABombingDefense);
-      if (!enemyCanBomb || !territoryCanBeBombed || hasAABombingDefense) {
+          + ", hasAABombingDefense=" + hasAntiAirBombingDefense);
+      if (!enemyCanBomb || !territoryCanBeBombed || hasAntiAirBombingDefense) {
         continue;
       }
 
@@ -733,27 +733,28 @@ class ProPurchaseAI {
       }
 
       // Determine most cost efficient units that can be produced in this territory
-      ProPurchaseOption bestAAOption = null;
+      ProPurchaseOption bestAntiAirOption = null;
       int minCost = Integer.MAX_VALUE;
       for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-        final boolean isAAForBombing = Matches.UnitTypeIsAAforBombingThisUnitOnly.match(ppo.getUnitType());
-        if (isAAForBombing && ppo.getCost() < minCost
+        final boolean isAntiAirForBombing = Matches.UnitTypeIsAAforBombingThisUnitOnly.match(ppo.getUnitType());
+        if (isAntiAirForBombing && ppo.getCost() < minCost
             && !Matches.UnitTypeConsumesUnitsOnCreation.match(ppo.getUnitType())) {
-          bestAAOption = ppo;
+          bestAntiAirOption = ppo;
           minCost = ppo.getCost();
         }
       }
 
       // Check if there aren't any available units
-      if (bestAAOption == null) {
+      if (bestAntiAirOption == null) {
         continue;
       }
-      ProLogger.trace("Best AA unit: " + bestAAOption.getUnitType().getName());
+      ProLogger.trace("Best AA unit: " + bestAntiAirOption.getUnitType().getName());
 
       // Create new temp units
-      resourceTracker.purchase(bestAAOption);
-      remainingUnitProduction -= bestAAOption.getQuantity();
-      final List<Unit> unitsToPlace = bestAAOption.getUnitType().create(bestAAOption.getQuantity(), player, true);
+      resourceTracker.purchase(bestAntiAirOption);
+      remainingUnitProduction -= bestAntiAirOption.getQuantity();
+      final List<Unit> unitsToPlace =
+          bestAntiAirOption.getUnitType().create(bestAntiAirOption.getQuantity(), player, true);
       placeTerritory.getPlaceUnits().addAll(unitsToPlace);
       ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
     }

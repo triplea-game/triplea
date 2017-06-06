@@ -35,8 +35,8 @@ public class ProTerritoryValueUtils {
           ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()), new ArrayList<>(), false);
 
       // Estimate TUV swing as number of casualties * cost
-      final double TUVSwing = -(strength / 8) * ProData.minCostPerHitPoint;
-      value += TUVSwing;
+      final double tuvSwing = -(strength / 8) * ProData.minCostPerHitPoint;
+      value += tuvSwing;
     }
 
     return value;

@@ -1715,7 +1715,6 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
   version: 2
-  img: http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png
   description: |
     <br>by Imbaked
     <br>
@@ -1725,7 +1724,6 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/domination_1914-weltpolitik/archive/master.zip
   version: 1
-  img: http://tripleamaps.sourceforge.net/images/TripleA_domination_1914_mini.png
   description: |
     <br>by Surtur
     <br>

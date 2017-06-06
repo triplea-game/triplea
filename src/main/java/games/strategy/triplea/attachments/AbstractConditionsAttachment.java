@@ -167,7 +167,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions.
    */
   @Override
-  public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge) {
+  public boolean isSatisfied(
+      final HashMap<ICondition, Boolean> testedConditions,
+      final IDelegateBridge delegateBridge) {
     if (testedConditions == null) {
       throw new IllegalStateException("testedCondititions cannot be null");
     }
@@ -208,14 +210,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * value.
    */
   public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
-      HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge) {
+      HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
     if (allConditionsTestedSoFar == null) {
       allConditionsTestedSoFar = new HashMap<>();
     }
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {
-        testAllConditionsRecursive(new HashSet<>(c.getConditions()), allConditionsTestedSoFar, aBridge);
-        allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
+        testAllConditionsRecursive(new HashSet<>(c.getConditions()), allConditionsTestedSoFar, delegateBridge);
+        allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, delegateBridge));
       }
     }
     return allConditionsTestedSoFar;
@@ -323,7 +325,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceDecrementOnSuccess;
   }
 
-  public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge aBridge, final boolean success,
+  public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge delegateBridge,
+      final boolean success,
       final boolean historyChild) {
     if (success) {
       if (m_chanceDecrementOnSuccess == 0) {
@@ -336,9 +339,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         return;
       }
       final String newChance = newToHit + ":" + diceSides;
-      aBridge.getHistoryWriter()
+      delegateBridge.getHistoryWriter()
           .startEvent("Success changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     } else {
       if (m_chanceIncrementOnFailure == 0) {
         return;
@@ -351,13 +354,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
       final String newChance = newToHit + ":" + diceSides;
       if (historyChild) {
-        aBridge.getHistoryWriter().addChildToEvent(
+        delegateBridge.getHistoryWriter().addChildToEvent(
             "Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
       } else {
-        aBridge.getHistoryWriter().startEvent(
+        delegateBridge.getHistoryWriter().startEvent(
             "Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
       }
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     }
   }
 
