@@ -791,7 +791,9 @@ public class GameParser {
       // boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
       final boolean isOptional = current.getAttribute("optional").equals("true");
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
-      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, data);
+      final boolean isDefaultAi = current.getAttribute("isDefaultAI").equals("true");
+      final boolean isNonPlayable = current.getAttribute("isNonPlayable").equals("true");
+      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, isDefaultAi, isNonPlayable, data);
       playerList.addPlayerID(newPlayer);
     }
   }

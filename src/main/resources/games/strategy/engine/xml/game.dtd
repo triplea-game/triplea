@@ -81,6 +81,8 @@
 		name ID #REQUIRED
 		optional (true | false) 'false'
 		canBeDisabled (true | false) 'false'
+		isDefaultAI (true | false) 'false'
+		isNonPlayable (true | false) 'false'
 	>
 	<!ELEMENT alliance EMPTY>
 
