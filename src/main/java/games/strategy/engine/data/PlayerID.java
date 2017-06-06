@@ -13,6 +13,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
   private final boolean m_optional;
   private final boolean m_canBeDisabled;
+  private final boolean isDefaultAi;
+  private final boolean isNonPlayable;
   private boolean m_isDisabled = false;
   private final UnitCollection m_unitsHeld;
   private final ResourceCollection m_resources;
@@ -23,14 +25,17 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
 
   public PlayerID(final String name, final GameData data) {
-    this(name, false, false, data);
+    this(name, false, false, false, false, data);
   }
 
   /** Creates new PlayerID. */
-  public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final GameData data) {
+  public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final boolean isDefaultAi,
+      final boolean isNonPlayable, final GameData data) {
     super(name, data);
     m_optional = optional;
     m_canBeDisabled = canBeDisabled;
+    this.isDefaultAi = isDefaultAi;
+    this.isNonPlayable = isNonPlayable;
     m_unitsHeld = new UnitCollection(this, data);
     m_resources = new ResourceCollection(data);
     m_technologyFrontiers = new TechnologyFrontierList(data);
@@ -42,6 +47,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   public boolean getCanBeDisabled() {
     return m_canBeDisabled;
+  }
+
+  public boolean isDefaultAi() {
+    return isDefaultAi;
+  }
+
+  public boolean isNonPlayable() {
+    return isNonPlayable;
   }
 
   @Override
@@ -80,15 +93,16 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     return false;
   }
 
-  public static final PlayerID NULL_PLAYERID = new PlayerID(Constants.PLAYER_NAME_NEUTRAL, true, false, null) {
-    // compatible with 0.9.0.2 saved games
-    private static final long serialVersionUID = -6596127754502509049L;
+  public static final PlayerID NULL_PLAYERID =
+      new PlayerID(Constants.PLAYER_NAME_NEUTRAL, true, false, false, false, null) {
+        // compatible with 0.9.0.2 saved games
+        private static final long serialVersionUID = -6596127754502509049L;
 
-    @Override
-    public boolean isNull() {
-      return true;
-    }
-  };
+        @Override
+        public boolean isNull() {
+          return true;
+        }
+      };
 
   @Override
   public String toString() {
