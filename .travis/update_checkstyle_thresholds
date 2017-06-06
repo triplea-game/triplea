@@ -83,8 +83,7 @@ update_remote_thresholds() {
       -X PUT \
       --header "Accept: application/vnd.github.v3+json" \
       --data "$update_request" \
-      "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES" \
-    2>&1 | sed -r 's|https://[^@]+@|https://[secure]@|'
+      "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES"
 }
 
 main

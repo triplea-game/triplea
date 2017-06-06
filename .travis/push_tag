@@ -26,8 +26,7 @@ configGithub() {
 deleteExistingTag() {
   echo "Attempting to delete tag $TAGGED_VERSION, this is so we will recreate the release if this build is being re-run."
   ## sed is to mask out access token in case the https url is printed 
-  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --delete "refs/tags/$TAGGED_VERSION" \
-     | sed 's|https://.*github|https://[secure]@github|'
+  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --delete "refs/tags/$TAGGED_VERSION"
 
   echo "Done doing tag deletes, ignore any errors immediately above if there are any for failing to delete non-existent tags"
 } 
@@ -49,7 +48,7 @@ createTag() {
 pushTag() {
   echo "Pushing tag: $TAGGED_VERSION to github to trigger releases deployment"
 
-  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
+  git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags
 }
 
 main
