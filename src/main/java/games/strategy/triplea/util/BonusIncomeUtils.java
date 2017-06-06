@@ -11,7 +11,7 @@ import games.strategy.util.IntegerMap;
 public class BonusIncomeUtils {
 
   /**
-   * Add AI bonus income based on the player's set percentage for all resources.
+   * Add bonus income based on the player's set percentage for all resources.
    * 
    * @return string that summarizes all the changes
    */
@@ -20,7 +20,7 @@ public class BonusIncomeUtils {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
       final int amount = income.getInt(resource);
-      final int incomePercent = Properties.getBonusIncomePercentage(player, bridge.getData());
+      final int incomePercent = Properties.getIncomePercentage(player, bridge.getData());
       final int bonusIncome = (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100));
       if (bonusIncome == 0) {
         continue;
