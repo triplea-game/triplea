@@ -33,7 +33,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.util.AiBonusIncomeUtils;
+import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -124,7 +124,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
       final IntegerMap<Resource> income = m_player.getResources().getResourcesCopy();
       income.subtract(leftOverResources);
-      endTurnReport.append("<br />").append(AiBonusIncomeUtils.addAiBonusIncome(income, m_bridge, m_player));
+      endTurnReport.append("<br />").append(BonusIncomeUtils.addBonusIncome(income, m_bridge, m_player));
 
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)

@@ -23,7 +23,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.util.AiBonusIncomeUtils;
+import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -169,7 +169,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initAiStartingBonusIncome(final IDelegateBridge bridge) {
     bridge.getData().getPlayerList().getPlayers().forEach(
-        player -> AiBonusIncomeUtils.addAiBonusIncome(player.getResources().getResourcesCopy(), bridge, player));
+        player -> BonusIncomeUtils.addBonusIncome(player.getResources().getResourcesCopy(), bridge, player));
   }
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge) {
