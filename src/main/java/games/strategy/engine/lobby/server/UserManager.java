@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.server;
 import java.util.logging.Logger;
 
 import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -26,8 +27,20 @@ public class UserManager implements IUserManager {
           .severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
       return "Sorry, but I can't let you do that";
     }
+
+    DbUser user = new DbUser(
+        new DbUser.UserName(userName),
+        new DbUser.UserEmail(emailAddress));
+    if (!user.isValid()) {
+      return user.getValidationErrorMessage();
+    }
+    HashedPassword password = new HashedPassword(hashedPassword);
+    if (!password.isValidSyntax()) {
+      return "Password is not hashed correctly";
+    }
+
     try {
-      new DbUserController().updateUser(userName, emailAddress, hashedPassword, false);
+      new DbUserController().updateUser(user, password);
     } catch (final IllegalStateException e) {
       return e.getMessage();
     }
@@ -44,6 +57,6 @@ public class UserManager implements IUserManager {
       s_logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return new DbUserController().getUser(userName);
+    return new DbUserController().getUserByName(userName);
   }
 }

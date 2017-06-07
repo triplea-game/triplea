@@ -8,6 +8,8 @@ addons:
       - python3
       - python3-yaml
 install: true
+services:
+- postgresql
 after_success: ./.travis/update_checkstyle_thresholds
 before_deploy:
 ## Run the travis setup, will download install4j and configure it
