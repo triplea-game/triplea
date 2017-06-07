@@ -11,39 +11,38 @@ import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 /**
- * IOC container for storing objects needed by the TripleA Swing client
- * A full blow dependency injection framework would deprecate this class.
+ * Manages the creation of objects, similar to a dependency injection framework.
+ * One instance of this class should map to one application instance (effectively a singleton).
+ * Main benefit is we get a centralized location to create objects, which lets us more easily
+ * manage common dependencies.
  *
- * <p>
- * This class roughly follows the singleton pattern. The singleton instance
- * can be updated, this is allowed to enable a mock instance of this class to
- * be used.
- * </p>
+ * single centralized place to create injected objects. This lets us
+ * deal with the dependencies of object creation in a single place.
  *
- * <p>
- * Caution: the public API of this class will grow to be fairly large. For every object we wish to return, we'll have an
- * "object()" method that will returns that same object. When things become hard to manage it'll be a good time
- * to move to an annotation or configuration based IOC framework.
- * </p>
+ * Example usage:
+ * <pre><code>
+ *   // before
+ *   public void clientCode() {
+ *     doSwingStuff();
+ *   }
  *
- * <p>
- * Second note, try to put as much class specific construction logic into the constructor of each class managed by this
- * container. This class should focus on just creating and wiring classes together. Contrast that with generating the
- * data
- * needed to create classes. For example, instead of parsing a file and passing that value to the constructor of another
- * class,
- * we would instead create an intermediary class that knows everything about which file to parse and how to parse it,
- * and we would
- * pass that intermediary class to the new class we wish to create. Said in another way, this class should not contain
- * any 'business'
- * logic.
- * </p>
+ *   public void doSwingStuff(UserSettings userSettings) {
+ *     int preferenceValue = new UserSettings(SettingsGlobal.getInstance()).getNumberPreference();
+ *     :
+ *     :
+ *   }
  *
- * <p>
- * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies
- * must be passed to them.
- * Since GameRunner creates ClientContext, similar none of the classes created by Client Context can game runner 2
- * </p>
+ *   // after
+ *   public void clientCode() {
+ *     doSwingStuff(ClientContext.userSettings());
+ *   }
+ *
+ *   public void doSwingStuff(UserSettings settings) {
+ *     int preferenceValue = settings.getNumberPreference();
+ *     :
+ *     :
+ *   }
+ * </code></pre>
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
