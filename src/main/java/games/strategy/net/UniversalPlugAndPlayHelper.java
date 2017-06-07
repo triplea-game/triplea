@@ -89,8 +89,7 @@ public class UniversalPlugAndPlayHelper {
     System.out.println("To " + local.getHostAddress() + ":" + internalPort);
     boolean mapped = false;
     try {
-      mapped = m_device.addPortMapping("TripleA Game Hosting", "TCP", null, externalPort, local.getHostAddress(),
-          internalPort, 0);
+      mapped = m_device.addPortMapping("TripleA Game Hosting", null, internalPort, externalPort, local.getHostAddress(), 0, "TCP");
     } catch (final IOException e) {
       System.out.println("Port Mapping Failed! Please try to Forward Ports manually! \r\n " + e.getMessage());
       return "Port Mapping Failed! Please try to Forward Ports manually! \r\n " + e.getMessage();
