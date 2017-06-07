@@ -425,7 +425,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/AoT_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -660,7 +660,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/caribbean_trade_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/CaribbeanTradeWar_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -693,7 +693,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
   version: 3
-  img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/DragonWar_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -729,7 +729,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/StarTrek_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -747,7 +747,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/StarWarsGalacticWar_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -765,7 +765,7 @@
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/StarWarsTatooineWar_mini.png
+  img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
@@ -1505,13 +1505,12 @@
 - mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 8
-  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/map/EXTRA/MiniSnapshot.png
+  version: 9
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
     <br>
-    <br>This map features 3 major Axis players and 6 major Allied.
-    <br>There are also 11 minor players that take part in the world war.
+    <br>This map features 8 Axis and 12 Allied players.
     <br>
     <br>Play through WW2 as one or more Axis or Allied powers.
     <br>Be free of restricting politics and non-aggression pacts.
