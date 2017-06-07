@@ -1,8 +1,6 @@
 package games.strategy.engine;
 
-import games.strategy.engine.config.GameEnginePropertyFileReader;
 import games.strategy.engine.config.GameEnginePropertyReader;
-import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
 import games.strategy.triplea.settings.ai.AiSettings;
@@ -40,7 +38,7 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  * </code></pre>
  */
 public final class ClientContext {
-  private static final ClientContext instance = new ClientContext();
+  private static ClientContext instance = new ClientContext();
 
   private final MapDownloadController mapDownloadController;
   private final EngineVersion engineVersion;
@@ -53,7 +51,7 @@ public final class ClientContext {
   private final BattleOptionsSettings battleOptionsSettings;
 
   private ClientContext() {
-    gameEnginePropertyReader = new GameEnginePropertyFileReader();
+    gameEnginePropertyReader = new GameEnginePropertyReader();
     mapListingSource = new MapListingSource(gameEnginePropertyReader);
     mapDownloadController = new MapDownloadController(mapListingSource);
     engineVersion = new EngineVersion(gameEnginePropertyReader);

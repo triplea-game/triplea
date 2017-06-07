@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.engine.config.GameEngineProperty;
 import games.strategy.engine.config.GameEnginePropertyReader;
 
 /**
@@ -26,7 +25,7 @@ public class MapDownloadPropertiesTest {
 
   @Test
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
-    when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
+    when(mockReader.readMapListingDownloadUrl()).thenReturn(SAMPLE_VALUE);
     final MapListingSource testObj = new MapListingSource(mockReader);
     assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
   }

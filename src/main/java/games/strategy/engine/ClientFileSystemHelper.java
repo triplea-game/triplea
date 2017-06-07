@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.Version;
@@ -101,7 +101,7 @@ public final class ClientFileSystemHelper {
     final File[] files = folder.listFiles();
     final List<String> fileNames =
         Arrays.asList(files).stream().map(file -> file.getName()).collect(Collectors.toList());
-    return fileNames.contains(GameEnginePropertyFileReader.GAME_ENGINE_PROPERTY_FILE);
+    return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
   public static boolean areWeOldExtraJar() {

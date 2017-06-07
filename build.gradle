@@ -158,7 +158,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
     classifier 'server'
-    ['run-headless-game-host.sh', 'run-server.sh'].each { fileName ->
+    ['lobby.properties'].each { fileName ->
         from(fileName)
     }
     from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {

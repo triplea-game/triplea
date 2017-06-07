@@ -17,15 +17,11 @@ import games.strategy.util.Version;
 public class LobbyServer {
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
 
-  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
   public static final String ADMIN_USERNAME = "Admin";
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private final Messengers m_messengers;
 
-  public static String[] getProperties() {
-    return new String[] {TRIPLEA_LOBBY_PORT_PROPERTY};
-  }
 
   /** Creates a new instance of LobbyServer. */
   public LobbyServer(final int port) {
@@ -66,9 +62,9 @@ public class LobbyServer {
       // initialize the database
       Database.getDerbyConnection().close();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-      final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, "3303"));
+      final int port = LobbyContext.lobbyPropertyReader().getPort();
       logger.info("Trying to listen on port:" + port);
-      new LobbyServer(port);
+      new LobbyServer(LobbyContext.lobbyPropertyReader().getPort());
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);
@@ -81,9 +77,5 @@ public class LobbyServer {
 
   public Messengers getMessengers() {
     return m_messengers;
-  }
-
-  private static void usage() {
-    System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: 3303)>\n");
   }
 }

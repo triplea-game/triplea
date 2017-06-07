@@ -15,7 +15,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -188,8 +187,11 @@ public class GameParser {
     final Version mapCompatibleWithTripleaVersion =
         new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
     if (mapCompatibleWithTripleaVersion.isGreaterThan(ClientContext.engineVersion().getVersion(), true)) {
-      throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '"
-          + data.getGameName() + "' requires at least TripleA version " + mapCompatibleWithTripleaVersion.toString());
+      throw new EngineVersionException(
+          String.format("Current engine version: %s, is not compatible with version: %s, required by map: %s",
+              ClientContext.engineVersion().getVersion(),
+              mapCompatibleWithTripleaVersion.toString(),
+              data.getGameName()));
     }
   }
 
@@ -1270,10 +1272,10 @@ public class GameParser {
     return returnVal;
   }
 
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String input) {
+    char first = input.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + input.substring(1);
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
