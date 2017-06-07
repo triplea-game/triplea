@@ -55,6 +55,7 @@ sourceSets {
 }
 
 dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.guava:guava:19.0'

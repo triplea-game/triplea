@@ -27,7 +27,7 @@ public class GetGameSaveClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final Frame frame = JOptionPane.getFrameForComponent(m_parent);
-    final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
+    final File f = TripleAMenuBar.getSaveGameLocation(frame);
     if (f != null) {
       final byte[] bytes = m_serverRemote.getSaveGame();
       try (FileOutputStream fout = new FileOutputStream(f)) {
