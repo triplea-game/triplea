@@ -432,61 +432,59 @@
                           <void property="script">
                             <object class="com.install4j.api.beans.ScriptProperty">
                               <void property="value">
-                                <string>if(Util.isLinux()){
-    String home = System.getProperty("user.home");
-    File shareFolder = new File(home + "/.local/share");
-    if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
-        File applicationsDir = new File(shareFolder, "applications");
-        if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
-            applicationsDir.mkdirs();
-        }
-        File desktopFile = new File(applicationsDir, context.getCompilerVariable("sys.fullName") + ".desktop");
-        File mimeappsFile = new File(applicationsDir, "mimeapps.list");
-        if(!desktopFile.exists()){
-            return false;
-        }
-        if(!mimeappsFile.exists()){
-            mimeappsFile.createNewFile();
-        }
-        String mimeType = "x-scheme-handler/triplea";
-        StringBuilder builder = new StringBuilder();
-        try(Scanner scanner = new Scanner(desktopFile)){
-            String mimeTypePrefix = "MimeType=";
-            while(scanner.hasNextLine()){
-                String nextLine = scanner.nextLine();
-                if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
-                    builder.append(nextLine).append(" \"%u\"\n");
-                } else if(!nextLine.startsWith(mimeTypePrefix)){
-                    builder.append(nextLine).append('\n');
-                }
+                                <string>String home = System.getProperty("user.home");
+File shareFolder = new File(home + "/.local/share");
+if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+    File applicationsDir = new File(shareFolder, "applications");
+    if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+        applicationsDir.mkdirs();
+    }
+    File desktopFile = new File(applicationsDir, context.getCompilerVariable("sys.fullName") + ".desktop");
+    File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+    if(!desktopFile.exists()){
+        return false;
+    }
+    if(!mimeappsFile.exists()){
+        mimeappsFile.createNewFile();
+    }
+    String mimeType = "x-scheme-handler/triplea";
+    StringBuilder builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(desktopFile)){
+        String mimeTypePrefix = "MimeType=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
+                builder.append(nextLine).append(" \"%u\"\n");
+            } else if(!nextLine.startsWith(mimeTypePrefix)){
+                builder.append(nextLine).append('\n');
             }
-            builder.append(mimeTypePrefix).append(mimeType);
         }
-        try(PrintWriter writer = new PrintWriter(desktopFile)){
-            writer.println(builder.toString());
-        }
-        builder = new StringBuilder();
-        try(Scanner scanner = new Scanner(mimeappsFile)){
-            boolean isSetup = false;
-            String defaultApplicationString = "[Default Applications]";
-            String mimeTypePrefix = mimeType + "=";
-            while(scanner.hasNextLine()){
-                String nextLine = scanner.nextLine();
-                if(!nextLine.startsWith(mimeTypePrefix)){
-                    builder.append(nextLine).append('\n');
-                }
-                if(nextLine.equalsIgnoreCase(defaultApplicationString)){
-                    isSetup = true;
-                }
+        builder.append(mimeTypePrefix).append(mimeType);
+    }
+    try(PrintWriter writer = new PrintWriter(desktopFile)){
+        writer.println(builder.toString());
+    }
+    builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(mimeappsFile)){
+        boolean isSetup = false;
+        String defaultApplicationString = "[Default Applications]";
+        String mimeTypePrefix = mimeType + "=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(!nextLine.startsWith(mimeTypePrefix)){
+                builder.append(nextLine).append('\n');
             }
-            if(!isSetup){
-                builder.insert(0, defaultApplicationString + "\n");
+            if(nextLine.equalsIgnoreCase(defaultApplicationString)){
+                isSetup = true;
             }
-            builder.append(mimeTypePrefix).append(desktopFile.getName());
         }
-        try(PrintWriter writer = new PrintWriter(mimeappsFile)){
-            writer.println(builder.toString());
+        if(!isSetup){
+            builder.insert(0, defaultApplicationString + "\n");
         }
+        builder.append(mimeTypePrefix).append(desktopFile.getName());
+    }
+    try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+        writer.println(builder.toString());
     }
 }
 return true;</string>
@@ -496,7 +494,7 @@ return true;</string>
                         </object>
                       </java>
                     </serializedBean>
-                    <condition />
+                    <condition>Util.isLinux()</condition>
                   </action>
                 </beans>
               </group>
@@ -729,33 +727,31 @@ return true;</string>
                       <void property="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
                           <void property="value">
-                            <string>if(Util.isLinux()){
-    String home = System.getProperty("user.home");
-    File shareFolder = new File(home + "/.local/share");
-    if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
-        File applicationsDir = new File(shareFolder, "applications");
-        if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
-            return true;
-        }
-        File mimeappsFile = new File(applicationsDir, "mimeapps.list");
-        if(!mimeappsFile.exists()){
-            return true;
-        }
-        String mimeType = "x-scheme-handler/triplea";
-        StringBuilder builder = new StringBuilder();
-        try(Scanner scanner = new Scanner(mimeappsFile)){
-            boolean isSetup = false;
-            String mimeTypePrefix = mimeType + "=";
-            while(scanner.hasNextLine()){
-                String nextLine = scanner.nextLine();
-                if(!nextLine.equalsIgnoreCase(mimeTypePrefix + context.getCompilerVariable("sys.fullName") + ".desktop")){
-                    builder.append(nextLine).append('\n');
-                }
+                            <string>String home = System.getProperty("user.home");
+File shareFolder = new File(home + "/.local/share");
+if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+    File applicationsDir = new File(shareFolder, "applications");
+    if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+        return true;
+    }
+    File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+    if(!mimeappsFile.exists()){
+        return true;
+    }
+    String mimeType = "x-scheme-handler/triplea";
+    StringBuilder builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(mimeappsFile)){
+        boolean isSetup = false;
+        String mimeTypePrefix = mimeType + "=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + context.getCompilerVariable("sys.fullName") + ".desktop")){
+                builder.append(nextLine).append('\n');
             }
         }
-        try(PrintWriter writer = new PrintWriter(mimeappsFile)){
-            writer.println(builder.toString());
-        }
+    }
+    try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+        writer.println(builder.toString());
     }
 }
 return true;</string>
@@ -765,7 +761,7 @@ return true;</string>
                     </object>
                   </java>
                 </serializedBean>
-                <condition />
+                <condition>Util.isLinux()</condition>
               </action>
             </actions>
             <formComponents />
