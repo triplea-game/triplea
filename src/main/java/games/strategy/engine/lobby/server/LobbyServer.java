@@ -54,6 +54,10 @@ public class LobbyServer {
     server.setAcceptNewConnections(true);
   }
 
+  /**
+   * Launches a lobby instance.
+   * Lobby stays running until the process is killed or the lobby is shutdown.
+   */
   public static void main(final String[] args) {
     try {
       // send args to system properties
@@ -77,46 +81,6 @@ public class LobbyServer {
 
   public Messengers getMessengers() {
     return m_messengers;
-  }
-
-  /**
-   * Move command line arguments to System.properties
-   */
-  private static void handleCommandLineArgs(final String[] args) {
-    final String[] properties = getProperties();
-    boolean usagePrinted = false;
-    for (final String arg2 : args) {
-      boolean found = false;
-      String arg = arg2;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        arg = arg.substring(0, indexOf);
-        for (final String propertie : properties) {
-          if (arg.equals(propertie)) {
-            final String value = getValue(arg2);
-            System.getProperties().setProperty(propertie, value);
-            System.out.println(propertie + ":" + value);
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found) {
-        System.out.println("Unrecogized:" + arg2);
-        if (!usagePrinted) {
-          usagePrinted = true;
-          usage();
-        }
-      }
-    }
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
   }
 
   private static void usage() {

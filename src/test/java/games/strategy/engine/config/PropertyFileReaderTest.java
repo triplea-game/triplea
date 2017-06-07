@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import games.strategy.test.TestUtil;
 
-public class GameEnginePropertyFileReaderTest {
+public class PropertyFileReaderTest {
 
   private final GameEngineProperty propKey = GameEngineProperty.MAP_LISTING_SOURCE_FILE;
 
@@ -18,18 +18,18 @@ public class GameEnginePropertyFileReaderTest {
     final String input = " " + propKey + " = 1 ";
 
     final File propFile = TestUtil.createTempFile(input);
-    final PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
+    final PropertyReader testObj = new PropertyFileReader(propFile);
 
     assertThat("Property key value pair 'x = 1 '  should be trimmed, no spaces in value or key.",
         testObj.readProperty(propKey), is("1"));
   }
 
-  @Test(expected = PropertyNotFoundException.class)
+  @Test(expected = GameEnginePropertyFileReader.PropertyNotFoundException.class)
   public void testEmptyCase() {
     final String input = "";
 
     final File propFile = TestUtil.createTempFile(input);
-    final PropertyReader testObj = new GameEnginePropertyFileReader(propFile);
+    final PropertyReader testObj = new PropertyFileReader(propFile);
 
     assertThat("Simple empty input file, any key we read will return empty string",
         testObj.readProperty(propKey), is(""));
