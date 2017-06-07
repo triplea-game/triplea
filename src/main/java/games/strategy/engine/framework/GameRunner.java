@@ -117,6 +117,10 @@ public class GameRunner {
    */
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
+    if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
+      usage();
+      return;
+    }
     // do after we handle command line args
     Memory.checkForMemoryXMX();
 
@@ -126,10 +130,6 @@ public class GameRunner {
     HttpProxy.setupProxies();
     new Thread(GameRunner::checkLocalSystem).start();
     new Thread(GameRunner::checkForUpdates).start();
-    if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
-      usage();
-      return;
-    }
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
