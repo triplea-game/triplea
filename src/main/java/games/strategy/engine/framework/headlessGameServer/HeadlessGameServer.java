@@ -651,7 +651,7 @@ public class HeadlessGameServer {
 
   public static void main(final String[] args) {
     System.getProperties().setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    if(!ArgParser.handleCommandLineArgs(args, getProperties(), GameRunner.GameMode.HEADLESS_BOT)) {
+    if (!ArgParser.handleCommandLineArgs(args, getProperties())) {
       usage();
       return;
     }

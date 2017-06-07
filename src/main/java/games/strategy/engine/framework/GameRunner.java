@@ -51,10 +51,6 @@ import games.strategy.util.Version;
  */
 public class GameRunner {
 
-  public enum GameMode {
-    SWING_CLIENT, HEADLESS_BOT
-  }
-
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
   public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
@@ -119,13 +115,13 @@ public class GameRunner {
     // do after we handle command line args
     Memory.checkForMemoryXMX();
 
-    SwingUtilities.invokeLater(() -> LookAndFeel.setupLookAndFeel());
+    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
     showMainFrame();
-    new Thread(() -> setupLogging(GameMode.SWING_CLIENT)).start();
+    new Thread(GameRunner::setupLogging).start();
     HttpProxy.setupProxies();
     new Thread(GameRunner::checkLocalSystem).start();
-    new Thread(() -> checkForUpdates()).start();
-    if(!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS, GameMode.SWING_CLIENT)) {
+    new Thread(GameRunner::checkForUpdates).start();
+    if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
       usage();
       return;
     }
@@ -202,21 +198,19 @@ public class GameRunner {
 
 
 
-  private static void setupLogging(GameMode gameMode) {
-    if (gameMode == GameMode.SWING_CLIENT) {
-      Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
-        @Override
-        protected void dispatchEvent(AWTEvent newEvent) {
-          try {
-            super.dispatchEvent(newEvent);
-            // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-          } catch (Throwable t) {
-            ClientLogger.logError(t);
-            throw t;
-          }
+  private static void setupLogging() {
+    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
+      @Override
+      protected void dispatchEvent(AWTEvent newEvent) {
+        try {
+          super.dispatchEvent(newEvent);
+          // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
+        } catch (Throwable t) {
+          ClientLogger.logError(t);
+          throw t;
         }
-      });
-    }
+      }
+    });
   }
 
 
