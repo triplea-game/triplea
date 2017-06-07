@@ -23,7 +23,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -174,7 +174,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static LobbyServerProperties getLobbyServerProperties() {
-    final PropertyReader propReader = ClientContext.propertyReader();
+    final GameEnginePropertyReader propReader = ClientContext.gameEnginePropertyReader();
     final String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
     Optional<List<Map<String, Object>>> yamlDataObj = loadRemoteLobbyServerProperties(urlProp);
     if (!yamlDataObj.isPresent()) {

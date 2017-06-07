@@ -1,6 +1,7 @@
 package games.strategy.engine;
 
 import games.strategy.engine.config.GameEnginePropertyFileReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
@@ -43,7 +44,7 @@ public final class ClientContext {
 
   private final MapDownloadController mapDownloadController;
   private final EngineVersion engineVersion;
-  private final PropertyReader propertyReader;
+  private final GameEnginePropertyReader gameEnginePropertyReader;
   private final MapListingSource mapListingSource;
   private final ScrollSettings scrollSettings;
   private final FolderSettings folderSettings;
@@ -52,10 +53,10 @@ public final class ClientContext {
   private final BattleOptionsSettings battleOptionsSettings;
 
   private ClientContext() {
-    propertyReader = new GameEnginePropertyFileReader();
-    mapListingSource = new MapListingSource(propertyReader);
+    gameEnginePropertyReader = new GameEnginePropertyFileReader();
+    mapListingSource = new MapListingSource(gameEnginePropertyReader);
     mapDownloadController = new MapDownloadController(mapListingSource);
-    engineVersion = new EngineVersion(propertyReader);
+    engineVersion = new EngineVersion(gameEnginePropertyReader);
     scrollSettings = new ScrollSettings();
     folderSettings = new FolderSettings();
     aiSettings = new AiSettings();
@@ -63,8 +64,8 @@ public final class ClientContext {
     battleOptionsSettings = new BattleOptionsSettings();
   }
 
-  public static PropertyReader propertyReader() {
-    return instance.propertyReader;
+  public static GameEnginePropertyReader gameEnginePropertyReader() {
+    return instance.gameEnginePropertyReader;
   }
 
   public static MapListingSource mapListingSource() {

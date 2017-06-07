@@ -27,16 +27,16 @@ public class PropertyFileReader implements PropertyReader {
     this.propertyFile = propertyFile;
   }
 
-  @Override
-  public String readProperty(final GameEngineProperty propertyKey) {
+
+  protected String readProperty(final String propertyKey) {
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
 
-      if (!props.containsKey(propertyKey.toString())) {
+      if (!props.containsKey(propertyKey)) {
         throw new PropertyNotFoundException(propertyKey, propertyFile.getAbsolutePath());
       } else {
-        return props.getProperty(propertyKey.toString()).trim();
+        return props.getProperty(propertyKey).trim();
       }
     } catch (final FileNotFoundException e) {
       throw Throwables.propagate(e);
@@ -48,9 +48,9 @@ public class PropertyFileReader implements PropertyReader {
   static  class PropertyNotFoundException extends IllegalStateException {
     private static final long serialVersionUID = -7834937010739816090L;
 
-    PropertyNotFoundException(final GameEngineProperty property, final String propertyFilePath) {
+    PropertyNotFoundException(final String property, final String propertyFilePath) {
       super(String.format("Could not find property: %s, in game engine configuration file: %s",
-          property.toString(), propertyFilePath));
+          property, propertyFilePath));
     }
   }
 }

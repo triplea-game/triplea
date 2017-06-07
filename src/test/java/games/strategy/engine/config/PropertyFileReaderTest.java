@@ -18,7 +18,7 @@ public class PropertyFileReaderTest {
     final String input = " " + propKey + " = 1 ";
 
     final File propFile = TestUtil.createTempFile(input);
-    final PropertyReader testObj = new PropertyFileReader(propFile);
+    final GameEnginePropertyReader testObj = new GameEnginePropertyFileReader(propFile);
 
     assertThat("Property key value pair 'x = 1 '  should be trimmed, no spaces in value or key.",
         testObj.readProperty(propKey), is("1"));
@@ -29,7 +29,7 @@ public class PropertyFileReaderTest {
     final String input = "";
 
     final File propFile = TestUtil.createTempFile(input);
-    final PropertyReader testObj = new PropertyFileReader(propFile);
+    final GameEnginePropertyReader testObj = new GameEnginePropertyFileReader(propFile);
 
     assertThat("Simple empty input file, any key we read will return empty string",
         testObj.readProperty(propKey), is(""));

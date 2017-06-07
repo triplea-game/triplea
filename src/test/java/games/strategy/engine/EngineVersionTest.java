@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.util.Version;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,12 +37,11 @@ public class EngineVersionTest {
   }
 
   @Mock
-  private PropertyReader mockReader;
+  private GameEnginePropertyReader mockReader;
 
   private EngineVersion createTestObj(final String inputVersion) {
     when(mockReader.readProperty(GameEngineProperty.ENGINE_VERSION)).thenReturn(inputVersion);
-    final EngineVersion version = new EngineVersion(mockReader);
-    return version;
+    return new EngineVersion(mockReader);
   }
 
 

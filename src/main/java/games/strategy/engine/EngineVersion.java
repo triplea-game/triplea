@@ -1,14 +1,14 @@
 package games.strategy.engine;
 
 import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.util.Version;
 
 public class EngineVersion {
   private final Version version;
   private final String exactVersion;
 
-  public EngineVersion(final PropertyReader propertyReader) {
+  public EngineVersion(final GameEnginePropertyReader propertyReader) {
     exactVersion = propertyReader.readProperty(GameEngineProperty.ENGINE_VERSION);
     version = new Version(exactVersion);
   }

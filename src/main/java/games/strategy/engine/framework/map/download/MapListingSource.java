@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import games.strategy.engine.config.GameEngineProperty;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.config.PropertyReader;
 
 
@@ -21,7 +22,7 @@ import games.strategy.engine.config.PropertyReader;
 public class MapListingSource {
   private final String mapListDownloadSite;
 
-  public MapListingSource(final PropertyReader propertyReader) {
+  public MapListingSource(final GameEnginePropertyReader propertyReader) {
     checkNotNull(propertyReader);
     mapListDownloadSite = propertyReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE);
   }
