@@ -440,12 +440,7 @@
         if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
             applicationsDir.mkdirs();
         }
-        File desktopFile = Arrays.stream(applicationsDir.listFiles(new FilenameFilter(){
-            @Override
-            public boolean accept(File dir, String name){
-                return name.matches("TripleA[\\-0-9\\.]*\\.desktop");
-            }
-        })).findAny().get();
+        File desktopFile = new File(applicationsDir, context.getCompilerVariable("sys.fullName") + ".desktop");
         File mimeappsFile = new File(applicationsDir, "mimeapps.list");
         if(!desktopFile.exists()){
             return false;
@@ -588,7 +583,7 @@ return true;</string>
           </screen>
         </screens>
       </application>
-      <application name="" id="uninstaller" customizedId="" beanClass="com.install4j.runtime.beans.applications.UninstallerApplication" enabled="true" commentSet="false" comment="" actionElevationType="elevated" fileset="" customIcnsFile="" customIcoFile="" macEntitlementsFile="" automaticLauncherIntegration="false" launchMode="startupFirstWindow" launchInNewProcess="false" launchSchedule="updateSchedule" allLaunchers="true">
+      <application name="" id="uninstaller" customizedId="" beanClass="com.install4j.runtime.beans.applications.UninstallerApplication" enabled="true" commentSet="false" comment="" actionElevationType="none" fileset="" customIcnsFile="" customIcoFile="" macEntitlementsFile="" automaticLauncherIntegration="false" launchMode="startupFirstWindow" launchInNewProcess="false" launchSchedule="updateSchedule" allLaunchers="true">
         <serializedBean>
           <java class="java.beans.XMLDecoder">
             <object class="com.install4j.runtime.beans.applications.UninstallerApplication" id="UninstallerApplication0">
@@ -698,7 +693,7 @@ return true;</string>
             <preActivation />
             <postActivation />
             <actions>
-              <action name="" id="17" customizedId="" beanClass="com.install4j.runtime.beans.actions.UninstallFilesAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+              <action name="" id="17" customizedId="" beanClass="com.install4j.runtime.beans.actions.UninstallFilesAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.UninstallFilesAction" />
@@ -725,7 +720,7 @@ return true;</string>
                     </object>
                   </java>
                 </serializedBean>
-                <condition />
+                <condition>((String)WinRegistry.getValue(RegistryRoot.HKEY_CURRENT_USER, "Software\\Classes\\triplea\\shell\\open\\command", "")).equalsIgnoreCase("\"" + context.getVariable("sys.installationDir") + "\\TripleA.exe\" \"%1\"")</condition>
               </action>
               <action name="" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol handler">
                 <serializedBean>
@@ -753,7 +748,7 @@ return true;</string>
             String mimeTypePrefix = mimeType + "=";
             while(scanner.hasNextLine()){
                 String nextLine = scanner.nextLine();
-                if(!nextLine.startsWith(mimeTypePrefix)){
+                if(!nextLine.equalsIgnoreCase(mimeTypePrefix + context.getCompilerVariable("sys.fullName") + ".desktop")){
                     builder.append(nextLine).append('\n');
                 }
             }
