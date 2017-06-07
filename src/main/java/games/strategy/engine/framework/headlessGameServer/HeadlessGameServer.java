@@ -435,22 +435,23 @@ public class HeadlessGameServer {
     s_logger.info("Game Server initialized");
   }
 
-  private static synchronized void restartLobbyWatcher(final SetupPanelModel setupPanelModel, final ServerGame iGame) {
+  private static synchronized void restartLobbyWatcher(
+      final SetupPanelModel setupPanelModel, final ServerGame serverGame) {
     try {
       final ISetupPanel setup = setupPanelModel.getPanel();
       if (setup == null) {
         return;
       }
-      if (iGame != null) {
+      if (serverGame != null) {
         return;
       }
       if (setup.canGameStart()) {
         return;
       }
       if (setup instanceof ServerSetupPanel) {
-        ((ServerSetupPanel) setup).repostLobbyWatcher(iGame);
+        ((ServerSetupPanel) setup).repostLobbyWatcher(serverGame);
       } else if (setup instanceof HeadlessServerSetup) {
-        ((HeadlessServerSetup) setup).repostLobbyWatcher(iGame);
+        ((HeadlessServerSetup) setup).repostLobbyWatcher(serverGame);
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -680,8 +681,10 @@ public class HeadlessGameServer {
         + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
         + "   " + GameRunner.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
         + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
-        + "   " + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
+        + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME
+        + "=<seconds to wait for all clients to start the game>\n"
+        + "   " + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME
+        + "=<seconds to wait for an observer joining the game>\n"
         + "   " + GameRunner.MAP_FOLDER + "=mapFolder"
         + "\n"
         + "   You must start the Name and HostedBy with \"Bot\".\n"
@@ -721,15 +724,15 @@ public class HeadlessGameServer {
       printUsage = true;
     }
 
-    final String reconnection =
-        System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION, "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+    final String reconnection = System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION,
+        "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
     try {
       final int reconnect = Integer.parseInt(reconnection);
       if (reconnect < GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
         System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
             + " must be an integer equal to or greater than " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-            + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-            + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+            + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+            + " or " + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
         printUsage = true;
       }
     } catch (final NumberFormatException e) {

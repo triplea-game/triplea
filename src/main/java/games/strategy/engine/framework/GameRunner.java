@@ -110,6 +110,11 @@ public class GameRunner {
 
 
 
+  /**
+   * Launches the "main" TripleA gui enabled game client.
+   * No args will launch a client, additional args can be supplied to specify additional behavior.
+   * Warning: game engine code invokes this method to spawn new game clients.
+   */
   public static void main(final String[] args) {
     ErrorConsole.getConsole();
     // do after we handle command line args
@@ -214,6 +219,9 @@ public class GameRunner {
   }
 
 
+  /**
+   * Returns the property set parsed from a 'system.ini' file (as found at the project root).
+   */
   public static Properties getSystemIni() {
     final Properties rVal = new Properties();
     final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
@@ -227,6 +235,9 @@ public class GameRunner {
     return rVal;
   }
 
+  /**
+   * Writes a set of properties to the system.ini file.
+   */
   public static void writeSystemIni(final Properties properties) {
     final Properties toWrite;
 
