@@ -7,10 +7,16 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Test;
 
 public class ArgParserTest {
 
+
+  @After
+  public void teardown() {
+    System.clearProperty(GameRunner.TRIPLEA_GAME_PROPERTY);
+  }
 
   @Test
   public void argsTurnIntoSystemProps() {
