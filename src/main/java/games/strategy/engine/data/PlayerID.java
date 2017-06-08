@@ -13,8 +13,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
   private final boolean m_optional;
   private final boolean m_canBeDisabled;
-  private final boolean isDefaultAi;
-  private final boolean isNonPlayable;
+  private final boolean isAiDefault;
+  private final boolean isHidden;
   private boolean m_isDisabled = false;
   private final UnitCollection m_unitsHeld;
   private final ResourceCollection m_resources;
@@ -29,13 +29,13 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   /** Creates new PlayerID. */
-  public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final boolean isDefaultAi,
-      final boolean isNonPlayable, final GameData data) {
+  public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final boolean isAiDefault,
+      final boolean isHidden, final GameData data) {
     super(name, data);
     m_optional = optional;
     m_canBeDisabled = canBeDisabled;
-    this.isDefaultAi = isDefaultAi;
-    this.isNonPlayable = isNonPlayable;
+    this.isAiDefault = isAiDefault;
+    this.isHidden = isHidden;
     m_unitsHeld = new UnitCollection(this, data);
     m_resources = new ResourceCollection(data);
     m_technologyFrontiers = new TechnologyFrontierList(data);
@@ -49,12 +49,12 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     return m_canBeDisabled;
   }
 
-  public boolean isDefaultAi() {
-    return isDefaultAi;
+  public boolean isAiDefault() {
+    return isAiDefault;
   }
 
-  public boolean isNonPlayable() {
-    return isNonPlayable;
+  public boolean isHidden() {
+    return isHidden;
   }
 
   @Override

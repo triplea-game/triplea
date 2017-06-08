@@ -79,7 +79,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
           new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, this, data.getProperties());
       m_playerTypes.add(selector);
-      if (!player.isNonPlayable()) {
+      if (!player.isHidden()) {
         selector.layout(++gridy, this);
       }
     }
