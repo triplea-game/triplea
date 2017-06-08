@@ -7,9 +7,6 @@ import games.strategy.engine.framework.GameRunner;
 
 public class Memory {
   public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
-
-  private static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
-  // what should our xmx be approximately?
   private static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
   private static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
 
@@ -25,9 +22,6 @@ public class Memory {
     }
     final Properties systemIni = GameRunner.getSystemIni();
     if (useDefaultMaxMemory(systemIni)) {
-      return;
-    }
-    if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni)) {
       return;
     }
     long xmx = getMaxMemoryFromSystemIniFileInMB(systemIni);
@@ -79,7 +73,7 @@ public class Memory {
   public static int getMaxMemoryFromSystemIniFileInMB(final Properties systemIni) {
     final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
     int maxMemorySet = -1;
-    if (maxMemoryString.length() > 0) {
+    if (!maxMemoryString.isEmpty()) {
       try {
         maxMemorySet = Integer.parseInt(maxMemoryString);
       } catch (final NumberFormatException e) {
@@ -90,7 +84,7 @@ public class Memory {
   }
 
   public static Properties setMaxMemoryInMB(final int maxMemoryInMb) {
-    System.out.println("Setting max memory for TripleA to: " + maxMemoryInMb + "m");
+    ClientLogger.logQuietly("Setting max memory for TripleA to: " + maxMemoryInMb + "m");
     final Properties prop = new Properties();
     prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "false");
     prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMb);
@@ -100,19 +94,8 @@ public class Memory {
   public static void clearMaxMemory() {
     final Properties prop = new Properties();
     prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "true");
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
     prop.put(TRIPLEA_MEMORY_XMX, "");
     GameRunner.writeSystemIni(prop);
-  }
-
-  public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly,
-      final Properties prop) {
-    prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "" + useForOnlineOnly);
-  }
-
-  public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost(final Properties systemIni) {
-    final String forOnlineOnlyString = systemIni.getProperty(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
-    return Boolean.parseBoolean(forOnlineOnlyString);
   }
 
 }
