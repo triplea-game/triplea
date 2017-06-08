@@ -3,6 +3,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import org.apache.http.HttpStatus
 import org.asynchttpclient.DefaultAsyncHttpClient
+import org.asynchttpclient.DefaultAsyncHttpClientConfig
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 
@@ -67,7 +68,10 @@ ext.validateMapsYamlLinks = { yamlFile ->
     def maps = yaml.load(yamlFile.text)
     def imageUrls = maps . collect { it['img'] } . findAll { it != null }
 
-    def client = new DefaultAsyncHttpClient()
+    def clientConfig = new DefaultAsyncHttpClientConfig.Builder()
+            .setFollowRedirect(true)
+            .build()
+    def client = new DefaultAsyncHttpClient(clientConfig)
     try {
         def tasks = imageUrls.collect { client.prepareHead(it).execute() }
 
