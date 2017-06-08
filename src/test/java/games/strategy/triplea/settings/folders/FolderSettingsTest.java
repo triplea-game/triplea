@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.File;
+import java.util.function.Function;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,14 +38,21 @@ public class FolderSettingsTest {
     Mockito.when(mockPropertyReader.readProperty(eq(GameEngineProperty.SAVED_GAMES_FOLDER), anyString()))
         .thenReturn(TestData.saveFolder);
 
-
-    final FolderSettings settings = new FolderSettings(mockPropertyReader); //, File::mkdirfile -> true);
+    final FolderSettings settings = new FolderSettings(mockPropertyReader, tempFileMaker());
 
     final File expectedMapFolder = new File(ClientFileSystemHelper.getUserRootFolder(), TestData.mapFolder);
     assertThat(settings.getDownloadedMapPath().getAbsolutePath(), is(expectedMapFolder.getAbsolutePath()));
 
     final File expectedSaveFolder = new File(ClientFileSystemHelper.getUserRootFolder(), TestData.saveFolder);
     assertThat(settings.getSaveGamePath().getAbsolutePath(), is(expectedSaveFolder.getAbsolutePath()));
+  }
+
+  private static Function<File, Boolean> tempFileMaker() {
+    return file -> {
+      final boolean returnValue = file.mkdirs();
+      file.deleteOnExit();
+      return returnValue;
+    };
   }
 
   private interface TestData {
