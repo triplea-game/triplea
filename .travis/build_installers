@@ -7,7 +7,7 @@
 # and packaging and runs install4j to generate the final installer files.
 #
 
-TAGGED_VERSION=$1
+export TAGGED_VERSION=$1
 
 ## update engine version number to have the build number
 sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" game_engine.properties
