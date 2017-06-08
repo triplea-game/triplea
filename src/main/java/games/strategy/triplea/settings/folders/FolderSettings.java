@@ -3,6 +3,7 @@ package games.strategy.triplea.settings.folders;
 import java.io.File;
 import java.util.function.Function;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -24,14 +25,19 @@ public class FolderSettings {
   private final File saveGameFolder;
 
   public FolderSettings(final PropertyReader propertyFileReader) {
-    this(propertyFileReader, File::mkdirs);
+    this(propertyFileReader, File::mkdirs, DEFAULT_MAP_FOLDER, DEFAULT_SAVE_FOLDER);
   }
 
-  FolderSettings(final PropertyReader propertyReader, final Function<File, Boolean> fileMaker) {
+  @VisibleForTesting
+  FolderSettings(
+      final PropertyReader propertyReader,
+      final Function<File, Boolean> fileMaker,
+      final String defaultMapFolder,
+      final String defaultSaveFolder) {
     downloadedMapsFolder =
-        ensureFolderExistsOrDie(propertyReader, GameEngineProperty.MAP_FOLDER, DEFAULT_MAP_FOLDER, fileMaker);
+        ensureFolderExistsOrDie(propertyReader, GameEngineProperty.MAP_FOLDER, defaultMapFolder, fileMaker);
     saveGameFolder =
-        ensureFolderExistsOrDie(propertyReader, GameEngineProperty.SAVED_GAMES_FOLDER, DEFAULT_SAVE_FOLDER, fileMaker);
+        ensureFolderExistsOrDie(propertyReader, GameEngineProperty.SAVED_GAMES_FOLDER, defaultSaveFolder, fileMaker);
   }
 
   private static File ensureFolderExistsOrDie(

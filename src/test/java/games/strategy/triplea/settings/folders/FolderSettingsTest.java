@@ -27,7 +27,9 @@ public class FolderSettingsTest {
 
   @Test(expected = ClientLogger.FatalErrorException.class)
   public void folderCreateAlwaysFails() {
-    new FolderSettings(mockPropertyReader, file -> false);
+    Mockito.when(mockPropertyReader.readProperty(eq(GameEngineProperty.MAP_FOLDER), anyString()))
+        .thenReturn("test_folder_value_would_not_exist");
+    new FolderSettings(mockPropertyReader, file -> false, "defaultMapFolder", "defaultSaveFolder");
   }
 
   @Test
@@ -38,7 +40,8 @@ public class FolderSettingsTest {
     Mockito.when(mockPropertyReader.readProperty(eq(GameEngineProperty.SAVED_GAMES_FOLDER), anyString()))
         .thenReturn(TestData.saveFolder);
 
-    final FolderSettings settings = new FolderSettings(mockPropertyReader, tempFileMaker());
+    final FolderSettings settings = new FolderSettings(
+        mockPropertyReader, tempFileMaker(), "default1", "default2");
 
     final File expectedMapFolder = new File(ClientFileSystemHelper.getUserRootFolder(), TestData.mapFolder);
     assertThat(settings.getDownloadedMapPath().getAbsolutePath(), is(expectedMapFolder.getAbsolutePath()));
