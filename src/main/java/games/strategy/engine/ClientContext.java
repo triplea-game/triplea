@@ -11,39 +11,32 @@ import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 /**
- * IOC container for storing objects needed by the TripleA Swing client
- * A full blow dependency injection framework would deprecate this class.
+ * Manages the creation of objects, similar to a dependency injection framework.
+ * Use this class to manage singletons and as a factory to create objects that have shared
+ * dependencies already managed by this class.
+ * Example usage:
+ * <pre><code>
+ *   // before
+ *   public void clientCode(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
+ *     swingStuff(sharedDependencyWiredThroughAllTheMethods);
+ *     :
+ *   }
+ *   private void swingStuff(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
+ *     int preferenceValue = new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
+ *     :
+ *   }
  *
- * <p>
- * This class roughly follows the singleton pattern. The singleton instance
- * can be updated, this is allowed to enable a mock instance of this class to
- * be used.
- * </p>
+ *   // after
+ *   public void clientCode() {
+ *     doSwingStuff(ClientContext.userSettings());
+ *     :
+ *   }
  *
- * <p>
- * Caution: the public API of this class will grow to be fairly large. For every object we wish to return, we'll have an
- * "object()" method that will returns that same object. When things become hard to manage it'll be a good time
- * to move to an annotation or configuration based IOC framework.
- * </p>
- *
- * <p>
- * Second note, try to put as much class specific construction logic into the constructor of each class managed by this
- * container. This class should focus on just creating and wiring classes together. Contrast that with generating the
- * data
- * needed to create classes. For example, instead of parsing a file and passing that value to the constructor of another
- * class,
- * we would instead create an intermediary class that knows everything about which file to parse and how to parse it,
- * and we would
- * pass that intermediary class to the new class we wish to create. Said in another way, this class should not contain
- * any 'business'
- * logic.
- * </p>
- *
- * <p>
- * Third Note: Any classes created by ClientContext cannot call ClientContext in their constructor, all dependencies
- * must be passed to them.
- * Since GameRunner creates ClientContext, similar none of the classes created by Client Context can game runner 2
- * </p>
+ *   private void doSwingStuff(UserSettings settings) {
+ *     int preferenceValue = settings.getNumberPreference();
+ *     :
+ *   }
+ * </code></pre>
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
