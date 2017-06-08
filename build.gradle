@@ -116,8 +116,12 @@ git {
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
-        validateYaml(file('lobby_server.yaml'), file("$schemasDir/lobby_server.json"))
-        validateYaml(file('triplea_maps.yaml'), file("$schemasDir/triplea_maps.json"))
+        def lobbyServerYamlFile = file('lobby_server.yaml')
+        validateYaml(lobbyServerYamlFile, file("$schemasDir/lobby_server.json"))
+
+        def mapsYamlFile = file('triplea_maps.yaml')
+        validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
+        validateMapsYamlLinks(mapsYamlFile)
     }
 }
 
