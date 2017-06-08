@@ -37,7 +37,6 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  *     :
  *   }
  * </code></pre>
- * </p>
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
