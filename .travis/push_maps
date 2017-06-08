@@ -1,12 +1,10 @@
 #!/bin/bash
 
-## Note: The redirect to dev/nulls are to prevent the token from being printed in case there is a failure
+VERSION_NUMBER=$1
 
-## boiler plate git setup
 git config --global user.email "tripleabuilderbot@gmail.com"
 git config --global user.name "tripleabuilderbot"
 
-## clone the website repo, suppress any output
 git clone --quiet https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/triplea-game.github.io.git website
 
 #Split the yaml file into multiple files
@@ -16,7 +14,7 @@ git clone --quiet https://${PUSH_TO_WEBSITE_TOKEN}@github.com/triplea-game/tripl
 cd website
 if ! git diff-index --quiet HEAD --; then
   git add _maps/*
-  git commit -m "Bot: update map files after game engine build $TAGGED_VERSION"
+  git commit -m "Bot: update map files after game engine build $VERSION_NUMBER"
   git push -fq origin master
 fi
 

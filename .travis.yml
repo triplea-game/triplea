@@ -12,23 +12,12 @@ services:
 - postgresql
 after_success: ./.travis/update_checkstyle_thresholds
 before_deploy:
-## Run the travis setup, will download install4j and configure it
-- ./.travis/setup
-## Add the travis build number to the game engine version
-- GAME_CONFIG=game_engine.properties
-- ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
-- sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
-## Run the gradle release build process - creates the installers
-- ./gradlew release
-### Debug, show the artifacts that have been built
-- ls build/releases/
-### Rename the windows installers to have 32bit and 64bit extensions instead of 'x86'
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
-## Push a tag to github, will trigger the releases process
-- ./.travis/push_tag
-- ./.travis/push_maps_yaml
+- ./.travis/install_install4j
+- ENGINE_VERSION=$(grep "engine_version" game_engine.properties | sed 's/.*= *//g')
+- TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
+- ./.travis/build_installers $TAGGED_VERSION
+- ./.travis/push_tag $TAGGED_VERSION
+- ./.travis/push_maps
 deploy:
   provider: releases
   api_key:
