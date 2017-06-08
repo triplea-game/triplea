@@ -70,7 +70,7 @@ public class FolderSettings {
     return newFolder;
   }
 
-  private static File createFolderOrUseDefault(String propValue, String defaultPath) {
+  private static File createFolderOrUseDefault(final String propValue, final String defaultPath) {
     if (Strings.nullToEmpty(propValue).isEmpty()) {
       return new File(ClientFileSystemHelper.getUserRootFolder(), defaultPath);
     } else {
