@@ -78,6 +78,7 @@ ext.validateMapsYamlLinks = { yamlFile ->
         def task = null
         while ((task = poll(tasks, { it.done })) != null) {
             def response = task.get()
+            logger.info("Map thumbnail image status ($response.uri): $response.statusCode")
             if (response.statusCode != HttpStatus.SC_OK) {
                 throw new GradleException("$response.uri: map thumbnail image not available ($response.statusCode)")
             }
