@@ -138,24 +138,12 @@ public final class ClientFileSystemHelper {
   }
 
   public static File getUserMapsFolder() {
-    final String path = ClientContext.folderSettings().getDownloadedMapPath();
-
-
-    final File mapsFolder = new File(path);
-    if (!mapsFolder.exists()) {
-      try {
-        mapsFolder.mkdirs();
-      } catch (final SecurityException e) {
-        ClientLogger.logError(e);
-      }
-    }
-    if (!mapsFolder.exists()) {
-      ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
-    }
-    return mapsFolder;
+    return ClientContext.folderSettings().getDownloadedMapPath();
   }
 
-  /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
+  /**
+   * Create a temporary file, checked exceptions are re-thrown as unchecked.
+   */
   public static File createTempFile() {
     try {
       return File.createTempFile("triplea", "tmp");

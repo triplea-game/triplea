@@ -27,9 +27,11 @@ public class LobbyServer {
     return new String[] {TRIPLEA_LOBBY_PORT_PROPERTY};
   }
 
-  /** Creates a new instance of LobbyServer. */
+  /**
+   * Creates a new instance of LobbyServer.
+   */
   public LobbyServer(final int port) {
-    IServerMessenger server;
+    final IServerMessenger server;
     try {
       server = new ServerMessenger(ADMIN_USERNAME, port);
     } catch (final IOException ex) {
@@ -58,13 +60,13 @@ public class LobbyServer {
     try {
       // send args to system properties
       handleCommandLineArgs(args);
+      logger.info("Starting database");
+      // initialize the database
+      Database.getDerbyConnection().close();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, "3303"));
       logger.info("Trying to listen on port:" + port);
       new LobbyServer(port);
-      logger.info("Starting database");
-      // initialize the database
-      Database.getDerbyConnection().close();
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);

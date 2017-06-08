@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -19,7 +18,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ai.AiTab;
 import games.strategy.triplea.settings.battle.calc.BattleCalcTab;
 import games.strategy.triplea.settings.battle.options.BattleOptionsTab;
-import games.strategy.triplea.settings.folders.FoldersTab;
 import games.strategy.triplea.settings.scrolling.ScrollSettingsTab;
 import games.strategy.ui.SwingComponents;
 
@@ -27,24 +25,19 @@ import games.strategy.ui.SwingComponents;
  * Window that contains a tabbed panel with preference categories, each tab contains fields that allow users to update
  * game settings. The window handles generic logic around preferences, each tab will specify configuration values for
  * the settings.
- *
  * <p>
  * Overall layout:
  * </p>
- *
  * <ul>
  * <li>Primary element is a JTabbed pain, the contents are organized into rows, one row per option presented to the
  * user.</li>
  * </ul>
- *
  * <p>
  * Each row consists of: label, swing input, detailed description
  * </p>
- *
  * <p>
  * Then we have some buttons:
  * </p>
- *
  * <ul>
  * <li>default (revert) settings</li>
  * <li>save settings</li>
@@ -66,8 +59,7 @@ public class SettingsWindow extends SwingComponents.ModalJDialog {
         new BattleOptionsTab(ClientContext.battleOptionsSettings()),
         new BattleCalcTab(ClientContext.battleCalcSettings()),
         new AiTab(ClientContext.aiSettings()),
-        new ScrollSettingsTab(ClientContext.scrollSettings()),
-        new FoldersTab(ClientContext.folderSettings())));
+        new ScrollSettingsTab(ClientContext.scrollSettings())));
   }
 
   private SettingsWindow(final SettingsTab<?>... tabs) {
