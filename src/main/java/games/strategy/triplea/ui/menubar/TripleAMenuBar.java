@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
-
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -98,7 +97,6 @@ public class TripleAMenuBar extends JMenuBar {
    * Displays a file chooser dialog for the user to select the file to which the current game should be saved.
    *
    * @param frame The owner of the file chooser dialog; may be {@code null}.
-   *
    * @return The file to which the current game should be saved or {@code null} if the user cancelled the operation.
    */
   public static File getSaveGameLocation(final Frame frame) {
@@ -108,7 +106,7 @@ public class TripleAMenuBar extends JMenuBar {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-      fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath());
+      fileDialog.setDirectory(ClientContext.folderSettings().getSaveGamePath().getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
 

@@ -100,7 +100,7 @@ public class HeadlessGameServer {
         return;
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      Set<String> availableMaps = m_availableGames.getAvailableMapFolderOrZipNames();
+      final Set<String> availableMaps = m_availableGames.getAvailableMapFolderOrZipNames();
       if (!availableMaps.contains(mapNameProperty) && !availableMaps.contains(mapNameProperty + "-master")) {
         System.out.println("Game mapName not in available games listing: " + mapNameProperty);
         return;
@@ -474,8 +474,7 @@ public class HeadlessGameServer {
         GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
         GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
         GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
-        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-        GameRunner.MAP_FOLDER};
+        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME};
   }
 
   String getStatus() {

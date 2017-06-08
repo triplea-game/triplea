@@ -64,7 +64,7 @@ public final class ClientContext {
     mapDownloadController = new MapDownloadController(mapListingSource);
     engineVersion = new EngineVersion(propertyReader);
     scrollSettings = new ScrollSettings();
-    folderSettings = new FolderSettings();
+    folderSettings = new FolderSettings(propertyReader);
     aiSettings = new AiSettings();
     battleCalcSettings = new BattleCalcSettings();
     battleOptionsSettings = new BattleOptionsSettings();

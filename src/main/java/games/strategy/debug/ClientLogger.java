@@ -7,12 +7,12 @@ public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
 
-  public static void logQuietly(final Throwable e) {
-    log(developerOutputStream, e);
-  }
-
   private static void log(final PrintStream stream, final Throwable e) {
     e.printStackTrace(stream);
+  }
+
+  public static void logQuietly(final Throwable e) {
+    log(developerOutputStream, e);
   }
 
   public static void logQuietly(final String msg) {
@@ -46,5 +46,16 @@ public class ClientLogger {
   public static void logError(final String msg, final Collection<? extends Throwable> throwables) {
     logError(msg);
     throwables.forEach(ClientLogger::logError);
+  }
+
+  public static FatalErrorException fatal(final String error) {
+    logError("Fatal error: " + error);
+    return new FatalErrorException(error);
+  }
+
+  public static class FatalErrorException extends RuntimeException {
+    private FatalErrorException(final String msg) {
+      super(msg);
+    }
   }
 }

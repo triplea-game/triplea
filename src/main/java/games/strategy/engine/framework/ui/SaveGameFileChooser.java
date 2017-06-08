@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -16,6 +15,7 @@ public class SaveGameFileChooser extends JFileChooser {
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
   private static SaveGameFileChooser s_instance;
+
 
   public enum AUTOSAVE_TYPE {
     AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
@@ -65,11 +65,11 @@ public class SaveGameFileChooser extends JFileChooser {
     super();
     setFileFilter(createGameDataFileFilter());
     ensureMapsFolderExists();
-    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
+    setCurrentDirectory(ClientContext.folderSettings().getSaveGamePath());
   }
 
   public static void ensureMapsFolderExists() {
-    ensureDirectoryExists(new File(ClientContext.folderSettings().getSaveGamePath()));
+    ensureDirectoryExists(ClientContext.folderSettings().getSaveGamePath());
   }
 
   private static void ensureDirectoryExists(final File f) {

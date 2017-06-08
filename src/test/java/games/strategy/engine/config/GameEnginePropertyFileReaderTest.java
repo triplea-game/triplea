@@ -24,7 +24,7 @@ public class GameEnginePropertyFileReaderTest {
         testObj.readProperty(propKey), is("1"));
   }
 
-  @Test(expected = PropertyNotFoundException.class)
+  @Test(expected = IllegalStateException.class)
   public void testEmptyCase() {
     final String input = "";
 

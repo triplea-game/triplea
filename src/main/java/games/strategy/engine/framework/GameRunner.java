@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -56,6 +55,7 @@ public class GameRunner {
   public enum GameMode {
     SWING_CLIENT, HEADLESS_BOT
   }
+
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -105,17 +105,15 @@ public class GameRunner {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
-  public static final String MAP_FOLDER = "mapFolder";
-
-  private static String[] COMMAND_LINE_ARGS =
+  private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
-          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
+          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET};
 
 
-  private static void usage(GameMode gameMode) {
+  private static void usage(final GameMode gameMode) {
     if (gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
           + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
@@ -133,7 +131,6 @@ public class GameRunner {
           + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
           + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
           + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
-          + "   " + MAP_FOLDER + "=mapFolder"
           + "\n"
           + "   You must start the Name and HostedBy with \"Bot\".\n"
           + "   Game Comments must have this string in it: \"automated_host\".\n"
@@ -211,7 +208,8 @@ public class GameRunner {
   /**
    * Move command line arguments to System.properties
    */
-  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
+  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties,
+      final GameMode gameMode) {
     if (args.length == 1 && !args[0].contains("=")) {
       // assume a default single arg, convert the format so we can process as normally.
       args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
@@ -219,7 +217,7 @@ public class GameRunner {
 
     boolean usagePrinted = false;
     for (final String arg : args) {
-      String key;
+      final String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
         key = arg.substring(0, indexOf);
@@ -335,14 +333,10 @@ public class GameRunner {
     }
   }
 
-  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
+  private static boolean setSystemProperty(final String key, final String value, final String[] availableProperties) {
     for (final String property : availableProperties) {
       if (key.equals(property)) {
-        if (property.equals(MAP_FOLDER)) {
-          SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
-        } else {
-          System.getProperties().setProperty(property, value);
-        }
+        System.getProperties().setProperty(property, value);
         System.out.println(property + ":" + value);
         return true;
       }
@@ -358,15 +352,15 @@ public class GameRunner {
     return arg.substring(index + 1);
   }
 
-  private static void setupLogging(GameMode gameMode) {
+  private static void setupLogging(final GameMode gameMode) {
     if (gameMode == GameMode.SWING_CLIENT) {
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
-        protected void dispatchEvent(AWTEvent newEvent) {
+        protected void dispatchEvent(final AWTEvent newEvent) {
           try {
             super.dispatchEvent(newEvent);
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-          } catch (Throwable t) {
+          } catch (final Throwable t) {
             ClientLogger.logError(t);
             throw t;
           }
@@ -552,7 +546,7 @@ public class GameRunner {
    * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -795,7 +789,7 @@ public class GameRunner {
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
       boolean allFramesClosed = true;
-      for (Frame f : Frame.getFrames()) {
+      for (final Frame f : Frame.getFrames()) {
         if (f.isVisible()) {
           allFramesClosed = false;
           break;
