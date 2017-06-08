@@ -1,13 +1,24 @@
 #!/bin/bash
+#
+# This script pushes a tag to github, that creates a github release and triggers a travis release build
+# which then builds the release artifacts and deploys them to the github release.
+#
+# Note, the tag itself is also considered a branch and trigger an extraneous branch build in travis.
+#
 
-echo "Configure Git and PUSH A TAG - this trigger and execute the deploy section of this same build file, in the same travis linux container (skip_cleanup setting below is important)"
+TAG_VALUE=$1
+
+set -u
+
 git config --global user.email "tripleabuilderbot@gmail.com"
 git config --global user.name "tripleabuilderbot"
 
-echo "Delete previous tag if it exists, this way we can restart builds and regenerate artifacts in case anything goes wrong"
-git tag -d "$TAGGED_VERSION"
-git push origin ":refs/tags/$TAGGED_VERSION"
+echo "Attempting to delete tag $TAG_VALUE, this is so we will recreate the release if this build is being re-run. Ignore any errors from this"
+git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --delete "refs/tags/$TAG_VALUE"
+echo "Done deleting existing tag if it existed."
 
-echo "Push a tag to trigger github releases deployment"
-git tag $TAGGED_VERSION -a -m "$TAGGED_VERSION"
-git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags 2>&1 | sed 's|https://.*github|https://[secure]@github|'
+git tag "$TAG_VALUE" -a -f -m "$TAG_VALUE"
+
+echo "Pushing tag: $TAG_VALUE to github to trigger releases deployment"
+git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags
+

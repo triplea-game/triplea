@@ -64,7 +64,7 @@ public class LobbyServer {
       new LobbyServer(port);
       logger.info("Starting database");
       // initialize the database
-      Database.getConnection().close();
+      Database.getDerbyConnection().close();
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);

@@ -114,11 +114,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
       m_bridge.addChange(change);
       if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
-        final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa,
+        final Change changeVp = (ChangeFactory.attachmentPropertyChange(pa,
             (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
-        final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-        final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-        m_bridge.addChange(ccVP);
+        final Change changeCaptureVp = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+        final CompositeChange ccVp = new CompositeChange(changeVp, changeCaptureVp);
+        m_bridge.addChange(ccVp);
       }
       endTurnReport.append("<br />").append(addOtherResources(m_bridge));
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
@@ -129,7 +129,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
-      final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
+      final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
       int relationshipUpkeepCostFlat = 0;
       int relationshipUpkeepCostPercentage = 0;
       int relationshipUpkeepTotalCost = 0;
@@ -143,7 +143,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
       if (relationshipUpkeepCostPercentage != 0) {
-        relationshipUpkeepTotalCost += Math.round(gainedPUS * (relationshipUpkeepCostPercentage) / 100f);
+        relationshipUpkeepTotalCost += Math.round(gainedPus * (relationshipUpkeepCostPercentage) / 100f);
       }
       if (relationshipUpkeepCostFlat != 0) {
         relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;

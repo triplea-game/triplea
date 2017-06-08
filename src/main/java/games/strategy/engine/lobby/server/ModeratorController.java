@@ -298,12 +298,8 @@ public class ModeratorController extends AbstractModeratorController {
   @Override
   public boolean isPlayerAdmin(final INode node) {
     final String name = getRealName(node);
-    final DbUserController controller = new DbUserController();
-    final DbUser user = controller.getUser(name);
-    if (user == null) {
-      return false;
-    }
-    return user.isAdmin();
+    final DbUser user = new DbUserController().getUserByName(name);
+    return user != null && user.isAdmin();
   }
 
   @Override
@@ -330,8 +326,7 @@ public class ModeratorController extends AbstractModeratorController {
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
-    final String response = remoteHostUtils.getConnections();
-    return response;
+    return remoteHostUtils.getConnections();
   }
 
   @Override

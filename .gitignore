@@ -12,6 +12,10 @@ testclasses/
 test-results/
 savedGames/
 
+## Derby
+derby.log
+ta_users/
+
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
 

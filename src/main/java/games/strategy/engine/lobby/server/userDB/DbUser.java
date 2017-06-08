@@ -1,42 +1,134 @@
 package games.strategy.engine.lobby.server.userDB;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collection;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.util.Util;
 
 public class DbUser {
-  private final String name;
-  private final String email;
-  private final boolean isAdmin;
-  private final Date lastLogin;
-  private final Date joined;
+  private final UserName userName;
+  private final UserEmail userEmail;
+  private final Role userRole;
+
+  @VisibleForTesting
+  static final Collection<String> forbiddenNameParts =
+      Arrays.asList(InGameLobbyWatcher.LOBBY_WATCHER_NAME, "admin");
+
+  public enum Role {
+    NOT_ADMIN, ADMIN
+  }
+
+  /** Value object with validation methods. */
+  public static class UserName {
+    public final String userName;
+
+    public UserName(String userName) {
+      this.userName = userName;
+    }
+
+    String validate() {
+      if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
+        return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
+      }
+      if (userName.toLowerCase().contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME.toLowerCase())) {
+        return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
+      }
+      if (userName.toLowerCase().contains("admin")) {
+        return "Name can't contain the word admin";
+      }
+      return null;
+    }
+  }
+
+
+
+  public static class UserEmail {
+    public final String userEmail;
+
+    public UserEmail(String userEmail) {
+      this.userEmail = userEmail;
+    }
+
+    String validate() {
+      if (userEmail == null || userEmail.isEmpty() || !Util.isMailValid(userEmail)) {
+        return "Invalid email address";
+      }
+      return null;
+    }
+  }
 
   /**
-   * All-arg value object constructor.
+   *  Convenience constructor for non-admin users.
    */
-  public DbUser(final String name, final String email, final boolean isAdmin, final Date lastLogin, final Date joined) {
-    this.name = name;
-    this.email = email;
-    this.isAdmin = isAdmin;
-    this.lastLogin = lastLogin;
-    this.joined = joined;
+  public DbUser(UserName name, UserEmail email) {
+    this(name, email, Role.NOT_ADMIN);
+  }
+
+
+  public String getName() {
+    return userName.userName;
   }
 
   public String getEmail() {
-    return email;
+    return userEmail.userEmail;
   }
 
   public boolean isAdmin() {
-    return isAdmin;
+    return userRole == Role.ADMIN;
   }
 
-  public Date getJoined() {
-    return joined;
+  /**
+   * An all-args constructor.
+   */
+  public DbUser(UserName name, UserEmail email, Role role) {
+    this.userName = name;
+    this.userEmail = email;
+    this.userRole = role;
   }
 
-  public Date getLastLogin() {
-    return lastLogin;
+  public boolean isValid() {
+    return getValidationErrorMessage() == null;
   }
 
-  public String getName() {
-    return name;
+  public static boolean isValidUserName(String userName) {
+    return new UserName(userName).validate() == null;
+  }
+
+  /**
+   * Returns an error message String if there are validation errors, otherwise null.
+   */
+  public String getValidationErrorMessage() {
+    if (userName.validate() == null && userEmail.validate() == null) {
+      return null;
+    }
+    return userName.validate() + " " + userEmail.validate();
+  }
+
+  /**
+   * Example usage:
+   * <pre><code>
+   *   String proposedUserName = getUserInput();
+   *   if(!DbUser.isValidUserName(proposedUserName)) {
+   *     String validationErrorMessage =  DbUser.getUserNameValidationErrorMessage(proposedUserName();
+   *     showMessageToUser("User name is invalid: " + validationErrorMessage);
+   *   }
+   * </code>
+   * </pre>
+   * @return Assuming an invalid user name - returns an error message String.
+   * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
+   */
+  public static String getUserNameValidationErrorMessage(String userName) {
+    return new UserName(userName).validate();
+  }
+
+
+  @Override
+  public String toString() {
+    return "name: " + userName.userName
+        + ", email: " + userEmail.userEmail
+        + ", role: " + userRole;
   }
 }
