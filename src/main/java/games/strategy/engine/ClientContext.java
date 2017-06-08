@@ -15,10 +15,10 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  * One instance of this class should map to one application instance (effectively a singleton).
  * Main benefit is we get a centralized location to create objects, which lets us more easily
  * manage common dependencies.
- *
- * single centralized place to create injected objects. This lets us
+ * <p>
+ * Single centralized place to create injected objects. This lets us
  * deal with the dependencies of object creation in a single place.
- *
+ * </p><p>
  * Example usage:
  * <pre><code>
  *   // before
@@ -43,6 +43,7 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  *     :
  *   }
  * </code></pre>
+ * </p>
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
