@@ -12,34 +12,28 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
 
 /**
  * Manages the creation of objects, similar to a dependency injection framework.
- * One instance of this class should map to one application instance (effectively a singleton).
- * Main benefit is we get a centralized location to create objects, which lets us more easily
- * manage common dependencies.
- * <p>
- * Single centralized place to create injected objects. This lets us
- * deal with the dependencies of object creation in a single place.
- * </p><p>
+ * Use this class to manage singletons and as a factory to create objects that have shared
+ * dependencies already managed by this class.
  * Example usage:
  * <pre><code>
  *   // before
- *   public void clientCode() {
- *     doSwingStuff();
- *   }
- *
- *   public void doSwingStuff(UserSettings userSettings) {
- *     int preferenceValue = new UserSettings(SettingsGlobal.getInstance()).getNumberPreference();
+ *   public void clientCode(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
+ *     swingStuff(sharedDependencyWiredThroughAllTheMethods);
  *     :
+ *   }
+ *   private void swingStuff(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
+ *     int preferenceValue = new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
  *     :
  *   }
  *
  *   // after
  *   public void clientCode() {
  *     doSwingStuff(ClientContext.userSettings());
+ *     :
  *   }
  *
- *   public void doSwingStuff(UserSettings settings) {
+ *   private void doSwingStuff(UserSettings settings) {
  *     int preferenceValue = settings.getNumberPreference();
- *     :
  *     :
  *   }
  * </code></pre>
