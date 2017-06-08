@@ -2,8 +2,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import org.apache.http.HttpStatus
-import org.apache.http.client.methods.HttpHead
-import org.apache.http.impl.client.HttpClients
+import org.asynchttpclient.DefaultAsyncHttpClient
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 
@@ -16,9 +15,24 @@ buildscript {
         classpath group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.8.1'
         classpath group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.8'
         classpath group: 'com.github.fge', name: 'json-schema-validator', version: '2.2.6'
-        classpath group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+        classpath group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.6'
+        classpath group: 'org.asynchttpclient', name: 'async-http-client', version: '2.0.32'
         classpath group: 'org.yaml', name: 'snakeyaml', version: '1.18'
     }
+}
+
+def poll(Collection collection, Closure closure) {
+    if (collection.empty) {
+        return null
+    }
+
+    def value = null
+    while ((value = collection.find(closure)) == null) {
+        Thread.yield()
+    }
+
+    collection.remove(value)
+    return value
 }
 
 // Temporary until SnakeYAML defaults to no duplicate keys per YAML 1.2 spec
@@ -53,17 +67,19 @@ ext.validateMapsYamlLinks = { yamlFile ->
     def maps = yaml.load(yamlFile.text)
     def imageUrls = maps . collect { it['img'] } . findAll { it != null }
 
-    def client = HttpClients.createDefault()
-    imageUrls.each {
-        try {
-            def request = new HttpHead(it)
-            def response  = client.execute(request)
-            if (response.statusLine.statusCode != HttpStatus.SC_OK) {
-                throw new GradleException("$it: map thumbnail image not available")
+    def client = new DefaultAsyncHttpClient()
+    try {
+        def tasks = imageUrls.collect { client.prepareHead(it).execute() }
+
+        def task = null
+        while ((task = poll(tasks, { it.done })) != null) {
+            def response = task.get()
+            if (response.statusCode != HttpStatus.SC_OK) {
+                throw new GradleException("$response.uri: map thumbnail image not available ($response.statusCode)")
             }
-        } catch (Exception e) {
-            throw new GradleException("$it: failure during map thumbnail image request", e)
         }
+    } finally {
+        client.close()
     }
 }
 
