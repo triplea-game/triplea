@@ -47,7 +47,7 @@ public class FolderSettings {
       final Function<File, Boolean> fileMaker) {
 
     final String folderPath = propertyReader.readProperty(target, defaultValue);
-    File newFolder = createFolderOrUseDefault(folderPath, DEFAULT_MAP_FOLDER);
+    File newFolder = createFolderOrUseDefault(folderPath, defaultValue);
 
     if (newFolder.exists()) {
       Preconditions.checkState(newFolder.isDirectory(), newFolder.getAbsolutePath() + " should be a directory");
@@ -56,7 +56,7 @@ public class FolderSettings {
 
     if (!fileMaker.apply(newFolder)) {
       // failed to create, try the default
-      newFolder = new File(ClientFileSystemHelper.getUserRootFolder(), DEFAULT_MAP_FOLDER);
+      newFolder = new File(ClientFileSystemHelper.getUserRootFolder(), defaultValue);
       ClientLogger.logError(
           "Failed to create folder: " + newFolder.getAbsolutePath()
               + ", falling back to default: " + newFolder.getAbsolutePath());

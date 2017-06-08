@@ -29,7 +29,7 @@ public class FolderSettingsTest {
   public void folderCreateAlwaysFails() {
     Mockito.when(mockPropertyReader.readProperty(eq(GameEngineProperty.MAP_FOLDER), anyString()))
         .thenReturn("test_folder_value_would_not_exist");
-    new FolderSettings(mockPropertyReader, file -> false, "defaultMapFolder", "defaultSaveFolder");
+    new FolderSettings(mockPropertyReader, file -> false, "some_default1", "some_default2");
   }
 
   @Test
