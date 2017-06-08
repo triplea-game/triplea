@@ -47,8 +47,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private JLabel m_engineVersionText;
   private JLabel m_nameText;
   private JLabel m_versionText;
-  private JLabel m_fileNameLabel;
-  private JLabel m_fileNameText;
   private JLabel m_nameLabel;
   private JLabel m_versionLabel;
   private JLabel m_roundLabel;
@@ -90,9 +88,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
       } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
       }
     }
-    m_fileNameText.setText(getFormattedFileNameText(fileName,
-        Math.max(22, 3 + m_nameText.getText().length() + m_nameLabel.getText().length())));
-    m_fileNameText.setToolTipText(fileName);
   }
 
   /**
@@ -136,11 +131,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
     m_nameLabel = new JLabel("Map Name:");
     m_versionLabel = new JLabel("Map Version:");
     m_roundLabel = new JLabel("Game Round:");
-    m_fileNameLabel = new JLabel("File Name:");
     m_nameText = new JLabel();
     m_versionText = new JLabel();
     m_roundText = new JLabel();
-    m_fileNameText = new JLabel();
     m_loadNewGame = new JButton("Select Map");
     m_loadNewGame.setToolTipText("<html>Select a game from all the maps/games that come with TripleA, <br>and the ones "
         + "you have downloaded.</html>");
@@ -167,13 +160,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
     add(m_roundLabel, buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
     add(m_roundText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
 
-    add(m_fileNameLabel, buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
+    add(m_loadNewGame, buildGridRow(0, 4, new Insets(25, 10, 10, 10)));
 
-    add(m_fileNameText, buildGridRow(0, 5, new Insets(0, 10, 3, 5)));
-
-    add(m_loadNewGame, buildGridRow(0, 6, new Insets(25, 10, 10, 10)));
-
-    add(m_loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
+    add(m_loadSavedGame, buildGridRow(0, 5, new Insets(0, 10, 10, 10)));
 
     JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
