@@ -52,9 +52,9 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = GameRunner.getDelayedParsing();
+      boolean delayParsing = true;
       gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
-      gameDataFullyLoaded = !delayParsing;
+      gameDataFullyLoaded = false;
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
@@ -72,7 +72,8 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName, false);
+      boolean delayParsing = false;
+      gameData = new GameParser(url.toString()).parse(input, gameName, delayParsing);
       gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {

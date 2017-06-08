@@ -19,9 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -57,15 +55,14 @@ public class GameRunner {
     SWING_CLIENT, HEADLESS_BOT
   }
 
+
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
   public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
   public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   public static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
-  // not arguments:
   public static final int PORT = 3300;
-  private static final String DELAYED_PARSING = "DelayedParsing";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -89,7 +86,6 @@ public class GameRunner {
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   // non-commandline-argument-properties (for preferences)
-  // first time we've run this version of triplea?
   private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
@@ -107,7 +103,7 @@ public class GameRunner {
 
   public static final String MAP_FOLDER = "mapFolder";
 
-  private static String[] COMMAND_LINE_ARGS =
+  private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
@@ -115,7 +111,7 @@ public class GameRunner {
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
 
 
-  private static void usage(GameMode gameMode) {
+  private static void usage(final GameMode gameMode) {
     if (gameMode == GameMode.HEADLESS_BOT) {
       System.out.println("\nUsage and Valid Arguments:\n"
           + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
@@ -211,7 +207,8 @@ public class GameRunner {
   /**
    * Move command line arguments to System.properties
    */
-  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties, GameMode gameMode) {
+  public static void handleCommandLineArgs(final String[] args, final String[] availableProperties,
+      final GameMode gameMode) {
     if (args.length == 1 && !args[0].contains("=")) {
       // assume a default single arg, convert the format so we can process as normally.
       args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
@@ -219,7 +216,7 @@ public class GameRunner {
 
     boolean usagePrinted = false;
     for (final String arg : args) {
-      String key;
+      final String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
         key = arg.substring(0, indexOf);
@@ -335,7 +332,7 @@ public class GameRunner {
     }
   }
 
-  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
+  private static boolean setSystemProperty(final String key, final String value, final String[] availableProperties) {
     for (final String property : availableProperties) {
       if (key.equals(property)) {
         if (property.equals(MAP_FOLDER)) {
@@ -358,15 +355,15 @@ public class GameRunner {
     return arg.substring(index + 1);
   }
 
-  private static void setupLogging(GameMode gameMode) {
+  private static void setupLogging(final GameMode gameMode) {
     if (gameMode == GameMode.SWING_CLIENT) {
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
         @Override
-        protected void dispatchEvent(AWTEvent newEvent) {
+        protected void dispatchEvent(final AWTEvent newEvent) {
           try {
             super.dispatchEvent(newEvent);
             // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-          } catch (Throwable t) {
+          } catch (final Throwable t) {
             ClientLogger.logError(t);
             throw t;
           }
@@ -402,22 +399,6 @@ public class GameRunner {
     try (FileOutputStream fos = new FileOutputStream(systemIni)) {
       toWrite.store(fos, SYSTEM_INI);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
-
-  public static boolean getDelayedParsing() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    return pref.getBoolean(DELAYED_PARSING, true);
-  }
-
-  public static void setDelayedParsing(final boolean delayedParsing) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putBoolean(DELAYED_PARSING, delayedParsing);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
       ClientLogger.logQuietly(e);
     }
   }
@@ -552,7 +533,7 @@ public class GameRunner {
    * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -795,7 +776,7 @@ public class GameRunner {
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
       boolean allFramesClosed = true;
-      for (Frame f : Frame.getFrames()) {
+      for (final Frame f : Frame.getFrames()) {
         if (f.isVisible()) {
           allFramesClosed = false;
           break;

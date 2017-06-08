@@ -55,7 +55,6 @@ class EnginePreferences extends JDialog {
   private final Frame m_parentFrame;
   private JButton m_okButton;
   private JButton m_lookAndFeel;
-  private JButton m_gameParser;
   private JButton m_setupProxies;
   private JButton m_hostWaitTime;
   private JButton m_setMaxMemory;
@@ -83,7 +82,6 @@ class EnginePreferences extends JDialog {
   private void createComponents() {
     m_okButton = new JButton("OK");
     m_lookAndFeel = new JButton("Set Look And Feel");
-    m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
     m_setupProxies = new JButton("Setup Network and Proxy Settings");
     m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
     m_setMaxMemory = new JButton("Set Max Memory Usage");
@@ -107,8 +105,6 @@ class EnginePreferences extends JDialog {
     SoundOptions.addToPanel(buttonsPanel);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_lookAndFeel);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_gameParser);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_setupProxies);
     buttonsPanel.add(new JLabel(" "));
@@ -154,30 +150,6 @@ class EnginePreferences extends JDialog {
             "The look and feel has been applied. Please restart TripleA for it to take full effect",
             new CountDownLatchHandler(true));
       }
-    }));
-    m_gameParser.addActionListener(SwingAction.of("Enable/Disable Delayed Parsing of Game XML's", e -> {
-      // TODO: replace with 2 radio buttons
-      final boolean current = GameRunner.getDelayedParsing();
-      final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
-      final int answer = JOptionPane.showOptionDialog(m_parentFrame,
-          new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" + "<br><br>'" + options[1]
-              + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are "
-              + "valid, but can slow down the game significantly)."
-              + "<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString())
-              + "'</html>"),
-          "Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-          options[2]);
-      if (answer == JOptionPane.CANCEL_OPTION) {
-        return;
-      }
-      final boolean delay = (answer == JOptionPane.YES_OPTION);
-      if (delay == current) {
-        return;
-      }
-      GameRunner.setDelayedParsing(delay);
-      EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors",
-          new CountDownLatchHandler(true));
-
     }));
     m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
       // TODO: this action listener should probably come from the HttpProxy class
