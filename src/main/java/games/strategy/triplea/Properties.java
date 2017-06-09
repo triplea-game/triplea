@@ -538,6 +538,10 @@ public class Properties implements Constants {
     return data.getProperties().get(Constants.getIncomePercentageFor(playerId), 100);
   }
 
+  public static int getPuIncomeBonus(final PlayerID playerId, final GameData data) {
+    return data.getProperties().get(Constants.getPuIncomeBonus(playerId), 0);
+  }
+
   public static int getRelationshipsLastExtraRounds(final GameData data) {
     return data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS, 0);
   }
