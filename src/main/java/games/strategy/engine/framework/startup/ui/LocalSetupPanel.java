@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
@@ -23,6 +25,7 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.ui.SwingAction;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -56,7 +59,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final List<PlayerID> players = data.getPlayerList().getPlayers();
     // if the xml was created correctly, this list will be in turn order. we want to keep it that way.
     int gridx = 0;
-    int gridy = 0;
+    int gridy = 0;       
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel("Use");
       this.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -74,6 +77,10 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final JLabel bonusLabel = new JLabel("Income");
     this.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
+    bonusLabel.setVisible(false);
+    JButton resourceModifiers = new JButton();   
+    this.add(resourceModifiers, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.EAST,
+            GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
@@ -81,8 +88,17 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       m_playerTypes.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, this);
-      }
+        selector.setResourceModifiersVisble(false);
+      }      
     }
+    
+    Action resourceModifiersAction = SwingAction.of("Resource Modifiers", e -> {
+    	boolean isVisible = bonusLabel.isVisible();
+    	bonusLabel.setVisible(!isVisible);
+        m_playerTypes.forEach(row -> row.setResourceModifiersVisble(!isVisible));
+    });
+    resourceModifiers.setAction(resourceModifiersAction);
+    
     validate();
     invalidate();
     setWidgetActivation();

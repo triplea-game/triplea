@@ -114,6 +114,11 @@ class PlayerSelectorRow {
               GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
     }
   }
+  
+  void setResourceModifiersVisble(boolean isVisible) {
+	  incomePercentage.setVisible(isVisible);
+	  incomePercentageLabel.setVisible(isVisible);
+  }
 
   String getPlayerName() {
     return playerName;
