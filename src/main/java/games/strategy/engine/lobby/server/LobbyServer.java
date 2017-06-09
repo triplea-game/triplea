@@ -64,7 +64,7 @@ public class LobbyServer {
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = LobbyContext.lobbyPropertyReader().getPort();
       logger.info("Trying to listen on port:" + port);
-      new LobbyServer(LobbyContext.lobbyPropertyReader().getPort());
+      new LobbyServer(port);
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);
