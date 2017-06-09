@@ -24,8 +24,8 @@ class PlayerSelectorRow {
   private final JCheckBox enabledCheckBox;
   private final String playerName;
   private final JComboBox<String> playerTypes;
-  private JComponent bonusIncomePercentage;
-  private final JLabel bonusIncomePercentageLabel;
+  private JComponent incomePercentage;
+  private final JLabel incomePercentageLabel;
   private boolean enabled = true;
   private final JLabel name;
   private final JLabel alliances;
@@ -68,7 +68,7 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
+    } else if (player.isAiDefault()) {
       // the 4th in the list should be Pro AI (Hard AI)
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
     }
@@ -83,12 +83,12 @@ class PlayerSelectorRow {
     alliances = new JLabel(alliancesLabelText);
 
     // TODO: remove null check for next incompatible release
-    bonusIncomePercentage = null;
-    if (gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)) != null) {
-      bonusIncomePercentage =
-          gameProperties.getPlayerProperty(Constants.getBonusIncomePercentageFor(player)).getEditorComponent();
+    incomePercentage = null;
+    if (gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)) != null) {
+      incomePercentage =
+          gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)).getEditorComponent();
     }
-    bonusIncomePercentageLabel = new JLabel("%");
+    incomePercentageLabel = new JLabel("%");
 
     setWidgetActivation();
   }
@@ -106,10 +106,10 @@ class PlayerSelectorRow {
     container.add(alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
     // TODO: remove null check for next incompatible release
-    if (bonusIncomePercentage != null) {
-      container.add(bonusIncomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+    if (incomePercentage != null) {
+      container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
-      container.add(bonusIncomePercentageLabel,
+      container.add(incomePercentageLabel,
           new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
               GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
     }
