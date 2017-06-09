@@ -535,7 +535,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> routeCondition = new CompositeMatchAnd<>(
         Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsImpassable.invert());
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
-      final Route noAntiAirRoute = Utils.findNearest(t, canLand, routeCondition, data);
+      final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Route aaRoute = Utils.findNearest(t, canLand, Matches.TerritoryIsImpassable.invert(), data);
       final Collection<Unit> airToLand =
           t.getUnits().getMatches(new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player)));
@@ -544,7 +544,7 @@ public class WeakAI extends AbstractAI {
       // simply move first over no aa, then with aa
       // one (but hopefully not both) will be rejected
       moveUnits.add(airToLand);
-      moveRoutes.add(noAntiAirRoute);
+      moveRoutes.add(noAaRoute);
       moveUnits.add(airToLand);
       moveRoutes.add(aaRoute);
     }

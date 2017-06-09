@@ -1165,9 +1165,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
-        final HashMap<String, HashSet<UnitType>> mapAntiAir = taa.getAirborneTargettedByAA();
-        if (mapAntiAir != null && !mapAntiAir.isEmpty()) {
-          for (final Entry<String, HashSet<UnitType>> entry : mapAntiAir.entrySet()) {
+        final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
+        if (mapAa != null && !mapAa.isEmpty()) {
+          for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
             HashSet<UnitType> current = rVal.get(entry.getKey());
             if (current == null) {
               current = new HashSet<>();
@@ -1252,9 +1252,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_AA_RADAR)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAntiAir =
+          final List<UnitType> allAa =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAAforAnything);
-          for (final UnitType aa : allAntiAir) {
+          for (final UnitType aa : allAa) {
             taa.setRadarBonus("1:" + aa.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_SUPER_SUBS)) {

@@ -741,7 +741,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAntiAirOwnership() {
+  public void testAaOwnership() {
     // Set up players
     // PlayerID british = GameDataTestUtil.british(gameData);
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);

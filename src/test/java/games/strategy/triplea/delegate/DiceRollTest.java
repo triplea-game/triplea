@@ -219,7 +219,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAntiAir() {
+  public void testAa() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
@@ -240,7 +240,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAntiAirLowLuck() {
+  public void testAaLowLuck() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -288,7 +288,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAntiAirLowLuckDifferentMovement() {
+  public void testAaLowLuckDifferentMovement() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -314,7 +314,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAntiAirLowLuckWithRadar() throws Exception {
+  public void testAaLowLuckWithRadar() throws Exception {
     gameData = TestMapGameData.WW2V3_1941.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
