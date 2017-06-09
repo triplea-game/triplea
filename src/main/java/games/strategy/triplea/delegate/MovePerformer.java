@@ -87,7 +87,7 @@ public class MovePerformer implements Serializable {
    */
   private void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
       final Collection<Unit> transportsToLoad) {
-    final IExecutable preAntiAirFire = new IExecutable() {
+    final IExecutable preAaFire = new IExecutable() {
       private static final long serialVersionUID = -7945930782650355037L;
 
       @Override
@@ -105,7 +105,7 @@ public class MovePerformer implements Serializable {
       }
     };
     // hack to allow the executables to share state
-    final IExecutable fireAntiAir = new IExecutable() {
+    final IExecutable fireAa = new IExecutable() {
       private static final long serialVersionUID = -3780228078499895244L;
 
       @Override
@@ -131,7 +131,7 @@ public class MovePerformer implements Serializable {
         arrivingUnits = Util.difference(units, aaCasualtiesWithDependents);
       }
     };
-    final IExecutable postAntiAirFire = new IExecutable() {
+    final IExecutable postAaFire = new IExecutable() {
       private static final long serialVersionUID = 670783657414493643L;
 
       @Override
@@ -282,9 +282,9 @@ public class MovePerformer implements Serializable {
         m_moveDelegate.updateUndoableMoves(m_currentMove);
       }
     };
-    m_executionStack.push(postAntiAirFire);
-    m_executionStack.push(fireAntiAir);
-    m_executionStack.push(preAntiAirFire);
+    m_executionStack.push(postAaFire);
+    m_executionStack.push(fireAa);
+    m_executionStack.push(preAaFire);
     m_executionStack.execute(m_bridge);
   }
 
