@@ -1,9 +1,20 @@
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+
+import groovy.transform.TupleConstructor
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.github.fge.jsonschema.main.JsonSchemaFactory
+
 import org.apache.http.HttpStatus
-import org.asynchttpclient.DefaultAsyncHttpClient
-import org.asynchttpclient.DefaultAsyncHttpClientConfig
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.HttpClients;
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 
@@ -16,24 +27,69 @@ buildscript {
         classpath group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.8.1'
         classpath group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.8'
         classpath group: 'com.github.fge', name: 'json-schema-validator', version: '2.2.6'
-        classpath group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.6'
-        classpath group: 'org.asynchttpclient', name: 'async-http-client', version: '2.0.32'
+        classpath group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
         classpath group: 'org.yaml', name: 'snakeyaml', version: '1.18'
     }
 }
 
-def poll(Collection collection, Closure closure) {
-    if (collection.empty) {
-        return null
-    }
+@TupleConstructor
+class UriProbe {
+    String uri
+    Future<Integer> future
+}
 
-    def value = null
-    while ((value = collection.find(closure)) == null) {
-        Thread.yield()
+def checkUriProbes(probes) {
+    probes.forEach {
+        try {
+            def statusCode = it.future.get()
+            if (statusCode != HttpStatus.SC_OK) {
+                throw new GradleException("$it.uri: map resource not available ($statusCode)")
+            }
+        } catch (ExecutionException e) {
+            throw new GradleException("$it.uri: error requesting map resource ($e.cause.message)", e.cause)
+        }
     }
+}
 
-    collection.remove(value)
-    return value
+def newHttpClient() {
+    return HttpClients.custom()
+            .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build())
+            .build()
+}
+
+def parseMapsYamlUris(yamlFile) {
+    def yaml = new Yaml()
+    def maps = yaml.load(yamlFile.text)
+    def downloadUris = maps.collect { it['url'] }
+    def thumbnailUris = maps.collect { it['img'] }
+    return (downloadUris + thumbnailUris).findAll { it != null }
+}
+
+def probeUris(uris) {
+    def maxInFlightProbes = 5
+    def aggregateProbeTimeoutInMinutes = 5
+
+    newHttpClient().withCloseable { client ->
+        def probes = []
+
+        def executor = Executors.newFixedThreadPool(maxInFlightProbes)
+        uris.each { uri ->
+            probes << new UriProbe(uri, executor.submit({
+                def request = new HttpHead(uri)
+                client.execute(request).withCloseable { response ->
+                    def statusCode = response.statusLine.statusCode
+                    logger.info("URI probe result for '$uri': $statusCode")
+                    return statusCode
+                }
+            } as Callable))
+        }
+        executor.shutdown()
+        if (!executor.awaitTermination(aggregateProbeTimeoutInMinutes, TimeUnit.MINUTES)) {
+            throw new GradleException("timed out waiting for URI probes to complete")
+        }
+
+        return probes
+    }
 }
 
 // Temporary until SnakeYAML defaults to no duplicate keys per YAML 1.2 spec
@@ -63,29 +119,10 @@ def validateSchema(yamlFile, jsonSchemaFile) {
     }
 }
 
-ext.validateMapsYamlLinks = { yamlFile ->
-    def yaml = new Yaml()
-    def maps = yaml.load(yamlFile.text)
-    def imageUrls = maps . collect { it['img'] } . findAll { it != null }
-
-    def clientConfig = new DefaultAsyncHttpClientConfig.Builder()
-            .setFollowRedirect(true)
-            .build()
-    def client = new DefaultAsyncHttpClient(clientConfig)
-    try {
-        def tasks = imageUrls.collect { client.prepareHead(it).execute() }
-
-        def task = null
-        while ((task = poll(tasks, { it.done })) != null) {
-            def response = task.get()
-            logger.info("Map thumbnail image status ($response.uri): $response.statusCode")
-            if (response.statusCode != HttpStatus.SC_OK) {
-                throw new GradleException("$response.uri: map thumbnail image not available ($response.statusCode)")
-            }
-        }
-    } finally {
-        client.close()
-    }
+ext.validateMapsYamlUris = { yamlFile ->
+    def uris = parseMapsYamlUris(yamlFile)
+    def probes = probeUris(uris)
+    checkUriProbes(probes)
 }
 
 ext.validateYaml = { yamlFile, jsonSchemaFile ->

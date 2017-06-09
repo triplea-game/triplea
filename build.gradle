@@ -129,7 +129,7 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 
         def mapsYamlFile = file('triplea_maps.yaml')
         validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
-        validateMapsYamlLinks(mapsYamlFile)
+        validateMapsYamlUris(mapsYamlFile)
     }
 }
 
