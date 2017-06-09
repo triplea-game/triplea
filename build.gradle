@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'com.install4j.gradle' version '6.1.2'
@@ -102,6 +103,13 @@ task integTest(type: Test) {
     }
 
     mustRunAfter tasks.test
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
 
 def assetsDirectory = file("${buildDir}/assets")
@@ -211,7 +219,7 @@ gradle.taskGraph.whenReady { graph ->
 }
 
 check {
-    dependsOn 'integTest', 'validateYamls'
+    dependsOn 'integTest', 'validateYamls', 'jacocoTestReport'
 }
 
 checkstyle {
