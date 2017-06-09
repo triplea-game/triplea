@@ -25,7 +25,7 @@ public class LobbyServer {
 
   /** Creates a new instance of LobbyServer. */
   public LobbyServer(final int port) {
-    IServerMessenger server;
+    final IServerMessenger server;
     try {
       server = new ServerMessenger(ADMIN_USERNAME, port);
     } catch (final IOException ex) {
