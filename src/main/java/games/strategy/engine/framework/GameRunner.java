@@ -36,7 +36,6 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
@@ -101,14 +100,14 @@ public class GameRunner {
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
   public static final String MAP_FOLDER = "mapFolder";
+  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
-  private static String[] COMMAND_LINE_ARGS =
+  private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
-
 
 
   /**
@@ -160,7 +159,7 @@ public class GameRunner {
         + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
         + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
         + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
         + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
         + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
         + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
@@ -207,11 +206,11 @@ public class GameRunner {
   private static void setupLogging() {
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
       @Override
-      protected void dispatchEvent(AWTEvent newEvent) {
+      protected void dispatchEvent(final AWTEvent newEvent) {
         try {
           super.dispatchEvent(newEvent);
           // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
           ClientLogger.logError(t);
           throw t;
         }
@@ -402,7 +401,7 @@ public class GameRunner {
    * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -645,7 +644,7 @@ public class GameRunner {
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
       boolean allFramesClosed = true;
-      for (Frame f : Frame.getFrames()) {
+      for (final Frame f : Frame.getFrames()) {
         if (f.isVisible()) {
           allFramesClosed = false;
           break;

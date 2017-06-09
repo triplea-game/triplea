@@ -10,15 +10,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
 /**
- * Reads property values from the game engine configuration file.
- * 
- * @see PropertyReader for a complete listing of property keys
+ * Reads key value property pairs from a properties configuration file.
  */
-public class PropertyFileReader implements PropertyReader {
+class PropertyFileReader {
 
   private final File propertyFile;
 
-  PropertyFileReader(String propertyFile) {
+  PropertyFileReader(final String propertyFile) {
     this(new File(propertyFile));
   }
 
@@ -28,7 +26,7 @@ public class PropertyFileReader implements PropertyReader {
   }
 
 
-  protected String readProperty(final String propertyKey) {
+  String readProperty(final String propertyKey) {
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
