@@ -56,8 +56,6 @@ public class LobbyServer {
    */
   public static void main(final String[] args) {
     try {
-      // send args to system properties
-      handleCommandLineArgs(args);
       logger.info("Starting database");
       // initialize the database
       Database.getDerbyConnection().close();

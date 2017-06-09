@@ -100,7 +100,6 @@ public class GameRunner {
           DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
   public static final String MAP_FOLDER = "mapFolder";
-  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
   private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
@@ -447,7 +446,7 @@ public class GameRunner {
       final String value = System.getProperty(property);
       if (value != null) {
         commands.add("-D" + property + "=" + value);
-      } else if (GameRunner.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+      } else if (GameRunner.LOBBY_HOST.equals(property) || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
           || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
@@ -471,7 +470,7 @@ public class GameRunner {
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+        .add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
             + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
