@@ -219,7 +219,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAA() {
+  public void testAa() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
@@ -240,7 +240,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAALowLuck() {
+  public void testAaLowLuck() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -288,7 +288,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAALowLuckDifferentMovement() {
+  public void testAaLowLuckDifferentMovement() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final PlayerID russians = GameDataTestUtil.russians(gameData);
@@ -314,7 +314,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testAALowLuckWithRadar() throws Exception {
+  public void testAaLowLuckWithRadar() throws Exception {
     gameData = TestMapGameData.WW2V3_1941.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
@@ -397,7 +397,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testLHTRBomberDefend() {
+  public void testLhtrBomberDefend() {
     final PlayerID british = GameDataTestUtil.british(gameData);
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
@@ -413,7 +413,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testHeavyBombersLHTR() {
+  public void testHeavyBombersLhtr() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
@@ -432,7 +432,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testHeavyBombersLHTR2() {
+  public void testHeavyBombersLhtr2() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
@@ -450,7 +450,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testHeavyBombersDefendLHTR() {
+  public void testHeavyBombersDefendLhtr() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);

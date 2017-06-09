@@ -14,7 +14,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
     m_delegate = delegate;
   }
 
-  public boolean wrappedEquals(final Object other) {
+  private boolean wrappedEquals(final Object other) {
     if (other == this) {
       return true;
     }

@@ -535,7 +535,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> routeCondition = new CompositeMatchAnd<>(
         Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsImpassable.invert());
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
-      final Route noAARoute = Utils.findNearest(t, canLand, routeCondition, data);
+      final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Route aaRoute = Utils.findNearest(t, canLand, Matches.TerritoryIsImpassable.invert(), data);
       final Collection<Unit> airToLand =
           t.getUnits().getMatches(new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player)));
@@ -544,7 +544,7 @@ public class WeakAI extends AbstractAI {
       // simply move first over no aa, then with aa
       // one (but hopefully not both) will be rejected
       moveUnits.add(airToLand);
-      moveRoutes.add(noAARoute);
+      moveRoutes.add(noAaRoute);
       moveUnits.add(airToLand);
       moveRoutes.add(aaRoute);
     }
@@ -809,8 +809,8 @@ public class WeakAI extends AbstractAI {
       defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount();
     }
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int totPU = player.getResources().getQuantity(PUs);
-    int leftToSpend = totPU;
+    final int totalPu = player.getResources().getQuantity(PUs);
+    int leftToSpend = totalPu;
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
@@ -863,7 +863,7 @@ public class WeakAI extends AbstractAI {
       //
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
       // place all our units here
-      int maxUnits = (totPU - 1) / minimumUnitPrice;
+      int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : rrules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {

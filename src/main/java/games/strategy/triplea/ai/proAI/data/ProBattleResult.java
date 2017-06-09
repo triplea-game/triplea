@@ -23,11 +23,11 @@ public class ProBattleResult {
     battleRounds = 0;
   }
 
-  public ProBattleResult(final double winPercentage, final double TUVSwing, final boolean hasLandUnitRemaining,
+  public ProBattleResult(final double winPercentage, final double tuvSwing, final boolean hasLandUnitRemaining,
       final List<Unit> averageAttackersRemaining, final List<Unit> averageDefendersRemaining,
       final double battleRounds) {
     this.winPercentage = winPercentage;
-    this.TUVSwing = TUVSwing;
+    this.TUVSwing = tuvSwing;
     this.hasLandUnitRemaining = hasLandUnitRemaining;
     this.averageAttackersRemaining = averageAttackersRemaining;
     this.averageDefendersRemaining = averageDefendersRemaining;

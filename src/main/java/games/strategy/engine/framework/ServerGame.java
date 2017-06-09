@@ -358,8 +358,12 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveBefore(final IDelegate currentDelegate) {
-    final String stepName = currentDelegate.getName();
-    autoSave("autosaveBefore" + stepName.substring(0,1).toUpperCase() + stepName.substring(1) + ".tsvg");
+    autoSave(getAutoSaveBeforeFileName(currentDelegate.getName()));
+  }
+
+  private static String getAutoSaveBeforeFileName(final String stepName) {
+    final String baseFileName = "autosaveBefore" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
+    return GameDataFileUtils.addExtension(baseFileName);
   }
 
   @Override
@@ -419,8 +423,7 @@ public class ServerGame extends AbstractGame {
     final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
     if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
-      autoSave("autosaveAfter" + currentStep.getName().substring(0,1).toUpperCase()
-          + currentStep.getName().substring(1) + ".tsvg");
+      autoSave(getAutoSaveAfterFileNameForGameStep(currentStep));
     }
     endStep();
     if (m_isGameOver) {
@@ -432,10 +435,23 @@ public class ServerGame extends AbstractGame {
           ? SaveGameFileChooser.getAutoSaveEvenFileName() : SaveGameFileChooser.getAutoSaveOddFileName());
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
-      final String typeName = currentDelegate.getClass().getTypeName();
-      final String phaseName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-      autoSave("autosaveAfter" + phaseName.substring(0,1).toUpperCase() + phaseName.substring(1) + ".tsvg");
+      autoSave(getAutoSaveAfterFileNameForDelegate(currentDelegate));
     }
+  }
+
+  private static String getAutoSaveAfterFileNameForGameStep(final GameStep gameStep) {
+    return getAutoSaveAfterFileName(gameStep.getName());
+  }
+
+  private static String getAutoSaveAfterFileNameForDelegate(final IDelegate delegate) {
+    final String typeName = delegate.getClass().getTypeName();
+    final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
+    return getAutoSaveAfterFileName(stepName);
+  }
+
+  private static String getAutoSaveAfterFileName(final String stepName) {
+    final String baseFileName = "autosaveAfter" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
+    return GameDataFileUtils.addExtension(baseFileName);
   }
 
   /**
@@ -502,24 +518,24 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerID = getCurrentStep().getPlayerID();
+    final PlayerID playerId = getCurrentStep().getPlayerID();
     // no player specified for the given step
-    if (playerID == null) {
+    if (playerId == null) {
       return;
     }
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final IGamePlayer player = m_gamePlayers.get(playerID);
+    final IGamePlayer player = m_gamePlayers.get(playerId);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
-      final INode destination = m_playerManager.getNode(playerID.getName());
+      final INode destination = m_playerManager.getNode(playerId.getName());
       final IGameStepAdvancer advancer =
           (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      advancer.startPlayerStep(getCurrentStep().getName(), playerID);
+      advancer.startPlayerStep(getCurrentStep().getName(), playerId);
     }
   }
 

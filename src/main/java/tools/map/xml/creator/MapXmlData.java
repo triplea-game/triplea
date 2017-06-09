@@ -14,11 +14,11 @@ import games.strategy.util.Triple;
 
 public class MapXmlData {
   private String notes = "";
-  private File mapXMLFile;
+  private File mapXmlFile;
 
   private Map<String, String> xmlStringsMap = Maps.newLinkedHashMap();
   private List<String> resourceList = new ArrayList<>();
-  private Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap =
+  private Map<String, Map<TerritoryDefinitionDialog.Definition, Boolean>> territoryDefintionsMap =
       Maps.newHashMap();
   private Map<String, Set<String>> territoryConnectionsMap = Maps.newHashMap();
   private List<String> playerNames = new ArrayList<>();
@@ -44,43 +44,7 @@ public class MapXmlData {
     initialize();
   }
 
-  public MapXmlData(final Map<String, String> xmlStringsMap, final List<String> resourceList,
-      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap,
-      final Map<String, Set<String>> territoryConnectionsMap, final List<String> playerNames,
-      final Map<String, String> playerAllianceMap,
-      final Map<String, Integer> playerInitResourcesMap, final Map<String, List<Integer>> unitDefinitionsMap,
-      final Map<String, List<String>> gamePlaySequenceMap,
-      final Map<String, Triple<String, String, Integer>> playerSequenceMap,
-      final Map<String, List<String>> technologyDefinitionsMap, final Map<String, List<String>> productionFrontiersMap,
-      final Map<String, List<String>> unitAttachmentsMap, final Map<String, Integer> territoyProductionsMap,
-      final Map<String, CanalTerritoriesTuple> canalDefinitionsMap,
-      final Map<String, String> territoryOwnershipsMap,
-      final Map<String, Map<String, Map<String, Integer>>> unitPlacementsMap,
-      final Map<String, List<String>> gameSettingsMap,
-      final String notes, final File mapXMLFile) {
-    this.xmlStringsMap = xmlStringsMap;
-    this.resourceList = resourceList;
-    this.territoryDefintionsMap = territoryDefintionsMap;
-    this.territoryConnectionsMap = territoryConnectionsMap;
-    this.playerNames = playerNames;
-    this.playerAllianceMap = playerAllianceMap;
-    this.playerInitResourcesMap = playerInitResourcesMap;
-    this.unitDefinitionsMap = unitDefinitionsMap;
-    this.gamePlaySequenceMap = gamePlaySequenceMap;
-    this.playerSequenceMap = playerSequenceMap;
-    this.technologyDefinitionsMap = technologyDefinitionsMap;
-    this.productionFrontiersMap = productionFrontiersMap;
-    this.unitAttachmentsMap = unitAttachmentsMap;
-    this.territoyProductionsMap = territoyProductionsMap;
-    this.canalDefinitionsMap = canalDefinitionsMap;
-    this.territoryOwnershipsMap = territoryOwnershipsMap;
-    this.unitPlacementsMap = unitPlacementsMap;
-    this.gameSettingsMap = gameSettingsMap;
-    this.notes = notes;
-    this.mapXMLFile = mapXMLFile;
-  }
-
-  public void initialize() {
+  void initialize() {
     getXmlStringsMap().clear();
     getResourceList().clear();
     getPlayerNames().clear();
@@ -117,12 +81,12 @@ public class MapXmlData {
     this.resourceList = resourceList;
   }
 
-  public Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> getTerritoryDefintionsMap() {
+  public Map<String, Map<TerritoryDefinitionDialog.Definition, Boolean>> getTerritoryDefintionsMap() {
     return territoryDefintionsMap;
   }
 
   public void setTerritoryDefintionsMap(
-      final Map<String, Map<TerritoryDefinitionDialog.DEFINITION, Boolean>> territoryDefintionsMap) {
+      final Map<String, Map<TerritoryDefinitionDialog.Definition, Boolean>> territoryDefintionsMap) {
     this.territoryDefintionsMap = territoryDefintionsMap;
   }
 
@@ -254,12 +218,12 @@ public class MapXmlData {
     this.notes = notes;
   }
 
-  public File getMapXMLFile() {
-    return mapXMLFile;
+  public File getMapXmlFile() {
+    return mapXmlFile;
   }
 
-  public void setMapXMLFile(final File mapXMLFile) {
-    this.mapXMLFile = mapXMLFile;
+  public void setMapXmlFile(final File mapXmlFile) {
+    this.mapXmlFile = mapXmlFile;
   }
 
   /**
@@ -288,12 +252,12 @@ public class MapXmlData {
       final Map<String, Set<String>> waterLandTerritoyConnections) {
     for (final Entry<String, Set<String>> terrConn : MapXmlHelper.getTerritoryConnectionsMap().entrySet()) {
       if (MapXmlHelper.getTerritoryDefintionsMap().get(terrConn.getKey())
-          .get(TerritoryDefinitionDialog.DEFINITION.IS_WATER)) {
+          .get(TerritoryDefinitionDialog.Definition.IS_WATER)) {
         // terrConn.Key is water territory, get none-water entries in terrConn.Value
         @SuppressWarnings("unchecked")
         final Set<String> landTerrValue = (Set<String>) terrConn.getValue().stream()
             .filter(terr -> !MapXmlHelper.getTerritoryDefintionsMap().get(terr).get(
-                TerritoryDefinitionDialog.DEFINITION.IS_WATER));
+                TerritoryDefinitionDialog.Definition.IS_WATER));
         if (!landTerrValue.isEmpty()) {
           waterLandTerritoyConnections.put(terrConn.getKey(), landTerrValue);
         }
@@ -302,7 +266,7 @@ public class MapXmlData {
         @SuppressWarnings("unchecked")
         final Set<String> waterTerrValue = (Set<String>) terrConn.getValue().stream()
             .filter(terr -> MapXmlHelper.getTerritoryDefintionsMap().get(terr)
-                .get(TerritoryDefinitionDialog.DEFINITION.IS_WATER));
+                .get(TerritoryDefinitionDialog.Definition.IS_WATER));
         landWaterTerritoyConnections.put(terrConn.getKey(), waterTerrValue);
       }
     }

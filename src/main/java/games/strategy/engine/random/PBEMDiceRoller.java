@@ -42,9 +42,9 @@ public class PBEMDiceRoller implements IRandomSource {
     s_focusWindow = w;
   }
 
-  public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUUID) {
+  public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
     m_remoteDiceServer = diceServer;
-    m_gameUUID = gameUUID;
+    m_gameUUID = gameUuid;
   }
 
   /**
@@ -129,11 +129,11 @@ class HttpDiceRollerDialog extends JDialog {
    *        the subject for the email the dice roller will send (if it sends emails)
    * @param diceServer
    *        the dice server implementation
-   * @param gameUUID
+   * @param gameUuid
    *        the TripleA game UUID or null
    */
   public HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
-      final IRemoteDiceServer diceServer, final String gameUUID) {
+      final IRemoteDiceServer diceServer, final String gameUuid) {
     super(owner, "Dice roller", true);
     m_owner = owner;
     m_sides = sides;
@@ -141,7 +141,7 @@ class HttpDiceRollerDialog extends JDialog {
     m_subjectMessage = subjectMessage;
     m_gameID = diceServer.getGameId() == null ? "" : diceServer.getGameId();
     m_diceServer = diceServer;
-    m_gameUUID = gameUUID;
+    m_gameUUID = gameUuid;
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     m_exitButton.addActionListener(e -> System.exit(-1));
     m_exitButton.setEnabled(false);

@@ -38,7 +38,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   private TerritoryConnectionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final TerritoryConnectionsPanel panel = new TerritoryConnectionsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());

@@ -10,7 +10,7 @@ import games.strategy.util.Util;
 public class BadWordControllerTest {
 
   @Test
-  public void testCRUD() {
+  public void testCrud() {
     final BadWordController controller = new BadWordController();
     final String word = Util.createUniqueTimeStamp();
     controller.addBadWord(word);

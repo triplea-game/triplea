@@ -109,13 +109,13 @@ public class UnifiedMessenger {
   }
 
   private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {
-    final GUID methodCallID = new GUID();
+    final GUID methodCallId = new GUID();
     final CountDownLatch latch = new CountDownLatch(1);
     synchronized (m_pendingLock) {
-      m_pendingInvocations.put(methodCallID, latch);
+      m_pendingInvocations.put(methodCallId, latch);
     }
     // invoke remotely
-    final Invoke invoke = new HubInvoke(methodCallID, true, remoteCall);
+    final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
     send(invoke, m_messenger.getServerNode());
 
     try {
@@ -125,11 +125,11 @@ public class UnifiedMessenger {
     }
 
     synchronized (m_pendingLock) {
-      final RemoteMethodCallResults results = m_results.remove(methodCallID);
+      final RemoteMethodCallResults results = m_results.remove(methodCallId);
       if (results == null) {
         throw new IllegalStateException(
             "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"
-                + remoteCall.getRemoteName() + " with id:" + methodCallID);
+                + remoteCall.getRemoteName() + " with id:" + methodCallId);
       }
       return results;
     }
@@ -229,12 +229,12 @@ public class UnifiedMessenger {
   /**
    * Wait for the messenger to know about the given endpoint.
    */
-  public void waitForLocalImplement(final String endPointName, long timeoutMS) {
+  public void waitForLocalImplement(final String endPointName, long timeoutMs) {
     // dont use Long.MAX_VALUE since that will overflow
-    if (timeoutMS <= 0) {
-      timeoutMS = Integer.MAX_VALUE;
+    if (timeoutMs <= 0) {
+      timeoutMs = Integer.MAX_VALUE;
     }
-    final long endTime = timeoutMS + System.currentTimeMillis();
+    final long endTime = timeoutMs + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasLocalEndPoint(endPointName)) {
       ThreadUtil.sleep(50);
     }
@@ -314,13 +314,13 @@ public class UnifiedMessenger {
       // maybe an attempt to spoof a message
       assertIsServer(from);
       final SpokeInvocationResults results = (SpokeInvocationResults) msg;
-      final GUID methodID = results.methodCallID;
+      final GUID methodId = results.methodCallID;
       // both of these should already be populated
       // this list should be a synchronized list so we can do the add
       // all
       synchronized (m_pendingLock) {
-        m_results.put(methodID, results.results);
-        m_pendingInvocations.remove(methodID).countDown();
+        m_results.put(methodId, results.results);
+        m_pendingInvocations.remove(methodId).countDown();
       }
     }
   }

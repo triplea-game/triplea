@@ -255,21 +255,13 @@ class EnginePreferences extends JDialog {
       final Properties systemIni = GameRunner.getSystemIni();
       final int currentSetting = Memory.getMaxMemoryFromSystemIniFileInMB(systemIni);
       final boolean useDefault = Memory.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
-      final int currentMaxMemoryInMB = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
-      final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
+      final int currentMaxMemoryInMb = (int) (Memory.getMaxMemoryInBytes() / (1024 * 1024));
+      final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMb, 5);
       final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
       final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
       final ButtonGroup bgroup = new ButtonGroup();
       bgroup.add(noneButton);
       bgroup.add(userButton);
-      final boolean onlineOnlyOriginalSetting = Memory.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
-      final JCheckBox onlyOnlineCheckBox =
-          new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
-      onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
-      onlyOnlineCheckBox.setToolTipText(
-          "<html>If checked, only joining and hosting from online lobby will be affected by these settings."
-              + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time "
-              + "you start TripleA.</html>");
       final JButton test = new JButton("Test User Settings");
       test.addActionListener(SwingAction.of("Test User Settings", event -> {
         tested.set(true);
@@ -299,8 +291,6 @@ class EnginePreferences extends JDialog {
           + "<br />a new TripleA process is able to run with your new max memory setting. "
           + "<br />If one does not run, you had better lower the setting or just use the default. </p></em></html>"));
       radioPanel.add(new JLabel(" "));
-      radioPanel.add(onlyOnlineCheckBox);
-      radioPanel.add(new JLabel(" "));
       radioPanel.add(noneButton);
       radioPanel.add(userButton);
       radioPanel.add(new JLabel("Maximum Memory (in MB): "));
@@ -322,16 +312,9 @@ class EnginePreferences extends JDialog {
       if (noneButton.isSelected()) {
         Memory.clearMaxMemory();
       } else if (userButton.isSelected()) {
-        final boolean setOnlineOnly = onlineOnlyOriginalSetting != onlyOnlineCheckBox.isSelected();
         final boolean setMaxMemory = newMaxMemory.getValue() > 64 && tested.get();
-        if (setOnlineOnly || setMaxMemory) {
-          Properties prop;
-          if (setMaxMemory) {
-            prop = Memory.setMaxMemoryInMB(newMaxMemory.getValue());
-          } else {
-            prop = new Properties();
-          }
-          Memory.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
+        if (setMaxMemory) {
+          Properties prop = Memory.setMaxMemoryInMB(newMaxMemory.getValue());
           GameRunner.writeSystemIni(prop);
         }
       }

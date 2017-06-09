@@ -118,16 +118,16 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
-      final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
+      final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of ban: <br>"
               + "Please consult other admins before banning longer than 1 day. <br>"
               + "And please remember to report this ban.</html>",
           "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
-      if (resultBT < 0) {
+      if (resultBanType < 0) {
         return;
       }
-      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBT];
+      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBanType];
       if (selectedBanType.equals("Cancel")) {
         return;
       }
@@ -140,13 +140,13 @@ public class LobbyFrame extends JFrame {
       timeUnits.add("Year");
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
-      final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
           "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTU < 0) {
+      if (resultTimespanUnit < 0) {
         return;
       }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTU];
+      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
       if (selectedTimeUnit.equalsIgnoreCase("Cancel")) {
         return;
       }
@@ -161,12 +161,12 @@ public class LobbyFrame extends JFrame {
         controller.boot(clickedOn);
         return;
       }
-      final String resultLOT = JOptionPane.showInputDialog(LobbyFrame.this,
+      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
           "Now please enter the length of time to ban the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLOT == null) {
+      if (resultLengthOfTime == null) {
         return;
       }
-      final long result2 = Long.parseLong(resultLOT);
+      final long result2 = Long.parseLong(resultLengthOfTime);
       if (result2 < 0) {
         return;
       }
@@ -197,14 +197,14 @@ public class LobbyFrame extends JFrame {
 
 
     rVal.add(SwingAction.of("Mute Player", e -> {
-      final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
+      final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
           "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
-      if (resultMT < 0) {
+      if (resultMuteType < 0) {
         return;
       }
-      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMT];
+      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMuteType];
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
@@ -217,13 +217,13 @@ public class LobbyFrame extends JFrame {
       timeUnits.add("Year");
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
-      final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
           "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTU < 0) {
+      if (resultTimespanUnit < 0) {
         return;
       }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTU];
+      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
       if (selectedTimeUnit.equals("Cancel")) {
         return;
       }
@@ -236,12 +236,12 @@ public class LobbyFrame extends JFrame {
         }
         return;
       }
-      final String resultLOT = JOptionPane.showInputDialog(LobbyFrame.this,
+      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
           "Now please enter the length of time to mute the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLOT == null) {
+      if (resultLengthOfTime == null) {
         return;
       }
-      final long result2 = Long.parseLong(resultLOT);
+      final long result2 = Long.parseLong(resultLengthOfTime);
       if (result2 < 0) {
         return;
       }
@@ -280,11 +280,11 @@ public class LobbyFrame extends JFrame {
         if (value == null) {
           return;
         }
-        final long resultML = Long.parseLong(value.toString());
-        if (resultML < 0) {
+        final long resultMuteLengthInMinutes = Long.parseLong(value.toString());
+        if (resultMuteLengthInMinutes < 0) {
           return;
         }
-        final long ticks = resultML * 1000 * 60;
+        final long ticks = resultMuteLengthInMinutes * 1000 * 60;
         final long expire = System.currentTimeMillis() + ticks;
         controller.muteUsername(clickedOn, new Date(expire));
         controller.muteMac(clickedOn, new Date(expire));

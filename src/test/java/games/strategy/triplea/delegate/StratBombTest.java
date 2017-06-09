@@ -41,7 +41,7 @@ public class StratBombTest {
 
 
   @Test
-  public void testBombingRaidInvidualAA() {
+  public void testBombingRaidInvidualAa() {
     final Territory wgermany = gameData.getMap().getTerritory("Western Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerID british = GameDataTestUtil.british(gameData);

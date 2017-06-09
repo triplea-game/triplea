@@ -354,34 +354,34 @@ public class ClipPlayer {
   }
 
   /**
-   * @param resourceAndPathURL
+   * @param resourceAndPathUrl
    *        (URL uses '/', not File.separator or '\')
    */
-  protected List<URL> findClipFiles(final String resourceAndPathURL) {
+  protected List<URL> findClipFiles(final String resourceAndPathUrl) {
     final List<URL> availableSounds = new ArrayList<>();
-    final URL thisSoundURL = resourceLoader.getResource(resourceAndPathURL);
-    if (thisSoundURL == null) {
+    final URL thisSoundUrl = resourceLoader.getResource(resourceAndPathUrl);
+    if (thisSoundUrl == null) {
       return availableSounds;
     }
-    URI thisSoundURI;
+    URI thisSoundUri;
     File thisSoundFile;
     // we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a
     // zipped sound. There
     // might be a better way to do this...
     try {
-      thisSoundURI = thisSoundURL.toURI();
+      thisSoundUri = thisSoundUrl.toURI();
       try {
-        thisSoundFile = new File(thisSoundURI);
+        thisSoundFile = new File(thisSoundUri);
       } catch (final Exception e) {
         try {
-          thisSoundFile = new File(thisSoundURI.getPath());
+          thisSoundFile = new File(thisSoundUri.getPath());
         } catch (final Exception e3) {
-          thisSoundFile = new File(thisSoundURL.getPath());
+          thisSoundFile = new File(thisSoundUrl.getPath());
         }
       }
     } catch (final URISyntaxException e1) {
       try {
-        thisSoundFile = new File(thisSoundURL.getPath());
+        thisSoundFile = new File(thisSoundUrl.getPath());
       } catch (final Exception e4) {
         thisSoundFile = null;
       }
@@ -392,7 +392,7 @@ public class ClipPlayer {
     if (thisSoundFile == null || !thisSoundFile.exists()) {
       // final long startTime = System.currentTimeMillis();
       // we are probably using zipped sounds. there might be a better way to do this...
-      final String soundFilePath = thisSoundURL.getPath();
+      final String soundFilePath = thisSoundUrl.getPath();
       if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.contains(".zip!")) {
         // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
         // if it exists, if it
@@ -419,13 +419,13 @@ public class ClipPlayer {
                 final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
                 while (zipEnumeration.hasMoreElements()) {
                   final ZipEntry zipElement = zipEnumeration.nextElement();
-                  if (isZippedMp3(zipElement, resourceAndPathURL)) {
+                  if (isZippedMp3(zipElement, resourceAndPathUrl)) {
                     try {
-                      final URL zipSoundURL = resourceLoader.getResource(zipElement.getName());
-                      if (zipSoundURL == null) {
+                      final URL zipSoundUrl = resourceLoader.getResource(zipElement.getName());
+                      if (zipSoundUrl == null) {
                         continue;
                       }
-                      availableSounds.add(zipSoundURL);
+                      availableSounds.add(zipSoundUrl);
                     } catch (final Exception e) {
                       ClientLogger.logQuietly(e);
                     }
@@ -445,15 +445,15 @@ public class ClipPlayer {
         if (!(isSoundFileNamed(thisSoundFile))) {
           return availableSounds;
         }
-        availableSounds.add(thisSoundURL);
+        availableSounds.add(thisSoundUrl);
       }
     }
     if (thisSoundFile.isDirectory()) {
       for (final File soundFile : thisSoundFile.listFiles()) {
         if (isSoundFileNamed(soundFile)) {
           try {
-            final URL individualSoundURL = soundFile.toURI().toURL();
-            availableSounds.add(individualSoundURL);
+            final URL individualSoundUrl = soundFile.toURI().toURL();
+            availableSounds.add(individualSoundUrl);
           } catch (final MalformedURLException e) {
             String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
@@ -464,13 +464,13 @@ public class ClipPlayer {
       if (!isSoundFileNamed(thisSoundFile)) {
         return availableSounds;
       }
-      availableSounds.add(thisSoundURL);
+      availableSounds.add(thisSoundUrl);
     }
     return availableSounds;
   }
 
-  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathURL) {
-    return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathURL)
+  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathUrl) {
+    return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathUrl)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }
 

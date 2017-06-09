@@ -103,9 +103,9 @@ public class PlayerManager {
     for (final String player : m_playerMapping.keySet()) {
       if (!m_playerMapping.get(player).equals(localNode)) {
         any = player;
-        final PlayerID remotePlayerID = data.getPlayerList().getPlayerID(player);
-        if (!data.getRelationshipTracker().isAllied(local, remotePlayerID)) {
-          return remotePlayerID;
+        final PlayerID remotePlayerId = data.getPlayerList().getPlayerID(player);
+        if (!data.getRelationshipTracker().isAllied(local, remotePlayerId)) {
+          return remotePlayerId;
         }
       }
     }

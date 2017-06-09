@@ -101,7 +101,7 @@ public class MapPropertiesMaker extends JFrame {
     }
   } // end main
 
-  public MapPropertiesMaker() {
+  private MapPropertiesMaker() {
     super("Map Properties Maker");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.getContentPane().setLayout(new BorderLayout());
@@ -217,10 +217,10 @@ public class MapPropertiesMaker extends JFrame {
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
     showMore.addActionListener(SwingAction.of("Show All Options", e -> {
-      final Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUI =
-          MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
-      JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUI.getFirst());
-      s_mapProperties.writePropertiesToObject(propertyWrapperUI.getSecond());
+      final Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUi =
+          MapPropertiesMaker.s_mapProperties.propertyWrapperUi(true);
+      JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUi.getFirst());
+      s_mapProperties.writePropertiesToObject(propertyWrapperUi.getSecond());
       MapPropertiesMaker.this.createPlayerColorChooser();
       MapPropertiesMaker.this.validate();
       MapPropertiesMaker.this.repaint();

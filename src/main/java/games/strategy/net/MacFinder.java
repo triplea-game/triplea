@@ -39,9 +39,9 @@ public class MacFinder {
     // First, try to get the mac address of the local host network interface
     try {
       final InetAddress address = InetAddress.getLocalHost();
-      final NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
-      if (localHostNI != null) {
-        final byte[] rawMac = localHostNI.getHardwareAddress();
+      final NetworkInterface localHostNetworkInterface = NetworkInterface.getByInetAddress(address);
+      if (localHostNetworkInterface != null) {
+        final byte[] rawMac = localHostNetworkInterface.getHardwareAddress();
         final String mac = convertMacBytesToString(rawMac);
         if (isMacValid(mac)) {
           return mac;

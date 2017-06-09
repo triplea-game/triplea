@@ -269,11 +269,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         final Change use = ChangeFactory.attachmentPropertyChange(rule, Integer.toString(uses), "uses");
         bridge.addChange(use);
       }
-      final String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName()
+      final String puMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName()
           + " met a national objective for an additional " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
           + total + MyFormatter.pluralize(" PU", total);
-      bridge.getHistoryWriter().startEvent(PUMessage);
-      endTurnReport.append(PUMessage).append("<br />");
+      bridge.getHistoryWriter().startEvent(puMessage);
+      endTurnReport.append(puMessage).append("<br />");
     }
     return endTurnReport.toString();
   }

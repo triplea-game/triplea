@@ -25,7 +25,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSequencePanel)) {
       me = Optional.of(new GameSequencePanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -51,7 +51,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
     setOwnPanelLayout();
 
-    final GridBagConstraints gbcDefault = MapXmlUIHelper.getGbcDefaultTemplateWith(0, 0);
+    final GridBagConstraints gbcDefault = MapXmlUiHelper.getGbcDefaultTemplateWith(0, 0);
 
     addLabelsRow(gbcDefault);
 
@@ -64,7 +64,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
     addAddSequenceButton();
 
-    addFinalButtonRow(MapXmlUIHelper.getGBCCloneWith(gbcDefault, 0, rowIndex));
+    addFinalButtonRow(MapXmlUiHelper.getGbcCloneWith(gbcDefault, 0, rowIndex));
   }
 
   /**
@@ -80,11 +80,11 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
     final JLabel labelClassName = new JLabel("Class Name");
     labelClassName.setPreferredSize(dimension);
-    getOwnPanel().add(labelClassName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelSequenceName, 1, 0));
+    getOwnPanel().add(labelClassName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelSequenceName, 1, 0));
 
     final JLabel labelDisplayName = new JLabel("Display Name");
     labelDisplayName.setPreferredSize(dimension);
-    getOwnPanel().add(labelDisplayName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelSequenceName, 2, 0));
+    getOwnPanel().add(labelDisplayName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelSequenceName, 2, 0));
   }
 
   private void addMainInputRow(final GridBagConstraints gbcBase, final int rowIndex,
@@ -93,13 +93,13 @@ public class GameSequencePanel extends DynamicRowsPanel {
     final GameSequenceRow newRow =
         new GameSequenceRow(this, getOwnPanel(), rowEntry.getKey(), defintionValues.get(0),
             defintionValues.get(1));
-    newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, MapXmlUIHelper.getGBCCloneWith(gbcBase, 0, rowIndex));
+    newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, MapXmlUiHelper.getGbcCloneWith(gbcBase, 0, rowIndex));
     rows.add(newRow);
   }
 
   private void addAddSequenceButton() {
     final JButton buttonAddSequence = new JButton("Add Sequence");
-    buttonAddSequence.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       final Optional<String> newSequenceNameOptional =
           Optional.of(JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",

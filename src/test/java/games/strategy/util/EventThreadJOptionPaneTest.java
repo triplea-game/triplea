@@ -29,24 +29,25 @@ public final class EventThreadJOptionPaneTest {
   private final CountDownLatchHandler latchHandler = new CountDownLatchHandler(true);
 
   @Test
-  public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEDTWhenNotCalledFromEDT() throws Exception {
+  public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread()
+      throws Exception {
     final CountDownLatch latch = new CountDownLatch(1);
-    final AtomicBoolean runOnEDT = new AtomicBoolean(false);
+    final AtomicBoolean runOnEventDispatchThread = new AtomicBoolean(false);
 
     new Thread(() -> {
       EventThreadJOptionPane.invokeAndWait(latchHandler, () -> {
-        runOnEDT.set(SwingUtilities.isEventDispatchThread());
+        runOnEventDispatchThread.set(SwingUtilities.isEventDispatchThread());
         return Optional.empty();
       });
       latch.countDown();
     }).start();
     latch.await();
 
-    assertThat(runOnEDT.get(), is(true));
+    assertThat(runOnEventDispatchThread.get(), is(true));
   }
 
   @Test
-  public void testInvokeAndWaitWithSupplier_ShouldNotDeadlockWhenCalledFromEDT() throws Exception {
+  public void testInvokeAndWaitWithSupplier_ShouldNotDeadlockWhenCalledFromEventDispatchThread() throws Exception {
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicBoolean run = new AtomicBoolean(false);
 

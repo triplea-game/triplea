@@ -2828,7 +2828,7 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_placementLimit != null ? m_placementLimit.toString() : "null");
   }
 
-  public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML,
+  public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
       final boolean includeAttachedToName) {
     // displays everything in a very short form, in English rather than as xml stuff
     // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
@@ -2942,7 +2942,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     // line break
-    if (useHTML) {
+    if (useHtml) {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getIsInfrastructure()) {
@@ -3100,7 +3100,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("when hit this unit loses certain abilities, ");
     }
     // line break
-    if (useHTML) {
+    if (useHtml) {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getMaxBuiltPerPlayer() > -1) {

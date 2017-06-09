@@ -111,10 +111,10 @@ class FileSystemAccessStrategy {
 
   private static String formatMapList(final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
-    final int MAX_MAPS_TO_LIST = 6;
+    final int maxMapsToList = 6;
     final StringBuilder sb = new StringBuilder("<ul>");
     for (int i = 0; i < mapList.size(); i++) {
-      if (i > MAX_MAPS_TO_LIST) {
+      if (i > maxMapsToList) {
         sb.append("<li>...</li>");
         break;
       } else {

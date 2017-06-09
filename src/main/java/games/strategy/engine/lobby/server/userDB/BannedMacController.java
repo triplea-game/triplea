@@ -40,7 +40,7 @@ public class BannedMacController {
       banTillTs = new Timestamp(banTill.getTime());
     }
     s_logger.fine("Banning mac:" + mac);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)");
       ps.setString(1, mac);
@@ -64,7 +64,7 @@ public class BannedMacController {
 
   private void removeBannedMac(final String mac) {
     s_logger.fine("Removing banned mac:" + mac);
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?");
       ps.setString(1, mac);
@@ -88,7 +88,7 @@ public class BannedMacController {
     boolean expired = false;
     Timestamp banTill = null;
     final String sql = "select mac, ban_till from banned_macs where mac = ?";
-    final Connection con = Database.getConnection();
+    final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, mac);

@@ -25,13 +25,13 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   private final String playerName;
   private final TreeSet<String> allUnitNames;
 
-  public ProductionFrontiersPanel(final JPanel stepActionPanel, final String playerName) {
+  private ProductionFrontiersPanel(final JPanel stepActionPanel, final String playerName) {
     super(stepActionPanel);
     this.playerName = playerName;
     allUnitNames = new TreeSet<>(MapXmlHelper.getUnitDefinitionsMap().keySet());
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
+  static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof ProductionFrontiersPanel)
         || !((ProductionFrontiersPanel) me.get()).playerName.equals(playerName)) {
       me = Optional.of(new ProductionFrontiersPanel(stepActionPanel, playerName));
@@ -100,7 +100,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddUnit = new JButton("Add Unit");
 
-    buttonAddUnit.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       final List<String> curr_playersUnitNames = MapXmlHelper.getProductionFrontiersMap().get(playerName);
 

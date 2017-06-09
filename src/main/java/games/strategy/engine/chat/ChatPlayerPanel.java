@@ -265,7 +265,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       extra = extra + notes;
     }
     String status = chat.getStatusManager().getStatus(node);
-    final StringBuilder statusSB = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder("");
     if (status != null && status.length() > 0) {
       if (status.length() > 25) {
         status = status.substring(0, 25);
@@ -275,9 +275,9 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
           continue;
         }
-        statusSB.append(c);
+        sb.append(c);
       }
-      extra = extra + " (" + statusSB.toString() + ")";
+      extra = extra + " (" + sb.toString() + ")";
     }
     if (extra.length() == 0) {
       return node.getName();

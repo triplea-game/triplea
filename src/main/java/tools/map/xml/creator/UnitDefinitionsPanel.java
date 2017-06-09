@@ -25,7 +25,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitDefinitionsPanel)) {
       me = Optional.of(new UnitDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -90,7 +90,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddUnit = new JButton("Add Unit");
 
-    buttonAddUnit.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       String newUnitName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new unit name:",
           "Unit" + (MapXmlHelper.getUnitDefinitionsMap().size() + 1));

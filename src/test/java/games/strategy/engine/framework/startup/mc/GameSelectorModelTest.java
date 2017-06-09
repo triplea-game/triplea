@@ -17,7 +17,6 @@ import java.util.Observer;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -26,6 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
@@ -135,7 +135,7 @@ public class GameSelectorModelTest {
     testObj.load((GameData) null, ".xml");
     assertThat(testObj.isSavedGame(), is(false));
 
-    testObj.load((GameData) null, "file.tsvg");
+    testObj.load((GameData) null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
   }
 
@@ -249,27 +249,5 @@ public class GameSelectorModelTest {
   public void testGetGameVersion() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameVersion(), is(fakeGameVersion));
-  }
-
-  @Ignore
-  @Test
-  public void testLoadFromInputStream() {
-    // testObj.load(InputStream, string fileName);
-    // TODO
-  }
-
-
-  @Ignore
-  @Test
-  public void testLoadFromFile() {
-    // testObj.load(File, Component);
-    // TODO
-  }
-
-  @Ignore
-  @Test
-  public void testLoadDefaultGame() {
-    // testObj.loadDefaultGame(Component);
-    // TODO
   }
 }

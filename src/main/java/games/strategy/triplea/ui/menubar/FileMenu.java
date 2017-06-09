@@ -46,7 +46,7 @@ class FileMenu {
 
   private JMenuItem createSaveMenu() {
     final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save", e -> {
-      final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
+      final File f = TripleAMenuBar.getSaveGameLocation(frame);
       if (f != null) {
         game.saveGame(f);
         JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);

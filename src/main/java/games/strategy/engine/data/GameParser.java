@@ -791,7 +791,9 @@ public class GameParser {
       // boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
       final boolean isOptional = current.getAttribute("optional").equals("true");
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
-      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, data);
+      final boolean isAiDefault = current.getAttribute("isAIDefault").equals("true");
+      final boolean isHidden = current.getAttribute("isHidden").equals("true");
+      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, isAiDefault, isHidden, data);
       playerList.addPlayerID(newPlayer);
     }
   }
@@ -909,8 +911,8 @@ public class GameParser {
         }
       }
     }
-    data.getPlayerList().forEach(playerId -> data.getProperties().addEditableProperty(
-        new NumberProperty(Constants.getBonusIncomePercentageFor(playerId), null, 1000, -100, 0)));
+    data.getPlayerList().forEach(playerId -> data.getProperties().addPlayerProperty(
+        new NumberProperty(Constants.getIncomePercentageFor(playerId), null, 999, 0, 100)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)

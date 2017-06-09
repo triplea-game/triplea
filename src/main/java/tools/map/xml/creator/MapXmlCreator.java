@@ -294,7 +294,7 @@ public class MapXmlCreator extends JFrame {
     start();
   }
 
-  public static void start() {
+  private static void start() {
     SwingUtilities.invokeLater(() -> {
       final MapXmlCreator creator = new MapXmlCreator();
       creator.setSize(800, 600);
@@ -305,7 +305,7 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  public MapXmlCreator() {
+  MapXmlCreator() {
     super("TripleA Map XML Creator");
 
     mapFolderLocation = getDefaultMapFolderLocation();
@@ -355,7 +355,7 @@ public class MapXmlCreator extends JFrame {
     stepPanel.add(Box.createVerticalStrut(20));
 
     stepTitleLabel = new JLabel("Map Properties");
-    stepTitleLabel.setFont(new Font(MapXmlUIHelper.defaultMapXMLCreatorFontName, Font.BOLD, 12));
+    stepTitleLabel.setFont(new Font(MapXmlUiHelper.defaultMapXMLCreatorFontName, Font.BOLD, 12));
     stepTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     stepPanel.add(stepTitleLabel);
 
@@ -389,7 +389,7 @@ public class MapXmlCreator extends JFrame {
     // set up the actions
     final Action openAction = SwingAction.of("Load Map XML", e -> {
       final GameStep goToStep;
-      goToStep = MapXmlCreator.loadXML();
+      goToStep = MapXmlCreator.loadXml();
       highestStep = goToStep;
       DynamicRowsPanel.me = Optional.empty();
       SwingUtilities.invokeLater(() -> {
@@ -401,7 +401,7 @@ public class MapXmlCreator extends JFrame {
     final Action saveAction = SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> {
       stepActionPanel.requestFocus();
       if (!DynamicRowsPanel.me.isPresent() || DynamicRowsPanel.me.get().dataIsConsistent()) {
-        MapXmlCreator.saveXML();
+        MapXmlCreator.saveXml();
       }
     });
     saveAction.putValue(Action.SHORT_DESCRIPTION, "Save the Map XML to File");
@@ -470,7 +470,7 @@ public class MapXmlCreator extends JFrame {
     southRightPanelFlowLayout.setAlignment(FlowLayout.RIGHT);
     southPanel.add(southRightPanel);
 
-    final JButton buttonAvailableChoices = MapXmlUIHelper.createButton("Available Choices", KeyEvent.VK_C);
+    final JButton buttonAvailableChoices = MapXmlUiHelper.createButton("Available Choices", KeyEvent.VK_C);
     buttonAvailableChoices.addActionListener(e -> {
       switch (currentStep) {
 
@@ -621,7 +621,7 @@ public class MapXmlCreator extends JFrame {
   private void createButtonHelp() {
     buttonHelp = new JButton("Help");
     buttonHelp.setMnemonic(KeyEvent.VK_H);
-    buttonHelp.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonHelp.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonHelp.addActionListener(e -> {
       switch (currentStep) {
         case MAP_PROPERTIES:
@@ -809,19 +809,19 @@ public class MapXmlCreator extends JFrame {
   private void addSouthCenterPanelButtons() {
     buttonBack = new JButton("Back");
     buttonBack.setMnemonic(KeyEvent.VK_B);
-    buttonBack.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonBack.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonBack.addActionListener(e -> {
       goToStep(getPrevGameStepTo(currentStep));
       invokeLaterRepaintActionPanel();
     });
     southCenterPanel.add(buttonBack);
 
-    autoFillButton = MapXmlUIHelper.createButton("Auto-Fill", KeyEvent.VK_A);
+    autoFillButton = MapXmlUiHelper.createButton("Auto-Fill", KeyEvent.VK_A);
     autoFillButton.setMinimumSize(new Dimension(50, 23));
     autoFillButton.setMaximumSize(new Dimension(50, 23));
     southCenterPanel.add(autoFillButton);
 
-    nextButton = MapXmlUIHelper.createButton("Next", KeyEvent.VK_N, e -> {
+    nextButton = MapXmlUiHelper.createButton("Next", KeyEvent.VK_N, e -> {
       goToStep(getNextGameStepTo(currentStep));
       invokeLaterRepaintActionPanel();
     });
@@ -892,7 +892,7 @@ public class MapXmlCreator extends JFrame {
   }
 
 
-  private final String stepLabelFontName = MapXmlUIHelper.defaultMapXMLCreatorFontName;
+  private final String stepLabelFontName = MapXmlUiHelper.defaultMapXMLCreatorFontName;
   private final Font stepLabelFontDefault = new Font(stepLabelFontName, Font.PLAIN, 13);
   private final Font stepLabelFontHighlighted = new Font(stepLabelFontName, Font.BOLD, 13);
 
@@ -938,7 +938,7 @@ public class MapXmlCreator extends JFrame {
     stepTitleLabel.setText(title);
   }
 
-  public void setAutoFillAction(final AbstractAction action) {
+  void setAutoFillAction(final AbstractAction action) {
     for (final ActionListener actionListener : autoFillButton.getActionListeners()) {
       autoFillButton.removeActionListener(actionListener);
     }
@@ -1027,7 +1027,7 @@ public class MapXmlCreator extends JFrame {
   }
 
 
-  public void setAutoFillActionListener(final ActionListener autoFillActionListener) {
+  void setAutoFillActionListener(final ActionListener autoFillActionListener) {
     if (autoFillActionListener == null) {
       autoFillButton.setEnabled(false);
     } else {
@@ -1064,25 +1064,25 @@ public class MapXmlCreator extends JFrame {
     gridBadConstLabelNotesRow.gridwidth = 3;
     stepActionPanel.add(spTaNotes, gridBadConstLabelNotesRow);
 
-    final GridBagConstraints gridBadConstButtonPreviewHTMLRow = (GridBagConstraints) gridBadConstLabelNotesRow.clone();
-    gridBadConstButtonPreviewHTMLRow.weighty = 0.0;
-    gridBadConstButtonPreviewHTMLRow.insets = new Insets(0, 0, 0, 0);
-    gridBadConstButtonPreviewHTMLRow.gridwidth = 1;
-    gridBadConstButtonPreviewHTMLRow.gridx = 1;
-    gridBadConstButtonPreviewHTMLRow.gridy = 1;
+    final GridBagConstraints gridBadConstButtonPreviewHtmlRow = (GridBagConstraints) gridBadConstLabelNotesRow.clone();
+    gridBadConstButtonPreviewHtmlRow.weighty = 0.0;
+    gridBadConstButtonPreviewHtmlRow.insets = new Insets(0, 0, 0, 0);
+    gridBadConstButtonPreviewHtmlRow.gridwidth = 1;
+    gridBadConstButtonPreviewHtmlRow.gridx = 1;
+    gridBadConstButtonPreviewHtmlRow.gridy = 1;
 
-    final JButton buttonPreviewHTML = new JButton("Preview HTML");
-    buttonPreviewHTML.setPreferredSize(new Dimension(300, 30));
-    buttonPreviewHTML.setAction(SwingAction.of("Preview HTML", e -> showHTML(MapXmlHelper.getNotes(), "HTML Preview")));
-    stepActionPanel.add(buttonPreviewHTML, gridBadConstButtonPreviewHTMLRow);
+    final JButton buttonPreviewHtml = new JButton("Preview HTML");
+    buttonPreviewHtml.setPreferredSize(new Dimension(300, 30));
+    buttonPreviewHtml.setAction(SwingAction.of("Preview HTML", e -> showHtml(MapXmlHelper.getNotes(), "HTML Preview")));
+    stepActionPanel.add(buttonPreviewHtml, gridBadConstButtonPreviewHtmlRow);
 
     final GridBagConstraints gridBadConstLabelCongratsRow =
-        (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+        (GridBagConstraints) gridBadConstButtonPreviewHtmlRow.clone();
     gridBadConstLabelCongratsRow.gridy = 2;
     stepActionPanel.add(new JLabel("<html><big>Congratulation!</big></html>"), gridBadConstLabelCongratsRow);
 
     final GridBagConstraints gridBadConstLabelAllCompletedRow =
-        (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+        (GridBagConstraints) gridBadConstButtonPreviewHtmlRow.clone();
     gridBadConstLabelAllCompletedRow.gridy = 3;
     stepActionPanel.add(
         new JLabel("<html><nobr>You have completed all the steps for creating the map XML.</nobr></html>"),
@@ -1090,8 +1090,8 @@ public class MapXmlCreator extends JFrame {
 
     final JButton buttonSave = new JButton("Save Entries to XML");
     buttonSave.setPreferredSize(new Dimension(600, 35));
-    buttonSave.setAction(SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> MapXmlCreator.saveXML()));
-    final GridBagConstraints gridBadConstButtonSaveRow = (GridBagConstraints) gridBadConstButtonPreviewHTMLRow.clone();
+    buttonSave.setAction(SwingAction.of(BUTTON_LABEL_SAVE_MAP_XML, e -> MapXmlCreator.saveXml()));
+    final GridBagConstraints gridBadConstButtonSaveRow = (GridBagConstraints) gridBadConstButtonPreviewHtmlRow.clone();
     gridBadConstButtonSaveRow.insets = new Insets(5, 0, 0, 0);
     gridBadConstButtonSaveRow.gridy = 4;
     stepActionPanel.add(buttonSave, gridBadConstButtonSaveRow);
@@ -1108,7 +1108,7 @@ public class MapXmlCreator extends JFrame {
     stepActionPanel.add(tabbedPane, BorderLayout.CENTER);
   }
 
-  public void showHTML(final String htmlString, final String title) {
+  private void showHtml(final String htmlString, final String title) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -1141,7 +1141,7 @@ public class MapXmlCreator extends JFrame {
     });
   }
 
-  static void saveXML() {
+  static void saveXml() {
     try {
       final String fileName =
           new FileSave("Where to Save the Game XML ?",
@@ -1157,7 +1157,7 @@ public class MapXmlCreator extends JFrame {
       transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, GameParser.DTD_FILE_NAME);
-      final DOMSource source = new DOMSource(MapXmlHelper.getXMLDocument());
+      final DOMSource source = new DOMSource(MapXmlHelper.getXmlDocument());
       final File newFile = new File(fileName);
       final StreamResult result = new StreamResult(newFile);
 
@@ -1187,30 +1187,30 @@ public class MapXmlCreator extends JFrame {
     getLogger().log(level, msg);
   }
 
-  static GameStep loadXML() {
-    final String gameXMLPath =
-        MapXmlUIHelper.selectFile("Game XML File", MapXmlHelper.getMapXMLFile(), FILE_NAME_ENDING_XML).getPathString();
-    MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXMLPath);
+  static GameStep loadXml() {
+    final String gameXmlPath =
+        MapXmlUiHelper.selectFile("Game XML File", MapXmlHelper.getMapXmlFile(), FILE_NAME_ENDING_XML).getPathString();
+    MapXmlCreator.log(Level.INFO, "Load Game XML from " + gameXmlPath);
     try {
-      return loadXmlFromFilePath(gameXMLPath);
+      return loadXmlFromFilePath(gameXmlPath);
     } catch (SAXException | IOException | ParserConfigurationException e) {
-      ClientLogger.logError("Failed to load XML File: " + gameXMLPath, e);
-      return loadXML();
+      ClientLogger.logError("Failed to load XML File: " + gameXmlPath, e);
+      return loadXml();
     }
   }
 
-  public static GameStep loadXmlFromFilePath(final String gameXMLPath)
+  private static GameStep loadXmlFromFilePath(final String gameXmlPath)
       throws SAXException, IOException, ParserConfigurationException {
-    final FileInputStream in = new FileInputStream(gameXMLPath);
+    final FileInputStream in = new FileInputStream(gameXmlPath);
 
     // parse using builder to get DOM representation of the XML file
-    final org.w3c.dom.Document dom = new GameParser(gameXMLPath).getDocument(in);
+    final org.w3c.dom.Document dom = new GameParser(gameXmlPath).getDocument(in);
 
-    GameStep goToStep = MapXmlHelper.parseValuesFromXML(dom);
+    GameStep goToStep = MapXmlHelper.parseValuesFromXml(dom);
 
     // set map file, image file and map folder
-    MapXmlHelper.setMapXMLFile(new File(gameXMLPath));
-    File mapFolder = MapXmlHelper.getMapXMLFile().getParentFile();
+    MapXmlHelper.setMapXmlFile(new File(gameXmlPath));
+    File mapFolder = MapXmlHelper.getMapXmlFile().getParentFile();
     if (mapFolder.getName().equals(GameSelectorModel.DEFAULT_GAME_XML_DIRECTORY_NAME)) {
       mapFolder = mapFolder.getParentFile();
     }

@@ -41,17 +41,17 @@ public class ProData {
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
-  public static void initialize(final ProAI proAI) {
-    hiddenInitialize(proAI, proAI.getGameData(), proAI.getPlayerID(), false);
+  public static void initialize(final ProAI proAi) {
+    hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerID(), false);
   }
 
-  public static void initializeSimulation(final ProAI proAI, final GameData data, final PlayerID player) {
-    hiddenInitialize(proAI, data, player, true);
+  public static void initializeSimulation(final ProAI proAi, final GameData data, final PlayerID player) {
+    hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(final ProAI proAI, final GameData data, final PlayerID player,
+  private static void hiddenInitialize(final ProAI proAi, final GameData data, final PlayerID player,
       final boolean isSimulation) {
-    ProData.proAI = proAI;
+    ProData.proAI = proAi;
     ProData.data = data;
     ProData.player = player;
     ProData.isSimulation = isSimulation;

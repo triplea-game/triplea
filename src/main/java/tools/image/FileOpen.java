@@ -34,8 +34,7 @@ public class FileOpen {
     this(title, currentDirectory, null, extensions);
   }
 
-  public FileOpen(final String title, final File currentDirectory, final File selectedFile,
-      final String... extensions) {
+  FileOpen(final String title, final File currentDirectory, final File selectedFile, final String... extensions) {
     final JFileChooser chooser = new JFileChooser();
     chooser.setDialogTitle(title);
     if (selectedFile != null) {
@@ -77,8 +76,7 @@ public class FileOpen {
       // get the file
       file = chooser.getSelectedFile();
     } catch (final Exception ex) {
-      final String ERR_MSG_1 = "Warning! Could not load the file!";
-      JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Warning! Could not load the file!", "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
     }
   } // constructor

@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.MainGameFrame;
@@ -67,8 +68,8 @@ public class PBEMMessagePoster implements Serializable {
     final IForumPoster forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
     final IEmailSender emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
     final IWebPoster webPoster = (IWebPoster) gameData.getProperties().get(WEB_POSTER_PROP_NAME);
-    final boolean isPBEM = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
-    return (isPBEM && (forumPoster != null || emailSender != null || webPoster != null));
+    final boolean isPbem = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
+    return (isPbem && (forumPoster != null || emailSender != null || webPoster != null));
   }
 
   public IForumPoster getForumPoster() {
@@ -109,8 +110,8 @@ public class PBEMMessagePoster implements Serializable {
       saveGameSb.append(m_forumPoster.getTopicId()).append("_");
     }
     saveGameSb.append(m_currentPlayer.getName().substring(0, Math.min(3, m_currentPlayer.getName().length() - 1)))
-        .append(m_roundNumber).append(".tsvg");
-    final String saveGameName = saveGameSb.toString();
+        .append(m_roundNumber);
+    final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     if (m_forumPoster != null) {
       if (includeSaveGame) {
         m_forumPoster.addSaveGame(m_saveGameFile, saveGameName);
@@ -221,10 +222,10 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
-      final PBEMMessagePoster posterPBEM, final IAbstractForumPosterDelegate postingDelegate,
+      final PBEMMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
       final MainGameFrame mainGameFrame, final JComponent postButton) {
     String message = "";
-    final IForumPoster turnSummaryMsgr = posterPBEM.getForumPoster();
+    final IForumPoster turnSummaryMsgr = posterPbem.getForumPoster();
     final StringBuilder sb = new StringBuilder();
     if (turnSummaryMsgr != null) {
       sb.append(message).append("Post ").append(title).append(" ");
@@ -233,11 +234,11 @@ public class PBEMMessagePoster implements Serializable {
       }
       sb.append("to ").append(turnSummaryMsgr.getDisplayName()).append("?\n");
     }
-    final IEmailSender emailSender = posterPBEM.getEmailSender();
+    final IEmailSender emailSender = posterPbem.getEmailSender();
     if (emailSender != null) {
       sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
     }
-    final IWebPoster webPoster = posterPBEM.getWebPoster();
+    final IWebPoster webPoster = posterPbem.getWebPoster();
     if (webPoster != null) {
       sb.append("Send game state of '").append(webPoster.getGameName()).append("' to ").append(webPoster.getHost())
           .append("?\n");
@@ -257,24 +258,24 @@ public class PBEMMessagePoster implements Serializable {
           postingDelegate.setHasPostedTurnSummary(true);
         }
         try {
-          saveGameFile = File.createTempFile("triplea", ".tsvg");
+          saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
           if (saveGameFile != null) {
             mainGameFrame.getGame().saveGame(saveGameFile);
-            posterPBEM.setSaveGame(saveGameFile);
+            posterPbem.setSaveGame(saveGameFile);
           }
         } catch (final Exception e) {
           postOk = false;
           ClientLogger.logQuietly(e);
         }
-        posterPBEM.setTurnSummary(historyLog.toString());
+        posterPbem.setTurnSummary(historyLog.toString());
         try {
           // forward the poster to the delegate which invokes post() on the poster
           if (postingDelegate != null) {
-            if (!postingDelegate.postTurnSummary(posterPBEM, title, includeSaveGame)) {
+            if (!postingDelegate.postTurnSummary(posterPbem, title, includeSaveGame)) {
               postOk = false;
             }
           } else {
-            if (!posterPBEM.post(null, title, includeSaveGame)) {
+            if (!posterPbem.post(null, title, includeSaveGame)) {
               postOk = false;
             }
           }
@@ -286,9 +287,9 @@ public class PBEMMessagePoster implements Serializable {
           postingDelegate.setHasPostedTurnSummary(postOk);
         }
         final StringBuilder sb1 = new StringBuilder();
-        if (posterPBEM.getForumPoster() != null) {
-          final String saveGameRef = posterPBEM.getSaveGameRef();
-          final String turnSummaryRef = posterPBEM.getTurnSummaryRef();
+        if (posterPbem.getForumPoster() != null) {
+          final String saveGameRef = posterPbem.getSaveGameRef();
+          final String turnSummaryRef = posterPbem.getTurnSummaryRef();
           if (saveGameRef != null) {
             sb1.append("\nSave Game : ").append(saveGameRef);
           }
@@ -296,11 +297,11 @@ public class PBEMMessagePoster implements Serializable {
             sb1.append("\nSummary Text: ").append(turnSummaryRef);
           }
         }
-        if (posterPBEM.getEmailSender() != null) {
-          sb1.append("\nEmails: ").append(posterPBEM.getEmailSendStatus());
+        if (posterPbem.getEmailSender() != null) {
+          sb1.append("\nEmails: ").append(posterPbem.getEmailSendStatus());
         }
-        if (posterPBEM.getWebPoster() != null) {
-          sb1.append("\nWeb Site Post: ").append(posterPBEM.getWebPostStatus());
+        if (posterPbem.getWebPoster() != null) {
+          sb1.append("\nWeb Site Post: ").append(posterPbem.getWebPostStatus());
         }
         historyLog.getWriter().println(sb1.toString());
         if (historyLog.isVisible()) {

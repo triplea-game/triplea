@@ -28,7 +28,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel)) {
       me = Optional.of(new PlayerSequencePanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -105,7 +105,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddSequence = new JButton("Add Sequence");
 
-    buttonAddSequence.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       String newSequenceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",
           "Sequence" + (MapXmlHelper.getPlayerSequenceMap().size() + 1));

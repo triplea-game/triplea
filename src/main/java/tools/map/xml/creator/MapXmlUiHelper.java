@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 
 import tools.image.FileOpen;
 
-public class MapXmlUIHelper {
+public class MapXmlUiHelper {
 
   /**
    *
@@ -31,15 +31,14 @@ public class MapXmlUIHelper {
       final String title, final Object message,
       final int messageType)
       throws HeadlessException {
-    return MapXmlUIHelper.showOptionDialog(
+    return showOptionDialog(
         title,
         message,
         JOptionPane.YES_NO_OPTION,
         messageType, JOptionPane.NO_OPTION);
   }
 
-
-  public static void addNewFocusListenerForTextField(final JTextField textField, final Runnable r) {
+  static void addNewFocusListenerForTextField(final JTextField textField, final Runnable r) {
     textField.addFocusListener(new FocusListener() {
 
       @Override
@@ -78,11 +77,11 @@ public class MapXmlUIHelper {
         messageType, null, null, initialValue);
   }
 
-  public static final Font defaultMapXMLCreatorFont = MapXmlUIHelper.getDefaultMapXMLCreatorFont();
-  public static final String defaultMapXMLCreatorFontName = MapXmlUIHelper.getDefaultMapXMLCreatorFontName();
+  public static final Font defaultMapXMLCreatorFont = getDefaultMapXmlCreatorFont();
+  public static final String defaultMapXMLCreatorFontName = getDefaultMapXmlCreatorFontName();
   public static final String preferredMapXMLCreatorFontName = "Tahoma";
 
-  public static Font getDefaultMapXMLCreatorFont() {
+  public static Font getDefaultMapXmlCreatorFont() {
     return defaultMapXMLCreatorFont;
   }
 
@@ -91,7 +90,7 @@ public class MapXmlUIHelper {
    *
    * @return default font name for XML Creator
    */
-  public static String getDefaultMapXMLCreatorFontName() {
+  public static String getDefaultMapXmlCreatorFontName() {
     final String[] availableFontFamilyNames =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
     for (final String fontName : availableFontFamilyNames) {
@@ -110,7 +109,7 @@ public class MapXmlUIHelper {
    * @param actionListener - the ActionListener to be added
    */
   public static JButton createButton(final String buttonText, final int mnemonic, final ActionListener actionListener) {
-    final JButton newButton = MapXmlUIHelper.createButton(buttonText, mnemonic);
+    final JButton newButton = createButton(buttonText, mnemonic);
     newButton.addActionListener(actionListener);
     return newButton;
   }
@@ -136,9 +135,9 @@ public class MapXmlUIHelper {
    * @param anchor anchor value for new GridBagConstraints object
    * @return cloned GridBagConstraints object with provided gridx and gridy values
    */
-  public static GridBagConstraints getGBCCloneWith(final GridBagConstraints gbcToClone, final int gridx,
+  public static GridBagConstraints getGbcCloneWith(final GridBagConstraints gbcToClone, final int gridx,
       final int gridy, final int anchor) {
-    final GridBagConstraints gbcNew = MapXmlUIHelper.getGBCCloneWith(gbcToClone, gridx, gridy);
+    final GridBagConstraints gbcNew = getGbcCloneWith(gbcToClone, gridx, gridy);
     gbcNew.anchor = anchor;
     return gbcNew;
   }
@@ -149,7 +148,7 @@ public class MapXmlUIHelper {
    * @param gridy gridy value for new GridBagConstraints object
    * @return cloned GridBagConstraints object with provided gridx and gridy values
    */
-  public static GridBagConstraints getGBCCloneWith(final GridBagConstraints gbcToClone, final int gridx,
+  public static GridBagConstraints getGbcCloneWith(final GridBagConstraints gbcToClone, final int gridx,
       final int gridy) {
     final GridBagConstraints gbcNew = (GridBagConstraints) gbcToClone.clone();
     gbcNew.gridx = gridx;
@@ -157,7 +156,7 @@ public class MapXmlUIHelper {
     return gbcNew;
   }
 
-  public static FileOpen selectFile(final String filename, final File currentDirectory, final String... extensions) {
+  static FileOpen selectFile(final String filename, final File currentDirectory, final String... extensions) {
     final FileOpen gameXmlFileOpen =
         new FileOpen("Load " + filename, currentDirectory, MapXmlCreator.FILE_NAME_ENDING_XML);
     if (gameXmlFileOpen.getPathString() != null) {
@@ -177,7 +176,7 @@ public class MapXmlUIHelper {
    * @return new GridBagConstraints based on gbcTemplate and provided data
    */
   public static GridBagConstraints getGbcDefaultTemplateWith(final int gridx, final int gridy) {
-    return getGBCCloneWith(MapXmlUIHelper.gbcTemplate, gridx, gridy);
+    return getGbcCloneWith(gbcTemplate, gridx, gridy);
   }
 
   /**

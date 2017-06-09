@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'com.install4j.gradle' version '6.1.5'
@@ -34,24 +35,6 @@ tasks.withType(JavaCompile) {
     options.incremental = true
 }
 
-check {
-    dependsOn 'validateYamls'
-}
-
-checkstyle {
-    toolVersion = "7.6.1"
-}
-
-checkstyleMain {
-    maxWarnings = checkstyleMainMaxWarnings.toInteger()
-    source sourceSets.main.output.resourcesDir
-}
-
-checkstyleTest {
-    maxWarnings = checkstyleTestMaxWarnings.toInteger()
-    source sourceSets.test.output.resourcesDir
-}
-
 jar {
     manifest {
         attributes 'Main-Class': mainClassName, 'TripleA-Version': version
@@ -73,6 +56,7 @@ sourceSets {
 }
 
 dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.guava:guava:19.0'
@@ -97,6 +81,8 @@ dependencies {
 }
 
 test {
+    exclude '**/*Tests.class'
+
     testLogging {
         exceptionFormat = 'full'
     }
@@ -119,8 +105,12 @@ task integTest(type: Test) {
     mustRunAfter tasks.test
 }
 
-check.dependsOn integTest
-
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
 
 def assetsDirectory = file("${buildDir}/assets")
 git {
@@ -134,8 +124,12 @@ git {
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
-        validateYaml(file('lobby_server.yaml'), file("$schemasDir/lobby_server.json"))
-        validateYaml(file('triplea_maps.yaml'), file("$schemasDir/triplea_maps.json"))
+        def lobbyServerYamlFile = file('lobby_server.yaml')
+        validateYaml(lobbyServerYamlFile, file("$schemasDir/lobby_server.json"))
+
+        def mapsYamlFile = file('triplea_maps.yaml')
+        validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
+        validateMapsYamlLinks(mapsYamlFile)
     }
 }
 
@@ -222,4 +216,27 @@ gradle.taskGraph.whenReady { graph ->
             it.project.install4j.installDir = file(project.install4jHomeDir)
         }
     })
+}
+
+check {
+    dependsOn 'integTest', 'validateYamls', 'jacocoTestReport'
+}
+
+checkstyle {
+    toolVersion = "7.6.1"
+}
+
+checkstyleIntegTest {
+    maxWarnings = checkstyleIntegTestMaxWarnings.toInteger()
+    source sourceSets.integTest.output.resourcesDir
+}
+
+checkstyleMain {
+    maxWarnings = checkstyleMainMaxWarnings.toInteger()
+    source sourceSets.main.output.resourcesDir
+}
+
+checkstyleTest {
+    maxWarnings = checkstyleTestMaxWarnings.toInteger()
+    source sourceSets.test.output.resourcesDir
 }

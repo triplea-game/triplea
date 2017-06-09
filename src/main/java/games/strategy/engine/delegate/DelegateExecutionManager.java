@@ -53,11 +53,11 @@ public class DelegateExecutionManager {
    * </p>
    *
    * <p>
-   * If timeToWaitMS is > 0, we will give up trying to block delegate execution after timeTiWaitMS has elapsed.
+   * If timeToWaitMs is > 0, we will give up trying to block delegate execution after timeToWaitMs has elapsed.
    * </p>
    */
-  public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException {
-    final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
+  public boolean blockDelegateExecution(final int timeToWaitMs) throws InterruptedException {
+    final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMs, TimeUnit.MILLISECONDS);
     if (!rVal) {
       if (sm_logger.isLoggable(Level.FINE)) {
         sm_logger.fine("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount()

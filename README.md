@@ -1,6 +1,8 @@
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
 TripleA is a free game engine that runs on open source and is community supported. 
 
+[![Code Coverage](https://img.shields.io/codecov/c/github/pvorb/property-providers/develop.svg)](https://codecov.io/github/pvorb/property-providers?branch=develop)
+
 Installing TripleA and Playing
 ==============================
 - Download and install TripleA: http://triplea-game.github.io/download/
@@ -29,8 +31,8 @@ Lobby Game Bot Hosting
 ======================
 - Please see: https://github.com/triplea-game/lobby#run-hosted-bots
 
-Development and Map Making
-==========================
+Development
+===========
+- Accepted feature requests: https://github.com/triplea-game/triplea/wiki/Feature-Back-Log
 - Full project documentation, including 'how to get started guides' are at: http://www.triplea-game.org/dev_docs/
 - Broken map list: https://github.com/triplea-game/triplea/wiki/Broken-Maps
-- Accepted feature requests: https://github.com/triplea-game/triplea/wiki/Feature-Back-Log

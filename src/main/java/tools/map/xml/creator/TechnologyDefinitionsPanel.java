@@ -28,7 +28,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof TechnologyDefinitionsPanel)) {
       me = Optional.of(new TechnologyDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -99,7 +99,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     // <4> Add Final Button Row
     final JButton buttonAddTechnology = new JButton("Add Technology");
 
-    buttonAddTechnology.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddTechnology.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddTechnology.addActionListener(SwingAction.of("Add Technology", e -> {
       String newTechnologyName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new technology name:",
           "Technology" + (MapXmlHelper.getTechnologyDefinitionsMap().size() + 1));

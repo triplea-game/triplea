@@ -534,8 +534,8 @@ public class Properties implements Constants {
     return data.getProperties().get(USE_POLITICS, false);
   }
 
-  public static int getBonusIncomePercentage(final PlayerID playerId, final GameData data) {
-    return data.getProperties().get(Constants.getBonusIncomePercentageFor(playerId), 0);
+  public static int getIncomePercentage(final PlayerID playerId, final GameData data) {
+    return data.getProperties().get(Constants.getIncomePercentageFor(playerId), 100);
   }
 
   public static int getRelationshipsLastExtraRounds(final GameData data) {

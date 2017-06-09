@@ -650,7 +650,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge) {
+  public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
     if (testedConditions != null) {
       if (testedConditions.containsKey(this)) {
         return testedConditions.get(this);
@@ -658,12 +658,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     boolean objectiveMet = true;
     final List<PlayerID> players = getPlayers();
-    final GameData data = aBridge.getData();
+    final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
     if (objectiveMet && m_conditions.size() > 0) {
       if (testedConditions == null) {
         testedConditions = testAllConditionsRecursive(
-            getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, aBridge);
+            getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge);
       }
       objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), testedConditions, m_conditionType);
     }
@@ -807,16 +807,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     // check for battle stats
     if (objectiveMet && m_destroyedTUV != null) {
       final String[] s = m_destroyedTUV.split(":");
-      final int requiredDestroyedTUV = getInt(s[0]);
-      if (requiredDestroyedTUV >= 0) {
+      final int requiredDestroyedTuv = getInt(s[0]);
+      if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
-        final int destroyedTUVforThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
+        final int destroyedTuvForThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
             data.getBattleRecordsList(), 0, data.getSequence().getRound(), justCurrentRound, false);
-        if (requiredDestroyedTUV > destroyedTUVforThisRoundSoFar) {
+        if (requiredDestroyedTuv > destroyedTuvForThisRoundSoFar) {
           objectiveMet = false;
         }
         if (getCountEach()) {
-          m_eachMultiple = destroyedTUVforThisRoundSoFar;
+          m_eachMultiple = destroyedTuvForThisRoundSoFar;
         }
       }
     }
@@ -854,10 +854,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0)) {
       if (diceSides <= 0 || hitTarget >= diceSides) {
         objectiveMet = true;
-        changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);
+        changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, false);
       } else if (hitTarget <= 0) {
         objectiveMet = false;
-        changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);
+        changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, false);
       } else {
         // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source
         // (ie: live and pbem
@@ -866,16 +866,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         // together, then
         // getting a ton of random numbers at once instead of one at a time)
         ThreadUtil.sleep(100);
-        final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
+        final int rollResult = delegateBridge.getRandom(diceSides, null, DiceType.ENGINE,
             "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
         objectiveMet = rollResult <= hitTarget;
         final String notificationMessage = (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE)
             + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult + "  for "
             + MyFormatter.attachmentNameToText(this.getName()) + ")";
-        aBridge.getHistoryWriter().startEvent(notificationMessage);
-        changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, true);
-        ((ITripleAPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
-            notificationMessage);
+        delegateBridge.getHistoryWriter().startEvent(notificationMessage);
+        changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
+        ((ITripleAPlayer) delegateBridge.getRemotePlayer(delegateBridge.getPlayerID()))
+            .reportMessage(notificationMessage, notificationMessage);
       }
     }
     return objectiveMet != m_invert;

@@ -300,11 +300,11 @@ public class Vault {
    * Waits until we know about a given vault id.
    * waits for at most timeout milliseconds
    */
-  public void waitForID(final VaultID id, final long timeoutMS) {
-    if (timeoutMS <= 0) {
+  public void waitForID(final VaultID id, final long timeoutMs) {
+    if (timeoutMs <= 0) {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }
-    final long endTime = timeoutMS + System.currentTimeMillis();
+    final long endTime = timeoutMs + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !knowsAbout(id)) {
       synchronized (m_waitForLock) {
         if (knowsAbout(id)) {

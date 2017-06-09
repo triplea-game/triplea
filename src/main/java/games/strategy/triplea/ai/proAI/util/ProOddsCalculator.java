@@ -139,28 +139,28 @@ public class ProOddsCalculator {
         Match.getMatches(attackingUnits, Matches.UnitCanBeInBattle(true, !t.isWater(), 1, false, true, true));
     final List<Unit> mainCombatDefenders =
         Match.getMatches(defendingUnits, Matches.UnitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
-    double TUVswing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
+    double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
     if (Matches.TerritoryIsNeutralButNotWater.match(t)) { // Set TUV swing for neutrals
       final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
-      TUVswing = remainingUnitValue - attackingUnitValue;
+      tuvSwing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
       final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.unitValueMap);
-      TUVswing += transportedUnitValue * winPercentage / 100;
+      tuvSwing += transportedUnitValue * winPercentage / 100;
     }
 
     // Create battle result object
     final List<Territory> tList = new ArrayList<>();
     tList.add(t);
     if (Match.allMatch(tList, Matches.TerritoryIsLand)) {
-      return new ProBattleResult(winPercentage, TUVswing,
+      return new ProBattleResult(winPercentage, tuvSwing,
           Match.someMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());
     } else {
-      return new ProBattleResult(winPercentage, TUVswing, !averageAttackersRemaining.isEmpty(),
+      return new ProBattleResult(winPercentage, tuvSwing, !averageAttackersRemaining.isEmpty(),
           averageAttackersRemaining, averageDefendersRemaining, results.getAverageBattleRoundsFought());
     }
   }

@@ -41,6 +41,8 @@ public class GameProperties extends GameDataComponent {
   // added.
   private final List<String> ordering = new ArrayList<>();
 
+  private Map<String, IEditableProperty> playerProperties = new HashMap<>();
+
   /**
    * Creates a new instance of GameProperties.
    *
@@ -80,6 +82,13 @@ public class GameProperties extends GameDataComponent {
   public Object get(final String key) {
     if (editableProperties.containsKey(key)) {
       return editableProperties.get(key).getValue();
+    }
+    // TODO: remove null check for next incompatible release
+    if (playerProperties == null) {
+      playerProperties = new HashMap<>();
+    }
+    if (playerProperties.containsKey(key)) {
+      return playerProperties.get(key).getValue();
     }
     return constantProperties.get(key);
   }
@@ -127,6 +136,22 @@ public class GameProperties extends GameDataComponent {
       }
     }
     return properties;
+  }
+
+  public void addPlayerProperty(final IEditableProperty property) {
+    // TODO: remove null check for next incompatible release
+    if (playerProperties == null) {
+      playerProperties = new HashMap<>();
+    }
+    playerProperties.put(property.getName(), property);
+  }
+
+  public IEditableProperty getPlayerProperty(final String name) {
+    // TODO: remove null check for next incompatible release
+    if (playerProperties == null) {
+      playerProperties = new HashMap<>();
+    }
+    return playerProperties.get(name);
   }
 
   public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties)

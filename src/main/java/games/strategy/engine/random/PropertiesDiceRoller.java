@@ -120,12 +120,12 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, String gameID,
-      final String gameUUID) throws IOException {
-    if (gameID.trim().length() == 0) {
-      gameID = "TripleA";
+  public String postRequest(final int max, final int numDice, final String subjectMessage, String gameId,
+      final String gameUuid) throws IOException {
+    if (gameId.trim().length() == 0) {
+      gameId = "TripleA";
     }
-    String message = gameID + ":" + subjectMessage;
+    String message = gameId + ":" + subjectMessage;
     final int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
@@ -146,7 +146,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
       // this is to allow a dice server to allow the user to request the emails for the game
       // rather than sending out email for each roll
-      httpPost.addHeader("X-Triplea-Game-UUID", gameUUID);
+      httpPost.addHeader("X-Triplea-Game-UUID", gameUuid);
       final String host = m_props.getProperty("host");
       final int port = Integer.parseInt(m_props.getProperty("port", "80"));
       final HttpHost hostConfig = new HttpHost(host, port);

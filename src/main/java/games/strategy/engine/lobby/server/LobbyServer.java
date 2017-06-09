@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.net.IServerMessenger;
@@ -59,13 +58,13 @@ public class LobbyServer {
     try {
       // send args to system properties
       handleCommandLineArgs(args);
+      logger.info("Starting database");
+      // initialize the database
+      Database.getDerbyConnection().close();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = Integer.parseInt(System.getProperty(TRIPLEA_LOBBY_PORT_PROPERTY, "3303"));
       logger.info("Trying to listen on port:" + port);
       new LobbyServer(port);
-      logger.info("Starting database");
-      // initialize the database
-      Database.getConnection().close();
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);
@@ -84,7 +83,6 @@ public class LobbyServer {
    * Move command line arguments to System.properties
    */
   private static void handleCommandLineArgs(final String[] args) {
-    System.getProperties().setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     final String[] properties = getProperties();
     boolean usagePrinted = false;
     for (final String arg2 : args) {

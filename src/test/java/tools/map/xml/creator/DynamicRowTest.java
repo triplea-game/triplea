@@ -12,7 +12,7 @@ public class DynamicRowTest {
   public void testGetGbcDefaultTemplateWith() {
     final int gridx = 2;
     final int gridy = 3;
-    final GridBagConstraints gbcTemplate = MapXmlUIHelper.getGbcDefaultTemplateWith(gridx, gridy);
+    final GridBagConstraints gbcTemplate = MapXmlUiHelper.getGbcDefaultTemplateWith(gridx, gridy);
     assertEquals(gbcTemplate.gridx, gridx);
     assertEquals(gbcTemplate.gridy, gridy);
   }

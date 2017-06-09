@@ -1,12 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -17,7 +13,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +21,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -77,7 +70,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final SelectAndViewEditor m_forumPosterEditor;
   private final SelectAndViewEditor m_emailSenderEditor;
   private final SelectAndViewEditor m_webPosterEditor;
-  private final List<PBEMLocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<>();
+  private final List<PlayerSelectorRow> m_playerTypes = new ArrayList<>();
   private final JPanel m_localPlayerPanel = new JPanel();
   private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 
@@ -315,7 +308,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PBEMLocalPlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       if (player.isPlayerEnabled()) {
         return true;
       }
@@ -404,11 +397,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
     LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
-    final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
-    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
+    final String gameUuid = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
+    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUuid);
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PBEMLocalPlayerComboBoxSelector player : m_playerTypes) {
+    for (final PlayerSelectorRow player : m_playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
@@ -444,35 +437,35 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
     final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
-    final String[] playerNames = data.getPlayerList().getNames();
+    final List<PlayerID> players = data.getPlayerList().getPlayers();
     // if the xml was created correctly, this list will be in turn order. we want to keep it that way.
     int gridx = 0;
     int gridy = 0;
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel("Use");
-      enableLabel.setForeground(Color.black);
       m_localPlayerPanel.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     }
     final JLabel nameLabel = new JLabel("Name");
-    nameLabel.setForeground(Color.black);
     m_localPlayerPanel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel typeLabel = new JLabel("Type");
-    typeLabel.setForeground(Color.black);
     m_localPlayerPanel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel allianceLabel = new JLabel("Alliance");
-    allianceLabel.setForeground(Color.black);
     m_localPlayerPanel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    for (final String playerName : playerNames) {
-      final PBEMLocalPlayerComboBoxSelector selector =
-          new PBEMLocalPlayerComboBoxSelector(playerName, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerName)),
-              playerTypes, parent);
+    final JLabel bonusLabel = new JLabel("Income");
+    m_localPlayerPanel.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
+    for (final PlayerID player : players) {
+      final PlayerSelectorRow selector =
+          new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
+              data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, parent, data.getProperties());
       m_playerTypes.add(selector);
-      selector.layout(++gridy, m_localPlayerPanel);
+      if (!player.isHidden()) {
+        selector.layout(++gridy, m_localPlayerPanel);
+      }
     }
     m_localPlayerPanel.validate();
     m_localPlayerPanel.invalidate();
@@ -480,109 +473,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 }
 
 
-class PBEMLocalPlayerComboBoxSelector {
-  private final JCheckBox m_enabledCheckBox;
-  private final String m_playerName;
-  private final JComboBox<String> m_playerTypes;
-  private boolean m_enabled = true;
-  private final JLabel m_name;
-  private final JLabel m_alliances;
-  private final Collection<String> m_disableable;
-  private final String[] m_types;
-  private final SetupPanel m_parent;
-
-  PBEMLocalPlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections,
-      final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
-      final Collection<String> playerAlliances, final String[] types, final SetupPanel parent) {
-    m_playerName = playerName;
-    m_name = new JLabel(m_playerName + ":");
-    m_enabledCheckBox = new JCheckBox();
-    final ActionListener m_disablePlayerActionListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (m_enabledCheckBox.isSelected()) {
-          m_enabled = true;
-          // the 1st in the list should be human
-          m_playerTypes.setSelectedItem(m_types[0]);
-        } else {
-          m_enabled = false;
-          // the 2nd in the list should be Weak AI
-          m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
-        }
-        setWidgetActivation();
-      }
-    };
-    m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
-    m_enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
-    m_enabledCheckBox.setEnabled(disableable.contains(playerName));
-    m_disableable = disableable;
-    m_parent = parent;
-    m_types = types;
-    m_playerTypes = new JComboBox<>(types);
-    String previousSelection = reloadSelections.get(playerName);
-    if (previousSelection.equalsIgnoreCase("Client")) {
-      previousSelection = types[0];
-    }
-    if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
-      m_playerTypes.setSelectedItem(previousSelection);
-    } else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-      // the 4th in the list should be Pro AI (Hard AI)
-      m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-    }
-    // we do not set the default for the combobox because the default is the top item, which in this case is human
-    String m_playerAlliances;
-    if (playerAlliances.contains(playerName)) {
-      m_playerAlliances = "";
-    } else {
-      m_playerAlliances = playerAlliances.toString();
-    }
-    m_alliances = new JLabel(m_playerAlliances);
-    setWidgetActivation();
-  }
-
-  public void layout(final int row, final Container container) {
-    int gridx = 0;
-    if (!m_disableable.isEmpty()) {
-      container.add(m_enabledCheckBox, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    }
-    container.add(m_name, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(m_playerTypes, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(m_alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-  }
-
-  public String getPlayerName() {
-    return m_playerName;
-  }
-
-  public String getPlayerType() {
-    return (String) m_playerTypes.getSelectedItem();
-  }
-
-  public boolean isPlayerEnabled() {
-    return m_enabledCheckBox.isSelected();
-  }
-
-  private void setWidgetActivation() {
-    m_name.setEnabled(m_enabled);
-    m_alliances.setEnabled(m_enabled);
-    m_enabledCheckBox.setEnabled(m_disableable.contains(m_playerName));
-    m_parent.notifyObservers();
-  }
-
-  /**
-   * A cache for serialized beans that should be stored locally.
-   * This is used to store settings which are not game related, and should therefore not go into the options cache
-   * This is often used by editors to remember previous values
-   */
-
-}
-
-
-/** A bean cache used by PBEMSetupPanel. */
+/**
+ * A cache for serialized beans that should be stored locally.
+ * This is used to store settings which are not game related, and should therefore not go into the options cache
+ * This is often used by editors to remember previous values
+ */
 enum LocalBeanCache {
   INSTANCE;
   private final File m_file;

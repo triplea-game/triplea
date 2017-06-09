@@ -1165,9 +1165,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
-        final HashMap<String, HashSet<UnitType>> mapAA = taa.getAirborneTargettedByAA();
-        if (mapAA != null && !mapAA.isEmpty()) {
-          for (final Entry<String, HashSet<UnitType>> entry : mapAA.entrySet()) {
+        final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
+        if (mapAa != null && !mapAa.isEmpty()) {
+          for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
             HashSet<UnitType> current = rVal.get(entry.getKey());
             if (current == null) {
               current = new HashSet<>();
@@ -1252,9 +1252,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_AA_RADAR)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAA =
+          final List<UnitType> allAa =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAAforAnything);
-          for (final UnitType aa : allAA) {
+          for (final UnitType aa : allAa) {
             taa.setRadarBonus("1:" + aa.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_SUPER_SUBS)) {
@@ -1319,14 +1319,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
           final List<UnitType> allBombers =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
           final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLHTR = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+          final boolean heavyBombersLhtr = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             // we subtract the base rolls to get the bonus
             final int heavyBomberDiceRollsBonus =
                 heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID);
             taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
-            if (heavyBombersLHTR) {
+            if (heavyBombersLhtr) {
               // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
               // does not get changed.
               // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on,

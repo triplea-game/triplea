@@ -25,7 +25,6 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1734,7 +1733,7 @@ public class TripleAFrame extends MainGameFrame {
         data.acquireReadLock();
         // m_data.acquireWriteLock();
         try {
-          final File f = TripleAMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
+          final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
           if (f != null) {
             try (FileOutputStream fout = new FileOutputStream(f)) {
               final GameData datacopy = GameDataUtils.cloneGameData(data, true);

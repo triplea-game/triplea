@@ -33,6 +33,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -52,8 +53,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
   }
 
-  public boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
-    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData());
+  private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
+    return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
   /**
@@ -65,6 +66,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final GameData data = m_bridge.getData();
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+    final IntegerMap<Resource> leftOverResources = m_bridge.getPlayerID().getResources().getResourcesCopy();
     super.start();
     if (!m_needToInitialize) {
       return;
@@ -112,21 +114,22 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
       m_bridge.addChange(change);
       if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
-        final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa,
+        final Change changeVp = (ChangeFactory.attachmentPropertyChange(pa,
             (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
-        final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-        final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-        m_bridge.addChange(ccVP);
+        final Change changeCaptureVp = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+        final CompositeChange ccVp = new CompositeChange(changeVp, changeCaptureVp);
+        m_bridge.addChange(ccVp);
       }
       endTurnReport.append("<br />").append(addOtherResources(m_bridge));
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
-      final int puIncome = Math.max(0, m_player.getResources().getQuantity(PUs) - leftOverPUs);
-      endTurnReport.append("<br />").append(giveBonusIncomePercentage(puIncome));
+      final IntegerMap<Resource> income = m_player.getResources().getResourcesCopy();
+      income.subtract(leftOverResources);
+      endTurnReport.append("<br />").append(BonusIncomeUtils.addBonusIncome(income, m_bridge, m_player));
 
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
-      final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
+      final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
       int relationshipUpkeepCostFlat = 0;
       int relationshipUpkeepCostPercentage = 0;
       int relationshipUpkeepTotalCost = 0;
@@ -140,7 +143,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
       if (relationshipUpkeepCostPercentage != 0) {
-        relationshipUpkeepTotalCost += Math.round(gainedPUS * (relationshipUpkeepCostPercentage) / 100f);
+        relationshipUpkeepTotalCost += Math.round(gainedPus * (relationshipUpkeepCostPercentage) / 100f);
       }
       if (relationshipUpkeepCostFlat != 0) {
         relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;
@@ -169,23 +172,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     m_needToInitialize = false;
     showEndTurnReport(endTurnReport.toString());
-  }
-
-  private String giveBonusIncomePercentage(final int puIncome) {
-    // TODO and other resources?
-    final int bonusPercent = Properties.getBonusIncomePercentage(m_player, getData());
-    final int bonusIncome = (int) Math.round(((double) puIncome * (double) bonusPercent / 100));
-    if (bonusIncome == 0) {
-      return "";
-    }
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-    final int total = m_player.getResources().getQuantity(PUs) + bonusIncome;
-    final String message = "Giving player bonus income (" + bonusPercent + "%) of " + bonusIncome
-        + MyFormatter.pluralize(" PU", bonusIncome) + "; end with " + total + MyFormatter.pluralize(" PU", total);
-    m_bridge.getHistoryWriter().startEvent(message);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player,
-        getData().getResourceList().getResource(Constants.PUS), bonusIncome));
-    return message;
   }
 
   protected void showEndTurnReport(final String endTurnReport) {
@@ -231,7 +217,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return true;
   }
 
-  private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
+  private int rollWarBonds(final IDelegateBridge delegateBridge, final PlayerID player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -239,7 +225,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
     DiceRoll dice;
-    dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
@@ -248,7 +234,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return total;
   }
 
-  private String rollWarBondsForFriends(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
+  private String rollWarBondsForFriends(final IDelegateBridge delegateBridge, final PlayerID player,
+      final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -285,7 +272,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final String annotation =
         player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
-    final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    final DiceRoll dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int totalWarBonds = 0;
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
@@ -296,9 +283,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds)
             + " from War Bonds, giving the total to " + giveWarBondsTo.getName() + ", who ends with "
             + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
-    aBridge.getHistoryWriter().startEvent(transcriptText);
+    delegateBridge.getHistoryWriter().startEvent(transcriptText);
     final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
-    aBridge.addChange(change);
+    delegateBridge.addChange(change);
     getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
     return transcriptText + "<br />";
   }

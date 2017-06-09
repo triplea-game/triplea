@@ -179,7 +179,7 @@ public class DecorationPlacer extends JFrame {
     }
   } // end main
 
-  public DecorationPlacer(final String mapName) {
+  private DecorationPlacer(final String mapName) {
     super("Decoration Placer");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLocationRelativeTo(null);
@@ -558,7 +558,7 @@ public class DecorationPlacer extends JFrame {
               + "(name_place.txt) ?",
           "Points end in .png OR they do not?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           pointsAreNamesOptions,
-          pointsAreNamesOptions[(s_imagePointType.isEndInPNG() ? 0 : 1)]) == JOptionPane.NO_OPTION);
+          pointsAreNamesOptions[(s_imagePointType.isEndInPng() ? 0 : 1)]) == JOptionPane.NO_OPTION);
       s_createNewImageOnRightClick = false;
       s_staticImageForPlacing = null;
     } else {
@@ -918,7 +918,7 @@ enum ImagePointType {
   private final String folderName;
   private final String imageName;
   private final boolean useFolder;
-  private final boolean endInPNG;
+  private final boolean endInPng;
   private final boolean fillAll;
   private final boolean canUseBottomLeftPoint;
   private final boolean canHaveMultiplePoints;
@@ -932,14 +932,14 @@ enum ImagePointType {
   }
 
   ImagePointType(final String fileName, final String folderName, final String imageName, final boolean useFolder,
-      final boolean endInPNG, final boolean fillAll, final boolean canUseBottomLeftPoint,
+      final boolean endInPng, final boolean fillAll, final boolean canUseBottomLeftPoint,
       final boolean canHaveMultiplePoints, final boolean usesCentersPoint, final String description,
       final String instructions) {
     this.fileName = fileName;
     this.folderName = folderName;
     this.imageName = imageName;
     this.useFolder = useFolder;
-    this.endInPNG = endInPNG;
+    this.endInPng = endInPng;
     this.fillAll = fillAll;
     this.canUseBottomLeftPoint = canUseBottomLeftPoint;
     this.canHaveMultiplePoints = canHaveMultiplePoints;
@@ -964,8 +964,8 @@ enum ImagePointType {
     return useFolder;
   }
 
-  public boolean isEndInPNG() {
-    return endInPNG;
+  public boolean isEndInPng() {
+    return endInPng;
   }
 
   public boolean isFillAll() {

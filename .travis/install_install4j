@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Downloads and install install4j
+# Note at the end we configure install4j with our license key. After that final step, install4j can be used.
+#
 
 if [ -z "$INSTALL4J_LICENSE" ]; then
  echo "Error: required license environment variable: INSTALL4J_LICENSE, was not set"

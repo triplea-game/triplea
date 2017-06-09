@@ -177,7 +177,7 @@ public class ConnectionFinder {
     try {
       final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
           "connections.txt", s_mapFolderLocation).getPathString();
-      final StringBuffer connectionsString = convertToXML(connections);
+      final StringBuffer connectionsString = convertToXml(connections);
       if (fileName == null) {
         System.out.println();
         if (territoryDefinitions != null) {
@@ -234,7 +234,7 @@ public class ConnectionFinder {
    *        a map of connections between Territories
    * @return a StringBuffer containing XML representing these connections
    */
-  private static StringBuffer convertToXML(final Map<String, Collection<String>> connections) {
+  private static StringBuffer convertToXml(final Map<String, Collection<String>> connections) {
     final StringBuffer output = new StringBuffer();
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's

@@ -23,6 +23,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -86,6 +87,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     initOriginalOwner(aBridge);
     initTech(aBridge);
     initSkipUnusedBids(aBridge.getData());
+    initAiStartingBonusIncome(aBridge);
     initDeleteAssetsOfDisabledPlayers(aBridge);
     initTransportedLandUnits(aBridge);
     resetUnitState(aBridge);
@@ -163,6 +165,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
       }
     }
+  }
+
+  private static void initAiStartingBonusIncome(final IDelegateBridge bridge) {
+    bridge.getData().getPlayerList().getPlayers().forEach(
+        player -> BonusIncomeUtils.addBonusIncome(player.getResources().getResourcesCopy(), bridge, player));
   }
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge) {
@@ -244,17 +251,19 @@ public class InitializationDelegate extends BaseTripleADelegate {
       if (destroyer != null && !frontier.getRules().contains(destroyer)) {
         change.add(ChangeFactory.addProductionRule(destroyer, frontier));
       }
-      final ProductionRule artilleryIT =
+      final ProductionRule artilleryIndustrialTechnology =
           data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
-      final ProductionRule destroyerIT =
+      final ProductionRule destroyerIndustrialTechnology =
           data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
-      final ProductionFrontier frontierIT =
+      final ProductionFrontier frontierIndustrialTechnology =
           data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-      if (artilleryIT != null && !frontierIT.getRules().contains(artilleryIT)) {
-        change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
+      if (artilleryIndustrialTechnology != null
+          && !frontierIndustrialTechnology.getRules().contains(artilleryIndustrialTechnology)) {
+        change.add(ChangeFactory.addProductionRule(artilleryIndustrialTechnology, frontierIndustrialTechnology));
       }
-      if (destroyerIT != null && !frontierIT.getRules().contains(destroyerIT)) {
-        change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
+      if (destroyerIndustrialTechnology != null
+          && !frontierIndustrialTechnology.getRules().contains(destroyerIndustrialTechnology)) {
+        change.add(ChangeFactory.addProductionRule(destroyerIndustrialTechnology, frontierIndustrialTechnology));
       }
       if (!change.isEmpty()) {
         aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
@@ -273,9 +282,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
       /*
        * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
        */
-      final ProductionFrontier frontierNONShipyards =
+      final ProductionFrontier frontierNonShipyards =
           data.getProductionFrontierList().getProductionFrontier("production");
-      final Collection<ProductionRule> rules = frontierNONShipyards.getRules();
+      final Collection<ProductionRule> rules = frontierNonShipyards.getRules();
       for (final ProductionRule rule : rules) {
         final String ruleName = rule.getName();
         final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
