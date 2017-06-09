@@ -718,7 +718,7 @@ return true;</string>
                     </object>
                   </java>
                 </serializedBean>
-                <condition>((String)WinRegistry.getValue(RegistryRoot.HKEY_CURRENT_USER, "Software\\Classes\\triplea\\shell\\open\\command", "")).equalsIgnoreCase("\"" + context.getVariable("sys.installationDir") + "\\TripleA.exe\" \"%1\"")</condition>
+                <condition>Util.isWindows() &amp;&amp; ((String)WinRegistry.getValue(RegistryRoot.HKEY_CURRENT_USER, "Software\\Classes\\triplea\\shell\\open\\command", "")).equalsIgnoreCase("\"" + context.getVariable("sys.installationDir") + "\\TripleA.exe\" \"%1\"")</condition>
               </action>
               <action name="" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol handler">
                 <serializedBean>
