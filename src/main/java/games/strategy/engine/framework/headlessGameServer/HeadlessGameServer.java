@@ -459,7 +459,9 @@ public class HeadlessGameServer {
 
   public static void resetLobbyHostOldExtensionProperties() {
     for (final String property : getProperties()) {
-      if (GameRunner.LOBBY_HOST.equals(property) || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
+      if (GameRunner.LOBBY_HOST.equals(property)
+          || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+          || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
         if (oldValue != null) {
