@@ -439,7 +439,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
     if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
         applicationsDir.mkdirs();
     }
-    File desktopFile = new File(applicationsDir, context.getCompilerVariable("sys.fullName") + ".desktop");
+    File desktopFile = new File(applicationsDir, "TripleA-" + context.getCompilerVariable("sys.version") + ".desktop");
     File mimeappsFile = new File(applicationsDir, "mimeapps.list");
     if(!desktopFile.exists()){
         return false;
@@ -745,7 +745,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         String mimeTypePrefix = mimeType + "=";
         while(scanner.hasNextLine()){
             String nextLine = scanner.nextLine();
-            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + context.getCompilerVariable("sys.fullName") + ".desktop")){
+            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + "TripleA-" + context.getCompilerVariable("sys.version") + ".desktop")){
                 builder.append(nextLine).append('\n');
             }
         }
