@@ -37,6 +37,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.OpenFileUtility;
+import games.strategy.triplea.UrlConstants;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -229,8 +230,7 @@ public class InGameLobbyWatcher {
             if (JOptionPane.showConfirmDialog(parentComponent,
                 "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openURL(
-                  "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+              OpenFileUtility.openURL(UrlConstants.HOSTING_GUIDE.toString());
             }
             System.exit(-1);
           });
