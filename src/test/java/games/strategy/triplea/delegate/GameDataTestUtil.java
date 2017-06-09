@@ -221,7 +221,7 @@ public class GameDataTestUtil {
     return indexOfType;
   }
 
-  public static void setSelectAntiAirCasualties(final GameData data, final boolean val) {
+  public static void setSelectAaCasualties(final GameData data, final boolean val) {
     for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);

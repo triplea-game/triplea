@@ -721,7 +721,7 @@ class ProCombatMoveAI {
         for (final Territory t : bomberMoveMap.get(unit)) {
           final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
           if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
-            final int noAntiAirBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly) ? 0 : 1;
+            final int noAaBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly) ? 0 : 1;
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);
             if (ta != null) {
@@ -729,7 +729,7 @@ class ProCombatMoveAI {
             }
             final int numExistingBombers = attackMap.get(t).getBombers().size();
             final int remainingDamagePotential = maxDamage - 3 * numExistingBombers;
-            final int bombingScore = (1 + 9 * noAntiAirBombingDefense) * remainingDamagePotential;
+            final int bombingScore = (1 + 9 * noAaBombingDefense) * remainingDamagePotential;
             if (bombingScore >= maxBombingScore) {
               maxBombingScore = bombingScore;
               maxBombingTerritory = Optional.of(t);
@@ -776,8 +776,8 @@ class ProCombatMoveAI {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
-            final boolean hasAntiAir = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
-            if (!hasAntiAir && !isOverwhelmingWin) {
+            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            if (!hasAa && !isOverwhelmingWin) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
             }
@@ -1040,8 +1040,8 @@ class ProCombatMoveAI {
         }
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
         double estimate = ProBattleUtils.estimateStrengthDifference(t, attackMap.get(t).getUnits(), defendingUnits);
-        final boolean hasAntiAir = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
-        if (hasAntiAir) {
+        final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+        if (hasAa) {
           estimate -= 10;
         }
         estimatesMap.put(estimate, t);
@@ -1130,10 +1130,8 @@ class ProCombatMoveAI {
                 Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
-            final boolean hasAntiAir = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
-            if (!hasNoDefenders
-                && !isOverwhelmingWin
-                && (!hasAntiAir || result.getWinPercentage() < minWinPercentage)) {
+            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            if (!hasNoDefenders && !isOverwhelmingWin && (!hasAa || result.getWinPercentage() < minWinPercentage)) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
               if (patd.isStrafing()) {
@@ -1190,9 +1188,9 @@ class ProCombatMoveAI {
                 Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
-            final boolean hasAntiAir = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
             if (!isAirUnit || (!hasNoDefenders && !isOverwhelmingWin
-                && (!hasAntiAir || result.getWinPercentage() < minWinPercentage))) {
+                && (!hasAa || result.getWinPercentage() < minWinPercentage))) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
             }
