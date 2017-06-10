@@ -442,7 +442,8 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
     File desktopFile = new File(applicationsDir, "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop");
     File mimeappsFile = new File(applicationsDir, "mimeapps.list");
     if(!desktopFile.exists()){
-        return false;
+        Util.showMessage("Custom protocol handlers are not supported on the Linux distribution you are using.");
+        return true;
     }
     if(!mimeappsFile.exists()){
         mimeappsFile.createNewFile();
