@@ -33,7 +33,7 @@ public class BonusIncomeUtils {
       final int total = player.getResources().getQuantity(resource) + bonusIncome;
       String message = "Giving " + player.getName();
       if (puIncomeBonus > 0) {
-        message += " " + puIncomeBonus + " &";
+        message += " " + puIncomeBonus + " PUs &";
       }
       if (incomePercent != 100) {
         message += " " + incomePercent + "% income for " + bonusIncome + " ";
