@@ -147,8 +147,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
         + "you have downloaded.</html>");
     m_loadSavedGame = new JButton("Open Saved Game");
     m_loadSavedGame.setToolTipText("Open a previously saved game, or an autosave.");
-    m_gameOptions = new JButton("Map Options");
-    m_gameOptions.setToolTipText("<html>Set options for the currently selected game, <br>such as enabling/disabling "
+    m_gameOptions = new JButton("Game Options");
+    m_gameOptions.setToolTipText("<html>Set options for the current game, <br>such as enabling/disabling "
         + "Low Luck, or Technology, etc.</html>");
   }
 
