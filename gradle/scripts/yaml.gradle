@@ -11,10 +11,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 
 import org.apache.http.HttpStatus
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.client.config.CookieSpecs
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.methods.HttpHead
+import org.apache.http.impl.client.HttpClients
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 
