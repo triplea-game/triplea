@@ -1,7 +1,8 @@
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
-TripleA is a free game engine that runs on open source and is community supported. 
+[![codecov](https://codecov.io/gh/triplea-game/triplea/branch/master/graph/badge.svg)](https://codecov.io/gh/triplea-game/triplea)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/13dd86379fff49d3b96fd3f3d954d4e8)](https://www.codacy.com/app/dhvatta/triplea?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=triplea-game/triplea&amp;utm_campaign=Badge_Grade)
 
-[![Code Coverage](https://img.shields.io/codecov/c/github/pvorb/property-providers/develop.svg)](https://codecov.io/github/pvorb/property-providers?branch=develop)
+TripleA is a free game engine that runs on open source and is community supported. 
 
 Installing TripleA and Playing
 ==============================
