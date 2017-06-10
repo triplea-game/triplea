@@ -9,16 +9,12 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
@@ -82,9 +78,6 @@ public class GameRunner {
 
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
-  // non-commandline-argument-properties (for preferences)
-  // first time we've run this version of triplea?
-  private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
@@ -120,8 +113,13 @@ public class GameRunner {
       usage();
       return;
     }
-    // do after we handle command line args
-    Memory.checkForMemoryXMX();
+    // do after we handle command line args (the isMemorySet flag might have been passed as a command line arg,
+    // in that case it is parsed and set as a system prop when we handle command line ags, the code below
+    // checks for the system prop)
+    if (!Memory.isMemoryXmxSet()) {
+      GameRunner.startNewTripleA(Memory.getMaxMemoryInBytes());
+      return; // close this current instance down without further processing
+    }
 
     SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
     showMainFrame();
@@ -216,44 +214,6 @@ public class GameRunner {
       }
     });
   }
-
-
-  /**
-   * Returns the property set parsed from a 'system.ini' file (as found at the project root).
-   */
-  public static Properties getSystemIni() {
-    final Properties rVal = new Properties();
-    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-    if (systemIni.exists()) {
-      try (FileInputStream fis = new FileInputStream(systemIni)) {
-        rVal.load(fis);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    return rVal;
-  }
-
-  /**
-   * Writes a set of properties to the system.ini file.
-   */
-  public static void writeSystemIni(final Properties properties) {
-    final Properties toWrite;
-
-    toWrite = getSystemIni();
-    for (final Entry<Object, Object> entry : properties.entrySet()) {
-      toWrite.put(entry.getKey(), entry.getValue());
-    }
-
-    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-
-    try (FileOutputStream fos = new FileOutputStream(systemIni)) {
-      toWrite.store(fos, SYSTEM_INI);
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
 
   public static boolean getDelayedParsing() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
