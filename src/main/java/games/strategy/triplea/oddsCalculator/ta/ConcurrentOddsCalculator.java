@@ -203,12 +203,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     }
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    shutdown();
-    super.finalize();
-  }
-
   private void awaitLatch() {
     try {
       // there is a small chance calculate or setCalculateData or something could be called in between calls to

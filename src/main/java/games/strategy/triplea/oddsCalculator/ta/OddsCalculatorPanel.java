@@ -198,12 +198,6 @@ class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    shutdown();
-    super.finalize();
-  }
-
   private static double percentageOfFreeMemoryAvailable() {
     final Runtime runtime = Runtime.getRuntime();
     final long maxMemory = runtime.maxMemory();
