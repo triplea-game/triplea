@@ -1412,7 +1412,7 @@ public class WW2V3_41_Test {
     final Territory sz13 = territory("13 Sea Zone", gameData);
     final Territory sz14 = territory("14 Sea Zone", gameData);
     final Territory sz15 = territory("15 Sea Zone", gameData);
-    ;
+
     when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
         any(), contains(BattleStepStrings.RETREAT_PLANES))).thenThrow(
             new AssertionError("The Message is not allowed to contain the BattleStepStrings.RETREAT_PLANES constant"));
