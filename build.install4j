@@ -463,7 +463,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         builder.append(mimeTypePrefix).append(mimeType);
     }
     try(PrintWriter writer = new PrintWriter(desktopFile)){
-        writer.println(builder.toString());
+        writer.print(builder.toString());
     }
     builder = new StringBuilder();
     try(Scanner scanner = new Scanner(mimeappsFile)){
@@ -482,10 +482,10 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         if(!isSetup){
             builder.insert(0, defaultApplicationString + "\n");
         }
-        builder.append(mimeTypePrefix).append(desktopFile.getName());
+        builder.append(mimeTypePrefix).append(desktopFile.getName()).append('\n');
     }
     try(PrintWriter writer = new PrintWriter(mimeappsFile)){
-        writer.println(builder.toString());
+        writer.print(builder.toString());
     }
 }
 return true;</string>
@@ -752,7 +752,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         }
     }
     try(PrintWriter writer = new PrintWriter(mimeappsFile)){
-        writer.println(builder.toString());
+        writer.print(builder.toString());
     }
 }
 return true;</string>
