@@ -29,7 +29,6 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -127,9 +126,9 @@ public class BattleDisplay extends JPanel {
     m_mapPanel = mapPanel;
     m_data = data;
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
-    m_defenderModel = new BattleModel(defendingUnits, false, battleType, defender, m_data, m_location, territoryEffects,
+    m_defenderModel = new BattleModel(defendingUnits, false, battleType, m_data, m_location, territoryEffects,
         isAmphibious, Collections.emptySet(), m_mapPanel.getUIContext());
-    m_attackerModel = new BattleModel(attackingUnits, true, battleType, attacker, m_data, m_location, territoryEffects,
+    m_attackerModel = new BattleModel(attackingUnits, true, battleType, m_data, m_location, territoryEffects,
         isAmphibious, amphibiousLandAttackers, m_mapPanel.getUIContext());
     m_defenderModel.setEnemyBattleModel(m_attackerModel);
     m_attackerModel.setEnemyBattleModel(m_defenderModel);
@@ -760,7 +759,7 @@ class BattleModel extends DefaultTableModel {
     return diceColumns;
   }
 
-  BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType, final PlayerID player,
+  BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType,
       final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
       final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext) {
     super(new Object[0][0], varDiceArray(data));
