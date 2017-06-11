@@ -27,12 +27,22 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     return new Version(readProperty(GameEngineProperty.ENGINE_VERSION));
   }
 
+  /**
+   * Does a network fetch for a lobby properties file. That file has the IP
+   * address for the lobby (and other connectivity information)
+   */
   public String readLobbyPropertiesUrl() {
     final String url = readProperty(GameEngineProperty.LOBBY_PROPS_URL);
     try {
       return getUrlFollowingRedirects(url);
     } catch (final Exception e) {
-      throw new RuntimeException("Failed to get download file url: " + url, e);
+      throw new NetworkFetchException(url, e);
+    }
+  }
+
+  private static class NetworkFetchException extends RuntimeException {
+    NetworkFetchException(final String url, final Exception exception) {
+      super("Failed to get download file url: " + url, exception);
     }
   }
 
