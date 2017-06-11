@@ -375,7 +375,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!m_headless) {
       // take the casualties with least movement first
       if (isAmphibious()) {
-        sortAmphib(m_attackingUnits, m_data);
+        sortAmphib(m_attackingUnits);
       } else {
         BattleCalculator.sortPreBattle(m_attackingUnits);
       }
@@ -420,7 +420,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // find all attacking units (unsorted)
     for (final Iterator<PlayerID> attackersIter = attackers.iterator(); attackersIter.hasNext();) {
       final PlayerID current = attackersIter.next();
-      String delim;
+      final String delim;
       if (attackersIter.hasNext()) {
         delim = "; ";
       } else {
@@ -458,8 +458,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // find all defending units (unsorted)
     for (final Iterator<PlayerID> defendersIter = defenders.iterator(); defendersIter.hasNext();) {
       final PlayerID current = defendersIter.next();
-      Collection<Unit> defendingUnits;
-      String delim;
+      final Collection<Unit> defendingUnits;
+      final String delim;
       if (defendersIter.hasNext()) {
         delim = "; ";
       } else {
@@ -1403,9 +1403,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void queryRetreat(final boolean defender, final RetreatType retreatType, final IDelegateBridge bridge,
       Collection<Territory> availableTerritories) {
-    boolean subs;
-    boolean planes;
-    boolean partialAmphib;
+    final boolean subs;
+    final boolean planes;
+    final boolean partialAmphib;
     planes = retreatType == RetreatType.PLANES;
     subs = retreatType == RetreatType.SUBS;
     final boolean canSubsSubmerge = canSubsSubmerge();
@@ -1420,7 +1420,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // If attacker then add all owned units at battle site as some might have been removed from battle (infra)
     Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
     if (!defender) {
-      units = new HashSet<Unit>(units);
+      units = new HashSet<>(units);
       units.addAll(m_battleSite.getUnits().getMatches(Matches.unitIsOwnedBy(m_attacker)));
     }
     if (subs) {
@@ -1447,7 +1447,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
-    String text;
+    final String text;
     if (subs) {
       text = retreatingPlayer.getName() + " retreat subs?";
     } else if (planes) {
@@ -1457,7 +1457,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       text = retreatingPlayer.getName() + " retreat?";
     }
-    String step;
+    final String step;
     if (defender) {
       step = m_defender.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
     } else {
@@ -1528,7 +1528,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
         retreatUnits(units, retreatTo, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats";
-        String messageLong;
+        final String messageLong;
         if (subs) {
           messageLong = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
         } else if (planes) {
@@ -1576,7 +1576,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private Change retreatFromNonCombat(Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
     units = Match.getMatches(units, Matches.UnitIsTransport);
-    final Collection<Unit> retreated = getTransportDependents(units, m_data);
+    final Collection<Unit> retreated = getTransportDependents(units);
     if (!retreated.isEmpty()) {
       Territory retreatedFrom = null;
       for (final Unit unit : units) {
@@ -1648,7 +1648,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Match<Unit> notMyAir =
         new CompositeMatchOr<>(Matches.UnitIsNotAir, new InverseMatch<>(Matches.unitIsOwnedBy(m_attacker)));
     retreating = Match.getMatches(retreating, notMyAir);
-    String transcriptText;
+    final String transcriptText;
     // in WW2V1, defending subs can retreat so show owner
     if (isWW2V2()) {
       transcriptText = MyFormatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
@@ -2418,7 +2418,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   // Figure out what units a transport is transported and has unloaded
-  private Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
+  private Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (m_headless) {
       return Collections.emptyList();
     }
@@ -2471,7 +2471,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // Remove landed units from allied territory when their transport sinks
   private void removeFromNonCombatLandings(final Collection<Unit> units, final IDelegateBridge bridge) {
     for (final Unit transport : Match.getMatches(units, Matches.UnitIsTransport)) {
-      final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport), m_data);
+      final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport));
       if (lost.isEmpty()) {
         continue;
       }
@@ -2564,7 +2564,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
-      final Collection<Unit> dependents = getTransportDependents(transports, m_data);
+      final Collection<Unit> dependents = getTransportDependents(transports);
       if (!dependents.isEmpty()) {
         for (final Unit unit : dependents) {
           // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
@@ -2726,7 +2726,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   // In an amphibious assault, sort on who is unloading from xports first
   // This will allow the marines with higher scores to get killed last
-  private void sortAmphib(final List<Unit> units, final GameData data) {
+  private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
     final Comparator<Unit> comparator = (u1, u2) -> {
       int amphibComp = 0;

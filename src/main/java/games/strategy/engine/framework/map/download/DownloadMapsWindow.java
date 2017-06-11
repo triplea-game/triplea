@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -80,7 +79,7 @@ public class DownloadMapsWindow extends JFrame {
   public static void showDownloadMapsWindowAndDownload(final Collection<String> mapNames) {
     checkNotNull(mapNames);
 
-    Runnable downloadAndShowWindow = () -> {
+    final Runnable downloadAndShowWindow = () -> {
       final List<DownloadFileDescription> allDownloads =
           new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite()).getDownloads();
       checkNotNull(allDownloads);
@@ -104,7 +103,7 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> allDownloads) {
     super("Download Maps");
     setIconImage(GameRunner.getGameIcon(this));
-    progressPanel = new MapDownloadProgressPanel(this);
+    progressPanel = new MapDownloadProgressPanel();
 
     final List<DownloadFileDescription> pendingDownloads = new ArrayList<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
