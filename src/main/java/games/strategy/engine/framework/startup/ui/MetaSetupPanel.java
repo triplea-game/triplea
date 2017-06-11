@@ -22,8 +22,7 @@ import org.yaml.snakeyaml.Yaml;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -174,12 +173,12 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static LobbyServerProperties getLobbyServerProperties() {
-    final PropertyReader propReader = ClientContext.propertyReader();
-    final String urlProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_URL);
+    final GameEnginePropertyReader propReader = ClientContext.gameEnginePropertyReader();
+    final String urlProp = ClientContext.gameEnginePropertyReader().readLobbyPropertiesUrl();
     Optional<List<Map<String, Object>>> yamlDataObj = loadRemoteLobbyServerProperties(urlProp);
     if (!yamlDataObj.isPresent()) {
       // try reading properties from the local file as a backup
-      final String localFileProp = propReader.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
+      final String localFileProp = propReader.readLobbyPropertiesBackupFile();
       final File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
       yamlDataObj = loadYaml(localFile);
       if (!yamlDataObj.isPresent()) {
@@ -190,8 +189,7 @@ public class MetaSetupPanel extends SetupPanel {
 
     final Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
 
-    final LobbyServerProperties lobbyProps = new LobbyServerProperties(yamlProps);
-    return lobbyProps;
+    return new LobbyServerProperties(yamlProps);
   }
 
   private static Optional<List<Map<String, Object>>> loadRemoteLobbyServerProperties(final String lobbyPropsUrl) {

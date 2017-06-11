@@ -36,7 +36,6 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
@@ -79,6 +78,7 @@ public class GameRunner {
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
   private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
@@ -101,13 +101,12 @@ public class GameRunner {
 
   public static final String MAP_FOLDER = "mapFolder";
 
-  private static String[] COMMAND_LINE_ARGS =
+  private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
-          LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+          TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
-
 
 
   /**
@@ -159,7 +158,7 @@ public class GameRunner {
         + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
         + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
         + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
         + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
         + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
         + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
@@ -206,11 +205,11 @@ public class GameRunner {
   private static void setupLogging() {
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
       @Override
-      protected void dispatchEvent(AWTEvent newEvent) {
+      protected void dispatchEvent(final AWTEvent newEvent) {
         try {
           super.dispatchEvent(newEvent);
           // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
           ClientLogger.logError(t);
           throw t;
         }
@@ -401,7 +400,7 @@ public class GameRunner {
    * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -447,7 +446,7 @@ public class GameRunner {
       final String value = System.getProperty(property);
       if (value != null) {
         commands.add("-D" + property + "=" + value);
-      } else if (GameRunner.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+      } else if (GameRunner.LOBBY_HOST.equals(property) || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
           || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
@@ -471,7 +470,7 @@ public class GameRunner {
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+        .add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
             + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
@@ -644,7 +643,7 @@ public class GameRunner {
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
       boolean allFramesClosed = true;
-      for (Frame f : Frame.getFrames()) {
+      for (final Frame f : Frame.getFrames()) {
         if (f.isVisible()) {
           allFramesClosed = false;
           break;

@@ -80,18 +80,18 @@ public class InGameLobbyWatcher {
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
     final String host = System.getProperties().getProperty(GameRunner.LOBBY_HOST);
-    final String port = System.getProperties().getProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
+    final String port = System.getProperties().getProperty(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY);
     final String hostedBy = System.getProperties().getProperty(GameRunner.LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
     // clear the properties
     System.getProperties().remove(GameRunner.LOBBY_HOST);
-    System.getProperties().remove(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
+    System.getProperties().remove(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY);
     System.getProperties().remove(GameRunner.LOBBY_GAME_HOSTED_BY);
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.getProperties().setProperty(GameRunner.LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
-    System.getProperties().setProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
+    System.getProperties().setProperty(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
     System.getProperties().setProperty(GameRunner.LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override

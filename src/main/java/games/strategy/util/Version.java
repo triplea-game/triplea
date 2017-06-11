@@ -11,12 +11,12 @@ import java.util.StringTokenizer;
  * equal
  */
 public class Version implements Serializable, Comparable<Object> {
-  // maintain compatability with old versions
   static final long serialVersionUID = -4770210855326775333L;
   private final int m_major;
   private final int m_minor;
   private final int m_point;
   private final int m_micro;
+  private final String exactVersion;
 
   public Version(final int major, final int minor) {
     this(major, minor, 0);
@@ -31,6 +31,7 @@ public class Version implements Serializable, Comparable<Object> {
     this.m_minor = minor;
     this.m_point = point;
     this.m_micro = micro;
+    exactVersion = toString();
   }
 
   /**
@@ -38,6 +39,7 @@ public class Version implements Serializable, Comparable<Object> {
    * xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
+    exactVersion = version;
     final StringTokenizer tokens = new StringTokenizer(version, ".", false);
     if (tokens.countTokens() < 1) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -62,6 +64,20 @@ public class Version implements Serializable, Comparable<Object> {
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("invalid version string:" + version);
     }
+  }
+
+  /**
+   * Returns the exact and full version number.
+   * For example, if we specify:
+   * <code>
+   * new Version(1.2.3.4.5).getMicro == 4; // true
+   * new Version(1.2.3.4.5).toString().equals("1.2.3.4"); // true
+   * new Version(1.2.3.4.5).getExactVersion.equals("1.2.3.4.5"); // true
+   * </code>
+   */
+  public String getExactVersion() {
+    // in case of deserialization, exactVersion may be null, in which case toString() it.
+    return exactVersion != null ? exactVersion : toString();
   }
 
   @Override

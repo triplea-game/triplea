@@ -9,8 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.engine.config.GameEngineProperty;
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.GameEnginePropertyReader;
 
 /**
  * Basic test of map listing source, make sure that the test object requests a specific property key,
@@ -22,11 +21,11 @@ public class MapDownloadPropertiesTest {
   private static final String SAMPLE_VALUE = "http://this is a test value.txt";
 
   @Mock
-  private PropertyReader mockReader;
+  private GameEnginePropertyReader mockReader;
 
   @Test
   public void mapListDownloadSitePropertyIsReadFromPropertyFile() {
-    when(mockReader.readProperty(GameEngineProperty.MAP_LISTING_SOURCE_FILE)).thenReturn(SAMPLE_VALUE);
+    when(mockReader.readMapListingDownloadUrl()).thenReturn(SAMPLE_VALUE);
     final MapListingSource testObj = new MapListingSource(mockReader);
     assertThat(testObj.getMapListDownloadSite(), is(SAMPLE_VALUE));
   }
