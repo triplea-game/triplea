@@ -59,7 +59,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     if (!f.exists()) {
       throw new IllegalStateException("No dice server folder:" + f);
     }
-    final java.util.List<Properties> propFiles = new ArrayList<>();
+    final List<Properties> propFiles = new ArrayList<>();
     final File[] files = f.listFiles();
     for (final File file : files) {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {
@@ -151,7 +151,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       final int port = Integer.parseInt(m_props.getProperty("port", "80"));
       final HttpHost hostConfig = new HttpHost(host, port);
       HttpProxy.addProxy(httpPost);
-      try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost);) {
+      try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost)) {
         final HttpEntity entity = response.getEntity();
         return Util.getStringFromInputStream(entity.getContent());
       }
@@ -183,8 +183,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         }
       }
     }
-    String rollStartString;
-    String rollEndString;
+    final String rollStartString;
+    final String rollEndString;
     if (count == 1) {
       rollStartString = m_props.getProperty("roll.single.start");
       rollEndString = m_props.getProperty("roll.single.end");
