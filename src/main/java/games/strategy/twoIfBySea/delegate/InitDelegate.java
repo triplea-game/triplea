@@ -7,7 +7,7 @@ import games.strategy.triplea.delegate.InitializationDelegate;
 @MapSupport
 public class InitDelegate extends InitializationDelegate {
   @Override
-  protected void init(final IDelegateBridge aBridge) {
-    super.init(aBridge);
+  protected void init(final IDelegateBridge delegateBridge) {
+    super.init(delegateBridge);
   }
 }
