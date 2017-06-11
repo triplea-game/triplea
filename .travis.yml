@@ -10,6 +10,7 @@ addons:
 install: true
 services:
 - postgresql
+script: ./gradlew check jacocoRootReport
 after_success: 
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
