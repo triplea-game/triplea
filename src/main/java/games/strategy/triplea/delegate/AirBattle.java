@@ -96,7 +96,7 @@ public class AirBattle extends AbstractBattle {
     bridge.getHistoryWriter().startEvent("Air Battle in " + m_battleSite, m_battleSite);
     BattleCalculator.sortPreBattle(m_attackingUnits);
     BattleCalculator.sortPreBattle(m_defendingUnits);
-    m_steps = determineStepStrings(true, bridge);
+    m_steps = determineStepStrings(true);
     showBattle(bridge);
     pushFightLoopOnStack(true);
     m_stack.execute(bridge);
@@ -244,7 +244,7 @@ public class AirBattle extends AbstractBattle {
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (!m_isOver) {
-          m_steps = determineStepStrings(false, bridge);
+          m_steps = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_steps);
           m_round++;
@@ -262,7 +262,7 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  private List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  private List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
     if (showFirstRun) {
       steps.add(AIR_BATTLE);
@@ -346,7 +346,7 @@ public class AirBattle extends AbstractBattle {
 
   private void end(final IDelegateBridge bridge) {
     // record it
-    String text;
+    final String text;
     if (!m_attackingUnits.isEmpty()) {
       if (m_isBombingRun) {
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber)) {
@@ -492,7 +492,7 @@ public class AirBattle extends AbstractBattle {
     }
 
     private void getInterceptors(final IDelegateBridge bridge) {
-      boolean groundedPlanesRetreated;
+      final boolean groundedPlanesRetreated;
       final Collection<Unit> interceptors;
       if (m_isBombingRun) {
         // if bombing run, ask who will intercept
