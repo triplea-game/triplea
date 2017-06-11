@@ -375,7 +375,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!m_headless) {
       // take the casualties with least movement first
       if (isAmphibious()) {
-        sortAmphib(m_attackingUnits, m_data);
+        sortAmphib(m_attackingUnits);
       } else {
         BattleCalculator.sortPreBattle(m_attackingUnits);
       }
@@ -1576,7 +1576,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private Change retreatFromNonCombat(Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
     units = Match.getMatches(units, Matches.UnitIsTransport);
-    final Collection<Unit> retreated = getTransportDependents(units, m_data);
+    final Collection<Unit> retreated = getTransportDependents(units);
     if (!retreated.isEmpty()) {
       Territory retreatedFrom = null;
       for (final Unit unit : units) {
@@ -2418,7 +2418,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   // Figure out what units a transport is transported and has unloaded
-  private Collection<Unit> getTransportDependents(final Collection<Unit> targets, final GameData data) {
+  private Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (m_headless) {
       return Collections.emptyList();
     }
@@ -2471,7 +2471,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // Remove landed units from allied territory when their transport sinks
   private void removeFromNonCombatLandings(final Collection<Unit> units, final IDelegateBridge bridge) {
     for (final Unit transport : Match.getMatches(units, Matches.UnitIsTransport)) {
-      final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport), m_data);
+      final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport));
       if (lost.isEmpty()) {
         continue;
       }
@@ -2564,7 +2564,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
-      final Collection<Unit> dependents = getTransportDependents(transports, m_data);
+      final Collection<Unit> dependents = getTransportDependents(transports);
       if (!dependents.isEmpty()) {
         for (final Unit unit : dependents) {
           // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
@@ -2726,7 +2726,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   // In an amphibious assault, sort on who is unloading from xports first
   // This will allow the marines with higher scores to get killed last
-  private void sortAmphib(final List<Unit> units, final GameData data) {
+  private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
     final Comparator<Unit> comparator = (u1, u2) -> {
       int amphibComp = 0;
