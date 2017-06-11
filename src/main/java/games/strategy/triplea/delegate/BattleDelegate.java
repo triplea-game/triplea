@@ -1265,7 +1265,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 break;
               }
             }
-            if (amphib == false) {
+            if (!amphib) {
               continue;
             }
           }

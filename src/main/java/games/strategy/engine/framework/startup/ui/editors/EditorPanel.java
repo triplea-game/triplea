@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -122,10 +121,10 @@ public abstract class EditorPanel extends JPanel {
     final Component[] components = getComponents();
     for (final Component component : components) {
       // label in first column
-      if (component instanceof JLabel && layout.getConstraints(component).gridx == 0) {
-        if (component.getPreferredSize().width > width) {
-          width = component.getPreferredSize().width;
-        }
+      if (component instanceof JLabel
+          && layout.getConstraints(component).gridx == 0
+          && component.getPreferredSize().width > width) {
+        width = component.getPreferredSize().width;
       }
     }
     return width;
@@ -135,8 +134,7 @@ public abstract class EditorPanel extends JPanel {
    * Sets the label with for labels in the first column of the gridBagLayout.
    * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
    *
-   * @param width
-   *        the new width of the labels
+   * @param width the new width of the labels
    */
   public void setLabelWidth(final int width) {
     final GridBagLayout layout = (GridBagLayout) getLayout();
