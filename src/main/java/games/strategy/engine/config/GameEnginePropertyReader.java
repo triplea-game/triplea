@@ -19,7 +19,7 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     super(GAME_ENGINE_PROPERTY_FILE);
   }
 
-  @VisibleForTesting GameEnginePropertyReader(File propFile) {
+  @VisibleForTesting GameEnginePropertyReader(final File propFile) {
     super(propFile);
   }
 
@@ -31,7 +31,7 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     final String url = readProperty(GameEngineProperty.LOBBY_PROPS_URL);
     try {
       return getUrlFollowingRedirects(url);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException("Failed to get download file url: " + url, e);
     }
   }
@@ -56,9 +56,6 @@ public class GameEnginePropertyReader extends PropertyFileReader {
   public String readLobbyPropertiesBackupFile() {
     return super.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
   }
-
-
-
 
   @VisibleForTesting
   interface GameEngineProperty {

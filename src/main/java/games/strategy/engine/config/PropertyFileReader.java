@@ -43,7 +43,7 @@ class PropertyFileReader {
     }
   }
 
-  static  class PropertyNotFoundException extends IllegalStateException {
+  static class PropertyNotFoundException extends IllegalStateException {
     private static final long serialVersionUID = -7834937010739816090L;
 
     PropertyNotFoundException(final String property, final String propertyFilePath) {
