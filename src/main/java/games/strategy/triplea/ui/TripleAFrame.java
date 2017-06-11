@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -508,13 +509,13 @@ public class TripleAFrame extends MainGameFrame {
     final String zoom_map_in = "zoom_map_in";
     // do both = and + (since = is what you get when you hit ctrl+ )
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('+', InputEvent.META_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('+', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('=', InputEvent.META_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('=', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in) {
       private static final long serialVersionUID = -7565304172320049817L;
 
@@ -527,9 +528,9 @@ public class TripleAFrame extends MainGameFrame {
     });
     final String zoom_map_out = "zoom_map_out";
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out);
+        .put(KeyStroke.getKeyStroke('-', InputEvent.META_DOWN_MASK), zoom_map_out);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
+        .put(KeyStroke.getKeyStroke('-', InputEvent.CTRL_DOWN_MASK), zoom_map_out);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out) {
       private static final long serialVersionUID = 7677111833274819304L;
 

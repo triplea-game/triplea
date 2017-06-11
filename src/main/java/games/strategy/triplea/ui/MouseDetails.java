@@ -33,7 +33,7 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    return (m_mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
+    return (m_mouseEvent.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0;
   }
 
   public boolean isControlDown() {

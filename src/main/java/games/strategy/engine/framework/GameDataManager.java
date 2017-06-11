@@ -200,7 +200,7 @@ public class GameDataManager {
       final String className = (String) input.readObject();
       IDelegate instance;
       try {
-        instance = (IDelegate) Class.forName(className).newInstance();
+        instance = (IDelegate) Class.forName(className).getDeclaredConstructor().newInstance();
         instance.initialize(name, displayName);
         data.getDelegateList().addDelegate(instance);
       } catch (final Exception e) {

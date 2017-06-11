@@ -41,6 +41,8 @@ public class GameEnginePropertyReader extends PropertyFileReader {
   }
 
   private static class NetworkFetchException extends RuntimeException {
+    private static final long serialVersionUID = -8963534515318619962L;
+
     NetworkFetchException(final String url, final Exception exception) {
       super("Failed to get download file url: " + url, exception);
     }

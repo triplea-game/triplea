@@ -116,9 +116,9 @@ public class MapPropertiesMaker extends JFrame {
     exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
-    openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+    openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
     final JMenuItem saveItem = new JMenuItem(saveAction);
-    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     final JMenuItem exitItem = new JMenuItem(exitAction);
     // set up the menu bar
     final JMenuBar menuBar = new JMenuBar();

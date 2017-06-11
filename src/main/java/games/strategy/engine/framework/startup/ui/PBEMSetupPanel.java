@@ -268,7 +268,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     IBean cached = LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName());
     if (cached == null) {
       try {
-        cached = theClassType.newInstance();
+        cached = theClassType.getDeclaredConstructor().newInstance();
       } catch (final Exception e) {
         throw new RuntimeException(
             "Bean of type " + theClassType + " doesn't have public default constructor, error: " + e.getMessage());
