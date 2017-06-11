@@ -107,7 +107,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       }
     } else {
       // notify the player the action isn't valid anymore (shouldn't happen)
-      notifyNoValidAction(actionChoice);
+      notifyNoValidAction();
     }
   }
 
@@ -212,7 +212,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     // play a sound
     getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, m_player);
     sendNotification(UserActionText.getInstance().getNotificationSucccess(uaa.getText()));
-    notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
+    notifyOtherPlayers(UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
   }
 
   /**
@@ -232,7 +232,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Send a notification to the other players involved in this action (all
    * players except the player starting the action).
    */
-  private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification) {
+  private void notifyOtherPlayers(final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just uaa.getOtherPlayers(), or we can send it to all players. both are good options.
       final Collection<PlayerID> currentPlayer = new ArrayList<>();
@@ -256,7 +256,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
     sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));
-    notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
+    notifyOtherPlayers(UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
   }
 
   /**
@@ -276,7 +276,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * happen as the player shouldn't get an option to push the button on
    * non-valid actions.
    */
-  private void notifyNoValidAction(final UserActionAttachment uaa) {
+  private void notifyNoValidAction() {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
   }
 
@@ -300,6 +300,4 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 class UserActionExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = -7521031770074984272L;
   Serializable superState;
-  // add other variables here:
-  // public HashMap<ICondition, Boolean> m_testedConditions = null;
 }
