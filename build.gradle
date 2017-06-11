@@ -105,10 +105,22 @@ task integTest(type: Test) {
     mustRunAfter tasks.test
 }
 
-jacocoTestReport {
+task jacocoRootReport(type: JacocoReport) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Generates code coverage report for all Test tasks.'
+
+    sourceSets sourceSets.main
+    executionData fileTree(buildDir).include('**/jacoco/*.exec')
+
     reports {
-        xml.enabled true
-        html.enabled true
+        html {
+            destination = file("${project.jacoco.reportsDir}/root/html")
+            enabled = true
+        }
+        xml {
+            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
+            enabled = true
+        }
     }
 }
 
@@ -219,7 +231,7 @@ gradle.taskGraph.whenReady { graph ->
 }
 
 check {
-    dependsOn 'integTest', 'validateYamls', 'jacocoTestReport'
+    dependsOn 'integTest', 'validateYamls'
 }
 
 checkstyle {
