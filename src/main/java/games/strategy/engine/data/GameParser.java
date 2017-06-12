@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -443,15 +444,17 @@ public class GameParser {
     Object instance = null;
     try {
       final Class<?> instanceClass = Class.forName(className);
-      instance = instanceClass.newInstance();
+      instance = instanceClass.getDeclaredConstructor().newInstance();
       // a lot can go wrong, the following list is just a subset of potential pitfalls
-    } catch (final ClassNotFoundException cnfe) {
+    } catch (final ClassNotFoundException e) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
-    } catch (final InstantiationException ie) {
+    } catch (final InstantiationException e) {
       throw new GameParseException(mapName,
-          "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
-    } catch (final IllegalAccessException iae) {
-      throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
+          "Class <" + className + "> could not be instantiated. ->" + e.getMessage());
+    } catch (final IllegalAccessException e) {
+      throw new GameParseException(mapName, "Constructor could not be accessed ->" + e.getMessage());
+    } catch (ReflectiveOperationException e) {
+      throw new GameParseException(mapName, "Exception while constructing object ->" + e.getMessage());
     }
     return instance;
   }

@@ -179,7 +179,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       final JTextField[] countFields = new JTextField[playerUnitTypes.size()];
       // copy playPlacements map
       this.playerPlacements = playerPlacements.entrySet().stream()
-      .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), new Integer(e.getValue())))
+      .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()))
       .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
       this.setLayout(new GridBagLayout());
       final JTextArea title = new JTextArea("Choose units");

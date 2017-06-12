@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,18 +79,18 @@ public class TabbedProductionPanel extends ProductionPanel {
       int m_maxColumns;
       if (largestList <= 36) {
         m_maxColumns = Math.max(8,
-            Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), BigDecimal.ROUND_UP).intValue()));
+            Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
       } else if (largestList <= 64) {
         m_maxColumns = Math.max(8,
-            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), BigDecimal.ROUND_UP).intValue()));
+            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), RoundingMode.UP).intValue()));
       } else {
         m_maxColumns = Math.max(8,
-            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), BigDecimal.ROUND_UP).intValue()));
+            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), RoundingMode.UP).intValue()));
       }
       m_rows =
-          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), BigDecimal.ROUND_UP).intValue());
+          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), RoundingMode.UP).intValue());
       m_columns =
-          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue());
+          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), RoundingMode.UP).intValue());
     } else {
       m_rows = Math.max(2, properties.getRows());
       // There are small display problems if the size is less than 2x3 cells.

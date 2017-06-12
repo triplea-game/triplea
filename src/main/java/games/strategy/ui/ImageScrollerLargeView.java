@@ -204,7 +204,7 @@ public class ImageScrollerLargeView extends JComponent {
       public void mouseDragged(final MouseEvent e) {
         requestFocusInWindow();
         // the right button must be the one down
-        if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0 || (e.getModifiers() & InputEvent.BUTTON2_MASK) != 0) {
+        if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0 || (e.getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0) {
           wasLastActionDragging = true;
           m_inside = false;
           // read in location

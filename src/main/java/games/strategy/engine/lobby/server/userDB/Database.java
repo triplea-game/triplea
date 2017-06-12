@@ -210,18 +210,6 @@ public class Database {
     backupThread.start();
   }
 
-  /**
-   * This must be the first db call made.
-   * Run Database as a main method to run the backup.
-   */
-  private static void restoreFromBackup(final File backupDir) throws SQLException {
-    // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
-    final String url = "jdbc:derby:ta_users;restoreFrom=" + backupDir.getAbsolutePath();
-    final Properties props = getDbProps();
-    final Connection con = DriverManager.getConnection(url, props);
-    con.close();
-  }
-
   private static Properties getDbProps() {
     final Properties props = new Properties();
     props.put("user", "user1");
