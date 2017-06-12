@@ -453,7 +453,7 @@ public class GameParser {
           "Class <" + className + "> could not be instantiated. ->" + e.getMessage());
     } catch (final IllegalAccessException e) {
       throw new GameParseException(mapName, "Constructor could not be accessed ->" + e.getMessage());
-    } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+    } catch (ReflectiveOperationException e) {
       throw new GameParseException(mapName, "Exception while constructing object ->" + e.getMessage());
     }
     return instance;
