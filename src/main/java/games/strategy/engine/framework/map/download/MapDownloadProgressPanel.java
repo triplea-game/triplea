@@ -4,9 +4,12 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
@@ -14,11 +17,11 @@ import games.strategy.ui.SwingComponents;
 
 
 /** A small non-modal window that holds the progress bars for the current and pending map downloads. */
-final class MapDownloadProgressPanel extends JPanel {
+final class MapDownloadProgressPanel extends JPanel implements DownloadListener {
 
   private static final long serialVersionUID = -7288639737337542689L;
 
-  private final DownloadCoordinator downloadCoordinator;
+  private final DownloadCoordinator downloadCoordinator = DownloadCoordinator.INSTANCE;
 
   /*
    * Maintain grids that are placed east and west.
@@ -30,53 +33,62 @@ final class MapDownloadProgressPanel extends JPanel {
   private final List<DownloadFileDescription> downloadList = new ArrayList<>();
   private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
   private final Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
+  private final Map<DownloadFileDescription, MapDownloadProgressListener> mapDownloadProgressListeners =
+      Maps.newHashMap();
 
-  MapDownloadProgressPanel() {
-    downloadCoordinator = new DownloadCoordinator();
+  MapDownloadProgressPanel(final JFrame parent) {
+    downloadCoordinator.addDownloadListener(this);
+  }
+
+  @Override
+  public void removeNotify() {
+    downloadCoordinator.removeDownloadListener(this);
+    super.removeNotify();
   }
 
   void cancel() {
     downloadCoordinator.cancelDownloads();
   }
 
-  void download(List<DownloadFileDescription> newDownloads) {
-    final List<DownloadFileDescription> brandNewDownloads = new ArrayList<>();
-    for (final DownloadFileDescription download : newDownloads) {
-      if (!downloadList.contains(download) && !download.getMapName().isEmpty()) {
-        brandNewDownloads.add(download);
-      }
-    }
-    newDownloads = brandNewDownloads;
+  void download(final List<DownloadFileDescription> newDownloads) {
+    newDownloads.forEach(downloadCoordinator::accept);
+  }
 
-    if (newDownloads.isEmpty()) {
-      return;
-    }
+  @Override
+  public void downloadStarted(final DownloadFileDescription download) {
+    SwingUtilities.invokeLater(() -> addDownload(download));
+  }
 
-    final int itemCount = newDownloads.size() + downloadList.size();
+  private MapDownloadProgressListener addDownload(final DownloadFileDescription download) {
+    assert SwingUtilities.isEventDispatchThread();
+
+    // add new downloads to the head of the list, this will allow the user to see newly added items directly,
+    // rather than having to scroll down to see new items.
+    downloadList.add(0, download);
+
+    // space at the end of the label so the text does not end right at the progress bar
+    labels.put(download, new JLabel(download.getMapName() + "  "));
+    final JProgressBar progressBar = new JProgressBar();
+    progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
+    progressBars.put(download, progressBar);
+
+    rebuildPanel();
+
+    final MapDownloadProgressListener mapDownloadProgressListener =
+        new MapDownloadProgressListener(download.getUrl(), progressBar);
+    mapDownloadProgressListeners.put(download, mapDownloadProgressListener);
+    mapDownloadProgressListener.downloadStarted();
+    return mapDownloadProgressListener;
+  }
+
+  private void rebuildPanel() {
+    assert SwingUtilities.isEventDispatchThread();
+
+    final int itemCount = downloadList.size();
     this.removeAll();
     add(SwingComponents.horizontalJPanel(labelGrid, progressGrid));
-
     labelGrid.setLayout(new GridLayout(itemCount, 1));
     progressGrid.setLayout(new GridLayout(itemCount, 1));
-
-
-
-    for (final DownloadFileDescription download : newDownloads) {
-      if (download.getMapName().isEmpty()) {
-        continue;
-      }
-      // space at the end of the label so the text does not end right at the progress bar
-      labels.put(download, new JLabel(download.getMapName() + "  "));
-      final JProgressBar progressBar = new JProgressBar();
-      progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
-      progressBars.put(download, progressBar);
-    }
-
-    for (int i = newDownloads.size() - 1; i >= 0; i--) {
-      // add new downoads to the head of the list, this will allow the user to see newly added items directly,
-      // rather than having to scroll down to see new items.
-      downloadList.add(0, newDownloads.get(i));
-    }
 
     for (final DownloadFileDescription download : downloadList) {
       labelGrid.add(labels.get(download));
@@ -85,19 +97,27 @@ final class MapDownloadProgressPanel extends JPanel {
 
     revalidate();
     repaint();
+  }
 
-    for (final DownloadFileDescription download : newDownloads) {
-      if (download.getMapName().isEmpty()) {
-        continue;
-      }
+  @Override
+  public void downloadUpdated(final DownloadFileDescription download, final long bytesReceived) {
+    SwingUtilities.invokeLater(() -> {
+      final MapDownloadProgressListener mapDownloadProgressListener = getMapDownloadProgressListenerFor(download);
+      mapDownloadProgressListener.downloadUpdated(bytesReceived);
+    });
+  }
 
-      final MapDownloadProgressListener progressListener =
-          new MapDownloadProgressListener(download.getUrl(), progressBars.get(download));
-      downloadCoordinator.accept(
-          download,
-          progressListener::downloadStarted,
-          progressListener::downloadUpdated,
-          progressListener::downloadCompleted);
-    }
+  @Override
+  public void downloadStopped(final DownloadFileDescription download) {
+    SwingUtilities.invokeLater(() -> {
+      final MapDownloadProgressListener mapDownloadProgressListener = getMapDownloadProgressListenerFor(download);
+      mapDownloadProgressListener.downloadCompleted();
+    });
+  }
+
+  private MapDownloadProgressListener getMapDownloadProgressListenerFor(final DownloadFileDescription download) {
+    assert SwingUtilities.isEventDispatchThread();
+
+    return mapDownloadProgressListeners.computeIfAbsent(download, this::addDownload);
   }
 }

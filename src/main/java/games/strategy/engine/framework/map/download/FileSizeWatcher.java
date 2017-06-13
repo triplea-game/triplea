@@ -35,4 +35,8 @@ final class FileSizeWatcher {
       }
     };
   }
+
+  File getFile() {
+    return fileToWatch;
+  }
 }
