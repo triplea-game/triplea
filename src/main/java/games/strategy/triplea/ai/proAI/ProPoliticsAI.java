@@ -52,7 +52,7 @@ class ProPoliticsAI {
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
         Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<>(
-            Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
+            Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
@@ -149,7 +149,7 @@ class ProPoliticsAI {
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }

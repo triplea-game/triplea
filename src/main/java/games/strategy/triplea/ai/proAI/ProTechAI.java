@@ -375,7 +375,7 @@ final class ProTechAI {
     final CompositeMatch<Unit> blitzUnit =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
     final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<>(
-        Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
+        Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.territoryIsNotImpassableToLandUnits(ePlayer, data));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
@@ -430,7 +430,7 @@ final class ProTechAI {
             continue;
           }
           for (final Unit u : neighbor.getUnits()) {
-            if (unitCondition.match(u) && Matches.UnitHasEnoughMovementForRoutes(routes).match(u)) {
+            if (unitCondition.match(u) && Matches.unitHasEnoughMovementForRoutes(routes).match(u)) {
               units.add(u);
             }
           }
@@ -506,10 +506,10 @@ final class ProTechAI {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && Matches.UnitHasEnoughMovementForRoute(checked).match(u)) {
+      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
       } else if (ac != null && Matches.UnitCanLandOnCarrier.match(u)
-          && Matches.UnitHasEnoughMovementForRoute(checked).match(u)) {
+          && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
       }
     }
@@ -598,7 +598,7 @@ final class ProTechAI {
     final List<Territory> checkList = getExactNeighbors(check, 1, data, false);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player, data).match(t)
-          && Matches.TerritoryIsNotImpassableToLandUnits(player, data).match(t)) {
+          && Matches.territoryIsNotImpassableToLandUnits(player, data).match(t)) {
         rVal.add(t);
       }
     }

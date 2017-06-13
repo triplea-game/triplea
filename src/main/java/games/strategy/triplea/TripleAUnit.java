@@ -411,7 +411,7 @@ public class TripleAUnit extends Unit {
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {

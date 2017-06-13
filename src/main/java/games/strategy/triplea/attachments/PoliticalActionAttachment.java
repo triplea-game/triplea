@@ -143,7 +143,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     }
     return Match.getMatches(getPoliticalActionAttachments(player),
         new CompositeMatchAnd<>(
-            Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions),
+            Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }
 
