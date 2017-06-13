@@ -19,8 +19,9 @@ final class DownloadFile {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 
+  private final Runnable downloadStartedListener;
   private final List<Runnable> downloadCompletedListeners = new ArrayList<>();
-  private final Consumer<Long> progressUpdateListener;
+  private Consumer<Long> progressUpdateListener;
   private final DownloadFileDescription downloadDescription;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
@@ -32,8 +33,9 @@ final class DownloadFile {
    * @param progressUpdateListener Called periodically while download progress is made.
    * @param completionListener Called when the File download is complete.
    */
-  DownloadFile(final DownloadFileDescription download, final Consumer<Long> progressUpdateListener,
+  DownloadFile(final DownloadFileDescription download, Runnable startedListener, final Consumer<Long> progressUpdateListener,
       final Runnable completionListener) {
+    this.downloadStartedListener = startedListener;
     this.downloadDescription = download;
     this.progressUpdateListener = progressUpdateListener;
     addDownloadCompletedListener(completionListener);
@@ -45,6 +47,7 @@ final class DownloadFile {
    *        file <strong>WILL NOT</strong> be deleted.
    */
   void startAsyncDownload(final File fileToDownloadTo) {
+    new Thread(downloadStartedListener).start();
     final FileSizeWatcher watcher = new FileSizeWatcher(fileToDownloadTo, progressUpdateListener);
     addDownloadCompletedListener(() -> watcher.stop());
     state = DownloadState.DOWNLOADING;
