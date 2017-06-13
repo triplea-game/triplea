@@ -103,7 +103,7 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> allDownloads) {
     super("Download Maps");
     setIconImage(GameRunner.getGameIcon(this));
-    progressPanel = new MapDownloadProgressPanel();
+    progressPanel = new MapDownloadProgressPanel(null);
 
     final List<DownloadFileDescription> pendingDownloads = new ArrayList<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
