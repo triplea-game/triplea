@@ -2,6 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,10 +23,7 @@ public class FileDownloadTest {
 
   @Test
   public void testBasicStartCancel() throws Exception {
-    final DownloadFile testObj = new DownloadFile(mockDownload, () -> {
-    }, e -> {
-    }, () -> {
-    });
+    final DownloadFile testObj = new DownloadFile(mockDownload, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
     testObj.startAsyncDownload(temporaryFolder.newFile());
