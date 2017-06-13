@@ -861,13 +861,8 @@ public class ProMatches {
   }
 
   public static Match<Unit> UnitIsOwnedCarrier(final PlayerID player) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        final UnitAttachment ua = UnitAttachment.get(u.getType());
-        return ua.getCarrierCapacity() != -1 && Matches.unitIsOwnedBy(player).match(u);
-      }
-    };
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
+        && Matches.unitIsOwnedBy(player).match(unit));
   }
 
   public static Match<Unit> unitIsOwnedNotLand(final PlayerID player) {
