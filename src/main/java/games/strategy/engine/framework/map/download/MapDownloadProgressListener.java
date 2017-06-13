@@ -18,14 +18,14 @@ final class MapDownloadProgressListener {
   private static final int MAX_PROGRESS_VALUE = 100;
 
   private final JProgressBar progressBar;
-
   private final String uri;
-
+  private final String tooltip;
   private volatile Optional<Long> downloadLength = Optional.empty();
 
-  MapDownloadProgressListener(final String uri, final JProgressBar progressBar) {
+  MapDownloadProgressListener(final String uri, final JProgressBar progressBar, String tooltip) {
     this.progressBar = progressBar;
     this.uri = uri;
+    this.tooltip = tooltip;
   }
 
   void downloadStarted() {
@@ -34,8 +34,8 @@ final class MapDownloadProgressListener {
       progressBar.setMaximum(MAX_PROGRESS_VALUE);
       progressBar.setIndeterminate(true);
       progressBar.setStringPainted(false);
+      progressBar.setToolTipText("Pending...");
     });
-
     downloadLength = DownloadUtils.getDownloadLength(uri);
   }
 
@@ -46,6 +46,7 @@ final class MapDownloadProgressListener {
         progressBar.setValue((int) (currentLength * MAX_PROGRESS_VALUE / totalLength));
         progressBar.setStringPainted(true);
       }));
+      SwingUtilities.invokeLater(() -> progressBar.setToolTipText(tooltip));
     }
   }
 
