@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -36,7 +35,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
   private final Map<DownloadFileDescription, MapDownloadProgressListener> mapDownloadProgressListeners =
       Maps.newHashMap();
 
-  MapDownloadProgressPanel(final JFrame parent) {
+  MapDownloadProgressPanel() {
     downloadCoordinator.addDownloadListener(this);
   }
 
@@ -69,13 +68,12 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     // space at the end of the label so the text does not end right at the progress bar
     labels.put(download, new JLabel(download.getMapName() + "  "));
     final JProgressBar progressBar = new JProgressBar();
-    progressBar.setToolTipText("Installing to: " + download.getInstallLocation().getAbsolutePath());
     progressBars.put(download, progressBar);
 
     rebuildPanel();
 
     final MapDownloadProgressListener mapDownloadProgressListener =
-        new MapDownloadProgressListener(download.getUrl(), progressBar);
+        new MapDownloadProgressListener(download.getUrl(), progressBar, "Installing to: " + download.getInstallLocation().getAbsolutePath());
     mapDownloadProgressListeners.put(download, mapDownloadProgressListener);
     mapDownloadProgressListener.downloadStarted();
     return mapDownloadProgressListener;
