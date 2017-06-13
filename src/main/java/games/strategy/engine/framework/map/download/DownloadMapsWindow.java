@@ -122,9 +122,7 @@ public class DownloadMapsWindow extends JFrame {
       SwingComponents.newMessageDialog(formatUnknownPendingMapsMessage(unknownMapNames));
     }
 
-    final Optional<String> selectedMapName = pendingDownloadMapNames.isEmpty()
-        ? Optional.empty()
-        : Optional.of(pendingDownloadMapNames.iterator().next());
+    final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
 
     SwingComponents.addWindowCloseListener(this, () -> progressPanel.cancel());
 
