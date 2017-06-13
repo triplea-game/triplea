@@ -3,9 +3,10 @@ package games.strategy.engine.framework.map.download;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.ClientFileSystemHelper;
 
@@ -19,38 +20,26 @@ final class DownloadCoordinator {
   private static final int MAX_CONCURRENT_DOWNLOADS = 3;
 
   private final Object lock = new Object();
+
   private final Queue<DownloadFile> pendingDownloads = new LinkedList<>();
   private final Set<DownloadFile> activeDownloads = new HashSet<>();
   private final Set<DownloadFile> terminatedDownloads = new HashSet<>();
 
-  DownloadCoordinator() {}
+  private final List<DownloadListener> downloadListeners = new CopyOnWriteArrayList<>();
 
-  void accept(
-      final DownloadFileDescription download,
-      final Runnable startedListener,
-      final Consumer<Long> progressUpdateListener,
-      final Runnable completionListener) {
+  private DownloadCoordinator() {}
+
+  void addDownloadListener(final DownloadListener downloadListener) {
+    downloadListeners.add(downloadListener);
+  }
+
+  void removeDownloadListener(final DownloadListener downloadListener) {
+    downloadListeners.remove(downloadListener);
+  }
+
+  void accept(final DownloadFileDescription download) {
     synchronized (lock) {
-      pendingDownloads.add(new DownloadFile(download, startedListener, progressUpdateListener, () -> {
-        try {
-          completionListener.run();
-        } finally {
-          synchronized (lock) {
-            final Iterator<DownloadFile> iterator = activeDownloads.iterator();
-            while (iterator.hasNext()) {
-              final DownloadFile downloadFile = iterator.next();
-              if (downloadFile.isDone()) {
-                iterator.remove();
-                terminatedDownloads.add(downloadFile);
-                break;
-              }
-            }
-
-            updateQueue();
-          }
-        }
-      }));
-
+      pendingDownloads.add(new DownloadFile(download, new Listener()));
       updateQueue();
     }
   }
@@ -107,6 +96,37 @@ final class DownloadCoordinator {
       result.addAll(activeDownloads);
       result.addAll(pollTerminatedDownloads());
       return result;
+    }
+  }
+
+  private final class Listener implements DownloadListener {
+    @Override
+    public void downloadStarted(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadStarted(download));
+    }
+
+    @Override
+    public void downloadUpdated(final DownloadFileDescription download, final long bytesReceived) {
+      downloadListeners.forEach(it -> it.downloadUpdated(download, bytesReceived));
+    }
+
+    @Override
+    public void downloadStopped(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadStopped(download));
+
+      synchronized (lock) {
+        final Iterator<DownloadFile> iterator = activeDownloads.iterator();
+        while (iterator.hasNext()) {
+          final DownloadFile downloadFile = iterator.next();
+          if (downloadFile.isDone()) {
+            iterator.remove();
+            terminatedDownloads.add(downloadFile);
+            break;
+          }
+        }
+
+        updateQueue();
+      }
     }
   }
 }
