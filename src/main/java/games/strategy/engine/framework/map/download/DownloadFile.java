@@ -35,6 +35,7 @@ final class DownloadFile {
    *        file <strong>WILL NOT</strong> be deleted.
    */
   void startAsyncDownload(final File fileToDownloadTo) {
+    new Thread(() -> downloadListener.downloadStarted(download)).start();
     final FileSizeWatcher watcher = new FileSizeWatcher(
         fileToDownloadTo,
         bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
