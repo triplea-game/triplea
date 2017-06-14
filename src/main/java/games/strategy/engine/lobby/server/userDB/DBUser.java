@@ -8,7 +8,11 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.Util;
 
-public class DbUser {
+/*
+ * Note, this class is called by reflection: .
+ * TODO: annotate this class and others to identify them. Longer term drop the reflection.
+ */
+public class DBUser {
   private final UserName userName;
   private final UserEmail userEmail;
   private final Role userRole;
@@ -25,7 +29,7 @@ public class DbUser {
   public static class UserName {
     public final String userName;
 
-    public UserName(String userName) {
+    public UserName(final String userName) {
       this.userName = userName;
     }
 
@@ -48,7 +52,7 @@ public class DbUser {
   public static class UserEmail {
     public final String userEmail;
 
-    public UserEmail(String userEmail) {
+    public UserEmail(final String userEmail) {
       this.userEmail = userEmail;
     }
 
@@ -63,7 +67,7 @@ public class DbUser {
   /**
    *  Convenience constructor for non-admin users.
    */
-  public DbUser(UserName name, UserEmail email) {
+  public DBUser(final UserName name, final UserEmail email) {
     this(name, email, Role.NOT_ADMIN);
   }
 
@@ -83,7 +87,7 @@ public class DbUser {
   /**
    * An all-args constructor.
    */
-  public DbUser(UserName name, UserEmail email, Role role) {
+  public DBUser(final UserName name, final UserEmail email, final Role role) {
     this.userName = name;
     this.userEmail = email;
     this.userRole = role;
@@ -93,7 +97,7 @@ public class DbUser {
     return getValidationErrorMessage() == null;
   }
 
-  public static boolean isValidUserName(String userName) {
+  public static boolean isValidUserName(final String userName) {
     return new UserName(userName).validate() == null;
   }
 
@@ -111,8 +115,8 @@ public class DbUser {
    * Example usage:
    * <pre><code>
    *   String proposedUserName = getUserInput();
-   *   if(!DbUser.isValidUserName(proposedUserName)) {
-   *     String validationErrorMessage =  DbUser.getUserNameValidationErrorMessage(proposedUserName();
+   *   if(!DBUser.isValidUserName(proposedUserName)) {
+   *     String validationErrorMessage =  DBUser.getUserNameValidationErrorMessage(proposedUserName();
    *     showMessageToUser("User name is invalid: " + validationErrorMessage);
    *   }
    * </code>
@@ -120,7 +124,7 @@ public class DbUser {
    * @return Assuming an invalid user name - returns an error message String.
    * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
    */
-  public static String getUserNameValidationErrorMessage(String userName) {
+  public static String getUserNameValidationErrorMessage(final String userName) {
     return new UserName(userName).validate();
   }
 

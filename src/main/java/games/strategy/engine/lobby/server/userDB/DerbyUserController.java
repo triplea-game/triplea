@@ -19,7 +19,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   private final Supplier<Connection> connectionSupplier;
   private final UserDaoPrimarySecondary.Role usageRole;
 
-  DerbyUserController(UserDaoPrimarySecondary.Role usageRole, Supplier<Connection> connectionSupplier) {
+  DerbyUserController(final UserDaoPrimarySecondary.Role usageRole, final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
     this.usageRole = usageRole;
   }
@@ -76,7 +76,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public void updateUser(final DbUser user, final HashedPassword hashedPassword) {
+  public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     final Connection con = connectionSupplier.get();
@@ -101,7 +101,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public void createUser(final DbUser user, final HashedPassword hashedPassword) {
+  public void createUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
     if (doesUserExist(user.getName())) {
       throw new IllegalStateException("That user name has already been taken");
@@ -166,7 +166,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
   }
 
   @Override
-  public DbUser getUserByName(final String userName) {
+  public DBUser getUserByName(final String userName) {
     final String sql = "select * from ta_users where username = ?";
     final Connection con = connectionSupplier.get();
     try {
@@ -176,10 +176,10 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       if (!rs.next()) {
         return null;
       }
-      final DbUser user = new DbUser(
-          new DbUser.UserName(rs.getString("username")),
-          new DbUser.UserEmail(rs.getString("email")),
-          rs.getBoolean("admin") ? DbUser.Role.ADMIN : DbUser.Role.NOT_ADMIN);
+      final DBUser user = new DBUser(
+          new DBUser.UserName(rs.getString("username")),
+          new DBUser.UserEmail(rs.getString("email")),
+          rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       rs.close();
       ps.close();
       return user;

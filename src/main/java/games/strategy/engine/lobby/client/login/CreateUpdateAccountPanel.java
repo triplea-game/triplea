@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.ui.Util;
 
 public class CreateUpdateAccountPanel extends JPanel {
@@ -36,7 +36,7 @@ public class CreateUpdateAccountPanel extends JPanel {
   private JButton cancelButton;
   private ReturnValue returnValue;
 
-  public static CreateUpdateAccountPanel newUpdatePanel(final DbUser user) {
+  public static CreateUpdateAccountPanel newUpdatePanel(final DBUser user) {
     final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
     panel.userNameField.setText(user.getName());
     panel.userNameField.setEditable(false);
@@ -111,10 +111,10 @@ public class CreateUpdateAccountPanel extends JPanel {
     if (!games.strategy.util.Util.isMailValid(emailField.getText())) {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (!DbUser.isValidUserName(userNameField.getText())) {
+    } else if (!DBUser.isValidUserName(userNameField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          DbUser.getUserNameValidationErrorMessage(userNameField.getText()),
+          DBUser.getUserNameValidationErrorMessage(userNameField.getText()),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);
       return;
