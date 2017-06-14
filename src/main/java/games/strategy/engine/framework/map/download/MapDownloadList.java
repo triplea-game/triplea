@@ -37,6 +37,12 @@ class MapDownloadList {
     return available;
   }
 
+  List<DownloadFileDescription> getAvailableExcluding(final List<DownloadFileDescription> excluded) {
+    return available.stream()
+        .filter(not(excluded::contains))
+        .collect(Collectors.toList());
+  }
+
   List<DownloadFileDescription> getInstalled() {
     return installed;
   }

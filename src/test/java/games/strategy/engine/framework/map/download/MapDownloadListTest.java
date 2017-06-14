@@ -56,6 +56,29 @@ public class MapDownloadListTest {
   }
 
   @Test
+  public void testAvailableExcluding() {
+    when(strategy.getMapVersion(any())).thenReturn(Optional.empty());
+    final DownloadFileDescription download1 = newDownloadWithUrl("url1");
+    final DownloadFileDescription download2 = newDownloadWithUrl("url2");
+    final DownloadFileDescription download3 = newDownloadWithUrl("url3");
+    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+
+    final List<DownloadFileDescription> available = testObj.getAvailableExcluding(Arrays.asList(download1, download3));
+
+    assertThat(available, is(Arrays.asList(download2)));
+  }
+
+  private static DownloadFileDescription newDownloadWithUrl(final String url) {
+    return new DownloadFileDescription(
+        url,
+        "description",
+        "mapName",
+        MAP_VERSION,
+        DownloadFileDescription.DownloadType.MAP,
+        DownloadFileDescription.MapCategory.BEST);
+  }
+
+  @Test
   public void testInstalled() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
     final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
@@ -96,15 +119,5 @@ public class MapDownloadListTest {
     final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
     assertThat(outOfDate, is(Arrays.asList(download2)));
-  }
-
-  private static DownloadFileDescription newDownloadWithUrl(final String url) {
-    return new DownloadFileDescription(
-        url,
-        "description",
-        "mapName",
-        MAP_VERSION,
-        DownloadFileDescription.DownloadType.MAP,
-        DownloadFileDescription.MapCategory.BEST);
   }
 }
