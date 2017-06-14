@@ -140,7 +140,6 @@ final class DownloadCoordinator {
             break;
           }
         }
-
         updateQueue();
       }
     }
