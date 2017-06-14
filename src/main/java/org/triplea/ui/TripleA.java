@@ -37,12 +37,12 @@ public class TripleA extends Application {
   private TripleaMainMenu mainMenu;
 
   @Override
-  public void start(Stage stage) throws Exception {
-    FXMLLoader loader = getLoader(getClass().getResource("./fxml/TripleAMain.fxml"));
+  public void start(final Stage stage) throws Exception {
+    final FXMLLoader loader = getLoader(getClass().getResource("./fxml/TripleAMain.fxml"));
     loader.setController(this);
-    Scene scene = new Scene(loader.load(), 960, 540);
+    final Scene scene = new Scene(loader.load(), 960, 540);
     scene.getStylesheets().add("org/triplea/ui/css/main.css");
-    TripleaMainMenu mainMenu = addRootContent(new TripleaMainMenu(this));
+    final TripleaMainMenu mainMenu = addRootContent(new TripleaMainMenu(this));
     this.mainMenu = mainMenu;
     stage.setMinHeight(scene.getHeight());
     stage.setMinWidth(scene.getWidth());
@@ -53,12 +53,12 @@ public class TripleA extends Application {
     stage.setOnCloseRequest(e -> System.exit(0));
   }
 
-  public static void launch(String... arg) {
+  public static void launch(final String... arg) {
     Application.launch(arg);
   }
 
-  public static FXMLLoader getLoader(URL location) {
-    FXMLLoader loader = new FXMLLoader();
+  public static FXMLLoader getLoader(final URL location) {
+    final FXMLLoader loader = new FXMLLoader();
     loader.setLocation(location);
     loader.setResources(ResourceBundle.getBundle("org.triplea.ui.lang.TripleA", new Locale("en", "US")));
     return loader;
@@ -72,7 +72,7 @@ public class TripleA extends Application {
     exitOverlay.setVisible(true);
   }
 
-  <T extends Node> T addRootContent(T node) {
+  <T extends Node> T addRootContent(final T node) {
     rootPane.getChildren().add(node);
     return node;
   }
@@ -88,11 +88,11 @@ public class TripleA extends Application {
     System.exit(0);
   }
 
-  public void displayLoadingScreen(boolean bool) {
+  public void displayLoadingScreen(final boolean bool) {
     loadingOverlay.setVisible(bool);
   }
 
-  public void setLoadingMessage(String message) {
+  public void setLoadingMessage(final String message) {
     progressLabel.setText(message);
     progressTooltip.setText(message);
   }

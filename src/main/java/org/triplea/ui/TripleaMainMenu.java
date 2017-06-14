@@ -22,9 +22,9 @@ import javafx.scene.text.Text;
 
 public class TripleaMainMenu extends BorderPane {
 
-  private TripleA triplea;
-  private TripleaDownload downloadPane;
-  private TripleaSettings settingsPane;
+  private final TripleA triplea;
+  private final TripleaDownload downloadPane;
+  private final TripleaSettings settingsPane;
 
   @FXML
   private Text loggedInText;
@@ -54,8 +54,8 @@ public class TripleaMainMenu extends BorderPane {
   private VBox mainOptions;
 
 
-  public TripleaMainMenu(TripleA triplea) throws IOException {
-    FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleAMainMenu.fxml"));
+  public TripleaMainMenu(final TripleA triplea) throws IOException {
+    final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleAMainMenu.fxml"));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
@@ -164,8 +164,8 @@ public class TripleaMainMenu extends BorderPane {
   }
 
   @FXML
-  private void startHover(MouseEvent e) {}
+  private void startHover(final MouseEvent e) {}
 
   @FXML
-  private void endHover(MouseEvent e) {}
+  private void endHover(final MouseEvent e) {}
 }

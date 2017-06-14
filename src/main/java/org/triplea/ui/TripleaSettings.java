@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
 public class TripleaSettings extends StackPane {
-  private TripleA triplea;
+  private final TripleA triplea;
 
   @FXML
   private ComboBox<String> proxyCombobox;
@@ -22,20 +22,20 @@ public class TripleaSettings extends StackPane {
   private Spinner<Integer> proxyPort;
 
 
-  public TripleaSettings(TripleA triplea) throws IOException {
-    FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleASettings.fxml"));
+  public TripleaSettings(final TripleA triplea) throws IOException {
+    final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleASettings.fxml"));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
     this.triplea = triplea;
-    List<String> newItems =
+    final List<String> newItems =
         proxyCombobox.getItems().stream().map(s -> s.substring(1)).map(loader.getResources()::getString)
             .collect(Collectors.toList());
     proxyCombobox.getItems().clear();
     proxyCombobox.getItems().addAll(newItems);
     proxyCombobox.getSelectionModel().selectFirst();
     proxyCombobox.valueProperty().addListener((a, b, c) -> {
-      boolean disabled = proxyCombobox.getSelectionModel().getSelectedIndex() != 2;
+      final boolean disabled = proxyCombobox.getSelectionModel().getSelectedIndex() != 2;
       proxyHost.setDisable(disabled);
       proxyPort.setDisable(disabled);
     });

@@ -8,10 +8,10 @@ import javafx.scene.layout.VBox;
 
 public class TripleaDownload extends VBox {
 
-  private TripleA triplea;
+  private final TripleA triplea;
 
-  public TripleaDownload(TripleA triplea) throws IOException {
-    FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleADownload.fxml"));
+  public TripleaDownload(final TripleA triplea) throws IOException {
+    final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleADownload.fxml"));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
