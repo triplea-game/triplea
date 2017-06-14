@@ -293,7 +293,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       for (final PlayerID player : players) {
         originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
             // TODO: does this account for occupiedTerrOf???
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+            Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
@@ -308,7 +308,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       final Set<Territory> ownedTerrsNoWater = new HashSet<>();
       for (final PlayerID player : players) {
         ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+            Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
       return ownedTerrsNoWater;

@@ -148,7 +148,7 @@ public class ProUtils {
     for (final PlayerID otherPlayer : ePlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
-    enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+    enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
     enemyCapitals
         .retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
     return enemyCapitals;
@@ -160,7 +160,7 @@ public class ProUtils {
     for (final PlayerID alliedPlayer : players) {
       capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));
     }
-    capitals.retainAll(Match.getMatches(capitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+    capitals.retainAll(Match.getMatches(capitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
     capitals.retainAll(Match.getMatches(capitals, Matches.isTerritoryAllied(player, data)));
     return capitals;
   }

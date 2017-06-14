@@ -121,7 +121,7 @@ public class AirMovementValidator {
         maxMovementLeftForAllOwnedCarriers, Matches.seaCanMoveOver(player, data)));
     potentialCarrierOrigins.remove(routeEnd);
     potentialCarrierOrigins
-        .removeAll(Match.getMatches(potentialCarrierOrigins, Matches.TerritoryHasOwnedCarrier(player).invert()));
+        .removeAll(Match.getMatches(potentialCarrierOrigins, Matches.territoryHasOwnedCarrier(player).invert()));
     // now see if we can move carriers there to pick up
     validateAirCaughtByMovingCarriersAndOwnedAndAlliedAir(result, landingSpots, potentialCarrierOrigins,
         movedCarriersAndTheirFighters, airThatMustLandOnCarriers, airNotToConsiderBecauseWeAreValidatingThem, player,
@@ -358,7 +358,7 @@ public class AirMovementValidator {
           continue;
         }
         final List<Unit> carrierCanReach =
-            Match.getMatches(ownedCarriersInCarrierSpot, Matches.UnitHasEnoughMovementForRoute(toLandingSpot));
+            Match.getMatches(ownedCarriersInCarrierSpot, Matches.unitHasEnoughMovementForRoute(toLandingSpot));
         if (carrierCanReach.isEmpty()) {
           // none can reach
           continue;
@@ -680,9 +680,9 @@ public class AirMovementValidator {
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
     if (Matches.UnitIsCarrier.match(unit)) {
       // here we check to see if the unit can no longer carry units
-      if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit)) {
+      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit)) {
         // and we must check to make sure we let any allied air that are cargo stay here
-        if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit)) {
+        if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit)) {
           int cargo = 0;
           final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits()
               .getMatches(new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));

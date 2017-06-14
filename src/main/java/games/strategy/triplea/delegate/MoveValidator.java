@@ -237,7 +237,7 @@ public class MoveValidator {
         && Matches.isAtWar(route.getStart().getOwner(), data).match(player)
         && (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
-      if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart())
+      if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
           && !Match.allMatch(units, Matches.UnitIsAir)) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
@@ -253,7 +253,7 @@ public class MoveValidator {
         && !Matches.isAtWar(route.getStart().getOwner(), data).match(player)
         && (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
-      if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart())
+      if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
           && !Match.allMatch(units, Matches.UnitIsAir)) {
         return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
       }
@@ -283,7 +283,7 @@ public class MoveValidator {
         if (data.getRelationshipTracker().isAtWar(current.getOwner(), player)
             || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)) {
           enemyCount++;
-          allEnemyBlitzable &= Matches.TerritoryIsBlitzable(player, data).match(current);
+          allEnemyBlitzable &= Matches.territoryIsBlitzable(player, data).match(current);
         }
       }
       if (enemyCount > 0 && !allEnemyBlitzable) {
@@ -366,7 +366,7 @@ public class MoveValidator {
     if (route.someMatch(Matches.TerritoryIsImpassable)) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player, data))) {
+    if (!route.someMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
     final CompositeMatch<Territory> neutralOrEnemy =
@@ -551,7 +551,7 @@ public class MoveValidator {
       final Match<Unit> hasEnoughMovementForRoute;
       try {
         data.acquireReadLock();
-        hasEnoughMovementForRoute = Matches.UnitHasEnoughMovementForRoute(route);
+        hasEnoughMovementForRoute = Matches.unitHasEnoughMovementForRoute(route);
       } finally {
         data.releaseReadLock();
       }
@@ -593,7 +593,7 @@ public class MoveValidator {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
               && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
-              && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data))) {
+              && Match.someMatch(moveTest, Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
             // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
             // (shouldn't it be a dependant in this case??)
           } else {
@@ -1497,19 +1497,19 @@ public class MoveValidator {
     // No neutral countries on route predicate
     final Match<Territory> noNeutral = Matches.TerritoryIsNeutralButNotWater.invert();
     // No aa guns on route predicate
-    final Match<Territory> noAa = Matches.territoryHasEnemyAAforAnything(player, data).invert();
+    final Match<Territory> noAa = Matches.territoryHasEnemyAaForAnything(player, data).invert();
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
     final CompositeMatchAnd<Territory> noImpassable =
-        new CompositeMatchAnd<>(Matches.TerritoryIsPassableAndNotRestricted(player, data));
+        new CompositeMatchAnd<>(Matches.territoryIsPassableAndNotRestricted(player, data));
     // if we have air or land, we don't want to move over territories owned by players who's relationships will not let
     // us move into them
     if (hasAir) {
-      noImpassable.add(Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
+      noImpassable.add(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
     }
     if (hasLand) {
-      noImpassable.add(Matches.TerritoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
+      noImpassable.add(Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
     }
     // now find the default route
     Route defaultRoute;

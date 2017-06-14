@@ -443,7 +443,7 @@ public class ProTerritoryManager {
         int range = TripleAUnit.get(mySeaUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
-          if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
+          if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
               .match(mySeaUnit)) {
             range++; // assumes bonus of +1 for now
           }
@@ -630,7 +630,7 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
-        if (t.getUnits().someMatch(Matches.UnitIsAlliedCarrier(player, data))) {
+        if (t.getUnits().someMatch(Matches.unitIsAlliedCarrier(player, data))) {
           possibleCarrierTerritories.add(t);
         }
       }
@@ -649,7 +649,7 @@ public class ProTerritoryManager {
         int range = TripleAUnit.get(myAirUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(myAirUnit.getType()).getMovement(player);
-          if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
+          if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
               .match(myAirUnit)) {
             range++; // assumes bonus of +1 for now
           }
@@ -751,7 +751,7 @@ public class ProTerritoryManager {
         int movesLeft = TripleAUnit.get(myTransportUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
-          if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
+          if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
               .match(myTransportUnit)) {
             movesLeft++; // assumes bonus of +1 for now
           }
@@ -922,7 +922,7 @@ public class ProTerritoryManager {
         int range = TripleAUnit.get(mySeaUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
-          if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
+          if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
               .match(mySeaUnit)) {
             range++; // assumes bonus of +1 for now
           }

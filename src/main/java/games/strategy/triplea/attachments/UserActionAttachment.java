@@ -175,7 +175,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<>(
-        Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
+        Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 
   @Override
