@@ -1,0 +1,2773 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="920.0" type="StackPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<BorderPane style="-fx-background-color: #EEE;">
+			<center>
+				<TabPane tabClosingPolicy="UNAVAILABLE">
+					<tabs>
+						<Tab closable="false" text="%settings.tab.general">
+							<content>
+								<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+									<content>
+										<GridPane alignment="TOP_RIGHT" hgap="5.0" vgap="5.0">
+											<columnConstraints>
+												<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+												<ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+											</columnConstraints>
+											<rowConstraints>
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+											</rowConstraints>
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_combat_options" underline="true">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" />
+													</GridPane.margin>
+												</Text>
+												<Label text="%settings.label.confirm_enemy_casualties" GridPane.rowIndex="1">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.confirm_enemy_casualties">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.confirm_enemy_casualties">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Label text="%settings.label.confirm_defensive_rolls" GridPane.rowIndex="2">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.confirm_defensive_rolls">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.confirm_defensive_rolls">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Label text="%settings.label.focus_own_casualties" GridPane.rowIndex="3">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.focus_own_casualties">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.focus_own_casualties">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_battle_calculator" underline="true" GridPane.rowIndex="4">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" top="15.0" />
+													</GridPane.margin>
+												</Text>
+												<Label text="%settings.label.dice" GridPane.rowIndex="5">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.dice">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner GridPane.columnIndex="1" GridPane.rowIndex="5">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="2000" max="10000" min="1" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.dice">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label text="%settings.label.low_luck" GridPane.rowIndex="6">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.low_luck">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner GridPane.columnIndex="1" GridPane.rowIndex="6">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="500" max="10000" min="1" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.low_luck">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_ai" underline="true" GridPane.rowIndex="7">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" top="15.0" />
+													</GridPane.margin>
+												</Text>
+												<Label layoutX="15.0" layoutY="169.0" text="%settings.label.ai_pause_duration" GridPane.rowIndex="8">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.ai_pause_duration">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner GridPane.columnIndex="1" GridPane.rowIndex="8">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="400" max="3000" min="0" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.ai_pause_duration">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="199.0" text="%settings.label.show_ai_battles" GridPane.rowIndex="9">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.show_ai_battles">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="9">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.show_ai_battles">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Text layoutX="15.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_scrolling" underline="true" GridPane.rowIndex="10">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" top="15.0" />
+													</GridPane.margin>
+												</Text>
+												<Label layoutX="15.0" layoutY="266.0" text="%settings.label.arrow_scroll_speed" GridPane.rowIndex="11">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.arrow_scroll_speed">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="757.0" layoutY="264.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="70" max="200" min="2" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.arrow_scroll_speed">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="371.0" text="%settings.label.arrow_scroll_speed_multiplier" GridPane.rowIndex="12">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.arrow_scroll_speed_multiplier">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="757.0" layoutY="369.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="4" min="2" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.arrow_scroll_speed_multiplier">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="19.0" text="%settings.label.map_edge_scroll_speed" GridPane.rowIndex="13">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_edge_scroll_speed">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="15.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="30" max="250" min="10" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_edge_scroll_speed">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="19.0" text="%settings.label.map_edge_scroll_zone_size" GridPane.rowIndex="14">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_edge_scroll_zone_size">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="15.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="30" max="150" min="0" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_edge_scroll_zone_size">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="19.0" text="%settings.label.mouse_wheel_scroll_amount" GridPane.rowIndex="15">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.mouse_wheel_scroll_amount">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="15.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.rowIndex="15">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="60" max="400" min="10" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.mouse_wheel_scroll_amount">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Text layoutX="15.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_folders" underline="true" GridPane.rowIndex="16">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+												</Text>
+												<Label layoutX="15.0" layoutY="516.0" text="%settings.label.savegame_path" GridPane.rowIndex="17">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.savegame_path">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<HBox GridPane.columnIndex="1" GridPane.rowIndex="17">
+													<children>
+														<TextField>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.savegame_path">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</TextField>
+														<Button mnemonicParsing="false" text="%settings.button.browse_dirs">
+															<tooltip>
+																<Tooltip text="%settings.tooltip.savegame_path">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Button>
+													</children>
+												</HBox>
+												<Label layoutX="15.0" layoutY="551.0" text="%settings.label.map_download_path" GridPane.rowIndex="18">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_download_path">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<HBox GridPane.columnIndex="1" GridPane.rowIndex="18">
+													<children>
+														<TextField>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.map_download_path">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</TextField>
+														<Button mnemonicParsing="false" text="%settings.button.browse_dirs">
+															<tooltip>
+																<Tooltip text="%settings.tooltip.map_download_path">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Button>
+													</children>
+												</HBox>
+											</children>
+											<padding>
+												<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+											</padding>
+										</GridPane>
+									</content>
+								</ScrollPane>
+							</content>
+						</Tab>
+						<Tab closable="false" text="%settings.tab.video">
+							<content>
+								<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+									<content>
+										<GridPane hgap="5.0" vgap="5.0">
+											<columnConstraints>
+												<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+												<ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+											</columnConstraints>
+											<rowConstraints>
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+											</rowConstraints>
+											<children>
+												<Label text="%settings.label.video_resolution">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.video_resolution" />
+													</tooltip>
+												</Label>
+												<HBox GridPane.columnIndex="1">
+													<children>
+														<Spinner>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.width" />
+															</tooltip>
+														</Spinner>
+														<Label text="×">
+															<tooltip>
+																<Tooltip text="%settings.tooltip.video_resolution" />
+															</tooltip>
+														</Label>
+														<Spinner>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.height" />
+															</tooltip>
+														</Spinner>
+													</children>
+												</HBox>
+												<Label layoutX="15.0" layoutY="16.0" text="%settings.label.fullscreen" GridPane.rowIndex="1">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.fullscreen" />
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.fullscreen">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Label text="%settings.label.lang" GridPane.rowIndex="2">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.language" />
+													</tooltip>
+												</Label>
+												<ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+													<tooltip>
+														<Tooltip text="%settings.tooltip.language" />
+													</tooltip>
+												</ChoiceBox>
+											</children>
+											<padding>
+												<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+											</padding>
+										</GridPane>
+									</content>
+								</ScrollPane>
+							</content>
+						</Tab>
+						<Tab closable="false" text="%settings.tab.audio">
+							<content>
+								<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+									<content>
+												<GridPane hgap="5.0" vgap="5.0">
+													<columnConstraints>
+														<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+														<ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+													</columnConstraints>
+													<rowConstraints>
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+														<RowConstraints vgrow="NEVER" />
+													</rowConstraints>
+													<children>
+														<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_volume" underline="true">
+															<font>
+																<Font name="1942 report" size="26.0" />
+															</font>
+														</Text>
+														<Label layoutX="15.0" layoutY="90.0" text="%settings.label.master_volume" GridPane.rowIndex="1">
+															<font>
+																<Font name="1942 report" size="20.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.master_volume">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<HBox alignment="CENTER_RIGHT" layoutX="486.0" layoutY="85.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+															<children>
+																<Slider minWidth="400.0" value="100.0" HBox.hgrow="ALWAYS">
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.master_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<HBox.margin>
+																		<Insets right="5.0" />
+																	</HBox.margin>
+																</Slider>
+																<Label styleClass="borderLabel" text="100">
+																	<padding>
+																		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+																	</padding>
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.master_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Label>
+															</children>
+														</HBox>
+														<Label text="%settings.label.mute_music" GridPane.rowIndex="2">
+															<font>
+																<Font name="1942 report" size="20.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.mute_music">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.mute_music">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="55.0" text="%settings.label.music_volume" GridPane.rowIndex="3">
+															<font>
+																<Font name="1942 report" size="20.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.music_volume">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+															<children>
+																<Slider minWidth="400.0" value="100.0" HBox.hgrow="ALWAYS">
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.music_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<HBox.margin>
+																		<Insets right="5.0" />
+																	</HBox.margin>
+																</Slider>
+																<Label styleClass="borderLabel" text="100">
+																	<padding>
+																		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+																	</padding>
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.music_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Label>
+															</children>
+														</HBox>
+														<Label layoutX="15.0" layoutY="90.0" text="%settings.label.mute_game" GridPane.rowIndex="4">
+															<font>
+																<Font name="1942 report" size="20.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.mute_game">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="875.0" layoutY="88.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.mute_game">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="125.0" text="%settings.label.game_volume" GridPane.rowIndex="5">
+															<font>
+																<Font name="1942 report" size="20.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.game_volume">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<HBox alignment="CENTER_RIGHT" layoutX="486.0" layoutY="120.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+															<children>
+																<Slider minWidth="400.0" value="100.0" HBox.hgrow="ALWAYS">
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.game_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<HBox.margin>
+																		<Insets right="5.0" />
+																	</HBox.margin>
+																</Slider>
+																<Label styleClass="borderLabel" text="100">
+																	<padding>
+																		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+																	</padding>
+																	<tooltip>
+																		<Tooltip text="%settings.tooltip.game_volume">
+																			<font>
+																				<Font name="1942 report" size="14.0" />
+																			</font>
+																		</Tooltip>
+																	</tooltip>
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Label>
+															</children>
+														</HBox>
+														<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_sound_options" underline="true" GridPane.rowIndex="6">
+															<font>
+																<Font name="1942 report" size="26.0" />
+															</font>
+														</Text>
+														<Label text="%settings.label.all" GridPane.rowIndex="7">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="875.0" layoutY="146.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="7">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_chat" underline="true" GridPane.rowIndex="8">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="8">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.chat_messaging" GridPane.rowIndex="9">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="9">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.chat_slapping" GridPane.rowIndex="10">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="10">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.joined_chat" GridPane.rowIndex="11">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="11">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.click_button" GridPane.rowIndex="12">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="12">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_turn_phase" underline="true" GridPane.rowIndex="13">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="13">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.click_plot" GridPane.rowIndex="14">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="14">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.game_start" GridPane.rowIndex="15">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="15">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_battle" GridPane.rowIndex="16">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="16">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_combat_movement" GridPane.rowIndex="17">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="17">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_end_turn" GridPane.rowIndex="18">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="18">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_non_combat_movement" GridPane.rowIndex="19">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="19">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_placement" GridPane.rowIndex="20">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="20">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_politics" GridPane.rowIndex="21">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="21">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_purchase" GridPane.rowIndex="22">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="22">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_technology" GridPane.rowIndex="23">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="23">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.place_air_units" GridPane.rowIndex="24">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="24">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.place_infrastructure" GridPane.rowIndex="25">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="25">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.place_land_units" GridPane.rowIndex="26">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="26">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.place_sea_units" GridPane.rowIndex="27">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="27">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.political_action_failed" GridPane.rowIndex="28">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="28">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.political_action_successful" GridPane.rowIndex="29">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="29">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.start_turn_control" GridPane.rowIndex="30">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="30">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.technology_failed" GridPane.rowIndex="31">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="31">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.technology_researched" GridPane.rowIndex="32">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="32">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.triggered_notification_sound" GridPane.rowIndex="33">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="33">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_game_finished" underline="true" GridPane.rowIndex="34">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="34">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.game_won" GridPane.rowIndex="35">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="35">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.triggered_defeat_sound" GridPane.rowIndex="36">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="36">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.triggered_victory_sound" GridPane.rowIndex="37">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="37">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_lend_lease" underline="true" GridPane.rowIndex="38">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="38">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.action_operation_failed" GridPane.rowIndex="39">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="39">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.action_operation_successful" GridPane.rowIndex="40">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="40">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.phase_user_actions" GridPane.rowIndex="41">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="41">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.required_action" GridPane.rowIndex="42">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="42">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_aa_rocket_combat" underline="true" GridPane.rowIndex="43">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="43">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.aa_hit" GridPane.rowIndex="44">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="44">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.aa_miss" GridPane.rowIndex="45">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="45">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.rocket_attack" GridPane.rowIndex="46">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="46">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_land_combat" underline="true" GridPane.rowIndex="47">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="47">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.captured_by_blitzing" GridPane.rowIndex="48">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="48">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.land_battle" GridPane.rowIndex="49">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="49">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.land_retreat" GridPane.rowIndex="50">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="50">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_naval_combat" underline="true" GridPane.rowIndex="51">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="51">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.bombardment" GridPane.rowIndex="52">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="52">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.naval_battle" GridPane.rowIndex="53">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="53">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.sea_battle_won" GridPane.rowIndex="54">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="54">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.sea_retreat" GridPane.rowIndex="55">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="55">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.sub_submerge" GridPane.rowIndex="56">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="56">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.submarine_battle" GridPane.rowIndex="57">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="57">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_air_combat" underline="true" GridPane.rowIndex="58">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="58">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.air_battle" GridPane.rowIndex="59">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="59">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.air_battle_won" GridPane.rowIndex="60">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="60">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.air_retreat" GridPane.rowIndex="61">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="61">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.strategic_bombing" GridPane.rowIndex="62">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="62">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="180.0" text="%settings.label.title_combat_results" underline="true" GridPane.rowIndex="63">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="63">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.sub_all">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </GridPane.margin>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.battle_lost" GridPane.rowIndex="64">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="64">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.battle_stalemate" GridPane.rowIndex="65">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="65">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.captured_capital" GridPane.rowIndex="66">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="66">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.captured_land_territory" GridPane.rowIndex="67">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="67">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+														<Label layoutX="15.0" layoutY="275.0" text="%settings.label.captured_sea_zone" GridPane.rowIndex="68">
+															<font>
+																<Font name="1942 report" size="22.0" />
+															</font>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<GridPane.margin>
+																<Insets left="30.0" />
+															</GridPane.margin>
+														</Label>
+														<ToggleButton alignment="CENTER_LEFT" layoutX="861.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="68">
+															<graphic>
+																<Label prefHeight="17.0" prefWidth="178.0" />
+															</graphic>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.options">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+														</ToggleButton>
+													</children>
+													<padding>
+														<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+													</padding>
+												</GridPane>
+									</content>
+								</ScrollPane>
+							</content>
+						</Tab>
+						<Tab closable="false" text="%settings.tab.controls">
+							<content>
+								<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                           <content>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                              </GridPane>
+                           </content></ScrollPane>
+							</content>
+						</Tab>
+						<Tab closable="false" text="%settings.tab.advanced">
+							<content>
+								<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+									<content>
+										<GridPane hgap="5.0" vgap="5.0">
+											<columnConstraints>
+												<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+												<ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+											</columnConstraints>
+											<rowConstraints>
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+												<RowConstraints vgrow="SOMETIMES" />
+											</rowConstraints>
+											<children>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_settings" underline="true">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" />
+													</GridPane.margin>
+												</Text>
+												<Label layoutX="15.0" layoutY="55.0" text="%settings.label.casualty_selection" GridPane.rowIndex="1">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.casualty_selection">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="28.0" prefWidth="78.0" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+													<graphic>
+														<Label prefHeight="17.0" prefWidth="178.0" />
+													</graphic>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.casualty_selection">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</ToggleButton>
+												<Label alignment="TOP_LEFT" layoutX="15.0" layoutY="20.0" text="%settings.label.proxy_settings" GridPane.rowIndex="2">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.proxy_settings">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<VBox alignment="TOP_RIGHT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+													<children>
+														<ComboBox fx:id="proxyCombobox">
+															<tooltip>
+																<Tooltip text="%settings.tooltip.proxy_settings">
+																	<font>
+																		<Font name="1942 report" size="14.0" />
+																	</font>
+																</Tooltip>
+															</tooltip>
+															<items>
+																<FXCollections fx:factory="observableArrayList">
+																	<String fx:value="%settings.combobox.no_proxy" />
+																	<String fx:value="%settings.combobox.system_proxy" />
+																	<String fx:value="%settings.combobox.custom_proxy" />
+																</FXCollections>
+															</items>
+															<value>
+																<String fx:value="%settings.combobox.no_proxy" />
+															</value>
+														</ComboBox>
+														<TextField fx:id="proxyHost" disable="true" promptText="%settings.textfield.host">
+															<tooltip>
+																<Tooltip text="%settings.textfield.host" />
+															</tooltip>
+														</TextField>
+														<Spinner fx:id="proxyPort" disable="true">
+															<valueFactory>
+																<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="8080" max="65535" min="0" />
+															</valueFactory>
+															<tooltip>
+																<Tooltip text="%settings.tooltip.port" />
+															</tooltip>
+														</Spinner>
+													</children>
+													<GridPane.margin>
+														<Insets bottom="5.0" top="5.0" />
+													</GridPane.margin>
+												</VBox>
+												<Label layoutX="15.0" layoutY="20.0" text="%settings.label.max_host_wait_time_data_sync" GridPane.rowIndex="3">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.max_host_wait_time_data_sync">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner GridPane.columnIndex="1" GridPane.rowIndex="3">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="900" max="3600" min="1" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.max_host_wait_time_data_sync">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Label layoutX="15.0" layoutY="20.0" text="%settings.label.max_host_wait_time_join_game" GridPane.rowIndex="4">
+													<font>
+														<Font name="1942 report" size="20.0" />
+													</font>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.max_host_wait_time_join_game">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Label>
+												<Spinner layoutX="15.0" layoutY="20.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+													<valueFactory>
+														<SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="35" max="3600" min="1" />
+													</valueFactory>
+													<tooltip>
+														<Tooltip text="%settings.tooltip.max_host_wait_time_join_game">
+															<font>
+																<Font name="1942 report" size="14.0" />
+															</font>
+														</Tooltip>
+													</tooltip>
+												</Spinner>
+												<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%settings.text.title_development_tools" underline="true" GridPane.rowIndex="5">
+													<font>
+														<Font name="1942 report" size="26.0" />
+													</font>
+													<GridPane.margin>
+														<Insets bottom="5.0" top="15.0" />
+													</GridPane.margin>
+												</Text>
+												<Button mnemonicParsing="false" text="%settings.button.show_console" GridPane.rowIndex="6">
+													<tooltip>
+														<Tooltip text="%settings.tooltip.show_console" />
+													</tooltip>
+												</Button>
+												<Button mnemonicParsing="false" text="%settings.button.map_creator_v1" GridPane.rowIndex="7">
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_creator_v1" />
+													</tooltip>
+												</Button>
+												<Button mnemonicParsing="false" text="%settings.button.map_creator_v2" GridPane.rowIndex="8">
+													<tooltip>
+														<Tooltip text="%settings.tooltip.map_creator_v2" />
+													</tooltip>
+												</Button>
+											</children>
+											<padding>
+												<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+											</padding>
+										</GridPane>
+									</content>
+								</ScrollPane>
+							</content>
+						</Tab>
+					</tabs>
+				</TabPane>
+			</center>
+			<bottom>
+				<VBox BorderPane.alignment="CENTER">
+					<children>
+						<HBox alignment="CENTER" style="-fx-border-style: solid hidden solid hidden; -fx-border-color: #CCC; -fx-border-width: 2px;">
+							<children>
+								<Button mnemonicParsing="false" onAction="#reset" text="%settings.button.reset">
+									<HBox.margin>
+										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+									</HBox.margin>
+									<font>
+										<Font name="1942 report" size="14.0" />
+									</font>
+								</Button>
+								<Button layoutX="558.0" layoutY="10.0" mnemonicParsing="false" onAction="#save" text="%settings.button.save">
+									<HBox.margin>
+										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+									</HBox.margin>
+									<font>
+										<Font name="1942 report" size="14.0" />
+									</font>
+								</Button>
+							</children>
+						</HBox>
+						<HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0">
+							<children>
+								<Button mnemonicParsing="false" onAction="#back" text="%settings.button.back">
+									<HBox.margin>
+										<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+									</HBox.margin>
+									<font>
+										<Font name="1942 report" size="14.0" />
+									</font>
+								</Button>
+							</children>
+						</HBox>
+					</children>
+				</VBox>
+			</bottom>
+		</BorderPane>
+	</children>
+</fx:root>

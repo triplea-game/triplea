@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <HBox prefHeight="35.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <StackPane>
+               <children>
+                  <Text fx:id="loggedInText" strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.logged_in_as" visible="false" StackPane.alignment="BOTTOM_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="10.0" left="10.0" />
+                     </StackPane.margin>
+                  </Text>
+                  <HBox fx:id="loginForm" alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="476.0" StackPane.alignment="BOTTOM_LEFT">
+                     <children>
+                        <TextField fx:id="username" promptText="%main.textfield.username">
+                           <font>
+                              <Font name="1942 report" size="14.0" />
+                           </font>
+                        </TextField>
+                        <PasswordField fx:id="password" promptText="%main.textfield.password">
+                           <font>
+                              <Font name="1942 report" size="14.0" />
+                           </font>
+                        </PasswordField>
+                        <Button mnemonicParsing="false" onAction="#login" text="%main.button.login">
+                           <font>
+                              <Font name="1942 report" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </StackPane>
+            <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox alignment="BOTTOM_RIGHT">
+                     <children>
+                        <Button fx:id="buttonBack" mnemonicParsing="false" onAction="#showLastMenu" text="%main.button.back" visible="false">
+                           <VBox.margin>
+                              <Insets bottom="10.0" right="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Text fx:id="version" strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.triplea_version" textAlignment="RIGHT">
+                           <VBox.margin>
+                              <Insets bottom="5.0" right="5.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="1942 report" size="12.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.title">
+               <font>
+                  <Font name="1942 report" size="90.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.subtitle">
+               <font>
+                  <Font name="1942 report" size="17.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <StackPane BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="aboutSection" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.about_title">
+                     <font>
+                        <Font name="1942 report" size="37.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.about_description">
+                     <font>
+                        <Font name="1942 report" size="17.0" />
+                     </font>
+                  </Text>
+                  <Button mnemonicParsing="false" onAction="#showHelp" text="%main.button.help">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showRuleBook" text="%main.button.rule_book">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+            <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
+               <children>
+                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_lobby">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.local_game">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_networked_game">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <VBox fx:id="mainOptions" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#showPlayOptions" text="%main.button.play">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showDownloadMenu" text="%main.button.download_maps">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showSettingsMenu" text="%main.button.settings">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showAboutSection" text="%main.button.about">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showExitConfirmDialog" text="%main.button.exit">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="1942 report" size="20.0" />
+                     </font>
+                  </Button>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+         </children>
+      </StackPane>
+   </center>
+</fx:root>
