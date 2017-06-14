@@ -64,12 +64,10 @@ final class DownloadCoordinator {
   private void updateQueue() {
     assert Thread.holdsLock(lock);
 
-    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS) {
-      final DownloadFile downloadFile = pendingDownloads.poll();
-      if (downloadFile != null) {
-        downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
-        activeDownloads.add(downloadFile);
-      }
+    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS && !pendingDownloads.isEmpty()) {
+      final DownloadFile downloadFile = pendingDownloads.remove();
+      downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
+      activeDownloads.add(downloadFile);
     }
   }
 
