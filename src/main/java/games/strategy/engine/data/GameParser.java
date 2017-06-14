@@ -404,16 +404,8 @@ public class GameParser {
     try {
       final Class<?> instanceClass = Class.forName(className);
       instance = instanceClass.getDeclaredConstructor().newInstance();
-      // a lot can go wrong, the following list is just a subset of potential pitfalls
-    } catch (final ClassNotFoundException e) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found", e);
-    } catch (final InstantiationException e) {
-      throw new GameParseException(mapName,
-          "Class <" + className + "> could not be instantiated", e);
-    } catch (final IllegalAccessException e) {
-      throw new GameParseException(mapName, "Constructor could not be accessed", e);
-    } catch (ReflectiveOperationException e) {
-      throw new GameParseException(mapName, "Exception while constructing object", e);
+    } catch (final ReflectiveOperationException e) {
+      throw new GameParseException(mapName, String.format("Unable to create instance of class <%s>", className), e);
     }
     return instance;
   }
