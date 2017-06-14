@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 
 import games.strategy.util.Version;
 
@@ -69,6 +70,18 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     return super.readProperty(GameEngineProperty.LOBBY_PROPS_BACKUP_FILE);
   }
 
+
+  public MaxMemorySetting readMaxMemory() {
+    final String value = super.readProperty(GameEngineProperty.MAX_MEMORY);
+
+    if(Strings.nullToEmpty(value).isEmpty()) {
+      return MaxMemorySetting.NOT_SET;
+    }
+
+    return MaxMemorySetting.of(value);
+  }
+
+
   @VisibleForTesting
   interface GameEngineProperty {
     String MAP_LISTING_FILE = "Map_List_File";
@@ -76,5 +89,6 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     String ENGINE_VERSION = "engine_version";
     String LOBBY_PROPS_URL = "lobby_properties_file_url";
     String LOBBY_PROPS_BACKUP_FILE = "lobby_properties_file_backup";
+    String MAX_MEMORY = "max_memory";
   }
 }
