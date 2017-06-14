@@ -37,6 +37,13 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   MapDownloadProgressPanel() {
     downloadCoordinator.addDownloadListener(this);
+    addPendingDownloads();
+  }
+
+  private void addPendingDownloads() {
+    downloadCoordinator.getPendingDownloads().stream()
+      .map(DownloadFile::getDownload)
+      .forEach(this::downloadStarted);
   }
 
   @Override
