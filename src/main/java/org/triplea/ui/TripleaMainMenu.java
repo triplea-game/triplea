@@ -164,12 +164,8 @@ public class TripleaMainMenu extends BorderPane {
   }
 
   @FXML
-  private void startHover(MouseEvent e) {
-
-  }
+  private void startHover(MouseEvent e) {}
 
   @FXML
-  private void endHover(MouseEvent e) {
-    System.out.println("End");
-  }
+  private void endHover(MouseEvent e) {}
 }
