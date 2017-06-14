@@ -27,14 +27,22 @@ class PropertyFileReader {
 
 
   String readProperty(final String propertyKey) {
+    return readProperty(propertyKey, true);
+  }
+
+  String readProperty(final String propertyKey, boolean throwException) {
     try (FileInputStream inputStream = new FileInputStream(propertyFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
 
-      if (!props.containsKey(propertyKey)) {
+      if (!props.containsKey(propertyKey) && throwException) {
         throw new PropertyNotFoundException(propertyKey, propertyFile.getAbsolutePath());
       } else {
-        return props.getProperty(propertyKey).trim();
+        String property = props.getProperty(propertyKey);
+        if (property != null) {
+          property = property.trim();
+        }
+        return property;
       }
     } catch (final FileNotFoundException e) {
       throw Throwables.propagate(e);

@@ -20,6 +20,8 @@ import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.ui.TripleA;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
@@ -121,12 +123,16 @@ public class GameRunner {
       return; // close this current instance down without further processing
     }
 
-    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
-    showMainFrame();
-    new Thread(GameRunner::setupLogging).start();
-    HttpProxy.setupProxies();
-    new Thread(GameRunner::checkLocalSystem).start();
-    new Thread(GameRunner::checkForUpdates).start();
+    if (ClientContext.gameEnginePropertyReader().useExperimentalUI()) {
+      TripleA.launch(args);
+    } else {
+      SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+      showMainFrame();
+      new Thread(GameRunner::setupLogging).start();
+      HttpProxy.setupProxies();
+      new Thread(GameRunner::checkLocalSystem).start();
+      new Thread(GameRunner::checkForUpdates).start();
+    }
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {

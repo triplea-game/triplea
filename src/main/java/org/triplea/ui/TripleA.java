@@ -50,6 +50,11 @@ public class TripleA extends Application {
     stage.getIcons().add(new Image(getClass().getResourceAsStream("/games/strategy/engine/framework/ta_icon.png")));
     stage.setTitle("TripleA");
     stage.show();
+    stage.setOnCloseRequest(e -> System.exit(0));
+  }
+
+  public static void launch(String[] args) {
+    Application.launch(args);
   }
 
   public static FXMLLoader getLoader(URL location) {
@@ -80,6 +85,7 @@ public class TripleA extends Application {
   @FXML
   private void exit() {
     Platform.exit();
+    System.exit(0);
   }
 
   public void displayLoadingScreen(boolean bool) {
@@ -89,9 +95,5 @@ public class TripleA extends Application {
   public void setLoadingMessage(String message) {
     progressLabel.setText(message);
     progressTooltip.setText(message);
-  }
-
-  public static void main(String[] args) {
-    launch(args);
   }
 }

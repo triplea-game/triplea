@@ -20,7 +20,8 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     super(GAME_ENGINE_PROPERTY_FILE);
   }
 
-  @VisibleForTesting GameEnginePropertyReader(final File propFile) {
+  @VisibleForTesting
+  GameEnginePropertyReader(final File propFile) {
     super(propFile);
   }
 
@@ -74,11 +75,15 @@ public class GameEnginePropertyReader extends PropertyFileReader {
   public MaxMemorySetting readMaxMemory() {
     final String value = super.readProperty(GameEngineProperty.MAX_MEMORY);
 
-    if(Strings.nullToEmpty(value).isEmpty()) {
+    if (Strings.nullToEmpty(value).isEmpty()) {
       return MaxMemorySetting.NOT_SET;
     }
 
     return MaxMemorySetting.of(value);
+  }
+
+  public boolean useExperimentalUI() {
+    return String.valueOf(true).equals(super.readProperty(GameEngineProperty.EXPERIMENTAL_UI, false));
   }
 
 
@@ -90,5 +95,6 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     String LOBBY_PROPS_URL = "lobby_properties_file_url";
     String LOBBY_PROPS_BACKUP_FILE = "lobby_properties_file_backup";
     String MAX_MEMORY = "max_memory";
+    String EXPERIMENTAL_UI = "experimental_ui";
   }
 }
