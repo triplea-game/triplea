@@ -117,6 +117,15 @@ public class DownloadMapsWindow extends JFrame {
     if (!pendingDownloads.isEmpty()) {
       progressPanel.download(pendingDownloads);
     }
+    // TODO: there is a possibility that pendingDownloads will contain duplicates after the following call.
+    // i don't think it matters, but we should try to avoid it if possible. might be as simply as changing
+    // to a Set.
+    pendingDownloads.addAll(DownloadCoordinator.INSTANCE.getPendingDownloads().stream()
+        .map(DownloadFile::getDownload)
+        .collect(Collectors.toList()));
+    pendingDownloads.addAll(DownloadCoordinator.INSTANCE.getActiveDownloads().stream()
+        .map(DownloadFile::getDownload)
+        .collect(Collectors.toList()));
 
     if (!unknownMapNames.isEmpty()) {
       SwingComponents.newMessageDialog(formatUnknownPendingMapsMessage(unknownMapNames));
@@ -213,8 +222,8 @@ public class DownloadMapsWindow extends JFrame {
         ? null
         : createMapSelectionPanel(selectedMapName, outOfDateDownloads, MapAction.UPDATE);
     // For the UX, always show an available maps tab, even if it is empty
-    final JPanel available = createMapSelectionPanel(selectedMapName, mapList.getAvailable(), MapAction.INSTALL);
-
+    final JPanel available =
+        createMapSelectionPanel(selectedMapName, mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
 
     // if there is a map to preselect, show the available map list first
     if (selectedMapName.isPresent()) {
