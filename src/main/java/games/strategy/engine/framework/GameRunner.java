@@ -123,13 +123,13 @@ public class GameRunner {
       return; // close this current instance down without further processing
     }
 
+    HttpProxy.setupProxies();
     if (ClientContext.gameEnginePropertyReader().useExperimentalUI()) {
       TripleA.launch(args);
     } else {
       SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
       showMainFrame();
       new Thread(GameRunner::setupLogging).start();
-      HttpProxy.setupProxies();
       new Thread(GameRunner::checkLocalSystem).start();
       new Thread(GameRunner::checkForUpdates).start();
     }
