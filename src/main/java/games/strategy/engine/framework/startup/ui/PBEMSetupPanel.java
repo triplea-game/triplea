@@ -1,8 +1,13 @@
 package games.strategy.engine.framework.startup.ui;
 
+import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -13,7 +18,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +25,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -31,7 +35,6 @@ import javax.swing.border.TitledBorder;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -97,8 +100,22 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 
 
   private void createComponents() {
+    JScrollPane scrollPane = new JScrollPane(m_localPlayerPanel);
+    m_localPlayerPanel.addHierarchyListener(new HierarchyListener() {
+      @Override
+      public void hierarchyChanged(HierarchyEvent e) {
+        Window window = SwingUtilities.getWindowAncestor(m_localPlayerPanel);
+        if (window instanceof Dialog) {
+          Dialog dialog = (Dialog) window;
+          if (!dialog.isResizable()) {
+            dialog.setResizable(true);
+            dialog.setMinimumSize(new Dimension(700, 700));
+          }
+        }
+      }
+    });
     m_localPlayerSelection.addActionListener(
-        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's",
+        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, scrollPane, "Select Local Players and AI's",
             JOptionPane.PLAIN_MESSAGE));
   }
 
@@ -125,7 +142,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // add selection of local players
     add(m_localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
         GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
-    layoutPlayerPanel(this);
+    layoutPlayerComponents(m_localPlayerPanel, m_playerTypes, m_gameSelectorModel.getGameData());
     setWidgetActivation();
   }
 
@@ -424,52 +441,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     }
   }
 
-  private void layoutPlayerPanel(final SetupPanel parent) {
-    final GameData data = m_gameSelectorModel.getGameData();
-    m_localPlayerPanel.removeAll();
-    m_playerTypes.clear();
-    m_localPlayerPanel.setLayout(new GridBagLayout());
-    if (data == null) {
-      m_localPlayerPanel.add(new JLabel("No game selected!"));
-      return;
-    }
-    final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
-    final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
-    final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
-    final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
-    final List<PlayerID> players = data.getPlayerList().getPlayers();
-    // if the xml was created correctly, this list will be in turn order. we want to keep it that way.
-    int gridx = 0;
-    int gridy = 0;
-    if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
-      final JLabel enableLabel = new JLabel("Use");
-      m_localPlayerPanel.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    }
-    final JLabel nameLabel = new JLabel("Name");
-    m_localPlayerPanel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    final JLabel typeLabel = new JLabel("Type");
-    m_localPlayerPanel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    final JLabel allianceLabel = new JLabel("Alliance");
-    m_localPlayerPanel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    final JLabel bonusLabel = new JLabel("Income");
-    m_localPlayerPanel.add(bonusLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
-    for (final PlayerID player : players) {
-      final PlayerSelectorRow selector =
-          new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, parent, data.getProperties());
-      m_playerTypes.add(selector);
-      if (!player.isHidden()) {
-        selector.layout(++gridy, m_localPlayerPanel);
-      }
-    }
-    m_localPlayerPanel.validate();
-    m_localPlayerPanel.invalidate();
-  }
 }
 
 

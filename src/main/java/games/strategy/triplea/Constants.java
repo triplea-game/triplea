@@ -260,4 +260,8 @@ public interface Constants {
     return playerId.getName() + " Income Percentage";
   }
 
+  public static String getPuIncomeBonus(final PlayerID playerId) {
+    return playerId.getName() + "PU Income Bonus";
+  }
+
 }
