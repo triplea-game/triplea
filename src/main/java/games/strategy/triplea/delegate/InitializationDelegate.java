@@ -80,23 +80,17 @@ public class InitializationDelegate extends BaseTripleADelegate {
     return false;
   }
 
-  protected void init(final IDelegateBridge aBridge) {
-    initDestroyerArtillery(aBridge);
-    initShipyards(aBridge);
-    initTwoHitBattleship(aBridge);
-    initOriginalOwner(aBridge);
-    initTech(aBridge);
-    initSkipUnusedBids(aBridge.getData());
-    initAiStartingBonusIncome(aBridge);
-    initDeleteAssetsOfDisabledPlayers(aBridge);
-    initTransportedLandUnits(aBridge);
-    resetUnitState(aBridge);
-  }
+  protected void init(final IDelegateBridge delegateBridge) {
+    initDestroyerArtillery(delegateBridge);
+    initShipyards(delegateBridge);
+    initTwoHitBattleship(delegateBridge);
+    initOriginalOwner(delegateBridge);
+    initTech(delegateBridge);
+    initSkipUnusedBids(delegateBridge.getData());
+    initAiStartingBonusIncome(delegateBridge);
+    initDeleteAssetsOfDisabledPlayers(delegateBridge);
+    initTransportedLandUnits(delegateBridge);
 
-  /**
-   * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
-   */
-  private void resetUnitState(final IDelegateBridge aBridge) {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
