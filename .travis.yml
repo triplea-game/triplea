@@ -7,6 +7,8 @@ addons:
       # python for map file splitter
       - python3
       - python3-yaml
+      # up-to-date java version
+      - oracle-java8-installer
 install: true
 services:
 - postgresql
