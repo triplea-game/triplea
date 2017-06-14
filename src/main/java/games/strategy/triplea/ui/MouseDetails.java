@@ -1,8 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Point;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+
+import javax.swing.SwingUtilities;
 
 public class MouseDetails {
   private final MouseEvent m_mouseEvent;
@@ -33,8 +34,7 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    //FOR WHATEVER REASON THIS NEEDS TO ME META_DOWN INSTEAD OF BUTTON3_DOWN !!!!!!!!!!!
-    return (m_mouseEvent.getModifiersEx() & InputEvent.META_DOWN_MASK) == InputEvent.META_DOWN_MASK;
+    return SwingUtilities.isRightMouseButton(m_mouseEvent);
   }
 
   public boolean isControlDown() {
