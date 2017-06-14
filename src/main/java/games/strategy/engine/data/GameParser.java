@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -168,7 +169,7 @@ public class GameParser {
       validate();
     } catch (final Exception e) {
       ClientLogger.logQuietly("Error parsing: " + mapName, e);
-      throw new GameParseException(mapName, e.getMessage());
+      throw new GameParseException(mapName, e);
     }
     return data;
   }
@@ -275,17 +276,23 @@ public class GameParser {
     return builder.parse(input, system);
   }
 
+  private <T> T getValidatedObject(final Element element, final String attribute,
+      final boolean mustFind, final Function<String, T> supplier, String errorName)
+      throws GameParseException {
+    final String name = element.getAttribute(attribute);
+    final T attachable = supplier.apply(name);
+    if (attachable == null && mustFind) {
+      throw new GameParseException(mapName, "Could not find " + errorName + " name:" + name);
+    }
+    return attachable;
+  }
+
   /**
    * If mustfind is true and cannot find the player an exception will be thrown.
    */
   private PlayerID getPlayerID(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final PlayerID player = data.getPlayerList().getPlayerID(name);
-    if (player == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find player. name:" + name);
-    }
-    return player;
+    return getValidatedObject(element, attribute, mustFind, data.getPlayerList()::getPlayerID, "player");
   }
 
   /**
@@ -298,22 +305,13 @@ public class GameParser {
    */
   private RelationshipType getRelationshipType(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final RelationshipType relation = data.getRelationshipTypeList().getRelationshipType(name);
-    if (relation == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find relation name:" + name);
-    }
-    return relation;
+    return getValidatedObject(element, attribute, mustFind, data.getRelationshipTypeList()::getRelationshipType,
+        "relation");
   }
 
   private TerritoryEffect getTerritoryEffect(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final TerritoryEffect effect = data.getTerritoryEffectList().get(name);
-    if (effect == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find territoryEffect name:" + name);
-    }
-    return effect;
+    return getValidatedObject(element, attribute, mustFind, data.getTerritoryEffectList()::get, "territoryEffect");
   }
 
   /**
@@ -321,12 +319,8 @@ public class GameParser {
    */
   private ProductionRule getProductionRule(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(name);
-    if (productionRule == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production rule. name:" + name);
-    }
-    return productionRule;
+    return getValidatedObject(element, attribute, mustFind, data.getProductionRuleList()::getProductionRule,
+        "production rule");
   }
 
   /**
@@ -334,12 +328,7 @@ public class GameParser {
    */
   private RepairRule getRepairRule(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final RepairRule repairRule = data.getRepairRuleList().getRepairRule(name);
-    if (repairRule == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production rule. name:" + name);
-    }
-    return repairRule;
+    return getValidatedObject(element, attribute, mustFind, data.getRepairRuleList()::getRepairRule, "repair rule");
   }
 
   /**
@@ -347,12 +336,7 @@ public class GameParser {
    */
   private Territory getTerritory(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final Territory territory = data.getMap().getTerritory(name);
-    if (territory == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find territory. name:" + name);
-    }
-    return territory;
+    return getValidatedObject(element, attribute, mustFind, data.getMap()::getTerritory, "territory");
   }
 
   /**
@@ -360,12 +344,7 @@ public class GameParser {
    */
   private UnitType getUnitType(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final UnitType type = data.getUnitTypeList().getUnitType(name);
-    if (type == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find unitType. name:" + name);
-    }
-    return type;
+    return getValidatedObject(element, attribute, mustFind, data.getUnitTypeList()::getUnitType, "unitType");
   }
 
   /**
@@ -373,15 +352,8 @@ public class GameParser {
    */
   private TechAdvance getTechnology(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    TechAdvance type = data.getTechnologyFrontier().getAdvanceByName(name);
-    if (type == null) {
-      type = data.getTechnologyFrontier().getAdvanceByProperty(name);
-    }
-    if (type == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find technology. name:" + name);
-    }
-    return type;
+    return getValidatedObject(element, attribute, mustFind, data.getTechnologyFrontier()::getAdvanceByName,
+        "technology");
   }
 
   /**
@@ -389,12 +361,7 @@ public class GameParser {
    */
   private IDelegate getDelegate(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final IDelegate delegate = data.getDelegateList().getDelegate(name);
-    if (delegate == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find delegate. name:" + name);
-    }
-    return delegate;
+    return getValidatedObject(element, attribute, mustFind, data.getDelegateList()::getDelegate, "delegate");
   }
 
   /**
@@ -402,12 +369,7 @@ public class GameParser {
    */
   private Resource getResource(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final Resource resource = data.getResourceList().getResource(name);
-    if (resource == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find resource. name:" + name);
-    }
-    return resource;
+    return getValidatedObject(element, attribute, mustFind, data.getResourceList()::getResource, "resource");
   }
 
   /**
@@ -415,12 +377,8 @@ public class GameParser {
    */
   private ProductionFrontier getProductionFrontier(final Element element, final String attribute,
       final boolean mustFind) throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final ProductionFrontier productionFrontier = data.getProductionFrontierList().getProductionFrontier(name);
-    if (productionFrontier == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production frontier. name:" + name);
-    }
-    return productionFrontier;
+    return getValidatedObject(element, attribute, mustFind, data.getProductionFrontierList()::getProductionFrontier,
+        "production frontier");
   }
 
   /**
@@ -428,12 +386,8 @@ public class GameParser {
    */
   private RepairFrontier getRepairFrontier(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    final String name = element.getAttribute(attribute);
-    final RepairFrontier repairFrontier = data.getRepairFrontierList().getRepairFrontier(name);
-    if (repairFrontier == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find production frontier. name:" + name);
-    }
-    return repairFrontier;
+    return getValidatedObject(element, attribute, mustFind, data.getRepairFrontierList()::getRepairFrontier,
+        "repair frontier");
   }
 
   /**
@@ -447,14 +401,14 @@ public class GameParser {
       instance = instanceClass.getDeclaredConstructor().newInstance();
       // a lot can go wrong, the following list is just a subset of potential pitfalls
     } catch (final ClassNotFoundException e) {
-      throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
+      throw new GameParseException(mapName, "Class <" + className + "> could not be found", e);
     } catch (final InstantiationException e) {
       throw new GameParseException(mapName,
-          "Class <" + className + "> could not be instantiated. ->" + e.getMessage());
+          "Class <" + className + "> could not be instantiated", e);
     } catch (final IllegalAccessException e) {
-      throw new GameParseException(mapName, "Constructor could not be accessed ->" + e.getMessage());
+      throw new GameParseException(mapName, "Constructor could not be accessed", e);
     } catch (ReflectiveOperationException e) {
-      throw new GameParseException(mapName, "Exception while constructing object ->" + e.getMessage());
+      throw new GameParseException(mapName, "Exception while constructing object", e);
     }
     return instance;
   }
@@ -1314,11 +1268,11 @@ public class GameParser {
         setter.invoke(attachment, args);
       } catch (final IllegalAccessException iae) {
         throw new GameParseException(mapName,
-            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
+            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
       } catch (final InvocationTargetException ite) {
         ite.getCause().printStackTrace(System.out);
         throw new GameParseException(mapName,
-            "Error setting property:" + name + " cause:" + ite.getCause().getMessage());
+            "Error setting property:" + name, ite);
       }
       options.add(Tuple.of(name, itemValues));
     }

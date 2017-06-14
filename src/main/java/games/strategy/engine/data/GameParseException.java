@@ -8,7 +8,15 @@ public class GameParseException extends Exception {
   }
 
   public GameParseException(final String mapName, final String error) {
-    super("MapName: " + mapName + ", " + error);
+    this("MapName: " + mapName + ", " + error);
+  }
+
+  public GameParseException(final String mapName, final String error, final Throwable cause) {
+    this("MapName: " + mapName + ", " + error, cause);
+  }
+
+  public GameParseException(final String message, final Throwable cause) {
+    super(message, cause);
   }
 
 }
