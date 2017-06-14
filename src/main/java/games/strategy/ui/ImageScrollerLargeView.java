@@ -18,6 +18,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
@@ -73,7 +74,7 @@ public class ImageScrollerLargeView extends JComponent {
     }
   };
   // scrolling
-  private final javax.swing.Timer m_timer = new javax.swing.Timer(50, m_timerAction);
+  private final Timer m_timer = new Timer(50, m_timerAction);
   private boolean m_inside = false;
   private int m_insideCount = 0;
   private int m_edge = NONE;
@@ -204,8 +205,8 @@ public class ImageScrollerLargeView extends JComponent {
       public void mouseDragged(final MouseEvent e) {
         requestFocusInWindow();
         // the right button must be the one down
-        if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0
-            || (e.getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+        if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK
+            || (e.getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) == InputEvent.BUTTON2_DOWN_MASK) {
           wasLastActionDragging = true;
           m_inside = false;
           // read in location

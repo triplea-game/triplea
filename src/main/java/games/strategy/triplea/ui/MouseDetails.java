@@ -33,7 +33,8 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    return (m_mouseEvent.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0;
+    //FOR WHATEVER REASON THIS NEEDS TO ME META_DOWN INSTEAD OF BUTTON3_DOWN !!!!!!!!!!!
+    return (m_mouseEvent.getModifiersEx() & InputEvent.META_DOWN_MASK) == InputEvent.META_DOWN_MASK;
   }
 
   public boolean isControlDown() {
