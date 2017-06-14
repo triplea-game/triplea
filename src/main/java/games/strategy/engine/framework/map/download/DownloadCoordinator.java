@@ -40,7 +40,6 @@ final class DownloadCoordinator {
   void accept(final DownloadFileDescription download) {
     synchronized (lock) {
       pendingDownloads.add(new DownloadFile(download, new Listener()));
-      new Thread(() -> downloadListeners.forEach(l -> l.downloadStarted(download))).start();
       updateQueue();
     }
   }

@@ -72,8 +72,8 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
     rebuildPanel();
 
-    final MapDownloadProgressListener mapDownloadProgressListener =
-        new MapDownloadProgressListener(download.getUrl(), progressBar, "Installing to: " + download.getInstallLocation().getAbsolutePath());
+    final MapDownloadProgressListener mapDownloadProgressListener = new MapDownloadProgressListener(download.getUrl(),
+        progressBar, "Installing to: " + download.getInstallLocation().getAbsolutePath());
     mapDownloadProgressListeners.put(download, mapDownloadProgressListener);
     mapDownloadProgressListener.downloadStarted();
     return mapDownloadProgressListener;
