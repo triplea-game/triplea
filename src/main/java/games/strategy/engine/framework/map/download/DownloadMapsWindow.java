@@ -443,7 +443,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private ActionListener installAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
-    return e -> new Thread(() -> {
+    return e -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> downloadList = new ArrayList<>();
       for (final DownloadFileDescription map : maps) {
@@ -456,6 +456,6 @@ public class DownloadMapsWindow extends JFrame {
       }
 
       downloadList.forEach(m -> listModel.removeElement(m.getMapName()));
-    }).start();
+    };
   }
 }

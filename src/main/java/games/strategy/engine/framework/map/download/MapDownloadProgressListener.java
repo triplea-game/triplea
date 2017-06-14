@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import games.strategy.util.OptionalUtils;
+
 /**
  * A listener of map download progress events that updates the associated controls in the UI.
  *
@@ -17,44 +19,64 @@ final class MapDownloadProgressListener {
 
   private static final int MAX_PROGRESS_VALUE = 100;
 
-  private final JProgressBar progressBar;
-  private final String uri;
-  private final String tooltip;
+  private final DownloadFileDescription download;
   private volatile Optional<Long> downloadLength = Optional.empty();
+  private final JProgressBar progressBar;
 
-  MapDownloadProgressListener(final String uri, final JProgressBar progressBar, String tooltip) {
+  MapDownloadProgressListener(final DownloadFileDescription download, final JProgressBar progressBar) {
+    this.download = download;
     this.progressBar = progressBar;
-    this.uri = uri;
-    this.tooltip = tooltip;
+
+    initializeProgressBar();
+    requestDownloadLength();
+  }
+
+  private void initializeProgressBar() {
+    assert SwingUtilities.isEventDispatchThread();
+
+    progressBar.setMinimum(MIN_PROGRESS_VALUE);
+    progressBar.setMaximum(MAX_PROGRESS_VALUE);
+  }
+
+  private void requestDownloadLength() {
+    new Thread(() -> {
+      downloadLength = DownloadUtils.getDownloadLength(download.getUrl());
+    }).start();
   }
 
   void downloadStarted() {
+    updateProgressBar("Pending...");
+  }
+
+  private void updateProgressBar(final String toolTipText) {
     SwingUtilities.invokeLater(() -> {
-      progressBar.setMinimum(MIN_PROGRESS_VALUE);
-      progressBar.setMaximum(MAX_PROGRESS_VALUE);
       progressBar.setIndeterminate(true);
       progressBar.setStringPainted(false);
-      progressBar.setToolTipText("Pending...");
+      progressBar.setToolTipText(toolTipText);
     });
-    downloadLength = DownloadUtils.getDownloadLength(uri);
+  }
+
+  private void updateProgressBar(final String toolTipText, final int value) {
+    SwingUtilities.invokeLater(() -> {
+      progressBar.setIndeterminate(false);
+      progressBar.setValue(value);
+      progressBar.setStringPainted(true);
+      progressBar.setToolTipText(toolTipText);
+    });
   }
 
   void downloadUpdated(final long currentLength) {
-    if (currentLength > 0) {
-      downloadLength.ifPresent(totalLength -> SwingUtilities.invokeLater(() -> {
-        progressBar.setIndeterminate(false);
-        progressBar.setValue((int) (currentLength * MAX_PROGRESS_VALUE / totalLength));
-        progressBar.setStringPainted(true);
-      }));
-      SwingUtilities.invokeLater(() -> progressBar.setToolTipText(tooltip));
-    }
+    final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
+    OptionalUtils.ifPresentOrElse(downloadLength,
+        totalLength -> updateProgressBar(toolTipText, percentComplete(currentLength, totalLength)),
+        () -> updateProgressBar(toolTipText));
+  }
+
+  private static int percentComplete(final long currentLength, final long totalLength) {
+    return (int) (currentLength * MAX_PROGRESS_VALUE / totalLength);
   }
 
   void downloadCompleted() {
-    SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(false);
-      progressBar.setValue(MAX_PROGRESS_VALUE);
-      progressBar.setStringPainted(true);
-    });
+    updateProgressBar(String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
   }
 }
