@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.util.ThreadUtil;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
