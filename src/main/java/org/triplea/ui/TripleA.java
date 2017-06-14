@@ -53,8 +53,8 @@ public class TripleA extends Application {
     stage.setOnCloseRequest(e -> System.exit(0));
   }
 
-  public static void launch(String[] args) {
-    Application.launch(args);
+  public static void launch(String... arg) {
+    Application.launch(arg);
   }
 
   public static FXMLLoader getLoader(URL location) {
