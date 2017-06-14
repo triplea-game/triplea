@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server.userDB;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -9,13 +10,16 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.Util;
 
 /*
- * Note, this class is called by reflection: .
+ * Note, the DBUser data type is passed between lobby and client.
  * TODO: annotate this class and others to identify them. Longer term drop the reflection.
  */
-public class DBUser {
-  private final UserName userName;
-  private final UserEmail userEmail;
+public class DBUser implements Serializable {
+  private static final long serialVersionUID = -5289923058375302916L;
+
+  private final String m_name;
+  private final String m_email;
   private final Role userRole;
+
 
   @VisibleForTesting
   static final Collection<String> forbiddenNameParts =
@@ -73,11 +77,11 @@ public class DBUser {
 
 
   public String getName() {
-    return userName.userName;
+    return m_name;
   }
 
   public String getEmail() {
-    return userEmail.userEmail;
+    return m_email;
   }
 
   public boolean isAdmin() {
@@ -88,8 +92,8 @@ public class DBUser {
    * An all-args constructor.
    */
   public DBUser(final UserName name, final UserEmail email, final Role role) {
-    this.userName = name;
-    this.userEmail = email;
+    this.m_name = name.userName;
+    this.m_email = email.userEmail;
     this.userRole = role;
   }
 
@@ -105,10 +109,10 @@ public class DBUser {
    * Returns an error message String if there are validation errors, otherwise null.
    */
   public String getValidationErrorMessage() {
-    if (userName.validate() == null && userEmail.validate() == null) {
+    if (new UserName(m_name).validate() == null && new UserEmail(m_email).validate() == null) {
       return null;
     }
-    return userName.validate() + " " + userEmail.validate();
+    return new UserName(m_name).validate() + " " + new UserEmail(m_email).validate();
   }
 
   /**
@@ -131,8 +135,8 @@ public class DBUser {
 
   @Override
   public String toString() {
-    return "name: " + userName.userName
-        + ", email: " + userEmail.userEmail
+    return "name: " + m_name
+        + ", email: " + m_email
         + ", role: " + userRole;
   }
 }
