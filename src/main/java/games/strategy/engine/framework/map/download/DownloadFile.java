@@ -23,6 +23,10 @@ final class DownloadFile {
   DownloadFile(final DownloadFileDescription download, final DownloadListener downloadListener) {
     this.download = download;
     this.downloadListener = downloadListener;
+
+    // TODO: consider running in a separate thread because this constructor is called while a lock is held
+    // it works now because the listener calls SwingUtilities.invokeLater(), but that may not always be the case
+    downloadListener.downloadStarted(download);
   }
 
   DownloadFileDescription getDownload() {
@@ -49,8 +53,6 @@ final class DownloadFile {
    */
   private Thread createDownloadThread(final FileSizeWatcher watcher) {
     return new Thread(() -> {
-      downloadListener.downloadStarted(download);
-
       final File fileToDownloadTo = watcher.getFile();
       if (state != DownloadState.CANCELLED) {
         final String url = download.getUrl();
