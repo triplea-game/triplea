@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.util.ThreadUtil;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
@@ -39,18 +41,35 @@ final class DownloadCoordinator {
 
   void accept(final DownloadFileDescription download) {
     synchronized (lock) {
-      pendingDownloads.add(new DownloadFile(download, new Listener()));
-      updateQueue();
+      if (isNewDownload(download)) {
+        pendingDownloads.add(new DownloadFile(download, new Listener()));
+        updateQueue();
+      }
     }
+  }
+
+  private boolean isNewDownload(final DownloadFileDescription download) {
+    assert Thread.holdsLock(lock);
+
+    return !containsDownload(pendingDownloads, download)
+        && !containsDownload(activeDownloads, download);
+  }
+
+  private static boolean containsDownload(
+      final Collection<DownloadFile> downloadFiles,
+      final DownloadFileDescription download) {
+    return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
   }
 
   private void updateQueue() {
     assert Thread.holdsLock(lock);
 
-    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS && !pendingDownloads.isEmpty()) {
+    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS) {
       final DownloadFile downloadFile = pendingDownloads.poll();
-      downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
-      activeDownloads.add(downloadFile);
+      if (downloadFile != null) {
+        downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
+        activeDownloads.add(downloadFile);
+      }
     }
   }
 

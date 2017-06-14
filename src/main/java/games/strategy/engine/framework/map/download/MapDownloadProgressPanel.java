@@ -55,7 +55,10 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   @Override
   public void downloadStarted(final DownloadFileDescription download) {
-    SwingUtilities.invokeLater(() -> addDownload(download));
+    SwingUtilities.invokeLater(() -> {
+      final MapDownloadProgressListener mapDownloadProgressListener = getMapDownloadProgressListenerFor(download);
+      mapDownloadProgressListener.downloadStarted();
+    });
   }
 
   private MapDownloadProgressListener addDownload(final DownloadFileDescription download) {
@@ -72,11 +75,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
     rebuildPanel();
 
-    final MapDownloadProgressListener mapDownloadProgressListener = new MapDownloadProgressListener(download.getUrl(),
-        progressBar, "Installing to: " + download.getInstallLocation().getAbsolutePath());
-    mapDownloadProgressListeners.put(download, mapDownloadProgressListener);
-    mapDownloadProgressListener.downloadStarted();
-    return mapDownloadProgressListener;
+    return new MapDownloadProgressListener(download, progressBar);
   }
 
   private void rebuildPanel() {
