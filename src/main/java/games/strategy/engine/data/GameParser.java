@@ -277,12 +277,12 @@ public class GameParser {
   }
 
   private <T> T getValidatedObject(final Element element, final String attribute,
-      final boolean mustFind, final Function<String, T> supplier, String errorName)
+      final boolean mustFind, final Function<String, T> function, String errorName)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
-    final T attachable = supplier.apply(name);
+    final T attachable = function.apply(name);
     if (attachable == null && mustFind) {
-      throw new GameParseException(mapName, "Could not find " + errorName + " name:" + name);
+      throw new GameParseException(mapName, "Could not find " + errorName + ". name:" + name);
     }
     return attachable;
   }
