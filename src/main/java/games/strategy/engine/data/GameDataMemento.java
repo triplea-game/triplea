@@ -22,14 +22,6 @@ import games.strategy.util.memento.PropertyBagMementoImporter;
  */
 public final class GameDataMemento {
   @VisibleForTesting
-  static final class PropertyNames {
-    private PropertyNames() {}
-
-    static final String NAME = "name";
-    static final String VERSION = "version";
-  }
-
-  @VisibleForTesting
   static final long CURRENT_SCHEMA_VERSION = 1L;
 
   @VisibleForTesting
@@ -45,6 +37,14 @@ public final class GameDataMemento {
   public static final Map<ExportOptionName, Object> DEFAULT_EXPORT_OPTIONS_BY_NAME = newDefaultExportOptionsByName();
 
   private GameDataMemento() {}
+
+  @VisibleForTesting
+  static final class PropertyNames {
+    static final String NAME = "name";
+    static final String VERSION = "version";
+
+    private PropertyNames() {}
+  }
 
   private static Map<ExportOptionName, Object> newDefaultExportOptionsByName() {
     return Maps.immutableEnumMap(ImmutableMap.of(
