@@ -38,19 +38,19 @@ import games.strategy.util.MD5Crypt;
 
 public class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
-  private final LobbyFrame m_frame;
+  private final LobbyFrame lobbyFrame;
 
   public LobbyMenu(final LobbyFrame frame) {
-    m_frame = frame;
+    lobbyFrame = frame;
     // file only has one value
     // and on mac it is in the apple menu
     if (!SystemProperties.isMac()) {
       createFileMenu(this);
     } else {
-      MacLobbyWrapper.registerMacShutdownHandler(m_frame);
+      MacLobbyWrapper.registerMacShutdownHandler(lobbyFrame);
     }
     createAccountMenu(this);
-    if (m_frame.getLobbyClient().isAdmin()) {
+    if (lobbyFrame.getLobbyClient().isAdmin()) {
       createAdminMenu(this);
     }
     createSettingsMenu(this);
@@ -90,19 +90,19 @@ public class LobbyMenu extends JMenuBar {
     revive.setEnabled(true);
     revive.addActionListener(event -> {
       final Runnable runner = () -> {
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
             .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         final StringBuilder builder = new StringBuilder();
         builder.append("Online Players:\r\n\r\n");
-        for (final INode player : m_frame.getChatMessagePanel().getChat().getOnlinePlayers()) {
+        for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
           builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
         }
         builder.append("Players That Have Left (Last 10):\r\n\r\n");
-        for (final INode player : m_frame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
+        for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
           builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
         }
         final Runnable componentCreation = () -> {
-          final JDialog dialog = new JDialog(m_frame, "Players Information");
+          final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
           final JTextArea label = new JTextArea(builder.toString());
           label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
           label.setEditable(false);
@@ -125,7 +125,7 @@ public class LobbyMenu extends JMenuBar {
           dialog.setMinimumSize(new Dimension(500, 300));
           dialog.setSize(new Dimension(800, 600));
           dialog.setResizable(true);
-          dialog.setLocationRelativeTo(m_frame);
+          dialog.setLocationRelativeTo(lobbyFrame);
           dialog.setDefaultCloseOperation(2);
           dialog.setVisible(true);
         };
@@ -148,7 +148,7 @@ public class LobbyMenu extends JMenuBar {
         return;
       }
       if (!DBUser.isValidUserName((name1))) {
-        if (JOptionPane.showConfirmDialog(m_frame,
+        if (JOptionPane.showConfirmDialog(lobbyFrame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
@@ -156,7 +156,7 @@ public class LobbyMenu extends JMenuBar {
       }
       final long ticks = requestTimespanSupplication();
       final long expire = System.currentTimeMillis() + ticks;
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
@@ -190,7 +190,7 @@ public class LobbyMenu extends JMenuBar {
         error = null;
       }
       if (error != null) {
-        if (JOptionPane.showConfirmDialog(m_frame,
+        if (JOptionPane.showConfirmDialog(lobbyFrame,
             "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
             "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
@@ -198,7 +198,7 @@ public class LobbyMenu extends JMenuBar {
       }
       final long ticks = requestTimespanSupplication();
       final long expire = System.currentTimeMillis() + ticks;
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
@@ -220,13 +220,13 @@ public class LobbyMenu extends JMenuBar {
         return;
       }
       if (DBUser.isValidUserName(name1)) {
-        if (JOptionPane.showConfirmDialog(m_frame,
+        if (JOptionPane.showConfirmDialog(lobbyFrame,
             "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
             JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
       }
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
@@ -260,13 +260,13 @@ public class LobbyMenu extends JMenuBar {
         error = null;
       }
       if (error != null) {
-        if (JOptionPane.showConfirmDialog(m_frame,
+        if (JOptionPane.showConfirmDialog(lobbyFrame,
             "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
             "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
           return;
         }
       }
-      final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
@@ -288,7 +288,7 @@ public class LobbyMenu extends JMenuBar {
     timeUnits.add("Month");
     timeUnits.add("Year");
     timeUnits.add("Forever");
-    final int result = JOptionPane.showOptionDialog(m_frame, "Select the unit of measurement: ", "Select Timespan Unit",
+    final int result = JOptionPane.showOptionDialog(lobbyFrame, "Select the unit of measurement: ", "Select Timespan Unit",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
     if (result < 0) {
       return -1;
@@ -298,7 +298,7 @@ public class LobbyMenu extends JMenuBar {
       return Long.MAX_VALUE;
     }
     final String stringr =
-        JOptionPane.showInputDialog(m_frame, "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
+        JOptionPane.showInputDialog(lobbyFrame, "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
     if (stringr == null) {
       return -1;
     }
@@ -360,7 +360,7 @@ public class LobbyMenu extends JMenuBar {
 
   private void addChatTimeMenu(final JMenu parentMenu) {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.addActionListener(e -> m_frame.setShowChatTime(chatTimeBox.isSelected()));
+    chatTimeBox.addActionListener(e -> lobbyFrame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(true);
     parentMenu.add(chatTimeBox);
   }
@@ -368,21 +368,21 @@ public class LobbyMenu extends JMenuBar {
   private void addUpdateAccountMenu(final JMenu account) {
     final JMenuItem update = new JMenuItem("Update Account...");
     // only if we are not anonymous login
-    update.setEnabled(!m_frame.getLobbyClient().isAnonymousLogin());
+    update.setEnabled(!lobbyFrame.getLobbyClient().isAnonymousLogin());
     update.addActionListener(e -> updateAccountDetails());
     account.add(update);
   }
 
   private void updateAccountDetails() {
     final IUserManager manager =
-        (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
-    final DBUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
+        (IUserManager) lobbyFrame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
+    final DBUser user = manager.getUserInfo(lobbyFrame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
       JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user);
-    final CreateUpdateAccountPanel.ReturnValue rVal = panel.show(m_frame);
+    final CreateUpdateAccountPanel.ReturnValue rVal = panel.show(lobbyFrame);
     if (rVal == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
@@ -403,7 +403,7 @@ public class LobbyMenu extends JMenuBar {
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> m_frame.shutdown()));
+      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
       parentMenu.add(menuFileExit);
     }
   }
