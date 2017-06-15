@@ -89,6 +89,9 @@ public class RevisedTest {
   private GameData gameData;
   private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
+  /**
+   * Sets up a GameData object for testing..
+   */
   @Before
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
