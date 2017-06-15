@@ -38,22 +38,22 @@ import games.strategy.triplea.util.UnitSeperator;
 
 public abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
-  protected List<AbstractUndoableMove> m_moves;
-  protected final GameData m_data;
-  protected final AbstractMovePanel m_movePanel;
+  protected List<AbstractUndoableMove> moves;
+  protected final GameData gameData;
+  protected final AbstractMovePanel movePanel;
   protected JScrollPane scroll;
   // TODO replace this Integer with a int primitive... Using null as toggle switch is bad code
   protected Integer scrollBarPreviousValue = null;
   protected Integer previousVisibleIndex = null;
 
   protected AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
-    m_data = data;
-    m_movePanel = movePanel;
-    m_moves = Collections.emptyList();
+    gameData = data;
+    this.movePanel = movePanel;
+    moves = Collections.emptyList();
   }
 
   public void setMoves(final List<AbstractUndoableMove> m_undoableMoves) {
-    m_moves = m_undoableMoves;
+    moves = m_undoableMoves;
     SwingUtilities.invokeLater(() -> initLayout());
   }
 
@@ -62,7 +62,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     for (final List<Unit> highlightedUnits : highlightUnitByTerritory.values()) {
       units.addAll(highlightedUnits);
     }
-    m_movePanel.undoMoves(units);
+    movePanel.undoMoves(units);
   }
 
 
@@ -72,9 +72,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final JPanel items = new JPanel();
     items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
     // we want the newest move at the top
-    m_moves = new ArrayList<>(m_moves);
-    Collections.reverse(m_moves);
-    final Iterator<AbstractUndoableMove> iter = m_moves.iterator();
+    moves = new ArrayList<>(moves);
+    Collections.reverse(moves);
+    final Iterator<AbstractUndoableMove> iter = moves.iterator();
     if (iter.hasNext()) {
       add(new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"), BorderLayout.NORTH);
     }
@@ -92,7 +92,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
         items.add(seperator);
       }
     }
-    if (m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1) {
+    if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
       final JButton undoAllButton = new JButton("Undo All");
       undoAllButton.addActionListener(new UndoAllMovesActionListener());
       items.add(undoAllButton);
@@ -106,7 +106,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       @Override
       public void paint(final Graphics g) {
         if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex),
+          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((moves.size()) - previousVisibleIndex),
               1, scrollIncrementFinal));
           previousVisibleIndex = null;
         }
@@ -132,8 +132,8 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
       final Optional<ImageIcon> icon =
-          m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
-              category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+          movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+              category.getOwner(), gameData, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       if (icon.isPresent()) {
         final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
@@ -161,7 +161,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   }
 
   public int getCountOfMovesMade() {
-    return m_moves.size();
+    return moves.size();
   }
 
   protected void setSize(final Dimension buttonSize, final JButton cancelButton) {
@@ -184,7 +184,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     public void actionPerformed(final ActionEvent e) {
       // Record position of scroll bar as percentage.
       scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-      final String error = m_movePanel.undoMove(m_moveIndex);
+      final String error = movePanel.undoMove(m_moveIndex);
       if (error == null) {
         previousVisibleIndex = Math.max(0, m_moveIndex - 1);
       } else {
@@ -202,10 +202,10 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final int moveCount = m_movePanel.getUndoableMoves().size();
+      final int moveCount = movePanel.getUndoableMoves().size();
       final boolean suppressErrorMsgToUser = true;
       for (int i = moveCount - 1; i >= 0; i--) {
-        m_movePanel.undoMove(i, suppressErrorMsgToUser);
+        movePanel.undoMove(i, suppressErrorMsgToUser);
       }
     }
   }
@@ -222,9 +222,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      m_movePanel.cancelMove();
-      if (!m_movePanel.getMap().isShowing(m_move.getEnd())) {
-        m_movePanel.getMap().centerOn(m_move.getEnd());
+      movePanel.cancelMove();
+      if (!movePanel.getMap().isShowing(m_move.getEnd())) {
+        movePanel.getMap().centerOn(m_move.getEnd());
       }
       specificViewAction(m_move);
     }

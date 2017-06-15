@@ -238,7 +238,6 @@ public class ServerGame extends AbstractGame {
 
   private GameStep getCurrentStep() {
     return m_data.getSequence().getStep();
-    // m_data.getSequence().getStep(m_currentStepIndex);
   }
 
 
@@ -468,9 +467,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void startPersistentDelegates() {
-    final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
-    while (delegateIter.hasNext()) {
-      final IDelegate delegate = delegateIter.next();
+    for (final IDelegate delegate : m_data.getDelegateList()) {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
@@ -611,9 +608,9 @@ public class ServerGame extends AbstractGame {
 
   @Override
   public void addChange(final Change aChange) {
-    getGameModifiedBroadcaster().gameDataChanged(aChange);
     // let our channel subscribor do the change,
     // that way all changes will happen in the same thread
+    getGameModifiedBroadcaster().gameDataChanged(aChange);
   }
 
   @Override

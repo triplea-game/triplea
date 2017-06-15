@@ -13,6 +13,6 @@ public class UndoableMovesPanel extends AbstractUndoableMovesPanel {
 
   @Override
   protected final void specificViewAction(final AbstractUndoableMove move) {
-    m_movePanel.getMap().setRoute(((UndoableMove) move).getRoute());
+    movePanel.getMap().setRoute(((UndoableMove) move).getRoute());
   }
 }
