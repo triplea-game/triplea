@@ -8,13 +8,16 @@ import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
 import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.engine.framework.map.download.*;
 
 /**
  * Manages the creation of objects, similar to a dependency injection framework.
  * Use this class to manage singletons and as a factory to create objects that have shared
  * dependencies already managed by this class.
  * Example usage:
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  *   // before
  *   public void clientCode(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
  *     swingStuff(sharedDependencyWiredThroughAllTheMethods);
@@ -35,7 +38,8 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
  *     int preferenceValue = settings.getNumberPreference();
  *     :
  *   }
- * </code></pre>
+ * </code>
+ * </pre>
  */
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
@@ -49,6 +53,8 @@ public final class ClientContext {
   private final AiSettings aiSettings;
   private final BattleCalcSettings battleCalcSettings;
   private final BattleOptionsSettings battleOptionsSettings;
+
+  public static final DownloadCoordinator DOWNLOAD_COORDINATOR = new DownloadCoordinator();
 
   private ClientContext() {
     gameEnginePropertyReader = new GameEnginePropertyReader();

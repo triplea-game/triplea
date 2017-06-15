@@ -15,9 +15,7 @@ import games.strategy.engine.ClientFileSystemHelper;
  * Class that accepts and queues download requests. Download requests are started in background
  * thread, this class ensures N are in progress until all are done.
  */
-final class DownloadCoordinator {
-  static final DownloadCoordinator INSTANCE = new DownloadCoordinator();
-
+public final class DownloadCoordinator {
   private static final int MAX_CONCURRENT_DOWNLOADS = 3;
 
   private final Object lock = new Object();
@@ -27,8 +25,6 @@ final class DownloadCoordinator {
   private final Set<DownloadFile> terminatedDownloads = new HashSet<>();
 
   private final List<DownloadListener> downloadListeners = new CopyOnWriteArrayList<>();
-
-  private DownloadCoordinator() {}
 
   void addDownloadListener(final DownloadListener downloadListener) {
     downloadListeners.add(downloadListener);
