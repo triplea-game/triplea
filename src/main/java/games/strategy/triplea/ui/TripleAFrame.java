@@ -1728,7 +1728,6 @@ public class TripleAFrame extends MainGameFrame {
                 + "such as a move or battle phase.",
             "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
         data.acquireReadLock();
-        // gameData.acquireWriteLock();
         try {
           final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
           if (f != null) {
