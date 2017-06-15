@@ -18,7 +18,7 @@ main() {
 
   local -r old_hash=$(get_gradle_properties_hash)
   update_local_thresholds
-  has_local_thresholds_changed $old_hash && update_remote_thresholds $old_hash
+  has_local_thresholds_changed "$old_hash" && update_remote_thresholds "$old_hash"
 }
 
 should_skip_build() {
@@ -45,12 +45,19 @@ get_gradle_properties_hash() {
 
 update_local_thresholds() {
   echo "Updating Checkstyle thresholds..."
-  local -r checkstyle_reports_dir=build/reports/checkstyle
+  update_threshold main.xml Main
+  update_threshold test.xml Test
+  update_threshold integTest.xml IntegTest
+}
+
+update_threshold() {
+  local -r report_file=$1
+  local -r violation_property_name=$2
   local -r checkstyle_warning_pattern='<error [^>]*severity="warning"'
-  local -r main_warning_count=$(grep -P "$checkstyle_warning_pattern" $checkstyle_reports_dir/main.xml | wc -l)
-  sed -i -r 's/(checkstyleMainMaxWarnings)=[[:digit:]]+/\1='"$main_warning_count"'/' $GRADLE_PROPERTIES
-  local -r test_warning_count=$(grep -P "$checkstyle_warning_pattern" $checkstyle_reports_dir/test.xml | wc -l)
-  sed -i -r 's/(checkstyleTestMaxWarnings)=[[:digit:]]+/\1='"$test_warning_count"'/' $GRADLE_PROPERTIES
+  local -r checkstyle_reports_dir=build/reports/checkstyle
+  local -r violation_count=$(grep -c "$checkstyle_warning_pattern" $checkstyle_reports_dir/$report_file)
+  local -r violation_property="checkstyle${violation_property_name}MaxWarnings"
+  sed -i -r "s/$violation_property=[[:digit:]]+/$violation_property_name=$violation_count/" $GRADLE_PROPERTIES
 }
 
 has_local_thresholds_changed() {
