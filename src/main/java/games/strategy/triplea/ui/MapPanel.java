@@ -568,21 +568,21 @@ public class MapPanel extends ImageScrollerLargeView {
         if (fitAxisY && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
-          drawTiles(g2d, images, data, leftUpperBounds, 0, 0, undrawnTiles);
+          drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
             new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
-        drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+        drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
       if (fitAxisY && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
-        drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
+        drawTiles(g2d, images, data, upperBounds, undrawnTiles);
       }
     }
     // handle non overlap
     final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, images, data, mainBounds, 0, 0, undrawnTiles);
+    drawTiles(g2d, images, data, mainBounds, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
       t.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
@@ -680,14 +680,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds,
-      final double overlapX, final double overlapY, final List<Tile> undrawn) {
+      final List<Tile> undrawn) {
     final List<Tile> tileList = tileManager.getTiles(bounds);
     bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
-    if (overlapX != 0) {
-      bounds.x += overlapX - getScaledWidth();
+    if ((double) 0 != 0) {
+      bounds.x += (double) 0 - getScaledWidth();
     }
-    if (overlapY != 0) {
-      bounds.y += overlapY - getScaledHeight();
+    if ((double) 0 != 0) {
+      bounds.y += (double) 0 - getScaledHeight();
     }
     for (final Tile tile : tileList) {
       Image img = null;
