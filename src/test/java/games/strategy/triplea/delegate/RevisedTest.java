@@ -854,10 +854,8 @@ public class RevisedTest {
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
-    // int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    // int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid, pusAfterRaid);
     assertEquals(0, germany.getUnits().getMatches(Matches.unitIsOwnedBy(british)).size());
@@ -942,10 +940,8 @@ public class RevisedTest {
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
-    // int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    // int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
