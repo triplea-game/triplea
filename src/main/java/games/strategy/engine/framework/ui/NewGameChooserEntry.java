@@ -52,9 +52,9 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = GameRunner.getDelayedParsing();
+      final boolean delayParsing = true;
       gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
-      gameDataFullyLoaded = !delayParsing;
+      gameDataFullyLoaded = false;
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
