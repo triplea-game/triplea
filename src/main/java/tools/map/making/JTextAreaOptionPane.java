@@ -24,7 +24,7 @@ public class JTextAreaOptionPane {
   private final JFrame windowFrame = new JFrame();
   private final JButton okButton = new JButton();
   private final boolean logToSystemOut;
-  private final WeakReference<Window> parentComponentReference;
+  private final Window parentComponentReference;
   private int counter;
   private final CountDownLatch countDownLatch;
 
@@ -34,7 +34,7 @@ public class JTextAreaOptionPane {
     this.logToSystemOut = logToSystemOut;
     this.countDownLatch = countDownLatch;
     counter = latchCount;
-    parentComponentReference = new WeakReference<>(parentComponent);
+    parentComponentReference = parentComponent;
     windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (icon != null) {
       windowFrame.setIconImage(icon);
@@ -80,7 +80,7 @@ public class JTextAreaOptionPane {
 
   public void show() {
     windowFrame.pack();
-    windowFrame.setLocationRelativeTo(parentComponentReference.get());
+    windowFrame.setLocationRelativeTo(parentComponentReference);
     windowFrame.setVisible(true);
   }
 
