@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -480,24 +479,24 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
  */
 enum LocalBeanCache {
   INSTANCE;
-  private final File m_file;
-  private final Object m_mutex = new Object();
+  private final File file;
+  private final Object mutex = new Object();
 
-  Map<String, IBean> m_map = new HashMap<>();
+  Map<String, IBean> map = new HashMap<>();
 
   private LocalBeanCache() {
-    m_file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
-    m_map = loadMap();
+    file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
+    map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk
-    final Thread shutdown = new Thread(() -> writeToDisk());
+    final Thread shutdown = new Thread(this::writeToDisk);
     Runtime.getRuntime().addShutdownHook(shutdown);
   }
 
   @SuppressWarnings("unchecked")
   private Map<String, IBean> loadMap() {
-    if (m_file.exists()) {
-      try (FileInputStream fin = new FileInputStream(m_file);
-          ObjectInput oin = new ObjectInputStream(fin);) {
+    if (file.exists()) {
+      try (FileInputStream fin = new FileInputStream(file);
+          ObjectInput oin = new ObjectInputStream(fin)) {
         final Object o = oin.readObject();
         if (o instanceof Map) {
           final Map<?, ?> m = (Map<?, ?>) o;
@@ -513,7 +512,7 @@ enum LocalBeanCache {
         return (HashMap<String, IBean>) o;
       } catch (final Exception e) {
         // on error we delete the cache file, if we can
-        m_file.delete();
+        file.delete();
         System.err.println("Serialization cache invalid: " + e.getMessage());
         ClientLogger.logQuietly(e);
       }
@@ -532,18 +531,18 @@ enum LocalBeanCache {
    *        the bean
    */
   public void storeSerializable(final String key, final IBean bean) {
-    m_map.put(key, bean);
+    map.put(key, bean);
   }
 
   /**
    * Call to have the cache written to disk.
    */
   public void writeToDisk() {
-    synchronized (m_mutex) {
-      try (FileOutputStream fout = new FileOutputStream(m_file, false);
-          ObjectOutputStream out = new ObjectOutputStream(fout);) {
+    synchronized (mutex) {
+      try (FileOutputStream fout = new FileOutputStream(file, false);
+          ObjectOutputStream out = new ObjectOutputStream(fout)) {
 
-        out.writeObject(m_map);
+        out.writeObject(map);
       } catch (final IOException e) {
         // ignore
       }
@@ -558,7 +557,7 @@ enum LocalBeanCache {
    * @return the serializable or null if one doesn't exists under the given key
    */
   public IBean getSerializable(final String key) {
-    return m_map.get(key);
+    return map.get(key);
   }
 
 

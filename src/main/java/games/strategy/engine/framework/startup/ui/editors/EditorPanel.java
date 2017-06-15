@@ -22,11 +22,11 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
   public static final String EDITOR_CHANGE = "EditorChange";
-  protected final Color m_labelColor;
+  protected final Color labelColor;
 
   public EditorPanel() {
     super(new GridBagLayout());
-    m_labelColor = new JLabel().getForeground();
+    labelColor = new JLabel().getForeground();
   }
 
   /**
@@ -84,7 +84,7 @@ public abstract class EditorPanel extends JPanel {
    */
   protected boolean validateText(final String text, final JLabel label, final IValidator IValidator) {
     boolean valid = true;
-    Color color = m_labelColor;
+    Color color = labelColor;
     if (!IValidator.isValid(text)) {
       valid = false;
       color = Color.RED;

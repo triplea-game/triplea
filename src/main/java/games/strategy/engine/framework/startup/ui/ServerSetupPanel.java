@@ -49,20 +49,20 @@ import games.strategy.util.ThreadUtil;
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
   private static final long serialVersionUID = -2849872641665561807L;
-  private final ServerModel m_model;
-  private JTextField m_portField;
-  private JTextField m_addressField;
-  private JTextField m_nameField;
-  private List<PlayerRow> m_playerRows = new ArrayList<>();
-  private final GameSelectorModel m_gameSelectorModel;
-  private JPanel m_info;
-  private JPanel m_networkPanel;
-  private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
+  private final ServerModel model;
+  private JTextField portField;
+  private JTextField addressField;
+  private JTextField nameField;
+  private List<PlayerRow> playerRows = new ArrayList<>();
+  private final GameSelectorModel gameSelectorModel;
+  private JPanel info;
+  private JPanel networkPanel;
+  private final InGameLobbyWatcherWrapper lobbyWatcher = new InGameLobbyWatcherWrapper();
 
   public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel) {
-    m_model = model;
-    m_gameSelectorModel = gameSelectorModel;
-    m_model.setRemoteModelListener(this);
+    this.model = model;
+    this.gameSelectorModel = gameSelectorModel;
+    this.model.setRemoteModelListener(this);
     createLobbyWatcher();
     createComponents();
     layoutComponents();
@@ -72,10 +72,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   void createLobbyWatcher() {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this,
-          m_lobbyWatcher.getInGameLobbyWatcher()));
-      m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
+    if (lobbyWatcher != null) {
+      lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
+          lobbyWatcher.getInGameLobbyWatcher()));
+      lobbyWatcher.setGameSelectorModel(gameSelectorModel);
     }
   }
 
@@ -94,49 +94,49 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   void shutDownLobbyWatcher() {
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.shutDown();
+    if (lobbyWatcher != null) {
+      lobbyWatcher.shutDown();
     }
   }
 
   private void createComponents() {
-    final IServerMessenger messenger = m_model.getMessenger();
+    final IServerMessenger messenger = model.getMessenger();
     final Color backGround = new JTextField().getBackground();
-    m_portField = new JTextField("" + messenger.getLocalNode().getPort());
-    m_portField.setEnabled(true);
-    m_portField.setEditable(false);
-    m_portField.setBackground(backGround);
-    m_portField.setColumns(6);
-    m_addressField = new JTextField(messenger.getLocalNode().getAddress().getHostAddress());
-    m_addressField.setEnabled(true);
-    m_addressField.setEditable(false);
-    m_addressField.setBackground(backGround);
-    m_addressField.setColumns(20);
-    m_nameField = new JTextField(messenger.getLocalNode().getName());
-    m_nameField.setEnabled(true);
-    m_nameField.setEditable(false);
-    m_nameField.setBackground(backGround);
-    m_nameField.setColumns(20);
-    m_info = new JPanel();
-    m_networkPanel = new JPanel();
+    portField = new JTextField("" + messenger.getLocalNode().getPort());
+    portField.setEnabled(true);
+    portField.setEditable(false);
+    portField.setBackground(backGround);
+    portField.setColumns(6);
+    addressField = new JTextField(messenger.getLocalNode().getAddress().getHostAddress());
+    addressField.setEnabled(true);
+    addressField.setEditable(false);
+    addressField.setBackground(backGround);
+    addressField.setColumns(20);
+    nameField = new JTextField(messenger.getLocalNode().getName());
+    nameField.setEnabled(true);
+    nameField.setEditable(false);
+    nameField.setBackground(backGround);
+    nameField.setColumns(20);
+    info = new JPanel();
+    networkPanel = new JPanel();
   }
 
   private void layoutComponents() {
     setLayout(new BorderLayout());
-    m_info.setLayout(new GridBagLayout());
-    m_info.add(new JLabel("Name:"), new GridBagConstraints(0, 0, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+    info.setLayout(new GridBagLayout());
+    info.add(new JLabel("Name:"), new GridBagConstraints(0, 0, 1, 1, 0, 0.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(new JLabel("Address:"), new GridBagConstraints(0, 1, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+    info.add(new JLabel("Address:"), new GridBagConstraints(0, 1, 1, 1, 0, 0.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(new JLabel("Port:"), new GridBagConstraints(0, 2, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+    info.add(new JLabel("Port:"), new GridBagConstraints(0, 2, 1, 1, 0, 0.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(m_nameField, new GridBagConstraints(1, 0, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+    info.add(nameField, new GridBagConstraints(1, 0, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-    m_info.add(m_addressField, new GridBagConstraints(1, 1, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+    info.add(addressField, new GridBagConstraints(1, 1, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-    m_info.add(m_portField, new GridBagConstraints(1, 2, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+    info.add(portField, new GridBagConstraints(1, 2, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-    add(m_info, BorderLayout.NORTH);
+    add(info, BorderLayout.NORTH);
   }
 
   private void layoutPlayers() {
@@ -146,8 +146,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Insets spacing = new Insets(3, 16, 0, 0);
     final Insets lastSpacing = new Insets(3, 16, 0, 16);
     int gridx = 0;
-    final boolean disableable = !m_model.getPlayersAllowedToBeDisabled().isEmpty()
-        || m_model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
+    final boolean disableable = !model.getPlayersAllowedToBeDisabled().isEmpty()
+        || model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
     final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
     if (disableable) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
@@ -200,7 +200,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
-    final Iterator<PlayerRow> iter = m_playerRows.iterator();
+    final Iterator<PlayerRow> iter = playerRows.iterator();
     if (!iter.hasNext()) {
       final JLabel noPlayers = new JLabel("Load a game file first");
       layout.setConstraints(noPlayers, nameConstraints);
@@ -224,13 +224,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       players.add(row.getAlliance());
     }
     removeAll();
-    add(m_info, BorderLayout.NORTH);
+    add(info, BorderLayout.NORTH);
     final JScrollPane scroll = new JScrollPane(players, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
-    add(m_networkPanel, BorderLayout.SOUTH);
+    add(networkPanel, BorderLayout.SOUTH);
     invalidate();
     validate();
   }
@@ -242,34 +242,34 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public void shutDown() {
-    m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    m_model.shutDown();
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.shutDown();
+    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+    model.shutDown();
+    if (lobbyWatcher != null) {
+      lobbyWatcher.shutDown();
     }
   }
 
   @Override
   public void cancel() {
-    m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    m_model.cancel();
-    if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.shutDown();
+    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+    model.cancel();
+    if (lobbyWatcher != null) {
+      lobbyWatcher.shutDown();
     }
   }
 
   @Override
   public void postStartGame() {
-    final GameData data = m_gameSelectorModel.getGameData();
+    final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
 
   @Override
   public boolean canGameStart() {
-    if (m_gameSelectorModel.getGameData() == null || m_model == null) {
+    if (gameSelectorModel.getGameData() == null || model == null) {
       return false;
     }
-    final Map<String, String> players = m_model.getPlayersToNodeListing();
+    final Map<String, String> players = model.getPlayersToNodeListing();
     if (players == null || players.isEmpty()) {
       return false;
     }
@@ -279,7 +279,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       }
     }
     // make sure at least 1 player is enabled
-    final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
+    final Map<String, Boolean> someoneEnabled = model.getPlayersEnabledListing();
     for (final boolean bool : someoneEnabled.values()) {
       if (bool) {
         return true;
@@ -302,9 +302,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    final Map<String, String> playersToNode = m_model.getPlayersToNodeListing();
-    final Map<String, Boolean> playersEnabled = m_model.getPlayersEnabledListing();
-    for (final PlayerRow row : m_playerRows) {
+    final Map<String, String> playersToNode = model.getPlayersToNodeListing();
+    final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
+    for (final PlayerRow row : playerRows) {
       row.update(playersToNode, playersEnabled);
     }
     super.notifyObservers();
@@ -314,18 +314,18 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    m_playerRows = new ArrayList<>();
-    final Map<String, String> players = m_model.getPlayersToNodeListing();
-    final Map<String, Boolean> playersEnabled = m_model.getPlayersEnabledListing();
+    playerRows = new ArrayList<>();
+    final Map<String, String> players = model.getPlayersToNodeListing();
+    final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
-        m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
-    final Map<String, String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
+        model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+    final Map<String, String> reloadSelections = PlayerID.currentPlayers(gameSelectorModel.getGameData());
     final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow newPlayerRow =
           new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name),
-              m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
-      m_playerRows.add(newPlayerRow);
+              gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
+      playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }
     layoutPlayers();
@@ -344,7 +344,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     PlayerRow(final String playerName, final Map<String, String> reloadSelections,
         final Collection<String> playerAlliances, final String[] types) {
       m_nameLabel = new JLabel(playerName);
-      m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
+      m_playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
       m_localCheckBox = new JCheckBox();
       m_localCheckBox.addActionListener(m_localPlayerActionListener);
       m_localCheckBox.setSelected(true);
@@ -360,11 +360,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       }
       if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
         m_type.setSelectedItem(previousSelection);
-        m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+        model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
         // the 4th in the list should be Pro AI (Hard AI)
         m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-        m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+        model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       }
       if (playerAlliances.contains(playerName)) {
         m_alliance = new JLabel();
@@ -372,7 +372,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_alliance = new JLabel(playerAlliances.toString());
       }
       m_type.addActionListener(
-          e -> m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem()));
+          e -> model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem()));
     }
 
     public JComboBox<String> getType() {
@@ -405,7 +405,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         text = "-";
       }
       m_playerLabel.setText(text);
-      m_localCheckBox.setSelected(text.equals(m_model.getMessenger().getLocalNode().getName()));
+      m_localCheckBox.setSelected(text.equals(model.getMessenger().getLocalNode().getName()));
       m_enabledCheckBox.setSelected(playersEnabled.get(m_nameLabel.getText()));
       setWidgetActivation();
     }
@@ -416,16 +416,16 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       m_playerLabel.setEnabled(m_enabledCheckBox.isSelected());
       m_localCheckBox.setEnabled(m_enabledCheckBox.isSelected());
       m_alliance.setEnabled(m_enabledCheckBox.isSelected());
-      m_enabledCheckBox.setEnabled(m_model.getPlayersAllowedToBeDisabled().contains(m_nameLabel.getText()));
+      m_enabledCheckBox.setEnabled(model.getPlayersAllowedToBeDisabled().contains(m_nameLabel.getText()));
     }
 
     private final ActionListener m_localPlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_localCheckBox.isSelected()) {
-          m_model.takePlayer(m_nameLabel.getText());
+          model.takePlayer(m_nameLabel.getText());
         } else {
-          m_model.releasePlayer(m_nameLabel.getText());
+          model.releasePlayer(m_nameLabel.getText());
         }
         setWidgetActivation();
       }
@@ -434,11 +434,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {
-          m_model.enablePlayer(m_nameLabel.getText());
+          model.enablePlayer(m_nameLabel.getText());
           // the 1st in the list should be human
           m_type.setSelectedItem(m_types[0]);
         } else {
-          m_model.disablePlayer(m_nameLabel.getText());
+          model.disablePlayer(m_nameLabel.getText());
           // the 2nd in the list should be Weak AI
           m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
         }
@@ -449,34 +449,34 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public IChatPanel getChatPanel() {
-    return m_model.getChatPanel();
+    return model.getChatPanel();
   }
 
   public ServerModel getModel() {
-    return m_model;
+    return model;
   }
 
   @Override
   public synchronized ILauncher getLauncher() {
-    final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+    final ServerLauncher launcher = (ServerLauncher) model.getLauncher();
     if (launcher == null) {
       return null;
     }
-    launcher.setInGameLobbyWatcher(m_lobbyWatcher);
+    launcher.setInGameLobbyWatcher(lobbyWatcher);
     return launcher;
   }
 
   @Override
   public List<Action> getUserActions() {
     final List<Action> rVal = new ArrayList<>();
-    rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
-    rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
-    rVal.add(new MutePlayerAction(this, m_model.getMessenger()));
+    rVal.add(new BootPlayerAction(this, model.getMessenger()));
+    rVal.add(new BanPlayerAction(this, model.getMessenger()));
+    rVal.add(new MutePlayerAction(this, model.getMessenger()));
     rVal.add(
-        new SetPasswordAction(this, m_lobbyWatcher, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
-    if (m_lobbyWatcher != null && m_lobbyWatcher.isActive()) {
-      rVal.add(new EditGameCommentAction(m_lobbyWatcher, ServerSetupPanel.this));
-      rVal.add(new RemoveGameFromLobbyAction(m_lobbyWatcher));
+        new SetPasswordAction(this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
+    if (lobbyWatcher != null && lobbyWatcher.isActive()) {
+      rVal.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
+      rVal.add(new RemoveGameFromLobbyAction(lobbyWatcher));
     }
     return rVal;
   }

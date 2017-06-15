@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,14 +28,13 @@ import games.strategy.triplea.ui.JButtonDialog;
  */
 public class SelectAndViewEditor extends EditorPanel {
   private static final long serialVersionUID = 1580648148539524876L;
-  JComboBox<IBean> m_selector = new JComboBox<>();
-  JPanel m_view = new JPanel();
-  JButton m_helpButton = new JButton("Help?");
-  private final PropertyChangeListener m_properChangeListener;
-  private EditorPanel m_editor;
-  private final JLabel m_selectorLabel;
-  private final JEditorPane m_helpPanel;
-  private final String m_defaultHelp;
+  private final JComboBox<IBean> selector = new JComboBox<>();
+  private final JPanel view = new JPanel();
+  private final PropertyChangeListener propertyChangeListener;
+  private EditorPanel editor;
+  private final JLabel selectorLabel;
+  private final JEditorPane helpPanel;
+  private final String defaultHelp;
 
   /**
    * creates a new editor.
@@ -48,48 +46,49 @@ public class SelectAndViewEditor extends EditorPanel {
    */
   public SelectAndViewEditor(final String labelTitle, final String defaultHelp) {
     super();
-    m_defaultHelp = defaultHelp;
-    final Font oldFont = m_helpButton.getFont();
-    m_helpButton.setFont(new Font(oldFont.getName(), Font.BOLD, oldFont.getSize()));
-    m_view.setLayout(new GridBagLayout());
-    m_selectorLabel = new JLabel(labelTitle + ":");
-    add(m_selectorLabel, new GridBagConstraints(0, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHWEST,
+    this.defaultHelp = defaultHelp;
+    final JButton helpButton = new JButton("Help?");
+    final Font oldFont = helpButton.getFont();
+    helpButton.setFont(new Font(oldFont.getName(), Font.BOLD, oldFont.getSize()));
+    view.setLayout(new GridBagLayout());
+    selectorLabel = new JLabel(labelTitle + ":");
+    add(selectorLabel, new GridBagConstraints(0, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, 1, 2), 0, 0));
-    add(m_selector, new GridBagConstraints(1, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
+    add(selector, new GridBagConstraints(1, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
-    add(m_helpButton, new GridBagConstraints(2, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
+    add(helpButton, new GridBagConstraints(2, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
         new Insets(0, 0, 1, 0), 0, 0));
-    add(m_view, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+    add(view, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, 0, 0), 0, 0));
-    m_selector.setRenderer(new DisplayNameComboBoxRender());
-    m_selector.addItemListener(e -> {
+    selector.setRenderer(new DisplayNameComboBoxRender());
+    selector.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {
         updateView();
         fireEditorChanged();
       }
     });
-    m_properChangeListener = evt -> fireEditorChanged();
-    m_helpPanel = new JEditorPane();
-    m_helpPanel.setEditable(false);
-    m_helpPanel.setContentType("text/html");
-    m_helpPanel.setAutoscrolls(true);
-    m_helpPanel.setBackground(m_selectorLabel.getBackground());
+    propertyChangeListener = evt -> fireEditorChanged();
+    helpPanel = new JEditorPane();
+    helpPanel.setEditable(false);
+    helpPanel.setContentType("text/html");
+    helpPanel.setAutoscrolls(true);
+    helpPanel.setBackground(selectorLabel.getBackground());
     final Dimension preferredSize = new Dimension(500, 500);
-    m_helpPanel.setPreferredSize(preferredSize);
-    m_helpPanel.setSize(preferredSize);
+    helpPanel.setPreferredSize(preferredSize);
+    helpPanel.setSize(preferredSize);
     final JScrollPane notesScroll = new JScrollPane();
-    notesScroll.setViewportView(m_helpPanel);
+    notesScroll.setViewportView(helpPanel);
     notesScroll.setBorder(null);
     notesScroll.getViewport().setBorder(null);
-    m_helpButton.addActionListener(e -> {
-      String helpText;
+    helpButton.addActionListener(e -> {
+      final String helpText;
       if (getBean() == null) {
-        helpText = HelpSupport.loadHelp(m_defaultHelp);
+        helpText = HelpSupport.loadHelp(this.defaultHelp);
       } else {
         helpText = getBean().getHelpText();
       }
-      m_helpPanel.setText(helpText);
-      m_helpPanel.setCaretPosition(0);
+      helpPanel.setText(helpText);
+      helpPanel.setCaretPosition(0);
       JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
     });
   }
@@ -100,18 +99,18 @@ public class SelectAndViewEditor extends EditorPanel {
   private void updateView() {
     // todo(kg) Have the View use a card layout instead of removing all content
     // remove listeners from old editor, to avoid memory leak
-    if (m_editor != null) {
-      m_editor.removePropertyChangeListener(m_properChangeListener);
+    if (editor != null) {
+      editor.removePropertyChangeListener(propertyChangeListener);
     }
-    m_view.removeAll();
-    final IBean item = (IBean) m_selector.getSelectedItem();
-    m_editor = item.getEditor();
-    if (m_editor != null) {
+    view.removeAll();
+    final IBean item = (IBean) selector.getSelectedItem();
+    editor = item.getEditor();
+    if (editor != null) {
       // register a property change listener so we can re-notify our listeners
-      m_editor.addPropertyChangeListener(m_properChangeListener);
-      m_view.add(m_editor, new GridBagConstraints(0, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
+      editor.addPropertyChangeListener(propertyChangeListener);
+      view.add(editor, new GridBagConstraints(0, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
           GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-      m_editor.isBeanValid();
+      editor.isBeanValid();
     }
     revalidate();
     alignLabels();
@@ -123,21 +122,21 @@ public class SelectAndViewEditor extends EditorPanel {
    */
   private void alignLabels() {
     // resize the label to align with the nested editors labels
-    final int height = m_selectorLabel.getPreferredSize().height;
-    int width = m_selectorLabel.getPreferredSize().width;
-    if (m_editor != null) {
-      final int labelWidth = m_editor.getLabelWidth();
+    final int height = selectorLabel.getPreferredSize().height;
+    int width = selectorLabel.getPreferredSize().width;
+    if (editor != null) {
+      final int labelWidth = editor.getLabelWidth();
       if (width < labelWidth) {
         // resize this editors label
         width = labelWidth;
       } else {
         // resize nested editors labels
-        m_editor.setLabelWidth(width);
+        editor.setLabelWidth(width);
       }
     }
     final Dimension dimension = new Dimension(width, height);
-    m_selectorLabel.setPreferredSize(dimension);
-    m_selectorLabel.setSize(dimension);
+    selectorLabel.setPreferredSize(dimension);
+    selectorLabel.setSize(dimension);
   }
 
   /**
@@ -147,13 +146,13 @@ public class SelectAndViewEditor extends EditorPanel {
    *        the list of beans
    */
   public void setBeans(final List<? extends IBean> beans) {
-    m_selector.setModel(new DefaultComboBoxModel<>(beans.toArray(new IBean[beans.size()])));
+    selector.setModel(new DefaultComboBoxModel<>(beans.toArray(new IBean[beans.size()])));
     updateView();
   }
 
   @Override
   public boolean isBeanValid() {
-    return m_editor == null || m_editor.isBeanValid();
+    return editor == null || editor.isBeanValid();
   }
 
   /**
@@ -163,10 +162,10 @@ public class SelectAndViewEditor extends EditorPanel {
    */
   @Override
   public IBean getBean() {
-    if (m_editor == null) {
+    if (editor == null) {
       return null;
     }
-    return m_editor.getBean();
+    return editor.getBean();
   }
 
   /**
@@ -178,7 +177,7 @@ public class SelectAndViewEditor extends EditorPanel {
    *        the bean
    */
   public void setSelectedBean(final IBean bean) {
-    final DefaultComboBoxModel<IBean> model = (DefaultComboBoxModel<IBean>) m_selector.getModel();
+    final DefaultComboBoxModel<IBean> model = (DefaultComboBoxModel<IBean>) selector.getModel();
     final DefaultComboBoxModel<IBean> newModel = new DefaultComboBoxModel<>();
     boolean found = false;
     int i;
@@ -192,11 +191,11 @@ public class SelectAndViewEditor extends EditorPanel {
       }
     }
     if (found) {
-      m_selector.setModel(newModel);
+      selector.setModel(newModel);
     } else {
       model.addElement(bean);
     }
-    m_selector.setSelectedItem(bean);
+    selector.setSelectedItem(bean);
     updateView();
   }
 }

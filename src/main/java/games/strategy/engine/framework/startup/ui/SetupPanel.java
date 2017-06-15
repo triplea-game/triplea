@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.Action;
 import javax.swing.JPanel;
 
@@ -13,21 +12,21 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 
 public abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
-  private final List<Observer> m_listeners = new CopyOnWriteArrayList<>();
+  private final List<Observer> listeners = new CopyOnWriteArrayList<>();
 
   @Override
   public void addObserver(final Observer observer) {
-    m_listeners.add(observer);
+    listeners.add(observer);
   }
 
   @Override
   public void removeObserver(final Observer observer) {
-    m_listeners.add(observer);
+    listeners.add(observer);
   }
 
   @Override
   public void notifyObservers() {
-    for (final Observer observer : m_listeners) {
+    for (final Observer observer : listeners) {
       observer.update(null, null);
     }
   }
