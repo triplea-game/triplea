@@ -22,7 +22,7 @@ import games.strategy.util.Match;
 
 public class ExtendedStats extends StatPanel {
   private static final long serialVersionUID = 2502397606419491543L;
-  private IStat[] m_statsExtended = new IStat[] {};
+  private IStat[] statsExtended = new IStat[] {};
 
   public ExtendedStats(final GameData data, final IUIContext uiContext) {
     super(data, uiContext);
@@ -39,10 +39,10 @@ public class ExtendedStats extends StatPanel {
   }
 
   public IStat[] getStatsExtended(final GameData data) {
-    if (m_statsExtended.length == 0) {
+    if (statsExtended.length == 0) {
       fillExtendedStats(data);
     }
-    return m_statsExtended;
+    return statsExtended;
   }
 
   private void fillExtendedStats(final GameData data) {
@@ -54,31 +54,31 @@ public class ExtendedStats extends StatPanel {
       } else {
         final GenericResourceStat resourceStat = new GenericResourceStat();
         resourceStat.init(r.getName());
-        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
         statsExtended.add(resourceStat);
-        m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
     }
     // add tech related stuff
     if (games.strategy.triplea.Properties.getTechDevelopment(data)) {
       // add tech tokens
       if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
-        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
         statsExtended.add(new TechTokenStat());
-        m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
       // add number of techs
-      final List<IStat> techStatsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+      final List<IStat> techStatsExtended = new ArrayList<>(Arrays.asList(statsExtended));
       techStatsExtended.add(new TechCountStat());
-      m_statsExtended = techStatsExtended.toArray(new IStat[techStatsExtended.size()]);
+      statsExtended = techStatsExtended.toArray(new IStat[techStatsExtended.size()]);
 
       // add individual techs
       for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data)) {
         final GenericTechNameStat techNameStat = new GenericTechNameStat();
         techNameStat.init(ta);
-        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
         statsExtended.add(techNameStat);
-        m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
     }
     // now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
@@ -87,9 +87,9 @@ public class ExtendedStats extends StatPanel {
       final UnitType ut = allUnitTypes.next();
       final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
       unitNameStat.init(ut);
-      final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(m_statsExtended));
+      final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
       statsExtended.add(unitNameStat);
-      m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+      this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
     }
   }
 
