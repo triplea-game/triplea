@@ -4,8 +4,6 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -33,7 +31,7 @@ final class MapDownloadProgressPanel extends JPanel {
   private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
   private final Map<DownloadFileDescription, JProgressBar> progressBars = Maps.newHashMap();
 
-  MapDownloadProgressPanel(final JFrame parent) {
+  MapDownloadProgressPanel() {
     downloadCoordinator = new DownloadCoordinator();
   }
 

@@ -10,7 +10,10 @@ addons:
 install: true
 services:
 - postgresql
-after_success: ./.travis/update_checkstyle_thresholds
+script: ./gradlew check jacocoTestReport
+after_success: 
+- ./.travis/update_checkstyle_thresholds
+- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
 - ./.travis/install_install4j
 - ENGINE_VERSION=$(grep "engine_version" game_engine.properties | sed 's/.*= *//g')

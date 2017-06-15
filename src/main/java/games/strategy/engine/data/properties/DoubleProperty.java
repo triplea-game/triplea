@@ -2,6 +2,7 @@ package games.strategy.engine.data.properties;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.swing.JComponent;
 
@@ -27,12 +28,12 @@ public class DoubleProperty extends AEditableProperty {
     m_max = max;
     m_min = min;
     m_places = numberOfPlaces;
-    m_value = roundToPlace(def, numberOfPlaces, BigDecimal.ROUND_FLOOR);
+    m_value = roundToPlace(def, numberOfPlaces, RoundingMode.FLOOR);
   }
 
-  private static double roundToPlace(final double number, final int places, final int BigDecimalRoundingMode) {
+  private static double roundToPlace(final double number, final int places, final RoundingMode roundingMode) {
     BigDecimal bd = new BigDecimal(number);
-    bd = bd.setScale(places, BigDecimalRoundingMode);
+    bd = bd.setScale(places, roundingMode);
     return bd.doubleValue();
   }
 
@@ -50,7 +51,7 @@ public class DoubleProperty extends AEditableProperty {
           + "You should delete your option cache, located at "
           + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
     } else {
-      m_value = roundToPlace((Double) value, m_places, BigDecimal.ROUND_FLOOR);
+      m_value = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
     }
   }
 
@@ -67,7 +68,7 @@ public class DoubleProperty extends AEditableProperty {
     if (value instanceof Double) {
       double d;
       try {
-        d = roundToPlace((Double) value, m_places, BigDecimal.ROUND_FLOOR);
+        d = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
       } catch (final Exception e) {
         return false;
       }

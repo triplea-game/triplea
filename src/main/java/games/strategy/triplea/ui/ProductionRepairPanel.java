@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -54,7 +53,7 @@ public class ProductionRepairPanel extends JPanel {
   private boolean m_bid;
   private Collection<PlayerID> m_allowedPlayersToRepair;
   private GameData m_data;
-  private static HashMap<Unit, Integer> m_repairCount = new HashMap<>();
+  private static final HashMap<Unit, Integer> m_repairCount = new HashMap<>();
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -131,20 +130,19 @@ public class ProductionRepairPanel extends JPanel {
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
-            if (!repairRule.getResults().keySet().iterator().next().equals(u.getType())) {
+          for (final Unit unit : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+            if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }
-            final TripleAUnit taUnit = (TripleAUnit) u;
-            final Rule rule = new Rule(repairRule, player, m_uiContext, u, terr);
-            // int initialQuantity = initialPurchase.getInt(repairRule);
+            final TripleAUnit taUnit = (TripleAUnit) unit;
+            final Rule rule = new Rule(repairRule, player, unit, terr);
             int initialQuantity = 0;
-            if (initialPurchase.get(u) != null) {
-              initialQuantity = initialPurchase.get(u).getInt(repairRule);
+            if (initialPurchase.get(unit) != null) {
+              initialQuantity = initialPurchase.get(unit).getInt(repairRule);
             }
             rule.setQuantity(initialQuantity);
-            rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
-            rule.setName(u.toString());
+            rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(unit, terr));
+            rule.setName(unit.toString());
             m_rules.add(rule);
           }
         }
@@ -247,8 +245,7 @@ public class ProductionRepairPanel extends JPanel {
     private final int m_maxRepairAmount;
     private final int m_repairResults;
 
-    Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit,
-        final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final PlayerID id, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       m_unit = repairUnit;
       m_rule = rule;

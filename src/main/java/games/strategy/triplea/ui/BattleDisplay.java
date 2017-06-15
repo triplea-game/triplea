@@ -29,7 +29,6 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -117,19 +116,19 @@ public class BattleDisplay extends JPanel {
 
   BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
-      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleID,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleId,
       final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
-    m_battleID = battleID;
+    m_battleID = battleId;
     m_defender = defender;
     m_attacker = attacker;
     m_location = territory;
     m_mapPanel = mapPanel;
     m_data = data;
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
-    m_defenderModel = new BattleModel(defendingUnits, false, battleType, defender, m_data, m_location, territoryEffects,
+    m_defenderModel = new BattleModel(defendingUnits, false, battleType, m_data, m_location, territoryEffects,
         isAmphibious, Collections.emptySet(), m_mapPanel.getUIContext());
-    m_attackerModel = new BattleModel(attackingUnits, true, battleType, attacker, m_data, m_location, territoryEffects,
+    m_attackerModel = new BattleModel(attackingUnits, true, battleType, m_data, m_location, territoryEffects,
         isAmphibious, amphibiousLandAttackers, m_mapPanel.getUIContext());
     m_defenderModel.setEnemyBattleModel(m_attackerModel);
     m_attackerModel.setEnemyBattleModel(m_defenderModel);
@@ -215,12 +214,12 @@ public class BattleDisplay extends JPanel {
    *
    * @param aKilledUnits
    *        list of units killed
-   * @param aPlayerID
+   * @param playerId
    *        player kills belongs to
    */
-  private Collection<Unit> updateKilledUnits(final Collection<Unit> aKilledUnits, final PlayerID aPlayerID) {
+  private Collection<Unit> updateKilledUnits(final Collection<Unit> aKilledUnits, final PlayerID playerId) {
     final JPanel lCausalityPanel;
-    if (aPlayerID.equals(m_defender)) {
+    if (playerId.equals(m_defender)) {
       lCausalityPanel = m_casualtiesInstantPanelDefender;
     } else {
       lCausalityPanel = m_casualtiesInstantPanelAttacker;
@@ -760,7 +759,7 @@ class BattleModel extends DefaultTableModel {
     return diceColumns;
   }
 
-  BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType, final PlayerID player,
+  BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType,
       final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
       final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext) {
     super(new Object[0][0], varDiceArray(data));

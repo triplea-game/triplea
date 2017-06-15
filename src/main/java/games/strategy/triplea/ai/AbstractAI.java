@@ -622,7 +622,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
         while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }
@@ -646,7 +646,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }

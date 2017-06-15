@@ -75,8 +75,8 @@ class ExportMenu {
 
   // TODO: create a second menu option for parsing current attachments
   private void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
-    parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
+    final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
+    parentMenu.add(exportXml).setMnemonic(KeyEvent.VK_X);
   }
 
   private void exportXMLFile() {
@@ -209,10 +209,10 @@ class ExportMenu {
       final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
       while (playerOrderIterator.hasNext()) {
-        final PlayerID currentPlayerID = playerOrderIterator.next();
-        text.append(currentPlayerID.getName()).append(",");
+        final PlayerID currentPlayerId = playerOrderIterator.next();
+        text.append(currentPlayerId.getName()).append(",");
         final Iterator<String> allianceName =
-            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
+            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId).iterator();
         while (allianceName.hasNext()) {
           text.append(allianceName.next()).append(",");
         }

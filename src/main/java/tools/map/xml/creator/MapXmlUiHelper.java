@@ -191,7 +191,7 @@ public class MapXmlUiHelper {
     final GridBagConstraints gbcTemplateNew = new GridBagConstraints();
     gbcTemplateNew.insets = new Insets(0, 0, 5, 5);
     gbcTemplateNew.anchor = GridBagConstraints.WEST;
-    ;
+
     return gbcTemplateNew;
   }
 

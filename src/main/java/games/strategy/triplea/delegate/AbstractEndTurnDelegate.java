@@ -308,7 +308,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
             // PlayerOwnerChange
             final Collection<Unit> units =
                 currTerritory.getUnits().getMatches(new CompositeMatchAnd<>(Matches.unitOwnedBy(Player),
-                    Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
+                    Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
               changeList.add(Tuple.of(currTerritory, units));

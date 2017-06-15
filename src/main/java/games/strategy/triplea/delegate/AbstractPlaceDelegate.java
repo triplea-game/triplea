@@ -213,11 +213,23 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
+    final boolean hasRemainingProduction = (unitsLeftToPlace.size() < maxPlaceableMap.totalValues());
+    final List<Unit> remainingUnitsToPlace = new ArrayList<>(m_player.getUnits().getUnits());
+    remainingUnitsToPlace.removeAll(unitsLeftToPlace);
+    final boolean hasRemainingNonConstructionUnitsToPlace =
+        Match.someMatch(remainingUnitsToPlace, Matches.UnitIsNotConstruction);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
 
       // Get next producer territory
       Territory producer = producers.get(0);
-      if (producers.size() > 1) {
+      final boolean isCarrierLeftAndCanMoveExistingFightersToCarrier =
+          Match.someMatch(unitsLeftToPlace, Matches.UnitIsCarrier) && canMoveExistingFightersToNewCarriers()
+              && !Properties.getLHTRCarrierProductionRules(getData());
+      final boolean cantAdjustUnitPlacements =
+          isUnitPlacementRestrictions() && Match.someMatch(unitsLeftToPlace, Matches.UnitRequiresUnitsOnCreation);
+      if (producers.size() > 1
+          && (isCarrierLeftAndCanMoveExistingFightersToCarrier
+              || (hasRemainingProduction && hasRemainingNonConstructionUnitsToPlace && cantAdjustUnitPlacements))) {
         producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
         if (producer == null) {
           break;
@@ -837,7 +849,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
       }
       if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
-          && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
+          && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
         return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
       }
     }
@@ -918,7 +930,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
       final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
+        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);
         }
       }
@@ -952,7 +964,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         continue;
       }
       if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
-          && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
+          && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
         continue;
       }
       // account for any unit placement restrictions by territory
@@ -972,7 +984,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume = Match.getMatches(units, Matches.UnitConsumesUnitsOnCreation);
     for (final Unit unit : unitsWhichConsume) {
-      if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
+      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
         weCanConsume = false;
       }
       if (!weCanConsume) {
@@ -1075,7 +1087,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {
@@ -1282,7 +1294,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       // remove any units that require other units to be consumed on creation (veqryn)
       if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit)
-          && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(currentUnit)) {
+          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(currentUnit)) {
         continue;
       }
       unitMapHeld.add(ua.getConstructionType(), 1);
@@ -1381,7 +1393,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
         final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
         // do not need to remove unowned here, as this match will remove unowned units from consideration.
-        if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+        if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
             .match(unitWhichRequiresUnits)) {
           return true;
         }
@@ -1390,7 +1402,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             for (final Territory current : getAllProducers(to, m_player,
                 Collections.singletonList(unitWhichRequiresUnits), true)) {
               final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-              if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+              if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
                   .match(unitWhichRequiresUnits)) {
                 return true;
               }
@@ -1556,7 +1568,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
     // land, and like sea if
     // in water.

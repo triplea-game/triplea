@@ -3,9 +3,13 @@ package games.strategy.triplea.ai.proAI.logging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.logging.Level;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -19,7 +23,7 @@ import games.strategy.ui.SwingAction;
 /**
  * GUI class used to display logging window and logging settings.
  */
-class ProLogWindow extends javax.swing.JDialog {
+class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
   /** Creates new form ProLogWindow. */
@@ -36,7 +40,7 @@ class ProLogWindow extends javax.swing.JDialog {
 
   private void initComponents() {
     final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-    java.awt.GridBagConstraints gridBagConstraints;
+    GridBagConstraints gridBagConstraints;
     final JPanel jPanel7 = new JPanel();
     final JButton v_restoreDefaultsButton = new JButton();
     final JButton v_settingsDetailsButton = new JButton();
@@ -58,10 +62,10 @@ class ProLogWindow extends javax.swing.JDialog {
     final javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
     final JPanel v_pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
-    setMinimumSize(new java.awt.Dimension(775, 400));
-    addWindowListener(new java.awt.event.WindowAdapter() {
+    setMinimumSize(new Dimension(775, 400));
+    addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(final java.awt.event.WindowEvent evt) {
+      public void windowClosing(final WindowEvent evt) {
         formWindowClosing();
       }
 
@@ -79,11 +83,11 @@ class ProLogWindow extends javax.swing.JDialog {
     v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
     v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
     v_restoreDefaultsButton.addActionListener(evt -> v_restoreDefaultsButtonActionPerformed());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-    gridBagConstraints.insets = new java.awt.Insets(11, 0, 11, 0);
+    gridBagConstraints.anchor = GridBagConstraints.WEST;
+    gridBagConstraints.insets = new Insets(11, 0, 11, 0);
     jPanel7.add(v_restoreDefaultsButton, gridBagConstraints);
     v_settingsDetailsButton.setText("Settings Details");
     v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
@@ -93,40 +97,40 @@ class ProLogWindow extends javax.swing.JDialog {
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-    gridBagConstraints.insets = new java.awt.Insets(11, 6, 11, 0);
+    gridBagConstraints.anchor = GridBagConstraints.EAST;
+    gridBagConstraints.insets = new Insets(11, 6, 11, 0);
     jPanel7.add(v_settingsDetailsButton, gridBagConstraints);
     jPanel14.setName("jPanel14");
-    jPanel14.setLayout(new java.awt.GridBagLayout());
+    jPanel14.setLayout(new GridBagLayout());
     jPanel13.setName("jPanel13");
-    jPanel13.setLayout(new java.awt.GridBagLayout());
+    jPanel13.setLayout(new GridBagLayout());
     v_cancelButton.setText("Cancel");
     v_cancelButton.setName("v_cancelButton");
     v_cancelButton.addActionListener(evt -> v_cancelButtonActionPerformed());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+    gridBagConstraints.insets = new Insets(0, 10, 0, 0);
     jPanel13.add(v_cancelButton, gridBagConstraints);
     v_okButton.setText("OK");
     v_okButton.setName("v_okButton");
     v_okButton.addActionListener(evt -> v_okButtonActionPerformed());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     jPanel13.add(v_okButton, gridBagConstraints);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     jPanel14.add(jPanel13, gridBagConstraints);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     gridBagConstraints.weightx = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(11, 6, 11, 0);
+    gridBagConstraints.insets = new Insets(11, 6, 11, 0);
     jPanel7.add(jPanel14, gridBagConstraints);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -147,86 +151,86 @@ class ProLogWindow extends javax.swing.JDialog {
     v_aiOutputLogAreaScrollPane.setName("v_aiOutputLogAreaScrollPane");
     v_aiOutputLogArea.setColumns(20);
     v_aiOutputLogArea.setEditable(false);
-    v_aiOutputLogArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+    v_aiOutputLogArea.setFont(new Font("Segoe UI", 0, 10));
     v_aiOutputLogArea.setRows(5);
     v_aiOutputLogArea.setName("v_aiOutputLogArea");
     v_aiOutputLogAreaScrollPane.setViewportView(v_aiOutputLogArea);
     jPanel9.add(v_aiOutputLogAreaScrollPane);
     v_logHolderTabbedPane.addTab("Pre-Game", jPanel9);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.gridwidth = 7;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-    gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+    gridBagConstraints.fill = GridBagConstraints.BOTH;
+    gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
+    gridBagConstraints.insets = new Insets(7, 7, 7, 7);
     jPanel8.add(v_logHolderTabbedPane, gridBagConstraints);
     v_enableAILogging.setSelected(true);
     v_enableAILogging.setText("Enable AI Logging");
     v_enableAILogging.setName("v_enableAILogging");
     v_enableAILogging.addChangeListener(evt -> v_enableAILoggingStateChanged());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 0);
+    gridBagConstraints.insets = new Insets(7, 7, 0, 0);
     jPanel8.add(v_enableAILogging, gridBagConstraints);
     jLabel15.setText("Log Depth:");
     jLabel15.setName("jLabel15");
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 12, 0, 0);
+    gridBagConstraints.insets = new Insets(7, 12, 0, 0);
     jPanel8.add(jLabel15, gridBagConstraints);
     v_logDepth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
     v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
     v_logDepth.setName("v_logDepth");
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 0);
+    gridBagConstraints.insets = new Insets(7, 5, 0, 0);
     jPanel8.add(v_logDepth, gridBagConstraints);
     v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(5, 1, 100, 1));
-    v_limitLogHistoryToSpinner.setMinimumSize(new java.awt.Dimension(60, 20));
+    v_limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
     v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner");
-    v_limitLogHistoryToSpinner.setPreferredSize(new java.awt.Dimension(60, 20));
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    v_limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.ipadx = 10;
-    gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
+    gridBagConstraints.insets = new Insets(7, 0, 0, 0);
     jPanel8.add(v_limitLogHistoryToSpinner, gridBagConstraints);
     v_limitLogHistoryCB.setSelected(true);
     v_limitLogHistoryCB.setText("Limit Log History To:");
     v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
     v_limitLogHistoryCB.addChangeListener(evt -> v_limitLogHistoryCBStateChanged());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 12);
+    gridBagConstraints.insets = new Insets(7, 0, 0, 12);
     jPanel8.add(v_limitLogHistoryCB, gridBagConstraints);
     jLabel46.setText("rounds");
     jLabel46.setName("jLabel46");
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 6;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 7);
+    gridBagConstraints.insets = new Insets(7, 5, 0, 7);
     jPanel8.add(jLabel46, gridBagConstraints);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.weightx = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
+    gridBagConstraints.insets = new Insets(7, 0, 0, 0);
     jPanel8.add(v_pauseAIs, gridBagConstraints);
     v_tabPaneMain.addTab("Debugging", jPanel8);
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.fill = GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 7);
+    gridBagConstraints.insets = new Insets(7, 7, 0, 7);
     getContentPane().add(v_tabPaneMain, gridBagConstraints);
     setBounds((screenSize.width - 800), 25, 775, 401);
   }

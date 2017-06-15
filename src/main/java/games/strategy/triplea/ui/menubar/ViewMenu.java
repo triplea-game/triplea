@@ -15,7 +15,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -43,8 +42,8 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.AbstractUIContext;
@@ -550,6 +549,6 @@ class ViewMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
+    chatTimeBox.setEnabled(GameRunner.hasChat());
   }
 }

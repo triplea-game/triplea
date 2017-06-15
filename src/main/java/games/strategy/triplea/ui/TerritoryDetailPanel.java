@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
@@ -73,9 +74,9 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     m_showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
     final JComponent contentPane = (JComponent) m_frame.getContentPane();
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
+        .put(KeyStroke.getKeyStroke('B', InputEvent.META_DOWN_MASK), show_battle_calc);
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
+        .put(KeyStroke.getKeyStroke('B', InputEvent.CTRL_DOWN_MASK), show_battle_calc);
     contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
   }
 

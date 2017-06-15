@@ -3,46 +3,57 @@ package games.strategy.engine.framework;
 import java.awt.AWTEvent;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.MainPanel;
+import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.ui.ProgressWindow;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -79,12 +90,10 @@ public class GameRunner {
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
   private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
-  // non-commandline-argument-properties (for preferences)
-  // first time we've run this version of triplea?
-  private static final String SYSTEM_INI = "system.ini";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
@@ -101,12 +110,18 @@ public class GameRunner {
 
   public static final String MAP_FOLDER = "mapFolder";
 
-  private static String[] COMMAND_LINE_ARGS =
+
+  private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
+  private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
+  private static JFrame mainFrame;
+
+  private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
-          LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY,
+          TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
+
 
 
 
@@ -121,10 +136,21 @@ public class GameRunner {
       usage();
       return;
     }
-    // do after we handle command line args
-    Memory.checkForMemoryXMX();
-
     SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+    // do after we handle command line args (the isMemorySet flag might have been passed as a command line arg,
+    // in that case it is parsed and set as a system prop when we handle command line ags, the code below
+    // checks for the system prop)
+    if (!Memory.isMemoryXmxSet()) {
+      GameRunner.startNewTripleA(Memory.getMaxMemoryInBytes());
+      return; // close this current instance down without further processing
+    }
+
+    SwingUtilities.invokeLater(() -> {
+      setupPanelModel.showSelectType();
+      final MainPanel mainPanel = new MainPanel(setupPanelModel);
+      mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+    });
+
     showMainFrame();
     new Thread(GameRunner::setupLogging).start();
     HttpProxy.setupProxies();
@@ -151,6 +177,101 @@ public class GameRunner {
     }
   }
 
+  public static FileDialog newFileDialog() {
+    return new FileDialog(mainFrame);
+  }
+
+  public static Optional<File> showFileChooser(final FileFilter fileFilter) {
+    final JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileFilter(fileFilter);
+    final int returnCode = fileChooser.showOpenDialog(mainFrame);
+
+    if (returnCode == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
+  }
+
+
+  public static Optional<File> showSaveGameFileChooser() {
+    // Non-Mac platforms should use the normal Swing JFileChooser
+    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int rVal = fileChooser.showOpenDialog(mainFrame);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
+  }
+
+  public static ProgressWindow newProgressWindow(final String title) {
+    return new ProgressWindow(mainFrame, title);
+  }
+
+  /**
+   * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids parameter swapping
+   * problem and makes refactoring easier.
+   */
+  public static class Title {
+    public String value;
+    private Title(final String value) {
+      this.value = value;
+    }
+    public static Title of(final String value) {
+      return new Title(value);
+    }
+  }
+
+  public static int showConfirmDialog(final String message, final Title title, final int optionType, final int messageType) {
+    return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
+  }
+
+
+  public static void showMessageDialog(final String message, final Title title, final int messageType) {
+    JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
+  }
+
+
+  public static void hideMainFrame() {
+    SwingUtilities.invokeLater(() -> mainFrame.setVisible(false));
+  }
+
+
+  public static void showMainFrame() {
+    SwingUtilities.invokeLater(() -> {
+      gameSelectorModel.loadDefaultGame(mainFrame);
+
+      mainFrame.requestFocus();
+      mainFrame.toFront();
+      mainFrame.setVisible(true);
+
+      SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+
+      final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+      if (fileName.length() > 0) {
+        final File f = new File(fileName);
+        gameSelectorModel.load(f, mainFrame);
+      }
+      mainFrame.setVisible(true);
+      if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+        setupPanelModel.showServer(mainFrame);
+      } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+        setupPanelModel.showClient(mainFrame);
+      }
+    });
+  }
+
+  private static void checkLocalSystem() {
+    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
+    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
+    if (!exceptions.isEmpty()) {
+      final String msg = String.format(
+          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
+          exceptions.size(), localSystemChecker.getStatusMessage());
+      ClientLogger.logError(msg, exceptions);
+    }
+  }
+
+
   private static void usage() {
     System.out.println("\nUsage and Valid Arguments:\n"
         + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
@@ -159,7 +280,7 @@ public class GameRunner {
         + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
         + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
         + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
         + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
         + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
         + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
@@ -181,80 +302,22 @@ public class GameRunner {
         + "TripleaWarClub.org website forum.)\n");
   }
 
-  private static void showMainFrame() {
-    SwingUtilities.invokeLater(() -> {
-      final MainFrame frame = new MainFrame();
-      frame.requestFocus();
-      frame.toFront();
-      frame.setVisible(true);
-    });
-  }
-
-  private static void checkLocalSystem() {
-    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
-    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
-    if (!exceptions.isEmpty()) {
-      final String msg = String.format(
-          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
-          exceptions.size(), localSystemChecker.getStatusMessage());
-      ClientLogger.logError(msg, exceptions);
-    }
-  }
-
 
 
   private static void setupLogging() {
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
       @Override
-      protected void dispatchEvent(AWTEvent newEvent) {
+      protected void dispatchEvent(final AWTEvent newEvent) {
         try {
           super.dispatchEvent(newEvent);
           // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
           ClientLogger.logError(t);
           throw t;
         }
       }
     });
   }
-
-
-  /**
-   * Returns the property set parsed from a 'system.ini' file (as found at the project root).
-   */
-  public static Properties getSystemIni() {
-    final Properties rVal = new Properties();
-    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-    if (systemIni.exists()) {
-      try (FileInputStream fis = new FileInputStream(systemIni)) {
-        rVal.load(fis);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-    return rVal;
-  }
-
-  /**
-   * Writes a set of properties to the system.ini file.
-   */
-  public static void writeSystemIni(final Properties properties) {
-    final Properties toWrite;
-
-    toWrite = getSystemIni();
-    for (final Entry<Object, Object> entry : properties.entrySet()) {
-      toWrite.put(entry.getKey(), entry.getValue());
-    }
-
-    final File systemIni = new File(ClientFileSystemHelper.getRootFolder(), SYSTEM_INI);
-
-    try (FileOutputStream fos = new FileOutputStream(systemIni)) {
-      toWrite.store(fos, SYSTEM_INI);
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-  }
-
 
   public static boolean getDelayedParsing() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
@@ -401,7 +464,7 @@ public class GameRunner {
    * @return true if we have any out of date maps.
    */
   private static boolean checkForUpdatedMaps() {
-    MapDownloadController downloadController = ClientContext.mapDownloadController();
+    final MapDownloadController downloadController = ClientContext.mapDownloadController();
     return downloadController.checkDownloadedMapsAreLatest();
   }
 
@@ -447,7 +510,7 @@ public class GameRunner {
       final String value = System.getProperty(property);
       if (value != null) {
         commands.add("-D" + property + "=" + value);
-      } else if (GameRunner.LOBBY_HOST.equals(property) || LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+      } else if (GameRunner.LOBBY_HOST.equals(property) || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
           || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
@@ -471,7 +534,7 @@ public class GameRunner {
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+        .add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
             + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
@@ -644,7 +707,7 @@ public class GameRunner {
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
       boolean allFramesClosed = true;
-      for (Frame f : Frame.getFrames()) {
+      for (final Frame f : Frame.getFrames()) {
         if (f.isVisible()) {
           allFramesClosed = false;
           break;
@@ -654,6 +717,44 @@ public class GameRunner {
         System.exit(0);
       }
     });
+  }
+
+  /**
+   * todo, replace with something better
+   * Get the chat for the game, or null if there is no chat.
+   */
+  public static Chat getChat() {
+    final ISetupPanel model = setupPanelModel.getPanel();
+    if (model instanceof ServerSetupPanel) {
+      return model.getChatPanel().getChat();
+    } else if (model instanceof ClientSetupPanel) {
+      return model.getChatPanel().getChat();
+    } else {
+      return null;
+    }
+  }
+
+  public static boolean hasChat() {
+    return getChat() != null;
+  }
+
+  /**
+   * After the game has been left, call this.
+   */
+  public static void clientLeftGame() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingAction.invokeAndWait(GameRunner::clientLeftGame);
+      return;
+    }
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
+    ThreadUtil.sleep(100);
+    setupPanelModel.showSelectType();
+    showMainFrame();
+  }
+
+  public static void quitGame() {
+    mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
   }
 
 }

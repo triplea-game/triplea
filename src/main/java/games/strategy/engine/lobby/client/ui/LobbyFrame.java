@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -26,7 +25,6 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -320,7 +318,7 @@ public class LobbyFrame extends JFrame {
   public void shutdown() {
     setVisible(false);
     dispose();
-    MainFrame.getInstance().setVisible(true);
+    GameRunner.showMainFrame();
     m_client.getMessenger().shutDown();
     GameRunner.exitGameIfFinished();
   }

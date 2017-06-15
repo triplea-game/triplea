@@ -533,9 +533,9 @@ public class WeakAI extends AbstractAI {
           }
         });
     final Match<Territory> routeCondition = new CompositeMatchAnd<>(
-        Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsImpassable.invert());
+        Matches.territoryHasEnemyAaForCombatOnly(player, data).invert(), Matches.TerritoryIsImpassable.invert());
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
-      final Route noAntiAirRoute = Utils.findNearest(t, canLand, routeCondition, data);
+      final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Route aaRoute = Utils.findNearest(t, canLand, Matches.TerritoryIsImpassable.invert(), data);
       final Collection<Unit> airToLand =
           t.getUnits().getMatches(new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player)));
@@ -544,7 +544,7 @@ public class WeakAI extends AbstractAI {
       // simply move first over no aa, then with aa
       // one (but hopefully not both) will be rejected
       moveUnits.add(airToLand);
-      moveRoutes.add(noAntiAirRoute);
+      moveRoutes.add(noAaRoute);
       moveUnits.add(airToLand);
       moveRoutes.add(aaRoute);
     }
@@ -724,7 +724,7 @@ public class WeakAI extends AbstractAI {
       if (bombers.isEmpty()) {
         continue;
       }
-      final Match<Territory> routeCond = new InverseMatch<>(Matches.territoryHasEnemyAAforCombatOnly(player, data));
+      final Match<Territory> routeCond = new InverseMatch<>(Matches.territoryHasEnemyAaForCombatOnly(player, data));
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       moveUnits.add(bombers);
       moveRoutes.add(bombRoute);
@@ -774,7 +774,7 @@ public class WeakAI extends AbstractAI {
               || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
               || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
               || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
-              || Matches.UnitTypeIsStatic(player).match(results)) {
+              || Matches.unitTypeIsStatic(player).match(results)) {
             continue;
           }
           final int cost = rule.getCosts().getInt(PUs);
@@ -968,7 +968,7 @@ public class WeakAI extends AbstractAI {
         if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results)
             || Matches.UnitTypeIsAAforAnything.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
             || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
-            || Matches.UnitTypeIsStatic(player).match(results)) {
+            || Matches.unitTypeIsStatic(player).match(results)) {
           continue;
         }
         final int transportCapacity = UnitAttachment.get(results).getTransportCapacity();

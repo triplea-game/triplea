@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,7 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
@@ -105,7 +104,7 @@ public class ForumPosterEditor extends EditorPanel {
    */
   void testForum() {
     final IForumPoster poster = (IForumPoster) getBean();
-    final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
+    final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
     final Runnable runnable = () -> {
       if (poster.getIncludeSaveGame()) {
@@ -141,8 +140,10 @@ public class ForumPosterEditor extends EditorPanel {
       // now that we have a result, marshall it back unto the swing thread
       SwingUtilities.invokeLater(() -> {
         try {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), m_bean.getTurnSummaryRef(),
-              "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE);
+          GameRunner.showMessageDialog(
+              m_bean.getTurnSummaryRef(),
+              GameRunner.Title.of("Test Turn Summary Post"),
+              JOptionPane.INFORMATION_MESSAGE);
         } catch (final HeadlessException e) {
           // should never happen in a GUI app
         }

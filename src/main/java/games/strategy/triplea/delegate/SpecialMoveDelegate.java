@@ -245,10 +245,10 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories =
         games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
-    if (!Match.allMatch(route.getSteps(), Matches.TerritoryIsPassableAndNotRestricted(player, data))) {
+    if (!Match.allMatch(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
-    if (!Match.allMatch(route.getSteps(), Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+    if (!Match.allMatch(route.getSteps(), Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = Match.someMatch(airborne, Matches.UnitIsLand);

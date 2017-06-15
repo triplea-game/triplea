@@ -411,7 +411,7 @@ public class BattleTracker implements java.io.Serializable {
     }
     // we handle the end of the route later
     conquered.remove(route.getEnd());
-    final Collection<Territory> blitzed = Match.getMatches(conquered, Matches.TerritoryIsBlitzable(id, data));
+    final Collection<Territory> blitzed = Match.getMatches(conquered, Matches.territoryIsBlitzable(id, data));
     m_blitzed.addAll(Match.getMatches(blitzed, Matches.isTerritoryEnemy(id, data)));
     m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
     for (final Territory current : conquered) {
@@ -457,7 +457,7 @@ public class BattleTracker implements java.io.Serializable {
         }
       } else {
         if (Matches.isTerritoryEnemy(id, data).match(route.getEnd())) {
-          if (Matches.TerritoryIsBlitzable(id, data).match(route.getEnd())) {
+          if (Matches.territoryIsBlitzable(id, data).match(route.getEnd())) {
             m_blitzed.add(route.getEnd());
           }
           m_conquered.add(route.getEnd());
@@ -652,7 +652,7 @@ public class BattleTracker implements java.io.Serializable {
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
     if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id)
-        && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory)) {
+        && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
         final PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
@@ -747,7 +747,7 @@ public class BattleTracker implements java.io.Serializable {
     // destroy any units that should be destroyed on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
       final CompositeMatch<Unit> enemyToBeDestroyed =
-          new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.UnitDestroyedWhenCapturedByOrFrom(id));
+          new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -761,7 +761,7 @@ public class BattleTracker implements java.io.Serializable {
     // destroy any capture on entering units, IF the property to destroy them instead of capture is turned on
     if (games.strategy.triplea.Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data)) {
       final Collection<Unit> destroyed =
-          territory.getUnits().getMatches(Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+          territory.getUnits().getMatches(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
         bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some units instead of capturing them",
@@ -788,12 +788,12 @@ public class BattleTracker implements java.io.Serializable {
     final CompositeMatch<Unit> enemyNonCom =
         new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
     final CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<>(enemyNonCom,
-        Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+        Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeChangedOnCapture(data)) {
       final Collection<Unit> toReplace =
-          Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
+          Match.getMatches(nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
         final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map =
             UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
@@ -1162,7 +1162,7 @@ public class BattleTracker implements java.io.Serializable {
   private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
-        Matches.UnitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
+        Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
         TerritoryEffectHelper.getEffects(territory), gameData, false, false));

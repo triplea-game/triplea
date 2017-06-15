@@ -265,9 +265,9 @@ public class PolygonGrabber extends JFrame {
     autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
     // set up the menu items
     final JMenuItem openItem = new JMenuItem(openAction);
-    openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+    openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
     final JMenuItem saveItem = new JMenuItem(saveAction);
-    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     final JMenuItem exitItem = new JMenuItem(exitAction);
     s_islandMode = false;
     modeItem = new JCheckBoxMenuItem("Island Mode", false);

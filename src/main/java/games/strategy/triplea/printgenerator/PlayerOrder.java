@@ -43,9 +43,9 @@ public class PlayerOrder {
           && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
-      final PlayerID currentPlayerID = currentStep.getPlayerID();
-      if (currentPlayerID != null && !currentPlayerID.isNull()) {
-        m_playerSet.add(currentPlayerID);
+      final PlayerID currentPlayerId = currentStep.getPlayerID();
+      if (currentPlayerId != null && !currentPlayerId.isNull()) {
+        m_playerSet.add(currentPlayerId);
       }
     }
     FileWriter turnWriter = null;
@@ -57,8 +57,8 @@ public class PlayerOrder {
     final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
     int count = 1;
     while (playerIterator.hasNext()) {
-      final PlayerID currentPlayerID = playerIterator.next();
-      turnWriter.write(count + ". " + currentPlayerID.getName() + "\r\n");
+      final PlayerID currentPlayerId = playerIterator.next();
+      turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
       count++;
     }
     turnWriter.close();

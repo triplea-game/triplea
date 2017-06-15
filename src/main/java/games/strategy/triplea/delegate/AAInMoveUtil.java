@@ -98,14 +98,14 @@ class AAInMoveUtil implements Serializable {
   }
 
   Collection<Territory> getTerritoriesWhereAAWillFire(final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAntiAir = isAlwaysONAAEnabled();
+    final boolean alwaysOnAa = isAlwaysONAAEnabled();
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAntiAir && isAATerritoryRestricted()) {
+    if (!alwaysOnAa && isAATerritoryRestricted()) {
       return Collections.emptyList();
     }
     final GameData data = getData();
     // No AA in nonCombat unless 'Always on AA'
-    if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAntiAir) {
+    if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAa) {
       return Collections.emptyList();
     }
     // can't rely on m_player being the unit owner in Edit Mode
@@ -116,18 +116,18 @@ class AAInMoveUtil implements Serializable {
     // don't iterate over the end
     // that will be a battle
     // and handled else where in this tangled mess
-    final Match<Unit> hasAntiAir = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
+    final Match<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
         Matches.UnitIsAAforFlyOverOnly, 1, true, data);
     // AA guns in transports shouldn't be able to fire
-    final List<Territory> territoriesWhereAntiAirWillFire = new ArrayList<>();
+    final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnits().someMatch(hasAntiAir)) {
-        territoriesWhereAntiAirWillFire.add(current);
+      if (current.getUnits().someMatch(hasAa)) {
+        territoriesWhereAaWillFire.add(current);
       }
     }
     if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
-      if (route.getEnd().getUnits().someMatch(hasAntiAir)) {
-        territoriesWhereAntiAirWillFire.add(route.getEnd());
+      if (route.getEnd().getUnits().someMatch(hasAa)) {
+        territoriesWhereAaWillFire.add(route.getEnd());
       }
     } else {
       // Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from
@@ -138,11 +138,11 @@ class AAInMoveUtil implements Serializable {
       // battle.
       // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
       // fire
-      if (route.getStart().getUnits().someMatch(hasAntiAir) && !getBattleTracker().wasBattleFought(route.getStart())) {
-        territoriesWhereAntiAirWillFire.add(route.getStart());
+      if (route.getStart().getUnits().someMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
+        territoriesWhereAaWillFire.add(route.getStart());
       }
     }
-    return territoriesWhereAntiAirWillFire;
+    return territoriesWhereAaWillFire;
   }
 
   private BattleTracker getBattleTracker() {
@@ -173,25 +173,24 @@ class AAInMoveUtil implements Serializable {
     final PlayerID movingPlayer = movingPlayer(units);
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
-    final List<Unit> defendingAntiAir = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units,
+    final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
     // comes ordered alphabetically already
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAntiAir);
+    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
     // stacks are backwards
     Collections.reverse(AAtypes);
-    for (final String currentTypeAntiAir : AAtypes) {
-      final Collection<Unit> currentPossibleAntiAir =
-          Match.getMatches(defendingAntiAir, Matches.UnitIsAAofTypeAA(currentTypeAntiAir));
-      final Set<UnitType> targetUnitTypesForThisTypeAntiAir =
-          UnitAttachment.get(currentPossibleAntiAir.iterator().next().getType()).getTargetsAA(getData());
-      final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAntiAir);
+    for (final String currentTypeAa : AAtypes) {
+      final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
+      final Set<UnitType> targetUnitTypesForThisTypeAa =
+          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
+      final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAntiAir),
+          Match.getMatches(units, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
               new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted
-      currentMove.setCantUndo("Move cannot be undone after " + currentTypeAntiAir + " has fired.");
+      currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
       final DiceRoll[] dice = new DiceRoll[1];
       final IExecutable rollDice = new IExecutable() {
         private static final long serialVersionUID = 4714364489659654758L;
@@ -201,7 +200,7 @@ class AAInMoveUtil implements Serializable {
           // get rid of units already killed, so we don't target them twice
           validTargetedUnitsForThisRoll.removeAll(m_casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAntiAir, m_bridge, territory, true);
+            dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
           }
         }
       };
@@ -213,27 +212,27 @@ class AAInMoveUtil implements Serializable {
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
             final int hitCount = dice[0].getHits();
             if (hitCount == 0) {
-              if (currentTypeAntiAir.equals("AA")) {
+              if (currentTypeAa.equals("AA")) {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                    findDefender(currentPossibleAntiAir, territory));
+                    findDefender(currentPossibleAa, territory));
               } else {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAntiAir.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                    findDefender(currentPossibleAntiAir, territory));
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                    findDefender(currentPossibleAa, territory));
               }
-              getRemotePlayer().reportMessage("No " + currentTypeAntiAir + " hits in " + territory.getName(),
-                  "No " + currentTypeAntiAir + " hits in " + territory.getName());
+              getRemotePlayer().reportMessage("No " + currentTypeAa + " hits in " + territory.getName(),
+                  "No " + currentTypeAa + " hits in " + territory.getName());
             } else {
-              if (currentTypeAntiAir.equals("AA")) {
+              if (currentTypeAa.equals("AA")) {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                    findDefender(currentPossibleAntiAir, territory));
+                    findDefender(currentPossibleAa, territory));
               } else {
                 m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAntiAir.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                    findDefender(currentPossibleAntiAir, territory));
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                    findDefender(currentPossibleAa, territory));
               }
-              selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAntiAir, defendingAntiAir,
-                  territory, currentTypeAntiAir);
+              selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAa, defendingAa, territory,
+                  currentTypeAa);
             }
           }
         }
@@ -267,13 +266,13 @@ class AAInMoveUtil implements Serializable {
    * that the iterator will move through them.
    */
   private void selectCasualties(final DiceRoll dice, final Collection<Unit> allFriendlyUnits,
-      final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAntiAir,
-      final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAntiAir) {
+      final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAa,
+      final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAa) {
     final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validTargetedUnitsForThisRoll,
-        allFriendlyUnits, defendingAntiAir, allEnemyUnits, dice, m_bridge, territory.getOwner(), m_player, null,
-        territory, TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
-    getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAntiAir + " hits in " + territory.getName(),
-        casualties.size() + " " + currentTypeAntiAir + " hits in " + territory.getName());
+        allFriendlyUnits, defendingAa, allEnemyUnits, dice, m_bridge, territory.getOwner(), m_player, null, territory,
+        TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
+    getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
+        casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
     BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge);
     m_bridge.getHistoryWriter().addChildToEvent(
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),

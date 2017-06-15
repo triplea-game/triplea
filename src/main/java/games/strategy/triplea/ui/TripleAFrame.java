@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -40,7 +41,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -95,12 +95,12 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -161,48 +161,48 @@ import games.strategy.util.Tuple;
  */
 public class TripleAFrame extends MainGameFrame {
   private static final long serialVersionUID = 7640069668264418976L;
-  private GameData data;
-  private IGame game;
-  private MapPanel mapPanel;
-  private MapPanelSmallView smallView;
+  private final GameData data;
+  private final IGame game;
+  private final MapPanel mapPanel;
+  private final MapPanelSmallView smallView;
   private final JLabel message = new JLabel("No selection");
   private final JLabel status = new JLabel("");
   private final JLabel step = new JLabel("xxxxxx");
   private final JLabel round = new JLabel("xxxxxx");
   private final JLabel player = new JLabel("xxxxxx");
-  private ActionButtons actionButtons;
+  private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
   private final JTabbedPane tabsPanel = new JTabbedPane();
-  private StatPanel statsPanel;
-  private EconomyPanel economyPanel;
+  private final StatPanel statsPanel;
+  private final EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
-  private NotesPanel notesPanel;
-  private TerritoryDetailPanel details;
+  private final NotesPanel notesPanel;
+  private final TerritoryDetailPanel details;
   private final JPanel historyComponent = new JPanel();
-  private JPanel gameSouthPanel;
+  private final JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
   private boolean inHistory = false;
   private boolean inGame = true;
   private HistorySynchronizer historySyncher;
-  private IUIContext uiContext;
-  private JPanel mapAndChatPanel;
+  private final IUIContext uiContext;
+  private final JPanel mapAndChatPanel;
   private ChatPanel chatPanel;
-  private CommentPanel commentPanel;
-  private JSplitPane chatSplit;
+  private final CommentPanel commentPanel;
+  private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
-  private EditPanel editPanel;
+  private final EditPanel editPanel;
   private final ButtonModel editModeButtonModel;
   private final ButtonModel showCommentLogButtonModel;
   private IEditDelegate editDelegate;
-  private JSplitPane gameCenterPanel;
+  private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;
   private PlayerID lastStepPlayer;
   private PlayerID currentStepPlayer;
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
-  private ThreadPool messageAndDialogThreadPool;
-  private TripleAMenuBar menu;
+  private final ThreadPool messageAndDialogThreadPool;
+  private final TripleAMenuBar menu;
   private final ScrollSettings scrollSettings;
   private boolean isCtrlPressed = false;
 
@@ -227,7 +227,6 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.getMapData().verify(data);
     uiContext.setLocalPlayers(players);
     this.setCursor(uiContext.getCursor());
-    // initialize m_editModeButtonModel before createMenuBar()
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
@@ -296,7 +295,7 @@ public class TripleAFrame extends MainGameFrame {
     chatSplit.setOneTouchExpandable(true);
     chatSplit.setDividerSize(8);
     chatSplit.setResizeWeight(0.95);
-    if (MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null) {
+    if (GameRunner.hasChat()) {
       commentSplit = new JSplitPane();
       commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
       commentSplit.setOneTouchExpandable(true);
@@ -304,7 +303,7 @@ public class TripleAFrame extends MainGameFrame {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
+      chatPanel = new ChatPanel(GameRunner.getChat());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize = new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
       chatPanel.setPreferredSize(chatPrefSize);
@@ -319,7 +318,6 @@ public class TripleAFrame extends MainGameFrame {
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
     gameSouthPanel = new JPanel();
     gameSouthPanel.setLayout(new BorderLayout());
-    // m_gameSouthPanel.add(m_message, BorderLayout.WEST);
     message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     message.setPreferredSize(message.getPreferredSize());
     message.setText("some text to set a reasonable preferred size");
@@ -328,7 +326,6 @@ public class TripleAFrame extends MainGameFrame {
     status.setPreferredSize(message.getPreferredSize());
     message.setText("");
     status.setText("");
-    // m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
     final JPanel bottomMessagePanel = new JPanel();
     bottomMessagePanel.setLayout(new GridBagLayout());
     bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
@@ -508,13 +505,13 @@ public class TripleAFrame extends MainGameFrame {
     final String zoom_map_in = "zoom_map_in";
     // do both = and + (since = is what you get when you hit ctrl+ )
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('+', InputEvent.META_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('+', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('=', InputEvent.META_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+        .put(KeyStroke.getKeyStroke('=', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in) {
       private static final long serialVersionUID = -7565304172320049817L;
 
@@ -527,9 +524,9 @@ public class TripleAFrame extends MainGameFrame {
     });
     final String zoom_map_out = "zoom_map_out";
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out);
+        .put(KeyStroke.getKeyStroke('-', InputEvent.META_DOWN_MASK), zoom_map_out);
     ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
+        .put(KeyStroke.getKeyStroke('-', InputEvent.CTRL_DOWN_MASK), zoom_map_out);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out) {
       private static final long serialVersionUID = 7677111833274819304L;
 
@@ -609,7 +606,7 @@ public class TripleAFrame extends MainGameFrame {
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better
       // way to get the main frame
-      MainFrame.getInstance().clientLeftGame();
+      GameRunner.clientLeftGame();
     }
   }
 

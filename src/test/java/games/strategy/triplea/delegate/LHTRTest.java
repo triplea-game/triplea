@@ -97,7 +97,7 @@ public class LHTRTest {
   }
 
   @Test
-  public void testAntiAirGunsDontFireNonCombat() {
+  public void testAaGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);

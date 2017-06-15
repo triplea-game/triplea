@@ -188,8 +188,11 @@ public class GameParser {
     final Version mapCompatibleWithTripleaVersion =
         new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
     if (mapCompatibleWithTripleaVersion.isGreaterThan(ClientContext.engineVersion().getVersion(), true)) {
-      throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '"
-          + data.getGameName() + "' requires at least TripleA version " + mapCompatibleWithTripleaVersion.toString());
+      throw new EngineVersionException(
+          String.format("Current engine version: %s, is not compatible with version: %s, required by map: %s",
+              ClientContext.engineVersion().getVersion(),
+              mapCompatibleWithTripleaVersion.toString(),
+              data.getGameName()));
     }
   }
 
@@ -441,15 +444,17 @@ public class GameParser {
     Object instance = null;
     try {
       final Class<?> instanceClass = Class.forName(className);
-      instance = instanceClass.newInstance();
+      instance = instanceClass.getDeclaredConstructor().newInstance();
       // a lot can go wrong, the following list is just a subset of potential pitfalls
-    } catch (final ClassNotFoundException cnfe) {
+    } catch (final ClassNotFoundException e) {
       throw new GameParseException(mapName, "Class <" + className + "> could not be found.");
-    } catch (final InstantiationException ie) {
+    } catch (final InstantiationException e) {
       throw new GameParseException(mapName,
-          "Class <" + className + "> could not be instantiated. ->" + ie.getMessage());
-    } catch (final IllegalAccessException iae) {
-      throw new GameParseException(mapName, "Constructor could not be accessed ->" + iae.getMessage());
+          "Class <" + className + "> could not be instantiated. ->" + e.getMessage());
+    } catch (final IllegalAccessException e) {
+      throw new GameParseException(mapName, "Constructor could not be accessed ->" + e.getMessage());
+    } catch (ReflectiveOperationException e) {
+      throw new GameParseException(mapName, "Exception while constructing object ->" + e.getMessage());
     }
     return instance;
   }
@@ -913,6 +918,8 @@ public class GameParser {
     }
     data.getPlayerList().forEach(playerId -> data.getProperties().addPlayerProperty(
         new NumberProperty(Constants.getIncomePercentageFor(playerId), null, 999, 0, 100)));
+    data.getPlayerList().forEach(playerId -> data.getProperties().addPlayerProperty(
+        new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
   }
 
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
@@ -1270,10 +1277,10 @@ public class GameParser {
     return returnVal;
   }
 
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String input) {
+    char first = input.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + input.substring(1);
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)

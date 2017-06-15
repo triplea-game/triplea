@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,10 +13,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,6 +29,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -132,7 +130,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void createComponents() {
     m_engineVersionLabel = new JLabel("Engine Version:");
-    String version = ClientContext.engineVersion().getFullVersion();
+    final String version = ClientContext.engineVersion().getFullVersion();
     m_engineVersionText = new JLabel(version);
     m_nameLabel = new JLabel("Map Name:");
     m_versionLabel = new JLabel("Map Version:");
@@ -176,7 +174,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(m_loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    JButton downloadMapButton =
+    final JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
             () -> DownloadMapsWindow.showDownloadMapsWindow());
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
@@ -189,23 +187,23 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
 
-  private static GridBagConstraints buildGridCell(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 1);
   }
 
-  private static GridBagConstraints buildGridRow(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 2);
   }
 
-  private static GridBagConstraints buildGrid(int x, int y, Insets insets, int width) {
-    int gridWidth = width;
-    int gridHeight = 1;
-    double weigthX = 0;
-    double weigthY = 0;
-    int anchor = GridBagConstraints.WEST;
-    int fill = GridBagConstraints.NONE;
-    int ipadx = 0;
-    int ipady = 0;
+  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
+    final int gridWidth = width;
+    final int gridHeight = 1;
+    final double weigthX = 0;
+    final double weigthY = 0;
+    final int anchor = GridBagConstraints.WEST;
+    final int fill = GridBagConstraints.NONE;
+    final int ipadx = 0;
+    final int ipady = 0;
 
     return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }
@@ -229,7 +227,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
         final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
           final JPopupMenu menu = new JPopupMenu();
-          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
+          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
               SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
@@ -347,9 +345,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
     setWidgetActivation();
   }
 
-  public static File selectGameFile(final Component parent) {
+  /**
+   *  Prompts user with a file chooser dialog to select a save game file.
+   *  @return user selected File, null if none selected or prompt closed.
+   */
+  public static File selectGameFile() {
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
+      final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       SaveGameFileChooser.ensureMapsFolderExists();
       fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
@@ -360,17 +362,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (fileName == null) {
         return null;
       } else {
-        final File f = new File(dirName, fileName);
-        return f;
+        return new File(dirName, fileName);
       }
     } else {
-      // Non-Mac platforms should use the normal Swing JFileChooser
-      final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(parent));
-      if (rVal != JFileChooser.APPROVE_OPTION) {
-        return null;
-      }
-      return fileChooser.getSelectedFile();
+      return GameRunner.showSaveGameFileChooser().orElse(null);
     }
   }
 
@@ -379,8 +374,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
-      final File file =
-          selectGameFile(SystemProperties.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
+      final File file = selectGameFile();
       if (file == null || !file.exists()) {
         return;
       }

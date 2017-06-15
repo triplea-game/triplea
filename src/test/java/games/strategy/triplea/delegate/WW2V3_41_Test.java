@@ -133,7 +133,7 @@ public class WW2V3_41_Test {
   }
 
   @Test
-  public void testAntiAirCasualtiesLowLuckMixedRadar() {
+  public void testAaCasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
@@ -143,18 +143,18 @@ public class WW2V3_41_Test {
     // 3 bombers and 3 fighters
     final Collection<Unit> planes = bomber(gameData).create(3, british(gameData));
     planes.addAll(fighter(gameData).create(3, british(gameData)));
-    final Collection<Unit> defendingAntiAir =
+    final Collection<Unit> defendingAa =
         territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
     // don't allow rolling, 6 of each is deterministic
     m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
-    final DiceRoll roll = DiceRoll.rollAA(
-        Match.getMatches(planes,
-            Matches.unitIsOfTypes(
-                UnitAttachment.get(defendingAntiAir.iterator().next().getType()).getTargetsAA(gameData))),
-        defendingAntiAir, m_bridge, territory("Germany", gameData), true);
-    final Collection<Unit> casualties =
-        BattleCalculator.getAACasualties(false, planes, planes, defendingAntiAir, defendingAntiAir, roll, m_bridge,
-            null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+    final DiceRoll roll =
+        DiceRoll.rollAA(
+            Match.getMatches(planes,
+                Matches
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+            defendingAa, m_bridge, territory("Germany", gameData), true);
+    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
@@ -162,7 +162,7 @@ public class WW2V3_41_Test {
   }
 
   @Test
-  public void testAntiAirCasualtiesLowLuckMixedWithRollingRadar() {
+  public void testAaCasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
@@ -172,22 +172,22 @@ public class WW2V3_41_Test {
     // 4 bombers and 4 fighters
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
-    final Collection<Unit> defendingAntiAir =
+    final Collection<Unit> defendingAa =
         territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
     // 1 roll, a hit
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
     m_bridge.setRandomSource(randomSource);
-    final DiceRoll roll = DiceRoll.rollAA(
-        Match.getMatches(planes,
-            Matches.unitIsOfTypes(
-                UnitAttachment.get(defendingAntiAir.iterator().next().getType()).getTargetsAA(gameData))),
-        defendingAntiAir, m_bridge, territory("Germany", gameData), true);
+    final DiceRoll roll =
+        DiceRoll.rollAA(
+            Match.getMatches(planes,
+                Matches
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+            defendingAa, m_bridge, territory("Germany", gameData), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
-    final Collection<Unit> casualties =
-        BattleCalculator.getAACasualties(false, planes, planes, defendingAntiAir, defendingAntiAir, roll, m_bridge,
-            null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 2);
@@ -195,7 +195,7 @@ public class WW2V3_41_Test {
   }
 
   @Test
-  public void testAntiAirCasualtiesLowLuckMixedWithRollingMissRadar() {
+  public void testAaCasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge m_bridge = getDelegateBridge(british);
@@ -205,24 +205,24 @@ public class WW2V3_41_Test {
     // 4 bombers and 4 fighters
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
-    final Collection<Unit> defendingAntiAir =
+    final Collection<Unit> defendingAa =
         territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
     // 1 roll, a miss
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource =
         new ScriptedRandomSource(new int[] {5, 0, 0, 0, ScriptedRandomSource.ERROR});
     m_bridge.setRandomSource(randomSource);
-    final DiceRoll roll = DiceRoll.rollAA(
-        Match.getMatches(planes,
-            Matches.unitIsOfTypes(
-                UnitAttachment.get(defendingAntiAir.iterator().next().getType()).getTargetsAA(gameData))),
-        defendingAntiAir, m_bridge, territory("Germany", gameData), true);
+    final DiceRoll roll =
+        DiceRoll.rollAA(
+            Match.getMatches(planes,
+                Matches
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+            defendingAa, m_bridge, territory("Germany", gameData), true);
     assertEquals(roll.getHits(), 2);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
-    final Collection<Unit> casualties =
-        BattleCalculator.getAACasualties(false, planes, planes, defendingAntiAir, defendingAntiAir, roll, m_bridge,
-            null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
@@ -416,7 +416,7 @@ public class WW2V3_41_Test {
   }
 
   @Test
-  public void testCantBlitzFactoryOrAntiAir() {
+  public void testCantBlitzFactoryOrAa() {
     // Set up territories
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
@@ -453,7 +453,7 @@ public class WW2V3_41_Test {
   }
 
   @Test
-  public void testMultipleAntiAirInTerritory() {
+  public void testMultipleAaInTerritory() {
     // Set up territories
     final Territory poland = territory("Poland", gameData);
     // Add a russian factory
@@ -1412,7 +1412,7 @@ public class WW2V3_41_Test {
     final Territory sz13 = territory("13 Sea Zone", gameData);
     final Territory sz14 = territory("14 Sea Zone", gameData);
     final Territory sz15 = territory("15 Sea Zone", gameData);
-    ;
+
     when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
         any(), contains(BattleStepStrings.RETREAT_PLANES))).thenThrow(
             new AssertionError("The Message is not allowed to contain the BattleStepStrings.RETREAT_PLANES constant"));

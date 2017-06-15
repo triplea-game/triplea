@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -55,12 +54,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
   private static final String PERIOD = ".";
+
+  public static JFrame newJFrame(final String title, final JComponent contents) {
+    final JFrame frame = new JFrame(title);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    frame.setIconImage(GameRunner.getGameIcon(frame));
+    frame.getContentPane().add(contents, BorderLayout.CENTER);
+    frame.pack();
+
+    frame.setLocationRelativeTo(null);
+    return frame;
+  }
 
   public static JTabbedPane newJTabbedPane() {
     return new JTabbedPaneWithFixedWidthTabs();
@@ -99,12 +110,6 @@ public class SwingComponents {
       group.add(radioButton);
     }
     return group;
-  }
-
-  public static JDialog newJDialog(String title) {
-    JDialog dialog = new JDialog(MainFrame.getInstance(), title);
-    dialog.setModal(false);
-    return dialog;
   }
 
   public static class ModalJDialog extends JDialog {

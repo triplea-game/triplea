@@ -183,7 +183,7 @@ public class TripleAMenuBar extends JMenuBar {
       final List<String> substanceLooks = getLookAndFeelAvailableList();
       for (final String s : substanceLooks) {
         final Class<?> c = Class.forName(s);
-        final LookAndFeel lf = (LookAndFeel) c.newInstance();
+        final LookAndFeel lf = (LookAndFeel) c.getDeclaredConstructor().newInstance();
         lookAndFeels.put(lf.getName(), s);
       }
     } catch (final Exception e) {

@@ -7,11 +7,9 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -34,22 +33,26 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
  * until a new game has been started (TODO: check if the lobby
  * uses mainpanel at all)
  */
-class MainPanel extends JPanel implements Observer {
+public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private JButton playButton;
-  private JButton cancelButton;
+  private final JButton playButton;
+  private final JButton cancelButton;
   private ISetupPanel gameSetupPanel;
-  private JPanel gameSetupPanelHolder;
+  private final JPanel gameSetupPanelHolder;
   private JPanel chatPanelHolder;
   private final SetupPanelModel gameTypePanelModel;
   private final JPanel mainPanel = new JPanel();
-  private JSplitPane chatSplit;
+  private final JSplitPane chatSplit;
 
   private boolean isChatShowing;
 
-  MainPanel(final SetupPanelModel typePanelModel) {
+  /**
+   * MainPanel is the full contents of the 'mainFrame'. This panel represents the
+   * welcome screen and subsequent screens..
+   */
+  public MainPanel(final SetupPanelModel typePanelModel) {
     gameTypePanelModel = typePanelModel;
     final GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
@@ -57,15 +60,15 @@ class MainPanel extends JPanel implements Observer {
     playButton.setToolTipText("<html>Start your game! <br>"
         + "If not enabled, then you must select a way to play your game first: <br>"
         + "Play Online, or Local Game, or PBEM, or Host Networked.</html>");
-    JButton quitButton = new JButton("Quit");
+    final JButton quitButton = new JButton("Quit");
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
-    JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
+    final JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
     gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
     chatPanelHolder = new JPanel();
     chatPanelHolder.setLayout(new BorderLayout());
@@ -98,7 +101,7 @@ class MainPanel extends JPanel implements Observer {
       try {
         gameSetupPanel.shutDown();
       } finally {
-        MainFrame.getInstance().dispatchEvent(new WindowEvent(MainFrame.getInstance(), WindowEvent.WINDOW_CLOSING));
+        GameRunner.quitGame();
       }
     });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
@@ -167,7 +170,7 @@ class MainPanel extends JPanel implements Observer {
     revalidate();
   }
 
-  private static void createUserActionMenu(ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
+  private static void createUserActionMenu(final ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
     if (gameSetupPanel.getUserActions().isEmpty()) {
       return;
     }
@@ -185,7 +188,8 @@ class MainPanel extends JPanel implements Observer {
   }
 
 
-  private static void play(ISetupPanel gameSetupPanel, SetupPanelModel gameTypePanelModel, MainPanel mainPanel) {
+  private static void play(final ISetupPanel gameSetupPanel, final SetupPanelModel gameTypePanelModel,
+      final MainPanel mainPanel) {
     gameSetupPanel.preStartGame();
     final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
     if (launcher != null) {

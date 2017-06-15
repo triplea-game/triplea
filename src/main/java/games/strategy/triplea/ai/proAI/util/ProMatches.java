@@ -30,7 +30,7 @@ public class ProMatches {
       public boolean match(final Territory t) {
         final Match<Territory> match = new CompositeMatchOr<>(Matches.territoryIsInList(alliedTerritories),
             new CompositeMatchAnd<>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
-                Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
+                Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
                     false, true, true),
                 Matches.territoryIsInList(enemyTerritories).invert()));
         return match.match(t);
@@ -44,7 +44,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false,
+            Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false,
                 true, false));
         return match.match(t);
       }
@@ -56,7 +56,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestricted(player, data));
+            Matches.territoryIsPassableAndNotRestricted(player, data));
         return match.match(t);
       }
     };
@@ -69,7 +69,7 @@ public class ProMatches {
       public boolean match(final Territory t) {
         final Match<Territory> match =
             new CompositeMatchAnd<>(ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove),
-                Matches.territoryHasEnemyAAforAnything(player, data).invert());
+                Matches.territoryHasEnemyAaForAnything(player, data).invert());
         return match.match(t);
       }
     };
@@ -81,7 +81,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> territoryMatch = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false,
+            Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false,
                 false, false));
         final Match<Unit> unitMatch =
             Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).invert();
@@ -96,7 +96,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> territoryMatch = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestricted(player, data));
+            Matches.territoryIsPassableAndNotRestricted(player, data));
         final Match<Unit> unitMatch =
             Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).invert();
         return territoryMatch.match(t) && unitMatch.match(u);
@@ -110,7 +110,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false,
+            Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false,
                 false, false));
         return match.match(t);
       }
@@ -122,7 +122,7 @@ public class ProMatches {
       @Override
       public boolean match(final Territory t) {
         final Match<Territory> match = new CompositeMatchAnd<>(Matches.TerritoryIsLand,
-            Matches.territoryDoesNotCostMoneyToEnter(data), Matches.TerritoryIsPassableAndNotRestricted(player, data));
+            Matches.territoryDoesNotCostMoneyToEnter(data), Matches.territoryIsPassableAndNotRestricted(player, data));
         return match.match(t);
       }
     };
@@ -186,7 +186,7 @@ public class ProMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        return Matches.TerritoryIsBlitzable(player, data).match(t) && TerritoryEffectHelper.unitKeepsBlitz(u, t);
+        return Matches.territoryIsBlitzable(player, data).match(t) && TerritoryEffectHelper.unitKeepsBlitz(u, t);
       }
     };
   }
@@ -203,7 +203,7 @@ public class ProMatches {
           return false;
         }
         final Match<Territory> match = new CompositeMatchAnd<>(Matches.territoryDoesNotCostMoneyToEnter(data),
-            Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true,
+            Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true,
                 false, false));
         return match.match(t);
       }
@@ -942,14 +942,14 @@ public class ProMatches {
           return true;
         }
         final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
-        if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+        if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
             .match(unitWhichRequiresUnits)) {
           return true;
         }
         if (t.isWater() && Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
           for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.TerritoryIsLand)) {
             final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
-            if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+            if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
                 .match(unitWhichRequiresUnits)) {
               return true;
             }

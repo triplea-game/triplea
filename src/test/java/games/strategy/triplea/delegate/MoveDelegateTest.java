@@ -1245,7 +1245,7 @@ public class MoveDelegateTest extends DelegateTest {
   }
 
   @Test
-  public void testAntiAirCantMoveToConquered() {
+  public void testAaCantMoveToConquered() {
     bridge.setStepName("japaneseCombatMove");
     bridge.setPlayerId(japanese);
     delegate.setDelegateBridgeAndPlayer(bridge);

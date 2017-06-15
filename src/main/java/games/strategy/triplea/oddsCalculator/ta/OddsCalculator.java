@@ -590,7 +590,7 @@ class DummyPlayer extends AbstractAI {
    * This is because the battle calc does not know where the attackers are actually coming from.
    */
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
       final Collection<Territory> possibleTerritories, final String message) {
     // null = do not retreat
     if (possibleTerritories.isEmpty()) {
@@ -649,7 +649,7 @@ class DummyPlayer extends AbstractAI {
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
     final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());

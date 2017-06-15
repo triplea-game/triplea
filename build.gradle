@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'com.install4j.gradle' version '6.1.2'
@@ -55,8 +56,8 @@ sourceSets {
 }
 
 dependencies {
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
-    compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
+    compile 'commons-io:commons-io:2.5'
+    compile 'postgresql:postgresql:9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.guava:guava:19.0'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
@@ -68,9 +69,7 @@ dependencies {
     compile 'org.mindrot:jbcrypt:0.3m'
     compile 'org.yaml:snakeyaml:1.17'
     compile 'org.json:json:20160810'
-
-    compile files('lib/AppleJavaExtensions-1.6.jar')
-    compile files('lib/upnp.jar')
+    compile 'com.yuvimasory:orange-extensions:1.3.0'
 
     testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
     testCompile 'org.apache.derby:derby:10.10.1.1'
@@ -104,6 +103,25 @@ task integTest(type: Test) {
     mustRunAfter tasks.test
 }
 
+task jacocoRootReport(type: JacocoReport) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Generates code coverage report for all Test tasks.'
+
+    sourceSets sourceSets.main
+    executionData fileTree(buildDir).include('**/jacoco/*.exec')
+
+    reports {
+        html {
+            destination = file("${project.jacoco.reportsDir}/root/html")
+            enabled = true
+        }
+        xml {
+            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
+            enabled = true
+        }
+    }
+}
+
 def assetsDirectory = file("${buildDir}/assets")
 git {
     assets {
@@ -121,7 +139,7 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 
         def mapsYamlFile = file('triplea_maps.yaml')
         validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
-        validateMapsYamlLinks(mapsYamlFile)
+        validateMapsYamlUris(mapsYamlFile)
     }
 }
 
@@ -146,7 +164,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
         into('icons')
         exclude("icon.icns")
     }
-    ['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
+    ['readme.html', 'changelog.txt', 'game_engine.properties', 'lobby_server.yaml',
      'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
      'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
         from(fileName)
@@ -158,7 +176,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
     classifier 'server'
-    ['run-headless-game-host.sh', 'run-server.sh'].each { fileName ->
+    ['lobby.properties'].each { fileName ->
         from(fileName)
     }
     from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
@@ -231,4 +249,11 @@ checkstyleMain {
 checkstyleTest {
     maxWarnings = checkstyleTestMaxWarnings.toInteger()
     source sourceSets.test.output.resourcesDir
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }

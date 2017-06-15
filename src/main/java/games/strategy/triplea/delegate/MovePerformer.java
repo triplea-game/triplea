@@ -87,7 +87,7 @@ public class MovePerformer implements Serializable {
    */
   private void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
       final Collection<Unit> transportsToLoad) {
-    final IExecutable preAAFire = new IExecutable() {
+    final IExecutable preAaFire = new IExecutable() {
       private static final long serialVersionUID = -7945930782650355037L;
 
       @Override
@@ -105,7 +105,7 @@ public class MovePerformer implements Serializable {
       }
     };
     // hack to allow the executables to share state
-    final IExecutable fireAA = new IExecutable() {
+    final IExecutable fireAa = new IExecutable() {
       private static final long serialVersionUID = -3780228078499895244L;
 
       @Override
@@ -131,7 +131,7 @@ public class MovePerformer implements Serializable {
         arrivingUnits = Util.difference(units, aaCasualtiesWithDependents);
       }
     };
-    final IExecutable postAAFire = new IExecutable() {
+    final IExecutable postAaFire = new IExecutable() {
       private static final long serialVersionUID = 670783657414493643L;
 
       @Override
@@ -173,7 +173,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
-              new CompositeMatchAnd<>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
+              new CompositeMatchAnd<>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<>(Matches.UnitIsStrategicBomber);
           final boolean canCreateAirBattle =
@@ -252,7 +252,7 @@ public class MovePerformer implements Serializable {
                     Matches
                         .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
                             id),
-                    Matches.TerritoryIsBlitzable(id, data)))) {
+                    Matches.territoryIsBlitzable(id, data)))) {
               if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
                 continue;
               }
@@ -282,9 +282,9 @@ public class MovePerformer implements Serializable {
         m_moveDelegate.updateUndoableMoves(m_currentMove);
       }
     };
-    m_executionStack.push(postAAFire);
-    m_executionStack.push(fireAA);
-    m_executionStack.push(preAAFire);
+    m_executionStack.push(postAaFire);
+    m_executionStack.push(fireAa);
+    m_executionStack.push(preAaFire);
     m_executionStack.execute(m_bridge);
   }
 

@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -29,7 +27,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingAction;
 
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
@@ -129,13 +127,13 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
     final Runnable deleteMapRunnable = () -> {
-      final Component parentComponent = MainFrame.getInstance();
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
       String title = "Corrup Map File Found";
       final int optionType = JOptionPane.YES_NO_OPTION;
       int messageType = JOptionPane.WARNING_MESSAGE;
-      final int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
+      final int result = GameRunner.showConfirmDialog(
+          message, GameRunner.Title.of(title), optionType, messageType);
       if (result == JOptionPane.YES_OPTION) {
         final boolean deleted = map.delete();
         if (deleted) {
@@ -149,7 +147,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
           }
         }
         title = "File Removal Result";
-        JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+        JOptionPane.showMessageDialog(null, message, title, messageType);
       }
     };
 

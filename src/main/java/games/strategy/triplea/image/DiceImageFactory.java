@@ -31,15 +31,15 @@ public class DiceImageFactory {
   private final Map<Integer, Image> m_imagesIgnored = new HashMap<>();
 
   public DiceImageFactory(final ResourceLoader loader, final int diceSides) {
-    final int PIP_SIZE = 6;
+    final int pipSize = 6;
     m_diceSides = Math.max(6, diceSides);
     m_resourceLoader = loader;
-    generateDice(PIP_SIZE, Color.black, m_images);
-    generateDice(PIP_SIZE, Color.red, m_imagesHit);
-    generateDice(PIP_SIZE, s_ignored, m_imagesIgnored);
+    generateDice(pipSize, Color.black, m_images);
+    generateDice(pipSize, Color.red, m_imagesHit);
+    generateDice(pipSize, s_ignored, m_imagesIgnored);
   }
 
-  private void generateDice(final int PIP_SIZE, final Color color, final Map<Integer, Image> images) {
+  private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
     final ImageFactory iFactory = new ImageFactory();
     iFactory.setResourceLoader(m_resourceLoader);
     for (int i = 1; i <= m_diceSides; i++) {
@@ -63,30 +63,30 @@ public class DiceImageFactory {
         ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // center dot
         if (i == 1 || i == 3 || i == 5) {
-          graphics.fillOval(DIE_WIDTH / 2 - (PIP_SIZE / 2), DIE_HEIGHT / 2 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
+          graphics.fillOval(DIE_WIDTH / 2 - (pipSize / 2), DIE_HEIGHT / 2 - (pipSize / 2), pipSize, pipSize);
         }
         // dots in top left and bottom right
         if (i == 3 || i == 5 || i == 4) {
-          graphics.fillOval(DIE_WIDTH / 4 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(3 * DIE_WIDTH / 4 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE,
-              PIP_SIZE);
+          graphics.fillOval(DIE_WIDTH / 4 - (pipSize / 2), DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(3 * DIE_WIDTH / 4 - (pipSize / 2), 3 * DIE_HEIGHT / 4 - (pipSize / 2), pipSize,
+              pipSize);
         }
         // dots in bottom left and top right
         if (i == 5 || i == 4) {
-          graphics.fillOval(3 * DIE_WIDTH / 4 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(DIE_WIDTH / 4 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
+          graphics.fillOval(3 * DIE_WIDTH / 4 - (pipSize / 2), DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(DIE_WIDTH / 4 - (pipSize / 2), 3 * DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
         }
         // center two for 2
         if (i == 2 || i == 6) {
-          graphics.fillOval(DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 2 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 2 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
+          graphics.fillOval(DIE_WIDTH / 3 - (pipSize / 2), DIE_HEIGHT / 2 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(2 * DIE_WIDTH / 3 - (pipSize / 2), DIE_HEIGHT / 2 - (pipSize / 2), pipSize, pipSize);
         }
         if (i == 6) {
-          graphics.fillOval(DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(DIE_WIDTH / 3 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE,
-              PIP_SIZE);
+          graphics.fillOval(DIE_WIDTH / 3 - (pipSize / 2), DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(2 * DIE_WIDTH / 3 - (pipSize / 2), DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(DIE_WIDTH / 3 - (pipSize / 2), 3 * DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
+          graphics.fillOval(2 * DIE_WIDTH / 3 - (pipSize / 2), 3 * DIE_HEIGHT / 4 - (pipSize / 2), pipSize,
+              pipSize);
         }
         if (i > 6) {
           graphics.setFont(new Font("Arial", Font.BOLD, 16));

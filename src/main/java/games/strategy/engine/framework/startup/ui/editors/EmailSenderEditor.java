@@ -6,7 +6,6 @@ import java.awt.Insets;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -16,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRangeValidator;
 import games.strategy.engine.pbem.GenericEmailSender;
@@ -137,7 +136,7 @@ public class EmailSenderEditor extends EditorPanel {
    * Tests the email sender. This must be called from the swing event thread
    */
   private void testEmail() {
-    final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), "Sending test email...");
+    final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
     progressWindow.setVisible(true);
     final Runnable runnable = () -> {
       // initialize variables to error state, override if successful
@@ -162,7 +161,10 @@ public class EmailSenderEditor extends EditorPanel {
         final int finalMessageType = messageType;
         SwingUtilities.invokeLater(() -> {
           try {
-            JOptionPane.showMessageDialog(MainFrame.getInstance(), finalMessage, "Email Test", finalMessageType);
+            GameRunner.showMessageDialog(
+                finalMessage,
+                GameRunner.Title.of("Email Test"),
+                finalMessageType);
           } catch (final HeadlessException e) {
             // should never happen in a GUI app
           }

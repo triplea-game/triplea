@@ -37,7 +37,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.OpenFileUtility;
-import games.strategy.net.UniversalPlugAndPlayHelper;
+import games.strategy.triplea.UrlConstants;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -80,18 +80,18 @@ public class InGameLobbyWatcher {
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
     final String host = System.getProperties().getProperty(GameRunner.LOBBY_HOST);
-    final String port = System.getProperties().getProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
+    final String port = System.getProperties().getProperty(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY);
     final String hostedBy = System.getProperties().getProperty(GameRunner.LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
     // clear the properties
     System.getProperties().remove(GameRunner.LOBBY_HOST);
-    System.getProperties().remove(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY);
+    System.getProperties().remove(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY);
     System.getProperties().remove(GameRunner.LOBBY_GAME_HOSTED_BY);
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.getProperties().setProperty(GameRunner.LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
-    System.getProperties().setProperty(LobbyServer.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
+    System.getProperties().setProperty(GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
     System.getProperties().setProperty(GameRunner.LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
@@ -226,32 +226,11 @@ public class InGameLobbyWatcher {
               System.out.println(message);
               System.exit(-1);
             }
-            final int port = Integer.parseInt(portString);
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
-            JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
-            final String question =
-                "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
-                    + "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
-                    + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
-                    + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
-                    + "(To change your router's settings, click 'How To Host...' in the help menu, or use google "
-                    + "search.)\r\n\r\n"
-                    + "If TripleA previously successfully set your port forwarding, but you still cannot host, \r\n"
-                    + "then the problem is most likely your firewall. Try creating an exception for TripleA in the "
-                    + "firewall.\r\n"
-                    + "Or disable the firewall briefly just to test.\r\n"
-                    + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
-            final int answer = JOptionPane.showConfirmDialog(parentComponent, question,
-                "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
-            if (answer != JOptionPane.YES_OPTION) {
-              System.exit(-1);
-            }
-            UniversalPlugAndPlayHelper.attemptAddingPortForwarding(parentComponent, port);
             if (JOptionPane.showConfirmDialog(parentComponent,
                 "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openURL(
-                  "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+              OpenFileUtility.openURL(UrlConstants.HOSTING_GUIDE.toString());
             }
             System.exit(-1);
           });

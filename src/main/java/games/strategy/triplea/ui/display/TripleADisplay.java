@@ -33,47 +33,47 @@ public class TripleADisplay implements ITripleADisplay {
   // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
   // from BattlePane().showBattle( .. ) already
   @Override
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+  public void showBattle(final GUID battleId, final Territory location, final String battleTitle,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    m_ui.getBattlePanel().showBattle(battleID, location, attackingUnits, defendingUnits, killedUnits,
+    m_ui.getBattlePanel().showBattle(battleId, location, attackingUnits, defendingUnits, killedUnits,
         attackingWaitingToDie, defendingWaitingToDie, attacker, defender, isAmphibious, battleType,
         amphibiousLandAttackers);
   }
 
   @Override
-  public void listBattleSteps(final GUID battleID, final List<String> steps) {
-    m_ui.getBattlePanel().listBattle(battleID, steps);
+  public void listBattleSteps(final GUID battleId, final List<String> steps) {
+    m_ui.getBattlePanel().listBattle(battleId, steps);
   }
 
   @Override
-  public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final GUID battleId, final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
   @Override
-  public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> killed,
+  public void deadUnitNotification(final GUID battleId, final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
   }
 
   @Override
-  public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final GUID battleId, final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits, dependents);
   }
 
   @Override
-  public void battleEnd(final GUID battleID, final String message) {
+  public void battleEnd(final GUID battleId, final String message) {
     m_ui.getBattlePanel().battleEndMessage(message);
   }
 
   @Override
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
-    m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
+  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
+    m_ui.getBattlePanel().bombingResults(battleId, dice, cost);
   }
 
   @Override
