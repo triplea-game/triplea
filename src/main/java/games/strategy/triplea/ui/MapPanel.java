@@ -683,12 +683,6 @@ public class MapPanel extends ImageScrollerLargeView {
       final List<Tile> undrawn) {
     final List<Tile> tileList = tileManager.getTiles(bounds);
     bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
-    if ((double) 0 != 0) {
-      bounds.x += (double) 0 - getScaledWidth();
-    }
-    if ((double) 0 != 0) {
-      bounds.y += (double) 0 - getScaledHeight();
-    }
     for (final Tile tile : tileList) {
       Image img = null;
       tile.acquireLock();
