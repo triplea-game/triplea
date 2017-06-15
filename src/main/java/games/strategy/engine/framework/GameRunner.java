@@ -124,7 +124,7 @@ public class GameRunner {
     }
 
     HttpProxy.setupProxies();
-    if (ClientContext.gameEnginePropertyReader().useExperimentalUI()) {
+    if (ClientContext.gameEnginePropertyReader().useExperimentalUi()) {
       TripleA.launch(args);
     } else {
       SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);

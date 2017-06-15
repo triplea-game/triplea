@@ -57,6 +57,11 @@ public class TripleA extends Application {
     Application.launch(arg);
   }
 
+  /**
+   * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA
+   * @param location The FXML File to load
+   * @return An FXMLLoader object
+   */
   public static FXMLLoader getLoader(final URL location) {
     final FXMLLoader loader = new FXMLLoader();
     loader.setLocation(location);

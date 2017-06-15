@@ -82,7 +82,7 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     return MaxMemorySetting.of(value);
   }
 
-  public boolean useExperimentalUI() {
+  public boolean useExperimentalUi() {
     return String.valueOf(true).equals(super.readProperty(GameEngineProperty.EXPERIMENTAL_UI, false));
   }
 

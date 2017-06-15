@@ -122,7 +122,7 @@
             </VBox>
             <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
-                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_lobby">
+                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_lobby">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -133,7 +133,7 @@
                         <Font name="1942 report" size="13.0" />
                      </font>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.local_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.local_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -144,7 +144,7 @@
                         <Font name="1942 report" size="13.0" />
                      </font>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -155,7 +155,7 @@
                         <Font name="1942 report" size="13.0" />
                      </font>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -166,7 +166,7 @@
                         <Font name="1942 report" size="13.0" />
                      </font>
                   </Button>
-                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
+                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
                      </graphic>
