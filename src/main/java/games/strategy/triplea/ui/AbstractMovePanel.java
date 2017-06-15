@@ -120,7 +120,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   /**
-   * @return m_bridge.getGameData()
+   * @return playerBridge.getGameData()
    */
   protected final GameData getGameData() {
     return m_bridge.getGameData();

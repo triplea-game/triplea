@@ -14,8 +14,8 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
-    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
+    final AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
+    forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
 
   }
 
@@ -56,30 +56,30 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   @Override
   protected IAbstractForumPosterDelegate getForumPosterDelegate() {
-    return (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    return (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
   }
 
   @Override
   protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.getHasPostedTurnSummary();
   }
 
   @Override
   protected void setHasPostedTurnSummary(final boolean posted) {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     delegate.setHasPostedTurnSummary(posted);
   }
 
   @Override
   protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame) {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.postTurnSummary(poster, getTitle(), includeSaveGame);
   }
 
   @Override
   protected boolean skipPosting() {
-    return !m_poster.alsoPostMoveSummary();
+    return !pbemMessagePoster.alsoPostMoveSummary();
   }
 
   @Override

@@ -379,7 +379,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
        * creation of new battles is handled at the beginning of the battle delegate, in
        * "setupUnitsInSameTerritoryBattles", not here.
        * if (Matches.RelationshipTypeIsAtWar.match(newRelation))
-       * TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);
+       * TriggerAttachment.triggerMustFightBattle(player1, player2, playerBridge);
        */
     }
     if (!change.isEmpty()) {
