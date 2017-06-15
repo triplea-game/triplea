@@ -141,7 +141,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   protected ImageIcon getIcon(final String playerName) {
-    final PlayerID player = this.gameData.getPlayerList().getPlayerID(playerName);
+    final PlayerID player = gameData.getPlayerList().getPlayerID(playerName);
     if (player == null) {
       return null;
     }
@@ -352,7 +352,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     private void initColList() {
-      final java.util.List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      final List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();
