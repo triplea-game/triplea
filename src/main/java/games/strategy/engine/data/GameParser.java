@@ -352,13 +352,16 @@ public class GameParser {
    */
   private TechAdvance getTechnology(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, name -> {
-      TechAdvance type = data.getTechnologyFrontier().getAdvanceByName(name);
-      if (type == null) {
-        type = data.getTechnologyFrontier().getAdvanceByProperty(name);
-      }
-      return type;
-    }, "technology");
+    return getValidatedObject(element, attribute, mustFind, this::getTechnology, "technology");
+  }
+
+  private TechAdvance getTechnology(String name) {
+    final TechnologyFrontier frontier = data.getTechnologyFrontier();
+    TechAdvance type = frontier.getAdvanceByName(name);
+    if (type == null) {
+      type = frontier.getAdvanceByProperty(name);
+    }
+    return type;
   }
 
   /**
