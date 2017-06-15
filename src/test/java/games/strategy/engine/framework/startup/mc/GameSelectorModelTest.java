@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.awt.Component;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Observable;
@@ -75,10 +74,6 @@ public class GameSelectorModelTest {
   @Mock
   private ClientModel mockClientModel;
 
-  @Mock
-  private Component mockUiComponent;
-
-
   @Before
   public void setup() {
     testObj = new GameSelectorModel();
@@ -97,7 +92,7 @@ public class GameSelectorModelTest {
     this.testObjectSetMockGameData();
   }
 
-  private final void testObjectSetMockGameData() {
+  private void testObjectSetMockGameData() {
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
@@ -110,7 +105,7 @@ public class GameSelectorModelTest {
     reset(mockObserver);
   }
 
-  private final void prepareMockGameDataExpectations() {
+  private void prepareMockGameDataExpectations() {
     when(mockGameData.getGameVersion()).thenReturn(mockVersion);
     when(mockVersion.toString()).thenReturn(fakeGameVersion);
     when(mockGameData.getSequence()).thenReturn(mockSequence);
