@@ -1361,5 +1361,5 @@ public class BattleCalculator {
       }
     }
     return strengthWithoutSupport;
-}
+  }
 }
