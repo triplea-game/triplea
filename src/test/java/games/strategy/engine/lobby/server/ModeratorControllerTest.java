@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.message.MessageContext;
@@ -39,10 +39,10 @@ public class ModeratorControllerTest {
     final String adminName = Util.createUniqueTimeStamp();
 
     new DbUserController().createUser(
-        new DbUser(
-            new DbUser.UserName(adminName),
-            new DbUser.UserEmail("n@n.n"),
-            DbUser.Role.ADMIN),
+        new DBUser(
+            new DBUser.UserName(adminName),
+            new DBUser.UserEmail("n@n.n"),
+            DBUser.Role.ADMIN),
         new HashedPassword(MD5Crypt.crypt(adminName)));
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);

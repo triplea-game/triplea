@@ -2,7 +2,7 @@ package games.strategy.engine.lobby.server;
 
 import java.util.logging.Logger;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -28,13 +28,13 @@ public class UserManager implements IUserManager {
       return "Sorry, but I can't let you do that";
     }
 
-    DbUser user = new DbUser(
-        new DbUser.UserName(userName),
-        new DbUser.UserEmail(emailAddress));
+    final DBUser user = new DBUser(
+        new DBUser.UserName(userName),
+        new DBUser.UserEmail(emailAddress));
     if (!user.isValid()) {
       return user.getValidationErrorMessage();
     }
-    HashedPassword password = new HashedPassword(hashedPassword);
+    final HashedPassword password = new HashedPassword(hashedPassword);
     if (!password.isValidSyntax()) {
       return "Password is not hashed correctly";
     }
@@ -51,7 +51,7 @@ public class UserManager implements IUserManager {
    * Update the user info, returning an error string if an error occurs.
    */
   @Override
-  public DbUser getUserInfo(final String userName) {
+  public DBUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
       s_logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);

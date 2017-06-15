@@ -17,7 +17,7 @@ import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.net.ILoginValidator;
@@ -180,23 +180,23 @@ public class LobbyLoginValidator implements ILoginValidator {
       }
       final String hostName = userName.substring(0, userName.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
 
-      if (!DbUser.isValidUserName(hostName)) {
-        return DbUser.getUserNameValidationErrorMessage(hostName);
+      if (!DBUser.isValidUserName(hostName)) {
+        return DBUser.getUserNameValidationErrorMessage(hostName);
       }
     } else {
-      if (DbUser.isValidUserName(userName)) {
+      if (DBUser.isValidUserName(userName)) {
         return null;
       } else {
-        return DbUser.getUserNameValidationErrorMessage(userName);
+        return DBUser.getUserNameValidationErrorMessage(userName);
       }
     }
     return null;
   }
 
   private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
-    final DbUser user = new DbUser(
-        new DbUser.UserName(userName),
-        new DbUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
+    final DBUser user = new DBUser(
+        new DBUser.UserName(userName),
+        new DBUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
 
     if (!user.isValid()) {
       return user.getValidationErrorMessage();
