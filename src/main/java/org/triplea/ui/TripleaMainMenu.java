@@ -54,6 +54,7 @@ public class TripleaMainMenu extends BorderPane {
   private VBox mainOptions;
 
   /**
+   * Public constructor.
    * @param triplea The root pane
    * @throws IOException If the FXML file is not present
    */

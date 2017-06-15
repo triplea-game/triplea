@@ -22,6 +22,7 @@ public class TripleaSettings extends StackPane {
   private Spinner<Integer> proxyPort;
 
   /**
+   * Public constructor.
    * @param triplea The root pane
    * @throws IOException If the FXML file is not present
    */

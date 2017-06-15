@@ -58,7 +58,7 @@ public class TripleA extends Application {
   }
 
   /**
-   * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA
+   * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA.
    * @param location The FXML File to load
    * @return An FXMLLoader object
    */

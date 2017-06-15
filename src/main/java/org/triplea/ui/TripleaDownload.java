@@ -11,6 +11,7 @@ public class TripleaDownload extends VBox {
   private final TripleA triplea;
 
   /**
+   * Public constructor.
    * @param triplea The root pane
    * @throws IOException If the FXML file is not present
    */
