@@ -44,29 +44,18 @@ import games.strategy.triplea.settings.scrolling.ScrollSettings;
 public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
 
-  private final MapDownloadController mapDownloadController;
-  private final EngineVersion engineVersion;
-  private final GameEnginePropertyReader gameEnginePropertyReader;
-  private final MapListingSource mapListingSource;
-  private final ScrollSettings scrollSettings;
-  private final FolderSettings folderSettings;
-  private final AiSettings aiSettings;
-  private final BattleCalcSettings battleCalcSettings;
-  private final BattleOptionsSettings battleOptionsSettings;
-
+  private final GameEnginePropertyReader gameEnginePropertyReader = new GameEnginePropertyReader();
+  private final EngineVersion engineVersion = new EngineVersion(gameEnginePropertyReader);
+  private final MapListingSource mapListingSource = new MapListingSource(gameEnginePropertyReader);
+  private final MapDownloadController mapDownloadController = new MapDownloadController(mapListingSource);
+  private final ScrollSettings scrollSettings = new ScrollSettings();
+  private final FolderSettings folderSettings = new FolderSettings();
+  private final AiSettings aiSettings = new AiSettings();
+  private final BattleCalcSettings battleCalcSettings = new BattleCalcSettings();
+  private final BattleOptionsSettings battleOptionsSettings = new BattleOptionsSettings();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
-  private ClientContext() {
-    gameEnginePropertyReader = new GameEnginePropertyReader();
-    mapListingSource = new MapListingSource(gameEnginePropertyReader);
-    mapDownloadController = new MapDownloadController(mapListingSource);
-    engineVersion = new EngineVersion(gameEnginePropertyReader);
-    scrollSettings = new ScrollSettings();
-    folderSettings = new FolderSettings();
-    aiSettings = new AiSettings();
-    battleCalcSettings = new BattleCalcSettings();
-    battleOptionsSettings = new BattleOptionsSettings();
-  }
+  private ClientContext() {}
 
   public static GameEnginePropertyReader gameEnginePropertyReader() {
     return instance.gameEnginePropertyReader;
