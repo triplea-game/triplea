@@ -57,7 +57,7 @@ update_threshold() {
   local -r checkstyle_reports_dir=build/reports/checkstyle
   local -r violation_count=$(grep -c "$checkstyle_warning_pattern" $checkstyle_reports_dir/$report_file)
   local -r violation_property="checkstyle${violation_property_name}MaxWarnings"
-  sed -i -r "s/$violation_property=[[:digit:]]+/$violation_property_name=$violation_count/" $GRADLE_PROPERTIES
+  sed -i -r "s/$violation_property=[[:digit:]]+/$violation_property=$violation_count/" $GRADLE_PROPERTIES
 }
 
 has_local_thresholds_changed() {
