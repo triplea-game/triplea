@@ -238,7 +238,7 @@ public class ServerGame extends AbstractGame {
 
   private GameStep getCurrentStep() {
     return m_data.getSequence().getStep();
-    // m_data.getSequence().getStep(m_currentStepIndex);
+    // gameData.getSequence().getStep(m_currentStepIndex);
   }
 
 

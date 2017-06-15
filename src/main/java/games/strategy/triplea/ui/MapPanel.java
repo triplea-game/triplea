@@ -401,7 +401,6 @@ public class MapPanel extends ImageScrollerLargeView {
     tileManager.resetTiles(m_data, uiContext.getMapData());
     SwingUtilities.invokeLater(this::repaint);
     initSmallMap();
-    // m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
   }
 
   private MouseDetails convert(final MouseEvent me) {

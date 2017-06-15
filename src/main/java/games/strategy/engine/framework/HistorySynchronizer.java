@@ -14,7 +14,7 @@ import games.strategy.engine.history.EventChild;
  */
 public class HistorySynchronizer {
   // Note the GameData here and the game are not the same
-  // we are keeping m_data in synch with the history of the game by listening
+  // we are keeping gameData in synch with the history of the game by listening
   // for changes
   // we do this because our data can change depending where in the history we
   // are
@@ -106,7 +106,7 @@ public class HistorySynchronizer {
 
   /**
    * Serializes the object and then deserializes it, resolving object
-   * references into m_data. Note the the history we are synching may refer to
+   * references into gameData. Note the the history we are synching may refer to
    * a different game data than the GaneData held by the IGame. A clone is
    * made so that we can walk up and down the history without changing the
    * game.
