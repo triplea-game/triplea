@@ -370,11 +370,9 @@ public class StatPanel extends AbstractStatPanel {
           if (colMap.get(pid.getName()) == null) {
             throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
           }
-          final int col = colMap.get(pid.getName()).intValue();
+          final int col = colMap.get(pid.getName());
           int row = 0;
-          // boolean useTokens = false;
           if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
-            // useTokens = true;
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
@@ -382,19 +380,14 @@ public class StatPanel extends AbstractStatPanel {
           final List<TechAdvance> has = TechAdvance.getTechAdvances(StatPanel.this.gameData, pid);
           while (advancesAll.hasNext()) {
             final TechAdvance advance = advancesAll.next();
-            // if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
             if (!has.contains(advance)) {
-              row = rowMap.get(advance.getName()).intValue();
+              row = rowMap.get(advance.getName());
               data[row][col] = "-";
             }
           }
-          final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData).iterator();
-          while (advances.hasNext()) {
-            final TechAdvance advance = advances.next();
-            row = rowMap.get(advance.getName()).intValue();
-            // System.err.println("(" + row + ", " + col + ")");
+          for (final TechAdvance advance : TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData)) {
+            row = rowMap.get(advance.getName());
             data[row][col] = "X";
-            // data[row][col] = colList[col].substring(0, 1);
           }
         }
       } finally {
@@ -407,7 +400,6 @@ public class StatPanel extends AbstractStatPanel {
       if (col == 0) {
         return "Technology";
       }
-      // return colList[col - 1].substring(0, 1);
       return colList[col - 1];
     }
 
