@@ -8,10 +8,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class LobbyPropertyReaderTest {
   private LobbyPropertyReader testObj;
+
+  @Rule
+  public TemporaryFolder tempFolderRule = new TemporaryFolder();
 
   /**
    * Sets up an example lobby property file with some fake values, then sets up a property reader test object
@@ -19,8 +24,8 @@ public class LobbyPropertyReaderTest {
    */
   @Before
   public void setup() throws IOException {
-    final File testFile = File.createTempFile("testing", "tmp");
-    testFile.deleteOnExit();
+    final File testFile = tempFolderRule.newFile();
+
     try (FileWriter writer = new FileWriter(testFile)) {
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.port, String.valueOf(TestData.fakePort)));
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.postgresUser, TestData.fakeUser));
