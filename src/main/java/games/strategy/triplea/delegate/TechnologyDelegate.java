@@ -210,7 +210,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return new TechResults("No more available tech advances.");
     }
     final String annotation = m_player.getName() + " rolling for tech.";
-    int[] random;
+    final int[] random;
     int techHits = 0;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
@@ -255,7 +255,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
       m_bridge.addChange(removeTokens);
     }
-    Collection<TechAdvance> advances;
+    final Collection<TechAdvance> advances;
     if (isRevisedModel) {
       if (techHits > 0) {
         advances = Collections.singletonList(techToRollFor.getTechs().get(0));
@@ -372,7 +372,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
     final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
-    int[] random;
+    final int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
       final ITripleAPlayer tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
@@ -416,7 +416,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
-    // Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
+    // Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(gameData, techCategory);
     final Collection<TechAdvance> playersAdvances =
         TechTracker.getCurrentTechAdvances(m_bridge.getPlayerID(), getData());
     final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);

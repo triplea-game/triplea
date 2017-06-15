@@ -73,7 +73,7 @@ public class ExtendedStats extends StatPanel {
       statsExtended = techStatsExtended.toArray(new IStat[techStatsExtended.size()]);
 
       // add individual techs
-      for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data)) {
+      for (final TechAdvance ta : TechAdvance.getTechAdvances(gameData)) {
         final GenericTechNameStat techNameStat = new GenericTechNameStat();
         techNameStat.init(ta);
         final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
@@ -219,7 +219,7 @@ public class ExtendedStats extends StatPanel {
 
   class TechTokenStat extends ResourceStat {
     public TechTokenStat() {
-      super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+      super(gameData.getResourceList().getResource(Constants.TECH_TOKENS));
     }
   }
 

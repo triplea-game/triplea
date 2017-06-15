@@ -65,7 +65,7 @@ public class StatPanel extends AbstractStatPanel {
 
   @Override
   protected void initLayout() {
-    final boolean hasTech = !TechAdvance.getTechAdvances(m_data, null).isEmpty();
+    final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     m_statsTable = new JTable(m_dataModel) {
@@ -107,7 +107,7 @@ public class StatPanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_data = data;
+    gameData = data;
     m_dataModel.setGameData(data);
     m_techModel.setGameData(data);
     m_dataModel.gameDataChanged(null);
@@ -141,7 +141,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   protected ImageIcon getIcon(final String playerName) {
-    final PlayerID player = this.m_data.getPlayerList().getPlayerID(playerName);
+    final PlayerID player = this.gameData.getPlayerList().getPlayerID(playerName);
     if (player == null) {
       return null;
     }
@@ -149,7 +149,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   protected void fillPlayerIcons() {
-    for (final PlayerID p : m_data.getPlayerList().getPlayers()) {
+    for (final PlayerID p : gameData.getPlayerList().getPlayers()) {
       getIcon(p);
     }
   }
@@ -176,19 +176,19 @@ public class StatPanel extends AbstractStatPanel {
 
     public StatTableModel() {
       setStatCollums();
-      m_data.addDataChangeListener(this);
+      gameData.addDataChangeListener(this);
       m_isDirty = true;
     }
 
     public void setStatCollums() {
       m_stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
-      if (Match.someMatch(m_data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
+      if (Match.someMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
         stats.add(new VictoryCityStat());
         m_stats = stats.toArray(new IStat[stats.size()]);
       }
       // only add the vps in pacific
-      if (m_data.getProperties().get(Constants.PACIFIC_THEATER, false)) {
+      if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
         stats.add(new VPStat());
         m_stats = stats.toArray(new IStat[stats.size()]);
@@ -196,7 +196,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
@@ -205,7 +205,7 @@ public class StatPanel extends AbstractStatPanel {
         for (final PlayerID player : players) {
           m_collectedData[row][0] = player.getName();
           for (int i = 0; i < m_stats.length; i++) {
-            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(player, m_data));
+            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(player, gameData));
           }
           row++;
         }
@@ -214,12 +214,12 @@ public class StatPanel extends AbstractStatPanel {
           final String alliance = allianceIterator.next();
           m_collectedData[row][0] = alliance;
           for (int i = 0; i < m_stats.length; i++) {
-            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(alliance, m_data));
+            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(alliance, gameData));
           }
           row++;
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
     }
 
@@ -266,20 +266,20 @@ public class StatPanel extends AbstractStatPanel {
         // no need to recalculate all the stats just to get the row count
         // getting the row count is a fairly frequent operation, and will
         // happen even if we are not displayed!
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
-          return m_data.getPlayerList().size() + getAlliances().size();
+          return gameData.getPlayerList().size() + getAlliances().size();
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
       }
     }
 
     public synchronized void setGameData(final GameData data) {
       synchronized (this) {
-        m_data.removeDataChangeListener(this);
-        m_data = data;
-        m_data.addDataChangeListener(this);
+        gameData.removeDataChangeListener(this);
+        gameData = data;
+        gameData.addDataChangeListener(this);
         m_isDirty = true;
       }
       repaint();
@@ -294,14 +294,14 @@ public class StatPanel extends AbstractStatPanel {
     /* Row Header Names */
     private String[] colList;
     /* Underlying data for the table */
-    private String[][] data;
+    private final String[][] data;
     /* Convenience mapping of country names -> col */
     private Map<String, Integer> colMap = null;
     /* Convenience mapping of technology names -> row */
     private Map<String, Integer> rowMap = null;
 
     public TechTableModel() {
-      m_data.addDataChangeListener(this);
+      gameData.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
       colMap = new HashMap<>();
@@ -314,19 +314,19 @@ public class StatPanel extends AbstractStatPanel {
        */
       boolean useTech = false;
       try {
-        m_data.acquireReadLock();
-        if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
+        gameData.acquireReadLock();
+        if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
-          data = new String[TechAdvance.getTechAdvances(m_data).size() + 1][colList.length + 2];
+          data = new String[TechAdvance.getTechAdvances(gameData).size() + 1][colList.length + 2];
         } else {
-          data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
+          data = new String[TechAdvance.getTechAdvances(gameData).size()][colList.length + 1];
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
       /* Load the technology -> row mapping */
       rowMap = new HashMap<>();
-      final Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(m_data, null).iterator();
+      final Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(gameData, null).iterator();
       int row = 0;
       if (useTech) {
         rowMap.put("Tokens", Integer.valueOf(row));
@@ -352,7 +352,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     private void initColList() {
-      final java.util.List<PlayerID> players = new ArrayList<>(m_data.getPlayerList().getPlayers());
+      final java.util.List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();
@@ -363,7 +363,7 @@ public class StatPanel extends AbstractStatPanel {
     public void update() {
       clearAdvances();
       // copy so aquire/release read lock are on the same object!
-      final GameData gameData = m_data;
+      final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {
         for (final PlayerID pid : gameData.getPlayerList().getPlayers()) {
@@ -373,13 +373,13 @@ public class StatPanel extends AbstractStatPanel {
           final int col = colMap.get(pid.getName()).intValue();
           int row = 0;
           // boolean useTokens = false;
-          if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
+          if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
             // useTokens = true;
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
-          final Iterator<TechAdvance> advancesAll = TechAdvance.getTechAdvances(m_data).iterator();
-          final List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
+          final Iterator<TechAdvance> advancesAll = TechAdvance.getTechAdvances(StatPanel.this.gameData).iterator();
+          final List<TechAdvance> has = TechAdvance.getTechAdvances(StatPanel.this.gameData, pid);
           while (advancesAll.hasNext()) {
             final TechAdvance advance = advancesAll.next();
             // if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
@@ -388,7 +388,7 @@ public class StatPanel extends AbstractStatPanel {
               data[row][col] = "-";
             }
           }
-          final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, m_data).iterator();
+          final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData).iterator();
           while (advances.hasNext()) {
             final TechAdvance advance = advances.next();
             row = rowMap.get(advance.getName()).intValue();
@@ -442,9 +442,9 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     public void setGameData(final GameData data) {
-      m_data.removeDataChangeListener(this);
-      m_data = data;
-      m_data.addDataChangeListener(this);
+      gameData.removeDataChangeListener(this);
+      gameData = data;
+      gameData.addDataChangeListener(this);
       isDirty = true;
     }
   }
@@ -473,7 +473,7 @@ public class StatPanel extends AbstractStatPanel {
 
   class PUStat extends ResourceStat {
     public PUStat() {
-      super(getResourcePUs(m_data));
+      super(getResourcePUs(gameData));
     }
   }
 
