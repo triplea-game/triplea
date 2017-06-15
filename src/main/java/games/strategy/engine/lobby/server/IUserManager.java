@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 
@@ -10,5 +10,5 @@ public interface IUserManager extends IRemote {
 
   String updateUser(String userName, String emailAddress, String hashedPassword);
 
-  DbUser getUserInfo(String userName);
+  DBUser getUserInfo(String userName);
 }

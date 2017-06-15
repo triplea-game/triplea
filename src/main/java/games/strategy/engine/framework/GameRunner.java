@@ -136,7 +136,6 @@ public class GameRunner {
       usage();
       return;
     }
-    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
     // do after we handle command line args (the isMemorySet flag might have been passed as a command line arg,
     // in that case it is parsed and set as a system prop when we handle command line ags, the code below
     // checks for the system prop)
@@ -301,7 +300,6 @@ public class GameRunner {
         + " (Please email this password to one of the lobby moderators, or private message an admin on the "
         + "TripleaWarClub.org website forum.)\n");
   }
-
 
 
   private static void setupLogging() {

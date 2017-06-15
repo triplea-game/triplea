@@ -166,7 +166,7 @@ public class ForumPosterEditor extends EditorPanel {
       idValid = validateTextFieldNotEmpty(m_topicIdField, m_topicIdLabel);
       m_viewPosts.setEnabled(idValid);
     } else {
-      m_topicIdLabel.setForeground(m_labelColor);
+      m_topicIdLabel.setForeground(labelColor);
       m_viewPosts.setEnabled(false);
     }
     final boolean allValid = loginValid && passwordValid && idValid;

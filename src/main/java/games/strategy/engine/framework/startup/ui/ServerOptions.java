@@ -7,7 +7,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,13 +27,13 @@ import games.strategy.ui.SwingAction;
  */
 public class ServerOptions extends JDialog {
   private static final long serialVersionUID = -9074816386666798281L;
-  private JTextField m_nameField;
-  private IntTextField m_portField;
-  private JPasswordField m_passwordField;
-  private boolean m_okPressed;
-  private JCheckBox m_requirePasswordCheckBox;
-  private JTextField m_comment;
-  private boolean m_showComment = false;
+  private JTextField nameField;
+  private IntTextField portField;
+  private JPasswordField passwordField;
+  private boolean okPressed;
+  private JCheckBox requirePasswordCheckBox;
+  private JTextField comment;
+  private boolean showComment = false;
 
   /**
    * Creates a new instance of ServerOptions.
@@ -42,28 +41,28 @@ public class ServerOptions extends JDialog {
   public ServerOptions(final Component owner, final String defaultName, final int defaultPort,
       final boolean showComment) {
     super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);
-    m_showComment = showComment;
+    this.showComment = showComment;
     initComponents();
     layoutComponents();
     setupActions();
-    m_nameField.setText(defaultName);
-    m_portField.setValue(defaultPort);
+    nameField.setText(defaultName);
+    portField.setValue(defaultPort);
     setWidgetActivation();
     pack();
   }
 
   public void setNameEditable(final boolean editable) {
-    m_nameField.setEditable(editable);
+    nameField.setEditable(editable);
   }
 
   private void setupActions() {
-    m_requirePasswordCheckBox.addActionListener(e -> setWidgetActivation());
+    requirePasswordCheckBox.addActionListener(e -> setWidgetActivation());
   }
 
   @Override
   public String getName() {
     // fixes crash by truncating names to 20 characters
-    final String s = m_nameField.getText().trim();
+    final String s = nameField.getText().trim();
     if (s.length() > 20) {
       return s.substring(0, 20);
     }
@@ -71,10 +70,10 @@ public class ServerOptions extends JDialog {
   }
 
   public String getPassword() {
-    if (!m_requirePasswordCheckBox.isSelected()) {
+    if (!requirePasswordCheckBox.isSelected()) {
       return null;
     }
-    final String password = new String(m_passwordField.getPassword());
+    final String password = new String(passwordField.getPassword());
     if (password.trim().length() == 0) {
       return null;
     }
@@ -82,17 +81,17 @@ public class ServerOptions extends JDialog {
   }
 
   public int getPort() {
-    return m_portField.getValue();
+    return portField.getValue();
   }
 
   private void initComponents() {
-    m_nameField = new JTextField(10);
-    m_portField = new IntTextField(0, Integer.MAX_VALUE);
-    m_portField.setColumns(7);
-    m_passwordField = new JPasswordField();
-    m_passwordField.setColumns(10);
-    m_comment = new JTextField();
-    m_comment.setColumns(20);
+    nameField = new JTextField(10);
+    portField = new IntTextField(0, Integer.MAX_VALUE);
+    portField.setColumns(7);
+    passwordField = new JPasswordField();
+    passwordField.setColumns(10);
+    comment = new JTextField();
+    comment.setColumns(20);
   }
 
   private void layoutComponents() {
@@ -111,7 +110,7 @@ public class ServerOptions extends JDialog {
     fieldConstraints.anchor = GridBagConstraints.WEST;
     fieldConstraints.gridx = 1;
     fieldConstraints.insets = fieldSpacing;
-    m_requirePasswordCheckBox = new JCheckBox("");
+    requirePasswordCheckBox = new JCheckBox("");
     final JLabel passwordRequiredLabel = new JLabel("Require Password:");
     final JPanel fields = new JPanel();
     final GridBagLayout layout = new GridBagLayout();
@@ -123,24 +122,24 @@ public class ServerOptions extends JDialog {
     layout.setConstraints(portLabel, labelConstraints);
     layout.setConstraints(nameLabel, labelConstraints);
     layout.setConstraints(passwordLabel, labelConstraints);
-    layout.setConstraints(m_portField, fieldConstraints);
-    layout.setConstraints(m_nameField, fieldConstraints);
-    layout.setConstraints(m_passwordField, fieldConstraints);
-    layout.setConstraints(m_requirePasswordCheckBox, fieldConstraints);
+    layout.setConstraints(portField, fieldConstraints);
+    layout.setConstraints(nameField, fieldConstraints);
+    layout.setConstraints(passwordField, fieldConstraints);
+    layout.setConstraints(requirePasswordCheckBox, fieldConstraints);
     layout.setConstraints(passwordRequiredLabel, labelConstraints);
     fields.add(nameLabel);
-    fields.add(m_nameField);
+    fields.add(nameField);
     fields.add(portLabel);
-    fields.add(m_portField);
+    fields.add(portField);
     fields.add(passwordRequiredLabel);
-    fields.add(m_requirePasswordCheckBox);
+    fields.add(requirePasswordCheckBox);
     fields.add(passwordLabel);
-    fields.add(m_passwordField);
-    if (m_showComment) {
+    fields.add(passwordField);
+    if (showComment) {
       layout.setConstraints(commentLabel, labelConstraints);
-      layout.setConstraints(m_comment, fieldConstraints);
+      layout.setConstraints(comment, fieldConstraints);
       fields.add(commentLabel);
-      fields.add(m_comment);
+      fields.add(comment);
     }
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
@@ -150,13 +149,13 @@ public class ServerOptions extends JDialog {
   }
 
   public boolean getOKPressed() {
-    return m_okPressed;
+    return okPressed;
   }
 
   private void setWidgetActivation() {
-    m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
-    final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
-    m_passwordField.setBackground(backGround);
+    passwordField.setEnabled(requirePasswordCheckBox.isSelected());
+    final Color backGround = passwordField.isEnabled() ? portField.getBackground() : getBackground();
+    passwordField.setBackground(backGround);
     if (ClientFileSystemHelper.areWeOldExtraJar()
         && System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
       setNameEditable(false);
@@ -165,12 +164,12 @@ public class ServerOptions extends JDialog {
 
   private final Action m_okAction = SwingAction.of("OK", e -> {
     setVisible(false);
-    m_okPressed = true;
+    okPressed = true;
   });
 
   private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 
   public String getComments() {
-    return m_comment.getText();
+    return comment.getText();
   }
 }

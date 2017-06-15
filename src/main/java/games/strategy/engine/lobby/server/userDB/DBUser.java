@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server.userDB;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -8,10 +9,17 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.Util;
 
-public class DbUser {
-  private final UserName userName;
-  private final UserEmail userEmail;
+/*
+ * Note, the DBUser data type is passed between lobby and client.
+ * TODO: annotate this class and others to identify them. Longer term drop the reflection.
+ */
+public class DBUser implements Serializable {
+  private static final long serialVersionUID = -5289923058375302916L;
+
+  private final String m_name;
+  private final String m_email;
   private final Role userRole;
+
 
   @VisibleForTesting
   static final Collection<String> forbiddenNameParts =
@@ -25,7 +33,7 @@ public class DbUser {
   public static class UserName {
     public final String userName;
 
-    public UserName(String userName) {
+    public UserName(final String userName) {
       this.userName = userName;
     }
 
@@ -48,7 +56,7 @@ public class DbUser {
   public static class UserEmail {
     public final String userEmail;
 
-    public UserEmail(String userEmail) {
+    public UserEmail(final String userEmail) {
       this.userEmail = userEmail;
     }
 
@@ -63,17 +71,17 @@ public class DbUser {
   /**
    *  Convenience constructor for non-admin users.
    */
-  public DbUser(UserName name, UserEmail email) {
+  public DBUser(final UserName name, final UserEmail email) {
     this(name, email, Role.NOT_ADMIN);
   }
 
 
   public String getName() {
-    return userName.userName;
+    return m_name;
   }
 
   public String getEmail() {
-    return userEmail.userEmail;
+    return m_email;
   }
 
   public boolean isAdmin() {
@@ -83,9 +91,9 @@ public class DbUser {
   /**
    * An all-args constructor.
    */
-  public DbUser(UserName name, UserEmail email, Role role) {
-    this.userName = name;
-    this.userEmail = email;
+  public DBUser(final UserName name, final UserEmail email, final Role role) {
+    this.m_name = name.userName;
+    this.m_email = email.userEmail;
     this.userRole = role;
   }
 
@@ -93,7 +101,7 @@ public class DbUser {
     return getValidationErrorMessage() == null;
   }
 
-  public static boolean isValidUserName(String userName) {
+  public static boolean isValidUserName(final String userName) {
     return new UserName(userName).validate() == null;
   }
 
@@ -101,18 +109,18 @@ public class DbUser {
    * Returns an error message String if there are validation errors, otherwise null.
    */
   public String getValidationErrorMessage() {
-    if (userName.validate() == null && userEmail.validate() == null) {
+    if (new UserName(m_name).validate() == null && new UserEmail(m_email).validate() == null) {
       return null;
     }
-    return userName.validate() + " " + userEmail.validate();
+    return new UserName(m_name).validate() + " " + new UserEmail(m_email).validate();
   }
 
   /**
    * Example usage:
    * <pre><code>
    *   String proposedUserName = getUserInput();
-   *   if(!DbUser.isValidUserName(proposedUserName)) {
-   *     String validationErrorMessage =  DbUser.getUserNameValidationErrorMessage(proposedUserName();
+   *   if(!DBUser.isValidUserName(proposedUserName)) {
+   *     String validationErrorMessage =  DBUser.getUserNameValidationErrorMessage(proposedUserName();
    *     showMessageToUser("User name is invalid: " + validationErrorMessage);
    *   }
    * </code>
@@ -120,15 +128,15 @@ public class DbUser {
    * @return Assuming an invalid user name - returns an error message String.
    * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
    */
-  public static String getUserNameValidationErrorMessage(String userName) {
+  public static String getUserNameValidationErrorMessage(final String userName) {
     return new UserName(userName).validate();
   }
 
 
   @Override
   public String toString() {
-    return "name: " + userName.userName
-        + ", email: " + userEmail.userEmail
+    return "name: " + m_name
+        + ", email: " + m_email
         + ", role: " + userRole;
   }
 }
