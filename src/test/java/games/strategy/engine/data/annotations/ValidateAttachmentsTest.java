@@ -352,8 +352,6 @@ public class ValidateAttachmentsTest {
         }
       } else if (!Modifier.isAbstract(clazz.getModifiers())) {
         // check the symmetry of regular setters
-        @SuppressWarnings("unused")
-        final String method = null;
         try {
           final Constructor<? extends IAttachment> constructor =
               clazz.getConstructor(IAttachment.attachmentConstructorParameter);
