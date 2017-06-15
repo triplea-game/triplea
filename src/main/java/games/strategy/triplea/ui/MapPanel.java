@@ -832,7 +832,6 @@ public class MapPanel extends ImageScrollerLargeView {
 
 
 class BackgroundDrawer implements Runnable {
-  // use a weak reference, if we see the panel is gc'd, then we can stop this thread
   private MapPanel mapPanel;
 
   BackgroundDrawer(final MapPanel panel) {
