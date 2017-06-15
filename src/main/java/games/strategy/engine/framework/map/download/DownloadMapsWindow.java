@@ -34,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.OptionalUtils;
@@ -120,7 +121,8 @@ public class DownloadMapsWindow extends JFrame {
       progressPanel.download(pendingDownloads);
     }
 
-    pendingDownloads.addAll(ClientContext.DOWNLOAD_COORDINATOR.getDownloads().stream()
+    pendingDownloads.addAll(ClientContext.downloadCoordinator().getDownloads().stream()
+        .filter(download -> !download.getDownloadState().equals(DownloadState.CANCELLED))
         .map(DownloadFile::getDownload)
         .collect(Collectors.toList()));
 
