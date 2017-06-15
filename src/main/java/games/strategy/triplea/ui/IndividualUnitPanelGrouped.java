@@ -37,17 +37,17 @@ import games.strategy.util.Tuple;
  */
 public class IndividualUnitPanelGrouped extends JPanel {
   private static final long serialVersionUID = 3573683064535306664L;
-  private int m_max = 0;
-  private final boolean m_showMinAndMax;
-  private final JTextArea m_title;
-  private final GameData m_data;
-  private final IUIContext m_uiContext;
-  private final Map<String, Collection<Unit>> m_unitsToChooseFrom;
-  private final Collection<Tuple<String, IndividualUnitPanel>> m_entries =
+  private int max = 0;
+  private final boolean showMinAndMax;
+  private final JTextArea title;
+  private final GameData gameData;
+  private final IUIContext uiContext;
+  private final Map<String, Collection<Unit>> unitsToChooseFrom;
+  private final Collection<Tuple<String, IndividualUnitPanel>> entries =
       new ArrayList<>();
-  private final JLabel m_leftToSelect = new JLabel();
-  private final boolean m_showSelectAll;
-  private final ScrollableTextFieldListener m_textFieldListener = field -> updateLeft();
+  private final JLabel leftToSelect = new JLabel();
+  private final boolean showSelectAll;
+  private final ScrollableTextFieldListener textFieldListener = field -> updateLeft();
 
   /**
    * For when you want multiple individual unit panels, perhaps one for each territory, etc.
@@ -59,47 +59,47 @@ public class IndividualUnitPanelGrouped extends JPanel {
   public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data,
       final IUIContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,
       final boolean showSelectAll) {
-    m_data = data;
-    m_uiContext = uiContext;
+    gameData = data;
+    this.uiContext = uiContext;
     setMaxAndShowMaxButton(maxTotal);
-    m_showMinAndMax = showMinAndMax;
-    m_title = new JTextArea(title);
-    m_title.setBackground(this.getBackground());
-    m_title.setEditable(false);
-    m_title.setWrapStyleWord(true);
-    m_unitsToChooseFrom = unitsToChooseFrom;
-    m_showSelectAll = showSelectAll;
+    this.showMinAndMax = showMinAndMax;
+    this.title = new JTextArea(title);
+    this.title.setBackground(this.getBackground());
+    this.title.setEditable(false);
+    this.title.setWrapStyleWord(true);
+    this.unitsToChooseFrom = unitsToChooseFrom;
+    this.showSelectAll = showSelectAll;
     layoutEntries();
   }
 
   private void setMaxAndShowMaxButton(final int max) {
-    m_max = max;
-    m_textFieldListener.changedValue(null);
+    this.max = max;
+    textFieldListener.changedValue(null);
   }
 
   public void setTitle(final String title) {
-    m_title.setText(title);
+    this.title.setText(title);
   }
 
   private void updateLeft() {
-    if (m_max == -1) {
+    if (max == -1) {
       return;
     }
     final int selected = getSelectedCount();
-    final int newMax = m_max - selected;
-    for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
+    final int newMax = max - selected;
+    for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       final int current = entry.getSecond().getSelectedCount();
       final int maxForThis = current + newMax;
       if (entry.getSecond().getMax() != maxForThis) {
         entry.getSecond().setMaxAndUpdate(maxForThis);
       }
     }
-    m_leftToSelect.setText("Left to select:" + newMax);
+    leftToSelect.setText("Left to select:" + newMax);
   }
 
   protected int getSelectedCount() {
     int selected = 0;
-    for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
+    for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       selected += entry.getSecond().getSelectedCount();
     }
     return selected;
@@ -113,14 +113,14 @@ public class IndividualUnitPanelGrouped extends JPanel {
     m_selectNoneButton.setPreferredSize(buttonSize);
     final JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
     m_selectNoneButton.addActionListener(e -> selectNone());
     m_autoSelectButton.addActionListener(e -> autoSelect());
     final JPanel entries = new JPanel();
     entries.setLayout(new FlowLayout());
     entries.setBorder(BorderFactory.createEmptyBorder());
-    for (final Entry<String, Collection<Unit>> entry : m_unitsToChooseFrom.entrySet()) {
+    for (final Entry<String, Collection<Unit>> entry : unitsToChooseFrom.entrySet()) {
       final String miniTitle = entry.getKey();
       final Collection<Unit> possibleTargets = entry.getValue();
       final JPanel panelChooser = new JPanel();
@@ -131,9 +131,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
       chooserTitle.setFont(new Font("Arial", Font.BOLD, 12));
       panelChooser.add(chooserTitle);
       panelChooser.add(new JLabel(" "));
-      final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, m_data, m_uiContext,
-          m_max, m_showMinAndMax, m_showSelectAll, m_textFieldListener);
-      m_entries.add(Tuple.of(miniTitle, chooser));
+      final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, gameData, uiContext,
+          max, showMinAndMax, showSelectAll, textFieldListener);
+      this.entries.add(Tuple.of(miniTitle, chooser));
       panelChooser.add(chooser);
       final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
       chooserScrollPane.setMaximumSize(new Dimension(220, 520));
@@ -154,31 +154,31 @@ public class IndividualUnitPanelGrouped extends JPanel {
     add(entries, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
     yIndex++;
-    if (m_showSelectAll) {
+    if (showSelectAll) {
       add(m_autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, nullInsets, 0, 0));
       yIndex++;
     }
-    add(m_leftToSelect, new GridBagConstraints(0, 3, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    add(leftToSelect, new GridBagConstraints(0, 3, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
   Map<String, IntegerMap<Unit>> getSelected() {
     final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<>();
-    for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
+    for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       selectedUnits.put(entry.getFirst(), entry.getSecond().getSelected());
     }
     return selectedUnits;
   }
 
   protected void selectNone() {
-    for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
+    for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       entry.getSecond().selectNone();
     }
   }
 
   protected void autoSelect() {
-    for (final Tuple<String, IndividualUnitPanel> entry : m_entries) {
+    for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       entry.getSecond().autoSelect();
     }
   }
