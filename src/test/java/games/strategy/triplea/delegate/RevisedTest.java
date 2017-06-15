@@ -46,7 +46,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,6 +89,9 @@ public class RevisedTest {
   private GameData gameData;
   private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
+  /**
+   * Sets up a GameData object for testing..
+   */
   @Before
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
@@ -112,7 +114,7 @@ public class RevisedTest {
 
   @Test
   public void testMoveBadRoute() {
-    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerID british = british(gameData);
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
     final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
@@ -135,9 +137,9 @@ public class RevisedTest {
 
   @Test
   public void testSubAdvance() {
-    final UnitType sub = GameDataTestUtil.submarine(gameData);
+    final UnitType sub = submarine(gameData);
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerID japanese = japanese(gameData);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
@@ -189,7 +191,7 @@ public class RevisedTest {
     gameData.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     sinkiang.setOwner(japanese);
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final UnitType infantryType = infantry(gameData);
     gameData.performChange(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
     // now move to attack it
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
@@ -228,7 +230,7 @@ public class RevisedTest {
   @Test
   public void testContinuedBattles() {
     final PlayerID russians = GameDataTestUtil.russians(gameData);
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerID germans = germans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -239,9 +241,9 @@ public class RevisedTest {
     final Territory karelia = gameData.getMap().getTerritory("Karelia S.S.R.");
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     gameData.performChange(ChangeFactory.removeUnits(sz5, sz5.getUnits().getUnits()));
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
-    final UnitType subType = GameDataTestUtil.submarine(gameData);
-    final UnitType trnType = GameDataTestUtil.transport(gameData);
+    final UnitType infantryType = infantry(gameData);
+    final UnitType subType = submarine(gameData);
+    final UnitType trnType = transport(gameData);
     gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, germans)));
     gameData.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
     gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
@@ -752,7 +754,7 @@ public class RevisedTest {
     final Territory china = territory("China", gameData);
     final Territory kwang = territory("Kwantung", gameData);
     // Preset units in FIC
-    final UnitType infType = GameDataTestUtil.infantry(gameData);
+    final UnitType infType = infantry(gameData);
     // UnitType aaType = GameDataTestUtil.aaGun(gameData);
     removeFrom(fic, fic.getUnits().getUnits());
     addTo(fic, aaGun(gameData).create(1, japanese));
@@ -935,12 +937,7 @@ public class RevisedTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 2, 2}));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return null;
-      }
-    };
+    final InvocationHandler handler = (proxy, method, args) -> null;
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
@@ -1279,12 +1276,9 @@ public class RevisedTest {
         any(), any(), any(), any(), any(),
         anyBoolean(), any(),
         any(), any(), any(), anyBoolean()))
-            .thenAnswer(new Answer<CasualtyDetails>() {
-              @Override
-              public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
-                final Collection<Unit> selectFrom = invocation.getArgument(0);
-                return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
-              }
+            .thenAnswer(invocation -> {
+              final Collection<Unit> selectFrom = invocation.getArgument(0);
+              return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
             });
     bridge.setRemote(dummyPlayer);
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
