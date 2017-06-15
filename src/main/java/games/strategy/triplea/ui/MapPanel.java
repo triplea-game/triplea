@@ -18,7 +18,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -834,22 +833,22 @@ public class MapPanel extends ImageScrollerLargeView {
 
 class BackgroundDrawer implements Runnable {
   // use a weak reference, if we see the panel is gc'd, then we can stop this thread
-  private MapPanel m_mapPanelRef;
+  private MapPanel mapPanelRef;
 
   BackgroundDrawer(final MapPanel panel) {
-    m_mapPanelRef = panel;
+    mapPanelRef = panel;
   }
 
   public void stop() {
     // the thread will eventually wake up and notice we are done
-    m_mapPanelRef = null;
+    mapPanelRef = null;
   }
 
   @Override
   public void run() {
-    while (m_mapPanelRef != null) {
+    while (mapPanelRef != null) {
       final BlockingQueue<Tile> undrawnTiles;
-      final MapPanel panel = m_mapPanelRef;
+      final MapPanel panel = mapPanelRef;
       undrawnTiles = panel.getUndrawnTiles();
       final Tile tile;
       try {
@@ -860,14 +859,14 @@ class BackgroundDrawer implements Runnable {
       if (tile == null) {
         continue;
       }
-      final GameData data = m_mapPanelRef.getData();
+      final GameData data = mapPanelRef.getData();
       data.acquireReadLock();
       try {
-        tile.getImage(data, m_mapPanelRef.getUIContext().getMapData());
+        tile.getImage(data, mapPanelRef.getUIContext().getMapData());
       } finally {
         data.releaseReadLock();
       }
-      SwingUtilities.invokeLater(() -> m_mapPanelRef.repaint());
+      SwingUtilities.invokeLater(() -> mapPanelRef.repaint());
     }
   }
 }
