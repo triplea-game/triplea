@@ -63,7 +63,6 @@ public class IndividualUnitPanel extends JPanel {
     this.title = new JTextArea(title);
     this.title.setBackground(this.getBackground());
     this.title.setEditable(false);
-    // title.setColumns(15);
     this.title.setWrapStyleWord(true);
     countOptionalTextFieldListener = optionalListener;
     setMaxAndShowMaxButton(max);
@@ -91,7 +90,6 @@ public class IndividualUnitPanel extends JPanel {
     this.title = new JTextArea(title);
     this.title.setBackground(this.getBackground());
     this.title.setEditable(false);
-    // title.setColumns(15);
     this.title.setWrapStyleWord(true);
     countOptionalTextFieldListener = optionalListener;
     setMaxAndShowMaxButton(max);
