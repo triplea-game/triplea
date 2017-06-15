@@ -25,7 +25,6 @@ public class LobbyPropertyReaderTest {
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.port, String.valueOf(TestData.fakePort)));
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.postgresUser, TestData.fakeUser));
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.postgresPassword, TestData.fakePassword));
-      writer.close();
     }
 
     testObj = new LobbyPropertyReader(testFile);
