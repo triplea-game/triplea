@@ -668,7 +668,6 @@ public class GameRunner {
     // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same
     // engine as was used
     // for this savegame, and if so try to run it
-    // System.out.println("System classpath: " + System.getProperty("java.class.path"));
     // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
     // savegames.
     final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);

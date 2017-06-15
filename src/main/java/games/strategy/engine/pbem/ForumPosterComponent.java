@@ -131,9 +131,6 @@ public class ForumPosterComponent extends JPanel {
     add(m_postButton);
     add(new JButton(m_doneAction));
     validate();
-    // }
-    // });
-    // waitForRelease();
     return this;
   }
 

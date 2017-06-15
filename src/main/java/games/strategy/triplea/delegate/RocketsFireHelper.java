@@ -77,7 +77,6 @@ public class RocketsFireHelper {
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
     if (rocketTerritories.isEmpty()) {
       bridge.getHistoryWriter().startEvent(player.getName() + " has no rockets to fire");
-      // getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
       return;
     }
     if (isWW2V2(data) || isAllRocketsAttack(data)) {
@@ -263,8 +262,7 @@ public class RocketsFireHelper {
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
-          // map, and zero for the
-          // bonus.
+          // map, and zero for the bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
           }
@@ -319,8 +317,7 @@ public class RocketsFireHelper {
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
-          // map, and zero for the
-          // bonus.
+          // map, and zero for the bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
@@ -429,7 +426,6 @@ public class RocketsFireHelper {
       unitsCanDie
           .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
-        // targets.removeAll(unitsCanDie);
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);
         final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + attackedTerritory.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);

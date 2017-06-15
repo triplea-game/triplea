@@ -213,7 +213,6 @@ public class CenterPicker extends JFrame {
 
       @Override
       public void paint(final Graphics g) {
-        // super.paint(g);
         g.drawImage(image, 0, 0, this);
         g.setColor(Color.red);
         for (final String centerName : centers.keySet()) {
@@ -327,7 +326,7 @@ public class CenterPicker extends JFrame {
   private static void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
@@ -346,7 +345,6 @@ public class CenterPicker extends JFrame {
     if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
-        // value = value.replaceAll("\\(", " ");
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           s_mapFolderLocation = mapFolder;
