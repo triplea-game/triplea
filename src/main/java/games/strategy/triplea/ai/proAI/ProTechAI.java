@@ -618,7 +618,7 @@ final class ProTechAI {
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }
-    return findFontier(territory, endCond, Match.getAlwaysMatch(), distance, data);
+    return findFontier(territory, endCond, Match.always(), distance, data);
   }
 
   /**

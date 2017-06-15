@@ -1004,7 +1004,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.getAlwaysMatch())));
+          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.always())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();

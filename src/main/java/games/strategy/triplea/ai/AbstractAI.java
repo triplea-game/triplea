@@ -342,7 +342,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Match.getAlwaysMatch());
+                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Match.always());
               picked = distanceMap.lowestKey();
             }
           }
@@ -353,7 +353,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(test.get(0), territoryChoices, Match.getAlwaysMatch());
+                  data.getMap().getDistance(test.get(0), territoryChoices, Match.always());
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
                 final Territory choice = distanceMap.lowestKey();
                 distanceMap.removeKey(choice);
@@ -371,7 +371,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), territoryChoices, Match.getAlwaysMatch());
+                  data.getMap().getDistance(capitals.get(0), territoryChoices, Match.always());
               if (territoryChoices.contains(capitals.get(0))) {
                 distanceMap.put(capitals.get(0), 0);
               }
@@ -402,7 +402,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = territoryChoices.get(0);
           } else {
             final IntegerMap<Territory> distanceMap =
-                data.getMap().getDistance(capitals.get(0), notOwned, Match.getAlwaysMatch());
+                data.getMap().getDistance(capitals.get(0), notOwned, Match.always());
             picked = distanceMap.lowestKey();
           }
         }

@@ -1,6 +1,7 @@
 package games.strategy.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -44,9 +45,9 @@ public class MatchTest {
 
   @Test
   public void testNever() {
-    assertTrue(!Match.someMatch(ints, Match.getNeverMatch()));
-    assertTrue(!Match.allMatch(ints, Match.getNeverMatch()));
-    assertEquals(0, Match.getMatches(ints, Match.getNeverMatch()).size());
+    assertFalse(Match.someMatch(ints, Match.never()));
+    assertFalse(Match.allMatch(ints, Match.never()));
+    assertEquals(0, Match.getMatches(ints, Match.never()).size());
   }
 
   @Test
@@ -61,9 +62,9 @@ public class MatchTest {
 
   @Test
   public void testAlways() {
-    assertTrue(Match.someMatch(ints, Match.getAlwaysMatch()));
-    assertTrue(Match.allMatch(ints, Match.getAlwaysMatch()));
-    assertEquals(7, Match.getMatches(ints, Match.getAlwaysMatch()).size());
+    assertTrue(Match.someMatch(ints, Match.always()));
+    assertTrue(Match.allMatch(ints, Match.always()));
+    assertEquals(7, Match.getMatches(ints, Match.always()).size());
   }
 
   @Test
@@ -103,7 +104,7 @@ public class MatchTest {
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.getAlwaysMatch()).size(), 3);
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.getNeverMatch()).size(), 0);
+    assertEquals(3, Match.getKeysWhereValueMatch(map, Match.always()).size());
+    assertEquals(0, Match.getKeysWhereValueMatch(map, Match.never()).size());
   }
 }
