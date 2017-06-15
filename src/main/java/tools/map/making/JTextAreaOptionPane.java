@@ -60,14 +60,11 @@ public class JTextAreaOptionPane {
     windowFrame.getContentPane().add(m_label, BorderLayout.NORTH);
     windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
     windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (JTextAreaOptionPane.this.countDownLatch != null) {
-          JTextAreaOptionPane.this.countDownLatch.countDown();
-        }
-        dispose();
+    okButton.addActionListener(e -> {
+      if (JTextAreaOptionPane.this.countDownLatch != null) {
+        JTextAreaOptionPane.this.countDownLatch.countDown();
       }
+      dispose();
     });
   }
 

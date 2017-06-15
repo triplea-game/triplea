@@ -834,27 +834,23 @@ public class MapPanel extends ImageScrollerLargeView {
 
 class BackgroundDrawer implements Runnable {
   // use a weak reference, if we see the panel is gc'd, then we can stop this thread
-  private final WeakReference<MapPanel> m_mapPanelRef;
+  private MapPanel m_mapPanelRef;
 
   BackgroundDrawer(final MapPanel panel) {
-    m_mapPanelRef = new WeakReference<>(panel);
+    m_mapPanelRef = panel;
   }
 
   public void stop() {
     // the thread will eventually wake up and notice we are done
-    m_mapPanelRef.clear();
+    m_mapPanelRef = null;
   }
 
   @Override
   public void run() {
-    while (m_mapPanelRef.get() != null) {
+    while (m_mapPanelRef != null) {
       final BlockingQueue<Tile> undrawnTiles;
-      MapPanel panel = m_mapPanelRef.get();
-      if (panel == null) {
-        continue;
-      }
+      final MapPanel panel = m_mapPanelRef;
       undrawnTiles = panel.getUndrawnTiles();
-      panel = null;
       final Tile tile;
       try {
         tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
@@ -864,18 +860,14 @@ class BackgroundDrawer implements Runnable {
       if (tile == null) {
         continue;
       }
-      final MapPanel mapPanel = m_mapPanelRef.get();
-      if (mapPanel == null) {
-        continue;
-      }
-      final GameData data = mapPanel.getData();
+      final GameData data = m_mapPanelRef.getData();
       data.acquireReadLock();
       try {
-        tile.getImage(data, mapPanel.getUIContext().getMapData());
+        tile.getImage(data, m_mapPanelRef.getUIContext().getMapData());
       } finally {
         data.releaseReadLock();
       }
-      SwingUtilities.invokeLater(() -> mapPanel.repaint());
+      SwingUtilities.invokeLater(() -> m_mapPanelRef.repaint());
     }
   }
 }
