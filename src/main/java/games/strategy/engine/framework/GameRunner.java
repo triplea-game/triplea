@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -126,7 +127,6 @@ public class GameRunner {
 
 
 
-
   /**
    * Launches the "main" TripleA gui enabled game client.
    * No args will launch a client, additional args can be supplied to specify additional behavior.
@@ -151,6 +151,11 @@ public class GameRunner {
       TripleA.launch(args);
     } else {
       SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+      SwingUtilities.invokeLater(() -> {
+        setupPanelModel.showSelectType();
+        final MainPanel mainPanel = new MainPanel(setupPanelModel);
+        mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+      });
       showMainFrame();
       new Thread(GameRunner::setupLogging).start();
       new Thread(GameRunner::checkLocalSystem).start();
@@ -213,15 +218,18 @@ public class GameRunner {
    */
   public static class Title {
     public String value;
+
     private Title(final String value) {
       this.value = value;
     }
+
     public static Title of(final String value) {
       return new Title(value);
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType, final int messageType) {
+  public static int showConfirmDialog(final String message, final Title title, final int optionType,
+      final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
