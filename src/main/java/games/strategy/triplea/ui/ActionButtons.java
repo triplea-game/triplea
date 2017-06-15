@@ -35,47 +35,47 @@ import games.strategy.util.Tuple;
  */
 public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
-  private final CardLayout m_layout = new CardLayout();
-  private BattlePanel m_battlePanel;
-  private MovePanel m_movePanel;
-  private PurchasePanel m_purchasePanel;
-  private RepairPanel m_repairPanel;
-  private PlacePanel m_placePanel;
-  private TechPanel m_techPanel;
-  private EndTurnPanel m_endTurnPanel;
-  private MoveForumPosterPanel m_moveForumPosterPanel;
-  private ActionPanel m_current;
-  private PoliticsPanel m_politicsPanel;
-  private UserActionPanel m_userActionPanel;
-  private PickTerritoryAndUnitsPanel m_pickTerritoryAndUnitsPanel;
+  private final CardLayout layout = new CardLayout();
+  private BattlePanel battlePanel;
+  private MovePanel movePanel;
+  private PurchasePanel purchasePanel;
+  private RepairPanel repairPanel;
+  private PlacePanel placePanel;
+  private TechPanel techPanel;
+  private EndTurnPanel endTurnPanel;
+  private MoveForumPosterPanel moveForumPosterPanel;
+  private ActionPanel actionPanel;
+  private PoliticsPanel politicsPanel;
+  private UserActionPanel userActionPanel;
+  private PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
 
   /** Creates new ActionButtons. */
   public ActionButtons(final GameData data, final MapPanel map, final MovePanel movePanel, final TripleAFrame parent) {
-    m_battlePanel = new BattlePanel(data, map);
-    m_movePanel = movePanel;
-    m_purchasePanel = new PurchasePanel(data, map);
-    m_repairPanel = new RepairPanel(data, map);
-    m_placePanel = new PlacePanel(data, map, parent);
-    m_techPanel = new TechPanel(data, map);
-    m_endTurnPanel = new EndTurnPanel(data, map);
-    m_moveForumPosterPanel = new MoveForumPosterPanel(data, map);
-    m_politicsPanel = new PoliticsPanel(data, map, parent);
-    m_userActionPanel = new UserActionPanel(data, map, parent);
-    m_pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map, parent);
-    m_current = m_techPanel;
-    setLayout(m_layout);
+    battlePanel = new BattlePanel(data, map);
+    this.movePanel = movePanel;
+    purchasePanel = new PurchasePanel(data, map);
+    repairPanel = new RepairPanel(data, map);
+    placePanel = new PlacePanel(data, map, parent);
+    techPanel = new TechPanel(data, map);
+    endTurnPanel = new EndTurnPanel(data, map);
+    moveForumPosterPanel = new MoveForumPosterPanel(data, map);
+    politicsPanel = new PoliticsPanel(data, map, parent);
+    userActionPanel = new UserActionPanel(data, map, parent);
+    pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map, parent);
+    actionPanel = techPanel;
+    setLayout(layout);
     add(new JLabel(""), "");
-    add(m_battlePanel, m_battlePanel.toString());
-    add(m_movePanel, m_movePanel.toString());
-    add(m_repairPanel, m_repairPanel.toString());
-    add(m_purchasePanel, m_purchasePanel.toString());
-    add(m_placePanel, m_placePanel.toString());
-    add(m_techPanel, m_techPanel.toString());
-    add(m_endTurnPanel, m_endTurnPanel.toString());
-    add(m_moveForumPosterPanel, m_moveForumPosterPanel.toString());
-    add(m_politicsPanel, m_politicsPanel.toString());
-    add(m_userActionPanel, m_userActionPanel.toString());
-    add(m_pickTerritoryAndUnitsPanel, m_pickTerritoryAndUnitsPanel.toString());
+    add(battlePanel, battlePanel.toString());
+    add(this.movePanel, this.movePanel.toString());
+    add(repairPanel, repairPanel.toString());
+    add(purchasePanel, purchasePanel.toString());
+    add(placePanel, placePanel.toString());
+    add(techPanel, techPanel.toString());
+    add(endTurnPanel, endTurnPanel.toString());
+    add(moveForumPosterPanel, moveForumPosterPanel.toString());
+    add(politicsPanel, politicsPanel.toString());
+    add(userActionPanel, userActionPanel.toString());
+    add(pickTerritoryAndUnitsPanel, pickTerritoryAndUnitsPanel.toString());
     // this should not be necceessary
     // but it makes tracking down garbage leaks easier
     // in the profiler
@@ -85,96 +85,96 @@ public class ActionButtons extends JPanel {
     // this will minimize the damage
     map.getUIContext().addActive(() -> {
       removeAll();
-      m_current = null;
-      m_battlePanel.removeAll();
-      m_movePanel.removeAll();
-      m_repairPanel.removeAll();
-      m_purchasePanel.removeAll();
-      m_placePanel.removeAll();
-      m_techPanel.removeAll();
-      m_endTurnPanel.removeAll();
-      m_moveForumPosterPanel.removeAll();
-      m_politicsPanel.removeAll();
-      m_userActionPanel.removeAll();
-      m_pickTerritoryAndUnitsPanel.removeAll();
-      m_battlePanel = null;
-      m_movePanel = null;
-      m_repairPanel = null;
-      m_purchasePanel = null;
-      m_placePanel = null;
-      m_techPanel = null;
-      m_endTurnPanel = null;
-      m_moveForumPosterPanel = null;
-      m_politicsPanel = null;
-      m_userActionPanel = null;
-      m_pickTerritoryAndUnitsPanel = null;
+      actionPanel = null;
+      battlePanel.removeAll();
+      this.movePanel.removeAll();
+      repairPanel.removeAll();
+      purchasePanel.removeAll();
+      placePanel.removeAll();
+      techPanel.removeAll();
+      endTurnPanel.removeAll();
+      moveForumPosterPanel.removeAll();
+      politicsPanel.removeAll();
+      userActionPanel.removeAll();
+      pickTerritoryAndUnitsPanel.removeAll();
+      battlePanel = null;
+      this.movePanel = null;
+      repairPanel = null;
+      purchasePanel = null;
+      placePanel = null;
+      techPanel = null;
+      endTurnPanel = null;
+      moveForumPosterPanel = null;
+      politicsPanel = null;
+      userActionPanel = null;
+      pickTerritoryAndUnitsPanel = null;
     });
   }
 
   void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName) {
-    m_movePanel.setNonCombat(nonCombat);
+    movePanel.setNonCombat(nonCombat);
     final boolean airBorne = stepName.endsWith("AirborneCombatMove");
     final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
-    m_movePanel.setDisplayText(displayText + " Combat Move");
-    m_movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
-    changeTo(id, m_movePanel);
+    movePanel.setDisplayText(displayText + " Combat Move");
+    movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
+    changeTo(id, movePanel);
   }
 
   public void changeToRepair(final PlayerID id) {
-    changeTo(id, m_repairPanel);
+    changeTo(id, repairPanel);
   }
 
   public void changeToProduce(final PlayerID id) {
-    changeTo(id, m_purchasePanel);
+    changeTo(id, purchasePanel);
   }
 
   public void changeToPlace(final PlayerID id) {
-    changeTo(id, m_placePanel);
+    changeTo(id, placePanel);
   }
 
   public void changeToBattle(final PlayerID id, final Map<BattleType, Collection<Territory>> battles) {
-    m_battlePanel.setBattlesAndBombing(battles);
-    changeTo(id, m_battlePanel);
+    battlePanel.setBattlesAndBombing(battles);
+    changeTo(id, battlePanel);
   }
 
   public void changeToPolitics(final PlayerID id) {
-    changeTo(id, m_politicsPanel);
+    changeTo(id, politicsPanel);
   }
 
   public void changeToUserActions(final PlayerID id) {
-    changeTo(id, m_userActionPanel);
+    changeTo(id, userActionPanel);
   }
 
   public void changeToTech(final PlayerID id) {
-    changeTo(id, m_techPanel);
+    changeTo(id, techPanel);
   }
 
   public void changeToEndTurn(final PlayerID id) {
-    changeTo(id, m_endTurnPanel);
+    changeTo(id, endTurnPanel);
   }
 
   public void changeToMoveForumPosterPanel(final PlayerID id) {
-    changeTo(id, m_moveForumPosterPanel);
+    changeTo(id, moveForumPosterPanel);
   }
 
   private void changeTo(final PlayerID id, final ActionPanel newCurrent) {
-    m_current.setActive(false);
-    m_current = newCurrent;
+    actionPanel.setActive(false);
+    actionPanel = newCurrent;
     // newCurrent might be null if we are shutting down
-    if (m_current == null) {
+    if (actionPanel == null) {
       return;
     }
-    m_current.display(id);
-    final String currentName = m_current.toString();
+    actionPanel.display(id);
+    final String currentName = actionPanel.toString();
     SwingUtilities.invokeLater(() -> {
-      if (m_layout != null) {
-        m_layout.show(ActionButtons.this, currentName);
+      if (layout != null) {
+        layout.show(ActionButtons.this, currentName);
       }
     });
   }
 
   public void changeToPickTerritoryAndUnits(final PlayerID id) {
-    changeTo(id, m_pickTerritoryAndUnitsPanel);
+    changeTo(id, pickTerritoryAndUnitsPanel);
   }
 
   /**
@@ -183,7 +183,7 @@ public class ActionButtons extends JPanel {
    * @return null if no move was made.
    */
   public IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {
-    return m_purchasePanel.waitForPurchase(bid);
+    return purchasePanel.waitForPurchase(bid);
   }
 
   /**
@@ -193,7 +193,7 @@ public class ActionButtons extends JPanel {
    */
   public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
-    return m_repairPanel.waitForRepair(bid, allowedPlayersToRepair);
+    return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
   /**
@@ -202,7 +202,7 @@ public class ActionButtons extends JPanel {
    * @return null if no move was made.
    */
   public MoveDescription waitForMove(final IPlayerBridge bridge) {
-    return m_movePanel.waitForMove(bridge);
+    return movePanel.waitForMove(bridge);
   }
 
   /**
@@ -211,7 +211,7 @@ public class ActionButtons extends JPanel {
    * @return null if no tech roll was made.
    */
   public TechRoll waitForTech() {
-    return m_techPanel.waitForTech();
+    return techPanel.waitForTech();
   }
 
   /**
@@ -221,7 +221,7 @@ public class ActionButtons extends JPanel {
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
       final IPoliticsDelegate iPoliticsDelegate) {
-    return m_politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
+    return politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
   }
 
   /**
@@ -231,7 +231,7 @@ public class ActionButtons extends JPanel {
    */
   public UserActionAttachment waitForUserActionAction(final boolean firstRun,
       final IUserActionDelegate iUserActionDelegate) {
-    return m_userActionPanel.waitForUserActionAction(firstRun, iUserActionDelegate);
+    return userActionPanel.waitForUserActionAction(firstRun, iUserActionDelegate);
   }
 
   /**
@@ -240,61 +240,61 @@ public class ActionButtons extends JPanel {
    * @return null if no placement was made.
    */
   public PlaceData waitForPlace(final boolean bid, final IPlayerBridge bridge) {
-    return m_placePanel.waitForPlace(bid, bridge);
+    return placePanel.waitForPlace(bid, bridge);
   }
 
   /**
    * Blocks until the user selects an end-of-turn action.
    */
   public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
-    m_endTurnPanel.waitForEndTurn(frame, bridge);
+    endTurnPanel.waitForEndTurn(frame, bridge);
   }
 
   public void waitForMoveForumPosterPanel(final TripleAFrame frame, final IPlayerBridge bridge) {
-    m_moveForumPosterPanel.waitForDone(frame, bridge);
+    moveForumPosterPanel.waitForDone(frame, bridge);
   }
 
   /**
    * Blocks until the user selects a battle to fight.
    */
   public FightBattleDetails waitForBattleSelection() {
-    return m_battlePanel.waitForBattleSelection();
+    return battlePanel.waitForBattleSelection();
   }
 
   public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
-    return m_pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
+    return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
   }
 
   public ActionPanel getCurrent() {
-    return m_current;
+    return actionPanel;
   }
 
   public BattlePanel getBattlePanel() {
-    return m_battlePanel;
+    return battlePanel;
   }
 
   public AbstractMovePanel getMovePanel() {
-    return m_movePanel;
+    return movePanel;
   }
 
   public PlacePanel getPlacePanel() {
-    return m_placePanel;
+    return placePanel;
   }
 
   public PurchasePanel getPurchasePanel() {
-    return m_purchasePanel;
+    return purchasePanel;
   }
 
   public TechPanel getTechPanel() {
-    return m_techPanel;
+    return techPanel;
   }
 
   public EndTurnPanel getEndTurnPanel() {
-    return m_endTurnPanel;
+    return endTurnPanel;
   }
 
   public MoveForumPosterPanel getMoveForumPosterPanel() {
-    return m_moveForumPosterPanel;
+    return moveForumPosterPanel;
   }
 }
