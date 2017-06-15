@@ -12,7 +12,7 @@ import games.strategy.ui.SwingAction;
 
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
-  protected AbstractAction m_doneAction = SwingAction.of("Done", e -> {
+  protected AbstractAction doneAction = SwingAction.of("Done", e -> {
     if (m_forumPosterComponent.getHasPostedTurnSummary()
         || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
             "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
@@ -22,7 +22,7 @@ public class EndTurnPanel extends AbstractForumPosterPanel {
 
   public EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
+    m_forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
   }
 
   @Override
