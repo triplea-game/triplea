@@ -51,7 +51,7 @@ public class DbUserController implements UserDao {
    * Everything else is stored as secondary, we will parallel write to secondary (ignoring errors),
    * but will only read from the primary.
    */
-  @VisibleForTesting DbUserController(UserDaoPrimarySecondary ... userDaos) {
+  @VisibleForTesting DbUserController(final UserDaoPrimarySecondary ... userDaos) {
     final List<UserDao> primaryDaoList = Arrays.stream(userDaos)
         .filter(UserDaoPrimarySecondary::isPrimary)
         .collect(Collectors.toList());
@@ -80,12 +80,12 @@ public class DbUserController implements UserDao {
   }
 
   @Override
-  public void updateUser(final DbUser user, final HashedPassword password) {
+  public void updateUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
     primaryDao.updateUser(user, password);
     try {
       new Thread(() -> secondaryDaoSet.forEach(dao -> dao.updateUser(user, password))).start();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.warning(
           "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
     }
@@ -96,12 +96,12 @@ public class DbUserController implements UserDao {
    * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
    */
   @Override
-  public void createUser(final DbUser user, final HashedPassword password) {
+  public void createUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
     primaryDao.createUser(user, password);
     try {
       new Thread(() -> secondaryDaoSet.forEach(dao -> dao.createUser(user, password))).start();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.warning("Secondary datasource failure, this is okay if we are still setting "
           + "up a new datasource, error: " + e.getMessage());
     }
@@ -120,7 +120,7 @@ public class DbUserController implements UserDao {
    * @return null if no such user.
    */
   @Override
-  public DbUser getUserByName(final String userName) {
+  public DBUser getUserByName(final String userName) {
     return primaryDao.getUserByName(userName);
   }
 

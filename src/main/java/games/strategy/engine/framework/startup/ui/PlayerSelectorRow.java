@@ -26,6 +26,8 @@ class PlayerSelectorRow {
   private final JComboBox<String> playerTypes;
   private JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
+  private JComponent puIncomeBonus;
+  private final JLabel puIncomeBonusLabel;
   private boolean enabled = true;
   private final JLabel name;
   private final JLabel alliances;
@@ -90,6 +92,14 @@ class PlayerSelectorRow {
     }
     incomePercentageLabel = new JLabel("%");
 
+    // TODO: remove null check for next incompatible release
+    puIncomeBonus = null;
+    if (gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)) != null) {
+      puIncomeBonus =
+          gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
+    }
+    puIncomeBonusLabel = new JLabel("PUs");
+
     setWidgetActivation();
   }
 
@@ -108,11 +118,26 @@ class PlayerSelectorRow {
     // TODO: remove null check for next incompatible release
     if (incomePercentage != null) {
       container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
+          GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
       container.add(incomePercentageLabel,
           new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
               GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
     }
+    // TODO: remove null check for next incompatible release
+    if (puIncomeBonus != null) {
+      container.add(puIncomeBonus, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
+      container.add(puIncomeBonusLabel,
+          new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+              GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+    }
+  }
+
+  void setResourceModifiersVisble(boolean isVisible) {
+    incomePercentage.setVisible(isVisible);
+    incomePercentageLabel.setVisible(isVisible);
+    puIncomeBonus.setVisible(isVisible);
+    puIncomeBonusLabel.setVisible(isVisible);
   }
 
   String getPlayerName() {
@@ -131,6 +156,8 @@ class PlayerSelectorRow {
     name.setEnabled(enabled);
     alliances.setEnabled(enabled);
     enabledCheckBox.setEnabled(disableable.contains(playerName));
+    incomePercentage.setEnabled(enabled);
+    puIncomeBonus.setEnabled(enabled);
     parent.notifyObservers();
   }
 

@@ -15,8 +15,10 @@ import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -190,7 +192,7 @@ public class HelpMenu {
                   : (scroll.getPreferredSize().width > availWidth
                       ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
                       : scroll.getPreferredSize().height))));
-      final JDialog dialog = SwingComponents.newJDialog(unitHelpTitle);
+      final JDialog dialog = new JDialog((JFrame) null, unitHelpTitle);
       dialog.add(scroll, BorderLayout.CENTER);
       final JPanel buttons = new JPanel();
       final JButton button = new JButton(SwingAction.of("OK", event -> {
@@ -232,7 +234,7 @@ public class HelpMenu {
       parentMenu.add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        final JDialog dialog = SwingComponents.newJDialog(gameNotesTitle);
+        final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
         dialog.add(scroll, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
         final JButton button = new JButton(SwingAction.of("OK", event -> {

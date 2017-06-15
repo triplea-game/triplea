@@ -321,7 +321,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = aBridge.getData();
     final Match<Unit> crippledAlliedCarriersMatch = new CompositeMatchAnd<>(Matches.isUnitAllied(player, data),
         Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
-        Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+        Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch =
         new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
             Matches.UnitCanLandOnCarrier, Matches.unitHasMovementLeft);
@@ -355,14 +355,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit u : t.getUnits().getUnits()) {
-        if (Matches.UnitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
+        if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
           if (!Matches.isUnitAllied(player, data).match(u)) {
             continue;
           }
           int bonusMovement = Integer.MIN_VALUE;
           final Collection<Unit> givesBonusUnits = new ArrayList<>();
           final Match<Unit> givesBonusUnit = new CompositeMatchAnd<>(Matches.alliedUnit(player, data),
-              Matches.UnitCanGiveBonusMovementToThisUnit(u));
+              Matches.unitCanGiveBonusMovementToThisUnit(u));
           givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
           if (Matches.UnitIsSea.match(u)) {
             final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<>(givesBonusUnit, Matches.UnitIsLand);
@@ -417,7 +417,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         }
       } else {
         damaged = new HashSet<>(current.getUnits().getMatches(new CompositeMatchAnd<>(damagedUnitsOwned,
-            Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+            Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);
@@ -449,7 +449,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air
     // units to leave while damaged, we need to remove those air units now
     final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired.keySet(),
-        Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+        Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
 
     // now cycle through those now-repaired carriers, and remove allied air from being dependent
     final CompositeChange clearAlliedAir = new CompositeChange();
@@ -476,7 +476,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
     final Match<Unit> repairUnit = new CompositeMatchAnd<>(Matches.alliedUnit(owner, data),
-        Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(unitToBeRepaired));
+        Matches.UnitCanRepairOthers, Matches.unitCanRepairThisUnit(unitToBeRepaired));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.UnitIsSea.match(unitToBeRepaired)) {
       final Match<Unit> repairUnitLand = new CompositeMatchAnd<>(repairUnit, Matches.UnitIsLand);

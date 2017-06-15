@@ -94,14 +94,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     final Match<Unit> defenders = new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data),
-        new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
-            Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
+        new CompositeMatchOr<Unit>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+            Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
     if (m_targets.isEmpty()) {
       m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits,
+          Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
               airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
       targets.addAll(m_targets.keySet());
       m_defendingUnits = targets;
@@ -175,7 +175,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
     if (m_attackingUnits.isEmpty() || (m_defendingUnits.isEmpty()
-        || Match.noneMatch(m_defendingUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()))) {
+        || Match.noneMatch(m_defendingUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()))) {
       endBeforeRolling(bridge);
       return;
     }
@@ -183,7 +183,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits,
+    m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
     m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
     // reverse since stacks are in reverse order
@@ -257,7 +257,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         if (Match.someMatch(m_targets.keySet(), Matches.UnitCanDieFromReachingMaxDamage)) {
           final List<Unit> unitsCanDie = Match.getMatches(m_targets.keySet(), Matches.UnitCanDieFromReachingMaxDamage);
           unitsCanDie
-              .retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+              .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
           if (!unitsCanDie.isEmpty()) {
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
@@ -351,7 +351,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
       for (final String currentTypeAa : m_AAtypes) {
         final Collection<Unit> currentPossibleAa =
-            Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAa));
+            Match.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo =

@@ -30,6 +30,5 @@ public class ProgressWindow extends JWindow {
     setSize(200, 80);
     add(panel, BorderLayout.CENTER);
     pack();
-    setLocationRelativeTo(null);
   }
 }

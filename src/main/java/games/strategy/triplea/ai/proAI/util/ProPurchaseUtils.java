@@ -212,7 +212,7 @@ public class ProPurchaseUtils {
         new HashSet<>(data.getMap().getTerritoriesOwnedBy(player));
     ownedOrHasUnitTerritories.addAll(ProData.myUnitTerritories);
     final List<Territory> potentialTerritories = Match.getMatches(ownedOrHasUnitTerritories,
-        Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, false, false,
+        Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, false, false,
             false));
 
     // Create purchase territory holder for each factory territory
@@ -261,7 +261,7 @@ public class ProPurchaseUtils {
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
 
     final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (territory.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {

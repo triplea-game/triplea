@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 
@@ -125,8 +125,8 @@ class LoginPanel extends JPanel {
   private void logonPressed() {
     final String userName = m_userName.getText();
     final boolean anonymous = m_anonymous.isSelected();
-    if (!DbUser.isValidUserName(userName)) {
-      JOptionPane.showMessageDialog(this, DbUser.getUserNameValidationErrorMessage(userName), "Invalid Username",
+    if (!DBUser.isValidUserName(userName)) {
+      JOptionPane.showMessageDialog(this, DBUser.getUserNameValidationErrorMessage(userName), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length == 0 && !anonymous) {

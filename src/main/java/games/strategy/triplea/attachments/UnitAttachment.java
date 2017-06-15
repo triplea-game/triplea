@@ -1006,7 +1006,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Match.getMatches(units, Matches.UnitCanReceivesAbilityWhenWith()));
+        getUnitTypesFromUnitList(Match.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1023,7 +1023,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
-    if (Match.noneMatch(units, Matches.UnitCanReceivesAbilityWhenWith())) {
+    if (Match.noneMatch(units, Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
     final Collection<Unit> unitsCopy = new ArrayList<>(units);
@@ -1032,7 +1032,7 @@ public class UnitAttachment extends DefaultAttachment {
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
       final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
-          Matches.UnitCanReceivesAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
+          Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
     }
@@ -2980,7 +2980,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.UnitSupportAttachmentCanBeUsedByPlayer(player));
+          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {
           stats.append("can Modify Power Of Other Units, ");

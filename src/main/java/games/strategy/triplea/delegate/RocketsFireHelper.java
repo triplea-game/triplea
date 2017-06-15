@@ -167,7 +167,7 @@ public class RocketsFireHelper {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
         if (current.getUnits().someMatch(new CompositeMatchAnd<>(attackableUnits,
-            Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
+            Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
       }
@@ -191,7 +191,7 @@ public class RocketsFireHelper {
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
         new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
-        Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+        Match.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
@@ -427,7 +427,7 @@ public class RocketsFireHelper {
     if (Match.someMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
       final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
       unitsCanDie
-          .retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+          .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
         // targets.removeAll(unitsCanDie);
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);

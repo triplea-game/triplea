@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.DbUser;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DbUserController;
 import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.net.MacFinder;
@@ -66,9 +66,9 @@ public class LobbyLoginValidatorTest {
         name, mac, address));
     // create a user, verify we can't login with a username that already exists
     new DbUserController().createUser(
-        new DbUser(
-            new DbUser.UserName(name),
-            new DbUser.UserEmail("none@none.none")),
+        new DBUser(
+            new DBUser.UserName(name),
+            new DBUser.UserEmail("none@none.none")),
           new HashedPassword(MD5Crypt.crypt("foo")));
     // we should not be able to login now
     assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
@@ -99,9 +99,9 @@ public class LobbyLoginValidatorTest {
     final String password = "foo";
     final String hashedPassword = MD5Crypt.crypt(password);
     new DbUserController().createUser(
-        new DbUser(
-            new DbUser.UserName(name),
-            new DbUser.UserEmail(email)),
+        new DBUser(
+            new DBUser.UserName(name),
+            new DBUser.UserEmail(email)),
         new HashedPassword(hashedPassword));
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);

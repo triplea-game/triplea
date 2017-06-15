@@ -29,7 +29,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;
@@ -41,59 +41,50 @@ import games.strategy.util.UrlStreams;
 public class MicroWebPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
   public static final String HTTP_BLANK = "http://";
-  private final JButton m_viewSite = new JButton("View Web Site");
-  private final JButton m_testSite = new JButton("Test Web Site");
-  private final JButton m_initGame = new JButton("Initialize Game");
-  // private final JLabel m_idLabel = new JLabel("Site ID:");
-  private final JTextField m_id = new JTextField();
-  private final JLabel m_hostLabel = new JLabel("Host:");
-  private final JComboBox<String> m_hosts;
-  private final JCheckBox m_includeSaveGame = new JCheckBox("Send emails");
-  private final IWebPoster m_bean;
-  private final String[] m_parties;
-  private final JLabel m_gameNameLabel = new JLabel("Game Name:");
-  private final JTextField m_gameName = new JTextField();
+  private final JButton viewSite = new JButton("View Web Site");
+  private final JButton testSite = new JButton("Test Web Site");
+  private final JButton initGame = new JButton("Initialize Game");
+  private final JTextField id = new JTextField();
+  private final JLabel hostLabel = new JLabel("Host:");
+  private final JComboBox<String> hosts;
+  private final JCheckBox includeSaveGame = new JCheckBox("Send emails");
+  private final IWebPoster webPoster;
+  private final String[] parties;
+  private final JLabel gameNameLabel = new JLabel("Game Name:");
+  private final JTextField gameName = new JTextField();
 
   public MicroWebPosterEditor(final IWebPoster bean, final String[] parties) {
-    m_bean = bean;
-    m_parties = parties;
+    webPoster = bean;
+    this.parties = parties;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    add(m_hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    m_bean.addToAllHosts(m_bean.getHost());
-    m_hosts = new JComboBox<>(m_bean.getAllHosts());
-    m_hosts.setEditable(true);
-    m_hosts.setMaximumRowCount(6);
-    add(m_hosts, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    webPoster.addToAllHosts(webPoster.getHost());
+    hosts = new JComboBox<>(webPoster.getAllHosts());
+    hosts.setEditable(true);
+    hosts.setMaximumRowCount(6);
+    add(hosts, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    add(m_viewSite, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+    add(viewSite, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 2, bottomSpace, 0), 0, 0));
     row++;
-    add(m_gameNameLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(gameNameLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(m_gameName, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    add(gameName, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    m_gameName.setText(m_bean.getGameName());
-    add(m_initGame, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+    gameName.setText(webPoster.getGameName());
+    add(initGame, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 2, bottomSpace, 0), 0, 0));
-    if ((m_parties == null) || (m_parties.length == 0)) {
-      m_initGame.setEnabled(false);
+    if ((this.parties == null) || (this.parties.length == 0)) {
+      initGame.setEnabled(false);
     }
     row++;
-    // add(m_idLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new
-    // Insets(0, 0,
-    // bottomSpace, labelSpace), 0, 0));
-    // add(m_id, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-    // new Insets(0, 0,
-    // bottomSpace, 0), 0, 0));
-    // m_id.setText(m_bean.getSiteId());
-    // row++;
-    add(m_includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 0), 0, 0));
-    m_includeSaveGame.setSelected(m_bean.getMailSaveGame());
-    add(m_testSite, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+    includeSaveGame.setSelected(webPoster.getMailSaveGame());
+    add(testSite, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 2, bottomSpace, 0), 0, 0));
     setupListeners();
   }
@@ -102,26 +93,26 @@ public class MicroWebPosterEditor extends EditorPanel {
    * Configures the listeners for the gui components.
    */
   private void setupListeners() {
-    m_viewSite.addActionListener(e -> ((IWebPoster) getBean()).viewSite());
-    m_testSite.addActionListener(e -> testSite());
-    m_initGame.addActionListener(e -> initGame());
-    m_hosts.addActionListener(e -> fireEditorChanged());
+    viewSite.addActionListener(e -> ((IWebPoster) getBean()).viewSite());
+    testSite.addActionListener(e -> testSite());
+    initGame.addActionListener(e -> initGame());
+    hosts.addActionListener(e -> fireEditorChanged());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-    // m_hosts.getDocument().addDocumentListener(docListener);
-    m_id.getDocument().addDocumentListener(docListener);
-    m_gameName.getDocument().addDocumentListener(docListener);
+    // hosts.getDocument().addDocumentListener(docListener);
+    id.getDocument().addDocumentListener(docListener);
+    gameName.getDocument().addDocumentListener(docListener);
   }
 
   private void initGame() {
-    if (m_parties == null) {
+    if (parties == null) {
       return;
     }
     final String hostUrl;
-    if (!((String) m_hosts.getSelectedItem()).endsWith("/")) {
-      hostUrl = (String) m_hosts.getSelectedItem();
+    if (!((String) hosts.getSelectedItem()).endsWith("/")) {
+      hostUrl = (String) hosts.getSelectedItem();
     } else {
-      hostUrl = m_hosts.getSelectedItem() + "/";
+      hostUrl = hosts.getSelectedItem() + "/";
     }
     final ArrayList<String> players = new ArrayList<>();
     try {
@@ -145,7 +136,7 @@ public class MicroWebPosterEditor extends EditorPanel {
         players.set(i, players.get(i).substring(0, players.get(i).indexOf("\t")));
       }
     } catch (final Exception ex) {
-      JOptionPane.showMessageDialog(MainFrame.getInstance(),
+      JOptionPane.showMessageDialog(null,
           "Retrieving players from " + hostUrl + " failed:\n" + ex.toString(), "Error",
           JOptionPane.INFORMATION_MESSAGE);
       return;
@@ -154,9 +145,9 @@ public class MicroWebPosterEditor extends EditorPanel {
     window.setLayout(new GridBagLayout());
     window.getContentPane().add(new JLabel("Select Players For Each Nation:"), new GridBagConstraints(0, 0, 2, 1, 0, 0,
         GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-    final List<JComboBox<String>> comboBoxes = new ArrayList<>(m_parties.length);
-    for (int i = 0; i < m_parties.length; i++) {
-      final JLabel label = new JLabel(m_parties[i] + ": ");
+    final List<JComboBox<String>> comboBoxes = new ArrayList<>(parties.length);
+    for (int i = 0; i < parties.length; i++) {
+      final JLabel label = new JLabel(parties[i] + ": ");
       comboBoxes.add(i, new JComboBox<>());
       for (int p = 0; p < players.size(); p++) {
         comboBoxes.get(i).addItem(players.get((p)));
@@ -179,33 +170,39 @@ public class MicroWebPosterEditor extends EditorPanel {
       window.dispose();
       final StringBuilder sb = new StringBuilder();
       for (int i = 0; i < comboBoxes.size(); i++) {
-        sb.append(m_parties[i]);
+        sb.append(parties[i]);
         sb.append(": ");
         sb.append(comboBoxes.get(i).getSelectedItem());
         sb.append("\n");
       }
-      HttpEntity entity = MultipartEntityBuilder.create()
-          .addTextBody("siteid", m_id.getText())
+      final HttpEntity entity = MultipartEntityBuilder.create()
+          .addTextBody("siteid", id.getText())
           .addTextBody("players", sb.toString())
-          .addTextBody("gamename", m_gameName.getText())
+          .addTextBody("gamename", gameName.getText())
           .build();
       try {
         final String response = TripleAWebPoster.executePost(hostUrl, "create.php", entity);
         if (response.toLowerCase().contains("success")) {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized",
+          GameRunner.showMessageDialog(
+              response,
+              GameRunner.Title.of("Game initialized"),
               JOptionPane.INFORMATION_MESSAGE);
         } else {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + response, "Error",
-              JOptionPane.INFORMATION_MESSAGE);
+          GameRunner.showMessageDialog(
+              "Game initialized failed",
+              GameRunner.Title.of("Error"),
+              JOptionPane.ERROR_MESSAGE);
         }
       } catch (final Exception ex) {
-        JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + ex.toString(),
-            "Error", JOptionPane.INFORMATION_MESSAGE);
+        GameRunner.showMessageDialog(
+            "Game initialization failed:\n" + ex.toString(),
+            GameRunner.Title.of("Error"),
+            JOptionPane.ERROR_MESSAGE);
       }
     });
-    window.getContentPane().add(btnOk, new GridBagConstraints(0, m_parties.length + 1, 1, 1, 0, 0,
+    window.getContentPane().add(btnOk, new GridBagConstraints(0, parties.length + 1, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(30, 20, 20, 10), 0, 0));
-    window.getContentPane().add(btnClose, new GridBagConstraints(1, m_parties.length + 1, 1, 1, 0, 0,
+    window.getContentPane().add(btnClose, new GridBagConstraints(1, parties.length + 1, 1, 1, 0, 0,
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(30, 10, 20, 20), 0, 0));
     window.pack();
     window.setLocationRelativeTo(null);
@@ -217,7 +214,8 @@ public class MicroWebPosterEditor extends EditorPanel {
    */
   void testSite() {
     final IWebPoster poster = (IWebPoster) getBean();
-    final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
+
+    final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
     final Runnable runnable = () -> {
       Exception tmpException = null;
@@ -240,8 +238,10 @@ public class MicroWebPosterEditor extends EditorPanel {
       // now that we have a result, marshall it back unto the swing thread
       SwingUtilities.invokeLater(() -> {
         try {
-          final String message = (exception != null) ? exception.toString() : m_bean.getServerMessage();
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), message, "Test Turn Summary Post",
+          final String message = (exception != null) ? exception.toString() : webPoster.getServerMessage();
+          GameRunner.showMessageDialog(
+              message,
+              GameRunner.Title.of("Test Turn Summary Post"),
               JOptionPane.INFORMATION_MESSAGE);
         } catch (final HeadlessException e) {
           // should never happen in a GUI app
@@ -255,24 +255,24 @@ public class MicroWebPosterEditor extends EditorPanel {
 
   @Override
   public boolean isBeanValid() {
-    final boolean hostValid = validateText((String) m_hosts.getSelectedItem(), m_hostLabel,
+    final boolean hostValid = validateText((String) hosts.getSelectedItem(), hostLabel,
         text -> text != null && text.length() > 0 && !text.equalsIgnoreCase(HTTP_BLANK));
-    final boolean idValid = validateTextFieldNotEmpty(m_gameName, m_gameNameLabel);
+    final boolean idValid = validateTextFieldNotEmpty(gameName, gameNameLabel);
     final boolean allValid = hostValid && idValid;
-    m_testSite.setEnabled(allValid);
-    m_initGame.setEnabled(allValid);
-    m_viewSite.setEnabled(hostValid);
+    testSite.setEnabled(allValid);
+    initGame.setEnabled(allValid);
+    viewSite.setEnabled(hostValid);
     return allValid;
   }
 
   @Override
   public IBean getBean() {
-    m_bean.setHost((String) m_hosts.getSelectedItem());
-    m_bean.addToAllHosts((String) m_hosts.getSelectedItem());
-    m_bean.getAllHosts().remove(HTTP_BLANK);
-    m_bean.setSiteId(m_id.getText());
-    m_bean.setMailSaveGame(m_includeSaveGame.isSelected());
-    m_bean.setGameName(m_gameName.getText());
-    return m_bean;
+    webPoster.setHost((String) hosts.getSelectedItem());
+    webPoster.addToAllHosts((String) hosts.getSelectedItem());
+    webPoster.getAllHosts().remove(HTTP_BLANK);
+    webPoster.setSiteId(id.getText());
+    webPoster.setMailSaveGame(includeSaveGame.isSelected());
+    webPoster.setGameName(gameName.getText());
+    return webPoster;
   }
 }

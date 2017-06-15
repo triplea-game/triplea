@@ -173,7 +173,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
-              new CompositeMatchAnd<>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
+              new CompositeMatchAnd<>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<>(Matches.UnitIsStrategicBomber);
           final boolean canCreateAirBattle =
@@ -252,7 +252,7 @@ public class MovePerformer implements Serializable {
                     Matches
                         .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
                             id),
-                    Matches.TerritoryIsBlitzable(id, data)))) {
+                    Matches.territoryIsBlitzable(id, data)))) {
               if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
                 continue;
               }

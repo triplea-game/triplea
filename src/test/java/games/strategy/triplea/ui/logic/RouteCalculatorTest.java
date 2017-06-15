@@ -9,23 +9,15 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.triplea.ui.MapPanel;
-import games.strategy.triplea.ui.mapdata.MapData;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RouteCalculatorTest {
 
-  @Mock
-  private MapPanel mapPanel;
-  @Mock
-  private MapData mapData;
-
   @Test
   public void testRouteTranslation() {
-    Point[] inputArray = new Point[] {point(1, 4), point(1001, 1001), point(600, 600)};
+    final Point[] inputArray = new Point[] {point(1, 4), point(1001, 1001), point(600, 600)};
     assertArrayEquals(new Point[] {point(1, 4), point(1, 1), point(-400, -400)},
         new RouteCalculator(true, true, 1000, 1000).getTranslatedRoute(inputArray));
     assertArrayEquals(new Point[] {point(1, 4), point(1, 1001), point(-400, 600)},
@@ -35,15 +27,15 @@ public class RouteCalculatorTest {
     assertArrayEquals(inputArray, new RouteCalculator(false, false, 1000, 1000).getTranslatedRoute(inputArray));
   }
 
-  private static Point point(double x, double y) {
+  private static Point point(final double x, final double y) {
     return new Point(x, y);
   }
 
   @Test
   public void testClosestPoint() {
-    Point origin = new Point();
-    Point closestPoint = new Point(1, 1);
-    List<Point> pool = new ArrayList<>();
+    final Point origin = new Point();
+    final Point closestPoint = new Point(1, 1);
+    final List<Point> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
       pool.add(point((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
     }
@@ -53,7 +45,7 @@ public class RouteCalculatorTest {
 
   @Test
   public void testPossiblePoints() {
-    List<Point> possiblePoints = new ArrayList<>();
+    final List<Point> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of
     // x and y values 0, -mapWidth/height, +mapWidth/Height
     possiblePoints.add(point(-1000, -1000));
@@ -71,11 +63,12 @@ public class RouteCalculatorTest {
     checkPoints(8, possiblePoints, false, false);
   }
 
-  private static void checkPoints(int offset, List<Point> expected, boolean isInfiniteX, boolean isInfiniteY) {
-    List<Point> calculatedPoints =
+  private static void checkPoints(final int offset, final List<Point> expected, final boolean isInfiniteX,
+      final boolean isInfiniteY) {
+    final List<Point> calculatedPoints =
         new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
-    for (Point point : calculatedPoints) {
+    for (final Point point : calculatedPoints) {
       assertTrue(expected.contains(point));
     }
   }
@@ -92,7 +85,7 @@ public class RouteCalculatorTest {
     final Point[] s = new Point[] {point(0, 1000), point(1, 1001)};
     final Point[] se = new Point[] {point(1000, 1000), point(1001, 1001)};
 
-    List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
+    final List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
     // This may be changed along with the RouteOptimizer#getPossiblePoints method
     assertArrayEquals(input, points.get(0));
     assertArrayEquals(nw, points.get(1));
