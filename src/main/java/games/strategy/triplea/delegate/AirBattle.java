@@ -42,7 +42,6 @@ public class AirBattle extends AbstractBattle {
   protected static final String DEFENDERS_FIRE = "Defenders Fire";
   protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
   protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
-  // protected final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
   protected final ExecutionStack m_stack = new ExecutionStack();
   protected List<String> m_steps;
   protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
@@ -150,7 +149,6 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          // getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
           if (!m_intercept) {
             return;
           }

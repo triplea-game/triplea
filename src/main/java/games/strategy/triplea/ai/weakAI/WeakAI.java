@@ -253,7 +253,7 @@ public class WeakAI extends AbstractAI {
         s_logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
         continue;
       }
-      String result;
+      final String result;
       if (transportsToLoad == null) {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {
@@ -1003,7 +1003,6 @@ public class WeakAI extends AbstractAI {
             purchase.add(rule, transports);
             continue;
           }
-          // goodNumberOfTransports = ((int) (amphibRoute.getTerritories().size() * 2.6)) + 1;
         }
         final boolean buyBecauseTransport =
             (Math.random() < 0.7 && transportCount < goodNumberOfTransports) || Math.random() < 0.10;

@@ -53,7 +53,7 @@ import games.strategy.util.Tuple;
  * was being dduplicated all over the place.
  */
 public class BattleCalculator {
-  private static Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
+  private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
   public static void clearOOLCache() {
     oolCache.clear();
@@ -193,7 +193,6 @@ public class BattleCalculator {
     final Triple<Integer, Integer, Boolean> triple =
         DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, data, false);
-    // final int totalPower = triple.getFirst();
     final boolean allSameAttackPower = triple.getThird();
     // multiple HP units need to be counted multiple times:
     final List<Unit> planesList = new ArrayList<>();
@@ -475,13 +474,13 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
-    ITripleAPlayer tripleaPlayer;
+    final ITripleAPlayer tripleaPlayer;
     if (player.isNull()) {
       tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     } else {
       tripleaPlayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
     }
-    Map<Unit, Collection<Unit>> dependents;
+    final Map<Unit, Collection<Unit>> dependents;
     if (headLess) {
       dependents = Collections.emptyMap();
     } else {
@@ -963,11 +962,6 @@ public class BattleCalculator {
    * Therefore, this map should NOT be used for Purchasing information!
    */
   public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
-    /*
-     * if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() >
-     * 0)
-     * return s_costsForTuvForAllPlayersMergedAndAveraged;
-     */
     final Resource pus;
     data.acquireReadLock();
     try {
@@ -1345,13 +1339,12 @@ public class BattleCalculator {
       final Collection<TerritoryEffect> territoryEffects) {
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
-    int rolls;
+    final int rolls;
     if (defending) {
       rolls = ua.getDefenseRolls(current.getOwner());
     } else {
       rolls = ua.getAttackRolls(current.getOwner());
     }
-    // int strength = 0;
     int strengthWithoutSupport = 0;
     // Find the strength the unit has without support
     // lhtr heavy bombers take best of n dice for both attack and defense
@@ -1367,7 +1360,7 @@ public class BattleCalculator {
       strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
     } else {
       for (int i = 0; i < rolls; i++) {
-        int tempStrength;
+        final int tempStrength;
         if (defending) {
           tempStrength = ua.getDefense(current.getOwner());
         } else {
