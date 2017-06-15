@@ -143,6 +143,7 @@ public class GameRunner {
       GameRunner.startNewTripleA(Memory.getMaxMemoryInBytes());
       return; // close this current instance down without further processing
     }
+    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
 
     SwingUtilities.invokeLater(() -> {
       setupPanelModel.showSelectType();
