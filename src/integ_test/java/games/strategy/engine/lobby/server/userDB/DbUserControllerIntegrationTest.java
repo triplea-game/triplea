@@ -23,7 +23,8 @@ public class DbUserControllerIntegrationTest {
     testCreate(Database::getDerbyConnection, new DbUserController());
   }
 
-  private void testCreate(final Supplier<Connection> connectionSupplier, final DbUserController controller) throws Exception {
+  private void testCreate(final Supplier<Connection> connectionSupplier, final DbUserController controller)
+      throws Exception {
     final DBUser user = createUser();
     final int startCount = getUserCount(connectionSupplier);
 
