@@ -36,7 +36,7 @@ import games.strategy.util.Tuple;
 public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
-  private BattlePanel battlePanell;
+  private BattlePanel battlePanel;
   private MovePanel movePanel;
   private PurchasePanel purchasePanel;
   private RepairPanel repairPanel;
@@ -51,7 +51,7 @@ public class ActionButtons extends JPanel {
 
   /** Creates new ActionButtons. */
   public ActionButtons(final GameData data, final MapPanel map, final MovePanel movePanel, final TripleAFrame parent) {
-    battlePanell = new BattlePanel(data, map);
+    battlePanel = new BattlePanel(data, map);
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
     repairPanel = new RepairPanel(data, map);
@@ -65,7 +65,7 @@ public class ActionButtons extends JPanel {
     actionPanel = techPanel;
     setLayout(layout);
     add(new JLabel(""), "");
-    add(battlePanell, battlePanell.toString());
+    add(battlePanel, battlePanel.toString());
     add(this.movePanel, this.movePanel.toString());
     add(repairPanel, repairPanel.toString());
     add(purchasePanel, purchasePanel.toString());
@@ -86,7 +86,7 @@ public class ActionButtons extends JPanel {
     map.getUIContext().addActive(() -> {
       removeAll();
       actionPanel = null;
-      battlePanell.removeAll();
+      battlePanel.removeAll();
       this.movePanel.removeAll();
       repairPanel.removeAll();
       purchasePanel.removeAll();
@@ -97,7 +97,7 @@ public class ActionButtons extends JPanel {
       politicsPanel.removeAll();
       userActionPanel.removeAll();
       pickTerritoryAndUnitsPanel.removeAll();
-      battlePanell = null;
+      battlePanel = null;
       this.movePanel = null;
       repairPanel = null;
       purchasePanel = null;
@@ -133,8 +133,8 @@ public class ActionButtons extends JPanel {
   }
 
   public void changeToBattle(final PlayerID id, final Map<BattleType, Collection<Territory>> battles) {
-    battlePanell.setBattlesAndBombing(battles);
-    changeTo(id, battlePanell);
+    battlePanel.setBattlesAndBombing(battles);
+    changeTo(id, battlePanel);
   }
 
   public void changeToPolitics(final PlayerID id) {
@@ -258,7 +258,7 @@ public class ActionButtons extends JPanel {
    * Blocks until the user selects a battle to fight.
    */
   public FightBattleDetails waitForBattleSelection() {
-    return battlePanell.waitForBattleSelection();
+    return battlePanel.waitForBattleSelection();
   }
 
   public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
@@ -271,7 +271,7 @@ public class ActionButtons extends JPanel {
   }
 
   public BattlePanel getBattlePanel() {
-    return battlePanell;
+    return battlePanel;
   }
 
   public AbstractMovePanel getMovePanel() {
