@@ -15,6 +15,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -130,7 +131,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void createComponents() {
     engineVersionLabel = new JLabel("Engine Version:");
-    String version = ClientContext.engineVersion().getFullVersion();
+    final String version = ClientContext.engineVersion().getFullVersion();
     engineVersionText = new JLabel(version);
     nameLabel = new JLabel("Map Name:");
     versionLabel = new JLabel("Map Version:");
@@ -174,7 +175,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    JButton downloadMapButton =
+    final JButton downloadMapButton =
         SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
             DownloadMapsWindow::showDownloadMapsWindow);
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
@@ -187,11 +188,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
 
-  private static GridBagConstraints buildGridCell(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 1);
   }
 
-  private static GridBagConstraints buildGridRow(int x, int y, Insets insets) {
+  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
     return buildGrid(x, y, insets, 2);
   }
 
@@ -227,7 +228,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
         final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
           final JPopupMenu menu = new JPopupMenu();
-          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
+          menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
               SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
@@ -345,9 +346,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
     setWidgetActivation();
   }
 
-  public static File selectGameFile(final Component parent) {
+  public static File selectGameFile() {
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
+      final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       SaveGameFileChooser.ensureMapsFolderExists();
       fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
@@ -358,17 +359,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (fileName == null) {
         return null;
       } else {
-        final File f = new File(dirName, fileName);
-        return f;
+        return new File(dirName, fileName);
       }
     } else {
-      // Non-Mac platforms should use the normal Swing JFileChooser
-      final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(parent));
-      if (rVal != JFileChooser.APPROVE_OPTION) {
-        return null;
-      }
-      return fileChooser.getSelectedFile();
+      return GameRunner.showSaveGameFileChooser().orElse(null);
     }
   }
 
@@ -377,8 +371,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
-      final File file =
-          selectGameFile(SystemProperties.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
+      final File file = selectGameFile();
       if (file == null || !file.exists()) {
         return;
       }
