@@ -19,14 +19,14 @@ import games.strategy.triplea.util.PlayerOrderComparator;
  */
 public abstract class AbstractStatPanel extends JPanel {
   private static final long serialVersionUID = 1906611524937548809L;
-  protected GameData m_data;
+  protected GameData gameData;
 
   /**
    * Does not call initLayout() because initLayout may depend on some private tables being created with GameData first.
    * So make sure you call initLayout() yourself.
    */
   public AbstractStatPanel(final GameData data) {
-    m_data = data;
+    gameData = data;
   }
 
   /**
@@ -41,8 +41,8 @@ public abstract class AbstractStatPanel extends JPanel {
    */
   public Collection<String> getAlliances() {
     final Collection<String> rVal = new TreeSet<>();
-    for (final String alliance : m_data.getAllianceTracker().getAlliances()) {
-      if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
+    for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
+      if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
         rVal.add(alliance);
       }
     }
@@ -50,8 +50,8 @@ public abstract class AbstractStatPanel extends JPanel {
   }
 
   public List<PlayerID> getPlayers() {
-    final List<PlayerID> players = new ArrayList<>(m_data.getPlayerList().getPlayers());
-    Collections.sort(players, new PlayerOrderComparator(m_data));
+    final List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+    Collections.sort(players, new PlayerOrderComparator(gameData));
     return players;
   }
 

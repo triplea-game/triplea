@@ -266,7 +266,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    *        the "game over" text to be displayed to each user.
    */
   public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge) {
-    // TO NOT USE m_bridge, because it might be null here! use aBridge instead.
+    // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
     if (!m_gameOver) {
@@ -279,7 +279,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
-      // means our local copy of m_bridge could be null.
+      // means our local copy of playerBridge could be null.
       getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {

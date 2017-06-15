@@ -82,7 +82,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_data = data;
+    gameData = data;
     territoryChanged(null);
   }
 
@@ -95,7 +95,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     }
     add(m_showOdds);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    String labelText;
+    final String labelText;
     if (ta == null) {
       labelText = "<html>" + territory.getName() + "<br>Water Territory" + "<br><br></html>";
     } else {
@@ -103,14 +103,14 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     }
     add(new JLabel(labelText));
     Collection<Unit> unitsInTerritory;
-    m_data.acquireReadLock();
+    gameData.acquireReadLock();
     try {
       unitsInTerritory = territory.getUnits().getUnits();
     } finally {
-      m_data.releaseReadLock();
+      gameData.releaseReadLock();
     }
     add(new JLabel("Units: " + unitsInTerritory.size()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
+    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, gameData));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);
     refresh();

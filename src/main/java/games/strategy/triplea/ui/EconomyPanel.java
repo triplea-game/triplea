@@ -49,13 +49,13 @@ public class EconomyPanel extends AbstractStatPanel {
 
     public ResourceTableModel() {
       setResourceCollums();
-      m_data.addDataChangeListener(this);
+      gameData.addDataChangeListener(this);
       m_isDirty = true;
     }
 
     private void setResourceCollums() {
       final List<IStat> statList = new ArrayList<>();
-      for (final Resource resource : m_data.getResourceList().getResources()) {
+      for (final Resource resource : gameData.getResourceList().getResources()) {
         if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.VPS)) {
           continue;
         }
@@ -74,7 +74,7 @@ public class EconomyPanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
@@ -84,7 +84,7 @@ public class EconomyPanel extends AbstractStatPanel {
           m_collectedData[row][0] = player.getName();
           for (int i = 0; i < m_statsResource.length; i++) {
             m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
+                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, gameData));
           }
           row++;
         }
@@ -94,12 +94,12 @@ public class EconomyPanel extends AbstractStatPanel {
           m_collectedData[row][0] = alliance;
           for (int i = 0; i < m_statsResource.length; i++) {
             m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
+                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, gameData));
           }
           row++;
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
     }
 
@@ -129,20 +129,20 @@ public class EconomyPanel extends AbstractStatPanel {
       if (!m_isDirty) {
         return m_collectedData.length;
       } else {
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
-          return m_data.getPlayerList().size() + getAlliances().size();
+          return gameData.getPlayerList().size() + getAlliances().size();
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
       }
     }
 
     public synchronized void setGameData(final GameData data) {
       synchronized (this) {
-        m_data.removeDataChangeListener(this);
-        m_data = data;
-        m_data.addDataChangeListener(this);
+        gameData.removeDataChangeListener(this);
+        gameData = data;
+        gameData.addDataChangeListener(this);
         m_isDirty = true;
       }
       repaint();
@@ -151,7 +151,7 @@ public class EconomyPanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_data = data;
+    gameData = data;
     m_resourceModel.setGameData(data);
     m_resourceModel.gameDataChanged(null);
   }
