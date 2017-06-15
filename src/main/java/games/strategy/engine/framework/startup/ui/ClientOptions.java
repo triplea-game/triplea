@@ -6,7 +6,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -23,10 +22,10 @@ import games.strategy.ui.SwingAction;
  */
 public class ClientOptions extends JDialog {
   private static final long serialVersionUID = 8036055679545539809L;
-  private JTextField m_nameField;
-  private JTextField m_addressField;
-  private IntTextField m_portField;
-  private boolean m_okPressed;
+  private JTextField nameField;
+  private JTextField addressField;
+  private IntTextField portField;
+  private boolean okPressed;
 
   /**
    * Creates a new instance of ClientOptions.
@@ -36,16 +35,16 @@ public class ClientOptions extends JDialog {
     super(JOptionPane.getFrameForComponent(parent), "Client options", true);
     initComponents();
     layoutComponents();
-    m_nameField.setText(defaultName);
-    m_portField.setValue(defaultPort);
-    m_addressField.setText(defaultAddress);
+    nameField.setText(defaultName);
+    portField.setValue(defaultPort);
+    addressField.setText(defaultAddress);
     pack();
   }
 
   @Override
   public String getName() {
     // fixes crash by truncating names to 20 characters
-    final String s = m_nameField.getText().trim();
+    final String s = nameField.getText().trim();
     if (s.length() > 20) {
       return s.substring(0, 20);
     }
@@ -53,18 +52,18 @@ public class ClientOptions extends JDialog {
   }
 
   public String getAddress() {
-    return m_addressField.getText().trim();
+    return addressField.getText().trim();
   }
 
   public int getPort() {
-    return m_portField.getValue();
+    return portField.getValue();
   }
 
   private void initComponents() {
-    m_nameField = new JTextField(10);
-    m_addressField = new JTextField(10);
-    m_portField = new IntTextField(0, Integer.MAX_VALUE);
-    m_portField.setColumns(7);
+    nameField = new JTextField(10);
+    addressField = new JTextField(10);
+    portField = new IntTextField(0, Integer.MAX_VALUE);
+    portField.setColumns(7);
   }
 
   private void layoutComponents() {
@@ -92,15 +91,15 @@ public class ClientOptions extends JDialog {
     layout.setConstraints(portLabel, labelConstraints);
     layout.setConstraints(nameLabel, labelConstraints);
     layout.setConstraints(addressLabel, labelConstraints);
-    layout.setConstraints(m_portField, fieldConstraints);
-    layout.setConstraints(m_nameField, fieldConstraints);
-    layout.setConstraints(m_addressField, fieldConstraints);
+    layout.setConstraints(portField, fieldConstraints);
+    layout.setConstraints(nameField, fieldConstraints);
+    layout.setConstraints(addressField, fieldConstraints);
     fields.add(nameLabel);
-    fields.add(m_nameField);
+    fields.add(nameField);
     fields.add(portLabel);
-    fields.add(m_portField);
+    fields.add(portField);
     fields.add(addressLabel);
-    fields.add(m_addressField);
+    fields.add(addressField);
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
     buttons.add(new JButton(m_okAction));
@@ -109,12 +108,12 @@ public class ClientOptions extends JDialog {
   }
 
   public boolean getOKPressed() {
-    return m_okPressed;
+    return okPressed;
   }
 
   private final Action m_okAction = SwingAction.of("Connect", e -> {
     setVisible(false);
-    m_okPressed = true;
+    okPressed = true;
   });
   private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 }

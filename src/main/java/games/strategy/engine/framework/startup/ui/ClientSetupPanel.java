@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -32,10 +31,10 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
-  private final Insets BUTTON_INSETS = new Insets(0, 0, 0, 0);
-  private final ClientModel m_model;
-  private List<PlayerRow> m_playerRows = Collections.emptyList();
-  private final IRemoteModelListener m_listener = new IRemoteModelListener() {
+  private final Insets buttonInsets = new Insets(0, 0, 0, 0);
+  private final ClientModel clientModel;
+  private List<PlayerRow> playerRows = Collections.emptyList();
+  private final IRemoteModelListener listener = new IRemoteModelListener() {
     @Override
     public void playersTakenChanged() {}
 
@@ -46,28 +45,28 @@ public class ClientSetupPanel extends SetupPanel {
   };
 
   public ClientSetupPanel(final ClientModel model) {
-    m_model = model;
+    clientModel = model;
     layoutComponents();
     setupListeners();
     setWidgetActivation();
   }
 
   private void internalPlayersChanged() {
-    final Map<String, String> players = m_model.getPlayerToNodesMapping();
+    final Map<String, String> players = clientModel.getPlayerToNodesMapping();
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
-        m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
-    final Map<String, Boolean> enabledPlayers = m_model.getPlayersEnabledListing();
-    final Collection<String> disableable = m_model.getPlayersAllowedToBeDisabled();
-    if (!m_model.getIsServerHeadlessCached()) {
+        clientModel.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+    final Map<String, Boolean> enabledPlayers = clientModel.getPlayersEnabledListing();
+    final Collection<String> disableable = clientModel.getPlayersAllowedToBeDisabled();
+    if (!clientModel.getIsServerHeadlessCached()) {
       // clients only get to change bot settings
       disableable.clear();
     }
-    m_playerRows = new ArrayList<>();
+    playerRows = new ArrayList<>();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
           IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
-      m_playerRows.add(playerRow);
+      playerRows.add(playerRow);
       playerRow.update(players.get(name), disableable.contains(name));
     }
     layoutComponents();
@@ -87,7 +86,7 @@ public class ClientSetupPanel extends SetupPanel {
     final Insets lastSpacing = new Insets(3, 16, 0, 16);
     int gridx = 0;
     final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
-    final boolean disableable = m_model.getPlayersAllowedToBeDisabled().isEmpty();
+    final boolean disableable = clientModel.getPlayersAllowedToBeDisabled().isEmpty();
     if (!disableable) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
       enabledPlayerConstraints.gridx = gridx++;
@@ -131,7 +130,7 @@ public class ClientSetupPanel extends SetupPanel {
     // allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
-    for (final PlayerRow row : m_playerRows) {
+    for (final PlayerRow row : playerRows) {
       if (!disableable) {
         layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
         players.add(row.getEnabledPlayer());
@@ -150,7 +149,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    m_model.setRemoteModelListener(m_listener);
+    clientModel.setRemoteModelListener(listener);
   }
 
   @Override
@@ -158,12 +157,12 @@ public class ClientSetupPanel extends SetupPanel {
 
   @Override
   public void shutDown() {
-    m_model.shutDown();
+    clientModel.shutDown();
   }
 
   @Override
   public void cancel() {
-    m_model.cancel();
+    clientModel.cancel();
   }
 
   @Override
@@ -178,7 +177,7 @@ public class ClientSetupPanel extends SetupPanel {
     private final JLabel m_playerLabel;
     private JComponent m_playerComponent;
     private final String m_localPlayerType;
-    private JLabel m_alliance;
+    private final JLabel m_alliance;
 
     PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType,
         final boolean enabled) {
@@ -220,13 +219,13 @@ public class ClientSetupPanel extends SetupPanel {
       if (playerName == null) {
         m_playerLabel.setText("-");
         final JButton button = new JButton(m_takeAction);
-        button.setMargin(BUTTON_INSETS);
+        button.setMargin(buttonInsets);
         m_playerComponent = button;
       } else {
         m_playerLabel.setText(playerName);
-        if (playerName.equals(m_model.getMessenger().getLocalNode().getName())) {
+        if (playerName.equals(clientModel.getMessenger().getLocalNode().getName())) {
           final JButton button = new JButton(m_dontTakeAction);
-          button.setMargin(BUTTON_INSETS);
+          button.setMargin(buttonInsets);
           m_playerComponent = button;
         } else {
           m_playerComponent = new JLabel("");
@@ -244,7 +243,7 @@ public class ClientSetupPanel extends SetupPanel {
     }
 
     public boolean isPlaying() {
-      return m_playerLabel.getText().equals(m_model.getMessenger().getLocalNode().getName());
+      return m_playerLabel.getText().equals(clientModel.getMessenger().getLocalNode().getName());
     }
 
     public JComponent getPlayerComponent() {
@@ -260,7 +259,7 @@ public class ClientSetupPanel extends SetupPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        m_model.takePlayer(m_playerNameLabel.getText());
+        clientModel.takePlayer(m_playerNameLabel.getText());
       }
     };
     private final Action m_dontTakeAction = new AbstractAction("Dont Play") {
@@ -268,16 +267,16 @@ public class ClientSetupPanel extends SetupPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        m_model.releasePlayer(m_playerNameLabel.getText());
+        clientModel.releasePlayer(m_playerNameLabel.getText());
       }
     };
     private final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (m_enabledCheckBox.isSelected()) {
-          m_model.enablePlayer(m_playerNameLabel.getText());
+          clientModel.enablePlayer(m_playerNameLabel.getText());
         } else {
-          m_model.disablePlayer(m_playerNameLabel.getText());
+          clientModel.disablePlayer(m_playerNameLabel.getText());
         }
         setWidgetActivation(true);
       }
@@ -286,27 +285,27 @@ public class ClientSetupPanel extends SetupPanel {
 
   @Override
   public IChatPanel getChatPanel() {
-    return m_model.getChatPanel();
+    return clientModel.getChatPanel();
   }
 
   @Override
   public List<Action> getUserActions() {
-    if (m_model == null) {
+    if (clientModel == null) {
       return new ArrayList<>();
     }
-    final boolean isServerHeadless = m_model.getIsServerHeadlessCached();
+    final boolean isServerHeadless = clientModel.getIsServerHeadlessCached();
     if (!isServerHeadless) {
       return new ArrayList<>();
     }
     final List<Action> rVal = new ArrayList<>();
-    rVal.add(m_model.getHostBotSetMapClientAction(this));
-    rVal.add(m_model.getHostBotChangeGameOptionsClientAction(this));
-    rVal.add(m_model.getHostBotChangeGameToSaveGameClientAction(this));
-    rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
-    rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
-    rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
-    rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-    rVal.add(m_model.getHostBotGetGameSaveClientAction(this));
+    rVal.add(clientModel.getHostBotSetMapClientAction(this));
+    rVal.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
+    rVal.add(clientModel.getHostBotChangeGameToSaveGameClientAction(this));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+    rVal.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return rVal;
   }
 
