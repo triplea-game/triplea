@@ -375,12 +375,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
               + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
       MoveDelegate.getBattleTracker(getData()).addRelationshipChangesThisTurn(player1, player2, oldRelation,
           newRelation);
-      /*
-       * creation of new battles is handled at the beginning of the battle delegate, in
-       * "setupUnitsInSameTerritoryBattles", not here.
-       * if (Matches.RelationshipTypeIsAtWar.match(newRelation))
-       * TriggerAttachment.triggerMustFightBattle(player1, player2, playerBridge);
-       */
     }
     if (!change.isEmpty()) {
       m_bridge.addChange(change);

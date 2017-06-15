@@ -416,7 +416,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
-    // Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(gameData, techCategory);
     final Collection<TechAdvance> playersAdvances =
         TechTracker.getCurrentTechAdvances(m_bridge.getPlayerID(), getData());
     final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);

@@ -50,7 +50,6 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // Start event
       m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
       for (final TechAdvance advance : advances) {
-        // advance.perform(playerBridge.getPlayerID(), playerBridge, gameData);
         TechTracker.addAdvance(m_player, m_bridge, advance);
       }
     }
