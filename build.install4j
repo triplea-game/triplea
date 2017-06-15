@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="6.1.2" transformSequenceNumber="5">
+<install4j version="6.1.5" transformSequenceNumber="5">
   <directoryPresets config="./game_engine.properties" />
-  <application name="TripleA_${compiler:sys.version}" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="TripleA_${compiler:sys.version}" publisher="TripleA Developer Team" publisherWeb="triplea-game.github.io" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
+  <application name="TripleA_${compiler:sys.version}" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="TripleA_${compiler:sys.version}" publisher="TripleA Developer Team" publisherWeb="triplea-game.github.io" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -45,7 +45,7 @@
     <components />
   </files>
   <launchers>
-    <launcher name="TripleA" id="33" customizedId="" external="false" excludeFromMenu="false" unixMode="755" menuName="TripleA-${compiler:sys.version}" icnsFile="" customMacBundleIdentifier="false" macBundleIdentifier="" swtApp="false" fileset="" macBundleBinary="JavaApplicationStub" addMacEntitlements="false" macEntitlementsFile="" useCustomMacosExecutableName="false" customMacosExecutableName="" useJavaMinVersionOverride="false" javaMinVersionOverride="" useJavaMaxVersionOverride="false" javaMaxVersionOverride="">
+    <launcher name="TripleA" id="33" customizedId="" external="false" excludeFromMenu="false" unixMode="755" unixAutoStart="true" menuName="TripleA-${compiler:sys.version}" icnsFile="" customMacBundleIdentifier="false" macBundleIdentifier="" swtApp="false" fileset="" macBundleBinary="JavaApplicationStub" addMacEntitlements="false" macEntitlementsFile="" useCustomMacosExecutableName="false" customMacosExecutableName="" useJavaMinVersionOverride="false" javaMinVersionOverride="" useJavaMaxVersionOverride="false" javaMaxVersionOverride="">
       <executable name="TripleA" type="1" iconSet="true" iconFile="" executableDir="" redirectStderr="true" stderrFile="error.log" stderrMode="append" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false">
         <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="TripleA" productName="TripleA Game" />
       </executable>
@@ -334,6 +334,170 @@
                 </serializedBean>
                 <condition>!context.getBooleanVariable("sys.programGroupDisabled")</condition>
               </action>
+              <group name="Register Protocol Handler" id="173" customizedId="" beanClass="com.install4j.runtime.beans.groups.ActionGroup" enabled="true" commentSet="false" comment="" actionElevationType="inherit">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.groups.ActionGroup" />
+                  </java>
+                </serializedBean>
+                <beans>
+                  <action name="Add triplea key" id="172" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
+                          <void property="keyName">
+                            <string>Software\Classes\triplea</string>
+                          </void>
+                          <void property="registryRoot">
+                            <object class="java.lang.Enum" method="valueOf">
+                              <class>com.install4j.api.windows.RegistryRoot</class>
+                              <string>HKEY_CURRENT_USER</string>
+                            </object>
+                          </void>
+                          <void property="value">
+                            <string>URL:TripleA Protocol</string>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition />
+                  </action>
+                  <action name="Add URL Protocol entry" id="175" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
+                          <void property="keyName">
+                            <string>Software\Classes\triplea</string>
+                          </void>
+                          <void property="registryRoot">
+                            <object class="java.lang.Enum" method="valueOf">
+                              <class>com.install4j.api.windows.RegistryRoot</class>
+                              <string>HKEY_CURRENT_USER</string>
+                            </object>
+                          </void>
+                          <void property="valueName">
+                            <string>URL Protocol</string>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition />
+                  </action>
+                  <action name="Add Icon Path" id="177" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
+                          <void property="keyName">
+                            <string>Software\Classes\triplea\DefaultIcon</string>
+                          </void>
+                          <void property="registryRoot">
+                            <object class="java.lang.Enum" method="valueOf">
+                              <class>com.install4j.api.windows.RegistryRoot</class>
+                              <string>HKEY_CURRENT_USER</string>
+                            </object>
+                          </void>
+                          <void property="value">
+                            <string>"${installer:sys.installationDir}\TripleA.exe,0"</string>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition />
+                  </action>
+                  <action name="Add Exec Path" id="178" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction">
+                          <void property="keyName">
+                            <string>Software\Classes\triplea\shell\open\command</string>
+                          </void>
+                          <void property="registryRoot">
+                            <object class="java.lang.Enum" method="valueOf">
+                              <class>com.install4j.api.windows.RegistryRoot</class>
+                              <string>HKEY_CURRENT_USER</string>
+                            </object>
+                          </void>
+                          <void property="value">
+                            <string>"${installer:sys.installationDir}\TripleA.exe" "%1"</string>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition />
+                  </action>
+                  <action name="" id="220" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol handler">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                          <void property="script">
+                            <object class="com.install4j.api.beans.ScriptProperty">
+                              <void property="value">
+                                <string>String home = System.getProperty("user.home");
+File shareFolder = new File(home + "/.local/share");
+if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+    File applicationsDir = new File(shareFolder, "applications");
+    if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+        applicationsDir.mkdirs();
+    }
+    File desktopFile = new File(applicationsDir, "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop");
+    File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+    if(!desktopFile.exists()){
+        return true;
+    }
+    if(!mimeappsFile.exists()){
+        mimeappsFile.createNewFile();
+    }
+    String mimeType = "x-scheme-handler/triplea";
+    StringBuilder builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(desktopFile)){
+        String mimeTypePrefix = "MimeType=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
+                builder.append(nextLine).append(" \"%u\"\n");
+            } else if(!nextLine.startsWith(mimeTypePrefix)){
+                builder.append(nextLine).append('\n');
+            }
+        }
+        builder.append(mimeTypePrefix).append(mimeType);
+    }
+    try(PrintWriter writer = new PrintWriter(desktopFile)){
+        writer.print(builder.toString());
+    }
+    builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(mimeappsFile)){
+        boolean isSetup = false;
+        String defaultApplicationString = "[Default Applications]";
+        String mimeTypePrefix = mimeType + "=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(!nextLine.startsWith(mimeTypePrefix)){
+                builder.append(nextLine).append('\n');
+            }
+            if(nextLine.equalsIgnoreCase(defaultApplicationString)){
+                isSetup = true;
+            }
+        }
+        if(!isSetup){
+            builder.insert(0, defaultApplicationString + "\n");
+        }
+        builder.append(mimeTypePrefix).append(desktopFile.getName()).append('\n');
+    }
+    try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+        writer.print(builder.toString());
+    }
+}
+return true;</string>
+                              </void>
+                            </object>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition>Util.isLinux()</condition>
+                  </action>
+                </beans>
+              </group>
               <action name="" id="11" customizedId="" beanClass="com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
@@ -534,6 +698,70 @@
                   </java>
                 </serializedBean>
                 <condition />
+              </action>
+              <action name="" id="176" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to unregister the protocol handler">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction">
+                      <void property="keyName">
+                        <string>Software\Classes\triplea</string>
+                      </void>
+                      <void property="onlyIfEmpty">
+                        <boolean>false</boolean>
+                      </void>
+                      <void property="registryRoot">
+                        <object class="java.lang.Enum" method="valueOf">
+                          <class>com.install4j.api.windows.RegistryRoot</class>
+                          <string>HKEY_CURRENT_USER</string>
+                        </object>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition>Util.isWindows() &amp;&amp; ((String)WinRegistry.getValue(RegistryRoot.HKEY_CURRENT_USER, "Software\\Classes\\triplea\\shell\\open\\command", "")).equalsIgnoreCase("\"" + context.getVariable("sys.installationDir") + "\\TripleA.exe\" \"%1\"")</condition>
+              </action>
+              <action name="" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol handler">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                      <void property="script">
+                        <object class="com.install4j.api.beans.ScriptProperty">
+                          <void property="value">
+                            <string>String home = System.getProperty("user.home");
+File shareFolder = new File(home + "/.local/share");
+if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
+    File applicationsDir = new File(shareFolder, "applications");
+    if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
+        return true;
+    }
+    File mimeappsFile = new File(applicationsDir, "mimeapps.list");
+    if(!mimeappsFile.exists()){
+        return true;
+    }
+    String mimeType = "x-scheme-handler/triplea";
+    StringBuilder builder = new StringBuilder();
+    try(Scanner scanner = new Scanner(mimeappsFile)){
+        boolean isSetup = false;
+        String mimeTypePrefix = mimeType + "=";
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop")){
+                builder.append(nextLine).append('\n');
+            }
+        }
+    }
+    try(PrintWriter writer = new PrintWriter(mimeappsFile)){
+        writer.print(builder.toString());
+    }
+}
+return true;</string>
+                          </void>
+                        </object>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition>Util.isLinux()</condition>
               </action>
             </actions>
             <formComponents />
