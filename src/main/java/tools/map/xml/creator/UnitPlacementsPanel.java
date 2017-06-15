@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -108,7 +107,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     final String territoryName = terrNameOptional.get();
 
     final Map<String, Map<String, Integer>> placements = MapXmlHelper.getUnitPlacementsMap().get(territoryName);
-    String suggestedPlayer;
+    final String suggestedPlayer;
     if (placements.isEmpty()) {
       suggestedPlayer = MapXmlHelper.getTerritoryOwnershipsMap().get(territoryName);
     } else {
@@ -133,7 +132,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     final int availHeight = screenResolution.height - 120;
     final int availWidth = screenResolution.width - 40;
     final TerritoryPlacementPanel territoryPlacementPanel = new TerritoryPlacementPanel(playerPlacements,
-        MapXmlHelper.getProductionFrontiersMap().get(inputText), territoryName, inputText);
+        MapXmlHelper.getProductionFrontiersMap().get(inputText));
     final JScrollPane scroll = new JScrollPane(territoryPlacementPanel);
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth
@@ -170,7 +169,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     }
 
     public TerritoryPlacementPanel(final Map<String, Integer> playerPlacements,
-        final List<String> playerUnitTypes, final String territory, final String player) {
+        final List<String> playerUnitTypes) {
       super();
       final TerritoryPlacementPanel me = this;
       if (playerPlacements == null) {
