@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.engine.lobby.server.LobbyContext;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -55,7 +56,7 @@ public class Database {
   }
 
   private static File getDBRoot() {
-    File root;
+    final File root;
     if (System.getProperties().containsKey(ServerLauncher.SERVER_ROOT_DIR_PROPERTY)) {
       root = new File(System.getProperties().getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY));
     } else {
@@ -74,10 +75,10 @@ public class Database {
   }
 
   public static Connection getPostgresConnection() {
-    Connection connection = getDerbyConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
+    final Connection connection = getDerbyConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
     try {
       connection.setAutoCommit(false);
-    } catch (SQLException e) {
+    } catch (final SQLException e) {
       throw new RuntimeException("could not set autocommit to false on DB connection, connection not there?", e);
     }
     return connection;
@@ -218,11 +219,9 @@ public class Database {
   }
 
   private static Properties getPostgresDbProps() {
-    // These are the default values used by travis
-    // TODO: decide how to handle production values
     final Properties props = new Properties();
-    props.put("user", "postgres");
-    props.put("password", "");
+    props.put("user", LobbyContext.lobbyPropertyReader().getPostgresUser());
+    props.put("password", LobbyContext.lobbyPropertyReader().getPostgresPassword());
     return props;
   }
 
