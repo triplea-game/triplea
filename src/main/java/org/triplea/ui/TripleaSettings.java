@@ -22,9 +22,8 @@ public class TripleaSettings extends StackPane {
   private Spinner<Integer> proxyPort;
 
   /**
-   * Public constructor.
-   * @param triplea The root pane
-   * @throws IOException If the FXML file is not present
+   * @param triplea The root pane.
+   * @throws IOException If the FXML file is not present.
    */
   public TripleaSettings(final TripleA triplea) throws IOException {
     final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleASettings.fxml"));

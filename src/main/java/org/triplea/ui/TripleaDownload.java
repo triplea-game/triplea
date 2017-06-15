@@ -11,9 +11,8 @@ public class TripleaDownload extends VBox {
   private final TripleA triplea;
 
   /**
-   * Public constructor.
-   * @param triplea The root pane
-   * @throws IOException If the FXML file is not present
+   * @param triplea The root pane.
+   * @throws IOException If the FXML file is not present.
    */
   public TripleaDownload(final TripleA triplea) throws IOException {
     final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleADownload.fxml"));

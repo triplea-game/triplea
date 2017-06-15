@@ -54,9 +54,8 @@ public class TripleaMainMenu extends BorderPane {
   private VBox mainOptions;
 
   /**
-   * Public constructor.
-   * @param triplea The root pane
-   * @throws IOException If the FXML file is not present
+   * @param triplea The root pane.
+   * @throws IOException If the FXML file is not present.
    */
   public TripleaMainMenu(final TripleA triplea) throws IOException {
     final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleAMainMenu.fxml"));
