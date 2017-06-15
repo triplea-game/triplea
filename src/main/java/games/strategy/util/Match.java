@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A utilty for seeing which elements in a collection satisfy a given condition.
@@ -142,6 +145,24 @@ public abstract class Match<T> {
 
   public final Match<T> invert() {
     return new InverseMatch<>(this);
+  }
+
+  /**
+   * Creates a new match for the specified condition.
+   *
+   * @param condition The match condition; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> of(final Predicate<T> condition) {
+    checkNotNull(condition);
+
+    return new Match<T>() {
+      @Override
+      public boolean match(final T value) {
+        return condition.test(value);
+      }
+    };
   }
 }
 

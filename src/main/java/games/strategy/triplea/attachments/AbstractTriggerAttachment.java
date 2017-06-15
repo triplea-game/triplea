@@ -225,12 +225,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.isSatisfied(testedConditions);
-      }
-    };
+    return Match.of(t -> t.isSatisfied(testedConditions));
   }
 
   /**
@@ -270,12 +265,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   };
 
   public static Match<TriggerAttachment> notificationMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getNotification() != null;
-      }
-    };
+    return Match.of(t -> t.getNotification() != null);
   }
 
   protected static String getValueFromStringArrayForAllSubStrings(final String[] s) {
