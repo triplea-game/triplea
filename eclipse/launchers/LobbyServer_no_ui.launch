@@ -8,4 +8,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.lobby.server.LobbyServer"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
 </launchConfiguration>

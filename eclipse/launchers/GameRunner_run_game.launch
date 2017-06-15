@@ -10,5 +10,5 @@
 <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.framework.GameRunner"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.sun.management.jmxremote=true &#13;&#10;-Dcom.sun.management.jmxremote.port=3614 &#13;&#10;-Dcom.sun.management.jmxremote.authenticate=false &#13;&#10;-Dcom.sun.management.jmxremote.ssl=false"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea&#10;-Dcom.sun.management.jmxremote=true &#13;&#10;-Dcom.sun.management.jmxremote.port=3614 &#13;&#10;-Dcom.sun.management.jmxremote.authenticate=false &#13;&#10;-Dcom.sun.management.jmxremote.ssl=false"/>
 </launchConfiguration>

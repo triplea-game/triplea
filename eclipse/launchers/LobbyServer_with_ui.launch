@@ -9,4 +9,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.lobby.server.LobbyServer"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="triplea.lobby.ui=true&#13;&#10;triplea.lobby.console=true"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
 </launchConfiguration>
