@@ -1,6 +1,7 @@
 package games.strategy.engine;
 
 import games.strategy.engine.config.GameEnginePropertyReader;
+import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.engine.framework.map.download.MapListingSource;
 import games.strategy.triplea.settings.ai.AiSettings;
@@ -8,7 +9,6 @@ import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
 import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
-import games.strategy.engine.framework.map.download.*;
 
 /**
  * Manages the creation of objects, similar to a dependency injection framework.
@@ -54,7 +54,7 @@ public final class ClientContext {
   private final BattleCalcSettings battleCalcSettings;
   private final BattleOptionsSettings battleOptionsSettings;
 
-  public static final DownloadCoordinator DOWNLOAD_COORDINATOR = new DownloadCoordinator();
+  private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
   private ClientContext() {
     gameEnginePropertyReader = new GameEnginePropertyReader();
@@ -76,6 +76,9 @@ public final class ClientContext {
     return instance.mapListingSource;
   }
 
+  public static DownloadCoordinator downloadCoordinator() {
+    return instance.downloadCoordinator;
+  }
 
   public static MapDownloadController mapDownloadController() {
     return instance.mapDownloadController;
