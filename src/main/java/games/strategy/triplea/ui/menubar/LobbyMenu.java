@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -288,8 +289,10 @@ public class LobbyMenu extends JMenuBar {
     timeUnits.add("Month");
     timeUnits.add("Year");
     timeUnits.add("Forever");
-    final int result = JOptionPane.showOptionDialog(lobbyFrame, "Select the unit of measurement: ", "Select Timespan Unit",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
+    final int result =
+        JOptionPane.showOptionDialog(lobbyFrame, "Select the unit of measurement: ", "Select Timespan Unit",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(),
+            timeUnits.toArray()[3]);
     if (result < 0) {
       return -1;
     }
@@ -297,8 +300,10 @@ public class LobbyMenu extends JMenuBar {
     if (selectedTimeUnit.equals("Forever")) {
       return Long.MAX_VALUE;
     }
-    final String stringr =
-        JOptionPane.showInputDialog(lobbyFrame, "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
+    final String stringr = JOptionPane.showInputDialog(
+        lobbyFrame,
+        "Now please enter the length of time: (In " + selectedTimeUnit + "s) ",
+        1);
     if (stringr == null) {
       return -1;
     }
