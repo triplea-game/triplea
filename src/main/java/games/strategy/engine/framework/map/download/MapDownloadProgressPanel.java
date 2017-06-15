@@ -2,6 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.ui.SwingComponents;
 
 
@@ -20,7 +22,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
   private static final long serialVersionUID = -7288639737337542689L;
 
-  private final DownloadCoordinator downloadCoordinator = DownloadCoordinator.INSTANCE;
+  private final DownloadCoordinator downloadCoordinator = ClientContext.DOWNLOAD_COORDINATOR;
 
   /*
    * Maintain grids that are placed east and west.
@@ -56,7 +58,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     downloadCoordinator.cancelDownloads();
   }
 
-  void download(final List<DownloadFileDescription> newDownloads) {
+  void download(final Collection<DownloadFileDescription> newDownloads) {
     newDownloads.forEach(downloadCoordinator::accept);
   }
 

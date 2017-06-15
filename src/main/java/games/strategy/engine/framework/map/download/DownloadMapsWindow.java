@@ -11,8 +11,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -106,7 +108,7 @@ public class DownloadMapsWindow extends JFrame {
     setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel();
 
-    final List<DownloadFileDescription> pendingDownloads = new ArrayList<>();
+    final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
     for (final String mapName : pendingDownloadMapNames) {
       OptionalUtils.ifPresentOrElse(findMap(mapName, allDownloads),
@@ -117,13 +119,8 @@ public class DownloadMapsWindow extends JFrame {
     if (!pendingDownloads.isEmpty()) {
       progressPanel.download(pendingDownloads);
     }
-    // TODO: there is a possibility that pendingDownloads will contain duplicates after the following call.
-    // i don't think it matters, but we should try to avoid it if possible. might be as simply as changing
-    // to a Set.
-    pendingDownloads.addAll(DownloadCoordinator.INSTANCE.getPendingDownloads().stream()
-        .map(DownloadFile::getDownload)
-        .collect(Collectors.toList()));
-    pendingDownloads.addAll(DownloadCoordinator.INSTANCE.getActiveDownloads().stream()
+
+    pendingDownloads.addAll(ClientContext.DOWNLOAD_COORDINATOR.getDownloads().stream()
         .map(DownloadFile::getDownload)
         .collect(Collectors.toList()));
 
@@ -169,7 +166,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private Component createdTabbedPanelForMaps(
       final List<DownloadFileDescription> downloads,
-      final List<DownloadFileDescription> pendingDownloads) {
+      final Set<DownloadFileDescription> pendingDownloads) {
     final JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
     for (final DownloadFileDescription.MapCategory mapCategory : DownloadFileDescription.MapCategory.values()) {
       final List<DownloadFileDescription> categorizedDownloads = downloads.stream()
@@ -212,7 +209,7 @@ public class DownloadMapsWindow extends JFrame {
   private JTabbedPane createAvailableInstalledTabbedPanel(
       final Optional<String> selectedMapName,
       final List<DownloadFileDescription> downloads,
-      final List<DownloadFileDescription> pendingDownloads) {
+      final Set<DownloadFileDescription> pendingDownloads) {
     final MapDownloadList mapList = new MapDownloadList(downloads, new FileSystemAccessStrategy());
 
     final JTabbedPane tabbedPane = new JTabbedPane();

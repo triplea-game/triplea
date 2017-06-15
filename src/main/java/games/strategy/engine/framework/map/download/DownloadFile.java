@@ -2,6 +2,8 @@ package games.strategy.engine.framework.map.download;
 
 import java.io.File;
 
+import javax.swing.SwingUtilities;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
 
@@ -24,9 +26,7 @@ final class DownloadFile {
     this.download = download;
     this.downloadListener = downloadListener;
 
-    // TODO: consider running in a separate thread because this constructor is called while a lock is held
-    // it works now because the listener calls SwingUtilities.invokeLater(), but that may not always be the case
-    downloadListener.downloadStarted(download);
+    SwingUtilities.invokeLater(() -> downloadListener.downloadStarted(download));
   }
 
   DownloadFileDescription getDownload() {
@@ -80,7 +80,6 @@ final class DownloadFile {
       }
 
       watcher.stop();
-      // TODO: update code in this method so we pass reason (DONE, CANCELLED) to the listener
       downloadListener.downloadStopped(download);
     });
   }

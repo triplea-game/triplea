@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static games.strategy.util.PredicateUtils.not;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ class MapDownloadList {
     return available;
   }
 
-  List<DownloadFileDescription> getAvailableExcluding(final List<DownloadFileDescription> excluded) {
+  List<DownloadFileDescription> getAvailableExcluding(final Collection<DownloadFileDescription> excluded) {
     return available.stream()
         .filter(not(excluded::contains))
         .collect(Collectors.toList());
@@ -51,7 +52,7 @@ class MapDownloadList {
     return outOfDate;
   }
 
-  List<DownloadFileDescription> getOutOfDateExcluding(final List<DownloadFileDescription> excluded) {
+  List<DownloadFileDescription> getOutOfDateExcluding(final Collection<DownloadFileDescription> excluded) {
     return outOfDate.stream()
         .filter(not(excluded::contains))
         .collect(Collectors.toList());
