@@ -72,7 +72,7 @@ import games.strategy.util.Tuple;
  */
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
-  private static Logger logger = Logger.getLogger(MapPanel.class.getName());
+  private static final Logger logger = Logger.getLogger(MapPanel.class.getName());
   private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<>();
   private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<>();
   private final ListenerList<MouseOverUnitListener> mouseOverUnitsListeners = new ListenerList<>();
@@ -773,7 +773,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(this::repaint);
       return;
     }
     final Tuple<Integer, Integer> movementLeft =
@@ -845,14 +845,6 @@ public class MapPanel extends ImageScrollerLargeView {
   public Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
   }
-
-  public Optional<Image> getInfoImage() {
-    return uiContext.getMapData().getInfoImage();
-  }
-
-  public Optional<Image> getHelpImage() {
-    return uiContext.getMapData().getHelpImage();
-  }
 }
 
 
@@ -872,14 +864,14 @@ class BackgroundDrawer implements Runnable {
   @Override
   public void run() {
     while (m_mapPanelRef.get() != null) {
-      BlockingQueue<Tile> undrawnTiles;
+      final BlockingQueue<Tile> undrawnTiles;
       MapPanel panel = m_mapPanelRef.get();
       if (panel == null) {
         continue;
       }
       undrawnTiles = panel.getUndrawnTiles();
       panel = null;
-      Tile tile;
+      final Tile tile;
       try {
         tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
       } catch (final InterruptedException e) {
