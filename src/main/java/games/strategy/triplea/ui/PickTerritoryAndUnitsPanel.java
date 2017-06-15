@@ -155,7 +155,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         } else if (Match.allMatch(m_unitChoices, Matches.unitIsOfType(m_unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           m_pickedUnits.clear();
-          m_pickedUnits.addAll(Match.getNMatches(m_unitChoices, m_unitsPerPick, Match.getAlwaysMatch()));
+          m_pickedUnits.addAll(Match.getNMatches(m_unitChoices, m_unitsPerPick, Match.always()));
         } else {
           EventThreadJOptionPane.showMessageDialog(m_parent, "Must Choose Units For This Territory",
               "Must Choose Units For This Territory", JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));

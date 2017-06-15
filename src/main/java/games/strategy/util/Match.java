@@ -25,13 +25,20 @@ import java.util.function.Predicate;
  * </p>
  */
 public abstract class Match<T> {
+  @SuppressWarnings("rawtypes")
+  private static final Match ALWAYS = Match.of(it -> true);
 
-  public static <T> Match<T> getAlwaysMatch() {
-    return new AlwaysMatch<>();
+  @SuppressWarnings("rawtypes")
+  private static final Match NEVER = Match.of(it -> false);
+
+  @SuppressWarnings("unchecked")
+  public static <T> Match<T> always() {
+    return ALWAYS;
   }
 
-  public static <T> Match<T> getNeverMatch() {
-    return new NeverMatch<>();
+  @SuppressWarnings("unchecked")
+  public static <T> Match<T> never() {
+    return NEVER;
   }
 
   /**
@@ -163,21 +170,5 @@ public abstract class Match<T> {
         return condition.test(value);
       }
     };
-  }
-}
-
-
-class NeverMatch<T> extends Match<T> {
-  @Override
-  public boolean match(final T o) {
-    return false;
-  }
-}
-
-
-class AlwaysMatch<T> extends Match<T> {
-  @Override
-  public boolean match(final T o) {
-    return true;
   }
 }
