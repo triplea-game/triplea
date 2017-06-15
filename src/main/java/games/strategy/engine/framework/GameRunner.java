@@ -3,11 +3,13 @@ package games.strategy.engine.framework;
 import java.awt.AWTEvent;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,29 +17,43 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.MainPanel;
+import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.ui.ProgressWindow;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
@@ -94,12 +110,19 @@ public class GameRunner {
 
   public static final String MAP_FOLDER = "mapFolder";
 
+
+  private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
+  private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
+  private static JFrame mainFrame;
+
   private static final String[] COMMAND_LINE_ARGS =
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
+
+
 
 
   /**
@@ -121,7 +144,12 @@ public class GameRunner {
       return; // close this current instance down without further processing
     }
 
-    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+    SwingUtilities.invokeLater(() -> {
+      setupPanelModel.showSelectType();
+      final MainPanel mainPanel = new MainPanel(setupPanelModel);
+      mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+    });
+
     showMainFrame();
     new Thread(GameRunner::setupLogging).start();
     HttpProxy.setupProxies();
@@ -147,6 +175,101 @@ public class GameRunner {
       System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
     }
   }
+
+  public static FileDialog newFileDialog() {
+    return new FileDialog(mainFrame);
+  }
+
+  public static Optional<File> showFileChooser(final FileFilter fileFilter) {
+    final JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileFilter(fileFilter);
+    final int returnCode = fileChooser.showOpenDialog(mainFrame);
+
+    if (returnCode == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
+  }
+
+
+  public static Optional<File> showSaveGameFileChooser() {
+    // Non-Mac platforms should use the normal Swing JFileChooser
+    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int rVal = fileChooser.showOpenDialog(mainFrame);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
+  }
+
+  public static ProgressWindow newProgressWindow(final String title) {
+    return new ProgressWindow(mainFrame, title);
+  }
+
+  /**
+   * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids parameter swapping
+   * problem and makes refactoring easier.
+   */
+  public static class Title {
+    public String value;
+    private Title(final String value) {
+      this.value = value;
+    }
+    public static Title of(final String value) {
+      return new Title(value);
+    }
+  }
+
+  public static int showConfirmDialog(final String message, final Title title, final int optionType, final int messageType) {
+    return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
+  }
+
+
+  public static void showMessageDialog(final String message, final Title title, final int messageType) {
+    JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
+  }
+
+
+  public static void hideMainFrame() {
+    SwingUtilities.invokeLater(() -> mainFrame.setVisible(false));
+  }
+
+
+  public static void showMainFrame() {
+    SwingUtilities.invokeLater(() -> {
+      gameSelectorModel.loadDefaultGame(mainFrame);
+
+      mainFrame.requestFocus();
+      mainFrame.toFront();
+      mainFrame.setVisible(true);
+
+      SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+
+      final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+      if (fileName.length() > 0) {
+        final File f = new File(fileName);
+        gameSelectorModel.load(f, mainFrame);
+      }
+      mainFrame.setVisible(true);
+      if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+        setupPanelModel.showServer(mainFrame);
+      } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+        setupPanelModel.showClient(mainFrame);
+      }
+    });
+  }
+
+  private static void checkLocalSystem() {
+    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
+    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
+    if (!exceptions.isEmpty()) {
+      final String msg = String.format(
+          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
+          exceptions.size(), localSystemChecker.getStatusMessage());
+      ClientLogger.logError(msg, exceptions);
+    }
+  }
+
 
   private static void usage() {
     System.out.println("\nUsage and Valid Arguments:\n"
@@ -177,27 +300,6 @@ public class GameRunner {
         + " (Please email this password to one of the lobby moderators, or private message an admin on the "
         + "TripleaWarClub.org website forum.)\n");
   }
-
-  private static void showMainFrame() {
-    SwingUtilities.invokeLater(() -> {
-      final MainFrame frame = new MainFrame();
-      frame.requestFocus();
-      frame.toFront();
-      frame.setVisible(true);
-    });
-  }
-
-  private static void checkLocalSystem() {
-    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
-    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
-    if (!exceptions.isEmpty()) {
-      final String msg = String.format(
-          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
-          exceptions.size(), localSystemChecker.getStatusMessage());
-      ClientLogger.logError(msg, exceptions);
-    }
-  }
-
 
 
   private static void setupLogging() {
@@ -613,6 +715,44 @@ public class GameRunner {
         System.exit(0);
       }
     });
+  }
+
+  /**
+   * todo, replace with something better
+   * Get the chat for the game, or null if there is no chat.
+   */
+  public static Chat getChat() {
+    final ISetupPanel model = setupPanelModel.getPanel();
+    if (model instanceof ServerSetupPanel) {
+      return model.getChatPanel().getChat();
+    } else if (model instanceof ClientSetupPanel) {
+      return model.getChatPanel().getChat();
+    } else {
+      return null;
+    }
+  }
+
+  public static boolean hasChat() {
+    return getChat() != null;
+  }
+
+  /**
+   * After the game has been left, call this.
+   */
+  public static void clientLeftGame() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingAction.invokeAndWait(GameRunner::clientLeftGame);
+      return;
+    }
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
+    ThreadUtil.sleep(100);
+    setupPanelModel.showSelectType();
+    showMainFrame();
+  }
+
+  public static void quitGame() {
+    mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
   }
 
 }

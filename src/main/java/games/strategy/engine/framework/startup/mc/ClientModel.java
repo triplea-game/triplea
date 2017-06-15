@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -40,7 +39,6 @@ import games.strategy.engine.framework.networkMaintenance.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -66,7 +64,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
-  private static Logger s_logger = Logger.getLogger(ClientModel.class.getName());
+  private static final Logger s_logger = Logger.getLogger(ClientModel.class.getName());
   private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger m_channelMessenger;
   private IRemoteMessenger m_remoteMessenger;
@@ -243,7 +241,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       m_objectStreamFactory.setData(null);
-      SwingAction.invokeAndWait(() -> MainFrame.getInstance().setVisible(true));
+      SwingAction.invokeAndWait(GameRunner::showMainFrame);
     }
 
     @Override
@@ -336,7 +334,7 @@ public class ClientModel implements IMessengerErrorListener {
             m_gameLoadingWindow.doneWait();
             // an ugly hack, we need a better
             // way to get the main frame
-            MainFrame.getInstance().clientLeftGame();
+            GameRunner.clientLeftGame();
           }
         }
         if (!gameRunning) {
@@ -414,7 +412,7 @@ public class ClientModel implements IMessengerErrorListener {
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
-    MainFrame.getInstance().getChat().sendMessage("*** Was Disconnected ***", false);
+    GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
     EventThreadJOptionPane.showMessageDialog(m_ui, "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
@@ -445,8 +443,8 @@ public class ClientModel implements IMessengerErrorListener {
     return new ChangeGameOptionsClientAction(parent, getServerStartupRemote());
   }
 
-  public Action getHostBotChangeGameToSaveGameClientAction(final Component parent) {
-    return new ChangeGameToSaveGameClientAction(parent, getMessenger());
+  public Action getHostBotChangeGameToSaveGameClientAction() {
+    return new ChangeGameToSaveGameClientAction(getMessenger());
   }
 
   public Action getHostBotChangeToAutosaveClientAction(final Component parent,

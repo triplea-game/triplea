@@ -23,6 +23,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.config.GameEnginePropertyReader;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -148,14 +149,13 @@ public class MetaSetupPanel extends SetupPanel {
       return;
     }
     final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
-    MainFrame.getInstance().setVisible(false);
-    MainFrame.getInstance().dispose();
+    GameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
   }
 
 
   private static Optional<List<Map<String, Object>>> loadYaml(final File yamlFile) {
-    String yamlContent;
+    final String yamlContent;
     try {
       yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
     } catch (final IOException e) {

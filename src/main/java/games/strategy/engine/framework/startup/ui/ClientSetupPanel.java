@@ -34,7 +34,7 @@ public class ClientSetupPanel extends SetupPanel {
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
   private final ClientModel clientModel;
   private List<PlayerRow> playerRows = Collections.emptyList();
-  private final IRemoteModelListener listener = new IRemoteModelListener() {
+  private final IRemoteModelListener remoteModelListener = new IRemoteModelListener() {
     @Override
     public void playersTakenChanged() {}
 
@@ -149,7 +149,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    clientModel.setRemoteModelListener(listener);
+    clientModel.setRemoteModelListener(remoteModelListener);
   }
 
   @Override
@@ -300,7 +300,7 @@ public class ClientSetupPanel extends SetupPanel {
     final List<Action> rVal = new ArrayList<>();
     rVal.add(clientModel.getHostBotSetMapClientAction(this));
     rVal.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
-    rVal.add(clientModel.getHostBotChangeGameToSaveGameClientAction(this));
+    rVal.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
     rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
     rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
     rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));

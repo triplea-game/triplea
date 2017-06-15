@@ -29,7 +29,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;
@@ -136,7 +136,7 @@ public class MicroWebPosterEditor extends EditorPanel {
         players.set(i, players.get(i).substring(0, players.get(i).indexOf("\t")));
       }
     } catch (final Exception ex) {
-      JOptionPane.showMessageDialog(MainFrame.getInstance(),
+      JOptionPane.showMessageDialog(null,
           "Retrieving players from " + hostUrl + " failed:\n" + ex.toString(), "Error",
           JOptionPane.INFORMATION_MESSAGE);
       return;
@@ -175,7 +175,7 @@ public class MicroWebPosterEditor extends EditorPanel {
         sb.append(comboBoxes.get(i).getSelectedItem());
         sb.append("\n");
       }
-      HttpEntity entity = MultipartEntityBuilder.create()
+      final HttpEntity entity = MultipartEntityBuilder.create()
           .addTextBody("siteid", id.getText())
           .addTextBody("players", sb.toString())
           .addTextBody("gamename", gameName.getText())
@@ -183,15 +183,21 @@ public class MicroWebPosterEditor extends EditorPanel {
       try {
         final String response = TripleAWebPoster.executePost(hostUrl, "create.php", entity);
         if (response.toLowerCase().contains("success")) {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized",
+          GameRunner.showMessageDialog(
+              response,
+              GameRunner.Title.of("Game initialized"),
               JOptionPane.INFORMATION_MESSAGE);
         } else {
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + response, "Error",
-              JOptionPane.INFORMATION_MESSAGE);
+          GameRunner.showMessageDialog(
+              "Game initialized failed",
+              GameRunner.Title.of("Error"),
+              JOptionPane.ERROR_MESSAGE);
         }
       } catch (final Exception ex) {
-        JOptionPane.showMessageDialog(MainFrame.getInstance(), "Game initialization failed:\n" + ex.toString(),
-            "Error", JOptionPane.INFORMATION_MESSAGE);
+        GameRunner.showMessageDialog(
+            "Game initialization failed:\n" + ex.toString(),
+            GameRunner.Title.of("Error"),
+            JOptionPane.ERROR_MESSAGE);
       }
     });
     window.getContentPane().add(btnOk, new GridBagConstraints(0, parties.length + 1, 1, 1, 0, 0,
@@ -208,7 +214,8 @@ public class MicroWebPosterEditor extends EditorPanel {
    */
   void testSite() {
     final IWebPoster poster = (IWebPoster) getBean();
-    final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
+
+    final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
     final Runnable runnable = () -> {
       Exception tmpException = null;
@@ -232,7 +239,9 @@ public class MicroWebPosterEditor extends EditorPanel {
       SwingUtilities.invokeLater(() -> {
         try {
           final String message = (exception != null) ? exception.toString() : webPoster.getServerMessage();
-          JOptionPane.showMessageDialog(MainFrame.getInstance(), message, "Test Turn Summary Post",
+          GameRunner.showMessageDialog(
+              message,
+              GameRunner.Title.of("Test Turn Summary Post"),
               JOptionPane.INFORMATION_MESSAGE);
         } catch (final HeadlessException e) {
           // should never happen in a GUI app
