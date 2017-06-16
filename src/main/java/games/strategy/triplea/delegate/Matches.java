@@ -359,7 +359,7 @@ public class Matches {
       @Override
       public boolean match(final Unit o) {
         final Match<Unit> byOrFrom =
-            new CompositeMatchOr<>(unitDestroyedWhenCapturedBy(playerBy), unitDestroyedWhenCapturedFrom());
+            Match.any(unitDestroyedWhenCapturedBy(playerBy), unitDestroyedWhenCapturedFrom());
         return byOrFrom.match(o);
       }
     };
@@ -3033,7 +3033,7 @@ public class Matches {
         // unless they have other
         // combat abilities.
         final Match<UnitType> supporterOrNotInfrastructure =
-            new CompositeMatchOr<>(Matches.UnitTypeIsInfrastructure.invert(),
+            Match.any(Matches.UnitTypeIsInfrastructure.invert(),
                 Matches.unitTypeIsSupporterOrHasCombatAbility(attack, player));
         final Match<UnitType> combat;
         if (attack) {

@@ -82,7 +82,6 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class RevisedTest {
@@ -1383,8 +1382,7 @@ public class RevisedTest {
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
     load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
     // attack sz 6
-    move(sz5.getUnits().getMatches(new CompositeMatchOr<>(Matches.UnitCanBlitz, Matches.UnitIsTransport)),
-        new Route(sz5, sz6));
+    move(sz5.getUnits().getMatches(Match.any(Matches.UnitCanBlitz, Matches.UnitIsTransport)), new Route(sz5, sz6));
     // unload transports, 1 each to a different country
     // this move is illegal now
     assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));

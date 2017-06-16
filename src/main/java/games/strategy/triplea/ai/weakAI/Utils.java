@@ -15,7 +15,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 class Utils {
@@ -64,7 +63,7 @@ class Utils {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.match(t)) {
-        final CompositeMatchOr<Territory> routeOrEnd = new CompositeMatchOr<>(routeCondition, Matches.territoryIs(t));
+        final Match<Territory> routeOrEnd = Match.any(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
           if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {

@@ -290,7 +290,7 @@ public class MoveValidator {
           return result.setErrorReturnResult("Cannot blitz on that route");
         }
       } else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater())) {
-        final Match<Unit> blitzingUnit = new CompositeMatchOr<>(Matches.UnitCanBlitz, Matches.UnitIsAir);
+        final Match<Unit> blitzingUnit = Match.any(Matches.UnitCanBlitz, Matches.UnitIsAir);
         final Match<Unit> nonBlitzing = blitzingUnit.invert();
         final Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
@@ -367,8 +367,8 @@ public class MoveValidator {
     if (!route.someMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
-    final CompositeMatch<Territory> neutralOrEnemy =
-        new CompositeMatchOr<>(Matches.TerritoryIsNeutralButNotWater,
+    final Match<Territory> neutralOrEnemy =
+        Match.any(Matches.TerritoryIsNeutralButNotWater,
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     // final CompositeMatch<Unit> transportsCanNotControl = new
     // CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer,
@@ -629,8 +629,7 @@ public class MoveValidator {
     // test for stack limits per unit
     if (route.getEnd() != null) {
       final Collection<Unit> unitsWithStackingLimits =
-          Match.getMatches(units, new CompositeMatchOr<>(Matches.UnitHasMovementLimit,
-              Matches.UnitHasAttackingLimit));
+          Match.getMatches(units, Match.any(Matches.UnitHasMovementLimit, Matches.UnitHasAttackingLimit));
       for (final Territory t : route.getSteps()) {
         final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
         if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t)
@@ -710,9 +709,8 @@ public class MoveValidator {
    * AA and factory dont count as enemy.
    */
   static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> alliedOrNonCombat =
-        new CompositeMatchOr<>(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(),
-            Matches.UnitIsSubmerged);
+    final Match<Unit> alliedOrNonCombat =
+        Match.any(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.UnitIsSubmerged);
     // Submerged units do not interfere with movement
     for (final Territory current : route.getMiddleSteps()) {
       if (!current.getUnits().allMatch(alliedOrNonCombat)) {
@@ -728,14 +726,13 @@ public class MoveValidator {
    */
   static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data,
       final boolean ignoreRouteEnd) {
-    final CompositeMatch<Unit> subOnly =
-        new CompositeMatchOr<>(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data)
-            .invert());
-    final CompositeMatch<Unit> transportOnly =
-        new CompositeMatchOr<>(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
+    final Match<Unit> subOnly =
+        Match.any(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
+    final Match<Unit> transportOnly =
+        Match.any(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
             Matches.UnitIsLand, Matches.enemyUnit(player, data).invert());
-    final CompositeMatch<Unit> transportOrSubOnly =
-        new CompositeMatchOr<>(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
+    final Match<Unit> transportOrSubOnly =
+        Match.any(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
             Matches.UnitIsLand, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
@@ -810,10 +807,9 @@ public class MoveValidator {
     if (checkForAlreadyTransported) {
       // TODO Leaving UnitIsTransport for potential use with amphib transports (hovercraft, ducks, etc...)
       final List<Unit> transports =
-          Match.getMatches(units, new CompositeMatchOr<>(Matches.UnitIsTransport, Matches.UnitIsAirTransport));
+          Match.getMatches(units, Match.any(Matches.UnitIsTransport, Matches.UnitIsAirTransport));
       final List<Unit> transportable =
-          Match.getMatches(units, new CompositeMatchOr<>(Matches.UnitCanBeTransported,
-              Matches.UnitIsAirTransportable));
+          Match.getMatches(units, Match.any(Matches.UnitCanBeTransported, Matches.UnitIsAirTransportable));
       // Check if there are transports in the group to be checked
       if (alreadyLoaded.keySet().containsAll(transports)) {
         // Check each transportable unit -vs those already loaded.
@@ -1005,8 +1001,7 @@ public class MoveValidator {
     // if we are land make sure no water in route except for transport
     // situations
     final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-    final Collection<Unit> landAndAir =
-        Match.getMatches(units, new CompositeMatchOr<>(Matches.UnitIsLand, Matches.UnitIsAir));
+    final Collection<Unit> landAndAir = Match.getMatches(units, Match.any(Matches.UnitIsLand, Matches.UnitIsAir));
     // make sure we can be transported
     final Match<Unit> cantBeTransported = Matches.UnitCanBeTransported.invert();
     for (final Unit unit : Match.getMatches(land, cantBeTransported)) {
@@ -1131,7 +1126,7 @@ public class MoveValidator {
 
   static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
-    if (!Match.allMatch(units, new CompositeMatchOr<>(Matches.UnitIsAirTransportable, Matches.UnitIsAirTransport,
+    if (!Match.allMatch(units, Match.any(Matches.UnitIsAirTransportable, Matches.UnitIsAirTransport,
         Matches.UnitIsAir))) {
       return false;
     }
@@ -1157,7 +1152,7 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
-    if (!Match.allMatch(units, new CompositeMatchOr<>(Matches.UnitIsAir, Matches.UnitIsLand))) {
+    if (!Match.allMatch(units, Match.any(Matches.UnitIsAir, Matches.UnitIsLand))) {
       return true;
     }
     for (final Unit unit : Match.getMatches(units, Matches.UnitIsNotAirTransportable)) {

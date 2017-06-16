@@ -17,7 +17,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class Fire implements IExecutable {
@@ -105,7 +104,7 @@ public class Fire implements IExecutable {
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,
-          new CompositeMatchOr<>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
+          Match.any(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
       final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits,
           new CompositeMatchAnd<>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);

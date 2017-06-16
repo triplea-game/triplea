@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.util.PredicateUtils.not;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -171,5 +172,32 @@ public abstract class Match<T> {
         return condition.test(value);
       }
     };
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
+   *
+   * @param matches An array of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  @SafeVarargs
+  public static <T> Match<T> any(final Match<T>... matches) {
+    checkNotNull(matches);
+
+    return any(Arrays.asList(matches));
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
+   *
+   * @param matches A collection of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> any(final Collection<Match<T>> matches) {
+    checkNotNull(matches);
+
+    return Match.of(value -> matches.stream().anyMatch(match -> match.match(value)));
   }
 }

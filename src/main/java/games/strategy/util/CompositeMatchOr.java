@@ -1,6 +1,5 @@
 package games.strategy.util;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,13 +12,6 @@ public class CompositeMatchOr<T> extends CompositeMatch<T> {
     super();
     for (final Match<?> m : matches) {
       add((Match<T>) m);
-    }
-  }
-
-  public CompositeMatchOr(final Collection<Match<T>> matches) {
-    super();
-    for (final Match<T> m : matches) {
-      add(m);
     }
   }
 

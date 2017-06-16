@@ -29,7 +29,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -554,9 +553,9 @@ final class ProTechAI {
     }
     final CompositeMatch<Territory> routeCond =
         new CompositeMatchAnd<>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
-    CompositeMatch<Territory> routeCondition;
+    final Match<Territory> routeCondition;
     if (attacking) {
-      routeCondition = new CompositeMatchOr<>(Matches.territoryIs(destination), routeCond);
+      routeCondition = Match.any(Matches.territoryIs(destination), routeCond);
     } else {
       routeCondition = routeCond;
     }
@@ -630,7 +629,7 @@ final class ProTechAI {
    */
   private static List<Territory> findFontier(final Territory start, final Match<Territory> endCondition,
       final Match<Territory> routeCondition, final int distance, final GameData data) {
-    final Match<Territory> canGo = new CompositeMatchOr<>(endCondition, routeCondition);
+    final Match<Territory> canGo = Match.any(endCondition, routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
     final Queue<Territory> q = new LinkedList<>();
     final List<Territory> frontier = new ArrayList<>();

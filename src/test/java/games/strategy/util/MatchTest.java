@@ -11,6 +11,8 @@ import java.util.HashMap;
 import org.junit.Test;
 
 public class MatchTest {
+  private static final Object VALUE = new Object();
+
   private final Collection<Integer> ints = Arrays.asList(-1, -2, -3, 0, 1, 2, 3);
   private final Match<Integer> pos = Match.of(it -> it > 0);
   private final Match<Integer> neg = Match.of(it -> it < 0);
@@ -65,7 +67,19 @@ public class MatchTest {
   }
 
   @Test
+  public void testAny() {
+    assertFalse(Match.any().match(VALUE));
+    assertTrue(Match.any(Match.always()).match(VALUE));
+    assertFalse(Match.any(Match.never()).match(VALUE));
+    assertTrue(Match.any(Match.always(), Match.always()).match(VALUE));
+    assertTrue(Match.any(Match.always(), Match.never()).match(VALUE));
+    assertTrue(Match.any(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.any(Match.never(), Match.never()).match(VALUE));
+  }
+
+  @Test
   public void testOr() {
+    assertFalse(new CompositeMatchOr<Integer>().match(1));
     final CompositeMatch<Integer> or = new CompositeMatchOr<>(pos, neg);
     assertTrue(or.match(1));
     assertTrue(Match.someMatch(ints, or));
