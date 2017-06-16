@@ -40,7 +40,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -483,7 +482,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // moved out of the territory
     // this is an ilegant way to handle this bug
     final CompositeMatch<Unit> airNotInTerritory = new CompositeMatchAnd<>();
-    airNotInTerritory.add(new InverseMatch<>(Matches.unitIsInTerritory(m_battleSite)));
+    airNotInTerritory.add(Matches.unitIsInTerritory(m_battleSite).invert());
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
   }
 
@@ -1646,7 +1645,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     retreating.addAll(getDependentUnits(retreating));
     // our own air units dont retreat with land units
     final Match<Unit> notMyAir =
-        new CompositeMatchOr<>(Matches.UnitIsNotAir, new InverseMatch<>(Matches.unitIsOwnedBy(m_attacker)));
+        new CompositeMatchOr<>(Matches.UnitIsNotAir, Matches.unitIsOwnedBy(m_attacker).invert());
     retreating = Match.getMatches(retreating, notMyAir);
     final String transcriptText;
     // in WW2V1, defending subs can retreat so show owner
@@ -1696,7 +1695,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     retreating.addAll(getDependentUnits(units));
     // our own air units dont retreat with land units
     final Match<Unit> notMyAir =
-        new CompositeMatchOr<>(Matches.UnitIsNotAir, new InverseMatch<>(Matches.unitIsOwnedBy(m_attacker)));
+        new CompositeMatchOr<>(Matches.UnitIsNotAir, Matches.unitIsOwnedBy(m_attacker).invert());
     final Collection<Unit> nonAirRetreating = Match.getMatches(retreating, notMyAir);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));

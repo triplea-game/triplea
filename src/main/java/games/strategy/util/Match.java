@@ -1,6 +1,7 @@
 package games.strategy.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.util.PredicateUtils.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,7 +152,7 @@ public abstract class Match<T> {
   public abstract boolean match(T o);
 
   public final Match<T> invert() {
-    return new InverseMatch<>(this);
+    return Match.of(not(this::match));
   }
 
   /**

@@ -40,7 +40,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -93,7 +92,7 @@ public class WeakAI extends AbstractAI {
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
         Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
-            new CompositeMatchAnd<>(Matches.TerritoryIsLand, new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater)),
+            new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNeutralButNotWater.invert()),
             data);
     return invasionRoute == null;
   }
@@ -428,7 +427,7 @@ public class WeakAI extends AbstractAI {
           new CompositeMatchAnd<>(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
       final CompositeMatchAnd<Territory> enemyTerritory =
           new CompositeMatchAnd<>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand,
-              new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsEmpty);
+              Matches.TerritoryIsNeutralButNotWater.invert(), Matches.TerritoryIsEmpty);
       final int trans = t.getUnits().countMatches(ownedTransports);
       if (trans > 0) {
         final Route newRoute = Utils.findNearest(t, enemyTerritory, routeCondition, data);
@@ -467,8 +466,8 @@ public class WeakAI extends AbstractAI {
       moveOfType.add(Matches.UnitIsNotInfrastructure);
       moveOfType.add(Matches.UnitIsLand);
       final CompositeMatchAnd<Territory> moveThrough =
-          new CompositeMatchAnd<>(new InverseMatch<>(Matches.TerritoryIsImpassable),
-              new InverseMatch<>(Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsLand);
+          new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert(),
+              Matches.TerritoryIsNeutralButNotWater.invert(), Matches.TerritoryIsLand);
       final List<Unit> units = t.getUnits().getMatches(moveOfType);
       if (units.size() == 0) {
         continue;
@@ -724,7 +723,7 @@ public class WeakAI extends AbstractAI {
       if (bombers.isEmpty()) {
         continue;
       }
-      final Match<Territory> routeCond = new InverseMatch<>(Matches.territoryHasEnemyAaForCombatOnly(player, data));
+      final Match<Territory> routeCond = Matches.territoryHasEnemyAaForCombatOnly(player, data).invert();
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       moveUnits.add(bombers);
       moveRoutes.add(bombRoute);

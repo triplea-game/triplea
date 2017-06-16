@@ -4,44 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class MatchTest {
-  Collection<Integer> ints = new ArrayList<>();
-  Match<Integer> pos = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o > 0;
-    }
-  };
-  Match<Integer> neg = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o < 0;
-    }
-  };
-  Match<Integer> zero = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o == 0;
-    }
-  };
-
-  @Before
-  public void setUp() {
-    ints.add(-1);
-    ints.add(-2);
-    ints.add(-3);
-    ints.add(0);
-    ints.add(1);
-    ints.add(2);
-    ints.add(3);
-  }
+  private final Collection<Integer> ints = Arrays.asList(-1, -2, -3, 0, 1, 2, 3);
+  private final Match<Integer> pos = Match.of(it -> it > 0);
+  private final Match<Integer> neg = Match.of(it -> it < 0);
+  private final Match<Integer> zero = Match.of(it -> it == 0);
 
   @Test
   public void testNever() {
@@ -58,6 +31,12 @@ public class MatchTest {
     assertTrue(!neg.match(1));
     assertTrue(zero.match(0));
     assertTrue(!zero.match(1));
+  }
+
+  @Test
+  public void testInverse() {
+    assertFalse(Match.always().invert().match(new Object()));
+    assertTrue(Match.never().invert().match(new Object()));
   }
 
   @Test
@@ -96,6 +75,13 @@ public class MatchTest {
     assertTrue(Match.someMatch(ints, or));
     assertTrue(Match.allMatch(ints, or));
     assertEquals(7, Match.getMatches(ints, or).size());
+  }
+
+  @Test
+  public void testAddInverse() {
+    final CompositeMatch<Object> or = new CompositeMatchOr<>();
+    or.addInverse(Match.always());
+    assertFalse(or.match(new Object()));
   }
 
   @Test

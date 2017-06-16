@@ -36,7 +36,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
 /**
@@ -292,13 +291,12 @@ public class MoveValidator {
         }
       } else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater())) {
         final Match<Unit> blitzingUnit = new CompositeMatchOr<>(Matches.UnitCanBlitz, Matches.UnitIsAir);
-        final Match<Unit> nonBlitzing = new InverseMatch<>(blitzingUnit);
+        final Match<Unit> nonBlitzing = blitzingUnit.invert();
         final Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
         nonBlitzingUnits.removeAll(UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
-        final Match<Territory> territoryIsNotEnd = new InverseMatch<>(Matches.territoryIs(route.getEnd()));
-        final Match<Territory> nonFriendlyTerritories =
-            new InverseMatch<>(Matches.isTerritoryFriendly(player, data));
+        final Match<Territory> territoryIsNotEnd = Matches.territoryIs(route.getEnd()).invert();
+        final Match<Territory> nonFriendlyTerritories = Matches.isTerritoryFriendly(player, data).invert();
         final Match<Territory> notEndOrFriendlyTerrs =
             new CompositeMatchAnd<>(nonFriendlyTerritories, territoryIsNotEnd);
         final Match<Territory> foughtOver = Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data));
@@ -1010,7 +1008,7 @@ public class MoveValidator {
     final Collection<Unit> landAndAir =
         Match.getMatches(units, new CompositeMatchOr<>(Matches.UnitIsLand, Matches.UnitIsAir));
     // make sure we can be transported
-    final Match<Unit> cantBeTransported = new InverseMatch<>(Matches.UnitCanBeTransported);
+    final Match<Unit> cantBeTransported = Matches.UnitCanBeTransported.invert();
     for (final Unit unit : Match.getMatches(land, cantBeTransported)) {
       result.addDisallowedUnit("Not all units can be transported", unit);
     }
