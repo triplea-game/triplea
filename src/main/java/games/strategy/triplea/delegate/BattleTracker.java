@@ -46,7 +46,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -983,7 +982,7 @@ public class BattleTracker implements java.io.Serializable {
     if (dependent == null) {
       return Collections.emptyList();
     }
-    return Match.getMatches(dependent, new InverseMatch<>(Matches.BattleIsEmpty));
+    return Match.getMatches(dependent, Matches.BattleIsEmpty.invert());
   }
 
   /**

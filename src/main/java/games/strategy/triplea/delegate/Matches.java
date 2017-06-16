@@ -41,7 +41,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
@@ -104,7 +103,9 @@ public class Matches {
       return unit.getHits() > 0;
     }
   };
-  public static final Match<Unit> UnitHasNotTakenAnyDamage = new InverseMatch<>(UnitHasTakenSomeDamage);
+
+  public static final Match<Unit> UnitHasNotTakenAnyDamage = UnitHasTakenSomeDamage.invert();
+
   public static final Match<Unit> UnitHasOnlyOneHitPointLeft = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -126,7 +127,9 @@ public class Matches {
       return ua.getIsSub();
     }
   };
-  public static final Match<Unit> UnitIsNotSub = new InverseMatch<>(UnitIsSub);
+
+  public static final Match<Unit> UnitIsNotSub = UnitIsSub.invert();
+
   public static final Match<Unit> UnitIsCombatTransport = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -134,7 +137,9 @@ public class Matches {
       return (ua.getIsCombatTransport() && ua.getIsSea());
     }
   };
-  public static final Match<Unit> UnitIsNotCombatTransport = new InverseMatch<>(UnitIsCombatTransport);
+
+  public static final Match<Unit> UnitIsNotCombatTransport = UnitIsCombatTransport.invert();
+
   public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -198,7 +203,9 @@ public class Matches {
       return UnitTypeIsStrategicBomber.match(obj.getType());
     }
   };
-  public static final Match<Unit> UnitIsNotStrategicBomber = new InverseMatch<>(UnitIsStrategicBomber);
+
+  public static final Match<Unit> UnitIsNotStrategicBomber = UnitIsStrategicBomber.invert();
+
   public static final Match<UnitType> UnitTypeCanLandOnCarrier = new Match<UnitType>() {
     @Override
     public boolean match(final UnitType obj) {
@@ -209,8 +216,9 @@ public class Matches {
       return ua.getCarrierCost() != -1;
     }
   };
-  public static final Match<UnitType> UnitTypeCannotLandOnCarrier =
-      new InverseMatch<>(UnitTypeCanLandOnCarrier);
+
+  public static final Match<UnitType> UnitTypeCannotLandOnCarrier = UnitTypeCanLandOnCarrier.invert();
+
   public static final Match<Unit> unitHasMoved = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -218,7 +226,8 @@ public class Matches {
       return TripleAUnit.get(unit).getAlreadyMoved() > 0;
     }
   };
-  public static final Match<Unit> unitHasNotMoved = new InverseMatch<>(unitHasMoved);
+
+  public static final Match<Unit> unitHasNotMoved = unitHasMoved.invert();
 
   static Match<Unit> unitCanAttack(final PlayerID id) {
     return new Match<Unit>() {
@@ -449,8 +458,9 @@ public class Matches {
       return taUnit.getUnitDamage() > 0;
     }
   };
-  public static Match<Unit> UnitHasNotTakenAnyBombingUnitDamage =
-      new InverseMatch<>(UnitHasTakenSomeBombingUnitDamage);
+
+  public static final Match<Unit> UnitHasNotTakenAnyBombingUnitDamage = UnitHasTakenSomeBombingUnitDamage.invert();
+
   public static Match<Unit> UnitIsDisabled = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -475,7 +485,9 @@ public class Matches {
       return taUnit.getUnitDamage() > ua.getMaxOperationalDamage();
     }
   };
-  public static Match<Unit> UnitIsNotDisabled = new InverseMatch<>(UnitIsDisabled);
+
+  public static final Match<Unit> UnitIsNotDisabled = UnitIsDisabled.invert();
+
   public static final Match<Unit> UnitCanDieFromReachingMaxDamage = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -492,7 +504,9 @@ public class Matches {
       return UnitTypeIsInfrastructure.match(unit.getType());
     }
   };
-  public static final Match<Unit> UnitIsNotInfrastructure = new InverseMatch<>(UnitIsInfrastructure);
+
+  public static final Match<Unit> UnitIsNotInfrastructure = UnitIsInfrastructure.invert();
+
   public static final Match<UnitType> UnitTypeIsInfrastructure = new Match<UnitType>() {
     @Override
     public boolean match(final UnitType ut) {
@@ -673,7 +687,9 @@ public class Matches {
       return ua.getTransportCost() != -1;
     }
   };
-  public static final Match<Unit> UnitCanNotBeTransported = new InverseMatch<>(UnitCanBeTransported);
+
+  public static final Match<Unit> UnitCanNotBeTransported = UnitCanBeTransported.invert();
+
   public static final Match<Unit> UnitWasAmphibious = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -681,7 +697,9 @@ public class Matches {
       return taUnit.getWasAmphibious();
     }
   };
-  public static final Match<Unit> UnitWasNotAmphibious = new InverseMatch<>(UnitWasAmphibious);
+
+  public static final Match<Unit> UnitWasNotAmphibious = UnitWasAmphibious.invert();
+
   public static final Match<Unit> UnitWasInCombat = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -703,7 +721,9 @@ public class Matches {
       return taUnit.getWasLoadedThisTurn();
     }
   };
-  public static final Match<Unit> UnitWasNotLoadedThisTurn = new InverseMatch<>(UnitWasLoadedThisTurn);
+
+  public static final Match<Unit> UnitWasNotLoadedThisTurn = UnitWasLoadedThisTurn.invert();
+
   public static final Match<Unit> UnitCanTransport = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -741,7 +761,9 @@ public class Matches {
       return ua.getCanProduceUnits();
     }
   };
-  public static final Match<Unit> UnitCanNotProduceUnits = new InverseMatch<>(UnitCanProduceUnits);
+
+  public static final Match<Unit> UnitCanNotProduceUnits = UnitCanProduceUnits.invert();
+
   public static final Match<UnitType> UnitTypeIsInfrastructureButNotAAofAnyKind = new Match<UnitType>() {
     @Override
     public boolean match(final UnitType type) {
@@ -965,7 +987,9 @@ public class Matches {
       return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
     }
   };
-  public static final Match<Unit> UnitIsNotAA = new InverseMatch<>(UnitIsAAforAnything);
+
+  public static final Match<Unit> UnitIsNotAA = UnitIsAAforAnything.invert();
+
   public static final Match<Unit> UnitMaxAAattacksIsInfinite = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -1014,7 +1038,9 @@ public class Matches {
       return ua.getIsInfantry();
     }
   };
-  public static final Match<Unit> UnitIsNotInfantry = new InverseMatch<>(UnitIsInfantry);
+
+  public static final Match<Unit> UnitIsNotInfantry = UnitIsInfantry.invert();
+
   public static final Match<Unit> UnitHasMarinePositiveBonus = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -1051,7 +1077,9 @@ public class Matches {
       return ua.getIsAirTransportable();
     }
   };
-  public static final Match<Unit> UnitIsNotAirTransportable = new InverseMatch<>(UnitIsAirTransportable);
+
+  public static final Match<Unit> UnitIsNotAirTransportable = UnitIsAirTransportable.invert();
+
   public static final Match<Unit> UnitIsAirTransport = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -1064,7 +1092,9 @@ public class Matches {
       return ua.getIsAirTransport();
     }
   };
-  public static final Match<Unit> UnitIsNotAirTransport = new InverseMatch<>(UnitIsAirTransport);
+
+  public static final Match<Unit> UnitIsNotAirTransport = UnitIsAirTransport.invert();
+
   public static final Match<Unit> UnitIsArtillery = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -1104,7 +1134,9 @@ public class Matches {
       return ta.getVictoryCity() != 0;
     }
   };
-  public static final Match<Territory> TerritoryIsLand = new InverseMatch<>(TerritoryIsWater);
+
+  public static final Match<Territory> TerritoryIsLand = TerritoryIsWater.invert();
+
   public static final Match<Territory> TerritoryIsEmpty = new Match<Territory>() {
     @Override
     public boolean match(final Territory t) {
@@ -1379,8 +1411,9 @@ public class Matches {
       return t.getOwner().equals(PlayerID.NULL_PLAYERID);
     }
   };
-  public static final Match<Territory> TerritoryIsNotNeutralButCouldBeWater =
-      new InverseMatch<>(TerritoryIsNeutralButNotWater);
+
+  public static final Match<Territory> TerritoryIsNotNeutralButCouldBeWater = TerritoryIsNeutralButNotWater.invert();
+
   public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>() {
     @Override
     public boolean match(final Territory t) {
@@ -1391,7 +1424,8 @@ public class Matches {
       return ta != null && ta.getIsImpassable();
     }
   };
-  public static final Match<Territory> TerritoryIsNotImpassable = new InverseMatch<>(TerritoryIsImpassable);
+
+  public static final Match<Territory> TerritoryIsNotImpassable = TerritoryIsImpassable.invert();
 
   static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data) {
     return new Match<Territory>() {
@@ -1629,7 +1663,7 @@ public class Matches {
     };
   }
 
-  public static final Match<Unit> UnitIsStatic = new InverseMatch<>(UnitCanMove);
+  public static final Match<Unit> UnitIsStatic = UnitCanMove.invert();
 
   public static Match<UnitType> unitTypeIsStatic(final PlayerID id) {
     return Match.of(unitType -> !unitTypeCanMove(id).match(unitType));
@@ -2070,7 +2104,8 @@ public class Matches {
   public static final Match<Unit> UnitIsLand = new CompositeMatchAnd<>(UnitIsNotSea, UnitIsNotAir);
   public static final Match<UnitType> UnitTypeIsLand =
       new CompositeMatchAnd<>(UnitTypeIsNotSea, UnitTypeIsNotAir);
-  public static final Match<Unit> UnitIsNotLand = new InverseMatch<>(UnitIsLand);
+
+  public static final Match<Unit> UnitIsNotLand = UnitIsLand.invert();
 
   public static Match<Unit> unitIsOfType(final UnitType type) {
     return Match.of(unit -> unit.getType().equals(type));
@@ -2483,7 +2518,9 @@ public class Matches {
       return ua.getIsConstruction();
     }
   };
-  public static final Match<Unit> UnitIsNotConstruction = new InverseMatch<>(UnitIsConstruction);
+
+  public static final Match<Unit> UnitIsNotConstruction = UnitIsConstruction.invert();
+
   public static final Match<Unit> UnitCanProduceUnitsAndIsConstruction =
       new CompositeMatchAnd<>(UnitCanProduceUnits, UnitIsConstruction);
   public static final Match<UnitType> UnitTypeCanProduceUnitsAndIsConstruction =

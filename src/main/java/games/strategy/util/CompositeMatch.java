@@ -23,10 +23,10 @@ public abstract class CompositeMatch<T> extends Match<T> {
   }
 
   /**
-   * Add the inverse of a match. Equivalant to add(new InverseMatch(aMatch))
+   * Add the inverse of a match. Equivalent to add(match.invert()).
    */
-  public void addInverse(final Match<T> aMatch) {
-    add(new InverseMatch<>(aMatch));
+  public void addInverse(final Match<T> match) {
+    add(match.invert());
   }
 
   /**

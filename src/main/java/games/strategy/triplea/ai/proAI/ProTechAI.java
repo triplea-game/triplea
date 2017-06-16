@@ -31,7 +31,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 
 /**
@@ -737,7 +736,7 @@ final class ProTechAI {
   }
 
   private static Match<Territory> TerritoryIsNotImpassableToAirUnits() {
-    return new InverseMatch<>(TerritoryIsImpassableToAirUnits());
+    return TerritoryIsImpassableToAirUnits().invert();
   }
 
   /**

@@ -47,7 +47,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -474,7 +473,7 @@ public class MovePanel extends AbstractMovePanel {
     // when the
     // only consider the non land units
     if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !route.isLoad()) {
-      best = Match.getMatches(best, new InverseMatch<>(Matches.UnitIsLand));
+      best = Match.getMatches(best, Matches.UnitIsLand.invert());
     }
     sortUnitsToMove(best, route);
     Collections.reverse(best);
@@ -1136,7 +1135,7 @@ public class MovePanel extends AbstractMovePanel {
       } else if ((route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) || paratroopsLanding) {
         final List<Unit> unloadAble = Match.getMatches(selectedUnits, getUnloadableMatch());
         final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
-        canMove.addAll(Match.getMatches(selectedUnits, new InverseMatch<>(getUnloadableMatch())));
+        canMove.addAll(Match.getMatches(selectedUnits, getUnloadableMatch().invert()));
         if (paratroopsLanding) {
           transports = canMove;
         }
