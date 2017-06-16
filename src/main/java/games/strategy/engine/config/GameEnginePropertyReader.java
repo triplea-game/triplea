@@ -83,7 +83,7 @@ public class GameEnginePropertyReader extends PropertyFileReader {
   }
 
   public boolean useExperimentalUi() {
-    return String.valueOf(true).equals(super.readProperty(GameEngineProperty.EXPERIMENTAL_UI, false));
+    return String.valueOf(true).equals(super.readProperty(GameEngineProperty.JAVAFX_UI, false));
   }
 
 
@@ -95,6 +95,6 @@ public class GameEnginePropertyReader extends PropertyFileReader {
     String LOBBY_PROPS_URL = "lobby_properties_file_url";
     String LOBBY_PROPS_BACKUP_FILE = "lobby_properties_file_backup";
     String MAX_MEMORY = "max_memory";
-    String EXPERIMENTAL_UI = "experimental_ui";
+    String JAVAFX_UI = "javafx_ui";
   }
 }
