@@ -11,7 +11,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class TripleaSettings extends StackPane {
+public class SettingsPane extends StackPane {
   private final TripleA triplea;
 
   @FXML
@@ -25,7 +25,7 @@ public class TripleaSettings extends StackPane {
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  public TripleaSettings(final TripleA triplea) throws IOException {
+  public SettingsPane(final TripleA triplea) throws IOException {
     final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleASettings.fxml"));
     loader.setRoot(this);
     loader.setController(this);

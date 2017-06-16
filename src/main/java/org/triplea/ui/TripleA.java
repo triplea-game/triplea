@@ -34,7 +34,7 @@ public class TripleA extends Application {
   @FXML
   private StackPane rootPane;
 
-  private TripleaMainMenu mainMenu;
+  private MainMenuPane mainMenu;
 
   @Override
   public void start(final Stage stage) throws Exception {
@@ -42,7 +42,7 @@ public class TripleA extends Application {
     loader.setController(this);
     final Scene scene = new Scene(loader.load(), 960, 540);
     scene.getStylesheets().add("org/triplea/ui/css/main.css");
-    final TripleaMainMenu mainMenu = addRootContent(new TripleaMainMenu(this));
+    final MainMenuPane mainMenu = addRootContent(new MainMenuPane(this));
     this.mainMenu = mainMenu;
     stage.setMinHeight(scene.getHeight());
     stage.setMinWidth(scene.getWidth());
@@ -69,7 +69,7 @@ public class TripleA extends Application {
     return loader;
   }
 
-  public TripleaMainMenu getMainMenu() {
+  public MainMenuPane getMainMenu() {
     return mainMenu;
   }
 

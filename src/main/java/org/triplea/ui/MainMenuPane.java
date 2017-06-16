@@ -20,11 +20,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class TripleaMainMenu extends BorderPane {
+public class MainMenuPane extends BorderPane {
 
   private final TripleA triplea;
-  private final TripleaDownload downloadPane;
-  private final TripleaSettings settingsPane;
+  private final DownloadPane downloadPane;
+  private final SettingsPane settingsPane;
 
   @FXML
   private Text loggedInText;
@@ -57,16 +57,16 @@ public class TripleaMainMenu extends BorderPane {
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  public TripleaMainMenu(final TripleA triplea) throws IOException {
+  public MainMenuPane(final TripleA triplea) throws IOException {
     final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleAMainMenu.fxml"));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
     this.triplea = triplea;
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getFullVersion()));
-    downloadPane = triplea.addRootContent(new TripleaDownload(triplea));
+    downloadPane = triplea.addRootContent(new DownloadPane(triplea));
     downloadPane.setVisible(false);
-    settingsPane = triplea.addRootContent(new TripleaSettings(triplea));
+    settingsPane = triplea.addRootContent(new SettingsPane(triplea));
     settingsPane.setVisible(false);
   }
 
