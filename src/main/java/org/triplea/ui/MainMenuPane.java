@@ -73,7 +73,7 @@ public class MainMenuPane extends BorderPane {
 
   @FXML
   private void login() {
-    new Thread(() -> new LoadingTask<>(task -> {
+    new Thread(() -> new LoadingTask<>(triplea, task -> {
       task.setLoadingMesage("Loading test1234");
       ThreadUtil.sleep(2000);
       task.setLoadingMesage("Loading test234");

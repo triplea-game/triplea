@@ -31,14 +31,12 @@ public class TripleA extends Application {
   private StackPane rootPane;
 
   private MainMenuPane mainMenu;
-  static TripleA instance = null;
 
   @Override
   public void start(final Stage stage) throws Exception {
-    instance = this;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
     loader.setController(this);
-    final Scene scene = new Scene(loader.load(), 960, 540);//TODO make those values configurable
+    final Scene scene = new Scene(loader.load(), 960, 540);// TODO make those values configurable
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
     stage.setMinHeight(scene.getHeight());
