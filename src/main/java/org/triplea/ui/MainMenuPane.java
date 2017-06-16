@@ -9,7 +9,6 @@ import java.text.MessageFormat;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.util.ThreadUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -110,29 +109,19 @@ public class MainMenuPane extends BorderPane {
   }
 
   @FXML
-  private void showLobbyMenu() {
-
-  }
+  private void showLobbyMenu() {}
 
   @FXML
-  private void showLocalGameMenu() {
-
-  }
+  private void showLocalGameMenu() {}
 
   @FXML
-  private void showHostNetworkGameMenu() {
-
-  }
+  private void showHostNetworkGameMenu() {}
 
   @FXML
-  private void showJoinNetworkGameMenu() {
-
-  }
+  private void showJoinNetworkGameMenu() {}
 
   @FXML
-  private void showPbfPbemMenu() {
-
-  }
+  private void showPbfPbemMenu() {}
 
   @FXML
   private void showPlayOptions() {

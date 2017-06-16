@@ -50,12 +50,8 @@ public class SettingsPane extends StackPane {
   }
 
   @FXML
-  private void reset() {
-
-  }
+  private void reset() {}
 
   @FXML
-  private void save() {
-
-  }
+  private void save() {}
 }
