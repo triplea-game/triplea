@@ -26,7 +26,7 @@ public class SettingsPane extends StackPane {
    * @throws IOException If the FXML file is not present.
    */
   public SettingsPane(final TripleA triplea) throws IOException {
-    final FXMLLoader loader = TripleA.getLoader(getClass().getResource("./fxml/TripleASettings.fxml"));
+    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.SETTINGS_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
@@ -46,8 +46,7 @@ public class SettingsPane extends StackPane {
 
   @FXML
   private void back() {
-    setVisible(false);
-    triplea.getMainMenu().setVisible(true);
+    triplea.returnToMainMenu(this);
   }
 
   @FXML

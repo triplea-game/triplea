@@ -1,9 +1,5 @@
 package org.triplea.ui;
 
-import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -38,16 +34,15 @@ public class TripleA extends Application {
 
   @Override
   public void start(final Stage stage) throws Exception {
-    final FXMLLoader loader = getLoader(getClass().getResource("./fxml/TripleAMain.fxml"));
+    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
     loader.setController(this);
-    final Scene scene = new Scene(loader.load(), 960, 540);
-    scene.getStylesheets().add("org/triplea/ui/css/main.css");
-    final MainMenuPane mainMenu = addRootContent(new MainMenuPane(this));
-    this.mainMenu = mainMenu;
+    final Scene scene = new Scene(loader.load(), 960, 540);//TODO make those values configurable
+    scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
+    mainMenu = addRootContent(new MainMenuPane(this));
     stage.setMinHeight(scene.getHeight());
     stage.setMinWidth(scene.getWidth());
     stage.setScene(scene);
-    stage.getIcons().add(new Image(getClass().getResourceAsStream("/games/strategy/engine/framework/ta_icon.png")));
+    stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
     stage.setTitle("TripleA");
     stage.show();
     stage.setOnCloseRequest(e -> System.exit(0));
@@ -57,20 +52,9 @@ public class TripleA extends Application {
     Application.launch(arg);
   }
 
-  /**
-   * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA.
-   * @param location The FXML File to load
-   * @return An FXMLLoader object
-   */
-  public static FXMLLoader getLoader(final URL location) {
-    final FXMLLoader loader = new FXMLLoader();
-    loader.setLocation(location);
-    loader.setResources(ResourceBundle.getBundle("org.triplea.ui.lang.TripleA", new Locale("en", "US")));
-    return loader;
-  }
-
-  public MainMenuPane getMainMenu() {
-    return mainMenu;
+  void returnToMainMenu(Node currentPane) {
+    currentPane.setVisible(false);
+    mainMenu.setVisible(true);
   }
 
   public void promptExit() {
