@@ -29,7 +29,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -141,7 +140,7 @@ public class MovePerformer implements Serializable {
         // battles on (note water could have enemy but its
         // not owned)
         final GameData data = bridge.getData();
-        final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
+        final Match<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
         final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits));
         // Reset Optional
         arrivingUnits = new ArrayList<>();
@@ -288,13 +287,11 @@ public class MovePerformer implements Serializable {
     m_executionStack.execute(m_bridge);
   }
 
-  private static CompositeMatch<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
-    final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<>();
-    mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data));
-    mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
-    mustFightThrough
-        .add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
-    return mustFightThrough;
+  private static Match<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
+    return Match.any(
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data),
+        Matches.territoryHasNonSubmergedEnemyUnits(id, data),
+        Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
   }
 
   private static Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
@@ -363,9 +360,7 @@ public class MovePerformer implements Serializable {
       return;
     }
     final GameData data = m_bridge.getData();
-    final CompositeMatch<Unit> paratroopNAirTransports = new CompositeMatchOr<>();
-    paratroopNAirTransports.add(Matches.UnitIsAirTransport);
-    paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
+    final Match<Unit> paratroopNAirTransports = Match.any(Matches.UnitIsAirTransport, Matches.UnitIsAirTransportable);
     final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =

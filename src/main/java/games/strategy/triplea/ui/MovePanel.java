@@ -360,12 +360,10 @@ public class MovePanel extends AbstractMovePanel {
         }
       };
       if (route.isUnload()) {
-        final CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<>();
-        landOrCanMove.add(Matches.UnitIsLand);
         final CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<>();
         notLandAndCanMove.add(enoughMovement);
         notLandAndCanMove.add(Matches.UnitIsNotLand);
-        landOrCanMove.add(notLandAndCanMove);
+        final Match<Unit> landOrCanMove = Match.any(Matches.UnitIsLand, notLandAndCanMove);
         movable.add(landOrCanMove);
       } else {
         movable.add(enoughMovement);

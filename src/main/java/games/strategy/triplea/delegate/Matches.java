@@ -1391,12 +1391,7 @@ public class Matches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        final CompositeMatch<Unit> nonCom = new CompositeMatchOr<>();
-        nonCom.add(UnitIsInfrastructure);
-        nonCom.add(enemyUnit(player, data).invert());
-        // this is causing issues where the newly captured
-        // nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data));
-        // units fight against themselves
+        final Match<Unit> nonCom = Match.any(UnitIsInfrastructure, enemyUnit(player, data).invert());
         return t.getUnits().allMatch(nonCom);
       }
     };

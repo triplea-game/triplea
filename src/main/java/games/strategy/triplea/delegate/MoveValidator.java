@@ -35,7 +35,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 /**
@@ -392,9 +391,9 @@ public class MoveValidator {
     }
     if (end.getUnits().someMatch(Matches.enemyUnit(player, data))) {
       if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
-        final CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<>();
-        friendlyOrSubmerged.add(Matches.enemyUnit(player, data).invert());
-        friendlyOrSubmerged.add(Matches.UnitIsSubmerged);
+        final Match<Unit> friendlyOrSubmerged = Match.any(
+            Matches.enemyUnit(player, data).invert(),
+            Matches.UnitIsSubmerged);
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
             && !(Match.allMatch(units, Matches.UnitIsAir) && end.isWater())) {
           if (!Match.allMatch(units, Matches.UnitIsSub)
@@ -849,10 +848,7 @@ public class MoveValidator {
   }
 
   private static Collection<Unit> getNonLand(final Collection<Unit> units) {
-    final CompositeMatch<Unit> match = new CompositeMatchOr<>();
-    match.add(Matches.UnitIsAir);
-    match.add(Matches.UnitIsSea);
-    return Match.getMatches(units, match);
+    return Match.getMatches(units, Match.any(Matches.UnitIsAir, Matches.UnitIsSea));
   }
 
   public static int getMaxMovement(final Collection<Unit> units) {
