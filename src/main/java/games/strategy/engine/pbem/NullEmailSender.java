@@ -55,10 +55,18 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
+  public boolean isPasswordSaved() {
+    return false;
+  }
+
+  @Override
   public void setUserName(final String userName) {}
 
   @Override
   public void setPassword(final String password) {}
+
+  @Override
+  public void setPasswordSaved(final boolean passwordSaved) {}
 
   @Override
   public String getHelpText() {
