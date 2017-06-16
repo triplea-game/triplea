@@ -30,7 +30,6 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -174,15 +173,16 @@ public class MovePerformer implements Serializable {
           final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
               new CompositeMatchAnd<>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
-          final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<>(Matches.UnitIsStrategicBomber);
+          final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder();
+          allBombingRaidBuilder.add(Matches.UnitIsStrategicBomber);
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
                   && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
           if (canCreateAirBattle) {
-            allBombingRaid.add(Matches.unitCanEscort);
+            allBombingRaidBuilder.add(Matches.unitCanEscort);
           }
-          final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);
+          final boolean allCanBomb = Match.allMatch(arrived, allBombingRaidBuilder.any());
           final Collection<Unit> enemyTargets =
               Match.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment

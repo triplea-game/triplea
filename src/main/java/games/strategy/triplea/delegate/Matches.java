@@ -39,7 +39,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1844,16 +1843,16 @@ public class Matches {
             && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(t)) {
           return false;
         }
-        final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<>();
+        final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder();
         // we ignore neutral units
-        blitzableUnits.add(Matches.enemyUnit(player, data).invert());
+        blitzableUnitsBuilder.add(Matches.enemyUnit(player, data).invert());
         // WW2V2, cant blitz through factories and aa guns
         // WW2V1, you can
         if (!games.strategy.triplea.Properties.getWW2V2(data)
             && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data)) {
-          blitzableUnits.add(Matches.UnitIsInfrastructure);
+          blitzableUnitsBuilder.add(Matches.UnitIsInfrastructure);
         }
-        return t.getUnits().allMatch(blitzableUnits);
+        return t.getUnits().allMatch(blitzableUnitsBuilder.any());
       }
     };
   }
@@ -3052,14 +3051,14 @@ public class Matches {
           // AND match
           final CompositeMatch<UnitType> defenseMatchAnd = new CompositeMatchAnd<>();
           {
-            // OR match
-            final CompositeMatch<UnitType> defenseMatchOr = new CompositeMatchOr<>();
+            // ANY match
+            final Match.CompositeBuilder<UnitType> defenseMatchAnyBuilder = Match.newCompositeBuilder();
             if (!doNotIncludeAa) {
-              defenseMatchOr.add(new CompositeMatchAnd<>(Matches.UnitTypeIsAAforCombatOnly,
+              defenseMatchAnyBuilder.add(new CompositeMatchAnd<>(Matches.UnitTypeIsAAforCombatOnly,
                   Matches.unitTypeIsAaThatCanFireOnRound(battleRound)));
             }
-            defenseMatchOr.add(supporterOrNotInfrastructure);
-            defenseMatchAnd.add(defenseMatchOr);
+            defenseMatchAnyBuilder.add(supporterOrNotInfrastructure);
+            defenseMatchAnd.add(defenseMatchAnyBuilder.any());
           }
           if (isLandBattle) {
             defenseMatchAnd.add(Matches.UnitTypeIsSea.invert());
