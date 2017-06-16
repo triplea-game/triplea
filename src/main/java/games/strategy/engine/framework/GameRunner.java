@@ -70,7 +70,6 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
-  private static final String DELAYED_PARSING = "DelayedParsing";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -316,21 +315,6 @@ public class GameRunner {
         }
       }
     });
-  }
-
-  public static boolean getDelayedParsing() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    return pref.getBoolean(DELAYED_PARSING, true);
-  }
-
-  public static void setDelayedParsing(final boolean delayedParsing) {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-    pref.putBoolean(DELAYED_PARSING, delayedParsing);
-    try {
-      pref.sync();
-    } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
-    }
   }
 
   public static int getServerStartGameSyncWaitTime() {
