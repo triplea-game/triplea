@@ -31,9 +31,11 @@ public class TripleA extends Application {
   private StackPane rootPane;
 
   private MainMenuPane mainMenu;
+  static TripleA instance = null;
 
   @Override
   public void start(final Stage stage) throws Exception {
+    instance = this;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
     loader.setController(this);
     final Scene scene = new Scene(loader.load(), 960, 540);//TODO make those values configurable
@@ -77,11 +79,11 @@ public class TripleA extends Application {
     System.exit(0);
   }
 
-  public void displayLoadingScreen(final boolean bool) {
+  void displayLoadingScreen(final boolean bool) {
     loadingOverlay.setVisible(bool);
   }
 
-  public void setLoadingMessage(final String message) {
+  void setLoadingMessage(final String message) {
     progressLabel.setText(message);
     progressTooltip.setText(message);
   }

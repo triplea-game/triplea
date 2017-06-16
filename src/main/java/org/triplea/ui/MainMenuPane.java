@@ -9,6 +9,7 @@ import java.text.MessageFormat;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.util.ThreadUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -72,7 +73,15 @@ public class MainMenuPane extends BorderPane {
 
   @FXML
   private void login() {
-
+    new Thread(() -> new LoadingTask<>(task -> {
+      task.setLoadingMesage("Loading test1234");
+      ThreadUtil.sleep(2000);
+      task.setLoadingMesage("Loading test234");
+      ThreadUtil.sleep(2000);
+      task.setLoadingMesage("Loading test34");
+      ThreadUtil.sleep(2000);
+      return "";
+    }).run()).start();
   }
 
   @FXML
