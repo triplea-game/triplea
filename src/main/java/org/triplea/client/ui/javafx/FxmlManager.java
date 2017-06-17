@@ -17,7 +17,7 @@ public enum FxmlManager {
 
   private String value;
 
-  FxmlManager(String value) {
+  FxmlManager(final String value) {
     this.value = value;
   }
 
@@ -28,7 +28,7 @@ public enum FxmlManager {
 
   /**
    * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA.
-   * 
+   *
    * @param location The FXML File to load
    * @return An FXMLLoader object
    */
