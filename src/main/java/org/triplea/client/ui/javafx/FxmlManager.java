@@ -1,4 +1,4 @@
-package org.triplea.ui;
+package org.triplea.client.ui.javafx;
 
 import java.net.URL;
 import java.util.Locale;

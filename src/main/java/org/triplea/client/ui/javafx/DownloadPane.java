@@ -1,4 +1,4 @@
-package org.triplea.ui;
+package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
 

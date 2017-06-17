@@ -1,4 +1,4 @@
-package org.triplea.ui;
+package org.triplea.client.ui.javafx;
 
 import javafx.application.Application;
 import javafx.application.Platform;

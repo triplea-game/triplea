@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
-import org.triplea.ui.TripleA;
+import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
