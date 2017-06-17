@@ -43,10 +43,10 @@ public class OpenFileUtility {
   /**
    * Opens the specified web page in the user's default browser.
    *
-   * @param url An URL of a web page (ex: "http://www.google.com/").
+   * @param url A URL of a web page (ex: "http://www.google.com/").
    * @param action What to do if the Desktop API is not supported.
    */
-  public static void openURL(final String url, Runnable action) {
+  public static void openUrl(final String url, Runnable action) {
     if (Desktop.isDesktopSupported()) {
       try {
         Desktop.getDesktop().browse(URI.create(url));
@@ -61,10 +61,10 @@ public class OpenFileUtility {
   /**
    * Opens the specified web page in the user's default browser
    *
-   * @param url An URL of a web page (ex: "http://www.google.com/")
+   * @param url A URL of a web page (ex: "http://www.google.com/")
    */
   public static void openURL(final String url) {
-    openURL(url, () -> logDesktopAPIMessage(url));
+    openUrl(url, () -> logDesktopAPIMessage(url));
   }
 
   private static void logDesktopAPIMessage(String path) {

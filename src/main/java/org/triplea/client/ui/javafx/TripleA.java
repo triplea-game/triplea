@@ -68,7 +68,7 @@ public class TripleA extends Application {
   }
 
   public void open(final String url) {
-    OpenFileUtility.openURL(url, () -> showDesktopApiNotSupportedError(url));
+    OpenFileUtility.openUrl(url, () -> showDesktopApiNotSupportedError(url));
   }
 
   private void showDesktopApiNotSupportedError(final String path) {

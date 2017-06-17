@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import javafx.application.Platform;
 
-final public class LoadingTask<T> {
+public final class LoadingTask<T> {
 
   private final Function<LoadingTask<T>, T> function;
   private final TripleA triplea;
