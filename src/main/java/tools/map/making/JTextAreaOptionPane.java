@@ -23,13 +23,11 @@ public class JTextAreaOptionPane {
   private final boolean logToSystemOut;
   private final Window parentComponent;
   private int counter;
-  private final CountDownLatch countDownLatch;
 
   public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
       final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
       final int latchCount, final CountDownLatch countDownLatch) {
     this.logToSystemOut = logToSystemOut;
-    this.countDownLatch = countDownLatch;
     counter = latchCount;
     this.parentComponent = parentComponent;
     windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
