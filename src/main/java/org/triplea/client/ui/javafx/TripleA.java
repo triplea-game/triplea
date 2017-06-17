@@ -45,7 +45,6 @@ public class TripleA extends Application {
     stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
     stage.setTitle("TripleA");
     stage.show();
-    stage.setOnCloseRequest(e -> System.exit(0));
   }
 
   public static void launch(final String... arg) {
@@ -74,7 +73,6 @@ public class TripleA extends Application {
   @FXML
   private void exit() {
     Platform.exit();
-    System.exit(0);
   }
 
   void displayLoadingScreen(final boolean bool) {

@@ -133,7 +133,9 @@ public class GameRunner {
    * Warning: game engine code invokes this method to spawn new game clients.
    */
   public static void main(final String[] args) {
-    ErrorConsole.getConsole();
+    if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+      ErrorConsole.getConsole();
+    }
     if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
       usage();
       return;
@@ -147,20 +149,6 @@ public class GameRunner {
     }
 
     HttpProxy.setupProxies();
-    if (ClientContext.gameEnginePropertyReader().useExperimentalUi()) {
-      TripleA.launch(args);
-    } else {
-      SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
-      SwingUtilities.invokeLater(() -> {
-        setupPanelModel.showSelectType();
-        final MainPanel mainPanel = new MainPanel(setupPanelModel);
-        mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
-      });
-      showMainFrame();
-      new Thread(GameRunner::setupLogging).start();
-      new Thread(GameRunner::checkLocalSystem).start();
-      new Thread(GameRunner::checkForUpdates).start();
-    }
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
@@ -179,6 +167,21 @@ public class GameRunner {
     } else {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
       System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+    }
+
+    if (ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+      TripleA.launch(args);
+    } else {
+      SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+      SwingUtilities.invokeLater(() -> {
+        setupPanelModel.showSelectType();
+        final MainPanel mainPanel = new MainPanel(setupPanelModel);
+        mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+      });
+      showMainFrame();
+      new Thread(GameRunner::setupLogging).start();
+      new Thread(GameRunner::checkLocalSystem).start();
+      new Thread(GameRunner::checkForUpdates).start();
     }
   }
 
