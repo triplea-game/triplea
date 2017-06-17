@@ -18,8 +18,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
