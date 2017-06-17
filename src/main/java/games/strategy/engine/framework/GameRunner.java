@@ -222,7 +222,8 @@ public class GameRunner {
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType, final int messageType) {
+  public static int showConfirmDialog(final String message, final Title title, final int optionType,
+      final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
