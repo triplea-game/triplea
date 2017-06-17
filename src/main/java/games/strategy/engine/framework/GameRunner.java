@@ -212,9 +212,11 @@ public class GameRunner {
    */
   public static class Title {
     public String value;
+
     private Title(final String value) {
       this.value = value;
     }
+
     public static Title of(final String value) {
       return new Title(value);
     }
