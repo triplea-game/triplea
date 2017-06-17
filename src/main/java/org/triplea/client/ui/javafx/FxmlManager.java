@@ -35,7 +35,8 @@ public enum FxmlManager {
   static FXMLLoader getLoader(final URL location) {
     final FXMLLoader loader = new FXMLLoader();
     loader.setLocation(location);
-    loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));//TODO load locale based on user setting
+    // TODO load locale based on user setting
+    loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));
     return loader;
   }
 }
