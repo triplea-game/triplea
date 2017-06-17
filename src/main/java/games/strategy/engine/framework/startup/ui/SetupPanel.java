@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -119,7 +120,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
     incomeLabel.setVisible(false);
     gridx++;
-    final JLabel puIncomeBonusLabel = new JLabel("Flat Income");
+    final JLabel puIncomeBonusLabel = new JLabel("Bonus Income");
     panel.add(puIncomeBonusLabel, new GridBagConstraints(gridx++, gridy, 2, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
     puIncomeBonusLabel.setVisible(false);
