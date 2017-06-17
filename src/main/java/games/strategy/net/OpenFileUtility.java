@@ -16,9 +16,19 @@ public class OpenFileUtility {
   /**
    * Opens a specific file on the user's computer using the local computer's file associations.
    *
-   * @param file The file to be opened
+   * @param file The file to be opened.
    */
   public static void openFile(final File file) {
+    openFile(file, () -> logDesktopAPIMessage(file.getAbsolutePath()));
+  }
+
+  /**
+   * Opens a specific file on the user's computer using the local computer's file associations.
+   *
+   * @param file The file to be opened.
+   * @param action What to do if the Desktop API is not supported.
+   */
+  public static void openFile(final File file, Runnable action) {
     if (Desktop.isDesktopSupported()) {
       try {
         Desktop.getDesktop().open(file);
@@ -26,7 +36,25 @@ public class OpenFileUtility {
         ClientLogger.logError("Could not open File " + file.getAbsolutePath(), e);
       }
     } else {
-      logDesktopAPIMessage(file.getAbsolutePath());
+      action.run();
+    }
+  }
+
+  /**
+   * Opens the specified web page in the user's default browser.
+   *
+   * @param url An URL of a web page (ex: "http://www.google.com/").
+   * @param action What to do if the Desktop API is not supported.
+   */
+  public static void openURL(final String url, Runnable action) {
+    if (Desktop.isDesktopSupported()) {
+      try {
+        Desktop.getDesktop().browse(URI.create(url));
+      } catch (IOException e) {
+        ClientLogger.logError("Could not open URL " + url, e);
+      }
+    } else {
+      action.run();
     }
   }
 
@@ -36,15 +64,7 @@ public class OpenFileUtility {
    * @param url An URL of a web page (ex: "http://www.google.com/")
    */
   public static void openURL(final String url) {
-    if (Desktop.isDesktopSupported()) {
-      try {
-        Desktop.getDesktop().browse(URI.create(url));
-      } catch (IOException e) {
-        ClientLogger.logError("Could not open URL " + url, e);
-      }
-    } else {
-      logDesktopAPIMessage(url);
-    }
+    openURL(url, () -> logDesktopAPIMessage(url));
   }
 
   private static void logDesktopAPIMessage(String path) {

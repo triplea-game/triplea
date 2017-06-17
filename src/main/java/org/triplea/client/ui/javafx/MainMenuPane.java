@@ -1,12 +1,8 @@
 package org.triplea.client.ui.javafx;
 
-import java.awt.Desktop;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
 import javafx.fxml.FXML;
@@ -84,28 +80,12 @@ public class MainMenuPane extends BorderPane {
 
   @FXML
   private void showHelp() {
-    if (Desktop.isDesktopSupported()) {
-      try {
-        Desktop.getDesktop().browse(new URI(UrlConstants.GITHUB_HELP.toString()));
-      } catch (IOException | URISyntaxException e) {
-        ClientLogger.logQuietly("Error while trying to open URL", e);
-      }
-    } else {
-      // TODO Desktop API is not supported
-    }
+    triplea.open(UrlConstants.GITHUB_HELP.toString());
   }
 
   @FXML
   private void showRuleBook() {
-    if (Desktop.isDesktopSupported()) {
-      try {
-        Desktop.getDesktop().browse(new URI(UrlConstants.RULE_BOOK.toString()));
-      } catch (IOException | URISyntaxException e) {
-        ClientLogger.logQuietly("Error while trying to open URL", e);
-      }
-    } else {
-      // TODO Desktop API is not supported
-    }
+    triplea.open(UrlConstants.RULE_BOOK.toString());
   }
 
   @FXML

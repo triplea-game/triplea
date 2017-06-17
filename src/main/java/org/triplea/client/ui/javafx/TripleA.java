@@ -1,5 +1,8 @@
 package org.triplea.client.ui.javafx;
 
+import java.io.File;
+
+import games.strategy.net.OpenFileUtility;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -58,6 +61,22 @@ public class TripleA extends Application {
 
   public void promptExit() {
     exitOverlay.setVisible(true);
+  }
+
+  public void open(final File file) {
+    OpenFileUtility.openFile(file, () -> showDesktopApiNotSupportedError(file.getAbsolutePath()));
+  }
+
+  public void open(final String url) {
+    OpenFileUtility.openURL(url, () -> showDesktopApiNotSupportedError(url));
+  }
+
+  private void showDesktopApiNotSupportedError(final String path) {
+    showErrorMessage("Desktop API not supported", "Could not open '" + path + "' automatically!");
+  }
+
+  public void showErrorMessage(final String title, final String message) {
+    // TODO
   }
 
   <T extends Node> T addRootContent(final T node) {
