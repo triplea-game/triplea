@@ -40,6 +40,7 @@ public class ForumPosterEditor extends EditorPanel {
   private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
   private final JCheckBox m_includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
+  private final JCheckBox passwordSaved = new JCheckBox("Remember my password");
   private final IForumPoster m_bean;
 
   public ForumPosterEditor(final IForumPoster bean) {
@@ -69,6 +70,12 @@ public class ForumPosterEditor extends EditorPanel {
         new Insets(0, 0, bottomSpace, 0), 0, 0));
     m_password.setText(m_bean.getPassword());
     row++;
+    add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(passwordSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    passwordSaved.setSelected(m_bean.isPasswordSaved());
+    row++;
     if (m_bean.supportsSaveGame()) {
       add(m_includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -91,12 +98,25 @@ public class ForumPosterEditor extends EditorPanel {
    */
   private void setupListeners() {
     m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
+    passwordSaved.addActionListener(e -> passwordSavedChanged());
     m_testForum.addActionListener(e -> testForum());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     m_login.getDocument().addDocumentListener(docListener);
     m_password.getDocument().addDocumentListener(docListener);
     m_topicIdField.getDocument().addDocumentListener(docListener);
+  }
+
+  private void passwordSavedChanged() {
+    fireEditorChanged();
+
+    if (passwordSaved.isSelected()) {
+      GameRunner.showMessageDialog(
+          "Your password will be stored unencrypted in the local file system. "
+              + "You should not choose to remember your password if this makes you uncomfortable.",
+          GameRunner.Title.of("Security Warning"),
+          JOptionPane.WARNING_MESSAGE);
+    }
   }
 
   /**
@@ -179,6 +199,7 @@ public class ForumPosterEditor extends EditorPanel {
     m_bean.setTopicId(m_topicIdField.getText());
     m_bean.setUsername(m_login.getText());
     m_bean.setPassword(m_password.getText());
+    m_bean.setPasswordSaved(passwordSaved.isSelected());
     m_bean.setIncludeSaveGame(m_includeSaveGame.isSelected());
     m_bean.setAlsoPostAfterCombatMove(m_alsoPostAfterCombatMove.isSelected());
     return m_bean;

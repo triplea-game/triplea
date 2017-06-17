@@ -21,6 +21,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
   protected transient File m_saveGameFile = null;
   protected transient String m_turnSummaryRef = null;
   protected transient String m_saveGameFileName = null;
+  private boolean passwordSaved = false;
 
   @Override
   public String getTurnSummaryRef() {
@@ -80,7 +81,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public void setPassword(final String password) {
-    m_password = password;
+    m_password = passwordSaved ? password : USE_TRANSITIVE_PASSWORD;
     m_transPassword = password;
   }
 
@@ -90,6 +91,17 @@ public abstract class AbstractForumPoster implements IForumPoster {
       return m_transPassword;
     }
     return m_password;
+  }
+
+  @Override
+  public void setPasswordSaved(final boolean passwordSaved) {
+    this.passwordSaved = passwordSaved;
+    setPassword(m_transPassword);
+  }
+
+  @Override
+  public boolean isPasswordSaved() {
+    return passwordSaved;
   }
 
   @Override
