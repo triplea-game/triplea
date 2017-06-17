@@ -113,6 +113,13 @@ public interface IForumPoster extends IBean {
   String getPassword();
 
   /**
+   * Indicates the password will be saved with the poster.
+   *
+   * @return {@code true} if the password will be saved with the poster or {@code false} if the password is not saved.
+   */
+  boolean isPasswordSaved();
+
+  /**
    * Set the forum id.
    *
    * @param forumId
@@ -135,6 +142,14 @@ public interface IForumPoster extends IBean {
    *        the new password
    */
   void setPassword(String password);
+
+  /**
+   * Indicate the password should be saved with the poster.
+   *
+   * @param passwordSaved {@code true} if the password should be saved with the poster or {@code false} if the password
+   *        should not be saved.
+   */
+  void setPasswordSaved(boolean passwordSaved);
 
   /**
    * Opens a browser and go to the forum post, identified by the forumId.

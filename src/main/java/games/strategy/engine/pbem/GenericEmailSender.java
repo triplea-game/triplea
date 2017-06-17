@@ -58,6 +58,7 @@ public class GenericEmailSender implements IEmailSender {
   private int m_port = 25;
   private Encryption m_encryption;
   private boolean m_alsoPostAfterCombatMove = false;
+  private boolean passwordSaved = false;
 
   @Override
   public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
@@ -173,8 +174,19 @@ public class GenericEmailSender implements IEmailSender {
    */
   @Override
   public void setPassword(final String password) {
-    m_password = password;
+    m_password = passwordSaved ? password : USE_TRANSITIVE_PASSWORD;
     m_transPassword = password;
+  }
+
+  @Override
+  public boolean isPasswordSaved() {
+    return passwordSaved;
+  }
+
+  @Override
+  public void setPasswordSaved(final boolean passwordSaved) {
+    this.passwordSaved = passwordSaved;
+    setPassword(m_transPassword);
   }
 
   /**
@@ -291,6 +303,7 @@ public class GenericEmailSender implements IEmailSender {
     sender.setToAddress(getToAddress());
     sender.setUserName(getUserName());
     sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
+    sender.setPasswordSaved(isPasswordSaved());
     return sender;
   }
 
