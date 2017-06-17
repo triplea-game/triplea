@@ -929,8 +929,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       useSpecific = true;
     }
     for (final Territory terr : Territories) {
-      final Collection<Unit> allUnits =
-          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
       } else if (exclType.equals("allied")) {
@@ -1000,8 +999,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     while (ownedTerrIter.hasNext()) {
       // get all the units in the territory
       final Territory terr = ownedTerrIter.next();
-      final Collection<Unit> allUnits =
-          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
         allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
