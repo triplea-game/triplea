@@ -7,6 +7,8 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +104,8 @@ class LobbyGamePanel extends JPanel {
       public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
           final boolean hasFocus, final int row, final int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setText(TimeManager.getLocalizedTimeWithoutSeconds((Instant) value));
+        setText(TimeManager
+            .getLocalizedTimeWithoutSeconds(LocalDateTime.ofInstant((Instant) value, ZoneOffset.systemDefault())));
         return this;
       }
     });

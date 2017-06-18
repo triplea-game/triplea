@@ -6,7 +6,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
-import java.time.temporal.TemporalAccessor;
 
 public class TimeManager {
   /**
@@ -28,7 +27,7 @@ public class TimeManager {
     return getLocalizedTimeWithoutSeconds(LocalDateTime.now());
   }
 
-  public static String getLocalizedTimeWithoutSeconds(TemporalAccessor time) {
+  public static String getLocalizedTimeWithoutSeconds(LocalDateTime time) {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
         .format(time);
   }
