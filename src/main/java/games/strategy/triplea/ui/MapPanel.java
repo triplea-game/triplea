@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -60,7 +61,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
-import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -71,9 +71,9 @@ import games.strategy.util.Tuple;
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private static final Logger logger = Logger.getLogger(MapPanel.class.getName());
-  private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<>();
-  private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<>();
-  private final ListenerList<MouseOverUnitListener> mouseOverUnitsListeners = new ListenerList<>();
+  private final List<MapSelectionListener> mapSelectionListeners = new CopyOnWriteArrayList<>();
+  private final List<UnitSelectionListener> unitSelectionListeners = new CopyOnWriteArrayList<>();
+  private final List<MouseOverUnitListener> mouseOverUnitsListeners = new CopyOnWriteArrayList<>();
   private GameData m_data;
   // the territory that the mouse is
   private Territory currentTerritory;
@@ -117,11 +117,11 @@ public class MapPanel extends ImageScrollerLargeView {
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
-      
+
       private boolean is4Pressed = false;
       private boolean is5Pressed = false;
       private int lastActive = -1;
-      
+
       /**
        * Invoked when the mouse exits a component.
        */
@@ -147,12 +147,12 @@ public class MapPanel extends ImageScrollerLargeView {
           notifyTerritorySelected(terr, md);
         }
         if (e.getButton() == 4 || e.getButton() == 5) {
-          //the numbers 4 and 5 stand for the corresponding mouse button
+          // the numbers 4 and 5 stand for the corresponding mouse button
           lastActive = is4Pressed && is5Pressed ? (e.getButton() == 4 ? 5 : 4) : -1;
-          //we only want to change the variables if the corresponding button was released
+          // we only want to change the variables if the corresponding button was released
           is4Pressed = e.getButton() != 4 && is4Pressed;
           is5Pressed = e.getButton() != 5 && is5Pressed;
-          //we want to return here, because otherwise a menu might be opened
+          // we want to return here, because otherwise a menu might be opened
           return;
         }
         if (!unitSelectionListeners.isEmpty()) {
@@ -170,10 +170,10 @@ public class MapPanel extends ImageScrollerLargeView {
         is5Pressed = e.getButton() == 5 || is5Pressed;
         if (lastActive == -1) {
           new Thread(() -> {
-            //Mouse Events are different than key events
-            //Thats why we're "simulating" multiple
-            //clicks while the mouse button is held down
-            //so the map keeps scrolling
+            // Mouse Events are different than key events
+            // Thats why we're "simulating" multiple
+            // clicks while the mouse button is held down
+            // so the map keeps scrolling
             while (lastActive != -1) {
               final int diffPixel = computeScrollSpeed.get();
               if (lastActive == 5) {
@@ -181,8 +181,8 @@ public class MapPanel extends ImageScrollerLargeView {
               } else if (lastActive == 4) {
                 setTopLeft(getXOffset() - diffPixel, getYOffset());
               }
-              //50ms seems to be a good interval between "clicks"
-              //changing this number changes the scroll speed
+              // 50ms seems to be a good interval between "clicks"
+              // changing this number changes the scroll speed
               ThreadUtil.sleep(50);
             }
           }).start();

@@ -3,6 +3,8 @@ package games.strategy.ui;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -13,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.util.ListenerList;
 
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
@@ -30,7 +31,7 @@ public class ScrollableTextField extends JPanel {
   private final JButton m_down;
   private final JButton m_max;
   private final JButton m_min;
-  private final ListenerList<ScrollableTextFieldListener> m_listeners = new ListenerList<>();
+  private final List<ScrollableTextFieldListener> m_listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new ScrollableTextField. */
   public ScrollableTextField(final int minVal, final int maxVal) {

@@ -2,13 +2,13 @@ package games.strategy.ui;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
-
-import games.strategy.util.ListenerList;
 
 /**
  * Text field for entering int values.
@@ -20,7 +20,7 @@ public class IntTextField extends JTextField {
   private int m_max = Integer.MAX_VALUE;
   private int m_min = Integer.MIN_VALUE;
   private String m_terr = null;
-  private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<>();
+  private final List<IntTextFieldChangeListener> m_listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new IntTextField. */
   public IntTextField() {

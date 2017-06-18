@@ -1,8 +1,10 @@
 package games.strategy.engine.framework;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -22,7 +24,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
-import games.strategy.util.ListenerList;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
@@ -40,7 +41,7 @@ public abstract class AbstractGame implements IGame {
   protected IGameModifiedChannel m_gameModifiedChannel;
   protected final PlayerManager m_playerManager;
   protected boolean m_firstRun = true;
-  protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<>();
+  protected final List<GameStepListener> m_gameStepListeners = new CopyOnWriteArrayList<>();
 
   protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
