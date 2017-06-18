@@ -15,7 +15,7 @@ public class TimeManager {
    * @return formatted GMT Date String
    */
   public static String getGMTString(final Instant date) {
-    return DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss z").withZone(ZoneOffset.UTC).format(date);
+    return DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss 'GMT'").withZone(ZoneOffset.UTC).format(date);
   }
 
   public static String getLocalizedTime() {
