@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class CompositeRouteFinder {
@@ -48,7 +47,7 @@ public class CompositeRouteFinder {
 
   Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
-        ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<>(m_matches.keySet())));
+        ToHashSet(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
     final HashMap<Territory, Integer> terScoreMap = CreateScoreMap();
     final HashMap<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;

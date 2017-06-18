@@ -34,7 +34,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -218,7 +217,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       // add conditions required for triggers
       final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchAnd<>(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.resourceMatch()));
+          Match.any(TriggerAttachment.resourceMatch()));
       toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
       allConditionsNeeded.addAll(

@@ -24,8 +24,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class PlacePanel extends AbstractMovePanel {
@@ -137,8 +135,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
-          final CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier =
-              new CompositeMatchOr<>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.any(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {

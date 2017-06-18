@@ -38,7 +38,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -554,8 +553,8 @@ public class WeakAI extends AbstractAI {
     populateBomberCombat(data, moveUnits, moveRoutes, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
-    final CompositeMatchOr<Territory> walkInto =
-        new CompositeMatchOr<>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
+    final Match<Territory> walkInto =
+        Match.any(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);

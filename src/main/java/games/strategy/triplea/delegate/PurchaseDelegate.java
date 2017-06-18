@@ -39,7 +39,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -68,7 +67,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
         final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<>(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-            new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.prodMatch(),
+            Match.any(TriggerAttachment.prodMatch(),
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(

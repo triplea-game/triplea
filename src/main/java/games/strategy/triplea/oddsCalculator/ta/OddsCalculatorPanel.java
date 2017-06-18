@@ -74,7 +74,6 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.WidgetChangedListener;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
@@ -890,12 +889,12 @@ class PlayerUnitsPanel extends JPanel {
       return u1.getName().compareTo(u2.getName());
     });
     removeAll();
-    Match<UnitType> predicate;
+    final Match<UnitType> predicate;
     if (land) {
       if (m_defender) {
         predicate = Matches.UnitTypeIsNotSea;
       } else {
-        predicate = new CompositeMatchOr<>(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+        predicate = Match.any(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
       }
     } else {
       predicate = Matches.UnitTypeIsSeaOrAir;

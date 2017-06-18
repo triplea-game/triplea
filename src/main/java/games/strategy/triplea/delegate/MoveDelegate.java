@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -81,15 +80,15 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
           new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              new CompositeMatchOr<TriggerAttachment>(AbstractTriggerAttachment.notificationMatch(),
+              Match.any(AbstractTriggerAttachment.notificationMatch(),
                   TriggerAttachment.playerPropertyMatch(), TriggerAttachment.relationshipTypePropertyMatch(),
                   TriggerAttachment.territoryPropertyMatch(), TriggerAttachment.territoryEffectPropertyMatch(),
                   TriggerAttachment.removeUnitsMatch(), TriggerAttachment.changeOwnershipMatch()));
       final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
           new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.placeMatch()));
-      final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = new CompositeMatchOr<>(
+              Match.any(TriggerAttachment.placeMatch()));
+      final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.any(
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -239,7 +238,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
 
     // right now, land units on transports have movement taken away when they their transport moves
-    moveableUnitOwnedByMe.add(new CompositeMatchOr<>(Matches.unitHasMovementLeft,
+    moveableUnitOwnedByMe.add(Match.any(Matches.unitHasMovementLeft,
         new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
 
     // if not non combat, cannot move aa units

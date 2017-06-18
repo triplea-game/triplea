@@ -44,7 +44,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -397,7 +396,7 @@ public class BattleTracker implements java.io.Serializable {
     final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
     final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<>();
     conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
-    conquerable.add(new CompositeMatchOr<>(
+    conquerable.add(Match.any(
         Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
     final Collection<Territory> conquered = new ArrayList<>();
@@ -786,7 +785,7 @@ public class BattleTracker implements java.io.Serializable {
     // take over non combatants
     final CompositeMatch<Unit> enemyNonCom =
         new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
-    final CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<>(enemyNonCom,
+    final Match<Unit> willBeCaptured = Match.any(enemyNonCom,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture

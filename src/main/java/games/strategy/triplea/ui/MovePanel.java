@@ -45,7 +45,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -360,12 +359,10 @@ public class MovePanel extends AbstractMovePanel {
         }
       };
       if (route.isUnload()) {
-        final CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<>();
-        landOrCanMove.add(Matches.UnitIsLand);
         final CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<>();
         notLandAndCanMove.add(enoughMovement);
         notLandAndCanMove.add(Matches.UnitIsNotLand);
-        landOrCanMove.add(notLandAndCanMove);
+        final Match<Unit> landOrCanMove = Match.any(Matches.UnitIsLand, notLandAndCanMove);
         movable.add(landOrCanMove);
       } else {
         movable.add(enoughMovement);
@@ -386,13 +383,13 @@ public class MovePanel extends AbstractMovePanel {
       if (BaseEditDelegate.getEditMode(getData())) {
         movable.add(Matches.unitIsOwnedBy(owner));
       }
-      final CompositeMatch<Unit> rightUnitTypeMatch = new CompositeMatchOr<>();
+      final Match.CompositeBuilder<Unit> rightUnitTypeMatchBuilder = Match.newCompositeBuilder();
       for (final Unit unit : units) {
         if (unit.getOwner().equals(owner)) {
-          rightUnitTypeMatch.add(Matches.unitIsOfType(unit.getType()));
+          rightUnitTypeMatchBuilder.add(Matches.unitIsOfType(unit.getType()));
         }
       }
-      movable.add(rightUnitTypeMatch);
+      movable.add(rightUnitTypeMatchBuilder.any());
     }
     return movable;
   }

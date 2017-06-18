@@ -36,7 +36,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -94,7 +93,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     final Match<Unit> defenders = new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data),
-        new CompositeMatchOr<Unit>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+        Match.any(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
     if (m_targets.isEmpty()) {
@@ -357,7 +356,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> airborneTypesTargettedToo =
             TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.any(
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
               new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }

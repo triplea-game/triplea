@@ -42,7 +42,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -423,14 +422,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
     final CompositeMatchAnd<Unit> seaTransports =
         new CompositeMatchAnd<>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
-    final CompositeMatchOr<Unit> seaTranportsOrSubs = new CompositeMatchOr<>(seaTransports, Matches.UnitIsSub);
+    final Match<Unit> seaTranportsOrSubs = Match.any(seaTransports, Matches.UnitIsSub);
     // we want to match all sea zones with our units and enemy units
     final CompositeMatch<Territory> anyTerritoryWithOwnAndEnemy = new CompositeMatchAnd<>(
         Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
     final CompositeMatch<Territory> enemyTerritoryAndOwnUnits = new CompositeMatchAnd<>(
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.territoryHasUnitsOwnedBy(player));
-    final CompositeMatch<Territory> enemyUnitsOrEnemyTerritory =
-        new CompositeMatchOr<>(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
+    final Match<Territory> enemyUnitsOrEnemyTerritory =
+        Match.any(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
     final Iterator<Territory> battleTerritories =
         Match.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
     while (battleTerritories.hasNext()) {
@@ -647,7 +646,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, m_player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
     final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<>(
-        new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
+        Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
         Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(Matches.UnitCanScramble,
             Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
