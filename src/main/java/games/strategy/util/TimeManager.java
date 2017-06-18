@@ -39,6 +39,6 @@ public class TimeManager {
    * @return a Formatted String of the given DateTime
    */
   public static String toDateString(LocalDateTime dateTime) {
-    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy").format(dateTime);
+    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy").withZone(ZoneOffset.systemDefault()).format(dateTime);
   }
 }
