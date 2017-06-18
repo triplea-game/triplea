@@ -1273,7 +1273,8 @@ public class RevisedTest {
         any(), any(), any(), anyBoolean()))
             .thenAnswer(invocation -> {
               final Collection<Unit> selectFrom = invocation.getArgument(0);
-              return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
+              return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(),
+                  false);
             });
     bridge.setRemote(dummyPlayer);
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);

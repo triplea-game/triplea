@@ -212,15 +212,18 @@ public class GameRunner {
    */
   public static class Title {
     public String value;
+
     private Title(final String value) {
       this.value = value;
     }
+
     public static Title of(final String value) {
       return new Title(value);
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType, final int messageType) {
+  public static int showConfirmDialog(final String message, final Title title, final int optionType,
+      final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 

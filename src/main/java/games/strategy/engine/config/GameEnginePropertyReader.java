@@ -74,7 +74,7 @@ public class GameEnginePropertyReader extends PropertyFileReader {
   public MaxMemorySetting readMaxMemory() {
     final String value = super.readProperty(GameEngineProperty.MAX_MEMORY);
 
-    if(Strings.nullToEmpty(value).isEmpty()) {
+    if (Strings.nullToEmpty(value).isEmpty()) {
       return MaxMemorySetting.NOT_SET;
     }
 
