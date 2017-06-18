@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
-import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
@@ -137,9 +136,9 @@ public class ConnectionFinder {
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
-    Collections.sort(allTerritories, new AlphanumComparator());
+    Collections.sort(allTerritories);
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
-    Collections.sort(allAreas, new AlphanumComparator());
+    Collections.sort(allAreas);
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = new LinkedHashSet<>();
       final List<Polygon> currentPolygons = mapOfPolygons.get(territory);
@@ -209,7 +208,7 @@ public class ConnectionFinder {
    */
   private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
     // sort for pretty xml's
-    Collections.sort(allTerritoryNames, new AlphanumComparator());
+    Collections.sort(allTerritoryNames);
     final StringBuffer output = new StringBuffer();
     output.append("<!-- Territory Definitions -->\r\n");
     final Pattern waterPattern = Pattern.compile(waterString);
@@ -239,7 +238,7 @@ public class ConnectionFinder {
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
     final List<String> allTerritories = new ArrayList<>(connections.keySet());
-    Collections.sort(allTerritories, new AlphanumComparator());
+    Collections.sort(allTerritories);
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
         output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");

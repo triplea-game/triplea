@@ -28,7 +28,6 @@ import com.google.common.collect.Sets;
 
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
-import games.strategy.util.AlphanumComparator;
 import tools.map.making.ConnectionFinder;
 
 
@@ -113,9 +112,9 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         polygons == null ? new ArrayList<>() : new ArrayList<>(polygons.keySet());
-    Collections.sort(allTerritories, new AlphanumComparator());
+    Collections.sort(allTerritories);
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
-    Collections.sort(allAreas, new AlphanumComparator());
+    Collections.sort(allAreas);
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = Sets.newLinkedHashSet();
       final List<Polygon> currentPolygons = polygons.get(territory);
