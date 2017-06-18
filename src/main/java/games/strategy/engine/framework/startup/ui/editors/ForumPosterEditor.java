@@ -98,25 +98,13 @@ public class ForumPosterEditor extends EditorPanel {
    */
   private void setupListeners() {
     m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
-    passwordSaved.addActionListener(e -> passwordSavedChanged());
+    passwordSaved.addActionListener(e -> fireEditorChanged());
     m_testForum.addActionListener(e -> testForum());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     m_login.getDocument().addDocumentListener(docListener);
     m_password.getDocument().addDocumentListener(docListener);
     m_topicIdField.getDocument().addDocumentListener(docListener);
-  }
-
-  private void passwordSavedChanged() {
-    fireEditorChanged();
-
-    if (passwordSaved.isSelected()) {
-      GameRunner.showMessageDialog(
-          "Your password will be stored unencrypted in the local file system. "
-              + "You should not choose to remember your password if this makes you uncomfortable.",
-          GameRunner.Title.of("Security Warning"),
-          JOptionPane.WARNING_MESSAGE);
-    }
   }
 
   /**

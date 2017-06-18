@@ -136,21 +136,9 @@ public class EmailSenderEditor extends EditorPanel {
     port.getDocument().addDocumentListener(listener);
     password.getDocument().addDocumentListener(listener);
     toAddress.getDocument().addDocumentListener(listener);
-    passwordSaved.addActionListener(e -> passwordSavedChanged());
+    passwordSaved.addActionListener(e -> fireEditorChanged());
     useTls.addActionListener(e -> fireEditorChanged());
     testEmail.addActionListener(e -> testEmail());
-  }
-
-  private void passwordSavedChanged() {
-    fireEditorChanged();
-
-    if (passwordSaved.isSelected()) {
-      GameRunner.showMessageDialog(
-          "Your password will be stored unencrypted in the local file system. "
-              + "You should not choose to remember your password if this makes you uncomfortable.",
-          GameRunner.Title.of("Security Warning"),
-          JOptionPane.WARNING_MESSAGE);
-    }
   }
 
   /**
