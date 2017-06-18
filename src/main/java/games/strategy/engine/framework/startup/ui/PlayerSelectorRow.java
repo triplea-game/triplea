@@ -134,10 +134,16 @@ class PlayerSelectorRow {
   }
 
   void setResourceModifiersVisble(boolean isVisible) {
-    incomePercentage.setVisible(isVisible);
-    incomePercentageLabel.setVisible(isVisible);
-    puIncomeBonus.setVisible(isVisible);
-    puIncomeBonusLabel.setVisible(isVisible);
+    // TODO: remove null check for next incompatible release
+    if (incomePercentage != null) {
+      incomePercentage.setVisible(isVisible);
+      incomePercentageLabel.setVisible(isVisible);
+    }
+    // TODO: remove null check for next incompatible release
+    if (puIncomeBonus != null) {
+      puIncomeBonus.setVisible(isVisible);
+      puIncomeBonusLabel.setVisible(isVisible);
+    }
   }
 
   String getPlayerName() {
@@ -156,8 +162,14 @@ class PlayerSelectorRow {
     name.setEnabled(enabled);
     alliances.setEnabled(enabled);
     enabledCheckBox.setEnabled(disableable.contains(playerName));
-    incomePercentage.setEnabled(enabled);
-    puIncomeBonus.setEnabled(enabled);
+    // TODO: remove null check for next incompatible release
+    if (incomePercentage != null) {
+      incomePercentage.setEnabled(enabled);
+    }
+    // TODO: remove null check for next incompatible release
+    if (puIncomeBonus != null) {
+      puIncomeBonus.setEnabled(enabled);
+    }
     parent.notifyObservers();
   }
 
