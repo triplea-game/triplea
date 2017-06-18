@@ -11,25 +11,43 @@ public class TimeManager {
   /**
    * Replacement for {@code Date.toGMTString();}.
    *
-   * @param date The {@link Instant} being returned as String
+   * @param instant The {@link Instant} being returned as String
    * @return formatted GMT Date String
    */
-  public static String getGMTString(final Instant date) {
-    return DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss 'GMT'").withZone(ZoneOffset.UTC).format(date);
+  public static String getGMTString(final Instant instant) {
+    return DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss 'GMT'").withZone(ZoneOffset.UTC).format(instant);
   }
 
+  /**
+   * Returns a String representing the current {@link LocalDateTime}.
+   * Based on where you live this might be either for example 13:45 or 1:45pm.
+   * 
+   * @return The formatted String
+   */
   public static String getLocalizedTime() {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.MEDIUM).toFormatter()
         .format(LocalDateTime.now());
   }
 
+  /**
+   * Equivalent to {@code getLocalizedTimeWithoutSeconds(LocalDateTime.now())}.
+   * 
+   * @return The formatted String
+   */
   public static String getLocalizedTimeWithoutSeconds() {
     return getLocalizedTimeWithoutSeconds(LocalDateTime.now());
   }
 
-  public static String getLocalizedTimeWithoutSeconds(LocalDateTime time) {
+  /**
+   * Returns a String representing this {@link LocalDateTime}.
+   * Based on where you live this might be either for example 13:45 or 1:45pm.
+   * 
+   * @param dateTime The LocalDateTime representing the desired time
+   * @return The formatted String
+   */
+  public static String getLocalizedTimeWithoutSeconds(LocalDateTime dateTime) {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
-        .format(time);
+        .format(dateTime);
   }
 
   /**
@@ -39,6 +57,7 @@ public class TimeManager {
    * @return a Formatted String of the given DateTime
    */
   public static String toDateString(LocalDateTime dateTime) {
-    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy").withZone(ZoneOffset.systemDefault()).format(dateTime);
+    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy").withZone(ZoneOffset.systemDefault())
+        .format(dateTime);
   }
 }
