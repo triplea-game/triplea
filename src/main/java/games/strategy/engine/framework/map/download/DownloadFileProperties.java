@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.util.TimeManager;
 import games.strategy.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
@@ -59,7 +60,7 @@ class DownloadFileProperties {
   void setFrom(final DownloadFileDescription selected) {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
-    props.setProperty("download.time", new Date().toString());
+    props.setProperty("download.time", TimeManager.toDateString(LocalDateTime.now()));
     props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }

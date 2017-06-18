@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.Date;
+import java.time.Instant;
 
 import games.strategy.engine.lobby.server.userDB.BannedMacController;
 import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
@@ -21,7 +21,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Date banExpires) {
+  public void banUsername(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -38,12 +38,12 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banIp(final INode node, final Date banExpires) {
+  public void banIp(final INode node, final Instant banExpires) {
     // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
-  public void banMac(final INode node, final Date banExpires) {
+  public void banMac(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -60,7 +60,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
+  public void banMac(final INode node, final String hashedMac, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -76,7 +76,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteUsername(final INode node, final Date muteExpires) {
+  public void muteUsername(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -85,7 +85,7 @@ public class ModeratorController extends AbstractModeratorController {
     final String mac = getNodeMacAddress(node);
     final String realName = getRealName(node);
     new MutedUsernameController().addMutedUsername(realName, muteExpires);
-    m_serverMessenger.NotifyUsernameMutingOfPlayer(realName, muteExpires);
+    m_serverMessenger.notifyUsernameMutingOfPlayer(realName, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(String.format(
         "User was muted on the lobby(Username mute). "
@@ -95,12 +95,12 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteIp(final INode node, final Date muteExpires) {
+  public void muteIp(final INode node, final Instant muteExpires) {
     // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
-  public void muteMac(final INode node, final Date muteExpires) {
+  public void muteMac(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -108,7 +108,7 @@ public class ModeratorController extends AbstractModeratorController {
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     new MutedMacController().addMutedMac(mac, muteExpires);
-    m_serverMessenger.NotifyMacMutingOfPlayer(mac, muteExpires);
+    m_serverMessenger.notifyMacMutingOfPlayer(mac, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(String.format(
         "User was muted on the lobby(Mac mute). "

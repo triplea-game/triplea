@@ -4,11 +4,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -56,6 +55,7 @@ class ExportMenu {
   private final TripleAFrame frame;
   private final GameData gameData;
   private final IUIContext iuiContext;
+  private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
   ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
@@ -83,7 +83,6 @@ class ExportMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int round = 0;
     try {
       gameData.acquireReadLock();
@@ -91,7 +90,8 @@ class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
+    String defaultFileName =
+        "xml_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -101,7 +101,7 @@ class ExportMenu {
     final String xmlFile;
     try {
       gameData.acquireReadLock();
-      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(gameData);
+      final GameDataExporter exporter = new GameDataExporter(gameData);
       xmlFile = exporter.getXML();
     } finally {
       gameData.releaseReadLock();
@@ -146,7 +146,6 @@ class ExportMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int currentRound = 0;
     try {
       gameData.acquireReadLock();
@@ -154,8 +153,9 @@ class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_"
-        + currentRound + (showPhaseStats ? "_full" : "_short");
+    String defaultFileName =
+        "stats_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_"
+            + currentRound + (showPhaseStats ? "_full" : "_short");
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));

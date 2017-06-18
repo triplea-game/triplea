@@ -5,8 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -155,12 +155,11 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final long ticks = requestTimespanSupplication();
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plusMillis(requestTimespanSupplication());
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), expire);
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -197,13 +196,12 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final long ticks = requestTimespanSupplication();
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plusMillis(requestTimespanSupplication());
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            new Date(expire));
+            expire);
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -230,7 +228,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Instant.ofEpochMilli(0));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -271,7 +269,7 @@ public class LobbyMenu extends JMenuBar {
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            new Date(0));
+            Instant.ofEpochMilli(0));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }

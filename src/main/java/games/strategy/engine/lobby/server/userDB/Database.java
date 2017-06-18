@@ -7,7 +7,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -228,7 +229,7 @@ public class Database {
 
   static void backup() {
     final String backupDirName =
-        "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
+        "backup_at_" + DateTimeFormatter.ofPattern("yyyy_MM_dd__kk_mm_ss").format(LocalDateTime.now());
     final File backupRootDir = getBackupDir();
     final File backupDir = new File(backupRootDir, backupDirName);
     if (!backupDir.mkdirs()) {

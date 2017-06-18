@@ -1,6 +1,6 @@
 package games.strategy.net;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Set;
 
 /**
@@ -35,23 +35,23 @@ public interface IServerMessenger extends IMessenger {
    */
   Set<INode> getNodes();
 
-  void NotifyIPMiniBanningOfPlayer(String ip, Date expires);
+  void notifyIPMiniBanningOfPlayer(String ip, Instant expires);
 
-  void NotifyMacMiniBanningOfPlayer(String mac, Date expires);
+  void notifyMacMiniBanningOfPlayer(String mac, Instant expires);
 
-  void NotifyUsernameMiniBanningOfPlayer(String username, Date expires);
+  void notifyUsernameMiniBanningOfPlayer(String username, Instant expires);
 
   String getPlayerMac(String name);
 
-  void NotifyUsernameMutingOfPlayer(String username, Date muteExpires);
+  void notifyUsernameMutingOfPlayer(String username, Instant muteExpires);
 
-  void NotifyIPMutingOfPlayer(String ip, Date muteExpires);
+  void notifyIPMutingOfPlayer(String ip, Instant muteExpires);
 
-  void NotifyMacMutingOfPlayer(String mac, Date muteExpires);
+  void notifyMacMutingOfPlayer(String mac, Instant muteExpires);
 
-  boolean IsUsernameMiniBanned(String username);
+  boolean isUsernameMiniBanned(String username);
 
-  boolean IsIpMiniBanned(String ip);
+  boolean isIpMiniBanned(String ip);
 
-  boolean IsMacMiniBanned(String mac);
+  boolean isMacMiniBanned(String mac);
 }

@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,13 +31,13 @@ public class BannedUsernameController {
    * If this username is already banned, this call will update the ban_end.
    * </p>
    */
-  public void addBannedUsername(final String username, final Date banTill) {
+  public void addBannedUsername(final String username, final Instant banTill) {
     if (isUsernameBanned(username).getFirst()) {
       removeBannedUsername(username);
     }
     Timestamp banTillTs = null;
     if (banTill != null) {
-      banTillTs = new Timestamp(banTill.getTime());
+      banTillTs = new Timestamp(banTill.toEpochMilli());
     }
     s_logger.fine("Banning username:" + username);
     final Connection con = Database.getDerbyConnection();

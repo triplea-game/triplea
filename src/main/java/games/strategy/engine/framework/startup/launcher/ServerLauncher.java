@@ -4,11 +4,10 @@ import java.awt.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -400,9 +399,8 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private static String getConnectionLostFileName() {
-    final DateFormat dateFormat = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
-    final String baseFileName = "connection_lost_on_" + dateFormat.format(new Date());
-    return GameDataFileUtils.addExtension(baseFileName);
+    return GameDataFileUtils.addExtension(
+        "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
   }
 }
 

@@ -7,8 +7,7 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,6 +23,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
+import games.strategy.util.TimeManager;
 
 /**
  * A class for selecting which Forum poster to use.
@@ -154,7 +154,7 @@ public class ForumPosterEditor extends EditorPanel {
       }
       poster.postTurnSummary(
           "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getVersion()
-              + ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
+              + ", time: " + TimeManager.getLocalizedTime(),
           "Testing Forum poster");
       progressWindow.setVisible(false);
       // now that we have a result, marshall it back unto the swing thread

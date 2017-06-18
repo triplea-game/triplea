@@ -1,8 +1,10 @@
 package games.strategy.engine.lobby.server.login;
 
 import java.net.InetAddress;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.logging.Logger;
+
+import games.strategy.util.TimeManager;
 
 /**
  * This class is used to allow an access log to be easily created. The log settings should
@@ -13,11 +15,11 @@ public class AccessLog {
 
   public static void successfulLogin(final String userName, final InetAddress from) {
     s_logger.info("LOGIN name:" + userName + " ip:" + from.getHostAddress() + " time_ms:" + System.currentTimeMillis()
-        + " time:" + new Date());
+        + " time:" + TimeManager.toDateString(LocalDateTime.now()));
   }
 
   public static void failedLogin(final String userName, final InetAddress from, final String error) {
     s_logger.info("FAILED name:" + userName + " ip:" + from.getHostAddress() + " time_ms:" + System.currentTimeMillis()
-        + " error:" + error + " time:" + new Date());
+        + " error:" + error + " time:" + TimeManager.toDateString(LocalDateTime.now()));
   }
 }

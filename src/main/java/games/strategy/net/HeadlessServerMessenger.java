@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Set;
 
 import games.strategy.debug.ClientLogger;
@@ -99,13 +99,13 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {}
+  public void notifyIPMiniBanningOfPlayer(final String ip, final Instant expires) {}
 
   @Override
-  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {}
+  public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {}
 
   @Override
-  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {}
+  public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {}
 
   @Override
   public String getPlayerMac(final String name) {
@@ -113,26 +113,26 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {}
+  public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {}
 
   @Override
-  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {}
+  public void notifyIPMutingOfPlayer(final String ip, final Instant muteExpires) {}
 
   @Override
-  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {}
+  public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {}
 
   @Override
-  public boolean IsUsernameMiniBanned(final String username) {
+  public boolean isUsernameMiniBanned(final String username) {
     return false;
   }
 
   @Override
-  public boolean IsIpMiniBanned(final String ip) {
+  public boolean isIpMiniBanned(final String ip) {
     return false;
   }
 
   @Override
-  public boolean IsMacMiniBanned(final String mac) {
+  public boolean isMacMiniBanned(final String mac) {
     return false;
   }
 }

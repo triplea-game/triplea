@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.Date;
+import java.time.Instant;
 
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -15,7 +15,7 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
+  public void banMac(final INode node, final String hashedMac, final Instant banExpires) {
     // nothing
   }
 
@@ -63,32 +63,32 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Date banExpires) {
+  public void banUsername(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void banIp(final INode node, final Date banExpires) {
+  public void banIp(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void banMac(final INode node, final Date banExpires) {
+  public void banMac(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void muteUsername(final INode node, final Date muteExpires) {
+  public void muteUsername(final INode node, final Instant muteExpires) {
     // nothing
   }
 
   @Override
-  public void muteIp(final INode node, final Date muteExpires) {
+  public void muteIp(final INode node, final Instant muteExpires) {
     // nothing
   }
 
   @Override
-  public void muteMac(final INode node, final Date muteExpires) {
+  public void muteMac(final INode node, final Instant muteExpires) {
     // nothing
   }
 

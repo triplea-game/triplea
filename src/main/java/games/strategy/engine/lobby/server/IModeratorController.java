@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.Date;
+import java.time.Instant;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
@@ -18,7 +18,7 @@ public interface IModeratorController extends IRemote {
   /**
    * Ban the username of the given INode.
    */
-  void banUsername(INode node, Date banExpires);
+  void banUsername(INode node, Instant banExpires);
 
   /**
    * Ban the ip of the given INode.
@@ -26,22 +26,22 @@ public interface IModeratorController extends IRemote {
    * @deprecated Remove usages of this, banUserName and banMac are sufficient
    */
   @Deprecated
-  void banIp(INode node, Date banExpires);
+  void banIp(INode node, Instant banExpires);
 
   /**
    * Ban the mac of the given INode.
    */
-  void banMac(INode node, Date banExpires);
+  void banMac(INode node, Instant banExpires);
 
   /**
    * Ban the mac.
    */
-  void banMac(final INode node, final String hashedMac, final Date banExpires);
+  void banMac(final INode node, final String hashedMac, final Instant banExpires);
 
   /**
    * Mute the username of the given INode.
    */
-  void muteUsername(INode node, Date muteExpires);
+  void muteUsername(INode node, Instant muteExpires);
 
   /**
    * Mute the ip of the given INode.
@@ -49,12 +49,12 @@ public interface IModeratorController extends IRemote {
    * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
    */
   @Deprecated
-  void muteIp(INode node, Date muteExpires);
+  void muteIp(INode node, Instant muteExpires);
 
   /**
    * Mute the mac of the given INode.
    */
-  void muteMac(INode node, Date muteExpires);
+  void muteMac(INode node, Instant muteExpires);
 
   /**
    * Get list of people in the game.

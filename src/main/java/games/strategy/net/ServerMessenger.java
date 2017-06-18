@@ -9,8 +9,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -205,19 +205,19 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   @Override
-  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {
+  public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {
     synchronized (m_cachedListLock) {
       if (!m_liveMutedUsernames.contains(username)) {
         m_liveMutedUsernames.add(username);
       }
       if (muteExpires != null) {
-        ScheduleUsernameUnmuteAt(username, muteExpires.getTime());
+        ScheduleUsernameUnmuteAt(username, muteExpires);
       }
     }
   }
 
   @Override
-  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {
+  public void notifyIPMutingOfPlayer(final String ip, final Instant muteExpires) {
     // TODO: remove if no backwards compat issues
   }
 
@@ -230,25 +230,25 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   @Override
-  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {
+  public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {
     synchronized (m_cachedListLock) {
       if (!m_liveMutedMacAddresses.contains(mac)) {
         m_liveMutedMacAddresses.add(mac);
       }
       if (muteExpires != null) {
-        ScheduleMacUnmuteAt(mac, muteExpires.getTime());
+        ScheduleMacUnmuteAt(mac, muteExpires);
       }
     }
   }
 
-  private void ScheduleUsernameUnmuteAt(final String username, final long checkTime) {
+  private void ScheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
-    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), new Date(checkTime));
+    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), checkTime.toEpochMilli());
   }
 
-  private void ScheduleMacUnmuteAt(final String mac, final long checkTime) {
+  private void ScheduleMacUnmuteAt(final String mac, final Instant checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
-    unmuteMacTimer.schedule(getMacUnmuteTask(mac), new Date(checkTime));
+    unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli());
   }
 
   // TODO: remove 'ip' parameter if can confirm no backwards compat issues
@@ -262,7 +262,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedUsernames.add(realName);
-            ScheduleUsernameUnmuteAt(realName, muteTill);
+            ScheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
           }
         }
         if (!m_liveMutedMacAddresses.contains(mac)) {
@@ -270,7 +270,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedMacAddresses.add(mac);
-            ScheduleMacUnmuteAt(mac, muteTill);
+            ScheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
           }
         }
       }
@@ -362,14 +362,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedUsernames = new ArrayList<>();
 
   @Override
-  public boolean IsUsernameMiniBanned(final String username) {
+  public boolean isUsernameMiniBanned(final String username) {
     synchronized (m_cachedListLock) {
       return m_miniBannedUsernames.contains(username);
     }
   }
 
   @Override
-  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {
+  public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedUsernames.contains(username)) {
         m_miniBannedUsernames.add(username);
@@ -383,7 +383,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedUsernames.remove(username);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli());
       }
     }
   }
@@ -391,14 +391,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedIpAddresses = new ArrayList<>();
 
   @Override
-  public boolean IsIpMiniBanned(final String ip) {
+  public boolean isIpMiniBanned(final String ip) {
     synchronized (m_cachedListLock) {
       return m_miniBannedIpAddresses.contains(ip);
     }
   }
 
   @Override
-  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {
+  public void notifyIPMiniBanningOfPlayer(final String ip, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedIpAddresses.contains(ip)) {
         m_miniBannedIpAddresses.add(ip);
@@ -412,7 +412,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedIpAddresses.remove(ip);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli());
       }
     }
   }
@@ -420,14 +420,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedMacAddresses = new ArrayList<>();
 
   @Override
-  public boolean IsMacMiniBanned(final String mac) {
+  public boolean isMacMiniBanned(final String mac) {
     synchronized (m_cachedListLock) {
       return m_miniBannedMacAddresses.contains(mac);
     }
   }
 
   @Override
-  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {
+  public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedMacAddresses.contains(mac)) {
         m_miniBannedMacAddresses.add(mac);
@@ -441,7 +441,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedMacAddresses.remove(mac);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli());
       }
     }
   }
