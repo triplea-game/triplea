@@ -41,7 +41,7 @@ public abstract class AbstractGame implements IGame {
   protected IGameModifiedChannel m_gameModifiedChannel;
   protected final PlayerManager m_playerManager;
   protected boolean m_firstRun = true;
-  protected final List<GameStepListener> m_gameStepListeners = new CopyOnWriteArrayList<>();
+  protected final List<GameStepListener> gameStepListeners = new CopyOnWriteArrayList<>();
 
   protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
@@ -88,7 +88,7 @@ public abstract class AbstractGame implements IGame {
    */
   protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerID player,
       final int round, final String displayName) {
-    for (final GameStepListener listener : m_gameStepListeners) {
+    for (final GameStepListener listener : gameStepListeners) {
       listener.gameStepChanged(stepName, delegateName, player, round, displayName);
     }
   }
@@ -130,12 +130,12 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public void addGameStepListener(final GameStepListener listener) {
-    m_gameStepListeners.add(listener);
+    gameStepListeners.add(listener);
   }
 
   @Override
   public void removeGameStepListener(final GameStepListener listener) {
-    m_gameStepListeners.remove(listener);
+    gameStepListeners.remove(listener);
   }
 
   public static RemoteName getDisplayChannel(final GameData data) {

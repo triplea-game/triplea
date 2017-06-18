@@ -31,7 +31,7 @@ public class ScrollableTextField extends JPanel {
   private final JButton m_down;
   private final JButton m_max;
   private final JButton m_min;
-  private final List<ScrollableTextFieldListener> m_listeners = new CopyOnWriteArrayList<>();
+  private final List<ScrollableTextFieldListener> listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new ScrollableTextField. */
   public ScrollableTextField(final int minVal, final int maxVal) {
@@ -183,15 +183,15 @@ public class ScrollableTextField extends JPanel {
   }
 
   public void addChangeListener(final ScrollableTextFieldListener listener) {
-    m_listeners.add(listener);
+    listeners.add(listener);
   }
 
   public void removeChangeListener(final ScrollableTextFieldListener listener) {
-    m_listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   private void notifyListeners() {
-    for (final ScrollableTextFieldListener listener : m_listeners) {
+    for (final ScrollableTextFieldListener listener : listeners) {
       listener.changedValue(this);
     }
   }
