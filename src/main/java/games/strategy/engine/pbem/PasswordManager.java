@@ -4,9 +4,12 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
+import java.util.prefs.Preferences;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -15,39 +18,71 @@ import com.google.common.annotations.VisibleForTesting;
  * password after reading it from storage.
  *
  * <p>
+ * The password manager uses a user-specific key to protect passwords. The key is stored unencrypted in the user's
+ * preference tree. Thus, the key is in an area of the user's system that has the required permissions to ensure access
+ * only by the user. The key will automatically be created if it does not exist.
+ * </p>
+ *
+ * <p>
  * Instances of this class are immutable.
  * </p>
  */
 final class PasswordManager {
+  private static final String CIPHER_ALGORITHM = "AES";
+  private static final int CIPHER_KEY_SIZE_IN_BITS = 128;
   private static final Charset PLAINTEXT_ENCODING_CHARSET = StandardCharsets.UTF_8;
 
-  private final CipherFactory cipherFactory;
+  @VisibleForTesting
+  static final String PREFERENCE_KEY_ENCRYPTION_KEY = "PASSWORD_MANAGER_ENCRYPTION_KEY";
 
+  private final CipherFactory cipherFactory;
   private final SecretKey key;
 
-  @VisibleForTesting
-  PasswordManager(final CipherFactory cipherFactory, final SecretKey key) {
+  private PasswordManager(final CipherFactory cipherFactory, final SecretKey key) {
     this.cipherFactory = cipherFactory;
     this.key = key;
   }
 
-  private Cipher newCipher(final int opmode) throws GeneralSecurityException {
-    final Cipher cipher = cipherFactory.create();
-    cipher.init(opmode, key);
-    return cipher;
+  static PasswordManager newInstance() throws GeneralSecurityException {
+    return newInstance(getKey());
   }
 
-  /**
-   * Protects the specified unprotected password.
-   *
-   * @param unprotectedPassword The unprotected password; must not be {@code null}.
-   *
-   * @return The protected password; never {@code null}.
-   *
-   * @throws GeneralSecurityException If the unprotected password cannot be protected.
-   *
-   * @see #unprotect(String)
-   */
+  @VisibleForTesting
+  static PasswordManager newInstance(final SecretKey key) {
+    return new PasswordManager(() -> Cipher.getInstance(CIPHER_ALGORITHM), key);
+  }
+
+  private static SecretKey getKey() throws GeneralSecurityException {
+    return getKey(Preferences.userNodeForPackage(PasswordManager.class));
+  }
+
+  @VisibleForTesting
+  static SecretKey getKey(final Preferences preferences) throws GeneralSecurityException {
+    final byte[] encodedKey = preferences.getByteArray(PREFERENCE_KEY_ENCRYPTION_KEY, null);
+    if (encodedKey != null) {
+      return decodeKey(encodedKey);
+    }
+
+    final SecretKey key = newKey();
+    preferences.putByteArray(PREFERENCE_KEY_ENCRYPTION_KEY, encodeKey(key));
+    return key;
+  }
+
+  private static SecretKey decodeKey(final byte[] encodedKey) {
+    return new SecretKeySpec(encodedKey, CIPHER_ALGORITHM);
+  }
+
+  @VisibleForTesting
+  static SecretKey newKey() throws GeneralSecurityException {
+    final KeyGenerator keyGenerator = KeyGenerator.getInstance(CIPHER_ALGORITHM);
+    keyGenerator.init(CIPHER_KEY_SIZE_IN_BITS);
+    return keyGenerator.generateKey();
+  }
+
+  private static byte[] encodeKey(final SecretKey key) {
+    return key.getEncoded();
+  }
+
   String protect(final String unprotectedPassword) throws GeneralSecurityException {
     assert unprotectedPassword != null;
 
@@ -62,22 +97,16 @@ final class PasswordManager {
     return newCipher(Cipher.ENCRYPT_MODE).doFinal(plaintext);
   }
 
+  private Cipher newCipher(final int opmode) throws GeneralSecurityException {
+    final Cipher cipher = cipherFactory.create();
+    cipher.init(opmode, key);
+    return cipher;
+  }
+
   private static String encodeCiphertext(final byte[] ciphertext) {
     return Base64.getEncoder().encodeToString(ciphertext);
   }
 
-  /**
-   * Unprotects the specified protected password.
-   *
-   * @param protectedPassword The protected password previously created by {@link #protect(String)}; must not be
-   *        {@code null}.
-   *
-   * @return The unprotected password; never {@code null}.
-   *
-   * @throws GeneralSecurityException If the protected password cannot be unprotected.
-   *
-   * @see #protect(String)
-   */
   String unprotect(final String protectedPassword) throws GeneralSecurityException {
     assert protectedPassword != null;
 
