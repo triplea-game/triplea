@@ -11,7 +11,6 @@ import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -89,7 +88,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     if (games.strategy.triplea.Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
       // we use AND in order to make sure there are uses and when is set correctly.
-      final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = Match.all(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
       TriggerAttachment.collectAndFireTriggers(new HashSet<>(data.getPlayerList().getPlayers()),
           baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);

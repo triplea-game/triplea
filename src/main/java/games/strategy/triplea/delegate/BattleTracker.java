@@ -687,7 +687,7 @@ public class BattleTracker implements java.io.Serializable {
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
     if (Match.someMatch(territory.getUnits().getUnits(),
-        new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
+        Match.all(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -744,8 +744,8 @@ public class BattleTracker implements java.io.Serializable {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
-      final CompositeMatch<Unit> enemyToBeDestroyed =
-          new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
+      final Match<Unit> enemyToBeDestroyed =
+          Match.all(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -771,7 +771,7 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
-    final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<>(Matches.enemyUnit(id, data),
+    final Match<Unit> enemyToBeDestroyed = Match.all(Matches.enemyUnit(id, data),
         Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
@@ -783,8 +783,7 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // take over non combatants
-    final CompositeMatch<Unit> enemyNonCom =
-        new CompositeMatchAnd<>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
+    final Match<Unit> enemyNonCom = Match.all(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
     final Match<Unit> willBeCaptured = Match.any(enemyNonCom,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);

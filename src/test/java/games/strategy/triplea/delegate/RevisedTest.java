@@ -81,7 +81,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 public class RevisedTest {
@@ -540,7 +539,7 @@ public class RevisedTest {
     eeToSz5.add(sz5);
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits()
-        .getMatches(new CompositeMatchAnd<>(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
+        .getMatches(Match.all(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
     String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
@@ -726,7 +725,7 @@ public class RevisedTest {
     sz45To50.setStart(sz45);
     sz45To50.add(sz50);
     final List<Unit> japSub =
-        sz45.getUnits().getMatches(new CompositeMatchAnd<>(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
+        sz45.getUnits().getMatches(Match.all(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
     error = moveDelegate.move(japSub, sz45To50);
     // make sure no error
     assertNull(error);

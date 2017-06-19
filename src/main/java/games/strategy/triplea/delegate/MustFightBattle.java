@@ -1263,7 +1263,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Match<Territory> conqueuredOrEnemy = Match.any(
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(m_attacker, m_data),
-        new CompositeMatchAnd<Territory>(
+        Match.all(
             // Matches.TerritoryIsLand,
             Matches.TerritoryIsWater, Matches.territoryWasFoughOver(m_battleTracker)));
     possible.removeAll(Match.getMatches(possible, conqueuredOrEnemy));
@@ -1816,24 +1816,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> unitsToKill;
     final boolean hasUnitsThatCanRollLeft;
     if (attacker) {
-      hasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, new CompositeMatchAnd<>(notSubmergedAndType,
+      hasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, Match.all(notSubmergedAndType,
           Matches.unitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill = Match.getMatches(m_attackingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
+          Match.all(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
     } else {
-      hasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, new CompositeMatchAnd<>(notSubmergedAndType,
+      hasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, Match.all(notSubmergedAndType,
           Matches.unitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill = Match.getMatches(m_defendingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
+          Match.all(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
     }
     final boolean enemy = !attacker;
     final boolean enemyHasUnitsThatCanRollLeft;
     if (enemy) {
       enemyHasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.unitIsSupporterOrHasCombatAbility(enemy)));
+          Match.all(notSubmergedAndType, Matches.unitIsSupporterOrHasCombatAbility(enemy)));
     } else {
       enemyHasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits,
-          new CompositeMatchAnd<>(notSubmergedAndType, Matches.unitIsSupporterOrHasCombatAbility(enemy)));
+          Match.all(notSubmergedAndType, Matches.unitIsSupporterOrHasCombatAbility(enemy)));
     }
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       remove(unitsToKill, bridge, m_battleSite, !attacker);
@@ -2056,7 +2056,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void fireSuicideUnitsAttack() {
     // TODO: add a global toggle for returning fire (Veqryn)
-    final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<>(
+    final Match<Unit> attackableUnits = Match.all(
         Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(m_attacker, m_battleSite, m_data),
         Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
     final Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
@@ -2088,7 +2088,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     // TODO: add a global toggle for returning fire (Veqryn)
-    final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<>(Matches.UnitIsNotInfrastructure,
+    final Match<Unit> attackableUnits = Match.all(Matches.UnitIsNotInfrastructure,
         Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
     final Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
     final Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
@@ -2197,8 +2197,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final Collection<Unit> validAttackingUnitsForThisRoll =
             Match.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
                 Match.any(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-                    new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne,
-                        Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                    Match.all(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         final IExecutable rollDice = new IExecutable() {
           private static final long serialVersionUID = 6435935558879109347L;
 
@@ -2349,7 +2348,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     unitList.removeAll(Match.getMatches(unitList,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
     // remove any allied air units that are stuck on damaged carriers (veqryn)
-    unitList.removeAll(Match.getMatches(unitList, new CompositeMatchAnd<>(Matches.unitIsBeingTransported(),
+    unitList.removeAll(Match.getMatches(unitList, Match.all(Matches.unitIsBeingTransported(),
         Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
     // remove any units that were in air combat (veqryn)
     unitList.removeAll(Match.getMatches(unitList, Matches.UnitWasInAirBattle));
@@ -2613,8 +2612,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // TODO: why do we keep checking throughout this entire class if the units in m_defendingUnits are allied with
     // defender, and if the
     // units in m_attackingUnits are allied with the attacker? Does it really matter?
-    final CompositeMatch<Unit> alliedDefendingAir =
-        new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
+    final Match<Unit> alliedDefendingAir = Match.all(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
     final Collection<Unit> m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
     // no planes, exit
     if (m_defendingAir.isEmpty()) {
@@ -2656,7 +2654,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // carrier unit
     final Collection<Unit> carriers = Match.getMatches(attackingUnits, Matches.UnitIsCarrier);
     if (!carriers.isEmpty() && !games.strategy.triplea.Properties.getAlliedAirIndependent(data)) {
-      final Match<Unit> alliedFighters = new CompositeMatchAnd<>(Matches.isUnitAllied(attacker, data),
+      final Match<Unit> alliedFighters = Match.all(Matches.isUnitAllied(attacker, data),
           Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
       final Collection<Unit> alliedAirInTerr = Match.getMatches(attackingUnits, alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {

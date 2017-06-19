@@ -29,7 +29,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -171,7 +170,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
-              new CompositeMatchAnd<>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
+              Match.all(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder();
           allBombingRaidBuilder.add(Matches.UnitIsStrategicBomber);
@@ -247,7 +246,7 @@ public class MovePerformer implements Serializable {
             // could get really
             // difficult if we want these recorded in battle records).
             for (final Territory t : route
-                .getMatches(new CompositeMatchAnd<>(
+                .getMatches(Match.all(
                     Matches
                         .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
                             id),
@@ -339,12 +338,11 @@ public class MovePerformer implements Serializable {
     }
     if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .someMatch(new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
+            .someMatch(Match.all(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Match.getMatches(units,
-          new CompositeMatchAnd<>(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {
+      for (final Unit unit : Match.getMatches(units, Match.all(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }

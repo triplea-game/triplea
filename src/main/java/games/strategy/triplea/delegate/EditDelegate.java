@@ -91,7 +91,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {

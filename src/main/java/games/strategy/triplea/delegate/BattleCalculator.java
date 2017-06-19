@@ -41,7 +41,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
@@ -594,7 +593,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    final Match<Unit> aMatch = Match.all(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
     killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {

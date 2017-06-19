@@ -36,7 +36,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -1009,7 +1008,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, new CompositeMatchAnd<>(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Match.getMatches(allUnits, Match.all(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;

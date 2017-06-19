@@ -187,6 +187,33 @@ public abstract class Match<T> {
   }
 
   /**
+   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
+   *
+   * @param matches An array of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  @SafeVarargs
+  public static <T> Match<T> all(final Match<T>... matches) {
+    checkNotNull(matches);
+
+    return all(Arrays.asList(matches));
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
+   *
+   * @param matches A collection of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> all(final Collection<Match<T>> matches) {
+    checkNotNull(matches);
+
+    return Match.of(value -> matches.stream().allMatch(match -> match.match(value)));
+  }
+
+  /**
    * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
    *
    * @param matches An array of matches; must not be {@code null}.

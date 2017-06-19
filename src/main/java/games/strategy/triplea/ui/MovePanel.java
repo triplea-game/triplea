@@ -463,7 +463,7 @@ public class MovePanel extends AbstractMovePanel {
     Collection<Unit> transportsToLoad = Collections.emptyList();
     if (MoveValidator.isLoad(units, s_dependentUnits, route, getData(), getCurrentPlayer())) {
       transportsToLoad = route.getEnd().getUnits().getMatches(
-          new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
+          Match.all(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
     }
     List<Unit> best = new ArrayList<>(units);
     // if the player selects a land unit and other units
@@ -864,8 +864,7 @@ public class MovePanel extends AbstractMovePanel {
         // Load Bombers with paratroops
         if ((!nonCombat || IsParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
-            && Match.someMatch(selectedUnits,
-                new CompositeMatchAnd<>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
+            && Match.someMatch(selectedUnits, Match.all(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
           final PlayerID player = getCurrentPlayer();
           // TODO Transporting allied units
           // Get the potential units to load

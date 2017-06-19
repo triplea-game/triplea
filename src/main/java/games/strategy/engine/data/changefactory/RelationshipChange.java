@@ -6,7 +6,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -47,7 +46,7 @@ class RelationshipChange extends Change {
     // now redraw territories in case of new hostility
     if (Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
       for (final Territory t : Match.getMatches(data.getMap().getTerritories(),
-          new CompositeMatchAnd<>(
+          Match.all(
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)),
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player2))))) {
         t.notifyChanged();

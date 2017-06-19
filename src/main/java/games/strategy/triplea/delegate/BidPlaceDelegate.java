@@ -12,8 +12,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -115,10 +113,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
-    final CompositeMatch<Unit> groundUnits =
+    final Match<Unit> groundUnits =
         // we add factories and constructions later
-        new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
-    final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
+        Match.all(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
+    final Match<Unit> airUnits = Match.all(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
     if (Match.someMatch(units, Matches.UnitIsConstruction)) {
