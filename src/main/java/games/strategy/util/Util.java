@@ -1,12 +1,14 @@
 package games.strategy.util;
 
+import static games.strategy.util.PredicateUtils.not;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Some utility methods for dealing with collections.
@@ -38,19 +40,10 @@ public class Util {
    * @return true if some element in c1 is in c2
    */
   public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2) {
-    if (c1.isEmpty()) {
+    if (c1.isEmpty() || c2.isEmpty()) {
       return false;
     }
-    if (c2.isEmpty()) {
-      return false;
-    }
-    final Iterator<T> iter = c1.iterator();
-    while (iter.hasNext()) {
-      if (c2.contains(iter.next())) {
-        return true;
-      }
-    }
-    return false;
+    return c1.stream().anyMatch(c2::contains);
   }
 
   /**
@@ -64,13 +57,7 @@ public class Util {
     if (c2 == null || c2.size() == 0) {
       return new ArrayList<>(c1);
     }
-    final List<T> difference = new ArrayList<>();
-    for (final T current : c1) {
-      if (!c2.contains(current)) {
-        difference.add(current);
-      }
-    }
-    return difference;
+    return c1.stream().filter(not(c2::contains)).collect(Collectors.toList());
   }
 
   /**
@@ -89,10 +76,7 @@ public class Util {
     if (c1 == c2) {
       return true;
     }
-    if (!c1.containsAll(c2)) {
-      return false;
-    }
-    return c2.containsAll(c1);
+    return c2.containsAll(c1) && c1.containsAll(c2);
   }
 
   /**
@@ -157,7 +141,7 @@ public class Util {
       }
     });
   }
-  
+
   public static String getStringFromInputStream(InputStream in) {
     StringBuilder builder = new StringBuilder();
     try (Scanner scanner = new Scanner(in)) {
