@@ -116,7 +116,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {}
 
   @Override
-  public void notifyIPMutingOfPlayer(final String ip, final Instant muteExpires) {}
+  public void notifyIpMutingOfPlayer(final String ip, final Instant muteExpires) {}
 
   @Override
   public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {}

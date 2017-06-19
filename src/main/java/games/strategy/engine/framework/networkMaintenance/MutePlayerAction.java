@@ -49,7 +49,7 @@ public class MutePlayerAction extends AbstractAction {
         final String ip = node.getAddress().getHostAddress();
         final String mac = m_messenger.getPlayerMac(node.getName());
         m_messenger.notifyUsernameMutingOfPlayer(realName, null);
-        m_messenger.notifyIPMutingOfPlayer(ip, null);
+        m_messenger.notifyIpMutingOfPlayer(ip, null);
         m_messenger.notifyMacMutingOfPlayer(mac, null);
         return;
       }

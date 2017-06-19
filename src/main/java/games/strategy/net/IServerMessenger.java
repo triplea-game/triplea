@@ -45,7 +45,7 @@ public interface IServerMessenger extends IMessenger {
 
   void notifyUsernameMutingOfPlayer(String username, Instant muteExpires);
 
-  void notifyIPMutingOfPlayer(String ip, Instant muteExpires);
+  void notifyIpMutingOfPlayer(String ip, Instant muteExpires);
 
   void notifyMacMutingOfPlayer(String mac, Instant muteExpires);
 

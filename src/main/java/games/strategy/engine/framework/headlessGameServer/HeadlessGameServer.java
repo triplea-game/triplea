@@ -242,7 +242,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // (48 hours max)
-    Instant expireInstant = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
+    Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {
@@ -263,9 +263,9 @@ public class HeadlessGameServer {
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
               System.out.println("Remote Mute of Player: " + playerName);
-              messenger.notifyUsernameMutingOfPlayer(realName, expireInstant);
-              messenger.notifyIPMutingOfPlayer(ip, expireInstant);
-              messenger.notifyMacMutingOfPlayer(mac, expireInstant);
+              messenger.notifyUsernameMutingOfPlayer(realName, expire);
+              messenger.notifyIpMutingOfPlayer(ip, expire);
+              messenger.notifyMacMutingOfPlayer(mac, expire);
               return;
             }
           }

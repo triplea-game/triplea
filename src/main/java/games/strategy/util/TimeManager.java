@@ -30,15 +30,6 @@ public class TimeManager {
   }
 
   /**
-   * Equivalent to {@code getLocalizedTimeWithoutSeconds(LocalDateTime.now())}.
-   * 
-   * @return The formatted String
-   */
-  public static String getLocalizedTimeWithoutSeconds() {
-    return getLocalizedTimeWithoutSeconds(LocalDateTime.now());
-  }
-
-  /**
    * Returns a String representing this {@link LocalDateTime}.
    * Based on where you live this might be either for example 13:45 or 1:45pm.
    * 

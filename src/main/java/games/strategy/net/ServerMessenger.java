@@ -217,7 +217,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   @Override
-  public void notifyIPMutingOfPlayer(final String ip, final Instant muteExpires) {
+  public void notifyIpMutingOfPlayer(final String ip, final Instant muteExpires) {
     // TODO: remove if no backwards compat issues
   }
 
