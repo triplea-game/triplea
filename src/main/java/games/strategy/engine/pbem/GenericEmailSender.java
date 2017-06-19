@@ -75,12 +75,13 @@ public class GenericEmailSender implements IEmailSender {
     }
   }
 
-  private void protectPassword() throws IOException {
+  private void protectPassword() {
     try {
       passwordProtected = true;
       m_password = PasswordManager.newInstance().protect(m_password);
     } catch (final GeneralSecurityException e) {
-      throw new IOException("failed to protect PBEM password", e);
+      ClientLogger.logQuietly("failed to protect PBEM password", e);
+      m_password = "";
     }
   }
 

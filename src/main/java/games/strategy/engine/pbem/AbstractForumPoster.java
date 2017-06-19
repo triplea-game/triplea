@@ -39,12 +39,13 @@ public abstract class AbstractForumPoster implements IForumPoster {
     }
   }
 
-  private void protectPassword() throws IOException {
+  private void protectPassword() {
     try {
       passwordProtected = true;
       m_password = PasswordManager.newInstance().protect(m_password);
     } catch (final GeneralSecurityException e) {
-      throw new IOException("failed to protect PBF password", e);
+      ClientLogger.logQuietly("failed to protect PBF password", e);
+      m_password = "";
     }
   }
 
