@@ -1407,7 +1407,7 @@ public class MoveValidator {
     // but not us that can land on a carrier
     final CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<>();
     friendlyNotOwnedAir.add(Matches.alliedUnit(player, data));
-    friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(player));
+    friendlyNotOwnedAir.add(Matches.unitIsOwnedBy(player).invert());
     friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
     final Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
@@ -1417,7 +1417,7 @@ public class MoveValidator {
     final CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<>();
     friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
     friendlyNotOwnedCarrier.add(Matches.alliedUnit(player, data));
-    friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(player));
+    friendlyNotOwnedCarrier.add(Matches.unitIsOwnedBy(player).invert());
     final Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
     final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
     while (alliedCarrierIter.hasNext()) {

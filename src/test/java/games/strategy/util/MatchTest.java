@@ -88,13 +88,6 @@ public class MatchTest {
   }
 
   @Test
-  public void testAddInverse() {
-    final CompositeMatch<Object> and = new CompositeMatchAnd<>();
-    and.addInverse(Match.always());
-    assertFalse(and.match(new Object()));
-  }
-
-  @Test
   public void testMap() {
     final HashMap<String, String> map = new HashMap<>();
     map.put("a", "b");
