@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -24,7 +25,6 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
@@ -74,10 +74,9 @@ public class GameData implements java.io.Serializable {
   private String gameName;
   private Version gameVersion;
   private int diceSides;
-  private transient ListenerList<TerritoryListener> territoryListeners = new ListenerList<>();
-  private transient ListenerList<GameDataChangeListener> dataChangeListeners =
-      new ListenerList<>();
-  private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<>();
+  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -351,9 +350,9 @@ public class GameData implements java.io.Serializable {
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    territoryListeners = new ListenerList<>();
-    dataChangeListeners = new ListenerList<>();
-    gameMapListeners = new ListenerList<>();
+    territoryListeners = new CopyOnWriteArrayList<>();
+    dataChangeListeners = new CopyOnWriteArrayList<>();
+    gameMapListeners = new CopyOnWriteArrayList<>();
   }
 
   /**
