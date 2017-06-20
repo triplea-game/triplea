@@ -123,13 +123,7 @@ public class MapTest {
 
   @Test
   public void testImpossibleConditionRoute() {
-    final Match<Territory> test = new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        return false;
-      }
-    };
-    assertNull(map.getRoute(aa, ba, test));
+    assertNull(map.getRoute(aa, ba, Match.never()));
   }
 
   @Test

@@ -180,12 +180,8 @@ public class ProMatches {
   }
 
   private static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        return Matches.territoryIsBlitzable(player, data).match(t) && TerritoryEffectHelper.unitKeepsBlitz(u, t);
-      }
-    };
+    return Match.of(t -> Matches.territoryIsBlitzable(player, data).match(t)
+        && TerritoryEffectHelper.unitKeepsBlitz(u, t));
   }
 
   public static Match<Territory> territoryCanMoveSeaUnits(final PlayerID player, final GameData data,
@@ -247,63 +243,35 @@ public class ProMatches {
   }
 
   private static Match<Territory> territoryHasOnlyIgnoredUnits(final PlayerID player, final GameData data) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Unit> subOnly = Match.any(Matches.UnitIsInfrastructure, Matches.UnitIsSub,
-            Matches.enemyUnit(player, data).invert());
-        return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
-            || Matches.territoryHasNoEnemyUnits(player, data).match(t);
-      }
-    };
+    return Match.of(t -> {
+      final Match<Unit> subOnly = Match.any(Matches.UnitIsInfrastructure, Matches.UnitIsSub,
+          Matches.enemyUnit(player, data).invert());
+      return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
+          || Matches.territoryHasNoEnemyUnits(player, data).match(t);
+    });
   }
 
   public static Match<Territory> territoryHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.territoryHasEnemyUnits(player, data),
-            Matches.territoryIsInList(territoriesThatCantBeHeld));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.territoryHasEnemyUnits(player, data),
+        Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 
   public static Match<Territory> territoryHasPotentialEnemyUnits(final PlayerID player, final GameData data,
       final List<PlayerID> players) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.territoryHasEnemyUnits(player, data),
-            Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(players)));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.territoryHasEnemyUnits(player, data),
+        Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(players)));
   }
 
   public static Match<Territory> territoryHasNoEnemyUnitsOrCleared(final PlayerID player, final GameData data,
       final List<Territory> clearedTerritories) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.territoryHasNoEnemyUnits(player, data),
-            Matches.territoryIsInList(clearedTerritories));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.territoryHasNoEnemyUnits(player, data), Matches.territoryIsInList(clearedTerritories));
   }
 
   public static Match<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data),
-            Matches.territoryHasEnemyUnits(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data),
+        Matches.territoryHasEnemyUnits(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsLand() {
@@ -507,38 +475,19 @@ public class ProMatches {
 
   public static Match<Territory> territoryIsEnemyOrCantBeHeld(final PlayerID player, final GameData data,
       final List<Territory> territoriesThatCantBeHeld) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data),
-            Matches.territoryIsInList(territoriesThatCantBeHeld));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data),
+        Matches.territoryIsInList(territoriesThatCantBeHeld));
   }
 
   public static Match<Territory> territoryIsPotentialEnemy(final PlayerID player, final GameData data,
       final List<PlayerID> players) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data),
-            Matches.isTerritoryOwnedBy(players));
-        return match.match(t);
-      }
-    };
+    return Match.any(Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.isTerritoryOwnedBy(players));
   }
 
   public static Match<Territory> territoryIsPotentialEnemyOrHasPotentialEnemyUnits(final PlayerID player,
       final GameData data, final List<PlayerID> players) {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        final Match<Territory> match = Match.any(territoryIsPotentialEnemy(player, data, players),
-            territoryHasPotentialEnemyUnits(player, data, players));
-        return match.match(t);
-      }
-    };
+    return Match.any(territoryIsPotentialEnemy(player, data, players),
+        territoryHasPotentialEnemyUnits(player, data, players));
   }
 
   public static Match<Territory> territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(final PlayerID player,
@@ -805,15 +754,7 @@ public class ProMatches {
   }
 
   private static Match<Unit> unitIsNeutral() {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        if (u.getOwner().isNull()) {
-          return true;
-        }
-        return false;
-      }
-    };
+    return Match.of(u -> u.getOwner().isNull());
   }
 
   static Match<Unit> unitIsOwnedAir(final PlayerID player) {
@@ -919,28 +860,25 @@ public class ProMatches {
    * @return whether the territory contains one of the required combos of units
    */
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unitWhichRequiresUnits) {
-        if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
-        if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-            .match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        if (t.isWater() && Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
-          for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.TerritoryIsLand)) {
-            final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
-            if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-                .match(unitWhichRequiresUnits)) {
-              return true;
-            }
+    return Match.of(unitWhichRequiresUnits -> {
+      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
+      if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+          .match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      if (t.isWater() && Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
+        for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.TerritoryIsLand)) {
+          final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
+          if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+              .match(unitWhichRequiresUnits)) {
+            return true;
           }
         }
-        return false;
       }
-    };
+      return false;
+    });
   }
 }

@@ -349,15 +349,12 @@ public class MovePanel extends AbstractMovePanel {
       movable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     if (route != null) {
-      final Match<Unit> enoughMovement = new Match<Unit>() {
-        @Override
-        public boolean match(final Unit u) {
-          if (BaseEditDelegate.getEditMode(getData())) {
-            return true;
-          }
-          return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
+      final Match<Unit> enoughMovement = Match.of(u -> {
+        if (BaseEditDelegate.getEditMode(getData())) {
+          return true;
         }
-      };
+        return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
+      });
       if (route.isUnload()) {
         final CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<>();
         notLandAndCanMove.add(enoughMovement);
@@ -629,12 +626,7 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> incapableTransports =
         Match.getMatches(capableTransports, Matches.transportCannotUnload(route.getEnd()));
     capableTransports.removeAll(incapableTransports);
-    final Match<Unit> alliedMatch = new Match<Unit>() {
-      @Override
-      public boolean match(final Unit transport) {
-        return (!transport.getOwner().equals(unitOwner));
-      }
-    };
+    final Match<Unit> alliedMatch = Match.of(transport -> !transport.getOwner().equals(unitOwner));
     final Collection<Unit> alliedTransports = Match.getMatches(capableTransports, alliedMatch);
     capableTransports.removeAll(alliedTransports);
 

@@ -77,75 +77,43 @@ import games.strategy.util.Util;
  * </p>
  */
 public class Matches {
-  public static final Match<Object> IsTerritory = new Match<Object>() {
-    @Override
-    public boolean match(final Object o) {
-      return o != null && o instanceof Territory;
-    }
-  };
+  public static final Match<Object> IsTerritory = Match.of(o -> o != null && o instanceof Territory);
+
   public static final Match<Unit> UnitHasMoreThanOneHitPointTotal = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
       return UnitTypeHasMoreThanOneHitPointTotal.match(unit.getType());
     }
   };
-  public static final Match<UnitType> UnitTypeHasMoreThanOneHitPointTotal = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType ut) {
-      final UnitAttachment ua = UnitAttachment.get(ut);
-      return ua.getHitPoints() > 1;
-    }
-  };
-  public static final Match<Unit> UnitHasTakenSomeDamage = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      return unit.getHits() > 0;
-    }
-  };
+
+  public static final Match<UnitType> UnitTypeHasMoreThanOneHitPointTotal =
+      Match.of(ut -> UnitAttachment.get(ut).getHitPoints() > 1);
+
+  public static final Match<Unit> UnitHasTakenSomeDamage = Match.of(unit -> unit.getHits() > 0);
 
   public static final Match<Unit> UnitHasNotTakenAnyDamage = UnitHasTakenSomeDamage.invert();
 
-  public static final Match<Unit> UnitHasOnlyOneHitPointLeft = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getHitPoints() - unit.getHits() <= 1;
-    }
-  };
-  public static final Match<Unit> UnitIsSea = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getIsSea();
-    }
-  };
-  public static final Match<Unit> UnitIsSub = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getIsSub();
-    }
-  };
+  public static final Match<Unit> UnitHasOnlyOneHitPointLeft =
+      Match.of(unit -> UnitAttachment.get(unit.getType()).getHitPoints() - unit.getHits() <= 1);
+
+  public static final Match<Unit> UnitIsSea = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsSea());
+
+  public static final Match<Unit> UnitIsSub = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsSub());
 
   public static final Match<Unit> UnitIsNotSub = UnitIsSub.invert();
 
-  public static final Match<Unit> UnitIsCombatTransport = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return (ua.getIsCombatTransport() && ua.getIsSea());
-    }
-  };
+  public static final Match<Unit> UnitIsCombatTransport = Match.of(unit -> {
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    return (ua.getIsCombatTransport() && ua.getIsSea());
+  });
 
   public static final Match<Unit> UnitIsNotCombatTransport = UnitIsCombatTransport.invert();
 
-  public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return (ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport());
-    }
-  };
+  public static final Match<Unit> UnitIsTransportButNotCombatTransport = Match.of(unit -> {
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    return (ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport());
+  });
+
   public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -157,45 +125,32 @@ public class Matches {
       }
     }
   };
-  public static final Match<Unit> UnitIsDestroyer = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getIsDestroyer();
-    }
-  };
-  public static final Match<UnitType> UnitTypeIsDestroyer = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType type) {
-      final UnitAttachment ua = UnitAttachment.get(type);
-      return ua.getIsDestroyer();
-    }
-  };
-  public static final Match<Unit> UnitIsTransport = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return (ua.getTransportCapacity() != -1 && ua.getIsSea());
-    }
-  };
+
+  public static final Match<Unit> UnitIsDestroyer =
+      Match.of(unit -> UnitAttachment.get(unit.getType()).getIsDestroyer());
+
+  public static final Match<UnitType> UnitTypeIsDestroyer = Match.of(type -> UnitAttachment.get(type).getIsDestroyer());
+
+  public static final Match<Unit> UnitIsTransport = Match.of(unit -> {
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    return (ua.getTransportCapacity() != -1 && ua.getIsSea());
+  });
+
   public static final Match<Unit> UnitIsNotTransport = UnitIsTransport.invert();
-  public static final Match<Unit> UnitIsTransportAndNotDestroyer = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return (!Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea());
+
+  public static final Match<Unit> UnitIsTransportAndNotDestroyer = Match.of(unit -> {
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    return (!Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea());
+  });
+
+  public static final Match<UnitType> UnitTypeIsStrategicBomber = Match.of(obj -> {
+    final UnitAttachment ua = UnitAttachment.get(obj);
+    if (ua == null) {
+      return false;
     }
-  };
-  public static final Match<UnitType> UnitTypeIsStrategicBomber = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType obj) {
-      final UnitAttachment ua = UnitAttachment.get(obj);
-      if (ua == null) {
-        return false;
-      }
-      return ua.getIsStrategicBomber();
-    }
-  };
+    return ua.getIsStrategicBomber();
+  });
+
   public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
@@ -205,16 +160,13 @@ public class Matches {
 
   public static final Match<Unit> UnitIsNotStrategicBomber = UnitIsStrategicBomber.invert();
 
-  public static final Match<UnitType> UnitTypeCanLandOnCarrier = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType obj) {
-      final UnitAttachment ua = UnitAttachment.get(obj);
-      if (ua == null) {
-        return false;
-      }
-      return ua.getCarrierCost() != -1;
+  public static final Match<UnitType> UnitTypeCanLandOnCarrier = Match.of(obj -> {
+    final UnitAttachment ua = UnitAttachment.get(obj);
+    if (ua == null) {
+      return false;
     }
-  };
+    return ua.getCarrierCost() != -1;
+  });
 
   public static final Match<UnitType> UnitTypeCannotLandOnCarrier = UnitTypeCanLandOnCarrier.invert();
 

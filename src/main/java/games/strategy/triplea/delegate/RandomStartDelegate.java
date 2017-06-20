@@ -225,18 +225,15 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   private Match<PlayerID> getPlayerCanPickMatch() {
-    return new Match<PlayerID>() {
-      @Override
-      public boolean match(final PlayerID player) {
-        if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
-          return false;
-        }
-        if (player.getUnits().isEmpty()) {
-          return false;
-        }
-        return !player.getIsDisabled();
+    return Match.of(player -> {
+      if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
+        return false;
       }
-    };
+      if (player.getUnits().isEmpty()) {
+        return false;
+      }
+      return !player.getIsDisabled();
+    });
   }
 
   @Override

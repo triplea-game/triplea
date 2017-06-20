@@ -630,21 +630,11 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Match<Unit> unitHasAirDefenseGreaterThanZero() {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0;
-      }
-    };
+    return Match.of(u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0);
   }
 
   private static Match<Unit> unitHasAirAttackGreaterThanZero() {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0;
-      }
-    };
+    return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
   }
 
   static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {

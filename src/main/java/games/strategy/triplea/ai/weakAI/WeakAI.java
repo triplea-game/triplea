@@ -61,13 +61,10 @@ public class WeakAI extends AbstractAI {
       return null;
     }
     final Territory ourCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    final Match<Territory> endMatch = new Match<Territory>() {
-      @Override
-      public boolean match(final Territory o) {
-        final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
-        return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
-      }
-    };
+    final Match<Territory> endMatch = Match.of(o -> {
+      final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
+      return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
+    });
     final Match<Territory> routeCond =
         Match.all(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
     final Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
@@ -1082,10 +1079,5 @@ public class WeakAI extends AbstractAI {
     return true;
   }
 
-  public static final Match<Unit> Transporting = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit o) {
-      return (TripleAUnit.get(o).getTransporting().size() > 0);
-    }
-  };
+  public static final Match<Unit> Transporting = Match.of(o -> TripleAUnit.get(o).getTransporting().size() > 0);
 }
