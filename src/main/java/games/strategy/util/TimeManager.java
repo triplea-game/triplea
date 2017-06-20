@@ -9,13 +9,13 @@ import java.time.format.FormatStyle;
 
 public class TimeManager {
   /**
-   * Replacement for {@code Date.toGMTString();}.
+   * Prints an {@link Instant} localized, with all details
    *
    * @param instant The {@link Instant} being returned as String
    * @return formatted GMT Date String
    */
-  public static String getGMTString(final Instant instant) {
-    return DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss 'GMT'").withZone(ZoneOffset.UTC).format(instant);
+  public static String getFullUTCString(final Instant instant) {
+    return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withZone(ZoneOffset.UTC).format(instant);
   }
 
   /**

@@ -3,6 +3,7 @@ package games.strategy.engine.pbem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -114,7 +115,7 @@ public class GenericEmailSender implements IEmailSender {
       }
       // date
       try {
-        mimeMessage.setSentDate(new Date());
+        mimeMessage.setSentDate(Date.from(Instant.now()));
       } catch (final Exception e) {
         // NoOp - the Date field is simply ignored in this case
       }

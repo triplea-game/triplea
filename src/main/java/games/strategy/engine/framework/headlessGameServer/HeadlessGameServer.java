@@ -51,7 +51,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
-  private final String m_startDate = TimeManager.getGMTString(Instant.now());
+  private final String startDate = TimeManager.getFullUTCString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
     return s_instance;
@@ -483,7 +483,7 @@ public class HeadlessGameServer {
   }
 
   String getStatus() {
-    String message = "Server Start Date: " + m_startDate;
+    String message = "Server Start Date: " + startDate;
     final ServerGame game = getIGame();
     if (game != null) {
       message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
