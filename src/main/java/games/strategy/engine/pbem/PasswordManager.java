@@ -223,6 +223,16 @@ final class PasswordManager implements AutoCloseable {
     return salt;
   }
 
+  private byte[] encrypt(final byte[] plaintext, final byte[] salt) throws GeneralSecurityException {
+    return newCipher(Cipher.ENCRYPT_MODE, salt).doFinal(plaintext);
+  }
+
+  private Cipher newCipher(final int opmode, final byte[] salt) throws GeneralSecurityException {
+    final Cipher cipher = cipherFactory.create();
+    cipher.init(opmode, newSecretKey(salt));
+    return cipher;
+  }
+
   private SecretKey newSecretKey(final byte[] salt) throws GeneralSecurityException {
     // https://security.stackexchange.com/questions/3959/recommended-of-iterations-when-using-pkbdf2-sha256
     final int iterationCount = 20_000;
@@ -235,16 +245,6 @@ final class PasswordManager implements AutoCloseable {
     final KeySpec keySpec = new PBEKeySpec(masterPassword, salt, iterationCount, keyLengthInBits);
     final SecretKey key = secretKeyFactory.generateSecret(keySpec);
     return new SecretKeySpec(key.getEncoded(), CIPHER_ALGORITHM);
-  }
-
-  private byte[] encrypt(final byte[] plaintext, final byte[] salt) throws GeneralSecurityException {
-    return newCipher(Cipher.ENCRYPT_MODE, salt).doFinal(plaintext);
-  }
-
-  private Cipher newCipher(final int opmode, final byte[] salt) throws GeneralSecurityException {
-    final Cipher cipher = cipherFactory.create();
-    cipher.init(opmode, newSecretKey(salt));
-    return cipher;
   }
 
   private static String encodeCiphertextAndSalt(final byte[] ciphertext, final byte[] salt) {
