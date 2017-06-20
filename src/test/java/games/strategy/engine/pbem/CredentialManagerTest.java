@@ -24,28 +24,28 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class PasswordManagerTest {
+public final class CredentialManagerTest {
   @Mock
   private Preferences preferences;
 
-  private PasswordManager passwordManager;
+  private CredentialManager credentialManager;
 
   @Before
   public void setUp() throws Exception {
-    passwordManager = PasswordManager.newInstance(PasswordManager.newMasterPassword());
+    credentialManager = CredentialManager.newInstance(CredentialManager.newMasterPassword());
   }
 
   @After
   public void tearDown() {
-    passwordManager.close();
+    credentialManager.close();
   }
 
   @Test
-  public void shouldBeAbleToRoundTripPassword() throws Exception {
+  public void shouldBeAbleToRoundTripCredential() throws Exception {
     final String expected = "123$%^ ABCdef←↑→↓";
 
-    final String protectedPassword = passwordManager.protect(expected);
-    final String actual = passwordManager.unprotectToString(protectedPassword);
+    final String protectedCredential = credentialManager.protect(expected);
+    final String actual = credentialManager.unprotectToString(protectedCredential);
 
     assertThat(actual, is(expected));
   }
@@ -54,50 +54,51 @@ public final class PasswordManagerTest {
   public void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
     givenMasterPasswordDoesNotExist();
 
-    final char[] masterPassword = PasswordManager.getMasterPassword(preferences);
+    final char[] masterPassword = CredentialManager.getMasterPassword(preferences);
 
     thenMasterPasswordExistsAndIs(masterPassword);
   }
 
   private void givenMasterPasswordDoesNotExist() {
-    when(preferences.getByteArray(eq(PasswordManager.PREFERENCE_KEY_MASTER_PASSWORD), any())).then(returnsSecondArg());
+    when(preferences.getByteArray(eq(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+        .then(returnsSecondArg());
   }
 
   private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
-    verify(preferences).putByteArray(PasswordManager.PREFERENCE_KEY_MASTER_PASSWORD,
-        PasswordManager.encodeMasterPassword(masterPassword));
+    verify(preferences).putByteArray(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
+        CredentialManager.encodeMasterPassword(masterPassword));
   }
 
   @Test
   public void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
-    final char[] expected = PasswordManager.newMasterPassword();
+    final char[] expected = CredentialManager.newMasterPassword();
     givenMasterPasswordExists(expected);
 
-    final char[] actual = PasswordManager.getMasterPassword(preferences);
+    final char[] actual = CredentialManager.getMasterPassword(preferences);
 
     assertThat(actual, is(expected));
   }
 
   private void givenMasterPasswordExists(final char[] masterPassword) {
-    when(preferences.getByteArray(eq(PasswordManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
-        .thenReturn(PasswordManager.encodeMasterPassword(masterPassword));
+    when(preferences.getByteArray(eq(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+        .thenReturn(CredentialManager.encodeMasterPassword(masterPassword));
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedPasswordContainsLessThanOnePeriod() throws Exception {
-    catchException(() -> passwordManager.unprotect("AAAABBBB"));
+  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() throws Exception {
+    catchException(() -> credentialManager.unprotect("AAAABBBB"));
 
     assertThat(caughtException(), allOf(
-        is(instanceOf(PasswordManagerException.class)),
-        hasMessageThat(containsString("malformed protected password"))));
+        is(instanceOf(CredentialManagerException.class)),
+        hasMessageThat(containsString("malformed protected credential"))));
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedPasswordContainsMoreThanOnePeriod() throws Exception {
-    catchException(() -> passwordManager.unprotect("AAAA.BBBB.CCCC"));
+  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() throws Exception {
+    catchException(() -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
     assertThat(caughtException(), allOf(
-        is(instanceOf(PasswordManagerException.class)),
-        hasMessageThat(containsString("malformed protected password"))));
+        is(instanceOf(CredentialManagerException.class)),
+        hasMessageThat(containsString("malformed protected credential"))));
   }
 }

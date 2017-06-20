@@ -20,11 +20,11 @@ import javax.crypto.spec.SecretKeySpec;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * Provides a facility to protect a password before writing it to storage and to subsequently unprotect a protected
- * password after reading it from storage.
+ * Provides a facility to protect a credential before writing it to storage and to subsequently unprotect a protected
+ * credential after reading it from storage.
  *
  * <p>
- * The password manager uses a user-specific master password to protect individual passwords. The master password is
+ * The credential manager uses a user-specific master password to protect individual credentials. The master password is
  * stored unencrypted in the user's preference tree. Thus, the master password is in an area of the user's system that
  * has the required permissions to ensure access only by the user. The master password will automatically be created if
  * it does not exist.
@@ -34,49 +34,49 @@ import com.google.common.annotations.VisibleForTesting;
  * Instances of this class are not thread safe.
  * </p>
  */
-final class PasswordManager implements AutoCloseable {
+final class CredentialManager implements AutoCloseable {
   private static final String CIPHER_ALGORITHM = "AES";
   private static final Charset MASTER_PASSWORD_CHARSET = StandardCharsets.ISO_8859_1;
   private static final Charset PLAINTEXT_CHARSET = StandardCharsets.UTF_8;
 
   @VisibleForTesting
-  static final String PREFERENCE_KEY_MASTER_PASSWORD = "PASSWORD_MANAGER_MASTER_PASSWORD";
+  static final String PREFERENCE_KEY_MASTER_PASSWORD = "CREDENTIAL_MANAGER_MASTER_PASSWORD";
 
   private final CipherFactory cipherFactory;
   private final char[] masterPassword;
 
-  private PasswordManager(final CipherFactory cipherFactory, final char[] masterPassword) {
+  private CredentialManager(final CipherFactory cipherFactory, final char[] masterPassword) {
     this.cipherFactory = cipherFactory;
     this.masterPassword = masterPassword;
   }
 
   /**
-   * Creates a new instance of the {@code PasswordManager} class using the default master password for the user.
+   * Creates a new instance of the {@code CredentialManager} class using the default master password for the user.
    *
    * <p>
    * If the user has a saved master password, it will be used. Otherwise, a new master password will be created for the
    * user and saved.
    * </p>
    *
-   * @return A new password manager; never {@code null}.
+   * @return A new credential manager; never {@code null}.
    *
-   * @throws PasswordManagerException If no saved master password exists and a new master password cannot be created.
+   * @throws CredentialManagerException If no saved master password exists and a new master password cannot be created.
    */
-  static PasswordManager newInstance() throws PasswordManagerException {
+  static CredentialManager newInstance() throws CredentialManagerException {
     try {
       return newInstance(getMasterPassword());
     } catch (final GeneralSecurityException e) {
-      throw new PasswordManagerException("failed to create password manager", e);
+      throw new CredentialManagerException("failed to create credential manager", e);
     }
   }
 
   @VisibleForTesting
-  static PasswordManager newInstance(final char[] masterPassword) {
-    return new PasswordManager(() -> Cipher.getInstance(CIPHER_ALGORITHM), masterPassword);
+  static CredentialManager newInstance(final char[] masterPassword) {
+    return new CredentialManager(() -> Cipher.getInstance(CIPHER_ALGORITHM), masterPassword);
   }
 
   private static char[] getMasterPassword() throws GeneralSecurityException {
-    return getMasterPassword(Preferences.userNodeForPackage(PasswordManager.class));
+    return getMasterPassword(Preferences.userNodeForPackage(CredentialManager.class));
   }
 
   @VisibleForTesting
@@ -158,7 +158,7 @@ final class PasswordManager implements AutoCloseable {
   }
 
   /**
-   * Protects the unprotected password contained in the specified string.
+   * Protects the unprotected credential contained in the specified string.
    *
    * <p>
    * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #protect(char[])} INSTEAD!</strong> Strings are immutable and
@@ -166,47 +166,47 @@ final class PasswordManager implements AutoCloseable {
    * process (e.g. if memory is paged to disk).
    * </p>
    *
-   * @param unprotectedPasswordAsString The unprotected password as a string; must not be {@code null}.
+   * @param unprotectedCredentialAsString The unprotected credential as a string; must not be {@code null}.
    *
-   * @return The protected password; never {@code null}.
+   * @return The protected credential; never {@code null}.
    *
-   * @throws PasswordManagerException If the unprotected password cannot be protected.
+   * @throws CredentialManagerException If the unprotected credential cannot be protected.
    *
    * @see #unprotectToString(String)
    */
-  String protect(final String unprotectedPasswordAsString) throws PasswordManagerException {
-    assert unprotectedPasswordAsString != null;
+  String protect(final String unprotectedCredentialAsString) throws CredentialManagerException {
+    assert unprotectedCredentialAsString != null;
 
-    final char[] unprotectedPassword = unprotectedPasswordAsString.toCharArray();
+    final char[] unprotectedCredential = unprotectedCredentialAsString.toCharArray();
     try {
-      return protect(unprotectedPassword);
+      return protect(unprotectedCredential);
     } finally {
-      scrub(unprotectedPassword);
+      scrub(unprotectedCredential);
     }
   }
 
   /**
-   * Protects the unprotected password contained in the specified character array.
+   * Protects the unprotected credential contained in the specified character array.
    *
-   * @param unprotectedPassword The unprotected password as a character array; must not be {@code null}.
+   * @param unprotectedCredential The unprotected credential as a character array; must not be {@code null}.
    *
-   * @return The protected password; never {@code null}.
+   * @return The protected credential; never {@code null}.
    *
-   * @throws PasswordManagerException If the unprotected password cannot be protected.
+   * @throws CredentialManagerException If the unprotected credential cannot be protected.
    *
    * @see #unprotect(String)
    */
-  String protect(final char[] unprotectedPassword) throws PasswordManagerException {
-    assert unprotectedPassword != null;
+  String protect(final char[] unprotectedCredential) throws CredentialManagerException {
+    assert unprotectedCredential != null;
 
     try {
-      final byte[] plaintext = decodePlaintext(unprotectedPassword);
+      final byte[] plaintext = decodePlaintext(unprotectedCredential);
       final byte[] salt = newSalt();
       final byte[] ciphertext = encrypt(plaintext, salt);
       scrub(plaintext);
       return encodeCiphertextAndSalt(ciphertext, salt);
     } catch (final GeneralSecurityException e) {
-      throw new PasswordManagerException("failed to protect password", e);
+      throw new CredentialManagerException("failed to protect credential", e);
     }
   }
 
@@ -254,7 +254,7 @@ final class PasswordManager implements AutoCloseable {
   }
 
   /**
-   * Unprotects the specified protected password into a string.
+   * Unprotects the specified protected credential into a string.
    *
    * <p>
    * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #unprotect(String)} INSTEAD!</strong> Strings are immutable and
@@ -262,55 +262,55 @@ final class PasswordManager implements AutoCloseable {
    * process (e.g. if memory is paged to disk).
    * </p>
    *
-   * @param protectedPassword The protected password previously created by {@link #protect(String)}; must not be
+   * @param protectedCredential The protected credential previously created by {@link #protect(String)}; must not be
    *        {@code null}.
    *
-   * @return The unprotected password as a string; never {@code null}.
+   * @return The unprotected credential as a string; never {@code null}.
    *
-   * @throws PasswordManagerException If the protected password cannot be unprotected.
+   * @throws CredentialManagerException If the protected credential cannot be unprotected.
    *
    * @see #protect(String)
    */
-  String unprotectToString(final String protectedPassword) throws PasswordManagerException {
-    assert protectedPassword != null;
+  String unprotectToString(final String protectedCredential) throws CredentialManagerException {
+    assert protectedCredential != null;
 
-    final char[] unprotectedPassword = unprotect(protectedPassword);
-    final String unprotectedPasswordAsString = new String(unprotectedPassword);
-    scrub(unprotectedPassword);
-    return unprotectedPasswordAsString;
+    final char[] unprotectedCredential = unprotect(protectedCredential);
+    final String unprotectedCredentialAsString = new String(unprotectedCredential);
+    scrub(unprotectedCredential);
+    return unprotectedCredentialAsString;
   }
 
   /**
-   * Unprotects the specified protected password into a character array.
+   * Unprotects the specified protected credential into a character array.
    *
-   * @param protectedPassword The protected password previously created by {@link #protect(char[])}; must not be
+   * @param protectedCredential The protected credential previously created by {@link #protect(char[])}; must not be
    *        {@code null}.
    *
-   * @return The unprotected password as a character array; never {@code null}.
+   * @return The unprotected credential as a character array; never {@code null}.
    *
-   * @throws PasswordManagerException If the protected password cannot be unprotected.
+   * @throws CredentialManagerException If the protected credential cannot be unprotected.
    *
    * @see #protect(char[])
    */
-  char[] unprotect(final String protectedPassword) throws PasswordManagerException {
-    assert protectedPassword != null;
+  char[] unprotect(final String protectedCredential) throws CredentialManagerException {
+    assert protectedCredential != null;
 
     try {
-      final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedPassword);
+      final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedCredential);
       final byte[] plaintext = decrypt(ciphertextAndSalt.ciphertext, ciphertextAndSalt.salt);
-      final char[] unprotectedPassword = encodePlaintext(plaintext);
+      final char[] unprotectedCredential = encodePlaintext(plaintext);
       scrub(plaintext);
-      return unprotectedPassword;
+      return unprotectedCredential;
     } catch (final GeneralSecurityException e) {
-      throw new PasswordManagerException("failed to unprotect password", e);
+      throw new CredentialManagerException("failed to unprotect credential", e);
     }
   }
 
   private static CiphertextAndSalt decodeCiphertextAndSalt(final String encodedCiphertextAndSalt)
-      throws PasswordManagerException {
+      throws CredentialManagerException {
     final String[] components = encodedCiphertextAndSalt.split("\\.");
     if (components.length != 2) {
-      throw new PasswordManagerException("malformed protected password");
+      throw new CredentialManagerException("malformed protected credential");
     }
 
     final String encodedSalt = components[0];

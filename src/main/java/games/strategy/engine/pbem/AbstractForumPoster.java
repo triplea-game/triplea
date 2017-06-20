@@ -26,39 +26,45 @@ public abstract class AbstractForumPoster implements IForumPoster {
   protected transient String m_turnSummaryRef = null;
   protected transient String m_saveGameFileName = null;
   private boolean passwordSaved = false;
-  private boolean passwordProtected = false;
+  private boolean credentialsProtected = false;
 
   private void writeObject(final ObjectOutputStream out) throws IOException {
+    final String username = m_username;
     final String password = m_password;
     try {
-      protectPassword();
+      protectCredentials();
       out.defaultWriteObject();
     } finally {
+      m_username = username;
       m_password = password;
     }
   }
 
-  private void protectPassword() {
-    passwordProtected = true;
-    try (final PasswordManager passwordManager = PasswordManager.newInstance()) {
-      m_password = passwordManager.protect(m_password);
-    } catch (final PasswordManagerException e) {
-      ClientLogger.logQuietly("failed to protect PBF password", e);
+  private void protectCredentials() {
+    credentialsProtected = true;
+    try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+      m_username = credentialManager.protect(m_username);
+      m_password = credentialManager.protect(m_password);
+    } catch (final CredentialManagerException e) {
+      ClientLogger.logQuietly("failed to protect PBF credentials", e);
+      m_username = "";
       m_password = "";
     }
   }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    unprotectPassword();
+    unprotectCredentials();
   }
 
-  private void unprotectPassword() {
-    if (passwordProtected) {
-      try (final PasswordManager passwordManager = PasswordManager.newInstance()) {
-        m_password = passwordManager.unprotectToString(m_password);
-      } catch (final PasswordManagerException e) {
-        ClientLogger.logQuietly("failed to unprotect PBF password", e);
+  private void unprotectCredentials() {
+    if (credentialsProtected) {
+      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+        m_username = credentialManager.unprotectToString(m_username);
+        m_password = credentialManager.unprotectToString(m_password);
+      } catch (final CredentialManagerException e) {
+        ClientLogger.logQuietly("failed to unprotect PBF credentials", e);
+        m_username = "";
         m_password = "";
       }
     }
