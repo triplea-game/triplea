@@ -101,11 +101,15 @@ final class PasswordManager implements AutoCloseable {
   }
 
   private static char[] decodeMasterPassword(final byte[] encodedMasterPassword) {
-    final CharBuffer cb = MASTER_PASSWORD_CHARSET.decode(ByteBuffer.wrap(encodedMasterPassword));
-    final char[] masterPassword = new char[cb.length()];
-    cb.get(masterPassword);
+    return decodeChars(encodedMasterPassword, MASTER_PASSWORD_CHARSET);
+  }
+
+  private static char[] decodeChars(final byte[] bytes, final Charset charset) {
+    final CharBuffer cb = charset.decode(ByteBuffer.wrap(bytes));
+    final char[] chars = new char[cb.length()];
+    cb.get(chars);
     scrub(cb);
-    return masterPassword;
+    return chars;
   }
 
   @VisibleForTesting
@@ -137,11 +141,15 @@ final class PasswordManager implements AutoCloseable {
 
   @VisibleForTesting
   static byte[] encodeMasterPassword(final char[] masterPassword) {
-    final ByteBuffer bb = MASTER_PASSWORD_CHARSET.encode(CharBuffer.wrap(masterPassword));
-    final byte[] encodedMasterPassword = new byte[bb.remaining()];
-    bb.get(encodedMasterPassword);
+    return encodeChars(masterPassword, MASTER_PASSWORD_CHARSET);
+  }
+
+  private static byte[] encodeChars(final char[] chars, final Charset charset) {
+    final ByteBuffer bb = charset.encode(CharBuffer.wrap(chars));
+    final byte[] bytes = new byte[bb.remaining()];
+    bb.get(bytes);
     scrub(bb);
-    return encodedMasterPassword;
+    return bytes;
   }
 
   @Override
@@ -150,9 +158,37 @@ final class PasswordManager implements AutoCloseable {
   }
 
   /**
-   * Protects the specified unprotected password.
+   * Protects the unprotected password contained in the specified string.
    *
-   * @param unprotectedPassword The unprotected password; must not be {@code null}.
+   * <p>
+   * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #protect(char[])} INSTEAD!</strong> Strings are immutable and
+   * the secret data contained in the argument cannot be scrubbed. This data may then be leaked outside of this
+   * process (e.g. if memory is paged to disk).
+   * </p>
+   *
+   * @param unprotectedPasswordAsString The unprotected password as a string; must not be {@code null}.
+   *
+   * @return The protected password; never {@code null}.
+   *
+   * @throws PasswordManagerException If the unprotected password cannot be protected.
+   *
+   * @see #unprotectToString(String)
+   */
+  String protect(final String unprotectedPasswordAsString) throws PasswordManagerException {
+    assert unprotectedPasswordAsString != null;
+
+    final char[] unprotectedPassword = unprotectedPasswordAsString.toCharArray();
+    try {
+      return protect(unprotectedPassword);
+    } finally {
+      scrub(unprotectedPassword);
+    }
+  }
+
+  /**
+   * Protects the unprotected password contained in the specified character array.
+   *
+   * @param unprotectedPassword The unprotected password as a character array; must not be {@code null}.
    *
    * @return The protected password; never {@code null}.
    *
@@ -160,7 +196,7 @@ final class PasswordManager implements AutoCloseable {
    *
    * @see #unprotect(String)
    */
-  String protect(final String unprotectedPassword) throws PasswordManagerException {
+  String protect(final char[] unprotectedPassword) throws PasswordManagerException {
     assert unprotectedPassword != null;
 
     try {
@@ -174,8 +210,8 @@ final class PasswordManager implements AutoCloseable {
     }
   }
 
-  private static byte[] decodePlaintext(final String encodedPlaintext) {
-    return encodedPlaintext.getBytes(PLAINTEXT_CHARSET);
+  private static byte[] decodePlaintext(final char[] encodedPlaintext) {
+    return encodeChars(encodedPlaintext, PLAINTEXT_CHARSET);
   }
 
   private static byte[] newSalt() throws GeneralSecurityException {
@@ -218,24 +254,51 @@ final class PasswordManager implements AutoCloseable {
   }
 
   /**
-   * Unprotects the specified protected password.
+   * Unprotects the specified protected password into a string.
+   *
+   * <p>
+   * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #unprotect(String)} INSTEAD!</strong> Strings are immutable and
+   * the secret data contained in the return value cannot be scrubbed. This data may then be leaked outside of this
+   * process (e.g. if memory is paged to disk).
+   * </p>
    *
    * @param protectedPassword The protected password previously created by {@link #protect(String)}; must not be
    *        {@code null}.
    *
-   * @return The unprotected password; never {@code null}.
+   * @return The unprotected password as a string; never {@code null}.
    *
    * @throws PasswordManagerException If the protected password cannot be unprotected.
    *
    * @see #protect(String)
    */
-  String unprotect(final String protectedPassword) throws PasswordManagerException {
+  String unprotectToString(final String protectedPassword) throws PasswordManagerException {
+    assert protectedPassword != null;
+
+    final char[] unprotectedPassword = unprotect(protectedPassword);
+    final String unprotectedPasswordAsString = new String(unprotectedPassword);
+    scrub(unprotectedPassword);
+    return unprotectedPasswordAsString;
+  }
+
+  /**
+   * Unprotects the specified protected password into a character array.
+   *
+   * @param protectedPassword The protected password previously created by {@link #protect(char[])}; must not be
+   *        {@code null}.
+   *
+   * @return The unprotected password as a character array; never {@code null}.
+   *
+   * @throws PasswordManagerException If the protected password cannot be unprotected.
+   *
+   * @see #protect(char[])
+   */
+  char[] unprotect(final String protectedPassword) throws PasswordManagerException {
     assert protectedPassword != null;
 
     try {
       final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedPassword);
       final byte[] plaintext = decrypt(ciphertextAndSalt.ciphertext, ciphertextAndSalt.salt);
-      final String unprotectedPassword = encodePlaintext(plaintext);
+      final char[] unprotectedPassword = encodePlaintext(plaintext);
       scrub(plaintext);
       return unprotectedPassword;
     } catch (final GeneralSecurityException e) {
@@ -261,8 +324,8 @@ final class PasswordManager implements AutoCloseable {
     return newCipher(Cipher.DECRYPT_MODE, salt).doFinal(ciphertext);
   }
 
-  private static String encodePlaintext(final byte[] plaintext) {
-    return new String(plaintext, PLAINTEXT_CHARSET);
+  private static char[] encodePlaintext(final byte[] plaintext) {
+    return decodeChars(plaintext, PLAINTEXT_CHARSET);
   }
 
   private static void scrub(final byte[] bytes) {

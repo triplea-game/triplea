@@ -56,7 +56,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
   private void unprotectPassword() {
     if (passwordProtected) {
       try (final PasswordManager passwordManager = PasswordManager.newInstance()) {
-        m_password = passwordManager.unprotect(m_password);
+        m_password = passwordManager.unprotectToString(m_password);
       } catch (final PasswordManagerException e) {
         ClientLogger.logQuietly("failed to unprotect PBF password", e);
         m_password = "";

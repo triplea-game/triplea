@@ -45,7 +45,7 @@ public final class PasswordManagerTest {
     final String expected = "123$%^ ABCdef←↑→↓";
 
     final String protectedPassword = passwordManager.protect(expected);
-    final String actual = passwordManager.unprotect(protectedPassword);
+    final String actual = passwordManager.unprotectToString(protectedPassword);
 
     assertThat(actual, is(expected));
   }
