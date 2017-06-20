@@ -31,7 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
  * </p>
  *
  * <p>
- * Instances of this class are immutable.
+ * Instances of this class are not thread safe.
  * </p>
  */
 final class PasswordManager implements AutoCloseable {
