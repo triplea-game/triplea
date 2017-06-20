@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.prefs.Preferences;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,11 @@ public final class PasswordManagerTest {
   @Before
   public void setUp() throws Exception {
     passwordManager = PasswordManager.newInstance(PasswordManager.newMasterPassword());
+  }
+
+  @After
+  public void tearDown() {
+    passwordManager.close();
   }
 
   @Test

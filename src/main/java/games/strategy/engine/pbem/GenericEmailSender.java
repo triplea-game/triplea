@@ -75,9 +75,9 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   private void protectPassword() {
-    try {
-      passwordProtected = true;
-      m_password = PasswordManager.newInstance().protect(m_password);
+    passwordProtected = true;
+    try (final PasswordManager passwordManager = PasswordManager.newInstance()) {
+      m_password = passwordManager.protect(m_password);
     } catch (final PasswordManagerException e) {
       ClientLogger.logQuietly("failed to protect PBEM password", e);
       m_password = "";
@@ -91,8 +91,8 @@ public class GenericEmailSender implements IEmailSender {
 
   private void unprotectPassword() {
     if (passwordProtected) {
-      try {
-        m_password = PasswordManager.newInstance().unprotect(m_password);
+      try (final PasswordManager passwordManager = PasswordManager.newInstance()) {
+        m_password = passwordManager.unprotect(m_password);
       } catch (final PasswordManagerException e) {
         ClientLogger.logQuietly("failed to unprotect PBEM password", e);
         m_password = "";

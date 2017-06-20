@@ -34,7 +34,7 @@ import com.google.common.annotations.VisibleForTesting;
  * Instances of this class are immutable.
  * </p>
  */
-final class PasswordManager {
+final class PasswordManager implements AutoCloseable {
   private static final String CIPHER_ALGORITHM = "AES";
   private static final Charset MASTER_PASSWORD_CHARSET = StandardCharsets.ISO_8859_1;
   private static final Charset PLAINTEXT_CHARSET = StandardCharsets.UTF_8;
@@ -142,6 +142,11 @@ final class PasswordManager {
     bb.get(encodedMasterPassword);
     scrub(bb);
     return encodedMasterPassword;
+  }
+
+  @Override
+  public void close() {
+    scrub(masterPassword);
   }
 
   /**
