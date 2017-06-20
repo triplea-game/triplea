@@ -14,7 +14,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.security.GeneralSecurityException;
 import java.util.prefs.Preferences;
 
 import org.junit.Before;
@@ -83,7 +82,7 @@ public final class PasswordManagerTest {
     catchException(() -> passwordManager.unprotect("AAAABBBB"));
 
     assertThat(caughtException(), allOf(
-        is(instanceOf(GeneralSecurityException.class)),
+        is(instanceOf(PasswordManagerException.class)),
         hasMessageThat(containsString("malformed protected password"))));
   }
 
@@ -92,7 +91,7 @@ public final class PasswordManagerTest {
     catchException(() -> passwordManager.unprotect("AAAA.BBBB.CCCC"));
 
     assertThat(caughtException(), allOf(
-        is(instanceOf(GeneralSecurityException.class)),
+        is(instanceOf(PasswordManagerException.class)),
         hasMessageThat(containsString("malformed protected password"))));
   }
 }

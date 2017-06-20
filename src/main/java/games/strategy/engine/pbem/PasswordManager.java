@@ -60,10 +60,14 @@ final class PasswordManager {
    *
    * @return A new password manager; never {@code null}.
    *
-   * @throws GeneralSecurityException If no saved master password exists and a new master password cannot be created.
+   * @throws PasswordManagerException If no saved master password exists and a new master password cannot be created.
    */
-  static PasswordManager newInstance() throws GeneralSecurityException {
-    return newInstance(getMasterPassword());
+  static PasswordManager newInstance() throws PasswordManagerException {
+    try {
+      return newInstance(getMasterPassword());
+    } catch (final GeneralSecurityException e) {
+      throw new PasswordManagerException("failed to create password manager", e);
+    }
   }
 
   @VisibleForTesting
@@ -147,18 +151,22 @@ final class PasswordManager {
    *
    * @return The protected password; never {@code null}.
    *
-   * @throws GeneralSecurityException If the unprotected password cannot be protected.
+   * @throws PasswordManagerException If the unprotected password cannot be protected.
    *
    * @see #unprotect(String)
    */
-  String protect(final String unprotectedPassword) throws GeneralSecurityException {
+  String protect(final String unprotectedPassword) throws PasswordManagerException {
     assert unprotectedPassword != null;
 
-    final byte[] plaintext = decodePlaintext(unprotectedPassword);
-    final byte[] salt = newSalt();
-    final byte[] ciphertext = encrypt(plaintext, salt);
-    scrub(plaintext);
-    return encodeCiphertextAndSalt(ciphertext, salt);
+    try {
+      final byte[] plaintext = decodePlaintext(unprotectedPassword);
+      final byte[] salt = newSalt();
+      final byte[] ciphertext = encrypt(plaintext, salt);
+      scrub(plaintext);
+      return encodeCiphertextAndSalt(ciphertext, salt);
+    } catch (final GeneralSecurityException e) {
+      throw new PasswordManagerException("failed to protect password", e);
+    }
   }
 
   private static byte[] decodePlaintext(final String encodedPlaintext) {
@@ -212,25 +220,29 @@ final class PasswordManager {
    *
    * @return The unprotected password; never {@code null}.
    *
-   * @throws GeneralSecurityException If the protected password cannot be unprotected.
+   * @throws PasswordManagerException If the protected password cannot be unprotected.
    *
    * @see #protect(String)
    */
-  String unprotect(final String protectedPassword) throws GeneralSecurityException {
+  String unprotect(final String protectedPassword) throws PasswordManagerException {
     assert protectedPassword != null;
 
-    final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedPassword);
-    final byte[] plaintext = decrypt(ciphertextAndSalt.ciphertext, ciphertextAndSalt.salt);
-    final String unprotectedPassword = encodePlaintext(plaintext);
-    scrub(plaintext);
-    return unprotectedPassword;
+    try {
+      final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedPassword);
+      final byte[] plaintext = decrypt(ciphertextAndSalt.ciphertext, ciphertextAndSalt.salt);
+      final String unprotectedPassword = encodePlaintext(plaintext);
+      scrub(plaintext);
+      return unprotectedPassword;
+    } catch (final GeneralSecurityException e) {
+      throw new PasswordManagerException("failed to unprotect password", e);
+    }
   }
 
   private static CiphertextAndSalt decodeCiphertextAndSalt(final String encodedCiphertextAndSalt)
-      throws GeneralSecurityException {
+      throws PasswordManagerException {
     final String[] components = encodedCiphertextAndSalt.split("\\.");
     if (components.length != 2) {
-      throw new GeneralSecurityException("malformed protected password");
+      throw new PasswordManagerException("malformed protected password");
     }
 
     final String encodedSalt = components[0];

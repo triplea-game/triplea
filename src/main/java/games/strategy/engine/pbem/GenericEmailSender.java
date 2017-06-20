@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -79,7 +78,7 @@ public class GenericEmailSender implements IEmailSender {
     try {
       passwordProtected = true;
       m_password = PasswordManager.newInstance().protect(m_password);
-    } catch (final GeneralSecurityException e) {
+    } catch (final PasswordManagerException e) {
       ClientLogger.logQuietly("failed to protect PBEM password", e);
       m_password = "";
     }
@@ -94,7 +93,7 @@ public class GenericEmailSender implements IEmailSender {
     if (passwordProtected) {
       try {
         m_password = PasswordManager.newInstance().unprotect(m_password);
-      } catch (final GeneralSecurityException e) {
+      } catch (final PasswordManagerException e) {
         ClientLogger.logQuietly("failed to unprotect PBEM password", e);
         m_password = "";
       }

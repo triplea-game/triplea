@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.security.GeneralSecurityException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
@@ -43,7 +42,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
     try {
       passwordProtected = true;
       m_password = PasswordManager.newInstance().protect(m_password);
-    } catch (final GeneralSecurityException e) {
+    } catch (final PasswordManagerException e) {
       ClientLogger.logQuietly("failed to protect PBF password", e);
       m_password = "";
     }
@@ -58,7 +57,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
     if (passwordProtected) {
       try {
         m_password = PasswordManager.newInstance().unprotect(m_password);
-      } catch (final GeneralSecurityException e) {
+      } catch (final PasswordManagerException e) {
         ClientLogger.logQuietly("failed to unprotect PBF password", e);
         m_password = "";
       }
