@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
-import tools.map.making.JTextAreaOptionPane;
 
 /**
  * Utility for breaking an image into seperate smaller images.

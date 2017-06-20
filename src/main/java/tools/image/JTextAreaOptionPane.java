@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.image;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 /**
  * A text area that can show updates scrolling by.
  */
-public class JTextAreaOptionPane {
+class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
   private final JFrame windowFrame = new JFrame();
   private final JButton okButton = new JButton();
@@ -24,7 +24,7 @@ public class JTextAreaOptionPane {
   private final Window parentComponent;
   private int counter;
 
-  public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
+  JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
       final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
       final int latchCount, final CountDownLatch countDownLatch) {
     this.logToSystemOut = logToSystemOut;
@@ -70,18 +70,18 @@ public class JTextAreaOptionPane {
     }
   }
 
-  public void show() {
+  void show() {
     windowFrame.pack();
     windowFrame.setLocationRelativeTo(parentComponent);
     windowFrame.setVisible(true);
   }
 
-  public void dispose() {
+  void dispose() {
     windowFrame.setVisible(false);
     windowFrame.dispose();
   }
 
-  public void countDown() {
+  void countDown() {
     counter--;
     setWidgetActivation();
   }
@@ -94,7 +94,7 @@ public class JTextAreaOptionPane {
     editor.setCaretPosition(editor.getText().length());
   }
 
-  public void appendNewLine(final String text) {
+  void appendNewLine(final String text) {
     append(text + "\r\n");
   }
 }
