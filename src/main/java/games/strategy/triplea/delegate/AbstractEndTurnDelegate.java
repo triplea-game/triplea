@@ -289,11 +289,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return transcriptText + "<br />";
   }
 
-  private static void changeUnitOwnership(final IDelegateBridge aBridge) {
-    final PlayerID Player = aBridge.getPlayerID();
+  private static void changeUnitOwnership(final IDelegateBridge bridge) {
+    final PlayerID Player = bridge.getPlayerID();
     final PlayerAttachment pa = PlayerAttachment.get(Player);
     final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
-    final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
+    final Collection<Territory> territories = bridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
         new ArrayList<>();
@@ -319,16 +319,16 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (!change.isEmpty() && !changeList.isEmpty()) {
       if (changeList.size() == 1) {
         final Tuple<Territory, Collection<Unit>> tuple = changeList.iterator().next();
-        aBridge.getHistoryWriter().startEvent("Some Units in " + tuple.getFirst().getName() + " change ownership: "
+        bridge.getHistoryWriter().startEvent("Some Units in " + tuple.getFirst().getName() + " change ownership: "
             + MyFormatter.unitsToTextNoOwner(tuple.getSecond()), tuple.getSecond());
       } else {
-        aBridge.getHistoryWriter().startEvent("Units Change Ownership");
+        bridge.getHistoryWriter().startEvent("Units Change Ownership");
         for (final Tuple<Territory, Collection<Unit>> tuple : changeList) {
-          aBridge.getHistoryWriter().addChildToEvent("Some Units in " + tuple.getFirst().getName()
+          bridge.getHistoryWriter().addChildToEvent("Some Units in " + tuple.getFirst().getName()
               + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()), tuple.getSecond());
         }
       }
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
@@ -356,7 +356,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   // finds losses due to blockades, positive value returned.
-  protected int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge,
+  protected int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);
     if (playerRules != null && playerRules.getImmuneToBlockade()) {
@@ -402,7 +402,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           // getting a ton of random numbers at once instead of one at a time)
           ThreadUtil.sleep(100);
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
-          final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
+          final int[] dice = bridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
               enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
           rolledDice = true;
@@ -452,10 +452,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
     if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty()))) {
       final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
-      aBridge.getHistoryWriter().startEvent(mainline);
+      bridge.getHistoryWriter().startEvent(mainline);
       endTurnReport.append(mainline).append("<br />");
       for (final String t : transcripts) {
-        aBridge.getHistoryWriter().addChildToEvent(t);
+        bridge.getHistoryWriter().addChildToEvent(t);
         endTurnReport.append("* ").append(t).append("<br />");
       }
       endTurnReport.append("<br />");

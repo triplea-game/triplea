@@ -157,25 +157,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * and then it will fire all the conditions which are satisfied.
    */
   public static void collectAndFireTriggers(final HashSet<PlayerID> players,
-      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge, final String beforeOrAfter,
+      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName) {
-    final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, aBridge);
+    final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, bridge);
     if (toFirePossible.isEmpty()) {
       return;
     }
-    final HashMap<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
+    final HashMap<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, bridge);
     final List<TriggerAttachment> toFireTestedAndSatisfied =
         Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
     if (toFireTestedAndSatisfied.isEmpty()) {
       return;
     }
-    TriggerAttachment.fireTriggers(new HashSet<>(toFireTestedAndSatisfied), testedConditions, aBridge,
+    TriggerAttachment.fireTriggers(new HashSet<>(toFireTestedAndSatisfied), testedConditions, bridge,
         beforeOrAfter, stepName, true, true, true, true);
   }
 
   public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players,
-      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
     for (final PlayerID player : players) {
       toFirePossible.addAll(TriggerAttachment.getTriggers(player, data, triggerMatch));
@@ -184,17 +184,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
-      final IDelegateBridge aBridge) {
-    return collectTestsForAllTriggers(toFirePossible, aBridge, null, null);
+      final IDelegateBridge bridge) {
+    return collectTestsForAllTriggers(toFirePossible, bridge, null, null);
   }
 
   static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
-      final IDelegateBridge aBridge, final HashSet<ICondition> allConditionsNeededSoFar,
+      final IDelegateBridge bridge, final HashSet<ICondition> allConditionsNeededSoFar,
       final HashMap<ICondition, Boolean> allConditionsTestedSoFar) {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment
         .getAllConditionsRecursive(new HashSet<>(toFirePossible), allConditionsNeededSoFar);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar,
-        aBridge);
+        bridge);
   }
 
   /**
@@ -205,7 +205,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
    */
   public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge,
+      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     // all triggers at this point have their conditions satisfied
@@ -213,7 +213,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // rolls
     final HashSet<TriggerAttachment> triggersToFire = new HashSet<>();
     for (final TriggerAttachment t : triggersToBeFired) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       triggersToFire.add(t);
@@ -222,45 +222,45 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // Relationship,
     // AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
     // Notifications to current player
-    triggerNotifications(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerNotifications(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Attachment property changes
-    triggerPlayerPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerRelationshipTypePropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false,
+    triggerPlayerPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerRelationshipTypePropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
         testWhen);
-    triggerTerritoryPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false,
+    triggerTerritoryPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
         testWhen);
-    triggerTerritoryEffectPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false,
+    triggerTerritoryEffectPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
         testWhen);
-    triggerUnitPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerUnitPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Misc changes that only need to happen once (twice or more is meaningless)
-    triggerRelationshipChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerAvailableTechChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerTechChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerProductionChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerProductionFrontierEditChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false,
+    triggerRelationshipChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerAvailableTechChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerTechChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerProductionChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerProductionFrontierEditChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
         testWhen);
-    triggerSupportChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerChangeOwnership(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerSupportChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerChangeOwnership(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore
     // can use "each")
-    triggerUnitRemoval(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerPurchase(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerUnitPlacement(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerResourceChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerUnitRemoval(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerPurchase(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerUnitPlacement(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerResourceChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
-    triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, aBridge, beforeOrAfter, stepName, useUses,
+    triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, bridge, beforeOrAfter, stepName, useUses,
         testUses, false, testWhen); // Triggers firing other triggers
     // Victory messages and recording of winners
-    triggerVictory(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerVictory(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of
     // each round)
     if (useUses) {
-      setUsesForWhenTriggers(triggersToFire, aBridge, useUses);
+      setUsesForWhenTriggers(triggersToFire, bridge, useUses);
     }
   }
 
   protected static void setUsesForWhenTriggers(final HashSet<TriggerAttachment> triggersToBeFired,
-      final IDelegateBridge aBridge, final boolean useUses) {
+      final IDelegateBridge bridge, final boolean useUses) {
     if (!useUses) {
       return;
     }
@@ -276,8 +276,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.getHistoryWriter().startEvent("Setting uses for triggers used this phase.");
-      aBridge.addChange(change);
+      bridge.getHistoryWriter().startEvent("Setting uses for triggers used this phase.");
+      bridge.addChange(change);
     }
   }
 
@@ -1495,12 +1495,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_changeOwnership = new ArrayList<>();
   }
 
-  private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap,
-      final PlayerID player, final IDelegateBridge aBridge) {
+  private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> utMap,
+      final PlayerID player, final IDelegateBridge bridge) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> totalRemoved = new ArrayList<>();
-    for (final UnitType ut : uMap.keySet()) {
-      final int removeNum = uMap.getInt(ut);
+    for (final UnitType ut : utMap.keySet()) {
+      final int removeNum = utMap.getInt(ut);
       final Collection<Unit> toRemove = Match.getNMatches(terr.getUnits().getUnits(), removeNum,
           Match.all(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
       if (!toRemove.isEmpty()) {
@@ -1511,17 +1511,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (!change.isEmpty()) {
       final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": has removed "
           + MyFormatter.unitsToTextNoOwner(totalRemoved) + " owned by " + player.getName() + " in " + terr.getName();
-      aBridge.getHistoryWriter().startEvent(transcriptText, totalRemoved);
-      aBridge.addChange(change);
+      bridge.getHistoryWriter().startEvent(transcriptText, totalRemoved);
+      bridge.addChange(change);
     }
   }
 
-  private static void placeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap,
-      final PlayerID player, final IDelegateBridge aBridge) {
+  private static void placeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> utMap,
+      final PlayerID player, final IDelegateBridge bridge) {
     // createUnits
     final List<Unit> units = new ArrayList<>();
-    for (final UnitType u : uMap.keySet()) {
-      units.addAll(u.create(uMap.getInt(u), player));
+    for (final UnitType u : utMap.keySet()) {
+      units.addAll(u.create(utMap.getInt(u), player));
     }
     final CompositeChange change = new CompositeChange();
     // mark no movement
@@ -1533,10 +1533,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has "
         + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
-    aBridge.getHistoryWriter().startEvent(transcriptText, units);
+    bridge.getHistoryWriter().startEvent(transcriptText, units);
     final Change place = ChangeFactory.addUnits(terr, units);
     change.add(place);
-    aBridge.addChange(change);
+    bridge.addChange(change);
   }
 
   // And now for the actual triggers, as called throughout the engine.
@@ -1544,10 +1544,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   // default location for
   // when 'when' is not used.
   // Should be void.
-  public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, notificationMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -1557,11 +1557,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final Set<String> notifications = new HashSet<>();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       if (!notifications.contains(t.getNotification())) {
         notifications.add(t.getNotification());
@@ -1569,7 +1569,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
         if (sounds != null) {
           // play to observers if we are playing to everyone
-          aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
+          bridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), t.getPlayers(), null,
               t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
         }
@@ -1584,9 +1584,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               messageForRecord = messageForRecord.substring(0, 190) + "....";
             }
           }
-          aBridge.getHistoryWriter().startEvent(
+          bridge.getHistoryWriter().startEvent(
               "Note to players " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + ": " + messageForRecord);
-          ((ITripleADisplay) aBridge.getDisplayChannelBroadcaster()).reportMessageToPlayers(t.getPlayers(), null,
+          ((ITripleADisplay) bridge.getDisplayChannelBroadcaster()).reportMessageToPlayers(t.getPlayers(), null,
               ("<html>" + message.trim() + "</html>"), NOTIFICATION);
         }
       }
@@ -1594,7 +1594,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, playerPropertyMatch());
     if (testWhen) {
@@ -1605,11 +1605,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
         for (final PlayerID aPlayer : t.getPlayers()) {
@@ -1632,7 +1632,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1647,7 +1647,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1663,7 +1663,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1678,7 +1678,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1694,7 +1694,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1710,7 +1710,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
@@ -1720,12 +1720,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipTypePropertyMatch());
     if (testWhen) {
@@ -1736,11 +1736,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getRelationshipTypeProperty()) {
         for (final RelationshipType aRelationshipType : t.getRelationshipTypes()) {
@@ -1764,7 +1764,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting "
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting "
                 + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                 + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + aRelationshipType.getName());
           }
@@ -1773,12 +1773,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryPropertyMatch());
     if (testWhen) {
@@ -1790,11 +1790,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final CompositeChange change = new CompositeChange();
     final HashSet<Territory> territoriesNeedingReDraw = new HashSet<>();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryProperty()) {
         for (final Territory aTerritory : t.getTerritories()) {
@@ -1823,7 +1823,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
@@ -1839,7 +1839,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
@@ -1849,7 +1849,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
       for (final Territory aTerritory : territoriesNeedingReDraw) {
         aTerritory.notifyAttachmentChanged();
       }
@@ -1857,7 +1857,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryEffectPropertyMatch());
     if (testWhen) {
@@ -1868,11 +1868,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryEffectProperty()) {
         for (final TerritoryEffect aTerritoryEffect : t.getTerritoryEffects()) {
@@ -1896,7 +1896,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getTerritoryEffectAttachmentName().getSecond() + " attached to " + aTerritoryEffect.getName());
@@ -1906,12 +1906,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, unitPropertyMatch());
     if (testWhen) {
@@ -1922,11 +1922,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getUnitProperty()) {
         for (final UnitType aUnitType : t.getUnitType()) {
@@ -1949,7 +1949,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
@@ -1965,7 +1965,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            aBridge.getHistoryWriter()
+            bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
                     + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
@@ -1975,14 +1975,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipChangeMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -1992,11 +1992,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
         final String[] s = relationshipChange.split(":");
@@ -2013,7 +2013,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             || currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[2]))) {
           final RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[3]);
           change.add(ChangeFactory.relationshipChange(player1, player2, currentRelation, triggerNewRelation));
-          aBridge.getHistoryWriter()
+          bridge.getHistoryWriter()
               .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for "
                   + player1.getName() + " and " + player2.getName() + " from " + currentRelation.getName() + " to "
                   + triggerNewRelation.getName());
@@ -2029,12 +2029,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techAvailableMatch());
     if (testWhen) {
@@ -2044,11 +2044,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final String cat : t.getAvailableTech().keySet()) {
@@ -2058,15 +2058,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           for (final TechAdvance ta : t.getAvailableTech().get(cat).keySet()) {
             if (t.getAvailableTech().get(cat).get(ta)) {
-              aBridge.getHistoryWriter().startEvent(
+              bridge.getHistoryWriter().startEvent(
                   MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " gains access to " + ta);
               final Change change = ChangeFactory.addAvailableTech(tf, ta, aPlayer);
-              aBridge.addChange(change);
+              bridge.addChange(change);
             } else {
-              aBridge.getHistoryWriter().startEvent(
+              bridge.getHistoryWriter().startEvent(
                   MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " loses access to " + ta);
               final Change change = ChangeFactory.removeAvailableTech(tf, ta, aPlayer);
-              aBridge.addChange(change);
+              bridge.addChange(change);
             }
           }
         }
@@ -2074,7 +2074,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
-  public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     // final GameData data = aBridge.getData();
@@ -2086,27 +2086,27 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final TechAdvance ta : t.getTech()) {
           if (ta.hasTech(TechAttachment.get(aPlayer))) {
             continue;
           }
-          aBridge.getHistoryWriter().startEvent(
+          bridge.getHistoryWriter().startEvent(
               MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " activates " + ta);
-          TechTracker.addAdvance(aPlayer, aBridge, ta);
+          TechTracker.addAdvance(aPlayer, bridge, ta);
         }
       }
     }
   }
 
   public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodMatch());
     if (testWhen) {
@@ -2117,27 +2117,27 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final PlayerID aPlayer : t.getPlayers()) {
         change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
-        aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
+        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
             + " has their production frontier changed to: " + t.getFrontier().getName());
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodFrontierEditMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2147,11 +2147,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final Iterator<String> iter = t.getProductionRule().iterator();
       while (iter.hasNext()) {
@@ -2167,27 +2167,27 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         if (add) {
           if (!front.getRules().contains(pRule)) {
             change.add(ChangeFactory.addProductionRule(pRule, front));
-            aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
                 + " added to " + front.getName());
           }
         } else {
           if (front.getRules().contains(pRule)) {
             change.add(ChangeFactory.removeProductionRule(pRule, front));
-            aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
                 + " removed from " + front.getName());
           }
         }
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
+      bridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
     }
   }
 
-  public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2197,11 +2197,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final String usaString : t.getSupport().keySet()) {
@@ -2220,14 +2220,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (!t.getSupport().get(usa.getName())) {
               p.remove(aPlayer);
               change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-              aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+              bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
                   + aPlayer.getName() + " is removed from " + usa.toString());
             }
           } else {
             if (t.getSupport().get(usa.getName())) {
               p.add(aPlayer);
               change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-              aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+              bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
                   + aPlayer.getName() + " is added to " + usa.toString());
             }
           }
@@ -2235,14 +2235,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   public static void triggerChangeOwnership(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, changeOwnershipMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2252,11 +2252,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final BattleTracker bt = DelegateFinder.battleDelegate(data).getBattleTracker();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       for (final String value : t.getChangeOwnership()) {
         final String[] s = value.split(":");
@@ -2279,20 +2279,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (oldOwner != null && !oldOwner.equals(currentOwner)) {
             continue;
           }
-          aBridge.getHistoryWriter()
+          bridge.getHistoryWriter()
               .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + newOwner.getName()
                   + (captured ? " captures territory " : " takes ownership of territory ") + terr.getName());
           if (!captured) {
-            aBridge.addChange(ChangeFactory.changeOwner(terr, newOwner));
+            bridge.addChange(ChangeFactory.changeOwner(terr, newOwner));
           } else {
-            bt.takeOver(terr, newOwner, aBridge, null, null);
+            bt.takeOver(terr, newOwner, bridge, null, null);
           }
         }
       }
     }
   }
 
-  public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch());
@@ -2303,11 +2303,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
       for (final PlayerID aPlayer : t.getPlayers()) {
@@ -2319,16 +2319,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (!units.isEmpty()) {
             final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": "
                 + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
-            aBridge.getHistoryWriter().startEvent(transcriptText, units);
+            bridge.getHistoryWriter().startEvent(transcriptText, units);
             final Change place = ChangeFactory.addUnits(aPlayer, units);
-            aBridge.addChange(place);
+            bridge.addChange(place);
           }
         }
       }
     }
   }
 
-  public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, removeUnitsMatch());
@@ -2339,24 +2339,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final Territory ter : t.getRemoveUnits().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            removeUnits(t, ter, t.getRemoveUnits().get(ter), aPlayer, aBridge);
+            removeUnits(t, ter, t.getRemoveUnits().get(ter), aPlayer, bridge);
           }
         }
       }
     }
   }
 
-  public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch());
@@ -2367,17 +2367,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
       for (final PlayerID aPlayer : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, aBridge);
+            placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, bridge);
           }
         }
       }
@@ -2385,9 +2385,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, resourceMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2397,11 +2397,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final StringBuilder strbuf = new StringBuilder();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
       for (final PlayerID aPlayer : t.getPlayers()) {
@@ -2415,12 +2415,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             toAdd -= total;
             total = 0;
           }
-          aBridge.addChange(
+          bridge.addChange(
               ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
           final String puMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
               + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()
               + "; end with " + total + " " + t.getResource();
-          aBridge.getHistoryWriter().startEvent(puMessage);
+          bridge.getHistoryWriter().startEvent(puMessage);
           strbuf.append(puMessage).append(" <br />");
         }
       }
@@ -2429,10 +2429,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar,
-      final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter,
+      final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName, final boolean useUses, final boolean testUses, final boolean testChance,
       final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, activateTriggerMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2441,11 +2441,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
       for (final Tuple<String, String> tuple : t.getActivateTrigger()) {
@@ -2473,7 +2473,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         if (testConditionsToFire) {
           if (!testedConditionsSoFar.containsKey(toFire)) {
             // this should directly add the new tests to testConditionsToFire...
-            collectTestsForAllTriggers(toFireSet, aBridge, new HashSet<>(testedConditionsSoFar.keySet()),
+            collectTestsForAllTriggers(toFireSet, bridge, new HashSet<>(testedConditionsSoFar.keySet()),
                 testedConditionsSoFar);
           }
           if (!isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
@@ -2481,19 +2481,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
         }
         for (int i = 0; i < numberOfTimesToFire * eachMultiple; ++i) {
-          aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName())
+          bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName())
               + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
-          fireTriggers(toFireSet, testedConditionsSoFar, aBridge, beforeOrAfter, stepName, useUsesToFire,
+          fireTriggers(toFireSet, testedConditionsSoFar, bridge, beforeOrAfter, stepName, useUsesToFire,
               testUsesToFire, testChanceToFire, false);
         }
       }
     }
   }
 
-  public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+  public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, victoryMatch());
     if (testWhen) {
       trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2502,11 +2502,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Match.getMatches(trigs, availableUses);
     }
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(aBridge)) {
+      if (testChance && !t.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(aBridge);
+        t.use(bridge);
       }
       if (t.getVictory() == null || t.getPlayers() == null) {
         continue;
@@ -2515,9 +2515,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final String sounds = NotificationMessages.getInstance().getSoundsKey(t.getVictory().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
-          aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
+          bridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), t.getPlayers(), null, true);
-          aBridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
+          bridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
               data.getPlayerList().getPlayers(), t.getPlayers(), false);
         }
         String messageForRecord = victoryMessage.trim();
@@ -2529,10 +2529,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
         }
         try {
-          aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers())
+          bridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers())
               + " have just won the game, with this victory: " + messageForRecord);
           final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
-          ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), aBridge);
+          ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
