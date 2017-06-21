@@ -55,7 +55,6 @@ import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -388,8 +387,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Match<Unit> myDamaged =
-            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
+        final Match<Unit> myDamaged = Match.all(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,7 +38,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -123,8 +123,8 @@ public class ProductionRepairPanel extends JPanel {
     try {
       this.m_id = player;
       this.m_allowedPlayersToRepair = allowedPlayersToRepair;
-      final CompositeMatchAnd<Unit> myDamagedUnits =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
+      final Match<Unit> myDamagedUnits =
+          Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
               Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));

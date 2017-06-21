@@ -47,7 +47,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1503,7 +1502,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     for (final UnitType ut : uMap.keySet()) {
       final int removeNum = uMap.getInt(ut);
       final Collection<Unit> toRemove = Match.getNMatches(terr.getUnits().getUnits(), removeNum,
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
+          Match.all(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
       if (!toRemove.isEmpty()) {
         totalRemoved.addAll(toRemove);
         change.add(ChangeFactory.removeUnits(terr, toRemove));

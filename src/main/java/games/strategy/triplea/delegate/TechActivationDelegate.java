@@ -16,7 +16,6 @@ import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -58,7 +57,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = Match.all(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
           Match.any(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
               TriggerAttachment.supportMatch()));

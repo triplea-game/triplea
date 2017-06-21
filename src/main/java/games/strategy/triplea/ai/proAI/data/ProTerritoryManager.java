@@ -186,11 +186,11 @@ public class ProTerritoryManager {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
     }
-    final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, player),
+    final Match<Unit> airbasesCanScramble = Match.all(Matches.unitIsEnemyOf(data, player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
     final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<>(
         Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)),
-        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<>(Matches.UnitCanScramble,
+        Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
             Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
@@ -221,7 +221,7 @@ public class ProTerritoryManager {
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
         List<Unit> canScrambleAir = from.getUnits()
-            .getMatches(new CompositeMatchAnd<>(Matches.unitIsEnemyOf(data, player), Matches.UnitCanScramble,
+            .getMatches(Match.all(Matches.unitIsEnemyOf(data, player), Matches.UnitCanScramble,
                 Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(),
                 Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 
@@ -244,7 +244,7 @@ public class ProTerritoryManager {
   }
 
   private static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (!Match.allMatch(airbases, new CompositeMatchAnd<>(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
+    if (!Match.allMatch(airbases, Match.all(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
 
@@ -736,10 +736,10 @@ public class ProTerritoryManager {
       // Find my transports and amphibious units that have movement left
       final List<Unit> myTransportUnits =
           myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
-      Match<Territory> unloadAmphibTerritoryMatch = new CompositeMatchAnd<>(
+      Match<Territory> unloadAmphibTerritoryMatch = Match.all(
           ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove), moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
-        unloadAmphibTerritoryMatch = new CompositeMatchAnd<>(
+        unloadAmphibTerritoryMatch = Match.all(
             ProMatches.territoryCanPotentiallyMoveLandUnits(player, data), moveAmphibToTerritoryMatch);
       }
 

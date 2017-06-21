@@ -29,7 +29,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.PoliticsText;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -58,7 +57,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.all(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
           Match.any(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.

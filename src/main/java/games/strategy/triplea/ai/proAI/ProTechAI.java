@@ -108,16 +108,13 @@ final class ProTechAI {
       float strength = 0.0F;
       float airStrength = 0.0F;
       ePlayer = playerIter.next();
-      final CompositeMatch<Unit> enemyPlane =
-          new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransport = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+      final Match<Unit> enemyPlane = Match.all(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
+      final Match<Unit> enemyTransport = Match.all(Matches.unitIsOwnedBy(ePlayer),
           Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyShip =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
-      final CompositeMatch<Unit> enemyTransportable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer),
+      final Match<Unit> enemyShip = Match.all(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
+      final Match<Unit> enemyTransportable = Match.all(Matches.unitIsOwnedBy(ePlayer),
           Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
-      final CompositeMatch<Unit> aTransport =
-          new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
+      final Match<Unit> aTransport = Match.all(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       int maxBomberDistance = 0;
@@ -370,9 +367,9 @@ final class ProTechAI {
       final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
     final HashSet<Integer> ignore = new HashSet<>();
     ignore.add(1);
-    final CompositeMatch<Unit> blitzUnit =
-        new CompositeMatchAnd<>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
-    final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<>(
+    final Match<Unit> blitzUnit =
+        Match.all(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
+    final Match<Territory> validBlitzRoute = Match.all(
         Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.territoryIsNotImpassableToLandUnits(ePlayer, data));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
@@ -465,10 +462,9 @@ final class ProTechAI {
     final Queue<Territory> q = new LinkedList<>();
     Territory lz = null;
     Territory ac = null;
-    final CompositeMatch<Unit> enemyPlane =
-        new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
-    final CompositeMatch<Unit> enemyCarrier =
-        new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+    final Match<Unit> enemyPlane = Match.all(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+    final Match<Unit> enemyCarrier =
+        Match.all(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
     q.add(start);
     Territory current = null;
     distance.put(start, 0);
@@ -541,9 +537,8 @@ final class ProTechAI {
     }
     final CompositeMatch<Unit> ignore =
         new CompositeMatchAnd<>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
-    final CompositeMatch<Unit> sub = new CompositeMatchAnd<>(Matches.UnitIsSub.invert());
-    final CompositeMatch<Unit> transport =
-        new CompositeMatchAnd<>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
+    final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
+    final Match<Unit> transport = Match.all(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
     final CompositeMatch<Unit> unitCond = ignore;
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCond.add(transport);
@@ -551,8 +546,8 @@ final class ProTechAI {
     if (Properties.getIgnoreSubInMovement(data)) {
       unitCond.add(sub);
     }
-    final CompositeMatch<Territory> routeCond =
-        new CompositeMatchAnd<>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
+    final Match<Territory> routeCond =
+        Match.all(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
     final Match<Territory> routeCondition;
     if (attacking) {
       routeCondition = Match.any(Matches.territoryIs(destination), routeCond);
@@ -668,7 +663,7 @@ final class ProTechAI {
    */
   private static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
-    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
+    final Match<Unit> limitShips = Match.all(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {

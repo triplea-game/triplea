@@ -13,8 +13,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 class Utils {
@@ -105,7 +103,7 @@ class Utils {
    */
   static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
-    final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<>(unitCondition);
+    final Match<Unit> limitShips = Match.all(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {

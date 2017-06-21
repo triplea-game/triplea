@@ -304,7 +304,7 @@ public class AirBattle extends AbstractBattle {
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
-            .getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(bridge.getPlayerID(), m_data),
+            .getMatches(Match.all(Matches.enemyUnit(bridge.getPlayerID(), m_data),
                 Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
                 Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
@@ -651,7 +651,7 @@ public class AirBattle extends AbstractBattle {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<>(Matches.unitCanAirBattle);
+        final Match<Unit> canIntercept = Match.all(Matches.unitCanAirBattle);
         return canIntercept.match(u);
       }
     };

@@ -47,20 +47,35 @@ public class MatchTest {
   }
 
   @Test
+  public void testAll() {
+    assertTrue(Match.all().match(VALUE));
+
+    assertTrue(Match.all(Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.never()).match(VALUE));
+
+    assertTrue(Match.all(Match.always(), Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.always(), Match.never()).match(VALUE));
+    assertFalse(Match.all(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.never(), Match.never()).match(VALUE));
+  }
+
+  @Test
   public void testAnd() {
+    assertTrue(new CompositeMatchAnd<>().match(0));
+
     CompositeMatch<Integer> and = new CompositeMatchAnd<>(pos, neg);
-    assertTrue(!and.match(1));
-    assertTrue(!Match.someMatch(ints, and));
-    assertTrue(!Match.someMatch(ints, and));
+    assertFalse(and.match(1));
+    assertFalse(Match.someMatch(ints, and));
+    assertFalse(Match.someMatch(ints, and));
     assertEquals(0, Match.getMatches(ints, and).size());
     and.add(zero);
-    assertTrue(!Match.someMatch(ints, and));
-    assertTrue(!Match.allMatch(ints, and));
+    assertFalse(Match.someMatch(ints, and));
+    assertFalse(Match.allMatch(ints, and));
     assertEquals(0, Match.getMatches(ints, and).size());
     and = new CompositeMatchAnd<>(pos, pos);
     assertTrue(and.match(1));
     assertTrue(Match.someMatch(ints, and));
-    assertTrue(!Match.allMatch(ints, and));
+    assertFalse(Match.allMatch(ints, and));
     assertEquals(3, Match.getMatches(ints, and).size());
   }
 
@@ -85,13 +100,6 @@ public class MatchTest {
     assertEquals(Arrays.asList(), Match.getMatches(input, Match.never()));
     assertEquals(Arrays.asList(-1, 0, 1), Match.getMatches(input, Match.always()));
     assertEquals(Arrays.asList(-1, 1), Match.getMatches(input, Match.of(value -> value != 0)));
-  }
-
-  @Test
-  public void testAddInverse() {
-    final CompositeMatch<Object> and = new CompositeMatchAnd<>();
-    and.addInverse(Match.always());
-    assertFalse(and.match(new Object()));
   }
 
   @Test

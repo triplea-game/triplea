@@ -17,7 +17,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 public class ExtendedStats extends StatPanel {
@@ -208,8 +207,7 @@ public class ExtendedStats extends StatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int rVal = 0;
-      final Match<Unit> ownedBy =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+      final Match<Unit> ownedBy = Match.all(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
       for (final Territory place : data.getMap().getTerritories()) {
         rVal += place.getUnits().countMatches(ownedBy);
       }

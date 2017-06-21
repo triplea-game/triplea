@@ -20,7 +20,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -221,7 +220,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
+    return Match.all(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
   }
 
