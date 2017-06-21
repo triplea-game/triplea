@@ -278,6 +278,16 @@ public abstract class Match<T> {
     }
 
     /**
+     * Creates a new match whose condition is satisfied if the test object matches all of the conditions added to this
+     * builder.
+     *
+     * @return A new match; never {@code null}.
+     */
+    public Match<T> all() {
+      return Match.all(matches);
+    }
+
+    /**
      * Creates a new match whose condition is satisfied if the test object matches any of the conditions added to this
      * builder.
      *

@@ -36,8 +36,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -451,13 +449,13 @@ public class WeakAI extends AbstractAI {
         }
       }
       // these are the units we can move
-      final CompositeMatch<Unit> moveOfType = new CompositeMatchAnd<>();
-      moveOfType.add(Matches.unitIsOwnedBy(player));
-      moveOfType.add(Matches.UnitIsNotAA);
-      // we can never move factories
-      moveOfType.add(Matches.UnitCanMove);
-      moveOfType.add(Matches.UnitIsNotInfrastructure);
-      moveOfType.add(Matches.UnitIsLand);
+      final Match<Unit> moveOfType = Match.all(
+          Matches.unitIsOwnedBy(player),
+          Matches.UnitIsNotAA,
+          // we can never move factories
+          Matches.UnitCanMove,
+          Matches.UnitIsNotInfrastructure,
+          Matches.UnitIsLand);
       final Match<Territory> moveThrough =
           Match.all(Matches.TerritoryIsImpassable.invert(),
               Matches.TerritoryIsNeutralButNotWater.invert(), Matches.TerritoryIsLand);
@@ -649,18 +647,20 @@ public class WeakAI extends AbstractAI {
     for (final Territory enemy : enemyOwned) {
       final float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, false);
       if (enemyStrength > 0) {
-        final CompositeMatch<Unit> attackable = new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player),
-            Matches.UnitIsStrategicBomber.invert(), new Match<Unit>() {
+        final Match<Unit> attackable = Match.all(
+            Matches.unitIsOwnedBy(player),
+            Matches.UnitIsStrategicBomber.invert(),
+            new Match<Unit>() {
               @Override
               public boolean match(final Unit o) {
                 return !unitsAlreadyMoved.contains(o);
               }
-            });
-        attackable.add(Matches.UnitIsNotAA);
-        attackable.add(Matches.UnitCanMove);
-        attackable.add(Matches.UnitIsNotInfrastructure);
-        attackable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
-        attackable.add(Matches.UnitIsNotSea);
+            },
+            Matches.UnitIsNotAA,
+            Matches.UnitCanMove,
+            Matches.UnitIsNotInfrastructure,
+            Matches.UnitCanNotMoveDuringCombatMove.invert(),
+            Matches.UnitIsNotSea);
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         int ourStrength = 0;

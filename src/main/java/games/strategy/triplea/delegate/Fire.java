@@ -15,8 +15,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 public class Fire implements IExecutable {
@@ -122,9 +120,9 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overlfows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final CompositeMatch<Unit> match = new CompositeMatchAnd<>();
-          match.add(Matches.UnitIsTransportButNotCombatTransport);
-          match.add(Matches.unitIsOwnedBy(player));
+          final Match<Unit> match = Match.all(
+              Matches.UnitIsTransportButNotCombatTransport,
+              Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(

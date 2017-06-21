@@ -33,7 +33,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
@@ -1398,19 +1397,19 @@ public class MoveValidator {
       final Collection<Unit> startUnits, final GameData data, final PlayerID player) {
     // we want to get all air units that are owned by our allies
     // but not us that can land on a carrier
-    final CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<>();
-    friendlyNotOwnedAir.add(Matches.alliedUnit(player, data));
-    friendlyNotOwnedAir.add(Matches.unitIsOwnedBy(player).invert());
-    friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
+    final Match<Unit> friendlyNotOwnedAir = Match.all(
+        Matches.alliedUnit(player, data),
+        Matches.unitIsOwnedBy(player).invert(),
+        Matches.UnitCanLandOnCarrier);
     final Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
       return Collections.emptyMap();
     }
     // remove air that can be carried by allied
-    final CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<>();
-    friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
-    friendlyNotOwnedCarrier.add(Matches.alliedUnit(player, data));
-    friendlyNotOwnedCarrier.add(Matches.unitIsOwnedBy(player).invert());
+    final Match<Unit> friendlyNotOwnedCarrier = Match.all(
+        Matches.UnitIsCarrier,
+        Matches.alliedUnit(player, data),
+        Matches.unitIsOwnedBy(player).invert());
     final Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
     final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
     while (alliedCarrierIter.hasNext()) {

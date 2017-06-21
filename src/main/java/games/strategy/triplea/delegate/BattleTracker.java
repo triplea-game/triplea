@@ -42,8 +42,6 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -394,11 +392,11 @@ public class BattleTracker implements java.io.Serializable {
     }
     final boolean canConquerMiddleSteps = Match.someMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
     final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
-    final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<>();
-    conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
-    conquerable.add(Match.any(
-        Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
+    final Match<Territory> conquerable = Match.all(
+        Matches.territoryIsEmptyOfCombatUnits(data, id),
+        Match.any(
+            Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
+            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
@@ -500,9 +498,9 @@ public class BattleTracker implements java.io.Serializable {
           - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
           - Match.countMatches(arrivedUnits, Matches.UnitIsSubmerged);
       // If transports are restricted from controlling sea zones, subtract them
-      final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<>();
-      transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
-      transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
+      final Match<Unit> transportsCanNotControl = Match.all(
+          Matches.UnitIsTransportAndNotDestroyer,
+          Matches.UnitIsTransportButNotCombatTransport);
       if (!games.strategy.triplea.Properties.getTransportControlSeaZone(data)) {
         totalMatches -= Match.countMatches(arrivedUnits, transportsCanNotControl);
       }

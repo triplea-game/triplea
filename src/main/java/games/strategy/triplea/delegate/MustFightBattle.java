@@ -480,8 +480,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // remove any air units that were once in this attack, but have now
     // moved out of the territory
     // this is an ilegant way to handle this bug
-    final CompositeMatch<Unit> airNotInTerritory = new CompositeMatchAnd<>();
-    airNotInTerritory.add(Matches.unitIsInTerritory(m_battleSite).invert());
+    final Match<Unit> airNotInTerritory = Matches.unitIsInTerritory(m_battleSite).invert();
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
   }
 
@@ -852,10 +851,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             defenderWins(bridge);
           } else {
             // Get all allied transports in the territory
-            final CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<>();
-            matchAllied.add(Matches.UnitIsTransport);
-            matchAllied.add(Matches.UnitIsNotCombatTransport);
-            matchAllied.add(Matches.isUnitAllied(m_attacker, m_data));
+            final Match<Unit> matchAllied = Match.all(
+                Matches.UnitIsTransport,
+                Matches.UnitIsNotCombatTransport,
+                Matches.isUnitAllied(m_attacker, m_data));
             final List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
             // If no transports, just end the battle
             if (alliedTransports.isEmpty()) {
@@ -1358,8 +1357,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_headless) {
       return possible;
     }
-    final CompositeMatch<Territory> match =
-        new CompositeMatchAnd<>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
     // make sure we can move through the any canals
     final Match<Territory> canalMatch = Match.of(t -> {
       final Route r = new Route();
@@ -1367,7 +1364,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       r.add(t);
       return MoveValidator.validateCanal(r, unitsToRetreat, m_defender, m_data) == null;
     });
-    match.add(canalMatch);
+    final Match<Territory> match = Match.all(
+        Matches.TerritoryIsWater,
+        Matches.territoryHasNoEnemyUnits(player, m_data),
+        canalMatch);
     possible = Match.getMatches(possible, match);
     return possible;
   }
@@ -1736,30 +1736,29 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     // Get all allied transports in the territory
-    final CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<>();
-    matchAllied.add(Matches.UnitIsTransport);
-    matchAllied.add(Matches.UnitIsNotCombatTransport);
-    matchAllied.add(Matches.isUnitAllied(player, m_data));
-    matchAllied.add(Matches.UnitIsSea);
+    final Match<Unit> matchAllied = Match.all(
+        Matches.UnitIsTransport,
+        Matches.UnitIsNotCombatTransport,
+        Matches.isUnitAllied(player, m_data),
+        Matches.UnitIsSea);
     final List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
     // If no transports, just return
     if (alliedTransports.isEmpty()) {
       return;
     }
     // Get all ALLIED, sea & air units in the territory (that are NOT submerged)
-    final CompositeMatch<Unit> alliedUnitsMatch = new CompositeMatchAnd<>();
-    alliedUnitsMatch.add(Matches.isUnitAllied(player, m_data));
-    alliedUnitsMatch.add(Matches.UnitIsNotLand);
-    alliedUnitsMatch.add(Matches.UnitIsSubmerged.invert());
+    final Match<Unit> alliedUnitsMatch = Match.all(
+        Matches.isUnitAllied(player, m_data),
+        Matches.UnitIsNotLand,
+        Matches.UnitIsSubmerged.invert());
     final Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedUnitsMatch);
     // If transports are unescorted, check opposing forces to see if the Trns die automatically
     if (alliedTransports.size() == alliedUnits.size()) {
       // Get all the ENEMY sea and air units (that can attack) in the territory
-      final CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<>();
-      enemyUnitsMatch.add(Matches.UnitIsNotLand);
-      // enemyUnitsMatch.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
-      enemyUnitsMatch.add(Matches.UnitIsSubmerged.invert());
-      enemyUnitsMatch.add(Matches.unitCanAttack(player));
+      final Match<Unit> enemyUnitsMatch = Match.all(
+          Matches.UnitIsNotLand,
+          Matches.UnitIsSubmerged.invert(),
+          Matches.unitCanAttack(player));
       final Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
       // If there are attackers set their movement to 0 and kill the transports
       if (enemyUnits.size() > 0) {

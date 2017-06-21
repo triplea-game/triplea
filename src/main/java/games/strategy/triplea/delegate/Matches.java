@@ -1698,17 +1698,11 @@ public class Matches {
   }
 
   private static Match<Unit> unitIsEnemyAaForAnything(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> comp = new CompositeMatchAnd<>();
-    comp.add(UnitIsAAforAnything);
-    comp.add(enemyUnit(player, data));
-    return comp;
+    return Match.all(UnitIsAAforAnything, enemyUnit(player, data));
   }
 
   private static Match<Unit> unitIsEnemyAaForCombat(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> comp = new CompositeMatchAnd<>();
-    comp.add(UnitIsAAforCombatOnly);
-    comp.add(enemyUnit(player, data));
-    return comp;
+    return Match.all(UnitIsAAforCombatOnly, enemyUnit(player, data));
   }
 
   static Match<Unit> unitIsInTerritory(final Territory territory) {
@@ -1901,9 +1895,7 @@ public class Matches {
   }
 
   static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> match = new CompositeMatchAnd<>();
-    match.add(enemyUnit(player, data));
-    match.add(UnitIsSubmerged.invert());
+    final Match<Unit> match = Match.all(enemyUnit(player, data), UnitIsSubmerged.invert());
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
