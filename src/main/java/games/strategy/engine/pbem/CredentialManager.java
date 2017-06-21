@@ -39,11 +39,9 @@ final class CredentialManager implements AutoCloseable {
   @VisibleForTesting
   static final String PREFERENCE_KEY_MASTER_PASSWORD = "CREDENTIAL_MANAGER_MASTER_PASSWORD";
 
-  private final CipherFactory cipherFactory;
   private final char[] masterPassword;
 
-  private CredentialManager(final CipherFactory cipherFactory, final char[] masterPassword) {
-    this.cipherFactory = cipherFactory;
+  private CredentialManager(final char[] masterPassword) {
     this.masterPassword = masterPassword;
   }
 
@@ -69,7 +67,7 @@ final class CredentialManager implements AutoCloseable {
 
   @VisibleForTesting
   static CredentialManager newInstance(final char[] masterPassword) {
-    return new CredentialManager(() -> Cipher.getInstance(CIPHER_ALGORITHM), masterPassword);
+    return new CredentialManager(masterPassword);
   }
 
   private static char[] getMasterPassword() throws GeneralSecurityException {
@@ -212,7 +210,7 @@ final class CredentialManager implements AutoCloseable {
   }
 
   private Cipher newCipher(final int opmode, final byte[] salt) throws GeneralSecurityException {
-    final Cipher cipher = cipherFactory.create();
+    final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
     cipher.init(opmode, newSecretKey(salt));
     return cipher;
   }
@@ -336,11 +334,5 @@ final class CredentialManager implements AutoCloseable {
       this.ciphertext = ciphertext;
       this.salt = salt;
     }
-  }
-
-  @FunctionalInterface
-  @VisibleForTesting
-  interface CipherFactory {
-    Cipher create() throws GeneralSecurityException;
   }
 }
