@@ -9,12 +9,12 @@ import java.time.format.FormatStyle;
 
 public class TimeManager {
   /**
-   * Prints an {@link Instant} localized, with all details
+   * Prints an {@link Instant} localized, with all details.
    *
    * @param instant The {@link Instant} being returned as String
    * @return formatted GMT Date String
    */
-  public static String getFullUTCString(final Instant instant) {
+  public static String getFullUtcString(final Instant instant) {
     return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withZone(ZoneOffset.UTC).format(instant);
   }
 

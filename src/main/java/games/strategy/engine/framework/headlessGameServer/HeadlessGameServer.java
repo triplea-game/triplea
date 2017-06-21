@@ -51,7 +51,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
-  private final String startDate = TimeManager.getFullUTCString(Instant.now());
+  private final String startDate = TimeManager.getFullUtcString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
     return s_instance;
