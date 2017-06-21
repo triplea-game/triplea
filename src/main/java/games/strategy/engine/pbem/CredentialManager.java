@@ -2,7 +2,6 @@ package games.strategy.engine.pbem;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -36,8 +35,6 @@ import com.google.common.annotations.VisibleForTesting;
  */
 final class CredentialManager implements AutoCloseable {
   private static final String CIPHER_ALGORITHM = "AES";
-  private static final Charset MASTER_PASSWORD_CHARSET = StandardCharsets.ISO_8859_1;
-  private static final Charset PLAINTEXT_CHARSET = StandardCharsets.UTF_8;
 
   @VisibleForTesting
   static final String PREFERENCE_KEY_MASTER_PASSWORD = "CREDENTIAL_MANAGER_MASTER_PASSWORD";
@@ -95,25 +92,20 @@ final class CredentialManager implements AutoCloseable {
       return null;
     }
 
-    final char[] masterPassword = decodeMasterPassword(encodedMasterPassword);
+    final char[] masterPassword = decodeBytesToChars(encodedMasterPassword);
     scrub(encodedMasterPassword);
     return masterPassword;
   }
 
-  private static char[] decodeMasterPassword(final byte[] encodedMasterPassword) {
-    return decodeChars(encodedMasterPassword, MASTER_PASSWORD_CHARSET);
-  }
-
-  private static char[] decodeChars(final byte[] bytes, final Charset charset) {
-    final CharBuffer cb = charset.decode(ByteBuffer.wrap(bytes));
+  private static char[] decodeBytesToChars(final byte[] bytes) {
+    final CharBuffer cb = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(bytes));
     final char[] chars = new char[cb.length()];
     cb.get(chars);
     scrub(cb);
     return chars;
   }
 
-  @VisibleForTesting
-  static char[] newMasterPassword() throws GeneralSecurityException {
+  private static char[] newMasterPassword() throws GeneralSecurityException {
     // https://en.wikipedia.org/wiki/Password_strength#Random_passwords
     // Base64 ~~ Case sensitive alphanumeric
     final int base64DigitCountFor160BitEntropy = 27;
@@ -126,7 +118,7 @@ final class CredentialManager implements AutoCloseable {
     fillRandom(randomBytes);
     final byte[] encodedMasterPassword = Base64.getEncoder().encode(randomBytes);
     scrub(randomBytes);
-    final char[] masterPassword = decodeMasterPassword(encodedMasterPassword);
+    final char[] masterPassword = decodeBytesToChars(encodedMasterPassword);
     scrub(encodedMasterPassword);
     return masterPassword;
   }
@@ -136,16 +128,12 @@ final class CredentialManager implements AutoCloseable {
   }
 
   private static void saveMasterPassword(final Preferences preferences, final char[] masterPassword) {
-    preferences.putByteArray(PREFERENCE_KEY_MASTER_PASSWORD, encodeMasterPassword(masterPassword));
+    preferences.putByteArray(PREFERENCE_KEY_MASTER_PASSWORD, encodeCharsToBytes(masterPassword));
   }
 
   @VisibleForTesting
-  static byte[] encodeMasterPassword(final char[] masterPassword) {
-    return encodeChars(masterPassword, MASTER_PASSWORD_CHARSET);
-  }
-
-  private static byte[] encodeChars(final char[] chars, final Charset charset) {
-    final ByteBuffer bb = charset.encode(CharBuffer.wrap(chars));
+  static byte[] encodeCharsToBytes(final char[] chars) {
+    final ByteBuffer bb = StandardCharsets.UTF_8.encode(CharBuffer.wrap(chars));
     final byte[] bytes = new byte[bb.remaining()];
     bb.get(bytes);
     scrub(bb);
@@ -200,18 +188,14 @@ final class CredentialManager implements AutoCloseable {
     assert unprotectedCredential != null;
 
     try {
-      final byte[] plaintext = decodePlaintext(unprotectedCredential);
+      final byte[] plaintext = encodeCharsToBytes(unprotectedCredential);
       final byte[] salt = newSalt();
       final byte[] ciphertext = encrypt(plaintext, salt);
       scrub(plaintext);
-      return encodeCiphertextAndSalt(ciphertext, salt);
+      return formatProtectedCredential(ciphertext, salt);
     } catch (final GeneralSecurityException e) {
       throw new CredentialManagerException("failed to protect credential", e);
     }
-  }
-
-  private static byte[] decodePlaintext(final char[] encodedPlaintext) {
-    return encodeChars(encodedPlaintext, PLAINTEXT_CHARSET);
   }
 
   private static byte[] newSalt() throws GeneralSecurityException {
@@ -247,7 +231,7 @@ final class CredentialManager implements AutoCloseable {
     return new SecretKeySpec(key.getEncoded(), CIPHER_ALGORITHM);
   }
 
-  private static String encodeCiphertextAndSalt(final byte[] ciphertext, final byte[] salt) {
+  private static String formatProtectedCredential(final byte[] ciphertext, final byte[] salt) {
     final String encodedCiphertext = Base64.getEncoder().encodeToString(ciphertext);
     final String encodedSalt = Base64.getEncoder().encodeToString(salt);
     return encodedSalt + "." + encodedCiphertext;
@@ -296,9 +280,9 @@ final class CredentialManager implements AutoCloseable {
     assert protectedCredential != null;
 
     try {
-      final CiphertextAndSalt ciphertextAndSalt = decodeCiphertextAndSalt(protectedCredential);
+      final CiphertextAndSalt ciphertextAndSalt = parseProtectedCredential(protectedCredential);
       final byte[] plaintext = decrypt(ciphertextAndSalt.ciphertext, ciphertextAndSalt.salt);
-      final char[] unprotectedCredential = encodePlaintext(plaintext);
+      final char[] unprotectedCredential = decodeBytesToChars(plaintext);
       scrub(plaintext);
       return unprotectedCredential;
     } catch (final GeneralSecurityException e) {
@@ -306,9 +290,9 @@ final class CredentialManager implements AutoCloseable {
     }
   }
 
-  private static CiphertextAndSalt decodeCiphertextAndSalt(final String encodedCiphertextAndSalt)
+  private static CiphertextAndSalt parseProtectedCredential(final String protectedCredential)
       throws CredentialManagerException {
-    final String[] components = encodedCiphertextAndSalt.split("\\.");
+    final String[] components = protectedCredential.split("\\.");
     if (components.length != 2) {
       throw new CredentialManagerException("malformed protected credential");
     }
@@ -322,10 +306,6 @@ final class CredentialManager implements AutoCloseable {
 
   private byte[] decrypt(final byte[] ciphertext, final byte[] salt) throws GeneralSecurityException {
     return newCipher(Cipher.DECRYPT_MODE, salt).doFinal(ciphertext);
-  }
-
-  private static char[] encodePlaintext(final byte[] plaintext) {
-    return decodeChars(plaintext, PLAINTEXT_CHARSET);
   }
 
   private static void scrub(final byte[] bytes) {

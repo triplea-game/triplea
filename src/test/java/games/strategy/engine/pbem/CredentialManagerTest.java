@@ -25,6 +25,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CredentialManagerTest {
+  private static final char[] MASTER_PASSWORD = "MASTER←PASSWORD↑WITH→UNICODE↓CHARS".toCharArray();
+
   @Mock
   private Preferences preferences;
 
@@ -32,7 +34,7 @@ public final class CredentialManagerTest {
 
   @Before
   public void setUp() throws Exception {
-    credentialManager = CredentialManager.newInstance(CredentialManager.newMasterPassword());
+    credentialManager = CredentialManager.newInstance(MASTER_PASSWORD);
   }
 
   @After
@@ -66,22 +68,21 @@ public final class CredentialManagerTest {
 
   private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
     verify(preferences).putByteArray(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
-        CredentialManager.encodeMasterPassword(masterPassword));
+        CredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test
   public void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
-    final char[] expected = CredentialManager.newMasterPassword();
-    givenMasterPasswordExists(expected);
+    givenMasterPasswordExists(MASTER_PASSWORD);
 
     final char[] actual = CredentialManager.getMasterPassword(preferences);
 
-    assertThat(actual, is(expected));
+    assertThat(actual, is(MASTER_PASSWORD));
   }
 
   private void givenMasterPasswordExists(final char[] masterPassword) {
     when(preferences.getByteArray(eq(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
-        .thenReturn(CredentialManager.encodeMasterPassword(masterPassword));
+        .thenReturn(CredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test
