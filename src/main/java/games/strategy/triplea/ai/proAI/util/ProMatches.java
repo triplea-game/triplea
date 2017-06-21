@@ -479,7 +479,7 @@ public class ProMatches {
         Matches.unitIsTransporting().invert());
   }
 
-  public static Match<Unit> UnitIsOwnedCarrier(final PlayerID player) {
+  public static Match<Unit> unitIsOwnedCarrier(final PlayerID player) {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
         && Matches.unitIsOwnedBy(player).match(unit));
   }

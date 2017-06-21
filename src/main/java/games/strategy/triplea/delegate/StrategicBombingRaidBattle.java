@@ -753,7 +753,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       // Limit PUs lost if we would like to cap PUs lost at territory value
       if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
+        final int alreadyLost = DelegateFinder.moveDelegate(m_data).pusAlreadyLost(m_battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
         if (!m_targets.isEmpty()) {
@@ -788,7 +788,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
           }
           // Record production lost
-          DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
+          DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, currentUnitCost);
           // apply the hits to the targets
           final IntegerMap<Unit> damageMap = new IntegerMap<>();
           damageMap.put(current, totalDamage);
@@ -805,7 +805,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       } else {
         // Record PUs lost
-        DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
+        DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, cost);
         cost *= Properties.getPU_Multiplier(m_data);
         getDisplay(bridge).bombingResults(m_battleID, dice, cost);
         if (cost > 0) {

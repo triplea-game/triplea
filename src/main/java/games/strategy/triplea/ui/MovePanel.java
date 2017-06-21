@@ -840,7 +840,7 @@ public class MovePanel extends AbstractMovePanel {
         mouseLastUpdatePoint = me.getMapPoint();
         final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
         // Load Bombers with paratroops
-        if ((!nonCombat || IsParatroopersCanMoveDuringNonCombat(getData()))
+        if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
             && Match.someMatch(selectedUnits, Match.all(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
           final PlayerID player = getCurrentPlayer();
@@ -949,7 +949,7 @@ public class MovePanel extends AbstractMovePanel {
             TransportUtils.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
         final String title = "Load air transports";
         final String action = "load";
-        loadedUnits = UserChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
+        loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
         final Map<Unit, Unit> mapping = TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
         for (final Unit unit : mapping.keySet()) {
           final Collection<Unit> unitsColl = new ArrayList<>();
@@ -1313,11 +1313,11 @@ public class MovePanel extends AbstractMovePanel {
     return selectedEndpointTerritory;
   }
 
-  private static boolean IsParatroopersCanMoveDuringNonCombat(final GameData data) {
+  private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data) {
     return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
-  private final List<Unit> UserChooseUnits(final Set<Unit> defaultSelections,
+  private final List<Unit> userChooseUnits(final Set<Unit> defaultSelections,
       final Match<Collection<Unit>> unitsToLoadMatch, final List<Unit> unitsToLoad, final String title,
       final String action) {
     // Allow player to select which to load.

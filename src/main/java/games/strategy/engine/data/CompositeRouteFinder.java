@@ -37,7 +37,7 @@ public class CompositeRouteFinder {
     s_logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
-  private static HashSet<Territory> ToHashSet(final Collection<Territory> ters) {
+  private static HashSet<Territory> toHashSet(final Collection<Territory> ters) {
     final HashSet<Territory> result = new HashSet<>();
     for (final Territory ter : ters) {
       result.add(ter);
@@ -47,8 +47,8 @@ public class CompositeRouteFinder {
 
   Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
-        ToHashSet(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
-    final HashMap<Territory, Integer> terScoreMap = CreateScoreMap();
+        toHashSet(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
+    final HashMap<Territory, Integer> terScoreMap = createScoreMap();
     final HashMap<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;
     final HashMap<Territory, Territory> previous = new HashMap<>();
@@ -91,10 +91,10 @@ public class CompositeRouteFinder {
     if (bestRouteToEndScore == Integer.MAX_VALUE) {
       return null;
     }
-    return AssembleRoute(start, end, previous);
+    return assembleRoute(start, end, previous);
   }
 
-  private static Route AssembleRoute(final Territory start, final Territory end,
+  private static Route assembleRoute(final Territory start, final Territory end,
       final HashMap<Territory, Territory> previous) {
     final List<Territory> routeTers = new ArrayList<>();
     Territory curTer = end;
@@ -107,7 +107,7 @@ public class CompositeRouteFinder {
     return new Route(routeTers);
   }
 
-  private HashMap<Territory, Integer> CreateScoreMap() {
+  private HashMap<Territory, Integer> createScoreMap() {
     final HashMap<Territory, Integer> result = new HashMap<>();
     for (final Territory ter : m_map.getTerritories()) {
       result.put(ter, getTerScore(ter));

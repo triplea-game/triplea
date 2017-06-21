@@ -473,7 +473,7 @@ final class ProTechAI {
       if (distance.getInt(current) == maxDistance) {
         break;
       }
-      for (final Territory neighbor : data.getMap().getNeighbors(current, TerritoryIsNotImpassableToAirUnits())) {
+      for (final Territory neighbor : data.getMap().getNeighbors(current, territoryIsNotImpassableToAirUnits())) {
         if (!distance.keySet().contains(neighbor)) {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
@@ -729,14 +729,14 @@ final class ProTechAI {
     return sorted;
   }
 
-  private static Match<Territory> TerritoryIsNotImpassableToAirUnits() {
-    return TerritoryIsImpassableToAirUnits().invert();
+  private static Match<Territory> territoryIsNotImpassableToAirUnits() {
+    return territoryIsImpassableToAirUnits().invert();
   }
 
   /**
    * Assumes that water is passable to air units always.
    */
-  private static Match<Territory> TerritoryIsImpassableToAirUnits() {
+  private static Match<Territory> territoryIsImpassableToAirUnits() {
     return Match.all(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable);
   }
 }

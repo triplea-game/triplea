@@ -237,7 +237,7 @@ public class AirMovementValidator {
       final Collection<Unit> ownedCarriersInLandingSpot = Match.getMatches(unitsInLandingSpot, ownedCarrierMatch);
       // get air we own here, but exclude any air that can fly to allied land
       final Collection<Unit> airInLandingSpot = Match.getMatches(Match.getMatches(unitsInLandingSpot, ownedAirMatch),
-          UnitCanFindLand(data, landingSpot).invert());
+          unitCanFindLand(data, landingSpot).invert());
       // add allied air (it can't fly away)
       airInLandingSpot.addAll(Match.getMatches(unitsInLandingSpot, alliedNotOwnedAirMatch));
       // make sure we don't count this again
@@ -286,7 +286,7 @@ public class AirMovementValidator {
         }
         final Collection<Unit> ownedAirInCarrierSpot = Match.getMatches(
             // exclude any owned air that can fly to land
-            Match.getMatches(unitsInCarrierSpot, ownedAirMatch), UnitCanFindLand(data, carrierSpot).invert());
+            Match.getMatches(unitsInCarrierSpot, ownedAirMatch), unitCanFindLand(data, carrierSpot).invert());
         final Collection<Unit> alliedNotOwnedAirInCarrierSpot =
             Match.getMatches(unitsInCarrierSpot, alliedNotOwnedAirMatch);
         final Map<Unit, Collection<Unit>> mustMoveWithMap =
@@ -597,7 +597,7 @@ public class AirMovementValidator {
     return false;
   }
 
-  private static Match<Unit> UnitCanFindLand(final GameData data, final Territory current) {
+  private static Match<Unit> unitCanFindLand(final GameData data, final Territory current) {
     return Match.of(u -> canFindLand(data, u, current));
   }
 

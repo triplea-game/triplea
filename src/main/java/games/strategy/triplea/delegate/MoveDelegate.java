@@ -602,7 +602,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
    * @return The number of PUs that have been lost by bombing, rockets, etc.
    */
   @Override
-  public int PUsAlreadyLost(final Territory t) {
+  public int pusAlreadyLost(final Territory t) {
     return m_PUsLost.getInt(t);
   }
 
@@ -610,7 +610,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
    * Add more PUs lost to a territory due to bombing, rockets, etc.
    */
   @Override
-  public void PUsLost(final Territory t, final int amt) {
+  public void pusLost(final Territory t, final int amt) {
     m_PUsLost.add(t, amt);
   }
 }
