@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,17 +36,9 @@ public class CompositeRouteFinder {
     s_logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
-  private static HashSet<Territory> toHashSet(final Collection<Territory> ters) {
-    final HashSet<Territory> result = new HashSet<>();
-    for (final Territory ter : ters) {
-      result.add(ter);
-    }
-    return result;
-  }
-
   Route findRoute(final Territory start, final Territory end) {
     final HashSet<Territory> allMatchingTers =
-        toHashSet(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
+        new HashSet<>(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
     final HashMap<Territory, Integer> terScoreMap = createScoreMap();
     final HashMap<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;
