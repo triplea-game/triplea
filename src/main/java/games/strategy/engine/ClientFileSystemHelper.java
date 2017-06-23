@@ -101,7 +101,7 @@ public final class ClientFileSystemHelper {
   private static boolean folderContainsGamePropsFile(final File folder) {
     final File[] files = folder.listFiles();
 
-    final List<String> fileNames = (files == null) ? Collections.EMPTY_LIST :
+    final List<String> fileNames = (files == null) ? Collections.emptyList() :
         Arrays.stream(files).map(File::getName).collect(Collectors.toList());
     return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTY_FILE);
   }
