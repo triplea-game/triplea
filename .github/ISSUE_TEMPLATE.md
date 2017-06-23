@@ -12,8 +12,10 @@ In case TripleA opens the console and an error (a so called 'stacktrace') shows 
 1. Always put your stacktrace in a code segment, you can do this by simply selecting the whole stacktrace and clicking on the 'Insert Code' button (&lt;&gt;)
 2. If your stacktrace is too long, please consider creating a gist on gist.github.com and pasting the code there. This keeps the issue clean and readable. Don't forget linking to your gist.
 -->
-TripleA version I'm using:
+### TripleA version I'm using:
 
-What I expected to happen was:
+### What I did:
 
-What actually happened was:
+### What I expected to happen was:
+
+### What actually happened was:
