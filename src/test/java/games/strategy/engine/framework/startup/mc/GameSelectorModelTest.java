@@ -3,7 +3,9 @@ package games.strategy.engine.framework.startup.mc;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+
 import static org.junit.Assert.assertThat;
+
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,13 +13,13 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Observable;
 import java.util.Observer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -101,7 +103,7 @@ public class GameSelectorModelTest {
   }
 
   private void verifyTestObjectObserverUpdateSent() {
-    verify(mockObserver, times(1)).update((Observable) Mockito.any(), Mockito.any());
+    verify(mockObserver, times(1)).update(Mockito.any(), Mockito.any());
     reset(mockObserver);
   }
 
@@ -124,13 +126,13 @@ public class GameSelectorModelTest {
 
   @Test
   public void testIsSaveGame() {
-    testObj.load((GameData) null, "");
+    testObj.load(null, "");
     assertThat(testObj.isSavedGame(), is(true));
 
-    testObj.load((GameData) null, ".xml");
+    testObj.load(null, ".xml");
     assertThat(testObj.isSavedGame(), is(false));
 
-    testObj.load((GameData) null, GameDataFileUtils.addExtension("file"));
+    testObj.load(null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
   }
 

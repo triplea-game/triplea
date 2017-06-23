@@ -46,11 +46,11 @@ import games.strategy.util.Util;
  * Handles logic for battles in which fighting actually occurs.
  */
 public class MustFightBattle extends DependentBattle implements BattleStepStrings {
-  public static enum ReturnFire {
+  public enum ReturnFire {
     ALL, SUBS, NONE
   }
 
-  public static enum RetreatType {
+  public enum RetreatType {
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
 

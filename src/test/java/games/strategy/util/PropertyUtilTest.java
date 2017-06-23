@@ -44,17 +44,17 @@ public class PropertyUtilTest {
     PropertyUtil.set("bar", NEW_VALUE, testClass);
     assertThat(testClass.bar, is(NEW_VALUE));
 
-    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, testClass), is(NEW_VALUE));
+    assertThat(PropertyUtil.getPropertyFieldObject(BAR, testClass), is(NEW_VALUE));
   }
 
   @Test
   public void testGetField() {
-    assertThat((String) PropertyUtil.getPropertyFieldObject("bar", new PropertyClass()), is(DEFAULT));
+    assertThat(PropertyUtil.getPropertyFieldObject("bar", new PropertyClass()), is(DEFAULT));
   }
 
   @Test
   public void testGetFieldWithPrefixedPropertyNames() {
-    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
+    assertThat(PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
   }
 
 

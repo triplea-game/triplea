@@ -64,7 +64,7 @@ public final class SwingWorkerCompletionWaiter implements PropertyChangeListener
   }
 
   @VisibleForTesting
-  static interface ProgressWindow {
+  interface ProgressWindow {
     void close();
 
     void open();

@@ -74,7 +74,7 @@ public class LobbyGameTableModelTest {
   @Test
   public void updateGame() {
     final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex), nullValue());
+    assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
 
     final String newComment = "comment";
     final GameDescription newDescription = new GameDescription();
@@ -83,7 +83,7 @@ public class LobbyGameTableModelTest {
     testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
     TestUtil.waitForSwingThreads();
     assertThat(testObj.getRowCount(), is(1));
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex), is(newComment));
+    assertThat(testObj.getValueAt(0, commentColumnIndex), is(newComment));
   }
 
   @Test

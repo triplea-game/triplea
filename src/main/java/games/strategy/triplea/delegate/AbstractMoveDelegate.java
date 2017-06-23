@@ -28,7 +28,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer m_tempMovePerformer;
 
-  public static enum MoveType {
+  public enum MoveType {
     DEFAULT, SPECIAL
   }
 
