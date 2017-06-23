@@ -22,6 +22,9 @@ public class UndoablePlacement extends AbstractUndoableMove {
   Territory m_producerTerritory;
   PlayerID m_player;
 
+  /**
+   * Public UndoablePlacement constructor.
+   */
   public UndoablePlacement(final PlayerID player, final CompositeChange change, final Territory producer_territory,
       final Territory place_territory, final Collection<Unit> units) {
     super(change, units);
