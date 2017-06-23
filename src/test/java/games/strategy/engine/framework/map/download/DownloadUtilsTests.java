@@ -57,8 +57,6 @@ public final class DownloadUtilsTests {
 
     private File file;
 
-    private FileOutputStream os;
-
     @Mock
     private CloseableHttpResponse response;
 
@@ -71,7 +69,6 @@ public final class DownloadUtilsTests {
     @Before
     public void setUp() throws Exception {
       file = temporaryFolder.newFile();
-      os = new FileOutputStream(file);
 
       when(client.execute(any())).thenReturn(response);
       when(response.getEntity()).thenReturn(entity);
@@ -94,7 +91,9 @@ public final class DownloadUtilsTests {
     }
 
     private void downloadToFile() throws Exception {
-      DownloadUtils.downloadToFile(URI, os, client);
+      try (final FileOutputStream os = new FileOutputStream(file)) {
+        DownloadUtils.downloadToFile(URI, os, client);
+      }
     }
 
     private byte[] fileContent() throws Exception {

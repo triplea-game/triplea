@@ -27,8 +27,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.LocalizeHTML;
@@ -108,8 +106,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> endRoundDelegateTriggerMatch =
-          new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
-              AbstractTriggerAttachment.whenOrDefaultMatch(null, null), new CompositeMatchOr<TriggerAttachment>(
+          Match.all(AbstractTriggerAttachment.availableUses,
+              AbstractTriggerAttachment.whenOrDefaultMatch(null, null), Match.any(
                   TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -266,7 +264,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    *        the "game over" text to be displayed to each user.
    */
   public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge) {
-    // TO NOT USE m_bridge, because it might be null here! use aBridge instead.
+    // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
     if (!m_gameOver) {
@@ -279,7 +277,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
-      // means our local copy of m_bridge could be null.
+      // means our local copy of playerBridge could be null.
       getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {

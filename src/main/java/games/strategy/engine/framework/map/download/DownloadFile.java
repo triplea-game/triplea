@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+
+import javax.swing.SwingUtilities;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
@@ -19,24 +18,19 @@ final class DownloadFile {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
 
-  private final List<Runnable> downloadCompletedListeners = new ArrayList<>();
-  private final Consumer<Long> progressUpdateListener;
-  private final DownloadFileDescription downloadDescription;
+  private final DownloadFileDescription download;
+  private final DownloadListener downloadListener;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
-  /**
-   * Creates a new DownloadFile object.
-   * Does not actually start the download, call 'startAsyncDownload()' to start the download.
-   *
-   * @param download The details of what to download
-   * @param progressUpdateListener Called periodically while download progress is made.
-   * @param completionListener Called when the File download is complete.
-   */
-  DownloadFile(final DownloadFileDescription download, final Consumer<Long> progressUpdateListener,
-      final Runnable completionListener) {
-    this.downloadDescription = download;
-    this.progressUpdateListener = progressUpdateListener;
-    addDownloadCompletedListener(completionListener);
+  DownloadFile(final DownloadFileDescription download, final DownloadListener downloadListener) {
+    this.download = download;
+    this.downloadListener = downloadListener;
+
+    SwingUtilities.invokeLater(() -> downloadListener.downloadStarted(download));
+  }
+
+  DownloadFileDescription getDownload() {
+    return download;
   }
 
   /**
@@ -45,10 +39,11 @@ final class DownloadFile {
    *        file <strong>WILL NOT</strong> be deleted.
    */
   void startAsyncDownload(final File fileToDownloadTo) {
-    final FileSizeWatcher watcher = new FileSizeWatcher(fileToDownloadTo, progressUpdateListener);
-    addDownloadCompletedListener(() -> watcher.stop());
+    final FileSizeWatcher watcher = new FileSizeWatcher(
+        fileToDownloadTo,
+        bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
     state = DownloadState.DOWNLOADING;
-    createDownloadThread(fileToDownloadTo).start();
+    createDownloadThread(watcher).start();
   }
 
   /*
@@ -56,10 +51,11 @@ final class DownloadFile {
    * complete and if the download state is not cancelled, it will then move
    * the completed download temp file to: 'downloadDescription.getInstallLocation()'
    */
-  private Thread createDownloadThread(final File fileToDownloadTo) {
+  private Thread createDownloadThread(final FileSizeWatcher watcher) {
     return new Thread(() -> {
+      final File fileToDownloadTo = watcher.getFile();
       if (state != DownloadState.CANCELLED) {
-        final String url = downloadDescription.getUrl();
+        final String url = download.getUrl();
         try {
           DownloadUtils.downloadToFile(url, fileToDownloadTo);
         } catch (final Exception e) {
@@ -70,20 +66,21 @@ final class DownloadFile {
         }
         state = DownloadState.DONE;
         try {
-          Files.move(fileToDownloadTo, downloadDescription.getInstallLocation());
+          Files.move(fileToDownloadTo, download.getInstallLocation());
 
           final DownloadFileProperties props = new DownloadFileProperties();
-          props.setFrom(downloadDescription);
-          DownloadFileProperties.saveForZip(downloadDescription.getInstallLocation(), props);
+          props.setFrom(download);
+          DownloadFileProperties.saveForZip(download.getInstallLocation(), props);
 
         } catch (final Exception e) {
           final String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
-              + downloadDescription.getInstallLocation().getAbsolutePath();
+              + download.getInstallLocation().getAbsolutePath();
           ClientLogger.logError(msg, e);
         }
       }
-      // notify listeners we finished the download
-      downloadCompletedListeners.forEach(e -> e.run());
+
+      watcher.stop();
+      downloadListener.downloadStopped(download);
     });
   }
 
@@ -108,9 +105,5 @@ final class DownloadFile {
 
   boolean isWaiting() {
     return state == DownloadState.NOT_STARTED;
-  }
-
-  private void addDownloadCompletedListener(final Runnable listener) {
-    downloadCompletedListeners.add(listener);
   }
 }

@@ -1,12 +1,9 @@
-package tools.map.making;
+package tools.image;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JButton;
@@ -19,22 +16,20 @@ import javax.swing.WindowConstants;
 /**
  * A text area that can show updates scrolling by.
  */
-public class JTextAreaOptionPane {
+class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
   private final JFrame windowFrame = new JFrame();
   private final JButton okButton = new JButton();
   private final boolean logToSystemOut;
-  private final WeakReference<Window> parentComponentReference;
+  private final Window parentComponent;
   private int counter;
-  private final CountDownLatch countDownLatch;
 
-  public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
+  JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
       final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
       final int latchCount, final CountDownLatch countDownLatch) {
     this.logToSystemOut = logToSystemOut;
-    this.countDownLatch = countDownLatch;
     counter = latchCount;
-    parentComponentReference = new WeakReference<>(parentComponent);
+    this.parentComponent = parentComponent;
     windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (icon != null) {
       windowFrame.setIconImage(icon);
@@ -61,14 +56,11 @@ public class JTextAreaOptionPane {
     windowFrame.getContentPane().add(m_label, BorderLayout.NORTH);
     windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
     windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (JTextAreaOptionPane.this.countDownLatch != null) {
-          JTextAreaOptionPane.this.countDownLatch.countDown();
-        }
-        dispose();
+    okButton.addActionListener(e -> {
+      if (countDownLatch != null) {
+        countDownLatch.countDown();
       }
+      dispose();
     });
   }
 
@@ -78,18 +70,18 @@ public class JTextAreaOptionPane {
     }
   }
 
-  public void show() {
+  void show() {
     windowFrame.pack();
-    windowFrame.setLocationRelativeTo(parentComponentReference.get());
+    windowFrame.setLocationRelativeTo(parentComponent);
     windowFrame.setVisible(true);
   }
 
-  public void dispose() {
+  void dispose() {
     windowFrame.setVisible(false);
     windowFrame.dispose();
   }
 
-  public void countDown() {
+  void countDown() {
     counter--;
     setWidgetActivation();
   }
@@ -102,7 +94,7 @@ public class JTextAreaOptionPane {
     editor.setCaretPosition(editor.getText().length());
   }
 
-  public void appendNewLine(final String text) {
+  void appendNewLine(final String text) {
     append(text + "\r\n");
   }
 }

@@ -23,13 +23,6 @@ public abstract class CompositeMatch<T> extends Match<T> {
   }
 
   /**
-   * Add the inverse of a match. Equivalant to add(new InverseMatch(aMatch))
-   */
-  public void addInverse(final Match<T> aMatch) {
-    add(new InverseMatch<>(aMatch));
-  }
-
-  /**
    * Returns the matches, does not return a copy
    * so be careful about modifying. Also note this could
    * be regenerated when new matches are added.

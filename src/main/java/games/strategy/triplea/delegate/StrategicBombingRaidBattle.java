@@ -35,8 +35,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -93,8 +91,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // fill in defenders
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    final Match<Unit> defenders = new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data),
-        new CompositeMatchOr<Unit>(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+    final Match<Unit> defenders = Match.all(Matches.enemyUnit(m_attacker, m_data),
+        Match.any(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
     if (m_targets.isEmpty()) {
@@ -357,9 +355,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> airborneTypesTargettedToo =
             TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<>(
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.any(
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+              Match.all(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
         final IExecutable roll = new IExecutable() {
@@ -755,7 +753,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       // Limit PUs lost if we would like to cap PUs lost at territory value
       if (isPUCap(m_data) || isLimitSBRDamagePerTurn(m_data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(m_data).PUsAlreadyLost(m_battleSite);
+        final int alreadyLost = DelegateFinder.moveDelegate(m_data).pusAlreadyLost(m_battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
         if (!m_targets.isEmpty()) {
@@ -790,7 +788,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
           }
           // Record production lost
-          DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
+          DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, currentUnitCost);
           // apply the hits to the targets
           final IntegerMap<Unit> damageMap = new IntegerMap<>();
           damageMap.put(current, totalDamage);
@@ -807,7 +805,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       } else {
         // Record PUs lost
-        DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
+        DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, cost);
         cost *= Properties.getPU_Multiplier(m_data);
         getDisplay(bridge).bombingResults(m_battleID, dice, cost);
         if (cost > 0) {

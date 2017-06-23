@@ -36,7 +36,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -929,8 +928,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       useSpecific = true;
     }
     for (final Territory terr : Territories) {
-      final Collection<Unit> allUnits =
-          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
       } else if (exclType.equals("allied")) {
@@ -1000,8 +998,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     while (ownedTerrIter.hasNext()) {
       // get all the units in the territory
       final Territory terr = ownedTerrIter.next();
-      final Collection<Unit> allUnits =
-          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
         allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
@@ -1011,7 +1008,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, new CompositeMatchAnd<>(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Match.getMatches(allUnits, Match.all(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;

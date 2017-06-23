@@ -322,9 +322,8 @@ public class IntegerMap<T> implements Cloneable, Serializable {
     return values;
   }
 
-  public void removeNonMatchingKeys(final Match<T> aMatch) {
-    final Match<T> match = new InverseMatch<>(aMatch);
-    removeMatchingKeys(match);
+  public void removeNonMatchingKeys(final Match<T> match) {
+    removeMatchingKeys(match.invert());
   }
 
   public void removeMatchingKeys(final Match<T> aMatch) {

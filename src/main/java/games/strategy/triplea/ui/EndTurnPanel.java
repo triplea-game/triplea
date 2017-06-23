@@ -12,8 +12,8 @@ import games.strategy.ui.SwingAction;
 
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
-  protected AbstractAction m_doneAction = SwingAction.of("Done", e -> {
-    if (m_forumPosterComponent.getHasPostedTurnSummary()
+  protected AbstractAction doneAction = SwingAction.of("Done", e -> {
+    if (forumPosterComponent.getHasPostedTurnSummary()
         || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
             "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
       release();
@@ -22,7 +22,7 @@ public class EndTurnPanel extends AbstractForumPosterPanel {
 
   public EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
+    forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
   }
 
   @Override
@@ -62,24 +62,24 @@ public class EndTurnPanel extends AbstractForumPosterPanel {
 
   @Override
   protected IAbstractForumPosterDelegate getForumPosterDelegate() {
-    return (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    return (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
   }
 
   @Override
   protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.getHasPostedTurnSummary();
   }
 
   @Override
   protected void setHasPostedTurnSummary(final boolean posted) {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     delegate.setHasPostedTurnSummary(posted);
   }
 
   @Override
   protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame) {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.postTurnSummary(poster, getTitle(), includeSaveGame);
   }
 

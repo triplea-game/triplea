@@ -17,10 +17,10 @@ public class ClientLogin implements IConnectionLogin {
   public static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
   public static final String JDK_VERSION_PROPERTY = "JDK.Version";
   public static final String PASSWORD_PROPERTY = "Password";
-  private final Component m_parent;
+  private final Component parentComponent;
 
   public ClientLogin(final Component parent) {
-    m_parent = parent;
+    parentComponent = parent;
   }
 
   @Override
@@ -29,7 +29,7 @@ public class ClientLogin implements IConnectionLogin {
     if (challengProperties.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
       final JPasswordField passwordField = new JPasswordField();
       passwordField.setColumns(15);
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField,
+      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), passwordField,
           "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
@@ -41,7 +41,7 @@ public class ClientLogin implements IConnectionLogin {
 
   @Override
   public void notifyFailedLogin(final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message,
+    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), message,
         new CountDownLatchHandler(true));
   }
 }

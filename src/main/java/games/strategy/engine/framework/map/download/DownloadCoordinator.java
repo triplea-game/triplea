@@ -1,107 +1,143 @@
 package games.strategy.engine.framework.map.download;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.util.ThreadUtil;
 
 /**
  * Class that accepts and queues download requests. Download requests are started in background
  * thread, this class ensures N are in progress until all are done.
  */
-public class DownloadCoordinator {
+public final class DownloadCoordinator {
+  private static final int MAX_CONCURRENT_DOWNLOADS = 3;
 
-  private static final int MAX_CONCURRENT_DOWNLOAD = 3;
+  private final Object lock = new Object();
 
-  private final Map<DownloadFile, Runnable> downloadMap = new HashMap<>();
-  private final Set<DownloadFileDescription> downloadSet = new HashSet<>();
+  private final Queue<DownloadFile> pendingDownloads = new LinkedList<>();
+  private final Set<DownloadFile> activeDownloads = new HashSet<>();
+  private final Set<DownloadFile> terminatedDownloads = new HashSet<>();
 
-  private volatile boolean cancelled = false;
+  private final List<DownloadListener> downloadListeners = new CopyOnWriteArrayList<>();
 
-  DownloadCoordinator() {
-    new Thread(() -> {
-      while (!cancelled) {
-        try {
-          startNextDownloads();
-          // pause for a brief while before the next iteration, helps avoid a Github too many requests error
-          ThreadUtil.sleep(250);
-        } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
-          throw e;
+  void addDownloadListener(final DownloadListener downloadListener) {
+    downloadListeners.add(downloadListener);
+  }
+
+  void removeDownloadListener(final DownloadListener downloadListener) {
+    downloadListeners.remove(downloadListener);
+  }
+
+  void accept(final DownloadFileDescription download) {
+    synchronized (lock) {
+      if (isNewDownload(download)) {
+        pendingDownloads.add(new DownloadFile(download, new Listener()));
+        updateQueue();
+      }
+    }
+  }
+
+  private boolean isNewDownload(final DownloadFileDescription download) {
+    assert Thread.holdsLock(lock);
+
+    return !containsDownload(pendingDownloads, download)
+        && !containsDownload(activeDownloads, download);
+  }
+
+  private static boolean containsDownload(
+      final Collection<DownloadFile> downloadFiles,
+      final DownloadFileDescription download) {
+    return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
+  }
+
+  private void updateQueue() {
+    assert Thread.holdsLock(lock);
+
+    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS && !pendingDownloads.isEmpty()) {
+      final DownloadFile downloadFile = pendingDownloads.remove();
+      downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
+      activeDownloads.add(downloadFile);
+    }
+  }
+
+  void cancelDownloads() {
+    synchronized (lock) {
+      for (final DownloadFile download : pendingDownloads) {
+        download.cancelDownload(); // CAUTION: calling out to external code while holding lock
+        terminatedDownloads.add(download);
+      }
+      pendingDownloads.clear();
+
+      for (final DownloadFile download : activeDownloads) {
+        download.cancelDownload(); // CAUTION: calling out to external code while holding lock
+        terminatedDownloads.add(download);
+      }
+      activeDownloads.clear();
+    }
+  }
+
+  Set<DownloadFile> pollTerminatedDownloads() {
+    synchronized (lock) {
+      final Set<DownloadFile> set = new HashSet<>(terminatedDownloads);
+      terminatedDownloads.clear();
+      return set;
+    }
+  }
+
+  Set<DownloadFile> getActiveDownloads() {
+    synchronized (lock) {
+      return new HashSet<>(activeDownloads);
+    }
+  }
+
+  Set<DownloadFile> getPendingDownloads() {
+    synchronized (lock) {
+      return new HashSet<>(pendingDownloads);
+    }
+  }
+
+  Set<DownloadFile> getDownloads() {
+    synchronized (lock) {
+      final Set<DownloadFile> result = getPendingDownloads();
+      result.addAll(activeDownloads);
+      result.addAll(pollTerminatedDownloads());
+      return result;
+    }
+  }
+
+  private final class Listener implements DownloadListener {
+    @Override
+    public void downloadStarted(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadStarted(download));
+    }
+
+    @Override
+    public void downloadUpdated(final DownloadFileDescription download, final long bytesReceived) {
+      downloadListeners.forEach(it -> it.downloadUpdated(download, bytesReceived));
+    }
+
+    @Override
+    public void downloadStopped(final DownloadFileDescription download) {
+      downloadListeners.forEach(it -> it.downloadStopped(download));
+
+      synchronized (lock) {
+        final Iterator<DownloadFile> iterator = activeDownloads.iterator();
+        while (iterator.hasNext()) {
+          final DownloadFile downloadFile = iterator.next();
+          if (downloadFile.isDone()) {
+            iterator.remove();
+            terminatedDownloads.add(downloadFile);
+            break;
+          }
         }
+        updateQueue();
       }
-    }).start();
-  }
-
-  private void startNextDownloads() {
-    final long downloadingCount = countDownloadsInProgress();
-    if (downloadMap != null && downloadingCount < MAX_CONCURRENT_DOWNLOAD) {
-      startNextDownload();
-    }
-  }
-
-
-  private long countDownloadsInProgress() {
-    return count(download -> download.isInProgress());
-  }
-
-
-  private long count(final Predicate<DownloadFile> filter) {
-    return downloadMap.keySet().stream().filter(filter).count();
-  }
-
-  private void startNextDownload() {
-    for (final Map.Entry<DownloadFile, Runnable> download : downloadMap.entrySet()) {
-      if (download.getKey().isWaiting()) {
-        new Thread(download.getValue()).start();
-        download.getKey().startAsyncDownload(ClientFileSystemHelper.createTempFile());
-        break;
-      }
-    }
-  }
-
-  /**
-   * Queues up a download request, sending notification when the download is started, when the download progress is
-   * updated, and when the download is complete.
-   *
-   * @param download A single map download to queue, may or may not be started immediately.
-   * @param startedListener A listener that is called when this specific download is started.
-   * @param progressUpdateListener A listener for progress updates, the value passed to the progress listener will be
-   *        the size of the downloaded file in bytes.
-   * @param completionListener A listener that is called when this specific download finishes.
-   */
-  void accept(
-      final DownloadFileDescription download,
-      final Runnable startedListener,
-      final Consumer<Long> progressUpdateListener,
-      final Runnable completionListener) {
-    // To avoid double acceptance, hold a lock while we check the 'downloadSet'
-    synchronized (this) {
-      if (downloadSet.contains(download)) {
-        return;
-      } else {
-        downloadSet.add(download);
-      }
-    }
-
-    final DownloadFile downloadFile = new DownloadFile(download, progressUpdateListener, completionListener);
-    downloadMap.put(downloadFile, startedListener);
-  }
-
-  /**
-   * Will prevent any new downloads from starting. Downloads in progress will continue, but they
-   * are downloaded to a temp file which will not be moved after cancel.
-   */
-  public void cancelDownloads() {
-    cancelled = true;
-    for (final DownloadFile download : downloadMap.keySet()) {
-      download.cancelDownload();
     }
   }
 }

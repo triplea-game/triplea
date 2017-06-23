@@ -59,7 +59,7 @@ public class MainMenuPane extends BorderPane {
     loader.setController(this);
     loader.load();
     this.triplea = triplea;
-    version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getFullVersion()));
+    version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     downloadPane = triplea.addRootContent(new DownloadPane(triplea));
     downloadPane.setVisible(false);
     settingsPane = triplea.addRootContent(new SettingsPane(triplea));

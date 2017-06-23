@@ -119,9 +119,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
     m_CANCEL_MOVE_ACTION.setEnabled(true);
   }
 
-  /**
-   * @return m_bridge.getGameData()
-   */
   protected final GameData getGameData() {
     return m_bridge.getGameData();
   }

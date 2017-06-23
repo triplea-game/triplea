@@ -23,12 +23,12 @@ import games.strategy.net.OpenFileUtility;
 import games.strategy.util.Version;
 
 class EngineVersionProperties {
+  private static final String TRIPLEA_VERSION_LINK =
+      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
   private final Version latestVersionOut;
   private final String link;
   private final String linkAlt;
   private final String changelogLink;
-  private static final String TRIPLEA_VERSION_LINK =
-      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
 
   private EngineVersionProperties() {
     this(getProperties());
@@ -36,7 +36,7 @@ class EngineVersionProperties {
 
   private EngineVersionProperties(final Properties props) {
     latestVersionOut =
-        new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
+        new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull(".")));
     link = props.getProperty("LINK", "http://triplea-game.github.io/");
     linkAlt = props.getProperty("LINK_ALT", "http://triplea-game.github.io/download/");
     changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
@@ -99,7 +99,7 @@ class EngineVersionProperties {
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getFullVersion());
+    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getExactVersion());
     text.append("<br />Latest version available for download: ").append(getLatestVersionOut());
     text.append("<br /><br />Click to download: <a class=\"external\" href=\"").append(getLinkToDownloadLatestVersion())
         .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");

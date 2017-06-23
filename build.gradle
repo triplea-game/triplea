@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
-    id 'com.install4j.gradle' version '6.1.2'
+    id 'com.install4j.gradle' version '6.1.5'
     id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
@@ -164,7 +164,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
         into('icons')
         exclude("icon.icns")
     }
-    ['readme.html', 'changelog.txt', 'game_engine.properties', 'lobby_server.yaml',
+    ['readme.html', 'changelog.txt', 'game_engine.properties',
      'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
      'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
         from(fileName)

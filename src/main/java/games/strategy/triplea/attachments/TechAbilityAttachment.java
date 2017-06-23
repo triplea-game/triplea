@@ -23,7 +23,6 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -1269,7 +1268,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              new CompositeMatchAnd<>(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
+              Match.all(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
           final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {

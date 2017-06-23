@@ -21,8 +21,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
@@ -91,7 +89,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -151,9 +149,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<>();
-      enemyNonCom.add(Matches.UnitIsInfrastructure);
-      enemyNonCom.add(Matches.enemyUnit(player, data));
+      final Match<Unit> enemyNonCom = Match.all(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
       m_bridge.addChange(ChangeFactory.markNoMovementChange(units));

@@ -14,6 +14,13 @@ import javax.swing.border.LineBorder;
 public class ProgressWindow extends JWindow {
   private static final long serialVersionUID = 4102671321734509406L;
 
+  /**
+   * Initializes a new instance of the {@code ProgressWindow} class.
+   *
+   * @param owner The frame from which the window is displayed; if {@code null} the shared owner will be used and this
+   *        window will not be focusable.
+   * @param title The progress message; may be {@code null}.
+   */
   public ProgressWindow(final Frame owner, final String title) {
     super(owner);
     final JLabel label = new JLabel(title);
@@ -30,5 +37,6 @@ public class ProgressWindow extends JWindow {
     setSize(200, 80);
     add(panel, BorderLayout.CENTER);
     pack();
+    setLocationRelativeTo(owner);
   }
 }

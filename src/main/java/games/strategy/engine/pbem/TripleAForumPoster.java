@@ -172,6 +172,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
     clone.setPassword(getPassword());
     clone.setUsername(getUsername());
+    clone.setPasswordSaved(isPasswordSaved());
     return clone;
   }
 

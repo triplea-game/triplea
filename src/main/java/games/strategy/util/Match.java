@@ -1,6 +1,10 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.util.PredicateUtils.not;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A utilty for seeing which elements in a collection satisfy a given condition.
@@ -20,15 +25,34 @@ import java.util.Set;
  * Static utility methods allow you to find what elements in a collection satisfy a match,
  * count the number of matches, see if any elements match etc.
  * </p>
+ *
+ * @param <T> The type of object that is tested by the match condition.
  */
 public abstract class Match<T> {
+  @SuppressWarnings("rawtypes")
+  private static final Match ALWAYS = Match.of(it -> true);
 
-  public static <T> Match<T> getAlwaysMatch() {
-    return new AlwaysMatch<>();
+  @SuppressWarnings("rawtypes")
+  private static final Match NEVER = Match.of(it -> false);
+
+  /**
+   * Returns a match whose condition is always satisfied.
+   *
+   * @return A match; never {@code null}.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> Match<T> always() {
+    return ALWAYS;
   }
 
-  public static <T> Match<T> getNeverMatch() {
-    return new NeverMatch<>();
+  /**
+   * Returns a match whose condition is never satisfied.
+   *
+   * @return A match; never {@code null}.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> Match<T> never() {
+    return NEVER;
   }
 
   /**
@@ -141,22 +165,136 @@ public abstract class Match<T> {
   public abstract boolean match(T o);
 
   public final Match<T> invert() {
-    return new InverseMatch<>(this);
+    return Match.of(not(this::match));
   }
-}
 
+  /**
+   * Creates a new match for the specified condition.
+   *
+   * @param condition The match condition; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> of(final Predicate<T> condition) {
+    checkNotNull(condition);
 
-class NeverMatch<T> extends Match<T> {
-  @Override
-  public boolean match(final T o) {
-    return false;
+    return new Match<T>() {
+      @Override
+      public boolean match(final T value) {
+        return condition.test(value);
+      }
+    };
   }
-}
 
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
+   *
+   * @param matches An array of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  @SafeVarargs
+  public static <T> Match<T> all(final Match<T>... matches) {
+    checkNotNull(matches);
 
-class AlwaysMatch<T> extends Match<T> {
-  @Override
-  public boolean match(final T o) {
-    return true;
+    return all(Arrays.asList(matches));
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
+   *
+   * @param matches A collection of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> all(final Collection<Match<T>> matches) {
+    checkNotNull(matches);
+
+    return Match.of(value -> matches.stream().allMatch(match -> match.match(value)));
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
+   *
+   * @param matches An array of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  @SafeVarargs
+  public static <T> Match<T> any(final Match<T>... matches) {
+    checkNotNull(matches);
+
+    return any(Arrays.asList(matches));
+  }
+
+  /**
+   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
+   *
+   * @param matches A collection of matches; must not be {@code null}.
+   *
+   * @return A new match; never {@code null}.
+   */
+  public static <T> Match<T> any(final Collection<Match<T>> matches) {
+    checkNotNull(matches);
+
+    return Match.of(value -> matches.stream().anyMatch(match -> match.match(value)));
+  }
+
+  /**
+   * Creates a new builder for incrementally constructing composite matches.
+   *
+   * @return A new composite match builder; never {@code null}.
+   */
+  public static <T> CompositeBuilder<T> newCompositeBuilder() {
+    return new CompositeBuilder<>();
+  }
+
+  /**
+   * A builder for incrementally constructing composite matches.
+   *
+   * <p>
+   * Instances of this class are not thread safe.
+   * </p>
+   *
+   * @param <T> The type of object that is tested by the match condition.
+   */
+  public static final class CompositeBuilder<T> {
+    private final Collection<Match<T>> matches = new ArrayList<>();
+
+    private CompositeBuilder() {}
+
+    /**
+     * Adds a new condition to the composite match under construction.
+     *
+     * @param match A match; must not be {@code null}.
+     *
+     * @return This builder; never {@code null}.
+     */
+    public CompositeBuilder<T> add(final Match<T> match) {
+      checkNotNull(match);
+
+      matches.add(match);
+      return this;
+    }
+
+    /**
+     * Creates a new match whose condition is satisfied if the test object matches all of the conditions added to this
+     * builder.
+     *
+     * @return A new match; never {@code null}.
+     */
+    public Match<T> all() {
+      return Match.all(matches);
+    }
+
+    /**
+     * Creates a new match whose condition is satisfied if the test object matches any of the conditions added to this
+     * builder.
+     *
+     * @return A new match; never {@code null}.
+     */
+    public Match<T> any() {
+      return Match.any(matches);
+    }
   }
 }

@@ -47,7 +47,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1503,7 +1502,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     for (final UnitType ut : uMap.keySet()) {
       final int removeNum = uMap.getInt(ut);
       final Collection<Unit> toRemove = Match.getNMatches(terr.getUnits().getUnits(), removeNum,
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
+          Match.all(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
       if (!toRemove.isEmpty()) {
         totalRemoved.addAll(toRemove);
         change.add(ChangeFactory.removeUnits(terr, toRemove));
@@ -2542,165 +2541,75 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Match<TriggerAttachment> prodMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getFrontier() != null;
-      }
-    };
+    return Match.of(t -> t.getFrontier() != null);
   }
 
   public static Match<TriggerAttachment> prodFrontierEditMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getProductionRule() != null && t.getProductionRule().size() > 0;
-      }
-    };
+    return Match.of(t -> t.getProductionRule() != null && t.getProductionRule().size() > 0);
   }
 
   public static Match<TriggerAttachment> techMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getTech().isEmpty();
-      }
-    };
+    return Match.of(t -> !t.getTech().isEmpty());
   }
 
   public static Match<TriggerAttachment> techAvailableMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getAvailableTech() != null;
-      }
-    };
+    return Match.of(t -> t.getAvailableTech() != null);
   }
 
   public static Match<TriggerAttachment> removeUnitsMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getRemoveUnits() != null;
-      }
-    };
+    return Match.of(t -> t.getRemoveUnits() != null);
   }
 
   public static Match<TriggerAttachment> placeMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getPlacement() != null;
-      }
-    };
+    return Match.of(t -> t.getPlacement() != null);
   }
 
   public static Match<TriggerAttachment> purchaseMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getPurchase() != null;
-      }
-    };
+    return Match.of(t -> t.getPurchase() != null);
   }
 
   public static Match<TriggerAttachment> resourceMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getResource() != null && t.getResourceCount() != 0;
-      }
-    };
+    return Match.of(t -> t.getResource() != null && t.getResourceCount() != 0);
   }
 
   public static Match<TriggerAttachment> supportMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getSupport() != null;
-      }
-    };
+    return Match.of(t -> t.getSupport() != null);
   }
 
   public static Match<TriggerAttachment> changeOwnershipMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getChangeOwnership().isEmpty();
-      }
-    };
+    return Match.of(t -> !t.getChangeOwnership().isEmpty());
   }
 
   public static Match<TriggerAttachment> unitPropertyMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
-      }
-    };
+    return Match.of(t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null);
   }
 
   public static Match<TriggerAttachment> territoryPropertyMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
-      }
-    };
+    return Match.of(t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null);
   }
 
   public static Match<TriggerAttachment> playerPropertyMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getPlayerProperty() != null;
-      }
-    };
+    return Match.of(t -> t.getPlayerProperty() != null);
   }
 
   public static Match<TriggerAttachment> relationshipTypePropertyMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
-      }
-    };
+    return Match.of(t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null);
   }
 
   public static Match<TriggerAttachment> territoryEffectPropertyMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
-      }
-    };
+    return Match.of(t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null);
   }
 
   public static Match<TriggerAttachment> relationshipChangeMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getRelationshipChange().isEmpty();
-      }
-    };
+    return Match.of(t -> !t.getRelationshipChange().isEmpty());
   }
 
   public static Match<TriggerAttachment> victoryMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getVictory() != null && t.getVictory().length() > 0;
-      }
-    };
+    return Match.of(t -> t.getVictory() != null && t.getVictory().length() > 0);
   }
 
   public static Match<TriggerAttachment> activateTriggerMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return !t.getActivateTrigger().isEmpty();
-      }
-    };
+    return Match.of(t -> !t.getActivateTrigger().isEmpty());
   }
 
   @Override

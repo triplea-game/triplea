@@ -40,6 +40,7 @@ public class EmailSenderEditor extends EditorPanel {
   private final JLabel portLabel = new JLabel("Port:");
   private final JButton testEmail = new JButton("Test Email");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
+  private final JCheckBox passwordSaved = new JCheckBox("Remember my password");
 
   /**
    * creates a new instance.
@@ -58,7 +59,9 @@ public class EmailSenderEditor extends EditorPanel {
     toAddress.setText(genericEmailSender.getToAddress());
     login.setText(genericEmailSender.getUserName());
     password.setText(genericEmailSender.getPassword());
+    passwordSaved.setSelected(genericEmailSender.isPasswordSaved());
     useTls.setSelected(genericEmailSender.getEncryption() == GenericEmailSender.Encryption.TLS);
+
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -83,6 +86,11 @@ public class EmailSenderEditor extends EditorPanel {
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(passwordSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
+        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
     if (editorConfiguration.showHost) {
       row++;
       add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
@@ -128,8 +136,21 @@ public class EmailSenderEditor extends EditorPanel {
     port.getDocument().addDocumentListener(listener);
     password.getDocument().addDocumentListener(listener);
     toAddress.getDocument().addDocumentListener(listener);
+    passwordSaved.addActionListener(e -> passwordSavedChanged());
     useTls.addActionListener(e -> fireEditorChanged());
     testEmail.addActionListener(e -> testEmail());
+  }
+
+  private void passwordSavedChanged() {
+    fireEditorChanged();
+
+    if (passwordSaved.isSelected()) {
+      GameRunner.showMessageDialog(
+          "Your password will be stored unencrypted in the local file system. "
+              + "You should not choose to remember your password if this makes you uncomfortable.",
+          GameRunner.Title.of("Security Warning"),
+          JOptionPane.WARNING_MESSAGE);
+    }
   }
 
   /**
@@ -197,6 +218,7 @@ public class EmailSenderEditor extends EditorPanel {
     genericEmailSender.setHost(host.getText());
     genericEmailSender.setUserName(login.getText());
     genericEmailSender.setPassword(password.getText());
+    genericEmailSender.setPasswordSaved(passwordSaved.isSelected());
     int port = 0;
     try {
       port = Integer.parseInt(this.port.getText());

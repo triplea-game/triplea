@@ -16,8 +16,6 @@ import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -50,7 +48,6 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // Start event
       m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
       for (final TechAdvance advance : advances) {
-        // advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
         TechTracker.addAdvance(m_player, m_bridge, advance);
       }
     }
@@ -60,9 +57,9 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = Match.all(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
+          Match.any(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
               TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(

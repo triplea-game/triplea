@@ -383,7 +383,7 @@ public class ProAI extends AbstractAI {
 
     // Interleave carriers and planes
     final List<Unit> interleavedTargetList =
-        new ArrayList<>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+        new ArrayList<>(ProTransportUtils.interleaveUnitsCarriersAndPlanes(selectFromSorted, 0));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }

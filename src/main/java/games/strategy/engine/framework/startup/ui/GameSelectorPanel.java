@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -131,7 +131,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void createComponents() {
     engineVersionLabel = new JLabel("Engine Version:");
-    final String version = ClientContext.engineVersion().getFullVersion();
+    final String version = ClientContext.engineVersion().getExactVersion();
     engineVersionText = new JLabel(version);
     nameLabel = new JLabel("Map Name:");
     versionLabel = new JLabel("Map Version:");

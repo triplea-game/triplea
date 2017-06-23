@@ -29,7 +29,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
-import tools.map.making.JTextAreaOptionPane;
 
 public class AutoPlacementFinder {
   private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;

@@ -31,8 +31,6 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -79,9 +77,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> technologyDelegateTriggerMatch = Match.all(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.techAvailableMatch()));
+          Match.any(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
@@ -210,7 +208,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return new TechResults("No more available tech advances.");
     }
     final String annotation = m_player.getName() + " rolling for tech.";
-    int[] random;
+    final int[] random;
     int techHits = 0;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
@@ -255,7 +253,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
       m_bridge.addChange(removeTokens);
     }
-    Collection<TechAdvance> advances;
+    final Collection<TechAdvance> advances;
     if (isRevisedModel) {
       if (techHits > 0) {
         advances = Collections.singletonList(techToRollFor.getTechs().get(0));
@@ -372,7 +370,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
     final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
-    int[] random;
+    final int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
       final ITripleAPlayer tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
@@ -416,7 +414,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
-    // Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data, techCategory);
     final Collection<TechAdvance> playersAdvances =
         TechTracker.getCurrentTechAdvances(m_bridge.getPlayerID(), getData());
     final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);

@@ -41,7 +41,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
@@ -53,7 +52,7 @@ import games.strategy.util.Tuple;
  * was being dduplicated all over the place.
  */
 public class BattleCalculator {
-  private static Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
+  private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
   public static void clearOOLCache() {
     oolCache.clear();
@@ -123,12 +122,12 @@ public class BattleCalculator {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
         if (isRollAAIndividually(data)) {
-          return IndividuallyFiredAACasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
+          return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
         }
         if (isRandomAACasualties(data)) {
-          return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+          return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
         }
-        return IndividuallyFiredAACasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
+        return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
       }
     }
   }
@@ -193,7 +192,6 @@ public class BattleCalculator {
     final Triple<Integer, Integer, Boolean> triple =
         DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, data, false);
-    // final int totalPower = triple.getFirst();
     final boolean allSameAttackPower = triple.getThird();
     // multiple HP units need to be counted multiple times:
     final List<Unit> planesList = new ArrayList<>();
@@ -223,7 +221,7 @@ public class BattleCalculator {
     final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
     if (!allSameAttackPower || tooManyHitsToDoGroups || chosenDiceSize % highestAttack != 0) {
       // we have too many hits, so just pick randomly
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     } else {
       // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1
       // fighter to die for sure.
@@ -333,7 +331,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties randomly.
    */
-  public static CasualtyDetails RandomAACasualties(final Collection<Unit> planes, final DiceRoll dice,
+  public static CasualtyDetails randomAaCasualties(final Collection<Unit> planes, final DiceRoll dice,
       final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<>(planes);
@@ -391,7 +389,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties based on individual AA shots at each aircraft.
    */
-  private static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
+  private static CasualtyDetails individuallyFiredAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
@@ -401,14 +399,14 @@ public class BattleCalculator {
     final int planeHitPoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
 
     if (DiceRoll.getTotalAAattacks(defendingAa, planes) != planeHitPoints) {
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =
         DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, bridge.getData(), false);
     final boolean allSameAttackPower = triple.getThird();
     if (!allSameAttackPower) {
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Tuple<Integer, Integer> attackThenDiceSides =
         DiceRoll.getAAattackAndMaxDiceSides(defendingAa, bridge.getData(), !defending);
@@ -475,13 +473,13 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
-    ITripleAPlayer tripleaPlayer;
+    final ITripleAPlayer tripleaPlayer;
     if (player.isNull()) {
       tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     } else {
       tripleaPlayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
     }
-    Map<Unit, Collection<Unit>> dependents;
+    final Map<Unit, Collection<Unit>> dependents;
     if (headLess) {
       dependents = Collections.emptyMap();
     } else {
@@ -595,7 +593,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    final Match<Unit> aMatch = Match.all(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
     killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
@@ -963,11 +961,6 @@ public class BattleCalculator {
    * Therefore, this map should NOT be used for Purchasing information!
    */
   public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
-    /*
-     * if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() >
-     * 0)
-     * return s_costsForTuvForAllPlayersMergedAndAveraged;
-     */
     final Resource pus;
     data.acquireReadLock();
     try {
@@ -1345,34 +1338,22 @@ public class BattleCalculator {
       final Collection<TerritoryEffect> territoryEffects) {
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
-    int rolls;
-    if (defending) {
-      rolls = ua.getDefenseRolls(current.getOwner());
-    } else {
-      rolls = ua.getAttackRolls(current.getOwner());
-    }
-    // int strength = 0;
+    final int rolls = (defending) ?  ua.getDefenseRolls(current.getOwner()) :
+        ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;
     // Find the strength the unit has without support
     // lhtr heavy bombers take best of n dice for both attack and defense
     if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-      if (defending) {
-        strengthWithoutSupport = ua.getDefense(current.getOwner());
-      } else {
-        strengthWithoutSupport = ua.getAttack(current.getOwner());
-      }
+      strengthWithoutSupport = (defending) ? ua.getDefense(current.getOwner()) :
+        ua.getAttack(current.getOwner());
       strengthWithoutSupport +=
           TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
       // just add one like LL if we are LHTR bombers
       strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
     } else {
       for (int i = 0; i < rolls; i++) {
-        int tempStrength;
-        if (defending) {
-          tempStrength = ua.getDefense(current.getOwner());
-        } else {
-          tempStrength = ua.getAttack(current.getOwner());
-        }
+        final int tempStrength = (defending) ? ua.getDefense(current.getOwner()) :
+            ua.getAttack(current.getOwner());
         strengthWithoutSupport +=
             TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
         strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());

@@ -42,7 +42,6 @@ public class AirBattle extends AbstractBattle {
   protected static final String DEFENDERS_FIRE = "Defenders Fire";
   protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
   protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
-  // protected final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
   protected final ExecutionStack m_stack = new ExecutionStack();
   protected List<String> m_steps;
   protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
@@ -150,7 +149,6 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          // getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
           if (!m_intercept) {
             return;
           }
@@ -306,7 +304,7 @@ public class AirBattle extends AbstractBattle {
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
-            .getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(bridge.getPlayerID(), m_data),
+            .getMatches(Match.all(Matches.enemyUnit(bridge.getPlayerID(), m_data),
                 Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
                 Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
@@ -632,31 +630,16 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Match<Unit> unitHasAirDefenseGreaterThanZero() {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0;
-      }
-    };
+    return Match.of(u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0);
   }
 
   private static Match<Unit> unitHasAirAttackGreaterThanZero() {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0;
-      }
-    };
+    return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
   }
 
   static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<>(Matches.unitCanAirBattle);
-        return canIntercept.match(u);
-      }
-    };
+    final Match<Unit> canIntercept = Matches.unitCanAirBattle;
+    return canIntercept;
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {

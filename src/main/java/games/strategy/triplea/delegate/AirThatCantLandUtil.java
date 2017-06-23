@@ -14,8 +14,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 /**
  * Utility for detecting and removing units that can't land at the end of a phase.
@@ -41,9 +40,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
-      ownedAir.add(Matches.UnitIsAir);
-      ownedAir.add(Matches.unitIsOwnedBy(player));
+      final Match<Unit> ownedAir = Match.all(Matches.UnitIsAir, Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
@@ -58,9 +55,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<>();
-      ownedAir.add(Matches.UnitIsAir);
-      ownedAir.add(Matches.alliedUnit(player, data));
+      final Match<Unit> ownedAir = Match.all(Matches.UnitIsAir, Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;

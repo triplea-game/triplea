@@ -24,7 +24,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -216,7 +215,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
       final Collection<Unit> overMax = new ArrayList<>(units);
-      overMax.removeAll(Match.getNMatches(units, airborneCapacity, Match.getAlwaysMatch()));
+      overMax.removeAll(Match.getNMatches(units, airborneCapacity, Match.always()));
       for (final Unit u : overMax) {
         result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
       }
@@ -292,7 +291,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+    return Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }
@@ -343,15 +342,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public int PUsAlreadyLost(final Territory t) {
-    // Auto-generated method stub
+  public int pusAlreadyLost(final Territory t) {
     return 0;
   }
 
   @Override
-  public void PUsLost(final Territory t, final int amt) {
-    // Auto-generated method stub
-  }
+  public void pusLost(final Territory t, final int amt) {}
 }
 
 

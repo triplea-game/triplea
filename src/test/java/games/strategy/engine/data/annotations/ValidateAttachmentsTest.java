@@ -127,10 +127,6 @@ public class ValidateAttachmentsTest {
     result.add(UnitAttachment.class);
     result.add(UnitSupportAttachment.class);
     result.add(TechAbilityAttachment.class);
-    // result.add(AbstractConditionsAttachment.class);
-    // result.add(AbstractPlayerRulesAttachment.class);
-    // result.add(AbstractRulesAttachment.class);
-    // result.add(AbstractTriggerAttachment.class);
     return result;
   }
 
@@ -173,12 +169,7 @@ public class ValidateAttachmentsTest {
   }
 
   // file to find classes or directory
-  static FileFilter s_classOrDirectory = new FileFilter() {
-    @Override
-    public boolean accept(final File file) {
-      return file.isDirectory() || file.getName().endsWith(".class");
-    }
-  };
+  static FileFilter s_classOrDirectory = file -> file.isDirectory() || file.getName().endsWith(".class");
 
   /**
    * Recursive method to find all classes that implement IAttachment and validate that they use the @GameProperty
@@ -207,7 +198,7 @@ public class ValidateAttachmentsTest {
       if (isSkipClass(className)) {
         return "";
       }
-      Class<?> clazz;
+      final Class<?> clazz;
       try {
         clazz = Class.forName(className);
         if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) {
@@ -282,7 +273,7 @@ public class ValidateAttachmentsTest {
             .append(": I must have missed a possibility");
         continue;
       }
-      Method getter;
+      final Method getter;
       final GameProperty annotation = setter.getAnnotation(GameProperty.class);
       if (annotation == null) {
         sb.append("Class ").append(clazz.getCanonicalName()).append(" has ").append(setter.getName())
@@ -294,8 +285,6 @@ public class ValidateAttachmentsTest {
       }
       // the property name must be derived from the method name
       final String propertyName = getPropertyName(setter);
-      // For debug purposes only
-      // sb.append("TESTING: Class " + clazz.getCanonicalName() + ", setter property " + propertyName + "\n");
       // if this is a deprecated setter, we skip it now
       if (setter.getAnnotation(Deprecated.class) != null) {
         continue;
@@ -349,7 +338,7 @@ public class ValidateAttachmentsTest {
       if (annotation.adds()) {
         // check that there is a clear method
         final String clearName = "clear" + capitalizeFirstLetter(propertyName);
-        Method clearMethod = null;
+        final Method clearMethod;
         try {
           clearMethod = clazz.getMethod(clearName);
         } catch (final NoSuchMethodException e) {
@@ -363,12 +352,9 @@ public class ValidateAttachmentsTest {
         }
       } else if (!Modifier.isAbstract(clazz.getModifiers())) {
         // check the symmetry of regular setters
-        @SuppressWarnings("unused")
-        String method = null;
         try {
           final Constructor<? extends IAttachment> constructor =
               clazz.getConstructor(IAttachment.attachmentConstructorParameter);
-          method = constructor.toString();
           final IAttachment attachment = constructor.newInstance("testAttachment", null, null);
           Object value = null;
           if (field.getType().equals(Integer.TYPE)) {
@@ -381,13 +367,11 @@ public class ValidateAttachmentsTest {
             // we do not handle complex types for now
             continue;
           }
-          method = setter.toString();
           if (setter.getParameterTypes()[0] == String.class) {
             setter.invoke(attachment, String.valueOf(value));
           } else {
             setter.invoke(attachment, value);
           }
-          method = getter.toString();
           final Object getterValue = getter.invoke(attachment);
           if (!value.equals(getterValue)) {
             sb.append("Class ").append(clazz.getCanonicalName()).append(", value set could not be obtained using ")
@@ -415,7 +399,6 @@ public class ValidateAttachmentsTest {
         } catch (final InvocationTargetException e) {
           // this only occurs if the constructor/getter or setter throws an exception, Usually it is because we pass
           // null to the constructor
-          // sb.append("Warning calling " + method + " threw exception " + e.getTargetException().getClass() + "\n");
         }
       }
     }

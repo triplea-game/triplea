@@ -18,18 +18,17 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -62,7 +61,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
-import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -72,10 +70,10 @@ import games.strategy.util.Tuple;
  */
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
-  private static Logger logger = Logger.getLogger(MapPanel.class.getName());
-  private final ListenerList<MapSelectionListener> mapSelectionListeners = new ListenerList<>();
-  private final ListenerList<UnitSelectionListener> unitSelectionListeners = new ListenerList<>();
-  private final ListenerList<MouseOverUnitListener> mouseOverUnitsListeners = new ListenerList<>();
+  private static final Logger logger = Logger.getLogger(MapPanel.class.getName());
+  private final List<MapSelectionListener> mapSelectionListeners = new CopyOnWriteArrayList<>();
+  private final List<UnitSelectionListener> unitSelectionListeners = new CopyOnWriteArrayList<>();
+  private final List<MouseOverUnitListener> mouseOverUnitsListeners = new CopyOnWriteArrayList<>();
   private GameData m_data;
   // the territory that the mouse is
   private Territory currentTerritory;
@@ -119,11 +117,11 @@ public class MapPanel extends ImageScrollerLargeView {
         new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
-      
+
       private boolean is4Pressed = false;
       private boolean is5Pressed = false;
       private int lastActive = -1;
-      
+
       /**
        * Invoked when the mouse exits a component.
        */
@@ -149,12 +147,12 @@ public class MapPanel extends ImageScrollerLargeView {
           notifyTerritorySelected(terr, md);
         }
         if (e.getButton() == 4 || e.getButton() == 5) {
-          //the numbers 4 and 5 stand for the corresponding mouse button
+          // the numbers 4 and 5 stand for the corresponding mouse button
           lastActive = is4Pressed && is5Pressed ? (e.getButton() == 4 ? 5 : 4) : -1;
-          //we only want to change the variables if the corresponding button was released
-          is4Pressed = e.getButton() == 4 ? false : is4Pressed;
-          is5Pressed = e.getButton() == 5 ? false : is5Pressed;
-          //we want to return here, because otherwise a menu might be opened
+          // we only want to change the variables if the corresponding button was released
+          is4Pressed = e.getButton() != 4 && is4Pressed;
+          is5Pressed = e.getButton() != 5 && is5Pressed;
+          // we want to return here, because otherwise a menu might be opened
           return;
         }
         if (!unitSelectionListeners.isEmpty()) {
@@ -168,14 +166,14 @@ public class MapPanel extends ImageScrollerLargeView {
 
       @Override
       public void mousePressed(final MouseEvent e) {
-        is4Pressed = e.getButton() == 4 ? true : is4Pressed;
-        is5Pressed = e.getButton() == 5 ? true : is5Pressed;
+        is4Pressed = e.getButton() == 4 || is4Pressed;
+        is5Pressed = e.getButton() == 5 || is5Pressed;
         if (lastActive == -1) {
           new Thread(() -> {
-            //Mouse Events are different than key events
-            //Thats why we're "simulating" multiple
-            //clicks while the mouse button is held down
-            //so the map keeps scrolling
+            // Mouse Events are different than key events
+            // Thats why we're "simulating" multiple
+            // clicks while the mouse button is held down
+            // so the map keeps scrolling
             while (lastActive != -1) {
               final int diffPixel = computeScrollSpeed.get();
               if (lastActive == 5) {
@@ -183,8 +181,8 @@ public class MapPanel extends ImageScrollerLargeView {
               } else if (lastActive == 4) {
                 setTopLeft(getXOffset() - diffPixel, getYOffset());
               }
-              //50ms seems to be a good interval between "clicks"
-              //changing this number changes the scroll speed
+              // 50ms seems to be a good interval between "clicks"
+              // changing this number changes the scroll speed
               ThreadUtil.sleep(50);
             }
           }).start();
@@ -219,7 +217,7 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       }
     });
-    this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(() -> repaint()));
+    this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(() -> {
       // super.deactivate
@@ -271,12 +269,12 @@ public class MapPanel extends ImageScrollerLargeView {
    * the units must all be in the same stack on the map, and exist in the given territory.
    * call with an null args
    */
-  public void setUnitHighlight(final Map<Territory, List<Unit>> units) {
+  void setUnitHighlight(final Map<Territory, List<Unit>> units) {
     highlightedUnits = units;
-    SwingUtilities.invokeLater(() -> repaint());
+    SwingUtilities.invokeLater(this::repaint);
   }
 
-  protected Map<Territory, List<Unit>> getHighlightedUnits() {
+  Map<Territory, List<Unit>> getHighlightedUnits() {
     return highlightedUnits;
   }
 
@@ -297,10 +295,10 @@ public class MapPanel extends ImageScrollerLargeView {
   /**
    * Set the route, could be null.
    */
-  public void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
+  void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
     if (route == null) {
       routeDescription = null;
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(this::repaint);
       return;
     }
     final RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
@@ -308,22 +306,22 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     routeDescription = newRouteDescription;
-    SwingUtilities.invokeLater(() -> repaint());
+    SwingUtilities.invokeLater(this::repaint);
   }
 
-  public void addMapSelectionListener(final MapSelectionListener listener) {
+  void addMapSelectionListener(final MapSelectionListener listener) {
     mapSelectionListeners.add(listener);
   }
 
-  public void removeMapSelectionListener(final MapSelectionListener listener) {
+  void removeMapSelectionListener(final MapSelectionListener listener) {
     mapSelectionListeners.remove(listener);
   }
 
-  public void addMouseOverUnitListener(final MouseOverUnitListener listener) {
+  void addMouseOverUnitListener(final MouseOverUnitListener listener) {
     mouseOverUnitsListeners.add(listener);
   }
 
-  public void removeMouseOverUnitListener(final MouseOverUnitListener listener) {
+  void removeMouseOverUnitListener(final MouseOverUnitListener listener) {
     mouseOverUnitsListeners.remove(listener);
   }
 
@@ -345,11 +343,11 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  public void addUnitSelectionListener(final UnitSelectionListener listener) {
+  void addUnitSelectionListener(final UnitSelectionListener listener) {
     unitSelectionListeners.add(listener);
   }
 
-  public void removeUnitSelectionListener(final UnitSelectionListener listener) {
+  void removeUnitSelectionListener(final UnitSelectionListener listener) {
     unitSelectionListeners.remove(listener);
   }
 
@@ -401,9 +399,8 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void resetMap() {
     tileManager.resetTiles(m_data, uiContext.getMapData());
-    SwingUtilities.invokeLater(() -> repaint());
+    SwingUtilities.invokeLater(this::repaint);
     initSmallMap();
-    // m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
   }
 
   private MouseDetails convert(final MouseEvent me) {
@@ -415,18 +412,11 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
-    // both are null
-    if (newUnits == currentUnits) {
-      return false;
-    }
-    // one is null
-    if (newUnits == null || currentUnits == null) {
-      return true;
-    }
-    if (!newUnits.getFirst().equals(currentUnits.getFirst())) {
-      return true;
-    }
-    return !games.strategy.util.Util.equals(newUnits.getSecond(), currentUnits.getSecond());
+    return newUnits != currentUnits
+        && (newUnits == null
+            || currentUnits == null
+            || !newUnits.getFirst().equals(currentUnits.getFirst())
+            || !games.strategy.util.Util.equals(newUnits.getSecond(), currentUnits.getSecond()));
   }
 
   public void updateCountries(final Collection<Territory> countries) {
@@ -441,17 +431,17 @@ public class MapPanel extends ImageScrollerLargeView {
   void setGameData(final GameData data) {
     // clean up any old listeners
     if (m_data != null) {
-      m_data.removeTerritoryListener(TERRITORY_LISTENER);
-      m_data.removeDataChangeListener(TECH_UPDATE_LISTENER);
+      m_data.removeTerritoryListener(territoryListener);
+      m_data.removeDataChangeListener(techUpdateListener);
     }
     m_data = data;
-    m_data.addTerritoryListener(TERRITORY_LISTENER);
-    m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
+    m_data.addTerritoryListener(territoryListener);
+    m_data.addDataChangeListener(techUpdateListener);
     clearUndrawn();
     tileManager.resetTiles(m_data, uiContext.getMapData());
   }
 
-  private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener() {
+  private final TerritoryListener territoryListener = new TerritoryListener() {
     @Override
     public void unitsChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
@@ -471,12 +461,12 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() -> repaint());
     }
   };
-  private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener() {
+  private final GameDataChangeListener techUpdateListener = new GameDataChangeListener() {
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       // find the players with tech changes
       final Set<PlayerID> playersWithTechChange = new HashSet<>();
-      getPlayersWithTechChanges(aChange, playersWithTechChange);
+      getPlayersWithTechChanges(change, playersWithTechChange);
       if (playersWithTechChange.isEmpty()) {
         return;
       }
@@ -484,15 +474,15 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() -> repaint());
     }
 
-    private void getPlayersWithTechChanges(final Change aChange, final Set<PlayerID> players) {
-      if (aChange instanceof CompositeChange) {
-        final CompositeChange composite = (CompositeChange) aChange;
+    private void getPlayersWithTechChanges(final Change change, final Set<PlayerID> players) {
+      if (change instanceof CompositeChange) {
+        final CompositeChange composite = (CompositeChange) change;
         for (final Change item : composite.getChanges()) {
           getPlayersWithTechChanges(item, players);
         }
       } else {
-        if (aChange instanceof ChangeAttachmentChange) {
-          final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) aChange;
+        if (change instanceof ChangeAttachmentChange) {
+          final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) change;
           if (changeAttachment.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
             players.add((PlayerID) changeAttachment.getAttachedTo());
           }
@@ -568,21 +558,21 @@ public class MapPanel extends ImageScrollerLargeView {
         if (fitAxisY && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
-          drawTiles(g2d, images, data, leftUpperBounds, 0, 0, undrawnTiles);
+          drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
             new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
-        drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+        drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
       if (fitAxisY && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
-        drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
+        drawTiles(g2d, images, data, upperBounds, undrawnTiles);
       }
     }
     // handle non overlap
     final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, images, data, mainBounds, 0, 0, undrawnTiles);
+    drawTiles(g2d, images, data, mainBounds, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
       t.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
@@ -649,11 +639,11 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  boolean mapWidthFitsOnScreen() {
+  private boolean mapWidthFitsOnScreen() {
     return m_model.getMaxWidth() < getScaledWidth();
   }
 
-  boolean mapHeightFitsOnScreen() {
+  private boolean mapHeightFitsOnScreen() {
     return m_model.getMaxHeight() < getScaledHeight();
   }
 
@@ -680,15 +670,9 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds,
-      final double overlapX, final double overlapY, final List<Tile> undrawn) {
+      final List<Tile> undrawn) {
     final List<Tile> tileList = tileManager.getTiles(bounds);
     bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
-    if (overlapX != 0) {
-      bounds.x += overlapX - getScaledWidth();
-    }
-    if (overlapY != 0) {
-      bounds.y += overlapY - getScaledHeight();
-    }
     for (final Tile tile : tileList) {
       Image img = null;
       tile.acquireLock();
@@ -757,15 +741,13 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   void initSmallMap() {
-    final Iterator<Territory> territories = m_data.getMap().getTerritories().iterator();
-    while (territories.hasNext()) {
-      final Territory territory = territories.next();
+    for (final Territory territory : m_data.getMap().getTerritories()) {
       smallMapImageManager.updateTerritoryOwner(territory, m_data, uiContext.getMapData());
     }
     smallMapImageManager.update(m_data, uiContext.getMapData());
   }
 
-  public void changeSmallMapOffscreenMap() {
+  void changeSmallMapOffscreenMap() {
     smallMapImageManager.updateOffscreenImage(uiContext.getMapImage().getSmallMapImage());
   }
 
@@ -773,7 +755,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(this::repaint);
       return;
     }
     final Tuple<Integer, Integer> movementLeft =
@@ -806,19 +788,19 @@ public class MapPanel extends ImageScrollerLargeView {
       getData().releaseReadLock();
     }
     mouseShadowImage = img;
-    SwingUtilities.invokeLater(() -> repaint());
+    SwingUtilities.invokeLater(this::repaint);
     g.dispose();
   }
 
-  public void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {
+  void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {
     tileManager.setTerritoryOverlay(territory, color, alpha, m_data, uiContext.getMapData());
   }
 
-  public void setTerritoryOverlayForBorder(final Territory territory, final Color color) {
+  void setTerritoryOverlayForBorder(final Territory territory, final Color color) {
     tileManager.setTerritoryOverlayForBorder(territory, color, m_data, uiContext.getMapData());
   }
 
-  public void clearTerritoryOverlay(final Territory territory) {
+  void clearTerritoryOverlay(final Territory territory) {
     tileManager.clearTerritoryOverlay(territory, m_data, uiContext.getMapData());
   }
 
@@ -834,62 +816,45 @@ public class MapPanel extends ImageScrollerLargeView {
     setCursor(hiddenCursor);
   }
 
-  public void showMouseCursor() {
+  void showMouseCursor() {
     setCursor(uiContext.getCursor());
   }
 
-  public Optional<Image> getErrorImage() {
+  Optional<Image> getErrorImage() {
     return uiContext.getMapData().getErrorImage();
   }
 
-  public Optional<Image> getWarningImage() {
+  Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
-  }
-
-  public Optional<Image> getInfoImage() {
-    return uiContext.getMapData().getInfoImage();
-  }
-
-  public Optional<Image> getHelpImage() {
-    return uiContext.getMapData().getHelpImage();
   }
 }
 
 
 class BackgroundDrawer implements Runnable {
-  // use a weak reference, if we see the panel is gc'd, then we can stop this thread
-  private final WeakReference<MapPanel> m_mapPanelRef;
+  private MapPanel mapPanel;
 
   BackgroundDrawer(final MapPanel panel) {
-    m_mapPanelRef = new WeakReference<>(panel);
+    mapPanel = panel;
   }
 
   public void stop() {
     // the thread will eventually wake up and notice we are done
-    m_mapPanelRef.clear();
+    mapPanel = null;
   }
 
   @Override
   public void run() {
-    while (m_mapPanelRef.get() != null) {
-      BlockingQueue<Tile> undrawnTiles;
-      MapPanel panel = m_mapPanelRef.get();
-      if (panel == null) {
-        continue;
-      }
+    while (mapPanel != null) {
+      final BlockingQueue<Tile> undrawnTiles;
+      final MapPanel panel = mapPanel;
       undrawnTiles = panel.getUndrawnTiles();
-      panel = null;
-      Tile tile;
+      final Tile tile;
       try {
         tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
       } catch (final InterruptedException e) {
         continue;
       }
       if (tile == null) {
-        continue;
-      }
-      final MapPanel mapPanel = m_mapPanelRef.get();
-      if (mapPanel == null) {
         continue;
       }
       final GameData data = mapPanel.getData();
@@ -899,7 +864,7 @@ class BackgroundDrawer implements Runnable {
       } finally {
         data.releaseReadLock();
       }
-      SwingUtilities.invokeLater(() -> mapPanel.repaint());
+      SwingUtilities.invokeLater(mapPanel::repaint);
     }
   }
 }

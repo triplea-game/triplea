@@ -10,4 +10,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.framework.headlessGameServer.HeadlessGameServer"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="triplea.game.host.console=true &#13;&#10;triplea.game= triplea.server=true &#13;&#10;triplea.port=3300&#13;&#10;triplea.lobby.host=127.0.0.1&#13;&#10;triplea.lobby.port=3300&#13;&#10;triplea.name=Bot1_TestServer &#13;&#10;triplea.lobby.game.hostedBy=Bot1_TestServer&#13;&#10;triplea.lobby.game.supportEmail=developer@gmail.com&#13;&#10;triplea.lobby.game.comments=automated_host"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="triplea"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
 </launchConfiguration>

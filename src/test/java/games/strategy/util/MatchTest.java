@@ -1,52 +1,27 @@
 package games.strategy.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class MatchTest {
-  Collection<Integer> ints = new ArrayList<>();
-  Match<Integer> pos = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o > 0;
-    }
-  };
-  Match<Integer> neg = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o < 0;
-    }
-  };
-  Match<Integer> zero = new Match<Integer>() {
-    @Override
-    public boolean match(final Integer o) {
-      return o == 0;
-    }
-  };
+  private static final Object VALUE = new Object();
 
-  @Before
-  public void setUp() {
-    ints.add(-1);
-    ints.add(-2);
-    ints.add(-3);
-    ints.add(0);
-    ints.add(1);
-    ints.add(2);
-    ints.add(3);
-  }
+  private final Collection<Integer> ints = Arrays.asList(-1, -2, -3, 0, 1, 2, 3);
+  private final Match<Integer> pos = Match.of(it -> it > 0);
+  private final Match<Integer> neg = Match.of(it -> it < 0);
+  private final Match<Integer> zero = Match.of(it -> it == 0);
 
   @Test
   public void testNever() {
-    assertTrue(!Match.someMatch(ints, Match.getNeverMatch()));
-    assertTrue(!Match.allMatch(ints, Match.getNeverMatch()));
-    assertEquals(0, Match.getMatches(ints, Match.getNeverMatch()).size());
+    assertFalse(Match.someMatch(ints, Match.never()));
+    assertFalse(Match.allMatch(ints, Match.never()));
   }
 
   @Test
@@ -60,41 +35,71 @@ public class MatchTest {
   }
 
   @Test
+  public void testInverse() {
+    assertFalse(Match.always().invert().match(new Object()));
+    assertTrue(Match.never().invert().match(new Object()));
+  }
+
+  @Test
   public void testAlways() {
-    assertTrue(Match.someMatch(ints, Match.getAlwaysMatch()));
-    assertTrue(Match.allMatch(ints, Match.getAlwaysMatch()));
-    assertEquals(7, Match.getMatches(ints, Match.getAlwaysMatch()).size());
+    assertTrue(Match.someMatch(ints, Match.always()));
+    assertTrue(Match.allMatch(ints, Match.always()));
+  }
+
+  @Test
+  public void testAll() {
+    assertTrue(Match.all().match(VALUE));
+
+    assertTrue(Match.all(Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.never()).match(VALUE));
+
+    assertTrue(Match.all(Match.always(), Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.always(), Match.never()).match(VALUE));
+    assertFalse(Match.all(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.all(Match.never(), Match.never()).match(VALUE));
   }
 
   @Test
   public void testAnd() {
+    assertTrue(new CompositeMatchAnd<>().match(0));
+
     CompositeMatch<Integer> and = new CompositeMatchAnd<>(pos, neg);
-    assertTrue(!and.match(1));
-    assertTrue(!Match.someMatch(ints, and));
-    assertTrue(!Match.someMatch(ints, and));
+    assertFalse(and.match(1));
+    assertFalse(Match.someMatch(ints, and));
+    assertFalse(Match.someMatch(ints, and));
     assertEquals(0, Match.getMatches(ints, and).size());
     and.add(zero);
-    assertTrue(!Match.someMatch(ints, and));
-    assertTrue(!Match.allMatch(ints, and));
+    assertFalse(Match.someMatch(ints, and));
+    assertFalse(Match.allMatch(ints, and));
     assertEquals(0, Match.getMatches(ints, and).size());
     and = new CompositeMatchAnd<>(pos, pos);
     assertTrue(and.match(1));
     assertTrue(Match.someMatch(ints, and));
-    assertTrue(!Match.allMatch(ints, and));
+    assertFalse(Match.allMatch(ints, and));
     assertEquals(3, Match.getMatches(ints, and).size());
   }
 
   @Test
-  public void testOr() {
-    final CompositeMatch<Integer> or = new CompositeMatchOr<>(pos, neg);
-    assertTrue(or.match(1));
-    assertTrue(Match.someMatch(ints, or));
-    assertTrue(!Match.allMatch(ints, or));
-    assertEquals(6, Match.getMatches(ints, or).size());
-    or.add(zero);
-    assertTrue(Match.someMatch(ints, or));
-    assertTrue(Match.allMatch(ints, or));
-    assertEquals(7, Match.getMatches(ints, or).size());
+  public void testAny() {
+    assertFalse(Match.any().match(VALUE));
+
+    assertTrue(Match.any(Match.always()).match(VALUE));
+    assertFalse(Match.any(Match.never()).match(VALUE));
+
+    assertTrue(Match.any(Match.always(), Match.always()).match(VALUE));
+    assertTrue(Match.any(Match.always(), Match.never()).match(VALUE));
+    assertTrue(Match.any(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.any(Match.never(), Match.never()).match(VALUE));
+  }
+
+  @Test
+  public void testGetMatches() {
+    assertEquals(Arrays.asList(), Match.getMatches(Arrays.asList(), Match.always()));
+
+    final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+    assertEquals(Arrays.asList(), Match.getMatches(input, Match.never()));
+    assertEquals(Arrays.asList(-1, 0, 1), Match.getMatches(input, Match.always()));
+    assertEquals(Arrays.asList(-1, 1), Match.getMatches(input, Match.of(value -> value != 0)));
   }
 
   @Test
@@ -103,7 +108,33 @@ public class MatchTest {
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.getAlwaysMatch()).size(), 3);
-    assertEquals(Match.getKeysWhereValueMatch(map, Match.getNeverMatch()).size(), 0);
+    assertEquals(3, Match.getKeysWhereValueMatch(map, Match.always()).size());
+    assertEquals(0, Match.getKeysWhereValueMatch(map, Match.never()).size());
+  }
+
+  @Test
+  public void testBuildAll() {
+    assertTrue(Match.newCompositeBuilder().all().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).all().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.always()).add(Match.never()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).add(Match.never()).all().match(VALUE));
+  }
+
+  @Test
+  public void testBuildAny() {
+    assertFalse(Match.newCompositeBuilder().any().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).any().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).any().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).add(Match.always()).any().match(VALUE));
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).add(Match.never()).any().match(VALUE));
+    assertTrue(Match.newCompositeBuilder().add(Match.never()).add(Match.always()).any().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).add(Match.never()).any().match(VALUE));
   }
 }

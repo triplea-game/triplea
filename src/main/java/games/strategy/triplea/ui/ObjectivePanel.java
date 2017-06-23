@@ -145,20 +145,20 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public ObjectiveTableModel() {
       setObjectiveStats();
-      m_data.addDataChangeListener(this);
+      gameData.addDataChangeListener(this);
       m_isDirty = true;
     }
 
     public void removeDataChangeListener() {
-      m_data.removeDataChangeListener(this);
+      gameData.removeDataChangeListener(this);
     }
 
     private void setObjectiveStats() {
       m_statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
-      final Collection<PlayerID> allPlayers = m_data.getPlayerList().getPlayers();
+      final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
-          IllegalCharacterRemover.replaceIllegalCharacter(m_data.getGameName(), '_').replaceAll(" ", "_").concat(".");
+          IllegalCharacterRemover.replaceIllegalCharacter(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
@@ -210,7 +210,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final PlayerID player = m_data.getPlayerList().getPlayerID(key[0]);
+        final PlayerID player = gameData.getPlayerList().getPlayerID(key[0]);
         if (player == null) {
           // could be an old map, or an old save, so we don't want to stop the game from running.
           System.err.println("objective.properties player does not exist: " + key[0]);
@@ -298,7 +298,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
         m_collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
@@ -316,7 +316,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           row++;
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
     }
 
@@ -396,11 +396,11 @@ public class ObjectivePanel extends AbstractStatPanel {
       if (!m_isDirty) {
         return m_collectedData.length;
       } else {
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
           return getRowTotal();
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
       }
     }
@@ -415,10 +415,10 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public synchronized void setGameData(final GameData data) {
       synchronized (this) {
-        m_data.removeDataChangeListener(this);
-        m_data = data;
+        gameData.removeDataChangeListener(this);
+        gameData = data;
         setObjectiveStats();
-        m_data.addDataChangeListener(this);
+        gameData.addDataChangeListener(this);
         m_isDirty = true;
       }
       repaint();
@@ -428,7 +428,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   @Override
   public void setGameData(final GameData data) {
     m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
-    m_data = data;
+    gameData = data;
     m_objectiveModel.setGameData(data);
     m_objectiveModel.gameDataChanged(null);
   }

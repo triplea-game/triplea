@@ -1004,7 +1004,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.getAlwaysMatch())));
+          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.always())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();
@@ -1728,7 +1728,6 @@ public class TripleAFrame extends MainGameFrame {
                 + "such as a move or battle phase.",
             "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
         data.acquireReadLock();
-        // m_data.acquireWriteLock();
         try {
           final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
           if (f != null) {

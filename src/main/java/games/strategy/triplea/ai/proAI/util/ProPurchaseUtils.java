@@ -36,7 +36,6 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
@@ -102,8 +101,7 @@ public class ProPurchaseUtils {
 
         // Find number of unit type that are already built and about to be placed
         int currentlyBuilt = 0;
-        final CompositeMatch<Unit> unitTypeOwnedBy =
-            new CompositeMatchAnd<>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+        final Match<Unit> unitTypeOwnedBy = Match.all(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

@@ -15,7 +15,6 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 
@@ -52,9 +51,9 @@ public class NewGameChooserEntry {
     }
 
     try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = GameRunner.getDelayedParsing();
+      final boolean delayParsing = true;
       gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
-      gameDataFullyLoaded = !delayParsing;
+      gameDataFullyLoaded = false;
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }

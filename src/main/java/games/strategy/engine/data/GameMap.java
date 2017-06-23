@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -394,7 +392,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Match<Territory> match) {
-    return getRoute(t1, t2, new CompositeMatchOr<>(Matches.territoryIs(t2), match));
+    return getRoute(t1, t2, Match.any(Matches.territoryIs(t2), match));
   }
 
   /**
@@ -421,7 +419,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1 == t2) {
       return new Route(t1);
     }
-    final CompositeMatch<Territory> allCond = new CompositeMatchOr<>(matches.keySet());
+    final Match<Territory> allCond = Match.any(matches.keySet());
     if (getNeighbors(t1, allCond).contains(t2)) {
       return new Route(t1, t2);
     }
@@ -499,7 +497,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond) {
-    return getDistance(t1, t2, new CompositeMatchOr<>(Matches.territoryIs(t2), cond));
+    return getDistance(t1, t2, Match.any(Matches.territoryIs(t2), cond));
   }
 
   /**
