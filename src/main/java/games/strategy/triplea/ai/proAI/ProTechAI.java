@@ -737,15 +737,6 @@ final class ProTechAI {
    * Assumes that water is passable to air units always.
    */
   private static Match<Territory> TerritoryIsImpassableToAirUnits() {
-    return new Match<Territory>() {
-      @Override
-      public boolean match(final Territory t) {
-        if (Matches.TerritoryIsLand.match(t) && Matches.TerritoryIsImpassable.match(t)) {
-          return true;
-        }
-        return false;
-      }
-    };
+    return Match.all(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable);
   }
-
 }
