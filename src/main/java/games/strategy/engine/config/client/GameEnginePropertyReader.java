@@ -52,7 +52,7 @@ public class GameEnginePropertyReader {
    * configuration that we would pass back in case github is not available.
    *
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
-   *     Otherwise backup values from client config.
+   *         Otherwise backup values from client config.
    */
   public LobbyServerProperties fetchLobbyServerProperties() {
     final String lobbyPropsUrl =
@@ -81,8 +81,8 @@ public class GameEnginePropertyReader {
   public String getMapListingSource() {
     return propertyFileReader.readProperty(PropertyKeys.MAP_LISTING_SOURCE_FILE);
   }
-  
-  public boolean useJavaFxUi(){
+
+  public boolean useJavaFxUi() {
     return propertyFileReader.readProperty(PropertyKeys.JAVAFX_UI).equalsIgnoreCase(String.valueOf(true));
   }
 

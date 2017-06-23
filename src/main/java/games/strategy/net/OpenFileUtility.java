@@ -19,7 +19,7 @@ public class OpenFileUtility {
    * @param file The file to be opened.
    */
   public static void openFile(final File file) {
-    openFile(file, () -> logDesktopAPIMessage(file.getAbsolutePath()));
+    openFile(file, () -> logDesktopApiMessage(file.getAbsolutePath()));
   }
 
   /**
@@ -64,10 +64,10 @@ public class OpenFileUtility {
    * @param url A URL of a web page (ex: "http://www.google.com/")
    */
   public static void openURL(final String url) {
-    openUrl(url, () -> logDesktopAPIMessage(url));
+    openUrl(url, () -> logDesktopApiMessage(url));
   }
 
-  private static void logDesktopAPIMessage(String path) {
+  private static void logDesktopApiMessage(String path) {
     SwingComponents.showDialog("Desktop API not supported",
         "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open "
             + path);
