@@ -78,9 +78,6 @@ classes.jar
 # External tool builders
 .externalToolBuilders/
 
-# Locally stored "Eclipse launch configurations"
-*.launch
-
 # CDT-specific
 .cproject
 
