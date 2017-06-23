@@ -155,10 +155,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.banUsername(clickedOn, null);
+          controller.banUsername(clickedOn, (Instant) null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.banMac(clickedOn, null);
+          controller.banMac(clickedOn, (Instant) null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
@@ -232,10 +232,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.muteUsername(clickedOn, null);
+          controller.muteUsername(clickedOn, (Instant) null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.muteMac(clickedOn, null);
+          controller.muteMac(clickedOn, (Instant) null);
         }
         return;
       }

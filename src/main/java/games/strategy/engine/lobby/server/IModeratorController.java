@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server;
 
 import java.time.Instant;
+import java.util.Date;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
@@ -122,4 +123,62 @@ public interface IModeratorController extends IRemote {
    * Is this node an admin.
    */
   boolean isPlayerAdmin(final INode node);
+
+  // Methods for backwards compatibility
+  // Remove with next incompatible release
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void banUsername(INode node, Date banExpires) {
+    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void banIp(INode node, Date banExpires) {
+    banIp(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void banMac(INode node, Date banExpires) {
+    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void banMac(final INode node, final String hashedMac, final Date banExpires) {
+    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void muteUsername(INode node, Date muteExpires) {
+    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void muteIp(INode node, Date muteExpires) {
+    muteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   */
+  @Deprecated
+  default void muteMac(INode node, Date muteExpires) {
+    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
 }
