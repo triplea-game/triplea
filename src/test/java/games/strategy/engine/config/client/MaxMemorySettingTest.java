@@ -1,4 +1,4 @@
-package games.strategy.engine.config;
+package games.strategy.engine.config.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

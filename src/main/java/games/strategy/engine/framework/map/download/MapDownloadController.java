@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.SystemPreferenceKey;
@@ -22,11 +23,7 @@ import games.strategy.util.Version;
 /** Controller for in-game map download actions. */
 public class MapDownloadController {
 
-  private final MapListingSource mapDownloadProperties;
-
-  public MapDownloadController(final MapListingSource mapSource) {
-    mapDownloadProperties = mapSource;
-  }
+  public MapDownloadController() {}
 
   /**
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
@@ -49,8 +46,7 @@ public class MapDownloadController {
 
       SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
 
-      final Collection<DownloadFileDescription> allDownloads =
-          new DownloadRunnable(mapDownloadProperties.getMapListDownloadSite()).getDownloads();
+      final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
