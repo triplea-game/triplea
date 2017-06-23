@@ -131,18 +131,22 @@ public class AvailableGames {
       while (entry != null) {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
-          // we have to close the loader to allow files to be deleted on windows
-          try {
-            final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames,
-                mapNamePropertyList);
-            if (added && map.getName().length() > 4) {
-              availableMapFolderOrZipNames
-                  .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
+          if (url != null) {
+            try {
+              final boolean added = addToAvailableGames(
+                  new URI(url.toString().replace(" ", "%20")),
+                  availableGames,
+                  mapNamePropertyList);
+              if (added && map.getName().length() > 4) {
+                availableMapFolderOrZipNames
+                    .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
+              }
+            } catch (final URISyntaxException e) {
+              // only happens when URI couldn't be build and therefore no entry was added. That's fine
             }
-          } catch (final URISyntaxException e) {
-            // only happens when URI couldn't be build and therefore no entry was added. That's fine
           }
         }
+        // we have to close the loader to allow files to be deleted on windows
         zis.closeEntry();
         entry = zis.getNextEntry();
       }
