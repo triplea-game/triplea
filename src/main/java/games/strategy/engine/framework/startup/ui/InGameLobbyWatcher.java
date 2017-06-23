@@ -176,9 +176,18 @@ public class InGameLobbyWatcher {
     final String gameRound =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
             ? "-" : oldWatcher.gameDescription.getRound();
-    gameDescription = new GameDescription(this.messenger.getLocalNode(), this.serverMessenger.getLocalNode().getPort(),
-        startDateTime, "???", playerCount, gameStatus, gameRound, this.serverMessenger.getLocalNode().getName(),
-        System.getProperty(GameRunner.LOBBY_GAME_COMMENTS), passworded, ClientContext.engineVersion().toString(), "0");
+    gameDescription = new GameDescription(
+        messenger.getLocalNode(),
+        serverMessenger.getLocalNode().getPort(),
+        startDateTime,
+        "???",
+        playerCount,
+        gameStatus,
+        gameRound,
+        serverMessenger.getLocalNode().getName(),
+        System.getProperty(GameRunner.LOBBY_GAME_COMMENTS),
+        passworded,
+        ClientContext.engineVersion().toString(), "0");
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
     synchronized (mutex) {

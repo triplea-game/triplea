@@ -15,16 +15,21 @@ import games.strategy.engine.ClientFileSystemHelper;
 /**
  * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
  */
-class DownloadRunnable {
+public class DownloadRunnable {
   private final String urlString;
 
-  DownloadRunnable(final String urlString) {
+  public DownloadRunnable(final String urlString) {
     super();
     this.urlString = urlString;
   }
 
 
-  List<DownloadFileDescription> getDownloads() {
+  /**
+   * Returns a parsed list of parsed downloadable maps. If initialized with a URL
+   * then we will do a network fetch and parse those contents, otherwise (for testing)
+   * we assume a local file reference and parse that.
+   */
+  public List<DownloadFileDescription> getDownloads() {
     if (beginsWithHttpProtocol(urlString)) {
       return downloadFile();
     } else {
@@ -32,31 +37,31 @@ class DownloadRunnable {
     }
   }
 
-  private static boolean beginsWithHttpProtocol(String urlString) {
+  private static boolean beginsWithHttpProtocol(final String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
   private List<DownloadFileDescription> downloadFile() {
     try {
-      File tempFile = ClientFileSystemHelper.createTempFile();
+      final File tempFile = ClientFileSystemHelper.createTempFile();
       tempFile.deleteOnExit();
       DownloadUtils.downloadToFile(urlString, tempFile);
-      byte[] contents = Files.readAllBytes(tempFile.toPath());
+      final byte[] contents = Files.readAllBytes(tempFile.toPath());
       return DownloadFileParser.parse(new ByteArrayInputStream(contents));
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logError("Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
       return new ArrayList<>();
     }
   }
 
   private List<DownloadFileDescription> readLocalFile() {
-    File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
+    final File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
     try {
-      byte[] contents = Files.readAllBytes(targetFile.toPath());
-      List<DownloadFileDescription> downloads = DownloadFileParser.parse(new ByteArrayInputStream(contents));
+      final byte[] contents = Files.readAllBytes(targetFile.toPath());
+      final List<DownloadFileDescription> downloads = DownloadFileParser.parse(new ByteArrayInputStream(contents));
       checkNotNull(downloads);
       return downloads;
-    } catch (IOException e) {
+    } catch (final IOException e) {
       ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
       return new ArrayList<>();
     }

@@ -67,10 +67,9 @@ public class ClientLoginValidator implements ILoginValidator {
     }
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!ClientContext.engineVersion().getVersion().equals(clientVersion, false)) {
-      final String error = "Client is using " + clientVersion + " but server requires version "
-          + ClientContext.engineVersion().getVersion();
-      return error;
+    if (!ClientContext.engineVersion().equals(clientVersion, false)) {
+      return "Client is using " + clientVersion + " but server requires version "
+          + ClientContext.engineVersion();
     }
     final String realName = clientName.split(" ")[0];
     if (m_serverMessenger.isUsernameMiniBanned(realName)) {

@@ -2,6 +2,8 @@ package games.strategy.engine.lobby.client.login;
 
 import java.util.Map;
 
+import com.google.common.base.Strings;
+
 /**
  * Server properties.
  *
@@ -24,17 +26,36 @@ public class LobbyServerProperties {
   public final String serverErrorMessage;
   public final String serverMessage;
 
-  public LobbyServerProperties(final Map<String, Object> yamlProps) {
-    this.host = (String) yamlProps.get("host");
-    this.port = (Integer) yamlProps.get("port");
-    this.serverMessage = (String) yamlProps.get("message");
-    this.serverErrorMessage = (String) yamlProps.get("error_message");
+  /**
+   * Inits a bare-bones object without server message.
+   * @param host The host address of the lobby, typically an IP address
+   * @param port The port the lobby is listening on
+   */
+  public LobbyServerProperties(final String host, final int port) {
+    this.host = host;
+    this.port = port;
+    this.serverErrorMessage = "";
+    this.serverMessage = "";
   }
 
   /**
-   * @return if the server is available. If the server is not available then getServerErrorMessage will give a reason.
+   * Typical constructor for lobby properties based on a yaml object. Parses lobby
+   * host, port, message, and an error message used to indicate potential down times
+   * to the user.
+   * @param yamlProps Yaml object with lobby properties from the point of view of the game
+   *                  client.
+   */
+  public LobbyServerProperties(final Map<String, Object> yamlProps) {
+    this.host = (String) yamlProps.get("host");
+    this.port = (Integer) yamlProps.get("port");
+    this.serverMessage = Strings.nullToEmpty((String) yamlProps.get("message"));
+    this.serverErrorMessage = Strings.nullToEmpty((String) yamlProps.get("error_message"));
+  }
+
+  /**
+   * @return True if the server is available. If not then see <code>serverErrorMessage</code>
    */
   public boolean isServerAvailable() {
-    return (serverErrorMessage == null) || serverErrorMessage.trim().length() <= 0;
+    return serverErrorMessage.isEmpty();
   }
 }

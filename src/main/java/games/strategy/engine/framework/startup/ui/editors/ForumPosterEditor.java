@@ -153,7 +153,7 @@ public class ForumPosterEditor extends EditorPanel {
         }
       }
       poster.postTurnSummary(
-          "Test summary from TripleA, engine version: " + ClientContext.engineVersion().getVersion()
+          "Test summary from TripleA, engine version: " + ClientContext.engineVersion()
               + ", time: " + TimeManager.getLocalizedTime(),
           "Testing Forum poster");
       progressWindow.setVisible(false);

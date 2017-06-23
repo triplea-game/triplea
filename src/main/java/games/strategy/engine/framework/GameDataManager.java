@@ -57,21 +57,21 @@ public class GameDataManager {
   }
 
   public GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
-    ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
+    final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!readVersion.equals(ClientContext.engineVersion().getVersion(), true)) {
+      if (!readVersion.equals(ClientContext.engineVersion(), true)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
-          final String message = "Incompatible game save, we are: " + ClientContext.engineVersion().getVersion()
+          final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
               + "  Trying to load game created with: " + readVersion;
           HeadlessGameServer.sendChat(message);
           System.out.println(message);
           return null;
         }
         final String error = "<html>Incompatible engine versions, and no old engine found. We are: "
-            + ClientContext.engineVersion().getVersion() + " . Trying to load game created with: " + readVersion
+            + ClientContext.engineVersion() + " . Trying to load game created with: " + readVersion
             + "<br>To download the latest version of TripleA, Please visit "
             + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE + "</html>";
         if (savegamePath == null) {
@@ -83,8 +83,7 @@ public class GameDataManager {
         try {
           final String newClassPath = GameRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
-          final String messageString = "<html>This TripleA engine is version "
-              + ClientContext.engineVersion().getVersion()
+          final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion()
               + " and you are trying to open a savegame made with version " + readVersion.toString()
               + "<br>However, this TripleA cannot open any savegame made by any engine other than engines with the "
               + "same first three version numbers as it (x_x_x_x)."
@@ -118,13 +117,13 @@ public class GameDataManager {
             throw new IOException("<html>Please run the default TripleA and try to open this game again. "
                 + "<br>This TripleA engine is old and kept only for backwards compatibility and can only open "
                 + "savegames created by engines with these first 3 version digits: "
-                + ClientContext.engineVersion().getVersion().toStringFull("_", true) + "</html>");
+                + ClientContext.engineVersion().toStringFull("_", true) + "</html>");
           } else {
             throw new IOException(error);
           }
         }
         return null;
-      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion().getVersion(), false)) {
+      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion(), false)) {
         // we can still load it because first 3 numbers of the version are the same, however this save was made by a
         // newer engine, so prompt
         // the user to upgrade
@@ -133,7 +132,7 @@ public class GameDataManager {
                 + "<br>However, because the first 3 version numbers are the same as your current version, we can "
                 + "still open the savegame."
                 + "<br><br>This TripleA engine is version "
-                + ClientContext.engineVersion().getVersion().toStringFull("_")
+                + ClientContext.engineVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
                 + "<br><br>To download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
@@ -198,7 +197,7 @@ public class GameDataManager {
       final String name = (String) input.readObject();
       final String displayName = (String) input.readObject();
       final String className = (String) input.readObject();
-      IDelegate instance;
+      final IDelegate instance;
       try {
         instance = (IDelegate) Class.forName(className).getDeclaredConstructor().newInstance();
         instance.initialize(name, displayName);
@@ -222,7 +221,7 @@ public class GameDataManager {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
-    outStream.writeObject(games.strategy.engine.ClientContext.engineVersion().getVersion());
+    outStream.writeObject(games.strategy.engine.ClientContext.engineVersion());
     data.acquireReadLock();
     try {
       outStream.writeObject(data);
