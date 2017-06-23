@@ -19,6 +19,7 @@ public class ClientContextIntegrationTest {
     assertThat(ClientContext.folderSettings(), notNullValue());
     assertThat(ClientContext.mapDownloadController(), notNullValue());
     assertThat(ClientContext.scrollSettings(), notNullValue());
+    assertThat(ClientContext.downloadCoordinator(), notNullValue());
 
     assertThat(ClientContext.getMapDownloadList(), notNullValue());
     assertThat(ClientContext.getMapDownloadList().isEmpty(), is(false));
