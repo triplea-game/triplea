@@ -16,7 +16,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 /**
  * Contains all the data to describe a placement and to undo it.
  */
-class UndoablePlacement extends AbstractUndoableMove {
+public class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
   final Territory m_placeTerritory;
   Territory m_producerTerritory;

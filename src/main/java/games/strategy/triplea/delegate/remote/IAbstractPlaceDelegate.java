@@ -4,9 +4,10 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 
-public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
+public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**
    * @param units
    *        units to place.

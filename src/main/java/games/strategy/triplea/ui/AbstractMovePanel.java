@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -18,8 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
-import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -123,14 +122,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return m_bridge.getGameData();
   }
 
-  private IAbstractMoveDelegate getMoveDelegate() {
-    return (IAbstractMoveDelegate) m_bridge.getRemoteDelegate();
+  @SuppressWarnings("unchecked")
+  private IAbstractMoveDelegate<UndoableMove> getMoveDelegate() {
+    return (IAbstractMoveDelegate<UndoableMove>) bridge.getRemoteDelegate();
   }
 
-  @SuppressWarnings("unchecked")
   protected final void updateMoves() {
-    m_undoableMoves = (List<UndoableMove>) getMoveDelegate().getMovesMade();
-    m_undoableMovesPanel.setMoves(new ArrayList<>(m_undoableMoves));
+    undoableMoves = getMoveDelegate().getMovesMade();
+    this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
   }
 
   public final void cancelMove() {
@@ -151,8 +150,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * </p>
    */
   public void undoMoves(final Set<Unit> units) {
-    @SuppressWarnings("unchecked")
-    final Set<UndoableMove> movesToUndo = getMovesToUndo(units, (List<Object>) getMoveDelegate().getMovesMade());
+    final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
 
     if (movesToUndo.size() == 0) {
       final String error =
@@ -164,13 +162,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
     undoMovesInReverseOrder(movesToUndo);
   }
 
-  private static Set<UndoableMove> getMovesToUndo(final Set<Unit> units, final List<Object> movesMade) {
-    final Set<UndoableMove> movesToUndo = Sets.newHashSet();
+  private static Set<UndoableMove> getMovesToUndo(final Set<Unit> units, final List<UndoableMove> movesMade) {
+    final Set<UndoableMove> movesToUndo = new HashSet<>();
 
     if (movesMade != null) {
-      for (final Object undoableMoveObject : movesMade) {
-        if (undoableMoveObject != null) {
-          final UndoableMove move = (UndoableMove) undoableMoveObject;
+      for (final UndoableMove move : movesMade) {
+        if (move != null) {
           if (move.containsAnyOf(units) && move.getcanUndo()) {
             movesToUndo.add(move);
           }
