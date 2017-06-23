@@ -81,6 +81,10 @@ public class GameEnginePropertyReader {
   public String getMapListingSource() {
     return propertyFileReader.readProperty(PropertyKeys.MAP_LISTING_SOURCE_FILE);
   }
+  
+  public boolean useJavaFxUi(){
+    return propertyFileReader.readProperty(PropertyKeys.JAVAFX_UI).equalsIgnoreCase(String.valueOf(true));
+  }
 
   /**
    * Reads the max memory user setting from configuration and returns a result object.
@@ -103,5 +107,6 @@ public class GameEnginePropertyReader {
     String LOBBY_PROP_FILE_URL = "lobby_properties_file_url";
     String LOBBY_BACKUP_HOST_ADDRESS = "lobby_backup_url";
     String MAX_MEMORY = "max_memory";
+    String JAVAFX_UI = "javafx_ui";
   }
 }
