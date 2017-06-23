@@ -32,29 +32,29 @@ import games.strategy.util.UrlStreams;
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
 public class AvailableGames {
-  private static final boolean s_delayedParsing = false;
+  private static final boolean delayedParsing = false;
   private static final String ZIP_EXTENSION = ".zip";
-  private final TreeMap<String, URI> m_availableGames = new TreeMap<>();
-  private final Set<String> m_availableMapFolderOrZipNames = new HashSet<>();
+  private final TreeMap<String, URI> availableGames = new TreeMap<>();
+  private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
 
-  public AvailableGames() {
+  AvailableGames() {
     final Set<String> mapNamePropertyList = new HashSet<>();
-    populateAvailableGames(m_availableGames, m_availableMapFolderOrZipNames, mapNamePropertyList);
+    populateAvailableGames(availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
   }
 
-  public List<String> getGameNames() {
-    return new ArrayList<>(m_availableGames.keySet());
+  List<String> getGameNames() {
+    return new ArrayList<>(availableGames.keySet());
   }
 
-  public Set<String> getAvailableMapFolderOrZipNames() {
-    return new HashSet<>(m_availableMapFolderOrZipNames);
+  Set<String> getAvailableMapFolderOrZipNames() {
+    return new HashSet<>(availableMapFolderOrZipNames);
   }
 
   /**
    * Can return null.
    */
   public GameData getGameData(final String gameName) {
-    return getGameDataFromXML(m_availableGames.get(gameName));
+    return getGameDataFromXML(availableGames.get(gameName));
   }
 
   /**
@@ -69,7 +69,7 @@ public class AvailableGames {
    * @return The path to the game file; or {@code null} if the game is not available.
    */
   public String getGameFilePath(final String gameName) {
-    return Optional.ofNullable(m_availableGames.get(gameName)).map(Object::toString).orElse(null);
+    return Optional.ofNullable(availableGames.get(gameName)).map(Object::toString).orElse(null);
   }
 
   private static void populateAvailableGames(final Map<String, URI> availableGames,
@@ -99,14 +99,17 @@ public class AvailableGames {
     return Arrays.asList(files);
   }
 
-  private static void populateFromDirectory(final File mapDir, final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
+  private static void populateFromDirectory(
+      final File mapDir,
+      final Map<String, URI> availableGames,
+      final Set<String> availableMapFolderOrZipNames,
+      final Set<String> mapNamePropertyList) {
     final File games = new File(mapDir, "games");
     if (!games.exists()) {
       // no games in this map dir
       return;
     }
-    if(games.listFiles() != null ) {
+    if (games.listFiles() != null) {
       for (final File game : games.listFiles()) {
         if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
           final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
@@ -159,7 +162,7 @@ public class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = new GameParser(uri.toString()).parse(input, gameName, s_delayedParsing);
+        final GameData data = new GameParser(uri.toString()).parse(input, gameName, delayedParsing);
         final String name = data.getGameName();
         final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
         if (!availableGames.containsKey(name)) {
