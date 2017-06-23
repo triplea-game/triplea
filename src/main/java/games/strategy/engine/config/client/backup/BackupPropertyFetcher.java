@@ -37,6 +37,8 @@ public class BackupPropertyFetcher {
 
 
   static class InvalidLobbyAddressException extends IllegalArgumentException {
+    private static final long serialVersionUID = 2362969094127736630L;
+
     InvalidLobbyAddressException(final String invalidValue) {
       super("There is a problem with configuration value '" + invalidValue + "', it does not seem to "
           + "be in a '<host>:<port>' format.");
