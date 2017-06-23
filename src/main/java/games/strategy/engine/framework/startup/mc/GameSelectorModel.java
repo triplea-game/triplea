@@ -162,9 +162,9 @@ public class GameSelectorModel extends Observable {
     return m_data;
   }
 
-  void setCanSelect(final boolean aBool) {
+  void setCanSelect(final boolean canSelect) {
     synchronized (this) {
-      m_canSelect = aBool;
+      m_canSelect = canSelect;
     }
     notifyObs();
   }
@@ -173,9 +173,9 @@ public class GameSelectorModel extends Observable {
     return m_canSelect;
   }
 
-  void setIsHostHeadlessBot(final boolean aBool) {
+  void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
     synchronized (this) {
-      m_isHostHeadlessBot = aBool;
+      m_isHostHeadlessBot = isHostHeadlessBot;
     }
     notifyObs();
   }

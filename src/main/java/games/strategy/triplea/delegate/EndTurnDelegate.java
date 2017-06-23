@@ -281,9 +281,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   private static final Match<RulesAttachment> availableUses = Match.of(ra -> ra.getUses() != 0);
 
   @Override
-  protected String addOtherResources(final IDelegateBridge aBridge) {
+  protected String addOtherResources(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
     final ResourceCollection productionCollection = getResourceProduction(territories, data);
@@ -299,12 +299,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final String resourceText =
           m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd) + "; ends with "
               + total + " " + MyFormatter.pluralize(r.getName(), total) + " total";
-      aBridge.getHistoryWriter().startEvent(resourceText);
+      bridge.getHistoryWriter().startEvent(resourceText);
       endTurnReport.append(resourceText).append("<br />");
       change.add(ChangeFactory.changeResourcesChange(m_player, r, toAdd));
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
     return endTurnReport.toString();
   }

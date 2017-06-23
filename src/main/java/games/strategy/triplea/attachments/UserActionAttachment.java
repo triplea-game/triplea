@@ -118,8 +118,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
       TriggerAttachment toFire = null;
@@ -145,7 +145,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       if (testConditionsToFire) {
         if (!testedConditionsSoFar.containsKey(toFire)) {
           // this should directly add the new tests to testConditionsToFire...
-          TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge,
+          TriggerAttachment.collectTestsForAllTriggers(toFireSet, bridge,
               new HashSet<>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
         }
         if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
@@ -153,9 +153,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         }
       }
       for (int i = 0; i < numberOfTimesToFire; ++i) {
-        aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
+        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
             + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
-        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, aBridge, null, null, useUsesToFire,
+        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, bridge, null, null, useUsesToFire,
             testUsesToFire, testChanceToFire, false);
       }
     }

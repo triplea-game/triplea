@@ -124,8 +124,8 @@ public abstract class ActionPanel extends JPanel {
    * Called when the history panel shows used to disable the panel
    * temporarily.
    */
-  public void setActive(final boolean aBool) {
-    m_active = aBool;
+  public void setActive(final boolean active) {
+    m_active = active;
   }
 
   public boolean getActive() {

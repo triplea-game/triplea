@@ -44,14 +44,14 @@ public class ImageScrollModel extends Observable {
     super.notifyObservers();
   }
 
-  public void setScrollX(final boolean aBool) {
-    m_scrollX = aBool;
+  public void setScrollX(final boolean scrollX) {
+    m_scrollX = scrollX;
     enforceBounds();
     updateListeners();
   }
 
-  public void setScrollY(final boolean aBool) {
-    m_scrollY = aBool;
+  public void setScrollY(final boolean scrollY) {
+    m_scrollY = scrollY;
     enforceBounds();
     updateListeners();
   }

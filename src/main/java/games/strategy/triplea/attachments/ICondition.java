@@ -65,7 +65,7 @@ public interface ICondition extends IAttachment {
    * testing the
    * conditions the first time.
    */
-  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge);
+  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge bridge);
 
   /**
    * HashMap&lt;ICondition, Boolean> testedConditions must be filled with completed tests of all conditions already, or
