@@ -29,7 +29,7 @@ class LobbyPropertyFileParser {
     return new LobbyServerProperties(configForThisVersion);
   }
 
-  private Map<String, Object> matchCurrentVersion(
+  private static Map<String, Object> matchCurrentVersion(
       final List<Map<String, Object>> lobbyProps,
       final Version currentVersion) {
     checkNotNull(lobbyProps);
