@@ -37,8 +37,8 @@ public class PropertyFileReader {
   }
 
   /**
-   * Reads a property key from configuration file and returns the associated value. Example:
-   * 
+   * Returns the value corresponding to a given property key, returns empty if the key is not found.
+   * Usage example:
    * <pre>
    * <code>
    * String myValue = readProperty("keyValue");
