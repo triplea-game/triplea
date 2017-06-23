@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.config.PropertyFileReader;
 import games.strategy.engine.config.client.backup.BackupPropertyFetcher;
-import games.strategy.engine.config.client.remote.RemoteFileFetcher;
+import games.strategy.engine.config.client.remote.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
@@ -28,7 +28,7 @@ public class GameEnginePropertyReaderTest {
   @Mock
   private PropertyFileReader mockPropertyFileReader;
   @Mock
-  private RemoteFileFetcher mockRemoteFileFetcher;
+  private LobbyServerPropertiesFetcher mockLobbyServerPropertiesFetcher;
   @Mock
   private BackupPropertyFetcher mockBackupPropertyFetcher;
 
@@ -43,7 +43,7 @@ public class GameEnginePropertyReaderTest {
   public void setup() {
     testObj = new GameEnginePropertyReader(
         mockPropertyFileReader,
-        mockRemoteFileFetcher,
+        mockLobbyServerPropertiesFetcher,
         mockBackupPropertyFetcher
     );
   }
@@ -96,7 +96,7 @@ public class GameEnginePropertyReaderTest {
   public void lobbyServerProperties() throws Exception {
     givenSuccessfullyParsedPropertiesUrl();
 
-    when(mockRemoteFileFetcher.downloadAndParseRemoteFile(TestData.fakePropUrl, TestData.fakeVersion))
+    when(mockLobbyServerPropertiesFetcher.downloadAndParseRemoteFile(TestData.fakePropUrl, TestData.fakeVersion))
         .thenReturn(TestData.fakeProps);
 
     final LobbyServerProperties result = testObj.fetchLobbyServerProperties();
@@ -116,7 +116,7 @@ public class GameEnginePropertyReaderTest {
   public void lobbyServerPropertiesUsingBackupCase() throws Exception {
     givenSuccessfullyParsedPropertiesUrl();
 
-    when(mockRemoteFileFetcher.downloadAndParseRemoteFile(TestData.fakePropUrl, TestData.fakeVersion))
+    when(mockLobbyServerPropertiesFetcher.downloadAndParseRemoteFile(TestData.fakePropUrl, TestData.fakeVersion))
         .thenThrow(new IOException("simulated io exception"));
 
     givenSuccessfullyParsedBackupValues();

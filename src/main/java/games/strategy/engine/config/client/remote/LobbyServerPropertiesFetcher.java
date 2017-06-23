@@ -8,7 +8,7 @@ import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
-public class RemoteFileFetcher {
+public class LobbyServerPropertiesFetcher {
 
   private final UrlRedirectResolver urlRedirectResolver;
   private final LobbyPropertyFileParser lobbyPropertyFileParser;
@@ -20,7 +20,7 @@ public class RemoteFileFetcher {
    * This allows us to fetch a remote file and parse it for lobby properties.
    * Those properties then tell the game client how/where to connect to the lobby.
    */
-  public RemoteFileFetcher() {
+  public LobbyServerPropertiesFetcher() {
     this(
         new UrlRedirectResolver(),
         new LobbyPropertyFileParser(),
@@ -28,7 +28,7 @@ public class RemoteFileFetcher {
   }
 
   @VisibleForTesting
-  RemoteFileFetcher(
+  LobbyServerPropertiesFetcher(
       final UrlRedirectResolver urlRedirectResolver,
       final LobbyPropertyFileParser lobbyPropertyFileParser,
       final FileDownloader fileDownloader) {

@@ -8,7 +8,7 @@ import com.google.common.base.Strings;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.PropertyFileReader;
 import games.strategy.engine.config.client.backup.BackupPropertyFetcher;
-import games.strategy.engine.config.client.remote.RemoteFileFetcher;
+import games.strategy.engine.config.client.remote.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
@@ -20,7 +20,7 @@ public class GameEnginePropertyReader {
   public static final String GAME_ENGINE_PROPERTY_FILE = "game_engine.properties";
 
   private final PropertyFileReader propertyFileReader;
-  private final RemoteFileFetcher remoteFileFetcher;
+  private final LobbyServerPropertiesFetcher lobbyServerPropertiesFetcher;
   private final BackupPropertyFetcher backupPropertyFetcher;
 
 
@@ -30,17 +30,17 @@ public class GameEnginePropertyReader {
   public GameEnginePropertyReader() {
     this(
         new PropertyFileReader(GAME_ENGINE_PROPERTY_FILE),
-        new RemoteFileFetcher(),
+        new LobbyServerPropertiesFetcher(),
         new BackupPropertyFetcher());
   }
 
   @VisibleForTesting
   GameEnginePropertyReader(
       final PropertyFileReader propertyFileReader,
-      final RemoteFileFetcher remoteFileFetcher,
+      final LobbyServerPropertiesFetcher lobbyServerPropertiesFetcher,
       final BackupPropertyFetcher backupPropertyFetcher) {
     this.propertyFileReader = propertyFileReader;
-    this.remoteFileFetcher = remoteFileFetcher;
+    this.lobbyServerPropertiesFetcher = lobbyServerPropertiesFetcher;
     this.backupPropertyFetcher = backupPropertyFetcher;
   }
 
@@ -61,7 +61,7 @@ public class GameEnginePropertyReader {
     final Version currentVersion = new Version(propertyFileReader.readProperty(PropertyKeys.ENGINE_VERSION));
 
     try {
-      return remoteFileFetcher.downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion);
+      return lobbyServerPropertiesFetcher.downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion);
     } catch (final IOException e) {
       ClientLogger.logError(
           String.format("Failed to download lobby server props file from %s; will attempt to use a local backup.",

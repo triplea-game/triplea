@@ -18,7 +18,7 @@ import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RemoteFileFetcherTest {
+public class LobbyServerPropertiesFetcherTest {
 
 
   private static final Version fakeVersion = new Version("0.0.0.0");
@@ -30,14 +30,14 @@ public class RemoteFileFetcherTest {
   @Mock
   private FileDownloader mockFileDownloader;
 
-  private RemoteFileFetcher testObj;
+  private LobbyServerPropertiesFetcher testObj;
 
   /**
    * Sets up a test object with mocked dependencies. We will primarily verify control flow.
    */
   @Before
   public void setup() {
-    testObj = new RemoteFileFetcher(
+    testObj = new LobbyServerPropertiesFetcher(
         mockUrlRedirectResolver,
         mockLobbyPropertyFileParser,
         mockFileDownloader);
