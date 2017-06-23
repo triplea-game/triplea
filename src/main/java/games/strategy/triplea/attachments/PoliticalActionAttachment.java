@@ -17,7 +17,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -142,7 +141,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       return new ArrayList<>();
     }
     return Match.getMatches(getPoliticalActionAttachments(player),
-        new CompositeMatchAnd<>(
+        Match.all(
             Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }

@@ -23,8 +23,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 /**
@@ -185,8 +183,8 @@ class AAInMoveUtil implements Serializable {
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, new CompositeMatchOr<>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          Match.getMatches(units, Match.any(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
+              Match.all(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted

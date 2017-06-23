@@ -32,7 +32,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -516,8 +515,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
       return null;
     }
-    final CompositeMatch<Unit> ownedFighters =
-        new CompositeMatchAnd<>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownedFighters = Match.all(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
     if (!producer.getUnits().someMatch(ownedFighters)) {
       return null;
     }
@@ -643,7 +641,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getOwner().equals(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && Match.someMatch(testUnits, new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsConstruction))) {
+          && Match.someMatch(testUnits, Match.all(Matches.UnitIsSea, Matches.UnitIsConstruction))) {
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
@@ -896,17 +894,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
       final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
-      placeableUnits
-          .addAll(Match.getMatches(units, new CompositeMatchAnd<>(seaOrLandMatch, Matches.UnitIsNotConstruction)));
+      placeableUnits.addAll(Match.getMatches(units, Match.all(seaOrLandMatch, Matches.UnitIsNotConstruction)));
       if (!water) {
-        placeableUnits.addAll(
-            Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
+        placeableUnits.addAll(Match.getMatches(units, Match.all(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
           && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
               && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier))) {
-        placeableUnits.addAll(
-            Match.getMatches(units, new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
+        placeableUnits.addAll(Match.getMatches(units, Match.all(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
       }
     }
     if (Match.someMatch(units, Matches.UnitIsConstruction)) {
@@ -998,7 +993,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       for (final UnitType ut : requiredUnits) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<>(
+        final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.all(
             Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut),
             Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled);
         final Collection<Unit> unitsBeingRemoved =
@@ -1385,33 +1380,30 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *         required combos as well).
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unitWhichRequiresUnits) {
-        if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
-        // do not need to remove unowned here, as this match will remove unowned units from consideration.
-        if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-            .match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        if (!doNotCountNeighbors) {
-          if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
-            for (final Territory current : getAllProducers(to, m_player,
-                Collections.singletonList(unitWhichRequiresUnits), true)) {
-              final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-              if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-                  .match(unitWhichRequiresUnits)) {
-                return true;
-              }
+    return Match.of(unitWhichRequiresUnits -> {
+      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
+      // do not need to remove unowned here, as this match will remove unowned units from consideration.
+      if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+          .match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      if (!doNotCountNeighbors) {
+        if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
+          for (final Territory current : getAllProducers(to, m_player,
+              Collections.singletonList(unitWhichRequiresUnits), true)) {
+            final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
+            if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+                .match(unitWhichRequiresUnits)) {
+              return true;
             }
           }
         }
-        return false;
       }
-    };
+      return false;
+    });
   }
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {

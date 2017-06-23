@@ -41,7 +41,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
@@ -123,12 +122,12 @@ public class BattleCalculator {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
         if (isRollAAIndividually(data)) {
-          return IndividuallyFiredAACasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
+          return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
         }
         if (isRandomAACasualties(data)) {
-          return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+          return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
         }
-        return IndividuallyFiredAACasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
+        return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
       }
     }
   }
@@ -222,7 +221,7 @@ public class BattleCalculator {
     final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
     if (!allSameAttackPower || tooManyHitsToDoGroups || chosenDiceSize % highestAttack != 0) {
       // we have too many hits, so just pick randomly
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     } else {
       // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1
       // fighter to die for sure.
@@ -332,7 +331,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties randomly.
    */
-  public static CasualtyDetails RandomAACasualties(final Collection<Unit> planes, final DiceRoll dice,
+  public static CasualtyDetails randomAaCasualties(final Collection<Unit> planes, final DiceRoll dice,
       final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<>(planes);
@@ -390,7 +389,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties based on individual AA shots at each aircraft.
    */
-  private static CasualtyDetails IndividuallyFiredAACasualties(final boolean defending, final Collection<Unit> planes,
+  private static CasualtyDetails individuallyFiredAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
@@ -400,14 +399,14 @@ public class BattleCalculator {
     final int planeHitPoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
 
     if (DiceRoll.getTotalAAattacks(defendingAa, planes) != planeHitPoints) {
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =
         DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, bridge.getData(), false);
     final boolean allSameAttackPower = triple.getThird();
     if (!allSameAttackPower) {
-      return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
+      return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Tuple<Integer, Integer> attackThenDiceSides =
         DiceRoll.getAAattackAndMaxDiceSides(defendingAa, bridge.getData(), !defending);
@@ -594,7 +593,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = new CompositeMatchAnd<>(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    final Match<Unit> aMatch = Match.all(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
     killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {

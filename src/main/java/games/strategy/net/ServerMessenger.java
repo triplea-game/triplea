@@ -198,7 +198,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   // which can be very slow
   private final List<String> m_liveMutedUsernames = new ArrayList<>();
 
-  private boolean IsUsernameMuted(final String username) {
+  private boolean isUsernameMuted(final String username) {
     synchronized (m_cachedListLock) {
       return m_liveMutedUsernames.contains(username);
     }
@@ -211,7 +211,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         m_liveMutedUsernames.add(username);
       }
       if (muteExpires != null) {
-        ScheduleUsernameUnmuteAt(username, muteExpires);
+        scheduleUsernameUnmuteAt(username, muteExpires);
       }
     }
   }
@@ -223,7 +223,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
 
-  private boolean IsMacMuted(final String mac) {
+  private boolean isMacMuted(final String mac) {
     synchronized (m_cachedListLock) {
       return m_liveMutedMacAddresses.contains(mac);
     }
@@ -236,7 +236,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         m_liveMutedMacAddresses.add(mac);
       }
       if (muteExpires != null) {
-        ScheduleMacUnmuteAt(mac, muteExpires);
+        scheduleMacUnmuteAt(mac, muteExpires);
       }
     }
   }
@@ -252,7 +252,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   // TODO: remove 'ip' parameter if can confirm no backwards compat issues
-  public void NotifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
+  public void notifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
     synchronized (m_cachedListLock) {
       m_cachedMacAddresses.put(uniquePlayerName, mac);
       if (isLobby()) {
@@ -262,7 +262,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedUsernames.add(realName);
-            ScheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
+            scheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
           }
         }
         if (!m_liveMutedMacAddresses.contains(mac)) {
@@ -270,7 +270,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedMacAddresses.add(mac);
-            ScheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
+            scheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
           }
         }
       }
@@ -283,7 +283,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return m_playersThatLeftMacs_Last10;
   }
 
-  private void NotifyPlayerRemoval(final INode node) {
+  private void notifyPlayerRemoval(final INode node) {
     synchronized (m_cachedListLock) {
       m_playersThatLeftMacs_Last10.put(node.getName(), m_cachedMacAddresses.get(node.getName()));
       if (m_playersThatLeftMacs_Last10.size() > 10) {
@@ -309,21 +309,21 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
-        if (IsUsernameMuted(realName)) {
+        if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
-        } else if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
+        } else if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
         }
       } else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName()
           .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
-        if (IsUsernameMuted(realName)) {
+        if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
-        if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
+        if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
@@ -660,7 +660,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (nodeToRemove.equals(this.node)) {
       throw new IllegalArgumentException("Cant remove ourself!");
     }
-    NotifyPlayerRemoval(nodeToRemove);
+    notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
       logger.info("Could not remove connection to node:" + nodeToRemove);

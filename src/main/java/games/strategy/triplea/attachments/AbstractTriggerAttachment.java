@@ -240,29 +240,21 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    *         false
    */
   public static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
-          return true;
-        } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
-          for (final Tuple<String, String> w : t.getWhen()) {
-            if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond())) {
-              return true;
-            }
+    return Match.of(t -> {
+      if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
+        return true;
+      } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
+        for (final Tuple<String, String> w : t.getWhen()) {
+          if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond())) {
+            return true;
           }
         }
-        return false;
       }
-    };
+      return false;
+    });
   }
 
-  public static Match<TriggerAttachment> availableUses = new Match<TriggerAttachment>() {
-    @Override
-    public boolean match(final TriggerAttachment t) {
-      return t.getUses() != 0;
-    }
-  };
+  public static final Match<TriggerAttachment> availableUses = Match.of(t -> t.getUses() != 0);
 
   public static Match<TriggerAttachment> notificationMatch() {
     return Match.of(t -> t.getNotification() != null);

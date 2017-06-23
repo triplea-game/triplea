@@ -24,7 +24,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -565,7 +564,7 @@ public class MoveDelegateTest extends DelegateTest {
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
     final Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(),
-        new CompositeMatchAnd<>(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
+        Match.all(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
     results = delegate.move(remainingTrns, route3);
     assertNull(results);
   }

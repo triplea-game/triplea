@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -79,17 +78,17 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // OR. use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       HashMap<ICondition, Boolean> testedConditions = null;
       final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
-          new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
+          Match.all(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              new CompositeMatchOr<TriggerAttachment>(AbstractTriggerAttachment.notificationMatch(),
+              Match.any(AbstractTriggerAttachment.notificationMatch(),
                   TriggerAttachment.playerPropertyMatch(), TriggerAttachment.relationshipTypePropertyMatch(),
                   TriggerAttachment.territoryPropertyMatch(), TriggerAttachment.territoryEffectPropertyMatch(),
                   TriggerAttachment.removeUnitsMatch(), TriggerAttachment.changeOwnershipMatch()));
       final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
-          new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
+          Match.all(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.placeMatch()));
-      final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = new CompositeMatchOr<>(
+              Match.any(TriggerAttachment.placeMatch()));
+      final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.any(
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -239,8 +238,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
 
     // right now, land units on transports have movement taken away when they their transport moves
-    moveableUnitOwnedByMe.add(new CompositeMatchOr<>(Matches.unitHasMovementLeft,
-        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
+    moveableUnitOwnedByMe.add(Match.any(Matches.unitHasMovementLeft,
+        Match.all(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
 
     // if not non combat, cannot move aa units
     if (GameStepPropertiesHelper.isCombatMove(getData())) {
@@ -319,11 +318,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge,
       final PlayerID player) {
     final GameData data = aBridge.getData();
-    final Match<Unit> crippledAlliedCarriersMatch = new CompositeMatchAnd<>(Matches.isUnitAllied(player, data),
+    final Match<Unit> crippledAlliedCarriersMatch = Match.all(Matches.isUnitAllied(player, data),
         Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch =
-        new CompositeMatchAnd<>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
+        Match.all(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
             Matches.UnitCanLandOnCarrier, Matches.unitHasMovementLeft);
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -361,18 +360,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
           }
           int bonusMovement = Integer.MIN_VALUE;
           final Collection<Unit> givesBonusUnits = new ArrayList<>();
-          final Match<Unit> givesBonusUnit = new CompositeMatchAnd<>(Matches.alliedUnit(player, data),
+          final Match<Unit> givesBonusUnit = Match.all(Matches.alliedUnit(player, data),
               Matches.unitCanGiveBonusMovementToThisUnit(u));
           givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
           if (Matches.UnitIsSea.match(u)) {
-            final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<>(givesBonusUnit, Matches.UnitIsLand);
+            final Match<Unit> givesBonusUnitLand = Match.all(givesBonusUnit, Matches.UnitIsLand);
             final List<Territory> neighbors =
                 new ArrayList<>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
             for (final Territory current : neighbors) {
               givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
             }
           } else if (Matches.UnitIsLand.match(u)) {
-            final Match<Unit> givesBonusUnitSea = new CompositeMatchAnd<>(givesBonusUnit, Matches.UnitIsSea);
+            final Match<Unit> givesBonusUnitSea = Match.all(givesBonusUnit, Matches.UnitIsSea);
             final List<Territory> neighbors =
                 new ArrayList<>(data.getMap().getNeighbors(t, Matches.TerritoryIsWater));
             for (final Territory current : neighbors) {
@@ -400,8 +399,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final boolean repairOnlyOwn =
         games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
     final Match<Unit> damagedUnits =
-        new CompositeMatchAnd<>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
-    final Match<Unit> damagedUnitsOwned = new CompositeMatchAnd<>(damagedUnits, Matches.unitIsOwnedBy(player));
+        Match.all(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
+    final Match<Unit> damagedUnitsOwned = Match.all(damagedUnits, Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
     final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
     while (iterTerritories.hasNext()) {
@@ -416,7 +415,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           damaged = new HashSet<>(current.getUnits().getMatches(damagedUnits));
         }
       } else {
-        damaged = new HashSet<>(current.getUnits().getMatches(new CompositeMatchAnd<>(damagedUnitsOwned,
+        damaged = new HashSet<>(current.getUnits().getMatches(Match.all(damagedUnitsOwned,
             Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
       }
       if (!damaged.isEmpty()) {
@@ -475,18 +474,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
-    final Match<Unit> repairUnit = new CompositeMatchAnd<>(Matches.alliedUnit(owner, data),
+    final Match<Unit> repairUnit = Match.all(Matches.alliedUnit(owner, data),
         Matches.UnitCanRepairOthers, Matches.unitCanRepairThisUnit(unitToBeRepaired));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.UnitIsSea.match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitLand = new CompositeMatchAnd<>(repairUnit, Matches.UnitIsLand);
+      final Match<Unit> repairUnitLand = Match.all(repairUnit, Matches.UnitIsLand);
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsLand));
       for (final Territory current : neighbors) {
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
     } else if (Matches.UnitIsLand.match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitSea = new CompositeMatchAnd<>(repairUnit, Matches.UnitIsSea);
+      final Match<Unit> repairUnitSea = Match.all(repairUnit, Matches.UnitIsSea);
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsWater));
       for (final Territory current : neighbors) {
@@ -569,8 +568,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static Collection<Territory> getEmptyNeutral(final Route route) {
-    final Match<Territory> emptyNeutral =
-        new CompositeMatchAnd<>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
+    final Match<Territory> emptyNeutral = Match.all(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);
     return neutral;
   }
@@ -604,7 +602,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
    * @return The number of PUs that have been lost by bombing, rockets, etc.
    */
   @Override
-  public int PUsAlreadyLost(final Territory t) {
+  public int pusAlreadyLost(final Territory t) {
     return m_PUsLost.getInt(t);
   }
 
@@ -612,7 +610,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
    * Add more PUs lost to a territory due to bombing, rockets, etc.
    */
   @Override
-  public void PUsLost(final Territory t, final int amt) {
+  public void pusLost(final Territory t, final int amt) {
     m_PUsLost.add(t, amt);
   }
 }

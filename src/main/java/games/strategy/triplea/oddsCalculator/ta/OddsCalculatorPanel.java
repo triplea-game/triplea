@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
@@ -74,9 +75,7 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.WidgetChangedListener;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 
 class OddsCalculatorPanel extends JPanel {
@@ -94,9 +93,9 @@ class OddsCalculatorPanel extends JPanel {
   private final JLabel m_roundsAverage = new JLabel();
   private final JLabel m_count = new JLabel();
   private final JLabel m_time = new JLabel();
-  private final IntTextField m_numRuns = new games.strategy.ui.IntTextField();
-  private final IntTextField m_retreatAfterXRounds = new games.strategy.ui.IntTextField();
-  private final IntTextField m_retreatAfterXUnitsLeft = new games.strategy.ui.IntTextField();
+  private final IntTextField m_numRuns = new IntTextField();
+  private final IntTextField m_retreatAfterXRounds = new IntTextField();
+  private final IntTextField m_retreatAfterXUnitsLeft = new IntTextField();
   private final JPanel m_resultsPanel = new JPanel();
   private final JButton m_calculateButton = new JButton("Pls Wait, Copying Data...");
   private final JButton m_clearButton = new JButton("Clear");
@@ -833,7 +832,7 @@ class PlayerUnitsPanel extends JPanel {
   private final boolean m_defender;
   private boolean m_isLand = true;
   private List<UnitCategory> m_categories = null;
-  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
+  private final List<WidgetChangedListener> m_listeners = new CopyOnWriteArrayList<>();
   private final WidgetChangedListener m_listenerUnitPanel = () -> notifyListeners();
 
   PlayerUnitsPanel(final GameData data, final IUIContext context, final boolean defender) {
@@ -890,12 +889,12 @@ class PlayerUnitsPanel extends JPanel {
       return u1.getName().compareTo(u2.getName());
     });
     removeAll();
-    Match<UnitType> predicate;
+    final Match<UnitType> predicate;
     if (land) {
       if (m_defender) {
         predicate = Matches.UnitTypeIsNotSea;
       } else {
-        predicate = new CompositeMatchOr<>(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+        predicate = Match.any(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
       }
     } else {
       predicate = Matches.UnitTypeIsSeaOrAir;
@@ -986,7 +985,7 @@ class UnitPanel extends JPanel {
   private final UnitCategory m_category;
   private final ScrollableTextField m_textField;
   private final GameData m_data;
-  private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<>();
+  private final List<WidgetChangedListener> m_listeners = new CopyOnWriteArrayList<>();
   private final ScrollableTextFieldListener m_listenerTextField = field -> notifyListeners();
 
   public UnitPanel(final GameData data, final IUIContext context, final UnitCategory category,

@@ -30,7 +30,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
@@ -646,7 +645,7 @@ public class DiceRoll implements Externalizable {
       if (!((allies && rule.getAllied()) || (!allies && rule.getEnemy()))) {
         continue;
       }
-      final CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<>(
+      final Match<Unit> canSupport = Match.all(
           Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
       final List<Unit> supporters = Match.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();

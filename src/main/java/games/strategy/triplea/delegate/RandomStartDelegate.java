@@ -20,7 +20,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -221,23 +220,20 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
+    return Match.all(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
   }
 
   private Match<PlayerID> getPlayerCanPickMatch() {
-    return new Match<PlayerID>() {
-      @Override
-      public boolean match(final PlayerID player) {
-        if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
-          return false;
-        }
-        if (player.getUnits().isEmpty()) {
-          return false;
-        }
-        return !player.getIsDisabled();
+    return Match.of(player -> {
+      if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
+        return false;
       }
-    };
+      if (player.getUnits().isEmpty()) {
+        return false;
+      }
+      return !player.getIsDisabled();
+    });
   }
 
   @Override

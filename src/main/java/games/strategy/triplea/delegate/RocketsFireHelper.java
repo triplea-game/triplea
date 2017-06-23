@@ -29,7 +29,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -132,7 +131,7 @@ public class RocketsFireHelper {
 
   Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
-    final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
+    final Match<Unit> ownedRockets = rocketMatch(player, data);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
       if (tracker.wasConquered(current)) {
@@ -145,8 +144,8 @@ public class RocketsFireHelper {
     return territories;
   }
 
-  CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return new CompositeMatchAnd<>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
+  Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
+    return Match.all(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
         Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved);
   }
 
@@ -160,12 +159,12 @@ public class RocketsFireHelper {
     if (!isRocketsCanFlyOverImpassables(data)) {
       allowed.add(Matches.TerritoryIsNotImpassable);
     }
-    final CompositeMatchAnd<Unit> attackableUnits =
-        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
+    final Match<Unit> attackableUnits =
+        Match.all(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().someMatch(new CompositeMatchAnd<>(attackableUnits,
+        if (current.getUnits().someMatch(Match.all(attackableUnits,
             Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
@@ -188,7 +187,7 @@ public class RocketsFireHelper {
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+        Match.all(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
         Match.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<>();
@@ -376,7 +375,7 @@ public class RocketsFireHelper {
     } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
       if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
+        final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);
       }
@@ -385,7 +384,7 @@ public class RocketsFireHelper {
       }
     }
     // Record the PUs lost
-    DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
+    DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
     if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
       getRemote(bridge).reportMessage(
           "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "

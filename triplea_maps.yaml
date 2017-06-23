@@ -579,7 +579,7 @@
 - mapName: Red Sun Over China
   mapCategory: GOOD
   url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
-  version: 2
+  version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_red_sun_over_china_mini.png
   description: |
     <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938.
@@ -1505,7 +1505,7 @@
 - mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 9
+  version: 10
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>

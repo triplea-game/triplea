@@ -31,8 +31,6 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -79,9 +77,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> technologyDelegateTriggerMatch = Match.all(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.techAvailableMatch()));
+          Match.any(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);

@@ -135,7 +135,7 @@ public class PoliticsPanel extends ActionPanel {
             : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
                 + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 
-    final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
+    final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
     choiceScroll.setBorder(BorderFactory.createEmptyBorder());
     choiceScroll.setPreferredSize(new Dimension(
         (choiceScroll.getPreferredSize().width > availWidth ? availWidth
@@ -163,7 +163,7 @@ public class PoliticsPanel extends ActionPanel {
 
   });
 
-  private JPanel PoliticalActionButtonPanel(final JDialog parent) {
+  private JPanel politicalActionButtonPanel(final JDialog parent) {
     final JPanel politicalActionButtonPanel = new JPanel();
     politicalActionButtonPanel.setLayout(new GridBagLayout());
     int row = 0;

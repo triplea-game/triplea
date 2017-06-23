@@ -20,8 +20,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -104,11 +102,8 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   boolean hasAttackingUnits() {
-    final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<>();
-    attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
-    attackingLand.add(Matches.UnitIsLand);
-    final boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
-    return someAttacking;
+    final Match<Unit> attackingLand = Match.all(Matches.alliedUnit(m_attacker, m_data), Matches.UnitIsLand);
+    return m_battleSite.getUnits().someMatch(attackingLand);
   }
 
   @Override

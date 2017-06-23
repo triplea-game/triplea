@@ -15,7 +15,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
@@ -75,7 +74,7 @@ class EditValidator {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -91,15 +90,12 @@ class EditValidator {
           }
         }
         if (Match.someMatch(units, Matches.UnitIsAir)) {
-          if (Match.someMatch(units,
-              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+          if (Match.someMatch(units, Match.all(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers =
-              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits =
-              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyCarriers = Match.all(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits = Match.all(Matches.UnitIsAir, Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)

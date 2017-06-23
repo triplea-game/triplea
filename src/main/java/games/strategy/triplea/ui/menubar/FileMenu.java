@@ -35,7 +35,7 @@ class FileMenu {
     fileMenu.setMnemonic(KeyEvent.VK_F);
     fileMenu.add(createSaveMenu());
 
-    if (PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
+    if (PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
       fileMenu.add(addPostPBEM());
     }
 
@@ -60,7 +60,7 @@ class FileMenu {
 
   JMenuItem addPostPBEM() {
     final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
-      if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
+      if (gameData == null || !PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
       final String title = "Manual Gamesave Post";

@@ -2,21 +2,20 @@ package games.strategy.ui;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-import games.strategy.util.ListenerList;
-
 public class DoubleTextField extends JTextField {
   private static final long serialVersionUID = -8698753345852617343L;
   private double m_max = Double.MAX_VALUE;
   private double m_min = Double.MIN_VALUE;
   private String m_terr = null;
-  private final ListenerList<DoubleTextFieldChangeListener> m_listeners =
-      new ListenerList<>();
+  private final List<DoubleTextFieldChangeListener> m_listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new DoubleTextField. */
   public DoubleTextField() {

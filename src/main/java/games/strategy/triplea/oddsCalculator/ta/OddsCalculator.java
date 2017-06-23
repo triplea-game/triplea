@@ -48,8 +48,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -598,9 +596,8 @@ class DummyPlayer extends AbstractAI {
     }
     if (submerge) {
       // submerge if all air vs subs
-      final CompositeMatch<Unit> seaSub = new CompositeMatchAnd<>(Matches.UnitIsSea, Matches.UnitIsSub);
-      final CompositeMatch<Unit> planeNotDestroyer =
-          new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+      final Match<Unit> seaSub = Match.all(Matches.UnitIsSea, Matches.UnitIsSub);
+      final Match<Unit> planeNotDestroyer = Match.all(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {

@@ -61,7 +61,7 @@ public class PBEMMessagePoster implements Serializable {
     return (m_forumPoster != null || m_emailSender != null || m_webSitePoster != null);
   }
 
-  public static boolean GameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
+  public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
     if (gameData == null) {
       return false;
     }

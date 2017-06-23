@@ -46,7 +46,6 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -1218,7 +1217,7 @@ class ProNonCombatMoveAI {
           final Set<Territory> cantHoldTerritories = new HashSet<>();
           while (true) {
             final Match<Territory> match =
-                new CompositeMatchAnd<>(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
+                Match.all(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
                     Matches.territoryIsInList(cantHoldTerritories).invert());
             final Route route = data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), match);
             if (route == null
@@ -1790,7 +1789,7 @@ class ProNonCombatMoveAI {
         // Check if number of attack territories and value are max
         final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 0 : 1;
         final int hasOwnedCarrier =
-            Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.UnitIsOwnedCarrier(player)) ? 1 : 0;
+            Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedCarrier(player)) ? 1 : 0;
         final double airValue = (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories
             + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories) / (1 + cantHoldWithoutAllies)
             / (1 + cantHoldWithoutAllies * isntFactory) * (1 + hasOwnedCarrier);
