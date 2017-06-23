@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -102,6 +103,7 @@ public final class DownloadUtils {
   private static CloseableHttpClient newHttpClient() {
     return HttpClients.custom()
         .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build())
+        .setRedirectStrategy(new LaxRedirectStrategy())
         .build();
   }
 
