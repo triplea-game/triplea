@@ -256,11 +256,11 @@ public interface Constants {
   String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
   String CONSTRUCTION_TYPE_FACTORY = "factory";
 
-  public static String getIncomePercentageFor(final PlayerID playerId) {
+  static String getIncomePercentageFor(final PlayerID playerId) {
     return playerId.getName() + " Income Percentage";
   }
 
-  public static String getPuIncomeBonus(final PlayerID playerId) {
+  static String getPuIncomeBonus(final PlayerID playerId) {
     return playerId.getName() + "PU Income Bonus";
   }
 

@@ -1,38 +1,21 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.yaml.snakeyaml.Yaml;
-
-import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.config.GameEnginePropertyReader;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.Version;
 
 public class MetaSetupPanel extends SetupPanel {
 
@@ -141,85 +124,15 @@ public class MetaSetupPanel extends SetupPanel {
 
 
   private void connectToLobby() {
-    final LobbyServerProperties props = getLobbyServerProperties();
-
-    final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
+    final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this));
     final LobbyClient client = login.login();
     if (client == null) {
       return;
     }
-    final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
+    final LobbyFrame lobbyFrame = new LobbyFrame(client);
     GameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
   }
-
-
-  private static Optional<List<Map<String, Object>>> loadYaml(final File yamlFile) {
-    final String yamlContent;
-    try {
-      yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
-    } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to read from: " + yamlFile.getAbsolutePath(), e);
-      return Optional.empty();
-    }
-    final Yaml yaml = new Yaml();
-    @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> yamlDataObj = (List<Map<String, Object>>) yaml.load(yamlContent);
-    if (yamlDataObj == null) {
-      return Optional.empty();
-    } else {
-      return Optional.of(yamlDataObj);
-    }
-  }
-
-  private static LobbyServerProperties getLobbyServerProperties() {
-    final GameEnginePropertyReader propReader = ClientContext.gameEnginePropertyReader();
-    final String urlProp = ClientContext.gameEnginePropertyReader().readLobbyPropertiesUrl();
-    Optional<List<Map<String, Object>>> yamlDataObj = loadRemoteLobbyServerProperties(urlProp);
-    if (!yamlDataObj.isPresent()) {
-      // try reading properties from the local file as a backup
-      final String localFileProp = propReader.readLobbyPropertiesBackupFile();
-      final File localFile = new File(ClientFileSystemHelper.getRootFolder(), localFileProp);
-      yamlDataObj = loadYaml(localFile);
-      if (!yamlDataObj.isPresent()) {
-        throw new IllegalStateException(
-            "Failed to read lobby properties from both: " + urlProp + ", and: " + localFile.getAbsolutePath());
-      }
-    }
-
-    final Map<String, Object> yamlProps = matchCurrentVersion(yamlDataObj.get());
-
-    return new LobbyServerProperties(yamlProps);
-  }
-
-  private static Optional<List<Map<String, Object>>> loadRemoteLobbyServerProperties(final String lobbyPropsUrl) {
-    final File file = ClientFileSystemHelper.createTempFile();
-    try {
-      try {
-        DownloadUtils.downloadToFile(lobbyPropsUrl, file);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly(
-            String.format(
-                "Failed to download lobby server props file (%s); using the backup local property file instead.",
-                lobbyPropsUrl),
-            e);
-      }
-      return loadYaml(file);
-    } finally {
-      file.delete();
-    }
-  }
-
-  private static Map<String, Object> matchCurrentVersion(final List<Map<String, Object>> lobbyProps) {
-    checkNotNull(lobbyProps);
-    final Version currentVersion = ClientContext.engineVersion().getVersion();
-
-    final Optional<Map<String, Object>> matchingVersionProps = lobbyProps.stream()
-        .filter(props -> currentVersion.equals(props.get("version")))
-        .findFirst();
-    return matchingVersionProps.orElse(lobbyProps.get(0));
-  }
-
 
   @Override
   public void setWidgetActivation() {

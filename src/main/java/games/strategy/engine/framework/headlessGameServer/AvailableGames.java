@@ -121,7 +121,7 @@ public class AvailableGames {
     try (
         final FileInputStream fis = new FileInputStream(map);
         final ZipInputStream zis = new ZipInputStream(fis);
-        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});) {
+        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {

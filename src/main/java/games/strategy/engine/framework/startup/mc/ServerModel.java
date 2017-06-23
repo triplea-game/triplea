@@ -77,7 +77,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         IObserverWaitingToJoin.class);
   }
 
-  private static Logger logger = Logger.getLogger(ServerModel.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerModel.class.getName());
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final SetupPanelModel typePanelModel;
   private final boolean headless;
@@ -417,7 +417,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       System.out.println("Changing to user savegame: " + fileName);
       try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-          InputStream oinput = new BufferedInputStream(input);) {
+          InputStream oinput = new BufferedInputStream(input)) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);

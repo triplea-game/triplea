@@ -84,7 +84,7 @@ public interface IUIContext {
 
   boolean getShowUnits();
 
-  void setShowUnits(boolean aBool);
+  void setShowUnits(boolean showUnits);
 
   OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
 
@@ -94,17 +94,17 @@ public interface IUIContext {
 
   void setDrawTerritoryBordersAgainToMedium();
 
-  void setShowTerritoryEffects(boolean aBool);
+  void setShowTerritoryEffects(boolean showTerritoryEffects);
 
   boolean getShowTerritoryEffects();
 
   boolean getShowMapOnly();
 
-  void setShowMapOnly(boolean aBool);
+  void setShowMapOnly(boolean showMapOnly);
 
   boolean getLockMap();
 
-  void setLockMap(boolean aBool);
+  void setLockMap(boolean lockMap);
 
   boolean getShowEndOfTurnReport();
 
@@ -124,7 +124,7 @@ public interface IUIContext {
 
   boolean getShowBattlesBetweenAIs();
 
-  void setShowBattlesBetweenAIs(boolean aBool);
+  void setShowBattlesBetweenAIs(boolean showBattlesBetweenAis);
 
   LocalPlayers getLocalPlayers();
 

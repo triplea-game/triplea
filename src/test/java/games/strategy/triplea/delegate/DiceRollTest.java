@@ -211,7 +211,7 @@ public class DiceRollTest {
     final ITestDelegateBridge bridge = getDelegateBridge(americans);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
     final MockBattle battle = new MockBattle(algeria);
-    battle.setAmphibiousLandAttackers(Collections.<Unit>emptyList());
+    battle.setAmphibiousLandAttackers(Collections.emptyList());
     battle.setIsAmphibious(true);
     final DiceRoll roll = DiceRoll.rollDice(attackers, false, americans, bridge, battle, "",
         TerritoryEffectHelper.getEffects(algeria), null);

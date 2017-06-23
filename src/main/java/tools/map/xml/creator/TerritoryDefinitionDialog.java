@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 
 public class TerritoryDefinitionDialog extends JDialog {
-  public static enum Definition {
+  public enum Definition {
     IS_WATER, IS_VICTORY_CITY, IMPASSABLE, IS_CAPITAL
   }
 

@@ -99,13 +99,13 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 
 
   private void createComponents() {
-    JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
+    final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
     localPlayerPanel.addHierarchyListener(new HierarchyListener() {
       @Override
       public void hierarchyChanged(HierarchyEvent e) {
-        Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
+        final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
         if (window instanceof Dialog) {
-          Dialog dialog = (Dialog) window;
+          final Dialog dialog = (Dialog) window;
           if (!dialog.isResizable()) {
             dialog.setResizable(true);
             dialog.setMinimumSize(new Dimension(700, 700));
@@ -455,7 +455,7 @@ enum LocalBeanCache {
 
   Map<String, IBean> map = new HashMap<>();
 
-  private LocalBeanCache() {
+  LocalBeanCache() {
     file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
     map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk

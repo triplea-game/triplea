@@ -24,8 +24,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.HttpProxy;
 
 public final class DownloadUtils {
@@ -110,6 +112,48 @@ public final class DownloadUtils {
   }
 
   /**
+   * Creaetes a temp file, downloads the contents of a target uri to that file, returns the file.
+   * @param uri The URI whose contents will be downloaded
+   */
+  public static FileDownloadResult downloadToFile(final String uri) {
+    final File file = ClientFileSystemHelper.createTempFile();
+    file.deleteOnExit();
+    try {
+      downloadToFile(uri, file);
+      return FileDownloadResult.success(file);
+    } catch (final IOException e) {
+      ClientLogger.logError("Failed to download: " + uri + ", will attempt to use backup values where available. "
+          + "Please check your network connection.", e);
+      return FileDownloadResult.FAILURE;
+    }
+  }
+
+
+  public static class FileDownloadResult {
+    public final boolean wasSuccess;
+    public final File downloadedFile;
+
+
+    public static final FileDownloadResult FAILURE = new FileDownloadResult();
+
+    public static FileDownloadResult success(final File downloadedFile) {
+      return new FileDownloadResult(downloadedFile);
+    }
+
+    private FileDownloadResult() {
+      wasSuccess = false;
+      downloadedFile = null;
+    }
+
+    private FileDownloadResult(final File downloadedFile) {
+      Preconditions.checkState(
+          downloadedFile.exists(), "Error, file does not exist: " + downloadedFile.getAbsolutePath());
+      this.downloadedFile = downloadedFile;
+      this.wasSuccess = true;
+    }
+  }
+
+  /**
    * Downloads the resource at the specified URI to the specified file.
    *
    * @param uri The resource URI; must not be {@code null}.
@@ -126,6 +170,9 @@ public final class DownloadUtils {
       downloadToFile(uri, os, client);
     }
   }
+
+
+
 
   @VisibleForTesting
   static void downloadToFile(

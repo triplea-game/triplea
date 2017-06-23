@@ -181,14 +181,14 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_attemptsLeftThisTurn = 1;
   }
 
-  public void resetAttempts(final IDelegateBridge aBridge) {
+  public void resetAttempts(final IDelegateBridge bridge) {
     if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
     }
   }
 
-  public void useAttempt(final IDelegateBridge aBridge) {
-    aBridge
+  public void useAttempt(final IDelegateBridge bridge) {
+    bridge
         .addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
   }
 

@@ -71,11 +71,11 @@ public class Database {
 
   public static Connection getDerbyConnection() {
     final String url = "jdbc:derby:ta_users;create=true";
-    return getDerbyConnection(url, getDbProps());
+    return getConnection(url, getDbProps());
   }
 
   public static Connection getPostgresConnection() {
-    final Connection connection = getDerbyConnection("jdbc:postgresql://localhost/", getPostgresDbProps());
+    final Connection connection = getConnection("jdbc:postgresql://localhost/ta_users", getPostgresDbProps());
     try {
       connection.setAutoCommit(false);
     } catch (final SQLException e) {
@@ -84,9 +84,9 @@ public class Database {
     return connection;
   }
 
-  public static Connection getDerbyConnection(final String url, final Properties props) {
+  public static Connection getConnection(final String url, final Properties props) {
     ensureDbIsSetup();
-    Connection conn = null;
+    final Connection conn;
     /*
      * The connection specifies create=true to cause
      * the database to be created. To remove the database,

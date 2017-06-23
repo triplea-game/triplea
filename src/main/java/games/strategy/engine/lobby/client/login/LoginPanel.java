@@ -33,7 +33,7 @@ class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
   private static final Logger logger = Logger.getLogger(LoginPanel.class.getName());
 
-  static enum ReturnValue {
+  enum ReturnValue {
     CANCEL, LOGON, CREATE_ACCOUNT
   }
 

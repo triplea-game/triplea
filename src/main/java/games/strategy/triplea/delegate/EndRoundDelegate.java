@@ -213,9 +213,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return false;
   }
 
-  private void checkVictoryCities(final IDelegateBridge aBridge, final String victoryMessage,
+  private void checkVictoryCities(final IDelegateBridge bridge, final String victoryMessage,
       final String victoryType) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
     String allianceName = null;
     final Collection<Territory> territories = data.getMap().getTerritories();
@@ -233,10 +233,10 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         }
       }
       if (teamVCs >= vcAmount) {
-        aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
+        bridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
         final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         // Added this to end the game on victory conditions
-        signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, aBridge);
+        signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, bridge);
       }
     }
   }
@@ -263,14 +263,14 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    * @param status
    *        the "game over" text to be displayed to each user.
    */
-  public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge) {
+  public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge bridge) {
     // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
     if (!m_gameOver) {
       m_gameOver = true;
       m_winners = winners;
-      aBridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
           ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next()
               : PlayerID.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
@@ -278,7 +278,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
       // means our local copy of playerBridge could be null.
-      getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+      getDisplay(bridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the
@@ -300,7 +300,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
             new CountDownLatchHandler(true)));
       }
       if (stopGame) {
-        aBridge.stopGameSequence();
+        bridge.stopGameSequence();
       }
     }
   }

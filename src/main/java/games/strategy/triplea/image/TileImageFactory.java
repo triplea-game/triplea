@@ -80,25 +80,25 @@ public final class TileImageFactory {
     }
   }
 
-  public static void setShowReliefImages(final boolean aBool) {
-    s_showReliefImages = aBool;
+  public static void setShowReliefImages(final boolean showReliefImages) {
+    s_showReliefImages = showReliefImages;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, s_showReliefImages);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to save value: " + aBool, ex);
+      ClientLogger.logQuietly("Failed to save value: " + showReliefImages, ex);
     }
   }
 
-  public static void setShowMapBlends(final boolean aBool) {
-    s_showMapBlends = aBool;
+  public static void setShowMapBlends(final boolean showMapBlends) {
+    s_showMapBlends = showMapBlends;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, s_showMapBlends);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + aBool, ex);
+      ClientLogger.logQuietly("faild to save value: " + showMapBlends, ex);
     }
   }
 

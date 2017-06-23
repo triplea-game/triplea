@@ -185,8 +185,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowUnits(final boolean aBool) {
-    m_drawUnits = aBool;
+  public void setShowUnits(final boolean showUnits) {
+    m_drawUnits = showUnits;
   }
 
   @Override
@@ -210,8 +210,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowTerritoryEffects(final boolean aBool) {
-    m_drawTerritoryEffects = aBool;
+  public void setShowTerritoryEffects(final boolean showTerritoryEffects) {
+    m_drawTerritoryEffects = showTerritoryEffects;
   }
 
   @Override
@@ -225,8 +225,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowMapOnly(final boolean aBool) {
-    m_drawMapOnly = aBool;
+  public void setShowMapOnly(final boolean showMapOnly) {
+    m_drawMapOnly = showMapOnly;
   }
 
   @Override

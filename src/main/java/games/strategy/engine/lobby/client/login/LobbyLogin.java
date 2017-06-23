@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
@@ -20,12 +21,12 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.util.MD5Crypt;
 
 public class LobbyLogin {
-  private final Window m_parent;
-  private final LobbyServerProperties m_serverProperties;
+  private final Window parentWindow;
+  private final LobbyServerProperties lobbyServerProperties;
 
-  public LobbyLogin(final Window parent, final LobbyServerProperties properties) {
-    m_parent = parent;
-    m_serverProperties = properties;
+  public LobbyLogin(final Window parent) {
+    parentWindow = parent;
+    lobbyServerProperties = ClientContext.gameEnginePropertyReader().fetchLobbyServerProperties();
   }
 
   /**
@@ -36,14 +37,17 @@ public class LobbyLogin {
    * </p>
    */
   public LobbyClient login() {
-    if (!m_serverProperties.isServerAvailable()) {
-      JOptionPane.showMessageDialog(m_parent, m_serverProperties.serverErrorMessage, "Could not connect to server",
+    if (!lobbyServerProperties.isServerAvailable()) {
+      JOptionPane.showMessageDialog(
+          parentWindow,
+          lobbyServerProperties.serverErrorMessage,
+          "Could not connect to server",
           JOptionPane.ERROR_MESSAGE);
       return null;
     }
-    if (m_serverProperties.port == -1) {
+    if (lobbyServerProperties.port == -1) {
       if (ClientFileSystemHelper.areWeOldExtraJar()) {
-        JOptionPane.showMessageDialog(m_parent,
+        JOptionPane.showMessageDialog(parentWindow,
             "<html>Could not find lobby server for this version of TripleA, <br>"
                 + "Please make sure you are using the latest version: "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
@@ -52,7 +56,7 @@ public class LobbyLogin {
                 + "the latest engine, Then host a game, Then load the old savegame!</b></html>",
             "Could not connect to server", JOptionPane.ERROR_MESSAGE);
       } else {
-        JOptionPane.showMessageDialog(m_parent,
+        JOptionPane.showMessageDialog(parentWindow,
             "<html>Could not find lobby server for this version of TripleA, <br>"
                 + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "</html>",
@@ -63,33 +67,19 @@ public class LobbyLogin {
     return loginToServer();
   }
 
-  private LobbyClient loginToServer() {
-    final LoginPanel panel = new LoginPanel();
-    final LoginPanel.ReturnValue value = panel.show(m_parent);
-    if (value == LoginPanel.ReturnValue.LOGON) {
-      return login(panel);
-    } else if (value == LoginPanel.ReturnValue.CANCEL) {
-      return null;
-    } else if (value == LoginPanel.ReturnValue.CREATE_ACCOUNT) {
-      return createAccount();
-    } else {
-      throw new IllegalStateException("??");
-    }
-  }
-
   private LobbyClient login(final LoginPanel panel) {
     try {
       final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
+      final ClientMessenger messenger = new ClientMessenger(lobbyServerProperties.host, lobbyServerProperties.port,
           panel.getUserName(), mac, new IConnectionLogin() {
-            private final AtomicReference<String> m_internalError = new AtomicReference<>();
+            private final AtomicReference<String> internalError = new AtomicReference<>();
 
             @Override
             public void notifyFailedLogin(String message) {
-              if (m_internalError.get() != null) {
-                message = m_internalError.get();
+              if (internalError.get() != null) {
+                message = internalError.get();
               }
-              JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(parentWindow, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
 
             @Override
@@ -103,7 +93,7 @@ public class LobbyLogin {
                   // the server does not have a salt value
                   // so there is no user with our name,
                   // continue as before
-                  m_internalError.set("No account with that name exists");
+                  internalError.set("No account with that name exists");
                   salt = "none";
                 }
                 final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
@@ -116,19 +106,36 @@ public class LobbyLogin {
       // sucess, store prefs
       LoginPanel.storePrefs(panel.getUserName(), panel.isAnonymous());
       return new LobbyClient(messenger, panel.isAnonymous());
-    } catch (final CouldNotLogInException clne) {
+    } catch (final CouldNotLogInException e) {
       // this has already been dealt with
       return loginToServer();
-    } catch (final IOException ioe) {
-      JOptionPane.showMessageDialog(m_parent, "Could Not Connect to Lobby : " + ioe.getMessage(), "Could not connect",
+    } catch (final IOException e) {
+      JOptionPane.showMessageDialog(
+          parentWindow,
+          "Could Not Connect to Lobby : " + e.getMessage(),
+          "Could not connect",
           JOptionPane.ERROR_MESSAGE);
       return null;
     }
   }
 
+  private LobbyClient loginToServer() {
+    final LoginPanel panel = new LoginPanel();
+    final LoginPanel.ReturnValue value = panel.show(parentWindow);
+    if (value == LoginPanel.ReturnValue.LOGON) {
+      return login(panel);
+    } else if (value == LoginPanel.ReturnValue.CANCEL) {
+      return null;
+    } else if (value == LoginPanel.ReturnValue.CREATE_ACCOUNT) {
+      return createAccount();
+    } else {
+      throw new IllegalStateException("??");
+    }
+  }
+
   private LobbyClient createAccount() {
     final CreateUpdateAccountPanel createAccount = CreateUpdateAccountPanel.newCreatePanel();
-    final CreateUpdateAccountPanel.ReturnValue value = createAccount.show(m_parent);
+    final CreateUpdateAccountPanel.ReturnValue value = createAccount.show(parentWindow);
     if (value == CreateUpdateAccountPanel.ReturnValue.OK) {
       return createAccount(createAccount);
     } else {
@@ -139,11 +146,11 @@ public class LobbyLogin {
   private LobbyClient createAccount(final CreateUpdateAccountPanel createAccount) {
     try {
       final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger(m_serverProperties.host, m_serverProperties.port,
+      final ClientMessenger messenger = new ClientMessenger(lobbyServerProperties.host, lobbyServerProperties.port,
           createAccount.getUserName(), mac, new IConnectionLogin() {
             @Override
             public void notifyFailedLogin(final String message) {
-              JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(parentWindow, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
 
             @Override
@@ -162,8 +169,12 @@ public class LobbyLogin {
     } catch (final CouldNotLogInException clne) {
       // this has already been dealt with
       return createAccount();
-    } catch (final IOException ioe) {
-      JOptionPane.showMessageDialog(m_parent, ioe.getMessage(), "Account creation failed", JOptionPane.ERROR_MESSAGE);
+    } catch (final IOException e) {
+      JOptionPane.showMessageDialog(
+          parentWindow,
+          e.getMessage(),
+          "Account creation failed",
+          JOptionPane.ERROR_MESSAGE);
       return null;
     }
   }

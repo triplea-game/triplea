@@ -1,35 +1,69 @@
 package games.strategy.engine.config;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
+import java.io.FileWriter;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import games.strategy.test.TestUtil;
 
 public class PropertyFileReaderTest {
 
+  private PropertyFileReader testObj;
+
+  /**
+   * Sets up a test object with a throw-away temp file with some basic
+   * test data written to it. Subsequent tests will verify parsing
+   * based on this data.
+   */
+  @Before
+  public void setup() throws Exception {
+    final File tempFile = File.createTempFile("test", "tmp");
+    tempFile.deleteOnExit();
+
+    final FileWriter writer = new FileWriter(tempFile);
+
+    writer.write("a=b\n");
+    writer.write(" 1 = 2 \n");
+    writer.write("whitespace =      \n");
+
+    writer.close();
+
+    testObj = new PropertyFileReader(tempFile);
+  }
+
+
   @Test
-  public void testPropertiesAreParsed() {
-    final String input = " " + GameEnginePropertyReader.GameEngineProperty.MAP_LISTING_FILE + " = 1 ";
-
-    final File propFile = TestUtil.createTempFile(input);
-    final GameEnginePropertyReader testObj = new GameEnginePropertyReader(propFile);
-
-    assertThat("Property key value pair 'x = 1 '  should be trimmed, no spaces in value or key.",
-        testObj.readMapListingDownloadUrl(), is("1"));
+  public void checkPropertyParsing() {
+    assertThat("basic happy case, we wrote 'a=b' in the props file",
+        testObj.readProperty("a"), is("b"));
+    assertThat("we are also checking string trimming here",
+        testObj.readProperty("1"), is("2"));
   }
 
-  @Test(expected = GameEnginePropertyReader.PropertyNotFoundException.class)
-  public void testEmptyCase() {
-    final String input = "";
+  @Test
+  public void checkPropertyNotFound() {
+    assertThat("not found is empty value back, same thing as if we did not set the value",
+        testObj.readProperty("notFound"), is(""));
 
-    final File propFile = TestUtil.createTempFile(input);
-    final GameEnginePropertyReader testObj = new GameEnginePropertyReader(propFile);
-
-    assertThat("Simple empty input file, any key we read will return empty string",
-        testObj.readMapListingDownloadUrl(), is(""));
+    assertThat("verify trimming, will look like no property found with only whitespace set",
+        testObj.readProperty("whitespace"), is(""));
   }
+
+
+  @Test(expected = NullPointerException.class)
+  public void throwsNullPointerOnNullInput() {
+    testObj.readProperty(null);
+  }
+
+  /**
+   * Empty input parameter would be a mistake from the client, throw an error rather than continuing.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void throwIfInputIsEmpty() {
+    testObj.readProperty("  ");
+  }
+
 }

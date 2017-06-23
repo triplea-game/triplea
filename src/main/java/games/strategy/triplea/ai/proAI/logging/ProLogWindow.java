@@ -396,8 +396,7 @@ class ProLogWindow extends JDialog {
 
   private void trimLogRoundPanels() {
     // If we're logging and we have trimming enabled, or if we have logging turned off
-    if ((ProLogSettings.loadSettings().EnableAILogging && ProLogSettings.loadSettings().LimitLogHistory)
-        || !ProLogSettings.loadSettings().EnableAILogging) {
+    if (!ProLogSettings.loadSettings().EnableAILogging || ProLogSettings.loadSettings().LimitLogHistory) {
       final int maxHistoryRounds;
       if (ProLogSettings.loadSettings().EnableAILogging) {
         maxHistoryRounds = ProLogSettings.loadSettings().LimitLogHistoryTo;

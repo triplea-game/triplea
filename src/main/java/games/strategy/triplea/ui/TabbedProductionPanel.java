@@ -76,7 +76,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   private void calculateXY(final ProductionTabsProperties properties, final int largestList) {
     if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      int m_maxColumns;
+      final int m_maxColumns;
       if (largestList <= 36) {
         m_maxColumns = Math.max(8,
             Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
@@ -163,13 +163,13 @@ public class TabbedProductionPanel extends ProductionPanel {
         resourceRules.add(rule);
       }
     }
-    ruleLists.add(Tuple.of("All", (List<Rule>) allRules));
-    ruleLists.add(Tuple.of("Land", (List<Rule>) landRules));
-    ruleLists.add(Tuple.of("Air", (List<Rule>) airRules));
-    ruleLists.add(Tuple.of("Sea", (List<Rule>) seaRules));
-    ruleLists.add(Tuple.of("Construction", (List<Rule>) constructRules));
-    ruleLists.add(Tuple.of("Upgrades/Consumes", (List<Rule>) upgradeConsumesRules));
-    ruleLists.add(Tuple.of("Resources", (List<Rule>) resourceRules));
+    ruleLists.add(Tuple.of("All", allRules));
+    ruleLists.add(Tuple.of("Land", landRules));
+    ruleLists.add(Tuple.of("Air", airRules));
+    ruleLists.add(Tuple.of("Sea", seaRules));
+    ruleLists.add(Tuple.of("Construction", constructRules));
+    ruleLists.add(Tuple.of("Upgrades/Consumes", upgradeConsumesRules));
+    ruleLists.add(Tuple.of("Resources", resourceRules));
     return ruleLists;
   }
 
