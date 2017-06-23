@@ -278,12 +278,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return games.strategy.triplea.Properties.getNationalObjectives(getData());
   }
 
-  private static Match<RulesAttachment> availableUses = new Match<RulesAttachment>() {
-    @Override
-    public boolean match(final RulesAttachment ra) {
-      return ra.getUses() != 0;
-    }
-  };
+  private static final Match<RulesAttachment> availableUses = Match.of(ra -> ra.getUses() != 0);
 
   @Override
   protected String addOtherResources(final IDelegateBridge aBridge) {

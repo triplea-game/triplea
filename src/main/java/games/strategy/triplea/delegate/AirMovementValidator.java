@@ -598,12 +598,7 @@ public class AirMovementValidator {
   }
 
   private static Match<Unit> UnitCanFindLand(final GameData data, final Territory current) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return canFindLand(data, u, current);
-      }
-    };
+    return Match.of(u -> canFindLand(data, u, current));
   }
 
   /**

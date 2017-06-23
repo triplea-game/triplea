@@ -141,12 +141,8 @@ class EditPanel extends ActionPanel {
           for (final Unit u : m_selectedUnits) {
             selectedUnitTypes.add(u.getType());
           }
-          final List<Unit> allOfCorrectType = Match.getMatches(allUnits, new Match<Unit>() {
-            @Override
-            public boolean match(final Unit o) {
-              return selectedUnitTypes.contains(o.getType());
-            }
-          });
+          final List<Unit> allOfCorrectType = Match.getMatches(allUnits,
+              Match.of(o -> selectedUnitTypes.contains(o.getType())));
           final int allCategories =
               UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           final int selectedCategories =

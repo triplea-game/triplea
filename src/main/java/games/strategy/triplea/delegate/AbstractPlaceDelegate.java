@@ -1380,33 +1380,30 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *         required combos as well).
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unitWhichRequiresUnits) {
-        if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
-        // do not need to remove unowned here, as this match will remove unowned units from consideration.
-        if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-            .match(unitWhichRequiresUnits)) {
-          return true;
-        }
-        if (!doNotCountNeighbors) {
-          if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
-            for (final Territory current : getAllProducers(to, m_player,
-                Collections.singletonList(unitWhichRequiresUnits), true)) {
-              final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-              if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-                  .match(unitWhichRequiresUnits)) {
-                return true;
-              }
+    return Match.of(unitWhichRequiresUnits -> {
+      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
+      // do not need to remove unowned here, as this match will remove unowned units from consideration.
+      if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+          .match(unitWhichRequiresUnits)) {
+        return true;
+      }
+      if (!doNotCountNeighbors) {
+        if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
+          for (final Territory current : getAllProducers(to, m_player,
+              Collections.singletonList(unitWhichRequiresUnits), true)) {
+            final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
+            if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+                .match(unitWhichRequiresUnits)) {
+              return true;
             }
           }
         }
-        return false;
       }
-    };
+      return false;
+    });
   }
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
