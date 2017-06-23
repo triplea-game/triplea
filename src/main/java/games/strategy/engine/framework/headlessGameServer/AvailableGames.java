@@ -68,7 +68,7 @@ public class AvailableGames {
    *
    * @return The path to the game file; or {@code null} if the game is not available.
    */
-  public String getGameFilePath(final String gameName) {
+  String getGameFilePath(final String gameName) {
     return Optional.ofNullable(availableGames.get(gameName)).map(Object::toString).orElse(null);
   }
 
