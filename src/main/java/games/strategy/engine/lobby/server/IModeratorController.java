@@ -23,7 +23,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void banUsername(INode node, Date banExpires) {
     banUsername(node, banExpires != null ? banExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Ban the username of the given INode.
@@ -37,7 +37,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void banIp(INode node, Date banExpires) {
     banIp(node, banExpires != null ? banExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Ban the ip of the given INode.
@@ -54,7 +54,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void banMac(INode node, Date banExpires) {
     banMac(node, banExpires != null ? banExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Ban the mac of the given INode.
@@ -68,7 +68,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void banMac(final INode node, final String hashedMac, final Date banExpires) {
     banMac(node, banExpires != null ? banExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Ban the mac.
@@ -82,7 +82,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void muteUsername(INode node, Date muteExpires) {
     muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Mute the username of the given INode.
@@ -96,7 +96,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void muteIp(INode node, Date muteExpires) {
     muteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Mute the ip of the given INode.
@@ -113,7 +113,7 @@ public interface IModeratorController extends IRemote {
   @Deprecated
   default void muteMac(INode node, Date muteExpires) {
     muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
+  }
 
   /**
    * Mute the mac of the given INode.
