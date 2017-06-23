@@ -17,9 +17,27 @@ public interface IModeratorController extends IRemote {
   void boot(INode node);
 
   /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banUsername(INode node, Date banExpires) {
+    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
    * Ban the username of the given INode.
    */
   void banUsername(INode node, Instant banExpires);
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banIp(INode node, Date banExpires) {
+    banIp(node, banExpires != null ? banExpires.toInstant() : null);
+  };
 
   /**
    * Ban the ip of the given INode.
@@ -30,9 +48,27 @@ public interface IModeratorController extends IRemote {
   void banIp(INode node, Instant banExpires);
 
   /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banMac(INode node, Date banExpires) {
+    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+  };
+
+  /**
    * Ban the mac of the given INode.
    */
   void banMac(INode node, Instant banExpires);
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banMac(final INode node, final String hashedMac, final Date banExpires) {
+    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+  };
 
   /**
    * Ban the mac.
@@ -40,9 +76,27 @@ public interface IModeratorController extends IRemote {
   void banMac(final INode node, final String hashedMac, final Instant banExpires);
 
   /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void muteUsername(INode node, Date muteExpires) {
+    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
+
+  /**
    * Mute the username of the given INode.
    */
   void muteUsername(INode node, Instant muteExpires);
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void muteIp(INode node, Date muteExpires) {
+    muteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
 
   /**
    * Mute the ip of the given INode.
@@ -51,6 +105,15 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   void muteIp(INode node, Instant muteExpires);
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void muteMac(INode node, Date muteExpires) {
+    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+  };
 
   /**
    * Mute the mac of the given INode.
@@ -123,62 +186,4 @@ public interface IModeratorController extends IRemote {
    * Is this node an admin.
    */
   boolean isPlayerAdmin(final INode node);
-
-  // Methods for backwards compatibility
-  // Remove with next incompatible release
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void banUsername(INode node, Date banExpires) {
-    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void banIp(INode node, Date banExpires) {
-    banIp(node, banExpires != null ? banExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void banMac(INode node, Date banExpires) {
-    banMac(node, banExpires != null ? banExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void banMac(final INode node, final String hashedMac, final Date banExpires) {
-    banMac(node, banExpires != null ? banExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void muteUsername(INode node, Date muteExpires) {
-    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void muteIp(INode node, Date muteExpires) {
-    muteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   */
-  @Deprecated
-  default void muteMac(INode node, Date muteExpires) {
-    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
-  };
 }
