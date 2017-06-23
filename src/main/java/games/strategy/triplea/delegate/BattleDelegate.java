@@ -40,7 +40,6 @@ import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -1076,13 +1075,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Get those that are neighbors
       final Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
       // Set up match criteria for allied carriers
-      final CompositeMatch<Unit> alliedCarrier = new CompositeMatchAnd<>();
-      alliedCarrier.add(Matches.UnitIsCarrier);
-      alliedCarrier.add(Matches.alliedUnit(defender, data));
+      final Match<Unit> alliedCarrier = Match.all(Matches.UnitIsCarrier, Matches.alliedUnit(defender, data));
       // Set up match criteria for allied planes
-      final CompositeMatch<Unit> alliedPlane = new CompositeMatchAnd<>();
-      alliedPlane.add(Matches.UnitIsAir);
-      alliedPlane.add(Matches.alliedUnit(defender, data));
+      final Match<Unit> alliedPlane = Match.all(Matches.UnitIsAir, Matches.alliedUnit(defender, data));
       // See if neighboring carriers have any capacity available
       for (final Territory currentTerritory : areSeaNeighbors) {
         // get the capacity of the carriers and cost of fighters
@@ -1148,8 +1143,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private static void landPlanesOnCarriers(final IDelegateBridge bridge, final Match<Unit> alliedDefendingAir,
-      final Collection<Unit> defendingAir, final CompositeMatch<Unit> alliedCarrier,
-      final CompositeMatch<Unit> alliedPlane, final Territory newTerritory, final Territory battleSite) {
+      final Collection<Unit> defendingAir, final Match<Unit> alliedCarrier,
+      final Match<Unit> alliedPlane, final Territory newTerritory, final Territory battleSite) {
     // Get the capacity of the carriers in the selected zone
     final Collection<Unit> alliedCarriersSelected = newTerritory.getUnits().getMatches(alliedCarrier);
     final Collection<Unit> alliedPlanesSelected = newTerritory.getUnits().getMatches(alliedPlane);

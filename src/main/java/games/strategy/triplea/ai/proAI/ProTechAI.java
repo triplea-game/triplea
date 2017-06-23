@@ -563,7 +563,7 @@ final class ProTechAI {
     // if we fail due to canal, then don't go near any enemy canals
     if (MoveValidator.validateCanal(r, null, player, data) != null) {
       r = data.getMap().getRoute(start, destination,
-          new CompositeMatchAnd<>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data).invert()));
+          Match.all(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data).invert()));
     }
     if (r == null || r.getEnd() == null) {
       return null;

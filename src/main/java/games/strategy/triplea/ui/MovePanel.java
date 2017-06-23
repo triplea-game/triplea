@@ -326,11 +326,8 @@ public class MovePanel extends AbstractMovePanel {
     return rVal;
   }
 
-  private CompositeMatch<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
-    final CompositeMatch<Unit> unloadable = new CompositeMatchAnd<>();
-    unloadable.add(getMovableMatch(route, units));
-    unloadable.add(Matches.UnitIsLand);
-    return unloadable;
+  private Match<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
+    return Match.all(getMovableMatch(route, units), Matches.UnitIsLand);
   }
 
   private CompositeMatch<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
@@ -356,9 +353,7 @@ public class MovePanel extends AbstractMovePanel {
         return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
       });
       if (route.isUnload()) {
-        final CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<>();
-        notLandAndCanMove.add(enoughMovement);
-        notLandAndCanMove.add(Matches.UnitIsNotLand);
+        final Match<Unit> notLandAndCanMove = Match.all(enoughMovement, Matches.UnitIsNotLand);
         final Match<Unit> landOrCanMove = Match.any(Matches.UnitIsLand, notLandAndCanMove);
         movable.add(landOrCanMove);
       } else {
@@ -579,9 +574,9 @@ public class MovePanel extends AbstractMovePanel {
     for (final Unit unit : unitsToLoad) {
       minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
     }
-    final CompositeMatch<Unit> candidateTransportsMatch = new CompositeMatchAnd<>();
-    candidateTransportsMatch.add(Matches.UnitIsTransport);
-    candidateTransportsMatch.add(Matches.alliedUnit(unitOwner, getGameData()));
+    final Match<Unit> candidateTransportsMatch = Match.all(
+        Matches.UnitIsTransport,
+        Matches.alliedUnit(unitOwner, getGameData()));
     final List<Unit> candidateTransports = Match.getMatches(endOwnedUnits, candidateTransportsMatch);
 
     // remove transports that don't have enough capacity
@@ -1253,9 +1248,7 @@ public class MovePanel extends AbstractMovePanel {
         return;
       }
       final PlayerID owner = getUnitOwner(selectedUnits);
-      final CompositeMatchAnd<Unit> match =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedBy(owner)/* , Matches.UnitIsNotFactory */);
-      match.add(Matches.UnitCanMove);
+      final Match<Unit> match = Match.all(Matches.unitIsOwnedBy(owner), Matches.UnitCanMove);
       final boolean someOwned = Match.someMatch(units, match);
       final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
       if (someOwned && isCorrectTerritory) {

@@ -113,6 +113,19 @@ public class MatchTest {
   }
 
   @Test
+  public void testBuildAll() {
+    assertTrue(Match.newCompositeBuilder().all().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).all().match(VALUE));
+
+    assertTrue(Match.newCompositeBuilder().add(Match.always()).add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.always()).add(Match.never()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).add(Match.always()).all().match(VALUE));
+    assertFalse(Match.newCompositeBuilder().add(Match.never()).add(Match.never()).all().match(VALUE));
+  }
+
+  @Test
   public void testBuildAny() {
     assertFalse(Match.newCompositeBuilder().any().match(VALUE));
 
