@@ -27,8 +27,6 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -535,19 +533,19 @@ final class ProTechAI {
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
       return null;
     }
-    final CompositeMatch<Unit> ignore =
-        new CompositeMatchAnd<>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
     final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
     final Match<Unit> transport = Match.all(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
-    final CompositeMatch<Unit> unitCond = ignore;
+    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.UnitIsInfrastructure.invert())
+        .add(Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
-      unitCond.add(transport);
+      unitCondBuilder.add(transport);
     }
     if (Properties.getIgnoreSubInMovement(data)) {
-      unitCond.add(sub);
+      unitCondBuilder.add(sub);
     }
     final Match<Territory> routeCond =
-        Match.all(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
+        Match.all(Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), Matches.TerritoryIsWater);
     final Match<Territory> routeCondition;
     if (attacking) {
       routeCondition = Match.any(Matches.territoryIs(destination), routeCond);
@@ -607,11 +605,12 @@ final class ProTechAI {
       final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
-    final CompositeMatch<Territory> endCond = new CompositeMatchAnd<>(Matches.TerritoryIsImpassable.invert());
+    final Match.CompositeBuilder<Territory> endCondBuilder = Match.<Territory>newCompositeBuilder()
+        .add(Matches.TerritoryIsImpassable.invert());
     if (!neutral || Properties.getNeutralsImpassable(data)) {
-      endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
+      endCondBuilder.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }
-    return findFontier(territory, endCond, Match.always(), distance, data);
+    return findFontier(territory, endCondBuilder.all(), Match.always(), distance, data);
   }
 
   /**

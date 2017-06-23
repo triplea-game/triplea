@@ -32,7 +32,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1081,14 +1080,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // if its an original factory then unlimited production
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
+        .add(Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatch.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatch.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
     }
-    final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatchBuilder.all());
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
@@ -1559,17 +1559,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to,
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
+        .add(Matches.unitIsBeingTransported().invert());
     // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
     // land, and like sea if
     // in water.
     if (to.isWater()) {
-      factoryMatch.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatch.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
     }
-    return Match.countMatches(unitsAtStartOfTurnInTo, factoryMatch) > 0;
+    return Match.countMatches(unitsAtStartOfTurnInTo, factoryMatchBuilder.all()) > 0;
   }
 
   /**

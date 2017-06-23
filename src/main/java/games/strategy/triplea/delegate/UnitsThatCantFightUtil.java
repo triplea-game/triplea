@@ -7,8 +7,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -27,17 +25,17 @@ public class UnitsThatCantFightUtil {
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
-      final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<>();
-      ownedUnitsMatch.add(Matches.UnitIsInfrastructure.invert());
+      final Match.CompositeBuilder<Unit> ownedUnitsMatchBuilder = Match.<Unit>newCompositeBuilder()
+          .add(Matches.UnitIsInfrastructure.invert());
       if (current.isWater()) {
-        ownedUnitsMatch.add(Matches.UnitIsLand.invert());
+        ownedUnitsMatchBuilder.add(Matches.UnitIsLand.invert());
       }
-      ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
+      ownedUnitsMatchBuilder.add(Matches.unitIsOwnedBy(player));
       // All owned units
-      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatchBuilder.all());
       // only noncombat units
-      ownedUnitsMatch.add(Matches.unitCanAttack(player).invert());
-      final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
+      ownedUnitsMatchBuilder.add(Matches.unitCanAttack(player).invert());
+      final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatchBuilder.all());
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }

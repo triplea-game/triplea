@@ -29,8 +29,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -165,11 +163,12 @@ public class AirBattle extends AbstractBattle {
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
-          final CompositeMatch<Unit> attackerSuicide = new CompositeMatchAnd<>(Matches.UnitIsSuicide);
+          final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.<Unit>newCompositeBuilder()
+              .add(Matches.UnitIsSuicide);
           if (m_isBombingRun) {
-            attackerSuicide.add(Matches.UnitIsNotStrategicBomber);
+            attackerSuicideBuilder.add(Matches.UnitIsNotStrategicBomber);
           }
-          if (Match.someMatch(m_attackingUnits, attackerSuicide)) {
+          if (Match.someMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
             final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
@@ -647,12 +646,14 @@ public class AirBattle extends AbstractBattle {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<>(Matches.unitCanAirBattle,
-            Matches.unitIsEnemyOf(data, attacker), Matches.UnitWasInAirBattle.invert());
+        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.<Unit>newCompositeBuilder()
+            .add(Matches.unitCanAirBattle)
+            .add(Matches.unitIsEnemyOf(data, attacker))
+            .add(Matches.UnitWasInAirBattle.invert());
         if (!canScrambleIntoAirBattles) {
-          canIntercept.add(Matches.UnitWasScrambled.invert());
+          canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
         }
-        return canIntercept.match(u);
+        return canInterceptBuilder.all().match(u);
       }
     };
   }
@@ -662,12 +663,14 @@ public class AirBattle extends AbstractBattle {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<>(Matches.unitCanIntercept,
-            Matches.unitIsEnemyOf(data, attacker), Matches.UnitWasInAirBattle.invert());
+        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.<Unit>newCompositeBuilder()
+            .add(Matches.unitCanIntercept)
+            .add(Matches.unitIsEnemyOf(data, attacker))
+            .add(Matches.UnitWasInAirBattle.invert());
         if (!canScrambleIntoAirBattles) {
-          canIntercept.add(Matches.UnitWasScrambled.invert());
+          canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
         }
-        return canIntercept.match(u);
+        return canInterceptBuilder.all().match(u);
       }
     };
   }

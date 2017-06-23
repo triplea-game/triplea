@@ -37,8 +37,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -2050,21 +2048,19 @@ public class Matches {
   }
 
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> ignore =
-        new CompositeMatchAnd<>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
     final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
     final Match<Unit> transport =
         Match.all(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
-    final CompositeMatch<Unit> unitCond = ignore;
+    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.UnitIsInfrastructure.invert())
+        .add(Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
-      unitCond.add(transport);
+      unitCondBuilder.add(transport);
     }
     if (Properties.getIgnoreSubInMovement(data)) {
-      unitCond.add(sub);
+      unitCondBuilder.add(sub);
     }
-    final Match<Territory> routeCondition = Match.all(
-        Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
-    return routeCondition;
+    return Match.all(Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), Matches.TerritoryIsWater);
   }
 
   public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>() {
@@ -2920,25 +2916,26 @@ public class Matches {
                 Matches.unitTypeIsSupporterOrHasCombatAbility(attack, player));
         final Match<UnitType> combat;
         if (attack) {
-          // AND match
-          final CompositeMatch<UnitType> attackMatchAnd = new CompositeMatchAnd<>();
-          attackMatchAnd.add(supporterOrNotInfrastructure);
+          // ALL match
+          final Match.CompositeBuilder<UnitType> attackMatchAllBuilder = Match.<UnitType>newCompositeBuilder()
+              .add(supporterOrNotInfrastructure);
           if (!includeAttackersThatCanNotMove) {
-            attackMatchAnd.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
-            attackMatchAnd.add(Matches.unitTypeCanMove(player));
+            attackMatchAllBuilder
+                .add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert())
+                .add(Matches.unitTypeCanMove(player));
           }
           if (isLandBattle) {
             if (doNotIncludeBombardingSeaUnits) {
-              attackMatchAnd.add(Matches.UnitTypeIsSea.invert());
+              attackMatchAllBuilder.add(Matches.UnitTypeIsSea.invert());
             }
           } else { // is sea battle
-            attackMatchAnd.add(Matches.UnitTypeIsLand.invert());
+            attackMatchAllBuilder.add(Matches.UnitTypeIsLand.invert());
           }
           // assign it
-          combat = attackMatchAnd;
+          combat = attackMatchAllBuilder.all();
         } else { // defense
-          // AND match
-          final CompositeMatch<UnitType> defenseMatchAnd = new CompositeMatchAnd<>();
+          // ALL match
+          final Match.CompositeBuilder<UnitType> defenseMatchAllBuilder = Match.newCompositeBuilder();
           {
             // ANY match
             final Match.CompositeBuilder<UnitType> defenseMatchAnyBuilder = Match.newCompositeBuilder();
@@ -2947,15 +2944,15 @@ public class Matches {
                   Matches.unitTypeIsAaThatCanFireOnRound(battleRound)));
             }
             defenseMatchAnyBuilder.add(supporterOrNotInfrastructure);
-            defenseMatchAnd.add(defenseMatchAnyBuilder.any());
+            defenseMatchAllBuilder.add(defenseMatchAnyBuilder.any());
           }
           if (isLandBattle) {
-            defenseMatchAnd.add(Matches.UnitTypeIsSea.invert());
+            defenseMatchAllBuilder.add(Matches.UnitTypeIsSea.invert());
           } else { // is sea battle
-            defenseMatchAnd.add(Matches.UnitTypeIsLand.invert());
+            defenseMatchAllBuilder.add(Matches.UnitTypeIsLand.invert());
           }
           // assign it
-          combat = defenseMatchAnd;
+          combat = defenseMatchAllBuilder.all();
         }
         return combat.match(ut);
       }

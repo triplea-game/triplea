@@ -36,8 +36,8 @@ public class MatchTest {
 
   @Test
   public void testInverse() {
-    assertFalse(Match.always().invert().match(new Object()));
-    assertTrue(Match.never().invert().match(new Object()));
+    assertFalse(Match.always().invert().match(VALUE));
+    assertTrue(Match.never().invert().match(VALUE));
   }
 
   @Test
@@ -57,26 +57,6 @@ public class MatchTest {
     assertFalse(Match.all(Match.always(), Match.never()).match(VALUE));
     assertFalse(Match.all(Match.never(), Match.always()).match(VALUE));
     assertFalse(Match.all(Match.never(), Match.never()).match(VALUE));
-  }
-
-  @Test
-  public void testAnd() {
-    assertTrue(new CompositeMatchAnd<>().match(0));
-
-    CompositeMatch<Integer> and = new CompositeMatchAnd<>(pos, neg);
-    assertFalse(and.match(1));
-    assertFalse(Match.someMatch(ints, and));
-    assertFalse(Match.someMatch(ints, and));
-    assertEquals(0, Match.getMatches(ints, and).size());
-    and.add(zero);
-    assertFalse(Match.someMatch(ints, and));
-    assertFalse(Match.allMatch(ints, and));
-    assertEquals(0, Match.getMatches(ints, and).size());
-    and = new CompositeMatchAnd<>(pos, pos);
-    assertTrue(and.match(1));
-    assertTrue(Match.someMatch(ints, and));
-    assertFalse(Match.allMatch(ints, and));
-    assertEquals(3, Match.getMatches(ints, and).size());
   }
 
   @Test

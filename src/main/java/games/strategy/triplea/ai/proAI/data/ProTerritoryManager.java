@@ -31,7 +31,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -188,21 +187,21 @@ public class ProTerritoryManager {
     }
     final Match<Unit> airbasesCanScramble = Match.all(Matches.unitIsEnemyOf(data, player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
-    final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<>(
-        Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)),
-        Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
-            Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)),
-        Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
+    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.<Territory>newCompositeBuilder()
+        .add(Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)))
+        .add(Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
+            Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)))
+        .add(Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
-      canScramble.add(Matches.TerritoryIsIsland);
+      canScrambleBuilder.add(Matches.TerritoryIsIsland);
     }
 
     // Find potential territories to scramble from
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory t : moveMap.keySet()) {
       if (t.isWater() || !toSeaOnly) {
-        final HashSet<Territory> canScrambleFrom =
-            new HashSet<>(Match.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScramble));
+        final HashSet<Territory> canScrambleFrom = new HashSet<>(
+            Match.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScrambleBuilder.all()));
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(t, canScrambleFrom);
         }

@@ -33,7 +33,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -1479,16 +1478,17 @@ public class MoveValidator {
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
-    final CompositeMatchAnd<Territory> noImpassable =
-        new CompositeMatchAnd<>(Matches.territoryIsPassableAndNotRestricted(player, data));
+    final Match.CompositeBuilder<Territory> noImpassableBuilder = Match.<Territory>newCompositeBuilder()
+        .add(Matches.territoryIsPassableAndNotRestricted(player, data));
     // if we have air or land, we don't want to move over territories owned by players who's relationships will not let
     // us move into them
     if (hasAir) {
-      noImpassable.add(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
+      noImpassableBuilder.add(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
     }
     if (hasLand) {
-      noImpassable.add(Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
+      noImpassableBuilder.add(Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
     }
+    final Match<Territory> noImpassable = noImpassableBuilder.all();
     // now find the default route
     Route defaultRoute;
     if (isNeutralsImpassable) {

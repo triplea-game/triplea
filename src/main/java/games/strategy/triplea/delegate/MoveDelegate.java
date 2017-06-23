@@ -30,7 +30,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -234,19 +233,19 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<>();
-    moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
+    final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.unitIsOwnedBy(m_player));
 
     // right now, land units on transports have movement taken away when they their transport moves
-    moveableUnitOwnedByMe.add(Match.any(Matches.unitHasMovementLeft,
+    moveableUnitOwnedByMeBuilder.add(Match.any(Matches.unitHasMovementLeft,
         Match.all(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
 
     // if not non combat, cannot move aa units
     if (GameStepPropertiesHelper.isCombatMove(getData())) {
-      moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      moveableUnitOwnedByMeBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     for (final Territory item : getData().getMap().getTerritories()) {
-      if (item.getUnits().someMatch(moveableUnitOwnedByMe)) {
+      if (item.getUnits().someMatch(moveableUnitOwnedByMeBuilder.all())) {
         return true;
       }
     }

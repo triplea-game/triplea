@@ -36,8 +36,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -1215,17 +1213,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat =
-        new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure,
-            Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> enemyUnitsThatPreventRetreatBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.enemyUnit(m_attacker, m_data))
+        .add(Matches.UnitIsNotInfrastructure)
+        .add(Matches.unitIsBeingTransported().invert())
+        .add(Matches.UnitIsSubmerged.invert());
     if (games.strategy.triplea.Properties.getIgnoreSubInMovement(m_data)) {
-      enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotSub);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotSub);
     }
     if (games.strategy.triplea.Properties.getIgnoreTransportInMovement(m_data)) {
-      enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
     }
-    Collection<Territory> possible =
-        Match.getMatches(m_attackingFrom, Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).invert());
+    Collection<Territory> possible = Match.getMatches(m_attackingFrom,
+        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreatBuilder.all()).invert());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
     if (isWW2V2() || isWW2V3()) {
@@ -1779,12 +1779,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty()) {
       return;
     }
-    final CompositeMatch<Unit> notSubmergedAndType = new CompositeMatchAnd<>(Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.UnitIsSubmerged.invert());
     if (Matches.TerritoryIsLand.match(m_battleSite)) {
-      notSubmergedAndType.add(Matches.UnitIsSea.invert());
+      notSubmergedAndTypeBuilder.add(Matches.UnitIsSea.invert());
     } else {
-      notSubmergedAndType.add(Matches.UnitIsLand.invert());
+      notSubmergedAndTypeBuilder.add(Matches.UnitIsLand.invert());
     }
+    final Match<Unit> notSubmergedAndType = notSubmergedAndTypeBuilder.all();
     final Collection<Unit> unitsToKill;
     final boolean hasUnitsThatCanRollLeft;
     if (attacker) {

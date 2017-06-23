@@ -27,7 +27,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -2541,15 +2540,16 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<>(Matches.unitIsOfType(ut));
+    final Match.CompositeBuilder<Unit> stackingMatchBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.unitIsOfType(ut));
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
-      stackingMatch.add(Matches.unitIsOwnedBy(owner));
+      stackingMatchBuilder.add(Matches.unitIsOwnedBy(owner));
     } else if (stackingType.equals("allied")) {
-      stackingMatch.add(Matches.isUnitAllied(owner, data));
+      stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatch);
+    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
     return Math.max(0, max - totalInTerritory);
   }
 

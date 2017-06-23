@@ -29,7 +29,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -154,15 +153,15 @@ public class RocketsFireHelper {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
-    final CompositeMatchAnd<Territory> allowed =
-        new CompositeMatchAnd<>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+    final Match.CompositeBuilder<Territory> allowedBuilder = Match.<Territory>newCompositeBuilder()
+        .add(Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
-      allowed.add(Matches.TerritoryIsNotImpassable);
+      allowedBuilder.add(Matches.TerritoryIsNotImpassable);
     }
     final Match<Unit> attackableUnits =
         Match.all(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
-      final Route route = data.getMap().getRoute(territory, current, allowed);
+      final Route route = data.getMap().getRoute(territory, current, allowedBuilder.all());
       if (route != null && route.numberOfSteps() <= maxDistance) {
         if (current.getUnits().someMatch(Match.all(attackableUnits,
             Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {

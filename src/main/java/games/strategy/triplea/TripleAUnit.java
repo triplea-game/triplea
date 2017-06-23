@@ -18,7 +18,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -401,14 +400,15 @@ public class TripleAUnit extends Unit {
 
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
+        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
+        .add(Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatch.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatch.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
     }
-    final Collection<Unit> factories = Match.getMatches(units, factoryMatch);
+    final Collection<Unit> factories = Match.getMatches(units, factoryMatchBuilder.all());
     if (factories.isEmpty()) {
       return null;
     }
