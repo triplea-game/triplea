@@ -18,8 +18,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -70,6 +70,7 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
+  private static final String DELAYED_PARSING = "DelayedParsing";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
@@ -157,22 +158,24 @@ public class GameRunner {
     new Thread(GameRunner::checkForUpdates).start();
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
+    final Version engineVersion = ClientContext.engineVersion();
     if (version != null && version.length() > 0) {
       final Version testVersion;
       try {
         testVersion = new Version(version);
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!ClientContext.engineVersion().getVersion().equals(testVersion, false)) {
-          System.out.println("Current Engine version in use: " + ClientContext.engineVersion());
+        if (!engineVersion.equals(testVersion, false)) {
+          System.out.println("Current Engine version in use: " + engineVersion);
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN,
+            ClientContext.engineVersion().toString());
+        System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + engineVersion);
       }
     } else {
-      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, ClientContext.engineVersion().toString());
-      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + ClientContext.engineVersion());
+      System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, engineVersion.toString());
+      System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + engineVersion);
     }
   }
 
@@ -222,8 +225,8 @@ public class GameRunner {
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType,
-      final int messageType) {
+  public static int showConfirmDialog(
+      final String message, final Title title, final int optionType, final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
@@ -238,6 +241,10 @@ public class GameRunner {
   }
 
 
+  /**
+   * Sets the 'main frame' to visible. In this context the main frame is the initial
+   * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
+   */
   public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
       gameSelectorModel.loadDefaultGame(mainFrame);
@@ -413,7 +420,8 @@ public class GameRunner {
       if (latestEngineOut == null) {
         return false;
       }
-      if (ClientContext.engineVersion().getVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
+      if (ClientContext.engineVersion()
+          .isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true)));
@@ -543,7 +551,8 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    final boolean sameVersion = ClientContext.engineVersion().getVersion().equals(engineVersionOfGameToJoin);
+    final boolean sameVersion =
+        ClientContext.engineVersion().equals(engineVersionOfGameToJoin);
     if (!sameVersion) {
       try {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
@@ -565,7 +574,8 @@ public class GameRunner {
         return;
       }
       // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version " + ClientContext.engineVersion().getVersion()
+      final String messageString = "<html>This TripleA engine is version "
+          + ClientContext.engineVersion()
           + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
           + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. "
@@ -598,7 +608,7 @@ public class GameRunner {
   }
 
   static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
-    if (ClientContext.engineVersion().getVersion().equals(oldVersionNeeded, ignoreMicro)) {
+    if (ClientContext.engineVersion().equals(oldVersionNeeded, ignoreMicro)) {
       return System.getProperty("java.class.path");
     }
     // first, see if the default/main triplea can run it

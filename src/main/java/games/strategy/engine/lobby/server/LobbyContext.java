@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.config.LobbyPropertyReader;
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 
 /**
  * Container for object creation, useful for managing shared dependencies.

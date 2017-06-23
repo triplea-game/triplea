@@ -1,14 +1,18 @@
 package games.strategy.engine;
 
-import games.strategy.engine.config.GameEnginePropertyReader;
+import java.util.List;
+
+import games.strategy.engine.config.client.GameEnginePropertyReader;
+import games.strategy.engine.framework.map.download.DownloadFileDescription;
+import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.engine.framework.map.download.MapListingSource;
 import games.strategy.triplea.settings.ai.AiSettings;
 import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
 import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
 import games.strategy.triplea.settings.folders.FolderSettings;
 import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.util.Version;
 
 /**
  * Manages the creation of objects, similar to a dependency injection framework.
@@ -45,9 +49,7 @@ public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
 
   private final GameEnginePropertyReader gameEnginePropertyReader = new GameEnginePropertyReader();
-  private final EngineVersion engineVersion = new EngineVersion(gameEnginePropertyReader);
-  private final MapListingSource mapListingSource = new MapListingSource(gameEnginePropertyReader);
-  private final MapDownloadController mapDownloadController = new MapDownloadController(mapListingSource);
+  private final MapDownloadController mapDownloadController = new MapDownloadController();
   private final ScrollSettings scrollSettings = new ScrollSettings();
   private final FolderSettings folderSettings = new FolderSettings();
   private final AiSettings aiSettings = new AiSettings();
@@ -61,20 +63,12 @@ public final class ClientContext {
     return instance.gameEnginePropertyReader;
   }
 
-  public static MapListingSource mapListingSource() {
-    return instance.mapListingSource;
-  }
-
   public static DownloadCoordinator downloadCoordinator() {
     return instance.downloadCoordinator;
   }
 
   public static MapDownloadController mapDownloadController() {
     return instance.mapDownloadController;
-  }
-
-  public static EngineVersion engineVersion() {
-    return instance.engineVersion;
   }
 
   public static ScrollSettings scrollSettings() {
@@ -95,5 +89,14 @@ public final class ClientContext {
 
   public static BattleOptionsSettings battleOptionsSettings() {
     return instance.battleOptionsSettings;
+  }
+
+  public static Version engineVersion() {
+    return instance.gameEnginePropertyReader.getEngineVersion();
+  }
+
+  public static List<DownloadFileDescription> getMapDownloadList() {
+    final String mapDownloadListUrl = instance.gameEnginePropertyReader.getMapListingSource();
+    return new DownloadRunnable(mapDownloadListUrl).getDownloads();
   }
 }

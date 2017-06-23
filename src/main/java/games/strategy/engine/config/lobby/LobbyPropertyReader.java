@@ -1,8 +1,10 @@
-package games.strategy.engine.config;
+package games.strategy.engine.config.lobby;
 
 import java.io.File;
 
 import com.google.common.annotations.VisibleForTesting;
+
+import games.strategy.engine.config.PropertyFileReader;
 
 /**
  * Reads property values from the lobby configuration file.
@@ -27,7 +29,7 @@ public class LobbyPropertyReader {
   }
 
   public String getPostgresUser() {
-    return propertyFileReader.readProperty(PropertyKeys.postgresUser);
+    return propertyFileReader.readProperty(LobbyPropertyReader.PropertyKeys.postgresUser);
   }
 
   public String getPostgresPassword() {
