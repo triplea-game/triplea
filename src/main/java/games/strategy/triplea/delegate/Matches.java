@@ -114,17 +114,14 @@ public class Matches {
     return (ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport());
   });
 
-  public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua.getTransportCapacity() == -1) {
-        return true;
-      } else {
-        return ua.getIsCombatTransport() && ua.getIsSea();
-      }
+  public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = Match.of(unit -> {
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    if (ua.getTransportCapacity() == -1) {
+      return true;
+    } else {
+      return ua.getIsCombatTransport() && ua.getIsSea();
     }
-  };
+  });
 
   public static final Match<Unit> UnitIsDestroyer =
       Match.of(unit -> UnitAttachment.get(unit.getType()).getIsDestroyer());
@@ -151,12 +148,8 @@ public class Matches {
     return ua.getIsStrategicBomber();
   });
 
-  public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsStrategicBomber.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitIsStrategicBomber =
+      Match.of(obj -> UnitTypeIsStrategicBomber.match(obj.getType()));
 
   public static final Match<Unit> UnitIsNotStrategicBomber = UnitIsStrategicBomber.invert();
 
@@ -170,27 +163,18 @@ public class Matches {
 
   public static final Match<UnitType> UnitTypeCannotLandOnCarrier = UnitTypeCanLandOnCarrier.invert();
 
-  public static final Match<Unit> unitHasMoved = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      final Unit unit = obj;
-      return TripleAUnit.get(unit).getAlreadyMoved() > 0;
-    }
-  };
+  public static final Match<Unit> unitHasMoved = Match.of(unit -> TripleAUnit.get(unit).getAlreadyMoved() > 0);
 
   public static final Match<Unit> unitHasNotMoved = unitHasMoved.invert();
 
   static Match<Unit> unitCanAttack(final PlayerID id) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit unit) {
-        final UnitAttachment ua = UnitAttachment.get(unit.getType());
-        if (ua.getMovement(id) <= 0) {
-          return false;
-        }
-        return ua.getAttack(id) > 0;
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua.getMovement(id) <= 0) {
+        return false;
       }
-    };
+      return ua.getAttack(id) > 0;
+    });
   }
 
   public static Match<Unit> unitHasAttackValueOfAtLeast(final int attackValue) {
@@ -205,56 +189,23 @@ public class Matches {
     return Match.of(unit -> data.getRelationshipTracker().isAtWar(unit.getOwner(), player));
   }
 
-  public static final Match<Unit> UnitIsNotSea = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      final Unit unit = obj;
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return !ua.getIsSea();
-    }
-  };
-  public static final Match<UnitType> UnitTypeIsSea = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType obj) {
-      final UnitAttachment ua = UnitAttachment.get(obj);
-      return ua.getIsSea();
-    }
-  };
-  public static final Match<UnitType> UnitTypeIsNotSea = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType type) {
-      final UnitAttachment ua = UnitAttachment.get(type);
-      return !ua.getIsSea();
-    }
-  };
-  public static final Match<UnitType> UnitTypeIsSeaOrAir = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType type) {
-      final UnitAttachment ua = UnitAttachment.get(type);
-      return ua.getIsSea() || ua.getIsAir();
-    }
-  };
-  public static final Match<UnitType> UnitTypeIsCarrier = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType type) {
-      final UnitAttachment ua = UnitAttachment.get(type);
-      return (ua.getCarrierCapacity() != -1);
-    }
-  };
-  public static final Match<Unit> UnitIsAir = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getIsAir();
-    }
-  };
-  public static final Match<Unit> UnitIsNotAir = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return !ua.getIsAir();
-    }
-  };
+  public static final Match<Unit> UnitIsNotSea = Match.of(unit -> !UnitAttachment.get(unit.getType()).getIsSea());
+
+  public static final Match<UnitType> UnitTypeIsSea = Match.of(type -> UnitAttachment.get(type).getIsSea());
+
+  public static final Match<UnitType> UnitTypeIsNotSea = Match.of(type -> !UnitAttachment.get(type).getIsSea());
+
+  public static final Match<UnitType> UnitTypeIsSeaOrAir = Match.of(type -> {
+    final UnitAttachment ua = UnitAttachment.get(type);
+    return ua.getIsSea() || ua.getIsAir();
+  });
+
+  public static final Match<UnitType> UnitTypeIsCarrier =
+      Match.of(type -> UnitAttachment.get(type).getCarrierCapacity() != -1);
+
+  public static final Match<Unit> UnitIsAir = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsAir());
+
+  public static final Match<Unit> UnitIsNotAir = Match.of(unit -> !UnitAttachment.get(unit.getType()).getIsAir());
 
   public static Match<UnitType> unitTypeCanBombard(final PlayerID id) {
     return Match.of(type -> UnitAttachment.get(type).getCanBombard(id));

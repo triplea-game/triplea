@@ -1153,13 +1153,10 @@ public class MoveValidator {
   }
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {
-    return Match.getMatches(units, Match.all(Matches.UnitIsAirTransportable, new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        return TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u) || route.crossesWater()
-            || route.getEnd().isWater();
-      }
-    }));
+    return Match.getMatches(units, Match.all(Matches.UnitIsAirTransportable, Match.of(u -> {
+      return TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u) || route.crossesWater()
+          || route.getEnd().isWater();
+    })));
   }
 
   private static MoveValidationResult validateParatroops(final boolean nonCombat, final GameData data,

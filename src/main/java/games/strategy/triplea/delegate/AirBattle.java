@@ -638,13 +638,8 @@ public class AirBattle extends AbstractBattle {
   }
 
   static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        final Match<Unit> canIntercept = Match.all(Matches.unitCanAirBattle);
-        return canIntercept.match(u);
-      }
-    };
+    final Match<Unit> canIntercept = Matches.unitCanAirBattle;
+    return canIntercept;
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {

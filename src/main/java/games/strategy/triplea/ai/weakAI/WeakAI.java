@@ -366,12 +366,7 @@ public class WeakAI extends AbstractAI {
       final float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, true);
       if (enemyStrength > 0) {
         final Match<Unit> attackable =
-            Match.all(Matches.unitIsOwnedBy(player), new Match<Unit>() {
-              @Override
-              public boolean match(final Unit o) {
-                return !unitsAlreadyMoved.contains(o);
-              }
-            });
+            Match.all(Matches.unitIsOwnedBy(player), Match.of(o -> !unitsAlreadyMoved.contains(o)));
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         int ourStrength = 0;
@@ -518,12 +513,7 @@ public class WeakAI extends AbstractAI {
     // this works because we are on the server
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Match<Territory> canLand =
-        Match.all(Matches.isTerritoryAllied(player, data), new Match<Territory>() {
-          @Override
-          public boolean match(final Territory o) {
-            return !delegate.getBattleTracker().wasConquered(o);
-          }
-        });
+        Match.all(Matches.isTerritoryAllied(player, data), Match.of(o -> !delegate.getBattleTracker().wasConquered(o)));
     final Match<Territory> routeCondition = Match.all(
         Matches.territoryHasEnemyAaForCombatOnly(player, data).invert(), Matches.TerritoryIsImpassable.invert());
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
