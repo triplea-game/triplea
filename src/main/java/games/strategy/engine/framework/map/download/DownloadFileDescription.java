@@ -12,7 +12,7 @@ import games.strategy.util.Version;
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to install it,
  * version, etc..
  */
-class DownloadFileDescription {
+public class DownloadFileDescription {
   private final String url;
   private final String description;
   private final String mapName;
@@ -36,7 +36,7 @@ class DownloadFileDescription {
     String outputLabel;
 
 
-    MapCategory(String label) {
+    MapCategory(final String label) {
       outputLabel = label;
     }
 
@@ -117,8 +117,8 @@ class DownloadFileDescription {
 
   /** File reference for where to install the file. */
   File getInstallLocation() {
-    String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ? "-master" : "";
-    String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
+    final String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ? "-master" : "";
+    final String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
     return new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
   }
 

@@ -95,7 +95,7 @@ public class DebugUtils {
     result.append(getProperties());
     result.append(getMemory());
     result.append(getOpenAppWindows());
-    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion().getVersion()).append("\n");
+    result.append("ENGINE VERSION: ").append(ClientContext.gameEnginePropertyReader().getEngineVersion()).append("\n");
     return result.toString();
   }
 

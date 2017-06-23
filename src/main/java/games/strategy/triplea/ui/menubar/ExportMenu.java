@@ -27,6 +27,7 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -65,7 +66,7 @@ class ExportMenu {
     final JMenu menuGame = new JMenu("Export");
     menuGame.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menuGame);
-    addExportXML(menuGame);
+    addExportXml(menuGame);
     addExportStats(menuGame);
     addExportStatsFull(menuGame);
     addExportSetupCharts(menuGame);
@@ -74,12 +75,12 @@ class ExportMenu {
   }
 
   // TODO: create a second menu option for parsing current attachments
-  private void addExportXML(final JMenu parentMenu) {
-    final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
+  private void addExportXml(final JMenu parentMenu) {
+    final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXmlFile());
     parentMenu.add(exportXml).setMnemonic(KeyEvent.VK_X);
   }
 
-  private void exportXMLFile() {
+  private void exportXmlFile() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
@@ -107,7 +108,7 @@ class ExportMenu {
       gameData.releaseReadLock();
     }
     try {
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(xmlFile);
       }
     } catch (final IOException e1) {
@@ -163,7 +164,7 @@ class ExportMenu {
       return;
     }
     final StringBuilder text = new StringBuilder(1000);
-    GameData clone;
+    final GameData clone;
     try {
       gameData.acquireReadLock();
       clone = GameDataUtils.cloneGameData(gameData);
@@ -182,7 +183,7 @@ class ExportMenu {
       text.append(defaultFileName + ",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
-      text.append(games.strategy.engine.ClientContext.engineVersion() + ",");
+      text.append(ClientContext.engineVersion() + ",");
       text.append("\n");
       text.append("Game Name: ,");
       text.append(gameData.getGameName() + ",");

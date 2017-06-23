@@ -84,9 +84,7 @@ public class DownloadMapsWindow extends JFrame {
     checkNotNull(mapNames);
 
     final Runnable downloadAndShowWindow = () -> {
-      final List<DownloadFileDescription> allDownloads =
-          new DownloadRunnable(ClientContext.mapListingSource().getMapListDownloadSite()).getDownloads();
-      checkNotNull(allDownloads);
+      final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
 
       SwingUtilities.invokeLater(() -> {
         final DownloadMapsWindow dia = new DownloadMapsWindow(mapNames, allDownloads);
