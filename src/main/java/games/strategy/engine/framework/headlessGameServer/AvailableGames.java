@@ -106,11 +106,13 @@ public class AvailableGames {
       // no games in this map dir
       return;
     }
-    for (final File game : games.listFiles()) {
-      if (game.toURI() != null && game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
-        if (added) {
-          availableMapFolderOrZipNames.add(mapDir.getName());
+    if(games.listFiles() != null ) {
+      for (final File game : games.listFiles()) {
+        if (game.toURI() != null && game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+          final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
+          if (added) {
+            availableMapFolderOrZipNames.add(mapDir.getName());
+          }
         }
       }
     }
@@ -121,7 +123,7 @@ public class AvailableGames {
     try (
         final FileInputStream fis = new FileInputStream(map);
         final ZipInputStream zis = new ZipInputStream(fis);
-        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()});) {
+        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
