@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 /**
@@ -17,14 +16,20 @@ public class PropertyFileReader {
   private final File propertyFile;
 
   /**
-   * Creates a property file reader centered around a given property file.
+   * Convenience constructor to create a property file reader
+   * centered around a given property file specified by file path.
+   * 
    * @param propertyFile Path to properties file that will be parsed.
    */
   public PropertyFileReader(final String propertyFile) {
     this(new File(propertyFile));
   }
 
-  @VisibleForTesting
+  /**
+   * Creates a property file reader centered around a given property file.
+   * 
+   * @param propertyFile Property file that will be parsed.
+   */
   public PropertyFileReader(final File propertyFile) {
     this.propertyFile = propertyFile;
     Preconditions.checkState(propertyFile.exists(),
@@ -33,9 +38,12 @@ public class PropertyFileReader {
 
   /**
    * Reads a property key from configuration file and returns the associated value. Example:
-   * <pre><code>
+   * 
+   * <pre>
+   * <code>
    * String myValue = readProperty("keyValue");
-   * </code></pre>
+   * </code>
+   * </pre>
    */
   public String readProperty(final String propertyKey) {
     if (propertyKey.trim().isEmpty()) {
