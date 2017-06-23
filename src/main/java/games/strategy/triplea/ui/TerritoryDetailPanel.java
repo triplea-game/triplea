@@ -35,10 +35,10 @@ import games.strategy.ui.OverlayIcon;
 
 public class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
-  private final IUIContext m_uiContext;
-  private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
-  private Territory m_currentTerritory;
-  private final TripleAFrame m_frame;
+  private final IUIContext uiContext;
+  private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
+  private Territory currentTerritory;
+  private final TripleAFrame frame;
 
   public static String getHoverText() {
     return "Hover over or drag and drop from a territory to list those units in this panel";
@@ -47,8 +47,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext,
       final TripleAFrame frame) {
     super(data);
-    m_frame = frame;
-    m_uiContext = uiContext;
+    this.frame = frame;
+    this.uiContext = uiContext;
     mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
       @Override
       public void mouseEntered(final Territory territory) {
@@ -68,11 +68,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        OddsCalculatorDialog.show(m_frame, m_currentTerritory);
+        OddsCalculatorDialog.show(frame, currentTerritory);
       }
     };
-    m_showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
-    final JComponent contentPane = (JComponent) m_frame.getContentPane();
+    showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
+    final JComponent contentPane = (JComponent) frame.getContentPane();
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke('B', InputEvent.META_DOWN_MASK), show_battle_calc);
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -87,13 +87,13 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   }
 
   private void territoryChanged(final Territory territory) {
-    m_currentTerritory = territory;
+    currentTerritory = territory;
     removeAll();
     refresh();
     if (territory == null) {
       return;
     }
-    add(m_showOdds);
+    add(showOdds);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     if (ta == null) {
@@ -110,7 +110,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       gameData.releaseReadLock();
     }
     add(new JLabel("Units: " + unitsInTerritory.size()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, gameData));
+    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, uiContext, gameData));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);
     refresh();

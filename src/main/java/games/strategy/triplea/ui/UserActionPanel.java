@@ -41,17 +41,17 @@ import games.strategy.ui.SwingAction;
  */
 public class UserActionPanel extends ActionPanel {
   private static final long serialVersionUID = -2735582890226625860L;
-  private final JLabel m_actionLabel = new JLabel();
-  private JButton m_selectUserActionButton = null;
-  private JButton m_doneButton = null;
-  private UserActionAttachment m_choice = null;
-  private final TripleAFrame m_parent;
-  private boolean m_firstRun = true;
-  private List<UserActionAttachment> m_validUserActions = Collections.emptyList();
+  private final JLabel actionLabel = new JLabel();
+  private JButton selectUserActionButton = null;
+  private JButton doneButton = null;
+  private UserActionAttachment choice = null;
+  private final TripleAFrame parent;
+  private boolean firstRun = true;
+  private List<UserActionAttachment> validUserActions = Collections.emptyList();
 
   public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
-    m_parent = parent;
+    this.parent = parent;
   }
 
   @Override
@@ -62,18 +62,18 @@ public class UserActionPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_choice = null;
+    choice = null;
     SwingUtilities.invokeLater(() -> {
       removeAll();
-      m_actionLabel.setText(id.getName() + " Actions and Operations");
-      add(m_actionLabel);
-      m_selectUserActionButton = new JButton(SelectUserActionAction);
-      m_selectUserActionButton.setEnabled(false);
-      add(m_selectUserActionButton);
-      m_doneButton = new JButton(DontBotherAction);
-      m_doneButton.setEnabled(false);
-      SwingUtilities.invokeLater(() -> m_doneButton.requestFocusInWindow());
-      add(m_doneButton);
+      actionLabel.setText(id.getName() + " Actions and Operations");
+      add(actionLabel);
+      selectUserActionButton = new JButton(SelectUserActionAction);
+      selectUserActionButton.setEnabled(false);
+      add(selectUserActionButton);
+      doneButton = new JButton(DontBotherAction);
+      doneButton.setEnabled(false);
+      SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
+      add(doneButton);
     });
   }
 
@@ -84,26 +84,26 @@ public class UserActionPanel extends ActionPanel {
    */
   public UserActionAttachment waitForUserActionAction(final boolean firstRun,
       final IUserActionDelegate iUserActionsDelegate) {
-    m_firstRun = firstRun;
+    this.firstRun = firstRun;
 
-    m_validUserActions = new ArrayList<>(iUserActionsDelegate.getValidActions());
-    Collections.sort(m_validUserActions, new UserActionComparator());
-    if (m_validUserActions.isEmpty()) {
+    validUserActions = new ArrayList<>(iUserActionsDelegate.getValidActions());
+    Collections.sort(validUserActions, new UserActionComparator());
+    if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;
     } else {
-      if (m_firstRun) {
+      if (this.firstRun) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(() -> {
-        m_selectUserActionButton.setEnabled(true);
-        m_doneButton.setEnabled(true);
+        selectUserActionButton.setEnabled(true);
+        doneButton.setEnabled(true);
         // press the user action button for us.
         SelectUserActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
-    return m_choice;
+    return choice;
   }
 
   /**
@@ -115,7 +115,7 @@ public class UserActionPanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      final JDialog userChoiceDialog = new JDialog(m_parent, "Actions and Operations", true);
+      final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
 
       final JPanel userChoicePanel = new JPanel();
       userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -128,7 +128,7 @@ public class UserActionPanel extends ActionPanel {
       userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
-      if (canSpendResourcesOnUserActions(m_validUserActions)) {
+      if (canSpendResourcesOnUserActions(validUserActions)) {
         final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
             ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources())));
         userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -142,7 +142,7 @@ public class UserActionPanel extends ActionPanel {
 
       userChoiceDialog.add(userChoicePanel);
       userChoiceDialog.pack();
-      userChoiceDialog.setLocationRelativeTo(m_parent);
+      userChoiceDialog.setLocationRelativeTo(parent);
       userChoiceDialog.setVisible(true);
       userChoiceDialog.dispose();
     }
@@ -159,9 +159,9 @@ public class UserActionPanel extends ActionPanel {
     userActionButtonPanel.setLayout(new GridBagLayout());
 
     final int firstRow = 0;
-    final int lastRow = m_validUserActions.size() - 1;
+    final int lastRow = validUserActions.size() - 1;
     int row = 0;
-    for (final UserActionAttachment uaa : m_validUserActions) {
+    for (final UserActionAttachment uaa : validUserActions) {
       final int topInset = (row == firstRow) ? 0 : 4;
       final int bottomInset = (row == lastRow) ? 0 : 4;
       final boolean canPlayerAffordUserAction = canPlayerAffordUserAction(getCurrentPlayer(), uaa);
@@ -171,10 +171,10 @@ public class UserActionPanel extends ActionPanel {
 
       final JButton button = new JButton(getActionButtonText(uaa));
       button.addActionListener(ae -> {
-        m_selectUserActionButton.setEnabled(false);
-        m_doneButton.setEnabled(false);
-        m_validUserActions = Collections.emptyList();
-        m_choice = uaa;
+        selectUserActionButton.setEnabled(false);
+        doneButton.setEnabled(false);
+        validUserActions = Collections.emptyList();
+        choice = uaa;
         parent.setVisible(false);
         release();
       });
@@ -220,8 +220,8 @@ public class UserActionPanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      if (!m_firstRun || youSureDoNothing()) {
-        m_choice = null;
+      if (!firstRun || youSureDoNothing()) {
+        choice = null;
         release();
       }
     }

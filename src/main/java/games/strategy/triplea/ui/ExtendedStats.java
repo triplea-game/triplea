@@ -222,6 +222,6 @@ public class ExtendedStats extends StatPanel {
   }
 
   public IStat[] getStats() {
-    return m_stats;
+    return stats;
   }
 }

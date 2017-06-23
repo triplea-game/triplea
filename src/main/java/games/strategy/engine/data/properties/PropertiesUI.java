@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 public class PropertiesUI extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
-  private int m_nextRow;
-  private int m_labelColumn;
+  private int nextRow;
+  private int labelColumn;
 
   public PropertiesUI(final GameProperties gameProperties, final boolean editable) {
     this(gameProperties.getEditableProperties(), editable);
@@ -23,9 +23,9 @@ public class PropertiesUI extends JPanel {
     for (final IEditableProperty property : properties) {
       // Limit it to 14 rows then start a new column
       // Don't know if this is the most elegant solution, but it works.
-      if (m_nextRow >= 15) {
-        m_labelColumn += 2;
-        m_nextRow = 0;
+      if (nextRow >= 15) {
+        labelColumn += 2;
+        nextRow = 0;
       }
       if (editable) {
         addItem(property.getName(), property.getEditorComponent(), property.getDescription(), property.getRowsNeeded());
@@ -55,8 +55,8 @@ public class PropertiesUI extends JPanel {
     // Create the label and its constraints
     final JLabel label = new JLabel(labelText);
     final GridBagConstraints labelConstraints = new GridBagConstraints();
-    labelConstraints.gridx = m_labelColumn;
-    labelConstraints.gridy = m_nextRow;
+    labelConstraints.gridx = labelColumn;
+    labelConstraints.gridy = nextRow;
     labelConstraints.gridheight = rowsNeeded;
     labelConstraints.insets = new Insets(10, 10, 0, 0);
     labelConstraints.anchor = GridBagConstraints.NORTHEAST;
@@ -64,8 +64,8 @@ public class PropertiesUI extends JPanel {
     add(label, labelConstraints);
     // Add the component with its constraints
     final GridBagConstraints itemConstraints = new GridBagConstraints();
-    itemConstraints.gridx = m_labelColumn + 1;
-    itemConstraints.gridy = m_nextRow;
+    itemConstraints.gridx = labelColumn + 1;
+    itemConstraints.gridy = nextRow;
     itemConstraints.gridheight = rowsNeeded;
     itemConstraints.insets = new Insets(10, 10, 0, 10);
     itemConstraints.weightx = 1.0;
@@ -76,6 +76,6 @@ public class PropertiesUI extends JPanel {
       label.setToolTipText(tooltip);
       item.setToolTipText(tooltip);
     }
-    m_nextRow += rowsNeeded;
+    nextRow += rowsNeeded;
   }
 }

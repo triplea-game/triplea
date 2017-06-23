@@ -39,17 +39,17 @@ import games.strategy.ui.SwingAction;
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
-  private final JLabel m_actionLabel = new JLabel();
-  private JButton m_selectPoliticalActionButton = null;
-  private JButton m_doneButton = null;
-  private PoliticalActionAttachment m_choice = null;
-  private TripleAFrame m_parent = null;
-  private boolean m_firstRun = true;
-  protected List<PoliticalActionAttachment> m_validPoliticalActions = null;
+  private final JLabel actionLabel = new JLabel();
+  private JButton selectPoliticalActionButton = null;
+  private JButton doneButton = null;
+  private PoliticalActionAttachment choice = null;
+  private TripleAFrame parent = null;
+  private boolean firstRun = true;
+  protected List<PoliticalActionAttachment> validPoliticalActions = null;
 
   public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
-    m_parent = parent;
+    this.parent = parent;
   }
 
   @Override
@@ -60,18 +60,18 @@ public class PoliticsPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_choice = null;
+    choice = null;
     SwingUtilities.invokeLater(() -> {
       removeAll();
-      m_actionLabel.setText(id.getName() + " Politics");
-      add(m_actionLabel);
-      m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
-      m_selectPoliticalActionButton.setEnabled(false);
-      add(m_selectPoliticalActionButton);
-      m_doneButton = new JButton(DontBotherAction);
-      m_doneButton.setEnabled(false);
-      SwingUtilities.invokeLater(() -> m_doneButton.requestFocusInWindow());
-      add(m_doneButton);
+      actionLabel.setText(id.getName() + " Politics");
+      add(actionLabel);
+      selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
+      selectPoliticalActionButton.setEnabled(false);
+      add(selectPoliticalActionButton);
+      doneButton = new JButton(DontBotherAction);
+      doneButton.setEnabled(false);
+      SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
+      add(doneButton);
     });
   }
 
@@ -83,27 +83,27 @@ public class PoliticsPanel extends ActionPanel {
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
       final IPoliticsDelegate iPoliticsDelegate) {
-    m_firstRun = firstRun;
+    this.firstRun = firstRun;
 
     // Never use a delegate or bridge from a UI. Multiplayer games will not work.
-    m_validPoliticalActions = new ArrayList<>(iPoliticsDelegate.getValidActions());
-    Collections.sort(m_validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
-    if (m_firstRun && m_validPoliticalActions.isEmpty()) {
+    validPoliticalActions = new ArrayList<>(iPoliticsDelegate.getValidActions());
+    Collections.sort(validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
+    if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing
       return null;
     } else {
-      if (m_firstRun) {
+      if (this.firstRun) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(() -> {
-        m_selectPoliticalActionButton.setEnabled(true);
-        m_doneButton.setEnabled(true);
+        selectPoliticalActionButton.setEnabled(true);
+        doneButton.setEnabled(true);
         // press the politics button for us.
         SelectPoliticalActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
-    return m_choice;
+    return choice;
   }
 
   /**
@@ -117,7 +117,7 @@ public class PoliticsPanel extends ActionPanel {
     final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
     final int availHeightChoice = (int) ((float) availHeight / 3);
 
-    final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
+    final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
     final Insets insets = new Insets(1, 1, 1, 1);
     final JPanel politicalChoicePanel = new JPanel();
     politicalChoicePanel.setLayout(new GridBagLayout());
@@ -132,7 +132,7 @@ public class PoliticsPanel extends ActionPanel {
             : (overviewScroll.getPreferredSize().width
                 + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
         (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
-            : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
+            : (overviewScroll.getPreferredSize().height + (validPoliticalActions.isEmpty() ? 26 : 0)
                 + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 
     final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
@@ -157,7 +157,7 @@ public class PoliticsPanel extends ActionPanel {
         GridBagConstraints.NONE, insets, 0, 0));
     politicalChoiceDialog.add(politicalChoicePanel);
     politicalChoiceDialog.pack();
-    politicalChoiceDialog.setLocationRelativeTo(m_parent);
+    politicalChoiceDialog.setLocationRelativeTo(parent);
     politicalChoiceDialog.setVisible(true);
     politicalChoiceDialog.dispose();
 
@@ -168,15 +168,15 @@ public class PoliticsPanel extends ActionPanel {
     politicalActionButtonPanel.setLayout(new GridBagLayout());
     int row = 0;
     final Insets insets = new Insets(1, 1, 1, 1);
-    for (final PoliticalActionAttachment paa : m_validPoliticalActions) {
+    for (final PoliticalActionAttachment paa : validPoliticalActions) {
       politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(paa));
       button.addActionListener(ae -> {
-        m_selectPoliticalActionButton.setEnabled(false);
-        m_doneButton.setEnabled(false);
-        m_validPoliticalActions = null;
-        m_choice = paa;
+        selectPoliticalActionButton.setEnabled(false);
+        doneButton.setEnabled(false);
+        validPoliticalActions = null;
+        choice = paa;
         parent.setVisible(false);
         release();
       });
@@ -193,8 +193,8 @@ public class PoliticsPanel extends ActionPanel {
    * This will stop the politicsPhase.
    */
   private final Action DontBotherAction = SwingAction.of("Done", e -> {
-    if (!m_firstRun || youSureDoNothing()) {
-      m_choice = null;
+    if (!firstRun || youSureDoNothing()) {
+      choice = null;
       release();
     }
   });

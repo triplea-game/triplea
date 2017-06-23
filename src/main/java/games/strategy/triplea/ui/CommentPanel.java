@@ -41,20 +41,20 @@ import games.strategy.ui.SwingAction;
 
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
-  private JTextPane m_text;
-  private JScrollPane m_scrollPane;
-  private JTextField m_nextMessage;
-  private JButton m_save;
-  private final GameData m_data;
-  private final TripleAFrame m_frame;
-  private Map<PlayerID, Icon> m_iconMap;
+  private JTextPane text;
+  private JScrollPane scrollPane;
+  private JTextField nextMessage;
+  private JButton save;
+  private final GameData data;
+  private final TripleAFrame frame;
+  private Map<PlayerID, Icon> iconMap;
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
 
   CommentPanel(final TripleAFrame frame, final GameData data) {
-    m_frame = frame;
-    m_data = data;
+    this.frame = frame;
+    this.data = data;
     init();
   }
 
@@ -72,35 +72,35 @@ public class CommentPanel extends JPanel {
   private void layoutComponents() {
     final Container content = this;
     content.setLayout(new BorderLayout());
-    m_scrollPane = new JScrollPane(m_text);
-    content.add(m_scrollPane, BorderLayout.CENTER);
-    content.add(m_scrollPane, BorderLayout.CENTER);
+    scrollPane = new JScrollPane(text);
+    content.add(scrollPane, BorderLayout.CENTER);
+    content.add(scrollPane, BorderLayout.CENTER);
     final JPanel savePanel = new JPanel();
     savePanel.setLayout(new BorderLayout());
-    savePanel.add(m_nextMessage, BorderLayout.CENTER);
-    savePanel.add(m_save, BorderLayout.WEST);
+    savePanel.add(nextMessage, BorderLayout.CENTER);
+    savePanel.add(save, BorderLayout.WEST);
     content.add(savePanel, BorderLayout.SOUTH);
   }
 
   private void createComponents() {
-    m_text = new JTextPane();
-    m_text.setEditable(false);
-    m_text.setFocusable(false);
-    m_nextMessage = new JTextField(10);
+    text = new JTextPane();
+    text.setEditable(false);
+    text.setFocusable(false);
+    nextMessage = new JTextField(10);
     // when enter is pressed, send the message
     final Insets inset = new Insets(3, 3, 3, 3);
-    m_save = new JButton(m_saveAction);
-    m_save.setMargin(inset);
-    m_save.setFocusable(false);
+    save = new JButton(saveAction);
+    save.setMargin(inset);
+    save.setFocusable(false);
     // create icon map
-    m_iconMap = new HashMap<>();
-    for (final PlayerID playerId : m_data.getPlayerList().getPlayers()) {
-      m_iconMap.put(playerId, new ImageIcon(m_frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
+    iconMap = new HashMap<>();
+    for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
+      iconMap.put(playerId, new ImageIcon(frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
     }
   }
 
   private void setupListeners() {
-    m_data.getHistory().addTreeModelListener(new TreeModelListener() {
+    data.getHistory().addTreeModelListener(new TreeModelListener() {
       @Override
       public void treeNodesChanged(final TreeModelEvent e) {}
 
@@ -122,9 +122,9 @@ public class CommentPanel extends JPanel {
   private void readHistoryTreeEvent(final TreeModelEvent e) {
     final TreeModelEvent tme = e;
     final Runnable runner = () -> {
-      m_data.acquireReadLock();
+      data.acquireReadLock();
       try {
-        final Document doc = m_text.getDocument();
+        final Document doc = text.getDocument();
         final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
         final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
         final String title =
@@ -133,14 +133,14 @@ public class CommentPanel extends JPanel {
         final Pattern p = Pattern.compile("^COMMENT: (.*)");
         final Matcher m = p.matcher(title);
         if (m.matches()) {
-          final PlayerID playerId = m_data.getSequence().getStep().getPlayerID();
-          final int round = m_data.getSequence().getRound();
+          final PlayerID playerId = data.getSequence().getStep().getPlayerID();
+          final int round = data.getSequence().getRound();
           final String player = playerId.getName();
-          final Icon icon = m_iconMap.get(playerId);
+          final Icon icon = iconMap.get(playerId);
           try {
             // insert into ui document
             final String prefix = " " + player + "(" + round + ") : ";
-            m_text.insertIcon(icon);
+            text.insertIcon(icon);
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
           } catch (final BadLocationException e1) {
@@ -148,7 +148,7 @@ public class CommentPanel extends JPanel {
           }
         }
       } finally {
-        m_data.releaseReadLock();
+        data.releaseReadLock();
       }
     };
     // invoke in the swing event thread
@@ -160,13 +160,13 @@ public class CommentPanel extends JPanel {
   }
 
   private void setupKeyMap() {
-    final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-    nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_saveAction);
+    final InputMap nextMessageKeymap = nextMessage.getInputMap();
+    nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), saveAction);
   }
 
   private void loadHistory() {
-    final Document doc = m_text.getDocument();
-    final HistoryNode rootNode = (HistoryNode) m_data.getHistory().getRoot();
+    final Document doc = text.getDocument();
+    final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
     @SuppressWarnings("unchecked")
     final Enumeration<HistoryNode> nodeEnum = rootNode.preorderEnumeration();
     final Pattern p = Pattern.compile("^COMMENT: (.*)");
@@ -181,7 +181,7 @@ public class CommentPanel extends JPanel {
         final PlayerID playerId = ((Step) node).getPlayerID();
         if (playerId != null) {
           player = playerId.getName();
-          icon = m_iconMap.get(playerId);
+          icon = iconMap.get(playerId);
         }
       } else {
         final String title = node.getTitle();
@@ -190,7 +190,7 @@ public class CommentPanel extends JPanel {
           try {
             // insert into ui document
             final String prefix = " " + player + "(" + round + ") : ";
-            m_text.insertIcon(icon);
+            text.insertIcon(icon);
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
           } catch (final BadLocationException e) {
@@ -205,9 +205,9 @@ public class CommentPanel extends JPanel {
   public void addMessage(final String message) {
     final Runnable runner = () -> {
       try {
-        final Document doc = m_text.getDocument();
+        final Document doc = text.getDocument();
         // save history entry
-        final IEditDelegate delegate = m_frame.getEditDelegate();
+        final IEditDelegate delegate = frame.getEditDelegate();
         String error;
         if (delegate == null) {
           error = "You can only add comments during your turn";
@@ -220,7 +220,7 @@ public class CommentPanel extends JPanel {
       } catch (final BadLocationException e) {
         ClientLogger.logQuietly(e);
       }
-      final BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
+      final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
       scrollModel.setValue(scrollModel.getMaximum());
     };
     // invoke in the swing event thread
@@ -255,11 +255,11 @@ public class CommentPanel extends JPanel {
     }
   }
 
-  private final Action m_saveAction = SwingAction.of("Add Comment", e -> {
-    if (m_nextMessage.getText().trim().length() == 0) {
+  private final Action saveAction = SwingAction.of("Add Comment", e -> {
+    if (nextMessage.getText().trim().length() == 0) {
       return;
     }
-    addMessage(m_nextMessage.getText());
-    m_nextMessage.setText("");
+    addMessage(nextMessage.getText());
+    nextMessage.setText("");
   });
 }
