@@ -108,7 +108,7 @@ public class AvailableGames {
     }
     if(games.listFiles() != null ) {
       for (final File game : games.listFiles()) {
-        if (game.toURI() != null && game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+        if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
           final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
           if (added) {
             availableMapFolderOrZipNames.add(mapDir.getName());
