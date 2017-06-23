@@ -353,7 +353,7 @@ public class HeadlessGameServer {
                 ClientLogger.logQuietly(e);
               }
               try {
-                messenger.notifyIPMiniBanningOfPlayer(ip, expire);
+                messenger.notifyIpMiniBanningOfPlayer(ip, expire);
               } catch (final Exception e) {
                 ClientLogger.logQuietly(e);
               }

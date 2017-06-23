@@ -99,7 +99,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyIPMiniBanningOfPlayer(final String ip, final Instant expires) {}
+  public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {}
 
   @Override
   public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {}

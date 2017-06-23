@@ -241,12 +241,12 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  private void ScheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
+  private void scheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
     unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), checkTime.toEpochMilli());
   }
 
-  private void ScheduleMacUnmuteAt(final String mac, final Instant checkTime) {
+  private void scheduleMacUnmuteAt(final String mac, final Instant checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
     unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli());
   }
@@ -398,7 +398,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   }
 
   @Override
-  public void notifyIPMiniBanningOfPlayer(final String ip, final Instant expires) {
+  public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedIpAddresses.contains(ip)) {
         m_miniBannedIpAddresses.add(ip);

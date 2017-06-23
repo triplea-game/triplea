@@ -35,7 +35,7 @@ public interface IServerMessenger extends IMessenger {
    */
   Set<INode> getNodes();
 
-  void notifyIPMiniBanningOfPlayer(String ip, Instant expires);
+  void notifyIpMiniBanningOfPlayer(String ip, Instant expires);
 
   void notifyMacMiniBanningOfPlayer(String mac, Instant expires);
 
