@@ -124,12 +124,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   @SuppressWarnings("unchecked")
   private IAbstractMoveDelegate<UndoableMove> getMoveDelegate() {
-    return (IAbstractMoveDelegate<UndoableMove>) bridge.getRemoteDelegate();
+    return (IAbstractMoveDelegate<UndoableMove>) m_bridge.getRemoteDelegate();
   }
 
   protected final void updateMoves() {
-    undoableMoves = getMoveDelegate().getMovesMade();
-    this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
+    m_undoableMoves = getMoveDelegate().getMovesMade();
+    this.m_undoableMovesPanel.setMoves(new ArrayList<>(m_undoableMoves));
   }
 
   public final void cancelMove() {
