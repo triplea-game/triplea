@@ -64,7 +64,7 @@ public class LHTRTest {
     delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, gameData);
-    gameData.performChange(ChangeFactory.addUnits(germans, Collections.singleton((Unit) carrier)));
+    gameData.performChange(ChangeFactory.addUnits(germans, Collections.singleton(carrier)));
     // end the move phase
     delegate.end();
     // make sure the fighter is still there

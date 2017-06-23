@@ -269,7 +269,7 @@ public class MessengerTest {
   }
 
   @Test
-  public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException {
+  public void testManyClients() throws IOException {
     final int count = 5;
     final List<ClientMessenger> clients = new ArrayList<>();
     final List<MessageListener> listeners = new ArrayList<>();

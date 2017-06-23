@@ -14,7 +14,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 
 class TerritoryOverLayDrawable implements IDrawable {
-  static enum OP {
+  enum OP {
     FILL, DRAW
   }
 

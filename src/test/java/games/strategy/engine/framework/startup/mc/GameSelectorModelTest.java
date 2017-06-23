@@ -101,7 +101,7 @@ public class GameSelectorModelTest {
   }
 
   private void verifyTestObjectObserverUpdateSent() {
-    verify(mockObserver, times(1)).update((Observable) Mockito.any(), Mockito.any());
+    verify(mockObserver, times(1)).update(Mockito.any(), Mockito.any());
     reset(mockObserver);
   }
 
@@ -124,13 +124,13 @@ public class GameSelectorModelTest {
 
   @Test
   public void testIsSaveGame() {
-    testObj.load((GameData) null, "");
+    testObj.load(null, "");
     assertThat(testObj.isSavedGame(), is(true));
 
-    testObj.load((GameData) null, ".xml");
+    testObj.load(null, ".xml");
     assertThat(testObj.isSavedGame(), is(false));
 
-    testObj.load((GameData) null, GameDataFileUtils.addExtension("file"));
+    testObj.load(null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
   }
 

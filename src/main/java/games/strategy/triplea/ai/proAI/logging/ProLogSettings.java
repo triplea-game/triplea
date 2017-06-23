@@ -22,7 +22,7 @@ public class ProLogSettings implements Serializable {
   public boolean EnableAILogging = true;
   public Level AILoggingDepth = Level.FINEST;
   private static ProLogSettings s_lastSettings = null;
-  private static String PROGRAM_SETTINGS = "Program Settings";
+  private static final String PROGRAM_SETTINGS = "Program Settings";
 
   static ProLogSettings loadSettings() {
     if (s_lastSettings == null) {
@@ -48,7 +48,7 @@ public class ProLogSettings implements Serializable {
   static void saveSettings(final ProLogSettings settings) {
     s_lastSettings = settings;
     try (final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
-        ObjectOutputStream outputStream = new ObjectOutputStream(pool);) {
+        ObjectOutputStream outputStream = new ObjectOutputStream(pool)) {
 
       outputStream.writeObject(settings);
       final Preferences prefs = Preferences.userNodeForPackage(ProAI.class);
