@@ -82,7 +82,7 @@ class ProLogWindow extends JDialog {
     v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
     v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
     v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
-    v_restoreDefaultsButton.addActionListener(evt -> v_restoreDefaultsButtonActionPerformed());
+    v_restoreDefaultsButton.addActionListener(evt -> restoreDefaultsButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -93,7 +93,7 @@ class ProLogWindow extends JDialog {
     v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
     v_settingsDetailsButton.setName("v_settingsDetailsButton");
     v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
-    v_settingsDetailsButton.addActionListener(evt -> v_settingsDetailsButtonActionPerformed());
+    v_settingsDetailsButton.addActionListener(evt -> settingsDetailsButtonActionPerformed());
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
@@ -106,7 +106,7 @@ class ProLogWindow extends JDialog {
     jPanel13.setLayout(new GridBagLayout());
     v_cancelButton.setText("Cancel");
     v_cancelButton.setName("v_cancelButton");
-    v_cancelButton.addActionListener(evt -> v_cancelButtonActionPerformed());
+    v_cancelButton.addActionListener(evt -> cancelButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
@@ -114,7 +114,7 @@ class ProLogWindow extends JDialog {
     jPanel13.add(v_cancelButton, gridBagConstraints);
     v_okButton.setText("OK");
     v_okButton.setName("v_okButton");
-    v_okButton.addActionListener(evt -> v_okButtonActionPerformed());
+    v_okButton.addActionListener(evt -> okButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -170,7 +170,7 @@ class ProLogWindow extends JDialog {
     v_enableAILogging.setSelected(true);
     v_enableAILogging.setText("Enable AI Logging");
     v_enableAILogging.setName("v_enableAILogging");
-    v_enableAILogging.addChangeListener(evt -> v_enableAILoggingStateChanged());
+    v_enableAILogging.addChangeListener(evt -> enableAiLoggingStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -204,7 +204,7 @@ class ProLogWindow extends JDialog {
     v_limitLogHistoryCB.setSelected(true);
     v_limitLogHistoryCB.setText("Limit Log History To:");
     v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
-    v_limitLogHistoryCB.addChangeListener(evt -> v_limitLogHistoryCBStateChanged());
+    v_limitLogHistoryCB.addChangeListener(evt -> limitLogHistoryCbStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;
@@ -271,7 +271,7 @@ class ProLogWindow extends JDialog {
     return settings;
   }
 
-  private void v_restoreDefaultsButtonActionPerformed() {
+  private void restoreDefaultsButtonActionPerformed() {
     final int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all AI settings?",
         "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
@@ -284,32 +284,32 @@ class ProLogWindow extends JDialog {
     }
   }
 
-  private void v_enableAILoggingStateChanged() {
+  private void enableAiLoggingStateChanged() {
     v_logDepth.setEnabled(v_enableAILogging.isSelected());
     v_limitLogHistoryCB.setEnabled(v_enableAILogging.isSelected());
   }
 
-  private void v_limitLogHistoryCBStateChanged() {
+  private void limitLogHistoryCbStateChanged() {
     v_limitLogHistoryToSpinner.setEnabled(v_limitLogHistoryCB.isSelected() && v_enableAILogging.isSelected());
   }
 
   private void formWindowClosing() {
-    v_cancelButtonActionPerformed();
+    cancelButtonActionPerformed();
   }
 
-  private void v_okButtonActionPerformed() {
+  private void okButtonActionPerformed() {
     final ProLogSettings settings = createSettings();
     ProLogSettings.saveSettings(settings);
     this.setVisible(false);
   }
 
-  private void v_cancelButtonActionPerformed() {
+  private void cancelButtonActionPerformed() {
     final ProLogSettings settings = ProLogSettings.loadSettings();
     loadSettings(settings);
     this.setVisible(false);
   }
 
-  private void v_settingsDetailsButtonActionPerformed() {
+  private void settingsDetailsButtonActionPerformed() {
     final JDialog dialog = new JDialog(this, "Pro AI - Settings Details");
     String message = "";
     if (v_tabPaneMain.getSelectedIndex() == 0) { // Debugging

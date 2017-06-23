@@ -342,15 +342,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public int PUsAlreadyLost(final Territory t) {
-    // Auto-generated method stub
+  public int pusAlreadyLost(final Territory t) {
     return 0;
   }
 
   @Override
-  public void PUsLost(final Territory t, final int amt) {
-    // Auto-generated method stub
-  }
+  public void pusLost(final Territory t, final int amt) {}
 }
 
 

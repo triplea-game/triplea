@@ -224,14 +224,12 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
-  public abstract int PUsAlreadyLost(final Territory t);
+  public abstract int pusAlreadyLost(final Territory t);
 
-  public abstract void PUsLost(final Territory t, final int amt);
+  public abstract void pusLost(final Territory t, final int amt);
 
   @Override
   public Class<IMoveDelegate> getRemoteType() {
     return IMoveDelegate.class;
   }
 }
-
-

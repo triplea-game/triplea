@@ -375,7 +375,7 @@ public class RocketsFireHelper {
     } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
       if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
+        final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);
       }
@@ -384,7 +384,7 @@ public class RocketsFireHelper {
       }
     }
     // Record the PUs lost
-    DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
+    DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
     if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
       getRemote(bridge).reportMessage(
           "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "

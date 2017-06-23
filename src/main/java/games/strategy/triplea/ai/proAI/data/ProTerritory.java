@@ -133,7 +133,7 @@ public class ProTerritory {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
     } else {
-      final List<Unit> defenders = Match.getMatches(cantMoveUnits, ProMatches.UnitIsOwnedCarrier(player).invert());
+      final List<Unit> defenders = Match.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).invert());
       defenders.addAll(units);
       defenders.addAll(tempUnits);
       return defenders;
