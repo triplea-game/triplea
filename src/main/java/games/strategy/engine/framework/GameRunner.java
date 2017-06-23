@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -70,7 +69,6 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
-  private static final String DELAYED_PARSING = "DelayedParsing";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
