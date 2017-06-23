@@ -167,8 +167,7 @@ public class GameRunner {
           System.out.println("Current Engine version in use: " + engineVersion);
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN,
-            ClientContext.engineVersion().toString());
+        System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, engineVersion.toString());
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + engineVersion);
       }
     } else {
