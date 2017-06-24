@@ -22,8 +22,8 @@ import games.strategy.triplea.Constants;
 
 public class EconomyPanel extends AbstractStatPanel {
   private static final long serialVersionUID = -7713792841831042952L;
-  private IStat[] m_statsResource;
-  private ResourceTableModel m_resourceModel;
+  private IStat[] statsResource;
+  private ResourceTableModel resourceModel;
 
   public EconomyPanel(final GameData data) {
     super(data);
@@ -33,8 +33,8 @@ public class EconomyPanel extends AbstractStatPanel {
   @Override
   protected void initLayout() {
     setLayout(new GridLayout(1, 1));
-    m_resourceModel = new ResourceTableModel();
-    final JTable table = new JTable(m_resourceModel);
+    resourceModel = new ResourceTableModel();
+    final JTable table = new JTable(resourceModel);
     table.getTableHeader().setReorderingAllowed(false);
     final TableColumn column = table.getColumnModel().getColumn(0);
     column.setPreferredWidth(175);
@@ -61,7 +61,7 @@ public class EconomyPanel extends AbstractStatPanel {
         }
         statList.add(new ResourceStat(resource));
       }
-      m_statsResource = statList.toArray(new IStat[statList.size()]);
+      statsResource = statList.toArray(new IStat[statList.size()]);
     }
 
     @Override
@@ -78,13 +78,13 @@ public class EconomyPanel extends AbstractStatPanel {
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
-        m_collectedData = new String[players.size() + alliances.size()][m_statsResource.length + 1];
+        m_collectedData = new String[players.size() + alliances.size()][statsResource.length + 1];
         int row = 0;
         for (final PlayerID player : players) {
           m_collectedData[row][0] = player.getName();
-          for (int i = 0; i < m_statsResource.length; i++) {
+          for (int i = 0; i < statsResource.length; i++) {
             m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, gameData));
+                statsResource[i].getFormatter().format(statsResource[i].getValue(player, gameData));
           }
           row++;
         }
@@ -92,9 +92,9 @@ public class EconomyPanel extends AbstractStatPanel {
         while (allianceIterator.hasNext()) {
           final String alliance = allianceIterator.next();
           m_collectedData[row][0] = alliance;
-          for (int i = 0; i < m_statsResource.length; i++) {
+          for (int i = 0; i < statsResource.length; i++) {
             m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, gameData));
+                statsResource[i].getFormatter().format(statsResource[i].getValue(alliance, gameData));
           }
           row++;
         }
@@ -116,12 +116,12 @@ public class EconomyPanel extends AbstractStatPanel {
       if (col == 0) {
         return "Player";
       }
-      return m_statsResource[col - 1].getName();
+      return statsResource[col - 1].getName();
     }
 
     @Override
     public int getColumnCount() {
-      return m_statsResource.length + 1;
+      return statsResource.length + 1;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class EconomyPanel extends AbstractStatPanel {
   @Override
   public void setGameData(final GameData data) {
     gameData = data;
-    m_resourceModel.setGameData(data);
-    m_resourceModel.gameDataChanged(null);
+    resourceModel.setGameData(data);
+    resourceModel.gameDataChanged(null);
   }
 }

@@ -39,9 +39,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge aBridge) {
+  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge bridge) {
     final CompositeChange change = new CompositeChange();
-    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, aBridge.getData(), null)) {
+    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, bridge.getData(), null)) {
       if (ta.getUsedThisRound()) {
         final int currentUses = ta.getUses();
         if (currentUses > 0) {
@@ -184,26 +184,26 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_notification = null;
   }
 
-  protected void use(final IDelegateBridge aBridge) {
+  protected void use(final IDelegateBridge bridge) {
     // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this
     // round
     // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
     // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified
     // elsewhere.
     if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
   }
 
-  protected boolean testChance(final IDelegateBridge aBridge) {
+  protected boolean testChance(final IDelegateBridge bridge) {
     // "chance" should ALWAYS be checked last! (always check all other conditions first)
     final int hitTarget = getChanceToHit();
     final int diceSides = getChanceDiceSides();
     if (diceSides <= 0 || hitTarget >= diceSides) {
-      changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, true, false);
+      changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, true, false);
       return true;
     } else if (hitTarget <= 0) {
-      changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, false, false);
+      changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, false, false);
       return false;
     }
     // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie:
@@ -211,15 +211,15 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
     // together, then getting a ton of random numbers at once instead of one at a time)
     ThreadUtil.sleep(100);
-    final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
+    final int rollResult = bridge.getRandom(diceSides, null, DiceType.ENGINE,
         "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
     final boolean testChance = rollResult <= hitTarget;
     final String notificationMessage =
         (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of "
             + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
-    aBridge.getHistoryWriter().startEvent(notificationMessage);
-    changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
-    ((ITripleAPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+    bridge.getHistoryWriter().startEvent(notificationMessage);
+    changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
+    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).reportMessage(notificationMessage,
         notificationMessage);
     return testChance;
   }

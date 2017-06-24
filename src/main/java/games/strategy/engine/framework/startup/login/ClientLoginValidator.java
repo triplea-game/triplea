@@ -99,7 +99,7 @@ public class ClientLoginValidator implements ILoginValidator {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
         // TODO: verify this prevention, does this protect against parallel connections?
-        ThreadUtil.sleep(4000 * Math.random()); // usage of sleep is okay.
+        ThreadUtil.sleep((int) (4000 * Math.random())); // usage of sleep is okay.
         return "Invalid password";
       }
     }

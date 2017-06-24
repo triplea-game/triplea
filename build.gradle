@@ -176,8 +176,10 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
     classifier 'server'
-    ['lobby.properties'].each { fileName ->
-        from(fileName)
+    ['config/lobby/lobby.properties'].each { fileName ->
+        from(fileName) {
+            into('config/lobby')
+        }
     }
     from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
         into('lib')
@@ -198,7 +200,7 @@ task copyJRE(type: Copy, dependsOn: [updateAssets]) {
 
 import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
-    projectFile = file('build.install4j')
+    projectFile = file('.install4j/build.install4j')
     release project.version
     doFirst {
         logger.lifecycle("building installer release of version '${project.version}'")

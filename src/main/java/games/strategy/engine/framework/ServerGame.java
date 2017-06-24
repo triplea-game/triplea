@@ -548,8 +548,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void addPlayerTypesToGameData(final Collection<IGamePlayer> localPlayers, final PlayerManager allPlayers,
-      final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
@@ -564,11 +564,11 @@ public class ServerGame extends AbstractGame {
     }
     final CompositeChange change = new CompositeChange();
     final Set<String> allPlayersString = allPlayers.getPlayers();
-    aBridge.getHistoryWriter().startEvent("Game Loaded");
+    bridge.getHistoryWriter().startEvent("Game Loaded");
     for (final IGamePlayer player : localPlayers) {
       allPlayersString.remove(player.getName());
       final boolean isHuman = player instanceof TripleAPlayer;
-      aBridge.getHistoryWriter()
+      bridge.getHistoryWriter()
           .addChildToEvent(
               player.getName()
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
@@ -584,7 +584,7 @@ public class ServerGame extends AbstractGame {
     while (playerIter.hasNext()) {
       final String player = playerIter.next();
       playerIter.remove();
-      aBridge.getHistoryWriter().addChildToEvent(
+      bridge.getHistoryWriter().addChildToEvent(
           player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
       final PlayerID p = data.getPlayerList().getPlayerID(player);
@@ -594,7 +594,7 @@ public class ServerGame extends AbstractGame {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
     m_needToInitialize = false;
     if (!allPlayersString.isEmpty()) {

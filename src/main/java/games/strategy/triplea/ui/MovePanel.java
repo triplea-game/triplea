@@ -51,14 +51,14 @@ import games.strategy.util.Util;
 
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
-  private static final int s_defaultMinTransportCost = 5;
+  private static final int defaultMinTransportCost = 5;
   /**
-   * @param s_deselectNumber
+   * @param deselectNumber
    *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large
    *        armies), but changed it
    *        after feedback).
    */
-  private static final int s_deselectNumber = 10;
+  private static final int deselectNumber = 10;
   // access only through getter and setter!
   private Territory firstSelectedTerritory;
   private Territory selectedEndpointTerritory;
@@ -86,7 +86,7 @@ public class MovePanel extends AbstractMovePanel {
   /** Creates new MovePanel. */
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    m_undoableMovesPanel = new UndoableMovesPanel(data, this);
+    undoableMovesPanel = new UndoableMovesPanel(data, this);
     mouseCurrentTerritory = null;
     unitsThatCanMoveOnRoute = Collections.emptyList();
     currentCursorImage = null;
@@ -567,7 +567,7 @@ public class MovePanel extends AbstractMovePanel {
     final PlayerID unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
         MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, s_dependentUnits, getData(), unitOwner);
-    int minTransportCost = s_defaultMinTransportCost;
+    int minTransportCost = defaultMinTransportCost;
     for (final Unit unit : unitsToLoad) {
       minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
     }
@@ -727,7 +727,7 @@ public class MovePanel extends AbstractMovePanel {
       data.acquireReadLock();
       try {
         // de select units
-        if (rightMouse && !noSelectedTerritory && !m_map.wasLastActionDraggingAndReset()) {
+        if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
           deselectUnits(units, t, me);
         } else if (!isMiddleMouseButton && !rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
           selectUnitsToMove(units, t, me);
@@ -823,7 +823,7 @@ public class MovePanel extends AbstractMovePanel {
         final List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
         Collections.sort(unitsToMove, UnitComparator.getHighestToLowestMovementComparator());
 
-        final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
+        final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
 
         int addCount = 0;
         for (final Unit unit : unitsToMove) {
@@ -990,7 +990,7 @@ public class MovePanel extends AbstractMovePanel {
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
+          final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
           // remove the last iterCount elements
           for (int i = 0; i < iterCount; i++) {
             unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
@@ -1026,7 +1026,7 @@ public class MovePanel extends AbstractMovePanel {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
           // changed to just remove 10 units
           // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
+          final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
           int remCount = 0;
           for (final Unit unit : units) {
             if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
@@ -1401,7 +1401,7 @@ public class MovePanel extends AbstractMovePanel {
             break;
           case KeyEvent.VK_U:
             if (getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
-              m_undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
+              undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
             }
             break;
         }
@@ -1416,7 +1416,7 @@ public class MovePanel extends AbstractMovePanel {
 
   @Override
   protected boolean doneMoveAction() {
-    if (m_undoableMovesPanel.getCountOfMovesMade() == 0) {
+    if (undoableMovesPanel.getCountOfMovesMade() == 0) {
       final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
           "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
       return rVal == JOptionPane.YES_OPTION;

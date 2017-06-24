@@ -226,10 +226,10 @@ public class IndividualUnitPanel extends JPanel {
 
 class SingleUnitPanel extends JPanel {
   private static final long serialVersionUID = 5034287842323633030L;
-  private final Unit m_unit;
-  private final ScrollableTextField m_textField;
+  private final Unit unit;
+  private final ScrollableTextField textField;
   private static final Insets nullInsets = new Insets(0, 0, 0, 0);
-  private final ScrollableTextFieldListener m_countTextFieldListener;
+  private final ScrollableTextFieldListener countTextFieldListener;
 
   public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext,
       final ScrollableTextFieldListener textFieldListener, final int max, final int min, final boolean showMaxAndMin) {
@@ -239,16 +239,16 @@ class SingleUnitPanel extends JPanel {
   public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context,
       final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
       final boolean showMaxAndMin) {
-    m_unit = unit;
+    this.unit = unit;
     final GameData m_data = data;
     final IUIContext m_context = context;
-    m_countTextFieldListener = textFieldListener;
-    m_textField = new ScrollableTextField(0, 512);
+    countTextFieldListener = textFieldListener;
+    textField = new ScrollableTextField(0, 512);
     if (max >= 0) {
       setMax(max);
     }
     setMin(min);
-    m_textField.setShowMaxAndMin(showMaxAndMin);
+    textField.setShowMaxAndMin(showMaxAndMin);
     final TripleAUnit taUnit = TripleAUnit.get(unit);
 
 
@@ -256,51 +256,51 @@ class SingleUnitPanel extends JPanel {
     setLayout(new GridBagLayout());
 
     final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
-    final JLabel label = m_context.createUnitImageJLabel(m_unit.getType(), m_unit.getOwner(), m_data,
+    final JLabel label = m_context.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(), m_data,
         isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
         taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
 
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));
-    add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+    add(textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 0), 0, 0));
   }
 
   public int getCount() {
-    return m_textField.getValue();
+    return textField.getValue();
   }
 
   public void setCount(final int value) {
-    m_textField.setValue(value);
+    textField.setValue(value);
   }
 
   public void selectAll() {
-    m_textField.setValue(m_textField.getMax());
+    textField.setValue(textField.getMax());
   }
 
   public void selectNone() {
-    m_textField.setValue(0);
+    textField.setValue(0);
   }
 
   public void setMax(final int value) {
-    m_textField.setMax(value);
+    textField.setMax(value);
   }
 
   public int getMax() {
-    return m_textField.getMax();
+    return textField.getMax();
   }
 
   public void setMin(final int value) {
-    m_textField.setMin(value);
+    textField.setMin(value);
   }
 
   public Unit getUnit() {
-    return m_unit;
+    return unit;
   }
 
   public void createComponents(final JPanel panel, final int yIndex) {
     panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-    m_textField.addChangeListener(m_countTextFieldListener);
+    textField.addChangeListener(countTextFieldListener);
   }
 }

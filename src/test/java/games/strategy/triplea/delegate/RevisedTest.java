@@ -423,7 +423,7 @@ public class RevisedTest {
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
-    final String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+    final String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -457,7 +457,7 @@ public class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
     // load the transport
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     final Route sz5ToNorway = new Route();
     sz5ToNorway.setStart(sz5);
@@ -504,9 +504,9 @@ public class RevisedTest {
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
     // load the transports
     // in two moves
-    String error = moveDelegate.move(infantry.subList(0, 1), eeToSz5, Collections.<Unit>singletonList(transport));
+    String error = moveDelegate.move(infantry.subList(0, 1), eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
-    error = moveDelegate.move(infantry.subList(1, 2), eeToSz5, Collections.<Unit>singletonList(transport));
+    error = moveDelegate.move(infantry.subList(1, 2), eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -542,7 +542,7 @@ public class RevisedTest {
         .getMatches(Match.all(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // try to unload
     final Route sz5ToEee = new Route();
@@ -571,7 +571,7 @@ public class RevisedTest {
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
@@ -624,7 +624,7 @@ public class RevisedTest {
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");

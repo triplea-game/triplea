@@ -31,61 +31,61 @@ import games.strategy.util.Match;
 public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;
   private final JLabel actionLabel = new JLabel();
-  private IntegerMap<ProductionRule> m_purchase;
-  private boolean m_bid;
-  private final SimpleUnitPanel m_purchasedPreviousRoundsUnits;
-  private final JLabel m_purchasedPreviousRoundsLabel;
-  private final SimpleUnitPanel m_purhcasedUnits;
-  private final JLabel m_purchasedLabel = new JLabel();
-  private final JButton m_buyButton;
+  private IntegerMap<ProductionRule> purchase;
+  private boolean bid;
+  private final SimpleUnitPanel purchasedPreviousRoundsUnits;
+  private final JLabel purchasedPreviousRoundsLabel;
+  private final SimpleUnitPanel purhcasedUnits;
+  private final JLabel purchasedLabel = new JLabel();
+  private final JButton buyButton;
   // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
-  private static boolean m_tabbedProduction = true;
+  private static boolean tabbedProduction = true;
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
   /** Creates new PurchasePanel. */
   public PurchasePanel(final GameData data, final MapPanel map) {
     super(data, map);
-    m_purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUIContext());
-    m_purhcasedUnits = new SimpleUnitPanel(map.getUIContext());
-    m_buyButton = new JButton(BUY);
-    m_buyButton.addActionListener(PURCHASE_ACTION);
-    m_purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
+    purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUIContext());
+    purhcasedUnits = new SimpleUnitPanel(map.getUIContext());
+    buyButton = new JButton(BUY);
+    buyButton.addActionListener(PURCHASE_ACTION);
+    purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
   }
 
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_purchase = new IntegerMap<>();
+    purchase = new IntegerMap<>();
     SwingUtilities.invokeLater(() -> {
       removeAll();
       actionLabel.setText(id.getName() + " production");
       add(actionLabel);
 
-      m_buyButton.setText(BUY);
-      add(m_buyButton);
+      buyButton.setText(BUY);
+      add(buyButton);
 
       add(new JButton(DoneAction));
 
       add(Box.createVerticalStrut(9));
 
-      m_purchasedLabel.setText("");
-      add(m_purchasedLabel);
+      purchasedLabel.setText("");
+      add(purchasedLabel);
 
       add(Box.createVerticalStrut(4));
 
-      m_purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
-      add(m_purhcasedUnits);
+      purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
+      add(purhcasedUnits);
 
       getData().acquireReadLock();
       try {
-        m_purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
+        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
             getData());
         add(Box.createVerticalStrut(4));
         if (!id.getUnits().isEmpty()) {
-          add(m_purchasedPreviousRoundsLabel);
+          add(purchasedPreviousRoundsLabel);
         }
-        add(m_purchasedPreviousRoundsUnits);
+        add(purchasedPreviousRoundsUnits);
       } finally {
         getData().releaseReadLock();
       }
@@ -96,16 +96,16 @@ public class PurchasePanel extends ActionPanel {
 
   private void refreshActionLabelText() {
     SwingUtilities.invokeLater(
-        () -> actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : "")));
+        () -> actionLabel.setText(getCurrentPlayer().getName() + " production " + (bid ? " for bid" : "")));
   }
 
   IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {
-    m_bid = bid;
+    this.bid = bid;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
     SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
     waitForRelease();
-    return m_purchase;
+    return purchase;
   }
 
   private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy") {
@@ -116,20 +116,20 @@ public class PurchasePanel extends ActionPanel {
       final PlayerID player = getCurrentPlayer();
       final GameData data = getData();
       if (isTabbedProduction()) {
-        m_purchase = TabbedProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid,
-            m_purchase, getMap().getUIContext());
+        purchase = TabbedProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid,
+            purchase, getMap().getUIContext());
       } else {
-        m_purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_purchase,
+        purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid, purchase,
             getMap().getUIContext());
       }
-      m_purhcasedUnits.setUnitsFromProductionRuleMap(m_purchase, player, data);
-      if (m_purchase.totalValues() == 0) {
-        m_purchasedLabel.setText("");
-        m_buyButton.setText(BUY);
+      purhcasedUnits.setUnitsFromProductionRuleMap(purchase, player, data);
+      if (purchase.totalValues() == 0) {
+        purchasedLabel.setText("");
+        buyButton.setText(BUY);
       } else {
-        m_buyButton.setText(CHANGE);
-        m_purchasedLabel.setText(totalUnitNumberPurchased(m_purchase)
-            + MyFormatter.pluralize(" unit", totalUnitNumberPurchased(m_purchase)) + " to be produced:");
+        buyButton.setText(CHANGE);
+        purchasedLabel.setText(totalUnitNumberPurchased(purchase)
+            + MyFormatter.pluralize(" unit", totalUnitNumberPurchased(purchase)) + " to be produced:");
       }
     }
   };
@@ -148,7 +148,7 @@ public class PurchasePanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      final boolean hasPurchased = m_purchase.totalValues() != 0;
+      final boolean hasPurchased = purchase.totalValues() != 0;
       if (!hasPurchased) {
         final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
             "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
@@ -172,19 +172,19 @@ public class PurchasePanel extends ActionPanel {
         }
         // sum production for all units except factories
         int totalProduced = 0;
-        for (final ProductionRule rule : m_purchase.keySet()) {
+        for (final ProductionRule rule : purchase.keySet()) {
           final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
           if (resourceOrUnit instanceof UnitType) {
             final UnitType type = (UnitType) resourceOrUnit;
             if (!Matches.UnitTypeIsConstruction.match(type)) {
-              totalProduced += m_purchase.getInt(rule) * rule.getResults().totalValues();
+              totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
             }
           }
         }
         final PlayerID player = getCurrentPlayer();
         final Collection<Unit> unitsNeedingFactory =
             Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotConstruction);
-        if (!m_bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
+        if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
           final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
               + " units, and can only place " + totalProd + " of them. Continue with purchase?";
           final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this), text,
@@ -212,10 +212,10 @@ public class PurchasePanel extends ActionPanel {
   }
 
   public static void setTabbedProduction(final boolean tabbedProduction) {
-    m_tabbedProduction = tabbedProduction;
+    PurchasePanel.tabbedProduction = tabbedProduction;
   }
 
   public static boolean isTabbedProduction() {
-    return m_tabbedProduction;
+    return tabbedProduction;
   }
 }

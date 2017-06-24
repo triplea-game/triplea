@@ -20,7 +20,7 @@ public class IntTextField extends JTextField {
   private int m_max = Integer.MAX_VALUE;
   private int m_min = Integer.MIN_VALUE;
   private String m_terr = null;
-  private final List<IntTextFieldChangeListener> m_listeners = new CopyOnWriteArrayList<>();
+  private final List<IntTextFieldChangeListener> listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new IntTextField. */
   public IntTextField() {
@@ -167,15 +167,15 @@ public class IntTextField extends JTextField {
   }
 
   public void addChangeListener(final IntTextFieldChangeListener listener) {
-    m_listeners.add(listener);
+    listeners.add(listener);
   }
 
   public void removeChangeListener(final IntTextFieldChangeListener listener) {
-    m_listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   private void notifyListeners() {
-    for (final IntTextFieldChangeListener listener : m_listeners) {
+    for (final IntTextFieldChangeListener listener : listeners) {
       listener.changedValue(this);
     }
   }

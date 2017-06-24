@@ -196,8 +196,8 @@ public abstract class AbstractBattle implements IBattle {
     return m_defender;
   }
 
-  public void setHeadless(final boolean aBool) {
-    m_headless = aBool;
+  public void setHeadless(final boolean headless) {
+    m_headless = headless;
   }
 
   @Override

@@ -85,13 +85,13 @@ import games.strategy.util.UrlStreams;
  */
 public class ObjectivePanel extends AbstractStatPanel {
   private static final long serialVersionUID = 3759819236905645520L;
-  private Map<String, Map<ICondition, String>> m_statsObjective;
-  private ObjectiveTableModel m_objectiveModel;
-  private IDelegateBridge m_dummyDelegate;
+  private Map<String, Map<ICondition, String>> statsObjective;
+  private ObjectiveTableModel objectiveModel;
+  private IDelegateBridge dummyDelegate;
 
   ObjectivePanel(final GameData data) {
     super(data);
-    m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
+    dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
     initLayout();
   }
 
@@ -101,18 +101,18 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 
   public boolean isEmpty() {
-    return m_statsObjective.isEmpty();
+    return statsObjective.isEmpty();
   }
 
   public void removeDataChangeListener() {
-    m_objectiveModel.removeDataChangeListener();
+    objectiveModel.removeDataChangeListener();
   }
 
   @Override
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    m_objectiveModel = new ObjectiveTableModel();
-    final JTable table = new JTable(m_objectiveModel);
+    objectiveModel = new ObjectiveTableModel();
+    final JTable table = new JTable(objectiveModel);
     table.getTableHeader().setReorderingAllowed(false);
     final TableColumn column0 = table.getColumnModel().getColumn(0);
     column0.setPreferredWidth(34);
@@ -126,7 +126,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
-      m_objectiveModel.loadData();
+      objectiveModel.loadData();
       SwingUtilities.invokeLater(() -> table.repaint());
     }));
     add(Box.createVerticalStrut(6));
@@ -154,7 +154,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private void setObjectiveStats() {
-      m_statsObjective = new LinkedHashMap<>();
+      statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
       final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
@@ -191,7 +191,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
         m_sections.put(key, sectionsUnsorted.get(key));
-        m_statsObjective.put(key, new LinkedHashMap<>());
+        statsObjective.put(key, new LinkedHashMap<>());
         statsObjectiveUnsorted.put(key, new HashMap<>());
       }
       // now do the stuff in the sections
@@ -269,7 +269,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           }
         }
       }
-      for (final Entry<String, Map<ICondition, String>> entry : m_statsObjective.entrySet()) {
+      for (final Entry<String, Map<ICondition, String>> entry : statsObjective.entrySet()) {
         final Map<ICondition, String> mapUnsorted = statsObjectiveUnsorted.get(entry.getKey());
         final Map<ICondition, String> mapSorted = entry.getValue();
         for (final String conditionString : m_sections.get(entry.getKey())) {
@@ -303,7 +303,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
         m_collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
         int row = 0;
-        for (final Entry<String, Map<ICondition, String>> mapEntry : m_statsObjective.entrySet()) {
+        for (final Entry<String, Map<ICondition, String>> mapEntry : statsObjective.entrySet()) {
           m_collectedData[row][1] =
               "<html><span style=\"font-size:140%\"><b><em>" + mapEntry.getKey() + "</em></b></span></html>";
           for (final Entry<ICondition, String> attachmentEntry : mapEntry.getValue().entrySet()) {
@@ -361,12 +361,12 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public HashMap<ICondition, Boolean> getTestedConditions() {
       final HashSet<ICondition> myConditions = new HashSet<>();
-      for (final Map<ICondition, String> map : m_statsObjective.values()) {
+      for (final Map<ICondition, String> map : statsObjective.values()) {
         myConditions.addAll(map.keySet());
       }
       final HashSet<ICondition> allConditionsNeeded =
           AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
-      return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
+      return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, dummyDelegate);
     }
 
     @Override
@@ -407,7 +407,7 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     private int getRowTotal() {
       int rowsTotal = m_sections.size() * 2; // we include a space between sections as well
-      for (final Map<ICondition, String> map : m_statsObjective.values()) {
+      for (final Map<ICondition, String> map : statsObjective.values()) {
         rowsTotal += map.size();
       }
       return rowsTotal;
@@ -427,10 +427,10 @@ public class ObjectivePanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
+    dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
     gameData = data;
-    m_objectiveModel.setGameData(data);
-    m_objectiveModel.gameDataChanged(null);
+    objectiveModel.setGameData(data);
+    objectiveModel.gameDataChanged(null);
   }
 }
 

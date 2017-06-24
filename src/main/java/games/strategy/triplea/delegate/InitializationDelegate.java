@@ -80,23 +80,23 @@ public class InitializationDelegate extends BaseTripleADelegate {
     return false;
   }
 
-  protected void init(final IDelegateBridge aBridge) {
-    initDestroyerArtillery(aBridge);
-    initShipyards(aBridge);
-    initTwoHitBattleship(aBridge);
-    initOriginalOwner(aBridge);
-    initTech(aBridge);
-    initSkipUnusedBids(aBridge.getData());
-    initAiStartingBonusIncome(aBridge);
-    initDeleteAssetsOfDisabledPlayers(aBridge);
-    initTransportedLandUnits(aBridge);
-    resetUnitState(aBridge);
+  protected void init(final IDelegateBridge bridge) {
+    initDestroyerArtillery(bridge);
+    initShipyards(bridge);
+    initTwoHitBattleship(bridge);
+    initOriginalOwner(bridge);
+    initTech(bridge);
+    initSkipUnusedBids(bridge.getData());
+    initAiStartingBonusIncome(bridge);
+    initDeleteAssetsOfDisabledPlayers(bridge);
+    initTransportedLandUnits(bridge);
+    resetUnitState(bridge);
   }
 
   /**
    * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
    */
-  private void resetUnitState(final IDelegateBridge aBridge) {
+  private void resetUnitState(final IDelegateBridge bridge) {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
@@ -110,8 +110,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
    * We assume that all transportable units in the sea are in a transport, no
    * exceptions.
    */
-  private static void initTransportedLandUnits(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initTransportedLandUnits(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     // check every territory
     boolean historyItemCreated = false;
     final Iterator<Territory> allTerritories = data.getMap().getTerritories().iterator();
@@ -142,11 +142,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
           final int capacity = TransportTracker.getAvailableCapacity(transport);
           if (capacity >= cost) {
             if (!historyItemCreated) {
-              aBridge.getHistoryWriter().startEvent("Initializing Units in Transports");
+              bridge.getHistoryWriter().startEvent("Initializing Units in Transports");
               historyItemCreated = true;
             }
             try {
-              aBridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
+              bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
             } catch (final IllegalStateException e) {
               System.err.println(
                   "You can only edit add transports+units after the initialization delegate of the game is finished.  "
@@ -172,8 +172,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         player -> BonusIncomeUtils.addBonusIncome(player.getResources().getResourcesCopy(), bridge, player));
   }
 
-  private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getDisabledPlayersAssetsDeleted(data)) {
       return;
     }
@@ -201,8 +201,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
       }
       if (!change.isEmpty()) {
-        aBridge.getHistoryWriter().startEvent("Remove all resources and units from: " + player.getName());
-        aBridge.addChange(change);
+        bridge.getHistoryWriter().startEvent("Remove all resources and units from: " + player.getName());
+        bridge.addChange(change);
       }
     }
   }
@@ -237,8 +237,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
     }
   }
 
-  private static void initDestroyerArtillery(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initDestroyerArtillery(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
     if (!isWW2V2(data) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
@@ -266,14 +266,14 @@ public class InitializationDelegate extends BaseTripleADelegate {
         change.add(ChangeFactory.addProductionRule(destroyerIndustrialTechnology, frontierIndustrialTechnology));
       }
       if (!change.isEmpty()) {
-        aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
-        aBridge.addChange(change);
+        bridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
+        bridge.addChange(change);
       }
     }
   }
 
-  private static void initShipyards(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initShipyards(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
@@ -299,8 +299,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
           change.add(ChangeFactory.addProductionRule(prodRule, frontierShipyards));
         }
       }
-      aBridge.getHistoryWriter().startEvent("Adding shipyard production rules - land/air units");
-      aBridge.addChange(change);
+      bridge.getHistoryWriter().startEvent("Adding shipyard production rules - land/air units");
+      bridge.addChange(change);
     }
   }
 
@@ -308,8 +308,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  private static void initTwoHitBattleship(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initTwoHitBattleship(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
     final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
     if (battleShipUnit == null) {
@@ -318,13 +318,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final UnitAttachment battleShipAttachment = UnitAttachment.get(battleShipUnit);
     final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
     if (userEnabled != defaultEnabled) {
-      aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));
+      bridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));
     }
   }
 
-  private static void initOriginalOwner(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void initOriginalOwner(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final CompositeChange changes = new CompositeChange();
     for (final Territory current : data.getMap()) {
       if (!current.getOwner().isNull()) {
@@ -344,8 +344,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
       }
     }
-    aBridge.getHistoryWriter().startEvent("Adding original owners");
-    aBridge.addChange(changes);
+    bridge.getHistoryWriter().startEvent("Adding original owners");
+    bridge.addChange(changes);
   }
 
   @Override

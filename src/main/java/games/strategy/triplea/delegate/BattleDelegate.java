@@ -178,19 +178,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return true;
   }
 
-  static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
-    setupUnitsInSameTerritoryBattles(battleTracker, aBridge);
-    setupTerritoriesAbandonedToTheEnemy(battleTracker, aBridge);
+  static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
+    setupUnitsInSameTerritoryBattles(battleTracker, bridge);
+    setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
     // these are "blitzed" and "conquered" territories without a fight, without a pending
     // battle
-    battleTracker.clearFinishedBattles(aBridge);
-    resetMaxScrambleCount(aBridge);
+    battleTracker.clearFinishedBattles(bridge);
+    resetMaxScrambleCount(bridge);
   }
 
-  private static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
+  private static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge bridge) {
     // these are air battle and air raids where there is no defender, probably because no
     // air is in range to defend
-    battleTracker.clearEmptyAirBattleAttacks(aBridge);
+    battleTracker.clearEmptyAirBattleAttacks(bridge);
   }
 
   @Override
@@ -414,9 +414,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * when political relationships change and potentially leave units in now-hostile territories.
    */
   private static void setupUnitsInSameTerritoryBattles(final BattleTracker battleTracker,
-      final IDelegateBridge aBridge) {
-    final PlayerID player = aBridge.getPlayerID();
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final PlayerID player = bridge.getPlayerID();
+    final GameData data = bridge.getData();
     final boolean ignoreTransports = isIgnoreTransportInMovement(data);
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
     final Match<Unit> seaTransports = Match.all(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
@@ -462,10 +462,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // separately, after aa
         // fires)
         if (enemyUnits.isEmpty() || Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
-          landParatroopers(player, territory, aBridge);
+          landParatroopers(player, territory, bridge);
         }
-        aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
-        battleTracker.addBattle(new RouteScripted(territory), attackingUnits, player, aBridge, null, null);
+        bridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
+        battleTracker.addBattle(new RouteScripted(territory), attackingUnits, player, bridge, null, null);
         battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
       }
       if (battle == null) {
@@ -498,19 +498,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
         battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
             BattleRecord.BattleResultDescription.STALEMATE, results);
-        battle.cancelBattle(aBridge);
+        battle.cancelBattle(bridge);
         battleTracker.removeBattle(battle);
         continue;
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final ITripleAPlayer remotePlayer = getRemotePlayer(aBridge);
+        final ITripleAPlayer remotePlayer = getRemotePlayer(bridge);
         if (territory.isWater() && games.strategy.triplea.Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
             battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
                 BattleRecord.BattleResultDescription.NO_BATTLE, results);
-            battle.cancelBattle(aBridge);
+            battle.cancelBattle(bridge);
             battleTracker.removeBattle(battle);
           }
           continue;
@@ -524,7 +524,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(aBridge);
+              battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);
             }
             continue;
@@ -535,7 +535,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(aBridge);
+              battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);
             }
             continue;
@@ -546,7 +546,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(aBridge);
+              battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);
             }
           }
@@ -560,12 +560,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * The enemy then takes over the territory in question.
    */
   private static void setupTerritoriesAbandonedToTheEnemy(final BattleTracker battleTracker,
-      final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data)) {
       return;
     }
-    final PlayerID player = aBridge.getPlayerID();
+    final PlayerID player = bridge.getPlayerID();
     final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), Matches
         .territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
         .iterator();
@@ -614,10 +614,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         throw new IllegalStateException("Should not be possible to have a normal battle in: " + territory.getName()
             + " and have abandoned or only bombing there too.");
       }
-      aBridge.getHistoryWriter().startEvent(
+      bridge.getHistoryWriter().startEvent(
           player.getName() + " has abandoned " + territory.getName() + " to " + abandonedToPlayer.getName(),
           abandonedToUnits);
-      battleTracker.takeOver(territory, abandonedToPlayer, aBridge, null, abandonedToUnits);
+      battleTracker.takeOver(territory, abandonedToPlayer, bridge, null, abandonedToUnits);
       // TODO: if there are multiple defending unit owners, allow picking which one takes over the territory
     }
   }
@@ -1005,9 +1005,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
   }
 
-  private static void resetMaxScrambleCount(final IDelegateBridge aBridge) {
+  private static void resetMaxScrambleCount(final IDelegateBridge bridge) {
     // reset the tripleaUnit property for all airbases that were used
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)) {
       return;
     }
@@ -1024,8 +1024,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
     }
     if (!change.isEmpty()) {
-      aBridge.getHistoryWriter().startEvent("Preparing Airbases for Possible Scrambling");
-      aBridge.addChange(change);
+      bridge.getHistoryWriter().startEvent("Preparing Airbases for Possible Scrambling");
+      bridge.addChange(change);
     }
   }
 

@@ -12,10 +12,10 @@ import javax.swing.text.PlainDocument;
 
 public class DoubleTextField extends JTextField {
   private static final long serialVersionUID = -8698753345852617343L;
-  private double m_max = Double.MAX_VALUE;
-  private double m_min = Double.MIN_VALUE;
-  private String m_terr = null;
-  private final List<DoubleTextFieldChangeListener> m_listeners = new CopyOnWriteArrayList<>();
+  private double max = Double.MAX_VALUE;
+  private double min = Double.MIN_VALUE;
+  private String terr = null;
+  private final List<DoubleTextFieldChangeListener> listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new DoubleTextField. */
   public DoubleTextField() {
@@ -36,7 +36,7 @@ public class DoubleTextField extends JTextField {
 
   private void initTextField() {
     setDocument(new DoubleDocument());
-    setText(String.valueOf(m_min));
+    setText(String.valueOf(min));
     addFocusListener(new LostFocus());
   }
 
@@ -46,18 +46,18 @@ public class DoubleTextField extends JTextField {
 
   private void checkValue() {
     if (getText().trim().equals("-")) {
-      setText(String.valueOf(m_min));
+      setText(String.valueOf(min));
     }
     try {
       Double.parseDouble(getText());
     } catch (final NumberFormatException e) {
-      setText(String.valueOf(m_min));
+      setText(String.valueOf(min));
     }
-    if (getValue() > m_max) {
-      setText(String.valueOf(m_max));
+    if (getValue() > max) {
+      setText(String.valueOf(max));
     }
-    if (getValue() < m_min) {
-      setText(String.valueOf(m_min));
+    if (getValue() < min) {
+      setText(String.valueOf(min));
     }
   }
 
@@ -68,45 +68,45 @@ public class DoubleTextField extends JTextField {
   }
 
   private void setMax(final double max) {
-    if (max < m_min) {
+    if (max < min) {
       throw new IllegalArgumentException(
-          "Max cant be less than min. Current Min: " + m_min + ", Current Max: " + m_max + ", New Max: " + max);
+          "Max cant be less than min. Current Min: " + min + ", Current Max: " + this.max + ", New Max: " + max);
     }
-    m_max = max;
-    if (getValue() > m_max) {
+    this.max = max;
+    if (getValue() > this.max) {
       setText(String.valueOf(max));
     }
   }
 
   public void setTerr(final String terr) {
-    m_terr = terr;
+    this.terr = terr;
   }
 
   private void setMin(final double min) {
-    if (min > m_max) {
+    if (min > max) {
       throw new IllegalArgumentException(
-          "Min cant be greater than max. Current Max: " + m_max + ", Current Min: " + m_min + ", New Min: " + min);
+          "Min cant be greater than max. Current Max: " + max + ", Current Min: " + this.min + ", New Min: " + min);
     }
-    m_min = min;
-    if (getValue() < m_min) {
+    this.min = min;
+    if (getValue() < this.min) {
       setText(String.valueOf(min));
     }
   }
 
   public double getMax() {
-    return m_max;
+    return max;
   }
 
   public String getTerr() {
-    return m_terr;
+    return terr;
   }
 
   public double getMin() {
-    return m_min;
+    return min;
   }
 
   private boolean isGood(final double value) {
-    return value <= m_max && value >= m_min;
+    return value <= max && value >= min;
   }
 
   /**
@@ -131,7 +131,7 @@ public class DoubleTextField extends JTextField {
         // if an error dont insert
         // allow start of negative numbers
         if (offs == 0) {
-          if (m_min < 0) {
+          if (min < 0) {
             if (str.equals("-")) {
               super.insertString(offs, str, a);
             }
@@ -154,15 +154,15 @@ public class DoubleTextField extends JTextField {
   }
 
   public void addChangeListener(final DoubleTextFieldChangeListener listener) {
-    m_listeners.add(listener);
+    listeners.add(listener);
   }
 
   public void removeChangeListener(final DoubleTextFieldChangeListener listener) {
-    m_listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   private void notifyListeners() {
-    for (final DoubleTextFieldChangeListener listener : m_listeners) {
+    for (final DoubleTextFieldChangeListener listener : listeners) {
       listener.changedValue(this);
     }
   }

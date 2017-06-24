@@ -29,16 +29,16 @@ import games.strategy.util.Match;
 public class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel actionLabel = new JLabel();
-  private final JLabel m_leftToPlaceLabel = new JLabel();
-  private PlaceData m_placeData;
-  private final SimpleUnitPanel m_unitsToPlace;
+  private final JLabel leftToPlaceLabel = new JLabel();
+  private PlaceData placeData;
+  private final SimpleUnitPanel unitsToPlace;
 
   /** Creates new PlacePanel. */
   public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);
-    m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
-    m_leftToPlaceLabel.setText("Units left to place:");
+    undoableMovesPanel = new UndoablePlacementsPanel(data, this);
+    unitsToPlace = new SimpleUnitPanel(map.getUIContext());
+    leftToPlaceLabel.setText("Units left to place:");
   }
 
   @Override
@@ -57,7 +57,7 @@ public class PlacePanel extends AbstractMovePanel {
     refreshActionLabelText(bid);
     waitForRelease();
     cleanUp();
-    return m_placeData;
+    return placeData;
   }
 
   private boolean canProduceFightersOnCarriers() {
@@ -103,10 +103,10 @@ public class PlacePanel extends AbstractMovePanel {
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option == JOptionPane.OK_OPTION) {
         final Collection<Unit> choosen = chooser.getSelected();
-        m_placeData = new PlaceData(choosen, territory);
+        placeData = new PlaceData(choosen, territory);
         updateUnits();
         if (choosen.containsAll(units)) {
-          m_leftToPlaceLabel.setText("");
+          leftToPlaceLabel.setText("");
         }
         release();
       }
@@ -160,7 +160,7 @@ public class PlacePanel extends AbstractMovePanel {
 
   private void updateUnits() {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
-    m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
+    unitsToPlace.setUnitsFromCategories(unitCategories, getData());
   }
 
   @Override
@@ -176,7 +176,7 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void undoMoveSpecific() {
-    m_leftToPlaceLabel.setText("Units left to place:");
+    leftToPlaceLabel.setText("Units left to place:");
     updateUnits();
   }
 
@@ -201,7 +201,7 @@ public class PlacePanel extends AbstractMovePanel {
         return false;
       }
     }
-    m_placeData = null;
+    placeData = null;
     return true;
   }
 
@@ -212,8 +212,8 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void addAdditionalButtons() {
-    add(leftBox(m_leftToPlaceLabel));
-    add(m_unitsToPlace);
+    add(leftBox(leftToPlaceLabel));
+    add(unitsToPlace);
     updateUnits();
   }
 }

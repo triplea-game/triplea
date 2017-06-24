@@ -42,16 +42,16 @@ import games.strategy.util.TimeManager;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
-  private JButton m_hostGame;
-  private JButton m_joinGame;
-  private JButton m_bootGame;
-  private LobbyGameTableModel m_gameTableModel;
-  private final Messengers m_messengers;
-  private JTable m_gameTable;
-  private TableSorter m_tableSorter;
+  private JButton hostGame;
+  private JButton joinGame;
+  private JButton bootGame;
+  private LobbyGameTableModel gameTableModel;
+  private final Messengers messengers;
+  private JTable gameTable;
+  private TableSorter tableSorter;
 
   LobbyGamePanel(final Messengers messengers) {
-    m_messengers = messengers;
+    this.messengers = messengers;
     createComponents();
     layoutComponents();
     setupListeners();
@@ -59,45 +59,45 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void createComponents() {
-    m_hostGame = new JButton("Host Game");
-    m_joinGame = new JButton("Join Game");
-    m_bootGame = new JButton("Boot Game");
-    m_gameTableModel = new LobbyGameTableModel(m_messengers.getMessenger(), m_messengers.getChannelMessenger(),
-        m_messengers.getRemoteMessenger());
-    m_tableSorter = new TableSorter(m_gameTableModel);
-    m_gameTable = new LobbyGameTable(m_tableSorter);
-    m_tableSorter.setTableHeader(m_gameTable.getTableHeader());
+    hostGame = new JButton("Host Game");
+    joinGame = new JButton("Join Game");
+    bootGame = new JButton("Boot Game");
+    gameTableModel = new LobbyGameTableModel(messengers.getMessenger(), messengers.getChannelMessenger(),
+        messengers.getRemoteMessenger());
+    tableSorter = new TableSorter(gameTableModel);
+    gameTable = new LobbyGameTable(tableSorter);
+    tableSorter.setTableHeader(gameTable.getTableHeader());
     // only allow one row to be selected
-    m_gameTable.setColumnSelectionAllowed(false);
-    m_gameTable.setRowSelectionAllowed(true);
-    m_gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    gameTable.setColumnSelectionAllowed(false);
+    gameTable.setRowSelectionAllowed(true);
+    gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     // by default, sort newest first
-    final int dateColumn = m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
-    m_tableSorter.setSortingStatus(dateColumn, TableSorter.DESCENDING);
+    final int dateColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
+    tableSorter.setSortingStatus(dateColumn, TableSorter.DESCENDING);
     // these should add up to 700 at most
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players))
         .setPreferredWidth(42);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round))
         .setPreferredWidth(40);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.B))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.B))
         .setPreferredWidth(12);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.EV))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.EV))
         .setPreferredWidth(42);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
         .setPreferredWidth(55);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
         .setPreferredWidth(112);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
         .setPreferredWidth(156);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments))
         .setPreferredWidth(130);
-    m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
+    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
-    m_gameTable.setDefaultRenderer(Instant.class, new DefaultTableCellRenderer() {
+    gameTable.setDefaultRenderer(Instant.class, new DefaultTableCellRenderer() {
       private static final long serialVersionUID = -2807387751127250972L;
 
       @Override
@@ -112,30 +112,30 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void layoutComponents() {
-    final JScrollPane scroll = new JScrollPane(m_gameTable);
+    final JScrollPane scroll = new JScrollPane(gameTable);
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
     final JToolBar toolBar = new JToolBar();
-    toolBar.add(m_hostGame);
-    toolBar.add(m_joinGame);
+    toolBar.add(hostGame);
+    toolBar.add(joinGame);
     if (isAdmin()) {
-      toolBar.add(m_bootGame);
+      toolBar.add(bootGame);
     }
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
   }
 
   boolean isAdmin() {
-    return ((IModeratorController) m_messengers.getRemoteMessenger()
+    return ((IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName())).isAdmin();
   }
 
   private void setupListeners() {
-    m_hostGame.addActionListener(e -> hostGame());
-    m_joinGame.addActionListener(e -> joinGame());
-    m_bootGame.addActionListener(e -> bootGame());
-    m_gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
-    m_gameTable.addMouseListener(new MouseListener() {
+    hostGame.addActionListener(e -> hostGame());
+    joinGame.addActionListener(e -> joinGame());
+    bootGame.addActionListener(e -> bootGame());
+    gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
+    gameTable.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
@@ -147,11 +147,11 @@ class LobbyGamePanel extends JPanel {
       @Override
       public void mousePressed(final MouseEvent e) {
         // right clicks do not 'select' a row by default. so force a row selection at the mouse point.
-        final int r = m_gameTable.rowAtPoint(e.getPoint());
-        if (r >= 0 && r < m_gameTable.getRowCount()) {
-          m_gameTable.setRowSelectionInterval(r, r);
+        final int r = gameTable.rowAtPoint(e.getPoint());
+        if (r >= 0 && r < gameTable.getRowCount()) {
+          gameTable.setRowSelectionInterval(r, r);
         } else {
-          m_gameTable.clearSelection();
+          gameTable.clearSelection();
         }
         mouseOnGamesList(e);
       }
@@ -176,13 +176,13 @@ class LobbyGamePanel extends JPanel {
     if (!SwingUtilities.isRightMouseButton(e)) {
       return;
     }
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
     // we sort the table, so get the correct index
-    final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = m_gameTableModel.get(modelIndex);
+    final int modelIndex = tableSorter.modelIndex(selectedIndex);
+    final GameDescription description = gameTableModel.get(modelIndex);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final Action a : getGamesListRightClickActions(description)) {
@@ -193,7 +193,7 @@ class LobbyGamePanel extends JPanel {
       menu.add(a);
     }
     if (hasActions) {
-      menu.show(m_gameTable, e.getX(), e.getY());
+      menu.show(gameTable, e.getX(), e.getY());
     }
   }
 
@@ -304,19 +304,19 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void joinGame() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
     // we sort the table, so get the correct index
-    final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = m_gameTableModel.get(modelIndex);
-    GameRunner.joinGame(description, m_messengers, getParent());
+    final int modelIndex = tableSorter.modelIndex(selectedIndex);
+    final GameDescription description = gameTableModel.get(modelIndex);
+    GameRunner.joinGame(description, messengers, getParent());
   }
 
   protected void hostGame() {
     final ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this),
-        m_messengers.getMessenger().getLocalNode().getName(), 3300, true);
+        messengers.getMessenger().getLocalNode().getName(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
@@ -324,11 +324,11 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     GameRunner.hostGame(options.getPort(), options.getName(), options.getComments(), options.getPassword(),
-        m_messengers);
+        messengers);
   }
 
   private void bootGame() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -338,19 +338,19 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     controller.boot(lobbyWatcherNode);
     JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
   }
 
   private void getHostInfo() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final String text = controller.getInformationOn(lobbyWatcherNode);
     final String connections = controller.getHostConnections(lobbyWatcherNode);
@@ -361,7 +361,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void getChatLogOfHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -373,7 +373,7 @@ class LobbyGamePanel extends JPanel {
     }
     // we sort the table, so get the correct index
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -404,8 +404,8 @@ class LobbyGamePanel extends JPanel {
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
-    final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = m_gameTableModel.get(modelIndex);
+    final int modelIndex = tableSorter.modelIndex(selectedIndex);
+    final GameDescription description = gameTableModel.get(modelIndex);
     final String hostedByName = description.getHostedBy().getName();
     final INode lobbyWatcherNode = new Node(
         (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
@@ -415,7 +415,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void mutePlayerInHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -443,7 +443,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -466,7 +466,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void bootPlayerInHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -482,7 +482,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -505,7 +505,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void banPlayerInHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -533,7 +533,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -556,7 +556,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void stopGameHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -567,7 +567,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -589,7 +589,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void shutDownHeadlessHostBot() {
-    final int selectedIndex = m_gameTable.getSelectedRow();
+    final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
     }
@@ -600,7 +600,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
         .getRemote(AbstractModeratorController.getModeratorControllerName());
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -622,7 +622,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private void setWidgetActivation() {
-    final boolean selected = m_gameTable.getSelectedRow() >= 0;
-    m_joinGame.setEnabled(selected);
+    final boolean selected = gameTable.getSelectedRow() >= 0;
+    joinGame.setEnabled(selected);
   }
 }

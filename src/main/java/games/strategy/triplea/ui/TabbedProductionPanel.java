@@ -30,8 +30,8 @@ import games.strategy.util.Tuple;
 
 public class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
-  private int m_rows;
-  private int m_columns;
+  private int rows;
+  private int columns;
 
   protected TabbedProductionPanel(final IUIContext uiContext) {
     super(uiContext);
@@ -56,7 +56,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     final JTabbedPane tabs = new JTabbedPane();
     add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(8, 8, 8, 0), 0, 0));
-    final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules);
+    final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateXY(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
@@ -64,10 +64,10 @@ public class TabbedProductionPanel extends ProductionPanel {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
       }
     }
-    add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    m_done = new JButton(m_done_action);
-    add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    done = new JButton(done_action);
+    add(done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     tabs.validate();
     this.validate();
@@ -76,7 +76,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   private void calculateXY(final ProductionTabsProperties properties, final int largestList) {
     if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      int m_maxColumns;
+      final int m_maxColumns;
       if (largestList <= 36) {
         m_maxColumns = Math.max(8,
             Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
@@ -87,14 +87,14 @@ public class TabbedProductionPanel extends ProductionPanel {
         m_maxColumns = Math.max(8,
             Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), RoundingMode.UP).intValue()));
       }
-      m_rows =
+      rows =
           Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), RoundingMode.UP).intValue());
-      m_columns =
-          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), RoundingMode.UP).intValue());
+      columns =
+          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
     } else {
-      m_rows = Math.max(2, properties.getRows());
+      rows = Math.max(2, properties.getRows());
       // There are small display problems if the size is less than 2x3 cells.
-      m_columns = Math.max(3, properties.getColumns());
+      columns = Math.max(3, properties.getColumns());
     }
   }
 
@@ -109,7 +109,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private void checkLists(final List<Tuple<String, List<Rule>>> ruleLists) {
-    final List<Rule> rulesCopy = new ArrayList<>(m_rules);
+    final List<Rule> rulesCopy = new ArrayList<>(rules);
     for (final Tuple<String, List<Rule>> tuple : ruleLists) {
       for (final Rule rule : tuple.getSecond()) {
         rulesCopy.remove(rule);
@@ -139,7 +139,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     final ArrayList<Rule> constructRules = new ArrayList<>();
     final ArrayList<Rule> upgradeConsumesRules = new ArrayList<>();
     final ArrayList<Rule> resourceRules = new ArrayList<>();
-    for (final Rule rule : m_rules) {
+    for (final Rule rule : rules) {
       allRules.add(rule);
       final NamedAttachable resourceOrUnit = rule.getProductionRule().getResults().keySet().iterator().next();
       if (resourceOrUnit instanceof UnitType) {
@@ -163,28 +163,28 @@ public class TabbedProductionPanel extends ProductionPanel {
         resourceRules.add(rule);
       }
     }
-    ruleLists.add(Tuple.of("All", (List<Rule>) allRules));
-    ruleLists.add(Tuple.of("Land", (List<Rule>) landRules));
-    ruleLists.add(Tuple.of("Air", (List<Rule>) airRules));
-    ruleLists.add(Tuple.of("Sea", (List<Rule>) seaRules));
-    ruleLists.add(Tuple.of("Construction", (List<Rule>) constructRules));
-    ruleLists.add(Tuple.of("Upgrades/Consumes", (List<Rule>) upgradeConsumesRules));
-    ruleLists.add(Tuple.of("Resources", (List<Rule>) resourceRules));
+    ruleLists.add(Tuple.of("All", allRules));
+    ruleLists.add(Tuple.of("Land", landRules));
+    ruleLists.add(Tuple.of("Air", airRules));
+    ruleLists.add(Tuple.of("Sea", seaRules));
+    ruleLists.add(Tuple.of("Construction", constructRules));
+    ruleLists.add(Tuple.of("Upgrades/Consumes", upgradeConsumesRules));
+    ruleLists.add(Tuple.of("Resources", resourceRules));
     return ruleLists;
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = SwingComponents.gridPanel(m_rows, m_columns);
-    final JPanel[][] panelHolder = new JPanel[m_rows][m_columns];
-    for (int m = 0; m < m_rows; m++) {
-      for (int n = 0; n < m_columns; n++) {
+    final JPanel panel = SwingComponents.gridPanel(rows, columns);
+    final JPanel[][] panelHolder = new JPanel[rows][columns];
+    for (int m = 0; m < rows; m++) {
+      for (int n = 0; n < columns; n++) {
         panelHolder[m][n] = new JPanel(new BorderLayout());
         panel.add(panelHolder[m][n]);
       }
     }
-    for (int x = 0; x < m_columns * m_rows; x++) {
+    for (int x = 0; x < columns * rows; x++) {
       if (x < rules.size()) {
-        panelHolder[(x % m_rows)][(x / m_rows)].add(rules.get(x).getPanelComponent());
+        panelHolder[(x % rows)][(x / rows)].add(rules.get(x).getPanelComponent());
       }
     }
     return panel;
