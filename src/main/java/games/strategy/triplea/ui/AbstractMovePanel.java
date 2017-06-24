@@ -129,7 +129,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final void updateMoves() {
     undoableMoves = getMoveDelegate().getMovesMade();
-    this.undoableMovesPanel.setMoves(new ArrayList<>(m_undoableMoves));
+    this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
   }
 
   public final void cancelMove() {
