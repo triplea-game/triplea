@@ -3,6 +3,7 @@
 .idea
 .project
 .settings
+.checkstyle
 
 *.backup
 *.swp
