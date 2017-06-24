@@ -16,26 +16,31 @@ import games.strategy.util.Util;
 
 public class DbUserControllerIntegrationTest {
 
+  private static final DbTestConnection DERBY =
+      new DbTestConnection(Database::getDerbyConnection, new DbUserController());
 
+  private static final DbTestConnection POSTGRES =
+      new DbTestConnection(Database::getPostgresConnection, new DbUserController(
+          new UserController(
+              UserDaoPrimarySecondary.Role.PRIMARY,
+              Database::getPostgresConnection)));
 
   @Test
-  public void create() throws Exception {
-    testCreate(Database::getDerbyConnection, new DbUserController());
+  public void testCreate() throws Exception {
+    testCreate(DERBY);
   }
 
-  private void testCreate(final Supplier<Connection> connectionSupplier, final DbUserController controller)
-      throws Exception {
-    final DBUser user = createUser();
-    final int startCount = getUserCount(connectionSupplier);
+  private static void testCreate(final DbTestConnection dbTestConnection) throws Exception {
+    final DBUser user = givenUser();
+    final int startCount = getUserCount(dbTestConnection.connectionSupplier);
 
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+    dbTestConnection.controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
-    final int endCount = getUserCount(connectionSupplier);
+    final int endCount = getUserCount(dbTestConnection.connectionSupplier);
     assertEquals(endCount, startCount + 1);
-    assertTrue(controller.doesUserExist(user.getName()));
   }
 
-  private static DBUser createUser() {
+  private static DBUser givenUser() {
     final String name = Util.createUniqueTimeStamp();
     final String email = name + "@none.none";
     return new DBUser(
@@ -53,12 +58,20 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
-  public void testGet() throws Exception {
-    final DBUser user = createUser();
-    final DbUserController controller = new DbUserController();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+  public void testCreatePostgres() throws Exception {
+    testCreate(POSTGRES);
+  }
 
-    final DBUser loadedUser = controller.getUserByName(user.getName());
+  @Test
+  public void testGet() throws Exception {
+    testGet(DERBY);
+  }
+
+  private static void testGet(final DbTestConnection dbTestConnection) throws Exception {
+    final DBUser user = givenUser();
+    dbTestConnection.controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+
+    final DBUser loadedUser = dbTestConnection.controller.getUserByName(user.getName());
 
     assertEquals(loadedUser.getName(), user.getName());
     assertEquals(loadedUser.getEmail(), user.getEmail());
@@ -66,24 +79,40 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
-  public void doesUserExist() {
-    final DBUser user = createUser();
-    final DbUserController controller = new DbUserController();
+  public void testGetPostgres() throws Exception {
+    testGet(POSTGRES);
+  }
 
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+  @Test
+  public void testDoesUserExist() {
+    testDoesUserExist(DERBY);
+  }
 
-    assertTrue(controller.doesUserExist(user.getName()));
+  private static void testDoesUserExist(final DbTestConnection dbTestConnection) {
+    final DBUser user = givenUser();
+
+    dbTestConnection.controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+
+    assertTrue(dbTestConnection.controller.doesUserExist(user.getName()));
+  }
+
+  @Test
+  public void testDoesUserExistPostgres() {
+    testDoesUserExist(POSTGRES);
   }
 
   @Test
   public void testCreateDupe() throws Exception {
-    final DBUser user = createUser();
+    testCreateDupe(DERBY);
+  }
 
-    final DbUserController controller = new DbUserController();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+  private static void testCreateDupe(final DbTestConnection dbTestConnection) throws Exception {
+    final DBUser user = givenUser();
+
+    dbTestConnection.controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
 
     try {
-      controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+      dbTestConnection.controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
       fail("Should not be allowed to create a dupe user");
     } catch (final Exception expected) {
       // expected
@@ -91,48 +120,81 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
+  public void testCreateDupePostgres() throws Exception {
+    testCreateDupe(POSTGRES);
+  }
+
+  @Test
   public void testLogin() throws Exception {
-    final DBUser user = createUser();
-    final DbUserController controller = new DbUserController();
+    testLogin(DERBY);
+  }
+
+  private static void testLogin(final DbTestConnection dbTestConnection) throws Exception {
+    final DBUser user = givenUser();
     final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
-    controller.createUser(user, password);
+    dbTestConnection.controller.createUser(user, password);
 
-    // advance the clock so we can see the login time
-    long loginTimeMustBeAfter = System.currentTimeMillis();
-    while (loginTimeMustBeAfter == System.currentTimeMillis()) {
-      ThreadUtil.sleep(1);
-    }
-    loginTimeMustBeAfter = System.currentTimeMillis();
-    assertTrue(controller.login(user.getName(), password));
+    ThreadUtil.sleep(1);
+    final long loginTimeMustBeAfter = System.currentTimeMillis();
+    ThreadUtil.sleep(1);
 
-    try (final Connection con = Database.getDerbyConnection()) {
+    assertTrue(dbTestConnection.controller.login(user.getName(), password));
+
+    try (final Connection con = dbTestConnection.connectionSupplier.get()) {
       final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
-      assertTrue(rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
+      assertTrue(
+          String.format("lastLogin %s, should be after %s",
+              rs.getTimestamp("lastLogin").getTime(), loginTimeMustBeAfter),
+
+          rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
     }
     // make sure last login time was updated
   }
 
+  @Test
+  public void testLoginPostgres() throws Exception {
+    testLogin(POSTGRES);
+  }
 
   @Test
   public void testUpdate() throws Exception {
-    final DBUser user = createUser();
+    testUpdate(DERBY);
+  }
+
+  private static void testUpdate(final DbTestConnection dbTestConnection) throws Exception {
+    final DBUser user = givenUser();
     final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
-    final DbUserController controller = new DbUserController();
-    controller.createUser(user, password);
-    assertTrue(controller.doesUserExist(user.getName()));
+    dbTestConnection.controller.createUser(user, password);
+    assertTrue(dbTestConnection.controller.doesUserExist(user.getName()));
     final String password2 = MD5Crypt.crypt("foo");
     final String email2 = "foo@foo.foo";
-    controller.updateUser(
+    dbTestConnection.controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
-    try (final Connection con = Database.getDerbyConnection()) {
-      final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
+    try (final Connection con = dbTestConnection.connectionSupplier.get()) {
+      final String sql = " select * from ta_users where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
       assertEquals(password2, rs.getString("password"));
+    }
+  }
+
+  @Test
+  public void testUpdatePostgres() throws Exception {
+    testUpdate(POSTGRES);
+  }
+
+  private static class DbTestConnection {
+    final Supplier<Connection> connectionSupplier;
+    final DbUserController controller;
+
+    DbTestConnection(final Supplier<Connection> connectionSupplier,
+        final DbUserController controller) {
+      this.connectionSupplier = connectionSupplier;
+      this.controller = controller;
     }
   }
 }
