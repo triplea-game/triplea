@@ -21,18 +21,18 @@ import games.strategy.engine.random.PlainRandomSource;
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 2284030734590389060L;
-  private final GameSelectorModel m_gameSelectorModel;
-  private final List<PlayerSelectorRow> m_playerTypes = new ArrayList<>();
+  private final GameSelectorModel gameSelectorModel;
+  private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
 
   public LocalSetupPanel(final GameSelectorModel model) {
-    m_gameSelectorModel = model;
-    layoutPlayerComponents(this, m_playerTypes, m_gameSelectorModel.getGameData());
+    gameSelectorModel = model;
+    layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
     setupListeners();
     setWidgetActivation();
   }
 
   private void setupListeners() {
-    m_gameSelectorModel.addObserver(this);
+    gameSelectorModel.addObserver(this);
   }
 
   @Override
@@ -45,11 +45,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public boolean canGameStart() {
-    if (m_gameSelectorModel.getGameData() == null) {
+    if (gameSelectorModel.getGameData() == null) {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerSelectorRow player : m_playerTypes) {
+    for (final PlayerSelectorRow player : playerTypes) {
       if (player.isPlayerEnabled()) {
         return true;
       }
@@ -59,27 +59,27 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    final GameData data = m_gameSelectorModel.getGameData();
+    final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
 
   @Override
   public void shutDown() {
-    m_gameSelectorModel.deleteObserver(this);
+    gameSelectorModel.deleteObserver(this);
   }
 
   @Override
   public void cancel() {
-    m_gameSelectorModel.deleteObserver(this);
+    gameSelectorModel.deleteObserver(this);
   }
 
   @Override
   public void update(final Observable o, final Object arg) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> layoutPlayerComponents(this, m_playerTypes, m_gameSelectorModel.getGameData()));
+      SwingUtilities.invokeLater(() -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
       return;
     }
-    layoutPlayerComponents(this, m_playerTypes, m_gameSelectorModel.getGameData());
+    layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
   }
 
   @Override
@@ -87,16 +87,16 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final IRandomSource randomSource = new PlainRandomSource();
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerSelectorRow player : m_playerTypes) {
+    for (final PlayerSelectorRow player : this.playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
     // we don't need the playerToNode list, the disable-able players, or the alliances
     // list, for a local game
     final PlayerListing pl =
-        new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(),
-            m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), null, null);
-    final LocalLauncher launcher = new LocalLauncher(m_gameSelectorModel, randomSource, pl);
+        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
+            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, randomSource, pl);
     return launcher;
   }
 

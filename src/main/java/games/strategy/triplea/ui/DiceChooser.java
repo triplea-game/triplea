@@ -20,46 +20,46 @@ import games.strategy.ui.SwingAction;
 
 class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;
-  private final IUIContext m_uiContext;
-  private JPanel m_dicePanel;
-  private final int[] m_random;
-  private int m_diceCount = 0;
-  private int m_numRolls = 0;
-  private int m_hitAt = 0;
-  private boolean m_hitOnlyIfEquals = false;
-  private final Collection<JButton> m_buttons;
-  private JButton m_undoButton;
-  private JLabel m_diceCountLabel;
+  private final IUIContext uiContext;
+  private JPanel dicePanel;
+  private final int[] random;
+  private int diceCount = 0;
+  private int numRolls = 0;
+  private int hitAt = 0;
+  private boolean hitOnlyIfEquals = false;
+  private final Collection<JButton> buttons;
+  private JButton undoButton;
+  private JLabel diceCountLabel;
   // private final GameData m_data;
-  private int m_diceSides = 6;
+  private int diceSides = 6;
 
   DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
       final int diceSides) {
-    m_uiContext = uiContext;
-    m_numRolls = numRolls;
-    m_diceSides = diceSides;
-    m_hitAt = hitAt;
-    m_hitOnlyIfEquals = hitOnlyIfEquals;
+    this.uiContext = uiContext;
+    this.numRolls = numRolls;
+    this.diceSides = diceSides;
+    this.hitAt = hitAt;
+    this.hitOnlyIfEquals = hitOnlyIfEquals;
     // m_data = data;
-    m_buttons = new ArrayList<>(diceSides);
-    m_random = new int[numRolls];
+    buttons = new ArrayList<>(diceSides);
+    random = new int[numRolls];
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     createComponents();
   }
 
   int[] getDice() {
-    if (m_diceCount < m_numRolls) {
+    if (diceCount < numRolls) {
       return null;
     }
-    return m_random;
+    return random;
   }
 
   private void addDie(final int roll) {
-    final boolean hit = (roll == m_hitAt || (!m_hitOnlyIfEquals && (m_hitAt > 0) && roll > m_hitAt));
+    final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
     final DieType dieType = hit ? DieType.HIT : DieType.MISS;
-    m_dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType)));
-    m_dicePanel.add(Box.createHorizontalStrut(2));
-    m_random[m_diceCount++] = roll - 1;
+    dicePanel.add(new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll, dieType)));
+    dicePanel.add(Box.createHorizontalStrut(2));
+    random[diceCount++] = roll - 1;
     updateDiceCount();
     validate();
     invalidate();
@@ -68,10 +68,10 @@ class DiceChooser extends JPanel {
 
   private void removeLastDie() {
     // remove the strut and the component
-    final int lastIndex = m_dicePanel.getComponentCount() - 1;
-    m_dicePanel.remove(lastIndex);
-    m_dicePanel.remove(lastIndex - 1);
-    m_diceCount--;
+    final int lastIndex = dicePanel.getComponentCount() - 1;
+    dicePanel.remove(lastIndex);
+    dicePanel.remove(lastIndex - 1);
+    diceCount--;
     updateDiceCount();
     validate();
     invalidate();
@@ -79,25 +79,25 @@ class DiceChooser extends JPanel {
   }
 
   private void updateDiceCount() {
-    final boolean showButtons = (m_diceCount < m_numRolls);
-    for (final JButton button : m_buttons) {
+    final boolean showButtons = (diceCount < numRolls);
+    for (final JButton button : buttons) {
       button.setEnabled(showButtons);
     }
-    m_undoButton.setEnabled((m_diceCount > 0));
-    m_diceCountLabel.setText("Dice remaining: " + (m_numRolls - m_diceCount));
+    undoButton.setEnabled((diceCount > 0));
+    diceCountLabel.setText("Dice remaining: " + (numRolls - diceCount));
   }
 
   private void createComponents() {
     final JPanel diceButtonPanel = new JPanel();
     diceButtonPanel.setLayout(new BoxLayout(diceButtonPanel, BoxLayout.X_AXIS));
     diceButtonPanel.add(Box.createHorizontalStrut(40));
-    for (int roll = 1; roll <= m_diceSides; roll++) {
-      final boolean hit = (roll == m_hitAt || (!m_hitOnlyIfEquals && (m_hitAt > 0) && roll > m_hitAt));
+    for (int roll = 1; roll <= diceSides; roll++) {
+      final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
       diceButtonPanel.add(Box.createHorizontalStrut(4));
       final int dieNum = roll;
       final DieType dieType = hit ? DieType.HIT : DieType.MISS;
       final JButton button =
-          new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType)) {
+          new JButton(new AbstractAction(null, uiContext.getDiceImageFactory().getDieIcon(roll, dieType)) {
             private static final long serialVersionUID = 8900816143434068634L;
 
             @Override
@@ -105,34 +105,34 @@ class DiceChooser extends JPanel {
               addDie(dieNum);
             }
           });
-      m_buttons.add(button);
-      button.setPreferredSize(new Dimension(m_uiContext.getDiceImageFactory().DIE_WIDTH + 4,
-          m_uiContext.getDiceImageFactory().DIE_HEIGHT + 4));
+      buttons.add(button);
+      button.setPreferredSize(new Dimension(uiContext.getDiceImageFactory().DIE_WIDTH + 4,
+          uiContext.getDiceImageFactory().DIE_HEIGHT + 4));
       diceButtonPanel.add(button);
     }
     diceButtonPanel.add(Box.createHorizontalStrut(4));
-    m_undoButton = new JButton(SwingAction.of("Undo", e -> removeLastDie()));
-    diceButtonPanel.add(m_undoButton);
+    undoButton = new JButton(SwingAction.of("Undo", e -> removeLastDie()));
+    diceButtonPanel.add(undoButton);
     diceButtonPanel.add(Box.createHorizontalStrut(40));
-    m_diceCountLabel = new JLabel("Dice remaining:   ");
+    diceCountLabel = new JLabel("Dice remaining:   ");
     final JPanel labelPanel = new JPanel();
     labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
-    labelPanel.add(m_diceCountLabel);
-    m_dicePanel = new JPanel();
-    m_dicePanel.setBorder(BorderFactory.createLoweredBevelBorder());
-    m_dicePanel.setLayout(new BoxLayout(m_dicePanel, BoxLayout.X_AXIS));
-    final JScrollPane scroll = new JScrollPane(m_dicePanel);
+    labelPanel.add(diceCountLabel);
+    dicePanel = new JPanel();
+    dicePanel.setBorder(BorderFactory.createLoweredBevelBorder());
+    dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
+    final JScrollPane scroll = new JScrollPane(dicePanel);
     scroll.setBorder(null);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
     // we're adding to a box layout, so to prevent the component from
     // grabbing extra space, set the max height.
     // allow room for a dice and a scrollbar
     scroll.setMinimumSize(
-        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+        new Dimension(scroll.getMinimumSize().width, uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
     scroll.setMaximumSize(
-        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+        new Dimension(scroll.getMaximumSize().width, uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
     scroll.setPreferredSize(
-        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+        new Dimension(scroll.getPreferredSize().width, uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
     add(scroll);
     add(Box.createVerticalStrut(8));
     add(labelPanel);

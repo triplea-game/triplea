@@ -19,166 +19,165 @@ import games.strategy.engine.framework.system.SystemProperties;
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
 
+  private static boolean imagesLoaded;
+  private static Icon up;
+  private static Icon down;
+  private static Icon max;
+  private static Icon min;
 
-  private static boolean s_imagesLoaded;
-  private static Icon s_up;
-  private static Icon s_down;
-  private static Icon s_max;
-  private static Icon s_min;
-
-  private final IntTextField m_text;
-  private final JButton m_up;
-  private final JButton m_down;
-  private final JButton m_max;
-  private final JButton m_min;
+  private final IntTextField text;
+  private final JButton upButton;
+  private final JButton downButton;
+  private final JButton maxButton;
+  private final JButton minButton;
   private final List<ScrollableTextFieldListener> listeners = new CopyOnWriteArrayList<>();
 
   /** Creates new ScrollableTextField. */
   public ScrollableTextField(final int minVal, final int maxVal) {
     super();
     loadImages();
-    m_text = new IntTextField(minVal, maxVal);
+    text = new IntTextField(minVal, maxVal);
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    add(m_text);
+    add(text);
     Insets inset = new Insets(0, 0, 0, 0);
     if (SystemProperties.isMac()) {
       inset = new Insets(2, 0, 2, 0);
     }
-    m_up = new JButton(s_up);
+    upButton = new JButton(up);
     final Action m_incrementAction = new AbstractAction("inc") {
       private static final long serialVersionUID = 2125871167112459475L;
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_text.isEnabled()) {
-          m_text.setValue(m_text.getValue() + 1);
+        if (text.isEnabled()) {
+          text.setValue(text.getValue() + 1);
           setWidgetActivation();
         }
       }
     };
-    m_up.addActionListener(m_incrementAction);
-    m_up.setMargin(inset);
-    m_down = new JButton(s_down);
-    m_down.setMargin(inset);
+    upButton.addActionListener(m_incrementAction);
+    upButton.setMargin(inset);
+    downButton = new JButton(down);
+    downButton.setMargin(inset);
     final Action m_decrementAction = new AbstractAction("dec") {
       private static final long serialVersionUID = 787758939168986726L;
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_text.isEnabled()) {
-          m_text.setValue(m_text.getValue() - 1);
+        if (text.isEnabled()) {
+          text.setValue(text.getValue() - 1);
           setWidgetActivation();
         }
       }
     };
-    m_down.addActionListener(m_decrementAction);
-    m_max = new JButton(s_max);
-    m_max.setMargin(inset);
+    downButton.addActionListener(m_decrementAction);
+    maxButton = new JButton(max);
+    maxButton.setMargin(inset);
     final Action m_maxAction = new AbstractAction("max") {
       private static final long serialVersionUID = -3899827439573519512L;
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_text.isEnabled()) {
-          m_text.setValue(m_text.getMax());
+        if (text.isEnabled()) {
+          text.setValue(text.getMax());
           setWidgetActivation();
         }
       }
     };
-    m_max.addActionListener(m_maxAction);
-    m_min = new JButton(s_min);
-    m_min.setMargin(inset);
+    maxButton.addActionListener(m_maxAction);
+    minButton = new JButton(min);
+    minButton.setMargin(inset);
     final Action m_minAction = new AbstractAction("min") {
       private static final long serialVersionUID = 5785321239855254848L;
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_text.isEnabled()) {
-          m_text.setValue(m_text.getMin());
+        if (text.isEnabled()) {
+          text.setValue(text.getMin());
           setWidgetActivation();
         }
       }
     };
-    m_min.addActionListener(m_minAction);
+    minButton.addActionListener(m_minAction);
     final JPanel upDown = new JPanel();
     upDown.setLayout(new BoxLayout(upDown, BoxLayout.Y_AXIS));
-    upDown.add(m_up);
-    upDown.add(m_down);
+    upDown.add(upButton);
+    upDown.add(downButton);
     final JPanel maxMin = new JPanel();
     maxMin.setLayout(new BoxLayout(maxMin, BoxLayout.Y_AXIS));
-    maxMin.add(m_max);
-    maxMin.add(m_min);
+    maxMin.add(maxButton);
+    maxMin.add(minButton);
     add(upDown);
     add(maxMin);
     final IntTextFieldChangeListener m_textListener = field -> notifyListeners();
-    m_text.addChangeListener(m_textListener);
+    text.addChangeListener(m_textListener);
     setWidgetActivation();
   }
 
   private static synchronized void loadImages() {
-    if (s_imagesLoaded) {
+    if (imagesLoaded) {
       return;
     }
-    s_up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
-    s_down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
-    s_max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
-    s_min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
-    s_imagesLoaded = true;
+    up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
+    down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
+    max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
+    min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
+    imagesLoaded = true;
   }
 
 
   public void setMax(final int max) {
-    m_text.setMax(max);
+    text.setMax(max);
     setWidgetActivation();
   }
 
   public void setTerr(final String terr) {
-    m_text.setTerr(terr);
+    text.setTerr(terr);
   }
 
-  public void setShowMaxAndMin(final boolean aBool) {
-    m_max.setVisible(aBool);
-    m_min.setVisible(aBool);
+  public void setShowMaxAndMin(final boolean showMaxAndMin) {
+    maxButton.setVisible(showMaxAndMin);
+    minButton.setVisible(showMaxAndMin);
   }
 
   public int getMax() {
-    return m_text.getMax();
+    return text.getMax();
   }
 
   public String getTerr() {
-    return m_text.getTerr();
+    return text.getTerr();
   }
 
   public void setMin(final int min) {
-    m_text.setMin(min);
+    text.setMin(min);
     setWidgetActivation();
   }
 
   private void setWidgetActivation() {
-    if (m_text.isEnabled()) {
-      final int value = m_text.getValue();
-      final int max = m_text.getMax();
+    if (text.isEnabled()) {
+      final int value = text.getValue();
+      final int max = text.getMax();
       final boolean enableUp = (value != max);
-      m_up.setEnabled(enableUp);
-      m_max.setEnabled(enableUp);
-      final int min = m_text.getMin();
+      upButton.setEnabled(enableUp);
+      maxButton.setEnabled(enableUp);
+      final int min = text.getMin();
       final boolean enableDown = (value != min);
-      m_down.setEnabled(enableDown);
-      m_min.setEnabled(enableDown);
+      downButton.setEnabled(enableDown);
+      minButton.setEnabled(enableDown);
     } else {
-      m_up.setEnabled(false);
-      m_down.setEnabled(false);
-      m_max.setEnabled(false);
-      m_min.setEnabled(false);
+      upButton.setEnabled(false);
+      downButton.setEnabled(false);
+      maxButton.setEnabled(false);
+      minButton.setEnabled(false);
     }
   }
 
   public int getValue() {
-    return m_text.getValue();
+    return text.getValue();
   }
 
   public void setValue(final int value) {
-    m_text.setValue(value);
+    text.setValue(value);
     setWidgetActivation();
   }
 
@@ -198,7 +197,7 @@ public class ScrollableTextField extends JPanel {
 
   @Override
   public void setEnabled(final boolean enabled) {
-    m_text.setEnabled(enabled);
+    text.setEnabled(enabled);
     setWidgetActivation();
   }
 }

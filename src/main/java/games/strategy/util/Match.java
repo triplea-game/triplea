@@ -29,20 +29,14 @@ import java.util.function.Predicate;
  * @param <T> The type of object that is tested by the match condition.
  */
 public abstract class Match<T> {
-  @SuppressWarnings("rawtypes")
-  private static final Match ALWAYS = Match.of(it -> true);
-
-  @SuppressWarnings("rawtypes")
-  private static final Match NEVER = Match.of(it -> false);
 
   /**
    * Returns a match whose condition is always satisfied.
    *
    * @return A match; never {@code null}.
    */
-  @SuppressWarnings("unchecked")
   public static <T> Match<T> always() {
-    return ALWAYS;
+    return Match.of(it -> true);
   }
 
   /**
@@ -50,9 +44,8 @@ public abstract class Match<T> {
    *
    * @return A match; never {@code null}.
    */
-  @SuppressWarnings("unchecked")
   public static <T> Match<T> never() {
-    return NEVER;
+    return Match.of(it -> false);
   }
 
   /**

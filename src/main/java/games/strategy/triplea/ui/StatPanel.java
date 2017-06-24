@@ -45,20 +45,20 @@ import games.strategy.util.Match;
 
 public class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
-  private final StatTableModel m_dataModel;
-  private final TechTableModel m_techModel;
-  protected IStat[] m_stats;
-  private JTable m_statsTable;
-  private Image m_statsImage = null;
-  protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<>();
-  protected IUIContext m_uiContext;
+  private final StatTableModel dataModel;
+  private final TechTableModel techModel;
+  protected IStat[] stats;
+  private JTable statsTable;
+  private Image statsImage = null;
+  protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
+  protected IUIContext uiContext;
 
   /** Creates a new instance of StatPanel. */
-  public StatPanel(final GameData data, final IUIContext uiContext2) {
+  public StatPanel(final GameData data, final IUIContext uiContext) {
     super(data);
-    m_uiContext = uiContext2;
-    m_dataModel = new StatTableModel();
-    m_techModel = new TechTableModel();
+    this.uiContext = uiContext;
+    dataModel = new StatTableModel();
+    techModel = new TechTableModel();
     fillPlayerIcons();
     initLayout();
   }
@@ -68,26 +68,26 @@ public class StatPanel extends AbstractStatPanel {
     final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
-    m_statsTable = new JTable(m_dataModel) {
+    statsTable = new JTable(dataModel) {
       private static final long serialVersionUID = -5516554955307630864L;
 
       @Override
       public void print(final Graphics g) {
-        if (m_statsImage != null) {
-          g.drawImage(m_statsImage, 0, 0, null, null);
+        if (statsImage != null) {
+          g.drawImage(statsImage, 0, 0, null, null);
         }
         super.print(g);
       }
     };
-    m_statsTable.getTableHeader().setReorderingAllowed(false);
-    m_statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
-    JScrollPane scroll = new JScrollPane(m_statsTable);
+    statsTable.getTableHeader().setReorderingAllowed(false);
+    statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
+    JScrollPane scroll = new JScrollPane(statsTable);
     add(scroll);
     // if no technologies, do not show the tech table
     if (!hasTech) {
       return;
     }
-    final JTable m_techTable = new JTable(m_techModel);
+    final JTable m_techTable = new JTable(techModel);
     m_techTable.getTableHeader().setReorderingAllowed(false);
     m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);
@@ -108,18 +108,18 @@ public class StatPanel extends AbstractStatPanel {
   @Override
   public void setGameData(final GameData data) {
     gameData = data;
-    m_dataModel.setGameData(data);
-    m_techModel.setGameData(data);
-    m_dataModel.gameDataChanged(null);
-    m_techModel.gameDataChanged(null);
+    dataModel.setGameData(data);
+    techModel.setGameData(data);
+    dataModel.gameDataChanged(null);
+    techModel.gameDataChanged(null);
   }
 
   public void setStatsBgImage(final Image image) {
-    m_statsImage = image;
+    statsImage = image;
   }
 
   public JTable getStatsTable() {
-    return m_statsTable;
+    return statsTable;
   }
 
   /**
@@ -130,12 +130,12 @@ public class StatPanel extends AbstractStatPanel {
    * @return ImageIcon small flag
    */
   protected ImageIcon getIcon(final PlayerID player) {
-    ImageIcon icon = m_mapPlayerImage.get(player);
-    if (icon == null && m_uiContext != null) {
-      final Image img = m_uiContext.getFlagImageFactory().getSmallFlag(player);
+    ImageIcon icon = mapPlayerImage.get(player);
+    if (icon == null && uiContext != null) {
+      final Image img = uiContext.getFlagImageFactory().getSmallFlag(player);
       icon = new ImageIcon(img);
       icon.setDescription(player.getName());
-      m_mapPlayerImage.put(player, icon);
+      mapPlayerImage.put(player, icon);
     }
     return icon;
   }
@@ -169,29 +169,29 @@ public class StatPanel extends AbstractStatPanel {
   class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -6156153062049822444L;
     /* Flag to indicate whether data needs to be recalculated */
-    private boolean m_isDirty = true;
+    private boolean isDirty = true;
     /* Column Header Names */
     /* Underlying data for the table */
-    private String[][] m_collectedData;
+    private String[][] collectedData;
 
     public StatTableModel() {
       setStatCollums();
       gameData.addDataChangeListener(this);
-      m_isDirty = true;
+      isDirty = true;
     }
 
     public void setStatCollums() {
-      m_stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+      stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
       if (Match.someMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
-        final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
+        final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
-        m_stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
       }
       // only add the vps in pacific
       if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
-        final List<IStat> stats = new ArrayList<>(Arrays.asList(m_stats));
+        final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VPStat());
-        m_stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
       }
     }
 
@@ -200,21 +200,21 @@ public class StatPanel extends AbstractStatPanel {
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
-        m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
+        collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final PlayerID player : players) {
-          m_collectedData[row][0] = player.getName();
-          for (int i = 0; i < m_stats.length; i++) {
-            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(player, gameData));
+          collectedData[row][0] = player.getName();
+          for (int i = 0; i < stats.length; i++) {
+            collectedData[row][i + 1] = stats[i].getFormatter().format(stats[i].getValue(player, gameData));
           }
           row++;
         }
         final Iterator<String> allianceIterator = alliances.iterator();
         while (allianceIterator.hasNext()) {
           final String alliance = allianceIterator.next();
-          m_collectedData[row][0] = alliance;
-          for (int i = 0; i < m_stats.length; i++) {
-            m_collectedData[row][i + 1] = m_stats[i].getFormatter().format(m_stats[i].getValue(alliance, gameData));
+          collectedData[row][0] = alliance;
+          for (int i = 0; i < stats.length; i++) {
+            collectedData[row][i + 1] = stats[i].getFormatter().format(stats[i].getValue(alliance, gameData));
           }
           row++;
         }
@@ -226,7 +226,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change aChange) {
       synchronized (this) {
-        m_isDirty = true;
+        isDirty = true;
       }
       SwingUtilities.invokeLater(() -> repaint());
     }
@@ -237,11 +237,11 @@ public class StatPanel extends AbstractStatPanel {
      */
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
-      if (m_isDirty) {
+      if (isDirty) {
         loadData();
-        m_isDirty = false;
+        isDirty = false;
       }
-      return m_collectedData[row][col];
+      return collectedData[row][col];
     }
 
     // Trivial implementations of required methods
@@ -250,18 +250,18 @@ public class StatPanel extends AbstractStatPanel {
       if (col == 0) {
         return "Player";
       }
-      return m_stats[col - 1].getName();
+      return stats[col - 1].getName();
     }
 
     @Override
     public int getColumnCount() {
-      return m_stats.length + 1;
+      return stats.length + 1;
     }
 
     @Override
     public synchronized int getRowCount() {
-      if (!m_isDirty) {
-        return m_collectedData.length;
+      if (!isDirty) {
+        return collectedData.length;
       } else {
         // no need to recalculate all the stats just to get the row count
         // getting the row count is a fairly frequent operation, and will
@@ -280,7 +280,7 @@ public class StatPanel extends AbstractStatPanel {
         gameData.removeDataChangeListener(this);
         gameData = data;
         gameData.addDataChangeListener(this);
-        m_isDirty = true;
+        isDirty = true;
       }
       repaint();
     }

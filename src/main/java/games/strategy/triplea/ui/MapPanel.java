@@ -105,7 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
     this.uiContext = uiContext;
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(this.uiContext.getCursor());
-    this.m_scale = this.uiContext.getScale();
+    this.scale = this.uiContext.getScale();
     this.backgroundDrawer = new BackgroundDrawer(this);
     this.tileManager = new TileManager(this.uiContext);
     final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
@@ -138,8 +138,8 @@ public class MapPanel extends ImageScrollerLargeView {
       @Override
       public void mouseReleased(final MouseEvent e) {
         final MouseDetails md = convert(e);
-        final double scaledMouseX = e.getX() / m_scale;
-        final double scaledMouseY = e.getY() / m_scale;
+        final double scaledMouseX = e.getX() / scale;
+        final double scaledMouseY = e.getY() / scale;
         final double x = normalizeX(scaledMouseX + getXOffset());
         final double y = normalizeY(scaledMouseY + getYOffset());
         final Territory terr = getTerritory(x, y);
@@ -194,8 +194,8 @@ public class MapPanel extends ImageScrollerLargeView {
       @Override
       public void mouseMoved(final MouseEvent e) {
         final MouseDetails md = convert(e);
-        final double scaledMouseX = e.getX() / m_scale;
-        final double scaledMouseY = e.getY() / m_scale;
+        final double scaledMouseX = e.getX() / scale;
+        final double scaledMouseY = e.getY() / scale;
         final double x = normalizeX(scaledMouseX + getXOffset());
         final double y = normalizeY(scaledMouseY + getYOffset());
         final Territory terr = getTerritory(x, y);
@@ -243,7 +243,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   // Beagle Code used to chnage map skin
   void changeImage(final Dimension newDimensions) {
-    m_model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
+    model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
     tileManager.createTiles(new Rectangle(newDimensions), m_data, uiContext.getMapData());
     tileManager.resetTiles(m_data, uiContext.getMapData());
   }
@@ -404,8 +404,8 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private MouseDetails convert(final MouseEvent me) {
-    final double scaledMouseX = me.getX() / m_scale;
-    final double scaledMouseY = me.getY() / m_scale;
+    final double scaledMouseX = me.getX() / scale;
+    final double scaledMouseY = me.getY() / scale;
     final double x = normalizeX(scaledMouseX + getXOffset());
     final double y = normalizeY(scaledMouseY + getYOffset());
     return new MouseDetails(me, x, y);
@@ -519,7 +519,7 @@ public class MapPanel extends ImageScrollerLargeView {
           final Image img = tile.getImage(gameData, uiContext.getMapData());
           if (img != null) {
             final AffineTransform t = new AffineTransform();
-            t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
+            t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
             g2d.drawImage(img, t, this);
           }
         } finally {
@@ -535,9 +535,9 @@ public class MapPanel extends ImageScrollerLargeView {
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
     super.paint(g2d);
-    g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
-    int x = m_model.getX();
-    int y = m_model.getY();
+    g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * scale), (getImageHeight() * scale)));
+    int x = model.getX();
+    int y = model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
     final Stopwatch stopWatch = new Stopwatch(logger, Level.FINER, "Paint");
@@ -547,26 +547,26 @@ public class MapPanel extends ImageScrollerLargeView {
     final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
     final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
     if (fitAxisX || fitAxisY) {
-      if (fitAxisX && x + (int) getScaledWidth() > m_model.getMaxWidth()) {
-        x -= m_model.getMaxWidth();
+      if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
+        x -= model.getMaxWidth();
       }
-      if (fitAxisY && y + (int) getScaledHeight() > m_model.getMaxHeight()) {
-        y -= m_model.getMaxHeight();
+      if (fitAxisY && y + (int) getScaledHeight() > model.getMaxHeight()) {
+        y -= model.getMaxHeight();
       }
       // handle wrapping off the screen
       if (fitAxisX && x < 0) {
         if (fitAxisY && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
-              new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
+              new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
           drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
-            new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
+            new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
         drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
       if (fitAxisY && y < 0) {
         final Rectangle2D.Double upperBounds =
-            new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
+            new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
         drawTiles(g2d, images, data, upperBounds, undrawnTiles);
       }
     }
@@ -575,10 +575,10 @@ public class MapPanel extends ImageScrollerLargeView {
     drawTiles(g2d, images, data, mainBounds, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
-      t.translate(m_scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
-          m_scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
+      t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
+          scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
       t.translate(mouseShadowImage.getWidth() / -2, mouseShadowImage.getHeight() / -2);
-      t.scale(m_scale, m_scale);
+      t.scale(scale, scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }
     if (routeDescription != null) {
@@ -605,8 +605,8 @@ public class MapPanel extends ImageScrollerLargeView {
               category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
             final AffineTransform t = new AffineTransform();
-            t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
-            t.scale(m_scale, m_scale);
+            t.translate(normalizeX(r.getX() - getXOffset()) * scale, normalizeY(r.getY() - getYOffset()) * scale);
+            t.scale(scale, scale);
             g2d.drawImage(image.get(), t, this);
           }
         }
@@ -640,11 +640,11 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private boolean mapWidthFitsOnScreen() {
-    return m_model.getMaxWidth() < getScaledWidth();
+    return model.getMaxWidth() < getScaledWidth();
   }
 
   private boolean mapHeightFitsOnScreen() {
-    return m_model.getMaxHeight() < getScaledHeight();
+    return model.getMaxHeight() < getScaledHeight();
   }
 
   /**
@@ -655,8 +655,8 @@ public class MapPanel extends ImageScrollerLargeView {
     // draw tiles near us if we have nothing left to draw
     // that way when we scroll slowly we wont notice a glitch
     if (undrawnTiles.isEmpty()) {
-      final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(m_model.getX() - preDrawMargin, 0),
-          Math.max(m_model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
+      final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(model.getX() - preDrawMargin, 0),
+          Math.max(model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
           getScaledHeight() + (2 * preDrawMargin));
       final List<Tile> tileList = tileManager.getTiles(extendedBounds);
       for (final Tile tile : tileList) {
@@ -687,7 +687,7 @@ public class MapPanel extends ImageScrollerLargeView {
         }
         if (img != null) {
           final AffineTransform t = new AffineTransform();
-          t.translate(m_scale * (tile.getBounds().x - bounds.getX()), m_scale * (tile.getBounds().y - bounds.getY()));
+          t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
           g.drawImage(img, t, this);
         }
       } finally {
@@ -715,14 +715,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public double getScale() {
-    return m_scale;
+    return scale;
   }
 
   @Override
   public void setScale(final double newScale) {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
-    final double normalizedScale = m_scale;
+    final double normalizedScale = scale;
     final OptionalExtraBorderLevel drawBorderOption = uiContext.getDrawTerritoryBordersAgain();
     // so what is happening here is that when we zoom out, the territory borders get blurred or even removed
     // so we have a special setter to have them be drawn a second time, on top of the relief tiles

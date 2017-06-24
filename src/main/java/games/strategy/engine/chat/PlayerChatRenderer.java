@@ -25,7 +25,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame game;
   private final IUIContext uiContext;
-  int m_maxIconCounter = 0;
+  int maxIconCounter = 0;
   HashMap<String, List<Icon>> iconMap = new HashMap<>();
   HashMap<String, Set<String>> playerMap = new HashMap<>();
 
@@ -75,7 +75,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
             icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
           }
         }
-        m_maxIconCounter = Math.max(m_maxIconCounter, icons.size());
+        maxIconCounter = Math.max(maxIconCounter, icons.size());
         playerMap.put(playerNode.toString(), players);
         if (uiContext == null) {
           iconMap.put(playerNode.toString(), null);
@@ -87,6 +87,6 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   public int getMaxIconCounter() {
-    return m_maxIconCounter;
+    return maxIconCounter;
   }
 }

@@ -332,9 +332,9 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   @Override
-  public void setLockMap(final boolean aBool) {
+  public void setLockMap(final boolean lockMap) {
     final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-    prefs.putBoolean(LOCK_MAP, aBool);
+    prefs.putBoolean(LOCK_MAP, lockMap);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
@@ -416,8 +416,8 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   @Override
-  public void setShowBattlesBetweenAIs(final boolean aBool) {
-    ClientContext.aiSettings().setShowBattlesBetweenAi(aBool);
+  public void setShowBattlesBetweenAIs(final boolean showBattlesBetweenAi) {
+    ClientContext.aiSettings().setShowBattlesBetweenAi(showBattlesBetweenAi);
   }
 
   @Override

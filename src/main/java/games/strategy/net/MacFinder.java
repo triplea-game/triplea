@@ -223,10 +223,7 @@ public class MacFinder {
       }
       i++;
     }
-    if (periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0) {
-      return false;
-    }
-    return true;
+    return !(periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0);
   }
 
   private static String tryToParseMACFromOutput(final String output, final List<String> possibleSeparators,

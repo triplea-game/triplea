@@ -1083,10 +1083,10 @@ public class BattleTracker implements java.io.Serializable {
     return m_battleRecords;
   }
 
-  void sendBattleRecordsToGameData(final IDelegateBridge aBridge) {
+  void sendBattleRecordsToGameData(final IDelegateBridge bridge) {
     if (m_battleRecords != null && !m_battleRecords.isEmpty()) {
-      aBridge.getHistoryWriter().startEvent("Recording Battle Statistics");
-      aBridge.addChange(ChangeFactory.addBattleRecords(m_battleRecords, aBridge.getData()));
+      bridge.getHistoryWriter().startEvent("Recording Battle Statistics");
+      bridge.addChange(ChangeFactory.addBattleRecords(m_battleRecords, bridge.getData()));
     }
   }
 
