@@ -953,13 +953,7 @@ class PlayerUnitsPanel extends JPanel {
         }
       }
     }
-    // we want to filter out anything like factories, or units that have no combat ability AND cannot be taken
-    // casualty.
-    // in addition, as of right now AA guns cannot fire on the offensive side, so we want to take them out too, unless
-    // they have other
-    // combat abilities.
-    rVal = Match.getMatches(rVal,
-        Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
+    rVal = Match.getMatches(rVal, Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
     return rVal;
   }
 
@@ -1082,10 +1076,10 @@ class OrderOfLossesInputPanel extends JPanel {
       final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
       final IUIContext context, final GameData data) {
     this.data = data;
-    this. context = context;
+    this.context = context;
     this.land = land;
     this.attackerCategories = attackerCategories;
-    this. defenderCategories = defenderCategories;
+    this.defenderCategories = defenderCategories;
     attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
     attackerTextField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
