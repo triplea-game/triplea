@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.ClientFileSystemHelper;
 
@@ -24,7 +24,7 @@ public final class DownloadCoordinator {
   private final Set<DownloadFile> activeDownloads = new HashSet<>();
   private final Set<DownloadFile> terminatedDownloads = new HashSet<>();
 
-  private final List<DownloadListener> downloadListeners = new CopyOnWriteArrayList<>();
+  private final List<DownloadListener> downloadListeners = new ArrayList<>();
 
   void addDownloadListener(final DownloadListener downloadListener) {
     downloadListeners.add(downloadListener);
