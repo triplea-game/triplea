@@ -640,12 +640,7 @@ public class WeakAI extends AbstractAI {
         final Match<Unit> attackable = Match.all(
             Matches.unitIsOwnedBy(player),
             Matches.UnitIsStrategicBomber.invert(),
-            new Match<Unit>() {
-              @Override
-              public boolean match(final Unit o) {
-                return !unitsAlreadyMoved.contains(o);
-              }
-            },
+            Match.of(o -> !unitsAlreadyMoved.contains(o)),
             Matches.UnitIsNotAA,
             Matches.UnitCanMove,
             Matches.UnitIsNotInfrastructure,
