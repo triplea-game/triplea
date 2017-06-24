@@ -23,9 +23,6 @@ public interface BattleStepStrings {
   String SELECT_CASUALTIES = " select casualties";
   String REMOVE_CASUALTIES = "Remove casualties";
   String SUBS_WITHDRAW = " withdraw subs?";
-  String PLANES_WITHDRAW = " withdraw planes?";
-  String RETREAT_PLANES = " retreat planes?";
-  String NONAMPHIB_WITHDRAW = " withdraw non-amphibious units?";
   String SUBS_SUBMERGE = " submerge subs?";
   String ATTACKER_WITHDRAW = " withdraw?";
   String SUICIDE_ATTACK = "Suicide and Munition units Attack";
