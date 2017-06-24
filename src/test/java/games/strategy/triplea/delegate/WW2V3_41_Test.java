@@ -46,9 +46,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -94,7 +91,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -1395,54 +1391,6 @@ public class WW2V3_41_Test {
     final String error =
         moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland, beloRussia));
     assertValid(error);
-  }
-
-  @Test
-  public void testAmphibAttackWithPlanesOnlyAskRetreatOnce() {
-    final PlayerID germans = germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    final Territory france = territory("France", gameData);
-    final Territory egypt = territory("Egypt", gameData);
-    final Territory balkans = territory("Balkans", gameData);
-    final Territory libya = territory("Libya", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory sz13 = territory("13 Sea Zone", gameData);
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz15 = territory("15 Sea Zone", gameData);
-
-    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
-        any(), contains(BattleStepStrings.RETREAT_PLANES))).thenThrow(
-            new AssertionError("The Message is not allowed to contain the BattleStepStrings.RETREAT_PLANES constant"));
-    bridge.setRemote(dummyPlayer);
-    final ITripleADisplay dummyDisplay = mock(ITripleADisplay.class);
-    doThrow(new AssertionError(
-        "None of the Battle steps is allow to contain the BattleStepStrings.PLANES_WITHDRAW constant"))
-            .when(dummyDisplay).listBattleSteps(any(), argThat(list -> {
-              for (final String string : list) {
-                if (string.contains(BattleStepStrings.PLANES_WITHDRAW)) {
-                  return true;
-                }
-              }
-              return false;
-            }));
-    bridge.setDisplay(dummyDisplay);
-    // move units for amphib assault
-    load(france.getUnits().getMatches(Matches.UnitIsInfantry), new Route(france, sz13));
-    move(sz13.getUnits().getUnits(), new Route(sz13, sz14, sz15));
-    move(sz15.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz15, egypt));
-    // ground attack
-    load(libya.getUnits().getMatches(Matches.UnitIsArtillery), new Route(libya, egypt));
-    // air units
-    move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, balkans, sz14, sz15, egypt));
-    moveDelegate(gameData).end();
-    bridge.setStepName("Combat");
-    // cook the dice so that all miss first round,all hit second round
-    bridge.setRandomSource(new ScriptedRandomSource(5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1));
-    battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    battleDelegate(gameData).start();
   }
 
   @Test
