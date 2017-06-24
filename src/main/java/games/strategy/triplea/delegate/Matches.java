@@ -2910,54 +2910,40 @@ public class Matches {
     return new Match<UnitType>() {
       @Override
       public boolean match(final UnitType ut) {
-        // we want to filter out anything like factories, or units that have no combat ability AND cannot be taken
-        // casualty.
-        // in addition, as of right now AA guns cannot fire on the offensive side, so we want to take them out too,
-        // unless they have other
-        // combat abilities.
-        final Match<UnitType> supporterOrNotInfrastructure =
-            Match.any(Matches.UnitTypeIsInfrastructure.invert(),
-                Matches.unitTypeIsSupporterOrHasCombatAbility(attack, player));
-        final Match<UnitType> combat;
+
+        // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
+        final Match.CompositeBuilder<UnitType> canBeInBattle = Match.newCompositeBuilder();
+
+        final Match.CompositeBuilder<UnitType> supportOrNotInfrastructureOrAa = Match.newCompositeBuilder();
+        supportOrNotInfrastructureOrAa.add(Matches.UnitTypeIsInfrastructure.invert());
+        supportOrNotInfrastructureOrAa.add(Matches.unitTypeIsSupporterOrHasCombatAbility(attack, player));
+        if (!doNotIncludeAa) {
+          supportOrNotInfrastructureOrAa.add(Match.all(Matches.UnitTypeIsAAforCombatOnly,
+              Matches.unitTypeIsAaThatCanFireOnRound(battleRound)));
+        }
+        canBeInBattle.add(supportOrNotInfrastructureOrAa.any());
+
         if (attack) {
-          // AND match
-          final CompositeMatch<UnitType> attackMatchAnd = new CompositeMatchAnd<>();
-          attackMatchAnd.add(supporterOrNotInfrastructure);
           if (!includeAttackersThatCanNotMove) {
-            attackMatchAnd.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
-            attackMatchAnd.add(Matches.unitTypeCanMove(player));
+            canBeInBattle.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
+            canBeInBattle.add(Matches.unitTypeCanMove(player));
           }
           if (isLandBattle) {
             if (doNotIncludeBombardingSeaUnits) {
-              attackMatchAnd.add(Matches.UnitTypeIsSea.invert());
+              canBeInBattle.add(Matches.UnitTypeIsSea.invert());
             }
           } else { // is sea battle
-            attackMatchAnd.add(Matches.UnitTypeIsLand.invert());
+            canBeInBattle.add(Matches.UnitTypeIsLand.invert());
           }
-          // assign it
-          combat = attackMatchAnd;
         } else { // defense
-          // AND match
-          final CompositeMatch<UnitType> defenseMatchAnd = new CompositeMatchAnd<>();
-          {
-            // ANY match
-            final Match.CompositeBuilder<UnitType> defenseMatchAnyBuilder = Match.newCompositeBuilder();
-            if (!doNotIncludeAa) {
-              defenseMatchAnyBuilder.add(Match.all(Matches.UnitTypeIsAAforCombatOnly,
-                  Matches.unitTypeIsAaThatCanFireOnRound(battleRound)));
-            }
-            defenseMatchAnyBuilder.add(supporterOrNotInfrastructure);
-            defenseMatchAnd.add(defenseMatchAnyBuilder.any());
-          }
           if (isLandBattle) {
-            defenseMatchAnd.add(Matches.UnitTypeIsSea.invert());
+            canBeInBattle.add(Matches.UnitTypeIsSea.invert());
           } else { // is sea battle
-            defenseMatchAnd.add(Matches.UnitTypeIsLand.invert());
+            canBeInBattle.add(Matches.UnitTypeIsLand.invert());
           }
-          // assign it
-          combat = defenseMatchAnd;
         }
-        return combat.match(ut);
+
+        return canBeInBattle.all().match(ut);
       }
     };
   }
