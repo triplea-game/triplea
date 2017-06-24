@@ -1,22 +1,10 @@
----
-layout: longpage
-title: Build Pipeline
-permalink: /dev_docs/admin/build_pipeline
----
 
-## build.gradle
-https://github.com/triplea-game/triplea/blob/master/build.gradle
+Key Build files:
+- Gradle: Runs the build commands to compile, test, run the installer 
+  - https://github.com/triplea-game/triplea/blob/master/build.gradle
+- Install4j: Installer packaging software
+  - https://github.com/triplea-game/triplea/blob/master/build.install4j
+- Travis: CI builder, watches for merges and runs gradle, which runs in turns runs install4j, and that in turn pushes release artifacts to github releases.
+  - https://github.com/triplea-game/triplea/blob/master/.travis.yml
+  - https://github.com/triplea-game/triplea/tree/master/.travis
 
-Core build script for the project.
-- compile / run tests / build a 'shadow' jar, a jar with all dependencies bundled
-- can be used to invoke the install4j packaging process
-
-## build.install4j
-https://github.com/triplea-game/triplea/blob/master/build.install4j
-
-Configuration for install4j. Creates platform specific installation binaries
-
-## .travis.yml
-https://github.com/triplea-game/triplea/blob/master/.travis.yml
-
-The travis.yml build file is a series of steps (gradle build commands for the most part) that run in a Linux container provided by travis.org. After gradle does compilation, unit testing, packaging of jars, gradle kicks off the install4j build. Finally the travis config specifies a list of which output files are to be deployed to github releses.
