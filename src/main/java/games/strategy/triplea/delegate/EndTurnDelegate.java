@@ -46,6 +46,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
+
     // do national objectives
     if (isNationalObjectives()) {
       final String nationalObjectivesText = determineNationalObjectives(bridge);
@@ -53,20 +54,19 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         endTurnReport.append(nationalObjectivesText).append("<br />");
       }
     }
+
     // create resources if any owned units have the ability
-    final String createsResourcesPositiveText = createResources(bridge, false);
-    if (createsResourcesPositiveText.trim().length() > 0) {
-      endTurnReport.append(createsResourcesPositiveText).append("<br />");
+    final String unitCreatedResourcesText = addUnitCreatedResources(bridge);
+    if (unitCreatedResourcesText.trim().length() > 0) {
+      endTurnReport.append(unitCreatedResourcesText).append("<br />");
     }
-    final String createsResourcesNegativeText = createResources(bridge, true);
-    if (createsResourcesNegativeText.trim().length() > 0) {
-      endTurnReport.append(createsResourcesNegativeText).append("<br />");
-    }
+
     // create units if any owned units have the ability
     final String createsUnitsText = createUnits(bridge);
     if (createsUnitsText.trim().length() > 0) {
       endTurnReport.append(createsUnitsText).append("<br />");
     }
+
     return endTurnReport.toString();
   }
 
@@ -160,43 +160,48 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return list.get(random);
   }
 
-  private String createResources(final IDelegateBridge bridge, final boolean negativeResources) {
-    final StringBuilder endTurnReport = new StringBuilder();
+  private String addUnitCreatedResources(final IDelegateBridge bridge) {
+
+    // Find total unit generated resources for all owned units
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerID();
-    final Match<Unit> myCreatorsMatch = Match.all(Matches.unitIsOwnedBy(player),
-        negativeResources ? Matches.UnitCreatesResourcesNegative : Matches.UnitCreatesResourcesPositive);
+    final Match<Unit> myCreatorsMatch = Match.all(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
+    final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
-      if (myCreators != null && !myCreators.isEmpty()) {
-        for (final Unit u : myCreators) {
-          final CompositeChange change = new CompositeChange();
-          final UnitAttachment ua = UnitAttachment.get(u.getType());
-          final IntegerMap<Resource> createsResourcesMap = ua.getCreatesResourcesList();
-          final Collection<Resource> willBeCreated = createsResourcesMap.keySet();
-          for (final Resource r : willBeCreated) {
-            int toAdd = createsResourcesMap.getInt(r);
-            if (r.getName().equals(Constants.PUS)) {
-              toAdd *= Properties.getPU_Multiplier(data);
-            }
-            int total = player.getResources().getQuantity(r) + toAdd;
-            if (total < 0) {
-              toAdd -= total;
-              total = 0;
-            }
-            final String transcriptText = u.getUnitType().getName() + " in " + t.getName() + " creates " + toAdd + " "
-                + r.getName() + "; " + player.getName() + " end with " + total + " " + r.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText);
-            endTurnReport.append(transcriptText).append("<br />");
-            final Change resources = ChangeFactory.changeResourcesChange(player, r, toAdd);
-            change.add(resources);
-          }
-          if (!change.isEmpty()) {
-            bridge.addChange(change);
-          }
-        }
+      for (final Unit unit : myCreators) {
+        final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
+        resourceTotalsMap.add(generatedResourcesMap);
       }
     }
+
+    // Add resource changes and create end turn report string
+    final StringBuilder endTurnReport = new StringBuilder();
+    final CompositeChange change = new CompositeChange();
+    for (final Resource resource : resourceTotalsMap.keySet()) {
+      int toAdd = resourceTotalsMap.getInt(resource);
+      if (toAdd == 0) {
+        continue;
+      }
+      if (resource.getName().equals(Constants.PUS)) {
+        toAdd *= Properties.getPU_Multiplier(getData());
+      }
+      int total = player.getResources().getQuantity(resource) + toAdd;
+      if (total < 0) {
+        toAdd -= total;
+        total = 0;
+      }
+      final String transcriptText = "Units generate " + toAdd + " " + resource.getName() + "; " + player.getName()
+          + " end with " + total + " " + resource.getName();
+      bridge.getHistoryWriter().startEvent(transcriptText);
+      endTurnReport.append(transcriptText).append("<br />");
+      final Change resources = ChangeFactory.changeResourcesChange(player, resource, toAdd);
+      change.add(resources);
+    }
+    if (!change.isEmpty()) {
+      bridge.addChange(change);
+    }
+
     return endTurnReport.toString();
   }
 

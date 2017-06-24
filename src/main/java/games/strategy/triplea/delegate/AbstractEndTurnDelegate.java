@@ -43,7 +43,7 @@ import games.strategy.util.Tuple;
  * At the end of the turn collect income.
  */
 public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate {
-  public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
+  public static final String END_TURN_REPORT_STRING = "Income Summary for ";
   private static final int CONVOY_BLOCKADE_DICE_SIDES = 6;
   private boolean m_needToInitialize = true;
   private boolean m_hasPostedTurnSummary = false;
