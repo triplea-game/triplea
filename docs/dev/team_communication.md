@@ -6,4 +6,10 @@ Primary means of communication is via github issues:
 
 ### Gitter
 
-For quick messages or informational broadcast messages. Allows for 1:1 messages.
+Quick 1:1 messages, administrative informational broadcast messages. For example: "Restarting bot 15, looks to be on fire"
+  
+
+### Forum
+
+Used to get communicate to the non-technical side of the TripleA community. Good place to get feedback on potential
+features or to ask questions to the larger TripleA community.
