@@ -832,7 +832,7 @@ class PlayerUnitsPanel extends JPanel {
   private final boolean defender;
   private boolean isLand = true;
   private List<UnitCategory> categories = null;
-  private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<WidgetChangedListener> listeners = new ArrayList<>();
   private final WidgetChangedListener listenerUnitPanel = () -> notifyListeners();
 
   PlayerUnitsPanel(final GameData data, final IUIContext context, final boolean defender) {

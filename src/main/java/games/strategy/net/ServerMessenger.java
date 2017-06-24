@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,11 +48,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final Node node;
   private boolean shutdown = false;
   private final NIOSocket nioSocket;
-  private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
-  private final List<IMessengerErrorListener> errorListeners =
-      new CopyOnWriteArrayList<>();
-  private final List<IConnectionChangeListener> connectionListeners =
-      new CopyOnWriteArrayList<>();
+  private final List<IMessageListener> listeners = new ArrayList<>();
+  private final List<IMessengerErrorListener> errorListeners = new ArrayList<>();
+  private final List<IConnectionChangeListener> connectionListeners = new ArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;
   // all our nodes

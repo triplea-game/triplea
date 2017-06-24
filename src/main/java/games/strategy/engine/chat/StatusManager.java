@@ -1,15 +1,15 @@
 package games.strategy.engine.chat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 
 public class StatusManager {
-  private final List<IStatusListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<IStatusListener> listeners = new ArrayList<>();
   private final Map<INode, String> status = new HashMap<>();
   private final Messengers messengers;
   private final Object mutex = new Object();

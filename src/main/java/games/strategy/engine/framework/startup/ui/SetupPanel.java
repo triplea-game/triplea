@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -24,7 +23,7 @@ import games.strategy.ui.SwingAction;
 
 public abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
-  private final List<Observer> listeners = new CopyOnWriteArrayList<>();
+  private final List<Observer> listeners = new ArrayList<>();
 
   @Override
   public void addObserver(final Observer observer) {
