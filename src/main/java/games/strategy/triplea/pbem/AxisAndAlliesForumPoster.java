@@ -255,7 +255,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
     clone.setPassword(getPassword());
     clone.setUsername(getUsername());
-    clone.setPasswordSaved(isPasswordSaved());
+    clone.setCredentialsSaved(areCredentialsSaved());
     return clone;
   }
 

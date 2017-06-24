@@ -40,7 +40,7 @@ public class ForumPosterEditor extends EditorPanel {
   private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
-  private final JCheckBox passwordSaved = new JCheckBox("Remember my password");
+  private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
   private final IForumPoster bean;
 
   public ForumPosterEditor(final IForumPoster bean) {
@@ -72,9 +72,9 @@ public class ForumPosterEditor extends EditorPanel {
     row++;
     add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(passwordSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(credentialsSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    passwordSaved.setSelected(bean.isPasswordSaved());
+    credentialsSaved.setSelected(bean.areCredentialsSaved());
     row++;
     if (bean.supportsSaveGame()) {
       add(includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
@@ -98,7 +98,7 @@ public class ForumPosterEditor extends EditorPanel {
    */
   private void setupListeners() {
     m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
-    passwordSaved.addActionListener(e -> fireEditorChanged());
+    credentialsSaved.addActionListener(e -> fireEditorChanged());
     m_testForum.addActionListener(e -> testForum());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
@@ -187,7 +187,7 @@ public class ForumPosterEditor extends EditorPanel {
     bean.setTopicId(m_topicIdField.getText());
     bean.setUsername(m_login.getText());
     bean.setPassword(m_password.getText());
-    bean.setPasswordSaved(passwordSaved.isSelected());
+    bean.setCredentialsSaved(credentialsSaved.isSelected());
     bean.setIncludeSaveGame(includeSaveGame.isSelected());
     bean.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());
     return bean;

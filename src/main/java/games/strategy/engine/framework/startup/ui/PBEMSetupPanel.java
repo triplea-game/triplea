@@ -224,6 +224,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         forumPoster.setUsername(cached.getUsername());
         forumPoster.setPassword(cached.getPassword());
+        forumPoster.setCredentialsSaved(cached.areCredentialsSaved());
       }
       forumPosterEditor.setSelectedBean(forumPoster);
     }
@@ -268,6 +269,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         sender.setUserName(cached.getUserName());
         sender.setPassword(cached.getPassword());
+        sender.setCredentialsSaved(cached.areCredentialsSaved());
       }
       emailSenderEditor.setSelectedBean(sender);
     }
