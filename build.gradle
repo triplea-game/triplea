@@ -200,7 +200,7 @@ task copyJRE(type: Copy, dependsOn: [updateAssets]) {
 
 import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
-    projectFile = file('build.install4j')
+    projectFile = file('.install4j/build.install4j')
     release project.version
     doFirst {
         logger.lifecycle("building installer release of version '${project.version}'")
