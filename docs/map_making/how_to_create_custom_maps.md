@@ -1,9 +1,4 @@
----
-layout: longpage
-title: Creating Custom Maps
-permalink: /how_to_create_custom_maps/
-root: /dev_docs/
----
+
 The initial settings for each game are stored in a file that you can
 edit to create a new game.&nbsp; You can modify unit placement,
 territory ownership, number of players, alliance of players, turn
