@@ -6,7 +6,6 @@ import java.util.Map;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -16,18 +15,19 @@ import games.strategy.triplea.formatter.MyFormatter;
 /**
  * Contains all the data to describe a placement and to undo it.
  */
-class UndoablePlacement extends AbstractUndoableMove {
+public class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
-  final Territory m_placeTerritory;
-  Territory m_producerTerritory;
-  PlayerID m_player;
+  private Territory m_placeTerritory;
+  private Territory m_producerTerritory;
 
-  public UndoablePlacement(final PlayerID player, final CompositeChange change, final Territory producer_territory,
+  /**
+   * This constructor initializes an UndoablePlacement objects with the passed parameters.
+   */
+  public UndoablePlacement(final CompositeChange change, final Territory producer_territory,
       final Territory place_territory, final Collection<Unit> units) {
     super(change, units);
     m_placeTerritory = place_territory;
     m_producerTerritory = producer_territory;
-    m_player = player;
   }
 
   public Territory getProducerTerritory() {

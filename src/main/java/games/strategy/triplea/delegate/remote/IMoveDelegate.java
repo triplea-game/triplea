@@ -7,11 +7,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.UndoableMove;
 
 /**
  * Remote interface for MoveDelegate.
  */
-public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPosterDelegate {
+public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
    * @param units
    *        - the units to move.
