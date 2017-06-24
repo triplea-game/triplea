@@ -48,6 +48,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -68,77 +69,77 @@ import games.strategy.util.Triple;
 
 class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;
-  private TripleAFrame m_frame;
-  private Action m_performMoveAction;
-  private Action m_addUnitsAction;
-  private Action m_delUnitsAction;
-  private Action m_changePUsAction;
-  private Action m_addTechAction;
-  private Action m_removeTechAction;
-  private Action m_changeUnitHitDamageAction;
-  private Action m_changeUnitBombingDamageAction;
-  private Action m_changeTerritoryOwnerAction;
-  private Action m_changePoliticalRelationships;
-  private Action m_currentAction = null;
-  private boolean m_active = false;
-  private Point m_mouseSelectedPoint;
-  private Point m_mouseCurrentPoint;
+  private TripleAFrame frame;
+  private Action performMoveAction;
+  private Action addUnitsAction;
+  private Action delUnitsAction;
+  private Action changePUsAction;
+  private Action addTechAction;
+  private Action removeTechAction;
+  private Action changeUnitHitDamageAction;
+  private Action changeUnitBombingDamageAction;
+  private Action changeTerritoryOwnerAction;
+  private Action changePoliticalRelationships;
+  private Action currentAction = null;
+  private boolean active = false;
+  private Point mouseSelectedPoint;
+  private Point mouseCurrentPoint;
   // use a LinkedHashSet because we want to know the order
-  private final Set<Unit> m_selectedUnits = new LinkedHashSet<>();
-  private Territory m_selectedTerritory = null;
-  private Territory m_currentTerritory = null;
+  private final Set<Unit> selectedUnits = new LinkedHashSet<>();
+  private Territory selectedTerritory = null;
+  private Territory currentTerritory = null;
 
   EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
-    m_frame = frame;
+    this.frame = frame;
     final JLabel m_actionLabel = new JLabel();
-    m_performMoveAction = new AbstractAction("Perform Move or Other Actions") {
+    performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
-        m_frame.showActionPanelTab();
+        currentAction = this;
+        EditPanel.this.frame.showActionPanelTab();
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_addUnitsAction = new AbstractAction("Add Units") {
+    addUnitsAction = new AbstractAction("Add Units") {
       private static final long serialVersionUID = 2205085537962024476L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         // TODO: change cursor to select territory
         // continued in territorySelected() handler below
       }
     };
-    m_delUnitsAction = new AbstractAction("Remove Selected Units") {
+    delUnitsAction = new AbstractAction("Remove Selected Units") {
       private static final long serialVersionUID = 5127470604727907906L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
-        final List<Unit> allUnits = new ArrayList<>(m_selectedTerritory.getUnits().getUnits());
+        final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits().getUnits());
         sortUnitsToRemove(allUnits);
         final MustMoveWithDetails mustMoveWithDetails;
         try {
           getData().acquireReadLock();
-          mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits,
+          mustMoveWithDetails = MoveValidator.getMustMoveWith(selectedTerritory, allUnits,
               new HashMap<>(), getData(), getCurrentPlayer());
         } finally {
           getData().releaseReadLock();
         }
         boolean mustChoose = false;
-        if (m_selectedUnits.containsAll(allUnits)) {
+        if (selectedUnits.containsAll(allUnits)) {
           mustChoose = false;
         } else {
           // if the unit choice is ambiguous then ask the user to clarify which units to remove
           // an ambiguous selection would be if the user selects 1 of 2 tanks, but
           // the tanks have different movement.
           final Set<UnitType> selectedUnitTypes = new HashSet<>();
-          for (final Unit u : m_selectedUnits) {
+          for (final Unit u : selectedUnits) {
             selectedUnitTypes.add(u.getType());
           }
           final List<Unit> allOfCorrectType = Match.getMatches(allUnits,
@@ -146,13 +147,13 @@ class EditPanel extends ActionPanel {
           final int allCategories =
               UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           final int selectedCategories =
-              UnitSeperator.categorize(m_selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
+              UnitSeperator.categorize(selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           mustChoose = (allCategories != selectedCategories);
         }
         Collection<Unit> bestUnits;
         if (mustChoose) {
-          final String chooserText = "Remove units from " + m_selectedTerritory + ":";
-          final UnitChooser chooser = new UnitChooser(allUnits, m_selectedUnits, mustMoveWithDetails.getMustMoveWith(),
+          final String chooserText = "Remove units from " + selectedTerritory + ":";
+          final UnitChooser chooser = new UnitChooser(allUnits, selectedUnits, mustMoveWithDetails.getMustMoveWith(),
               true, false, getData(), /* allowTwoHit= */false, getMap().getUIContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -162,33 +163,33 @@ class EditPanel extends ActionPanel {
           }
           bestUnits = chooser.getSelected(true);
         } else {
-          bestUnits = new ArrayList<>(m_selectedUnits);
+          bestUnits = new ArrayList<>(selectedUnits);
         }
-        final String result = m_frame.getEditDelegate().removeUnits(m_selectedTerritory, bestUnits);
+        final String result = EditPanel.this.frame.getEditDelegate().removeUnits(selectedTerritory, bestUnits);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result,
-              MyFormatter.pluralize("Could not remove unit", m_selectedUnits.size()), JOptionPane.ERROR_MESSAGE);
+              MyFormatter.pluralize("Could not remove unit", selectedUnits.size()), JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner") {
+    changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner") {
       private static final long serialVersionUID = 8547635747553626362L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         // TODO: change cursor to select territory
         // continued in territorySelected() handler below
       }
     };
-    m_changePUsAction = new AbstractAction("Change PUs") {
+    changePUsAction = new AbstractAction("Change PUs") {
       private static final long serialVersionUID = -2751668909341983795L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
             new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
@@ -225,7 +226,7 @@ class EditPanel extends ActionPanel {
         } catch (final Exception e) {
           // ignore malformed input
         }
-        final String result = m_frame.getEditDelegate().changePUs(player, newTotal);
+        final String result = EditPanel.this.frame.getEditDelegate().changePUs(player, newTotal);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -233,12 +234,12 @@ class EditPanel extends ActionPanel {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_addTechAction = new AbstractAction("Add Technology") {
+    addTechAction = new AbstractAction("Add Technology") {
       private static final long serialVersionUID = -5536151512828077755L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
             new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
@@ -279,7 +280,7 @@ class EditPanel extends ActionPanel {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-        final String result = m_frame.getEditDelegate().addTechAdvance(player, advance);
+        final String result = EditPanel.this.frame.getEditDelegate().addTechAdvance(player, advance);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -287,12 +288,12 @@ class EditPanel extends ActionPanel {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_removeTechAction = new AbstractAction("Remove Technology") {
+    removeTechAction = new AbstractAction("Remove Technology") {
       private static final long serialVersionUID = -2456111915025687825L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
             new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
@@ -342,7 +343,7 @@ class EditPanel extends ActionPanel {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-        final String result = m_frame.getEditDelegate().removeTechAdvance(player, advance);
+        final String result = EditPanel.this.frame.getEditDelegate().removeTechAdvance(player, advance);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -350,15 +351,15 @@ class EditPanel extends ActionPanel {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_changeUnitHitDamageAction = new AbstractAction("Change Unit Hit Damage") {
+    changeUnitHitDamageAction = new AbstractAction("Change Unit Hit Damage") {
       private static final long serialVersionUID = 1835547345902760810L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
-        if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
+        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
@@ -388,7 +389,7 @@ class EditPanel extends ActionPanel {
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
-        final String result = m_frame.getEditDelegate().changeUnitHitDamage(newDamageMap, m_selectedTerritory);
+        final String result = EditPanel.this.frame.getEditDelegate().changeUnitHitDamage(newDamageMap, selectedTerritory);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -396,15 +397,15 @@ class EditPanel extends ActionPanel {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_changeUnitBombingDamageAction = new AbstractAction("Change Unit Bombing Damage") {
+    changeUnitBombingDamageAction = new AbstractAction("Change Unit Bombing Damage") {
       private static final long serialVersionUID = 6975869192911780860L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitCanBeDamaged);
-        if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitCanBeDamaged);
+        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
@@ -423,7 +424,7 @@ class EditPanel extends ActionPanel {
             new HashMap<>();
         for (final Unit u : units) {
           currentDamageMap.put(u,
-              Triple.of(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0,
+              Triple.of(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, selectedTerritory), 0,
                   ((TripleAUnit) u).getUnitDamage()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",
@@ -436,7 +437,7 @@ class EditPanel extends ActionPanel {
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
-        final String result = m_frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, m_selectedTerritory);
+        final String result = EditPanel.this.frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, selectedTerritory);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -444,12 +445,12 @@ class EditPanel extends ActionPanel {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
     };
-    m_changePoliticalRelationships = new AbstractAction("Change Political Relationships") {
+    changePoliticalRelationships = new AbstractAction("Change Political Relationships") {
       private static final long serialVersionUID = -2950034347058147592L;
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        m_currentAction = this;
+        currentAction = this;
         setWidgetActivation();
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -471,7 +472,7 @@ class EditPanel extends ActionPanel {
             + "<br />since you are using edit mode).  So if you change anything here, be on the look out for "
             + "unintended consequences!</em></html>");
         panel.add(helpText, BorderLayout.NORTH);
-        final PoliticalStateOverview pui = new PoliticalStateOverview(getData(), m_frame.getUIContext(), true);
+        final PoliticalStateOverview pui = new PoliticalStateOverview(getData(), EditPanel.this.frame.getUIContext(), true);
         panel.add(pui, BorderLayout.CENTER);
         final JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -484,12 +485,12 @@ class EditPanel extends ActionPanel {
             new Dimension(
                 (scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
                 (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
-        final int option = JOptionPane.showConfirmDialog(m_frame, scroll, "Change Political Relationships",
+        final int option = JOptionPane.showConfirmDialog(EditPanel.this.frame, scroll, "Change Political Relationships",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (option == JOptionPane.OK_OPTION) {
           final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges = pui.getEditChanges();
           if (relationshipChanges != null && !relationshipChanges.isEmpty()) {
-            final String result = m_frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
+            final String result = EditPanel.this.frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
             if (result != null) {
               JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
                   JOptionPane.ERROR_MESSAGE);
@@ -503,35 +504,35 @@ class EditPanel extends ActionPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
     add(m_actionLabel);
-    final JButton performMove = new JButton(m_performMoveAction);
+    final JButton performMove = new JButton(performMoveAction);
     performMove.setToolTipText("<html>When in Edit Mode, you can perform special actions according to whatever phase "
         + "you are in, by switching back to the 'Action' tab.<br /> "
         + "So if you are in the 'Move' phase, you can move units virtually anywhere, because Edit Mode turns off the "
         + "movement validation.<br /> "
         + "You can use 'Action' tab during Edit Mode to do things not available by the other edit buttons.</html>");
     add(performMove);
-    add(new JButton(m_addUnitsAction));
-    add(new JButton(m_delUnitsAction));
-    add(new JButton(m_changeTerritoryOwnerAction));
-    add(new JButton(m_changePUsAction));
-    if (games.strategy.triplea.Properties.getTechDevelopment(getData())) {
-      add(new JButton(m_addTechAction));
-      add(new JButton(m_removeTechAction));
+    add(new JButton(addUnitsAction));
+    add(new JButton(delUnitsAction));
+    add(new JButton(changeTerritoryOwnerAction));
+    add(new JButton(changePUsAction));
+    if (Properties.getTechDevelopment(getData())) {
+      add(new JButton(addTechAction));
+      add(new JButton(removeTechAction));
     }
     data.acquireReadLock();
     try {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
       if (Match.someMatch(allUnitTypes, Matches.UnitTypeHasMoreThanOneHitPointTotal)) {
-        add(new JButton(m_changeUnitHitDamageAction));
+        add(new JButton(changeUnitHitDamageAction));
       }
-      if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
           && Match.someMatch(allUnitTypes, Matches.UnitTypeCanBeDamaged)) {
-        add(new JButton(m_changeUnitBombingDamageAction));
+        add(new JButton(changeUnitBombingDamageAction));
       }
     } finally {
       data.releaseReadLock();
     }
-    add(new JButton(m_changePoliticalRelationships));
+    add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));
     setWidgetActivation();
   }
@@ -573,29 +574,29 @@ class EditPanel extends ActionPanel {
   }
 
   private void setWidgetActivation() {
-    if (m_frame.getEditDelegate() == null) {
+    if (frame.getEditDelegate() == null) {
       // current turn belongs to remote player or AI player
-      m_performMoveAction.setEnabled(false);
-      m_addUnitsAction.setEnabled(false);
-      m_delUnitsAction.setEnabled(false);
-      m_changeTerritoryOwnerAction.setEnabled(false);
-      m_changePUsAction.setEnabled(false);
-      m_addTechAction.setEnabled(false);
-      m_removeTechAction.setEnabled(false);
-      m_changeUnitHitDamageAction.setEnabled(false);
-      m_changeUnitBombingDamageAction.setEnabled(false);
-      m_changePoliticalRelationships.setEnabled(false);
+      performMoveAction.setEnabled(false);
+      addUnitsAction.setEnabled(false);
+      delUnitsAction.setEnabled(false);
+      changeTerritoryOwnerAction.setEnabled(false);
+      changePUsAction.setEnabled(false);
+      addTechAction.setEnabled(false);
+      removeTechAction.setEnabled(false);
+      changeUnitHitDamageAction.setEnabled(false);
+      changeUnitBombingDamageAction.setEnabled(false);
+      changePoliticalRelationships.setEnabled(false);
     } else {
-      m_performMoveAction.setEnabled(m_currentAction == null);
-      m_addUnitsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-      m_delUnitsAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
-      m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-      m_changePUsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-      m_addTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-      m_removeTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-      m_changeUnitHitDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
-      m_changeUnitBombingDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
-      m_changePoliticalRelationships.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+      performMoveAction.setEnabled(currentAction == null);
+      addUnitsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      delUnitsAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
+      changeTerritoryOwnerAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      changePUsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      addTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      removeTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      changeUnitHitDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
+      changeUnitBombingDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
+      changePoliticalRelationships.setEnabled(currentAction == null && selectedUnits.isEmpty());
     }
   }
 
@@ -606,29 +607,29 @@ class EditPanel extends ActionPanel {
 
   @Override
   public void setActive(final boolean active) {
-    if (m_frame.getEditDelegate() == null) {
+    if (frame.getEditDelegate() == null) {
       // current turn belongs to remote player or AI player
       getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
       getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
       getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
       setWidgetActivation();
-    } else if (!m_active && active) {
+    } else if (!this.active && active) {
       getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
       getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
       getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
       setWidgetActivation();
-    } else if (!active && m_active) {
+    } else if (!active && this.active) {
       getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
       getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
       getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
       CANCEL_EDIT_ACTION.actionPerformed(null);
     }
-    m_active = active;
+    this.active = active;
   }
 
   @Override
   public boolean getActive() {
-    return m_active;
+    return active;
   }
 
   private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener() {
@@ -641,20 +642,20 @@ class EditPanel extends ActionPanel {
       if (t == null) {
         return;
       }
-      if (m_currentAction != null) {
+      if (currentAction != null) {
         return;
       }
       final boolean rightMouse = md.isRightButton();
-      if (!m_selectedUnits.isEmpty() && !(m_selectedTerritory == t)) {
-        deselectUnits(new ArrayList<>(m_selectedUnits), t, md);
-        m_selectedTerritory = null;
+      if (!selectedUnits.isEmpty() && !(selectedTerritory == t)) {
+        deselectUnits(new ArrayList<>(selectedUnits), t, md);
+        selectedTerritory = null;
       }
-      if (rightMouse && (m_selectedTerritory == t)) {
+      if (rightMouse && (selectedTerritory == t)) {
         deselectUnits(units, t, md);
       }
-      if (!rightMouse && (m_currentAction == m_addUnitsAction)) {
+      if (!rightMouse && (currentAction == addUnitsAction)) {
         // clicking on unit or territory selects territory
-        m_selectedTerritory = t;
+        selectedTerritory = t;
         MAP_SELECTION_LISTENER.territorySelected(t, md);
       } else if (!rightMouse) {
         // delete units
@@ -666,43 +667,43 @@ class EditPanel extends ActionPanel {
     private void deselectUnits(final List<Unit> units, final Territory t, final MouseDetails md) {
       // no unit selected, deselect the most recent
       if (units.isEmpty()) {
-        if (md.isControlDown() || t != m_selectedTerritory || m_selectedUnits.isEmpty()) {
-          m_selectedUnits.clear();
+        if (md.isControlDown() || t != selectedTerritory || selectedUnits.isEmpty()) {
+          selectedUnits.clear();
         } else {
           // remove the last element
-          m_selectedUnits.remove(new ArrayList<>(m_selectedUnits).get(m_selectedUnits.size() - 1));
+          selectedUnits.remove(new ArrayList<>(selectedUnits).get(selectedUnits.size() - 1));
         }
       } else { // user has clicked on a specific unit
         // deselect all if control is down
-        if (md.isControlDown() || t != m_selectedTerritory) {
-          m_selectedUnits.removeAll(units);
+        if (md.isControlDown() || t != selectedTerritory) {
+          selectedUnits.removeAll(units);
         } else { // deselect one
           // remove those with the least movement first
           for (final Unit unit : units) {
-            if (m_selectedUnits.contains(unit)) {
-              m_selectedUnits.remove(unit);
+            if (selectedUnits.contains(unit)) {
+              selectedUnits.remove(unit);
               break;
             }
           }
         }
       }
       // nothing left, cancel edit
-      if (m_selectedUnits.isEmpty()) {
+      if (selectedUnits.isEmpty()) {
         CANCEL_EDIT_ACTION.actionPerformed(null);
       } else {
-        getMap().setMouseShadowUnits(m_selectedUnits);
+        getMap().setMouseShadowUnits(selectedUnits);
       }
     }
 
     private void selectUnitsToRemove(final List<Unit> units, final Territory t, final MouseDetails md) {
-      if (units.isEmpty() && m_selectedUnits.isEmpty()) {
+      if (units.isEmpty() && selectedUnits.isEmpty()) {
         if (!md.isShiftDown()) {
           final Collection<Unit> unitsToMove = t.getUnits().getUnits();
           if (unitsToMove.isEmpty()) {
             return;
           }
           final String text = "Remove from " + t.getName();
-          final UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits, null, false, false, getData(),
+          final UnitChooser chooser = new UnitChooser(unitsToMove, selectedUnits, null, false, false, getData(),
               false, getMap().getUIContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -712,38 +713,38 @@ class EditPanel extends ActionPanel {
           if (chooser.getSelected(false).isEmpty()) {
             return;
           }
-          m_selectedUnits.addAll(chooser.getSelected(false));
+          selectedUnits.addAll(chooser.getSelected(false));
         }
       }
-      if (m_selectedTerritory == null) {
-        m_selectedTerritory = t;
-        m_mouseSelectedPoint = md.getMapPoint();
-        m_mouseCurrentPoint = md.getMapPoint();
+      if (selectedTerritory == null) {
+        selectedTerritory = t;
+        mouseSelectedPoint = md.getMapPoint();
+        mouseCurrentPoint = md.getMapPoint();
         CANCEL_EDIT_ACTION.setEnabled(true);
       }
       // select all
       if (md.isShiftDown()) {
-        m_selectedUnits.addAll(t.getUnits().getUnits());
+        selectedUnits.addAll(t.getUnits().getUnits());
       } else if (md.isControlDown()) {
-        m_selectedUnits.addAll(units);
+        selectedUnits.addAll(units);
       } else { // select one
         for (final Unit unit : units) {
-          if (!m_selectedUnits.contains(unit)) {
-            m_selectedUnits.add(unit);
+          if (!selectedUnits.contains(unit)) {
+            selectedUnits.add(unit);
             break;
           }
         }
       }
-      final Route defaultRoute = getData().getMap().getRoute(m_selectedTerritory, m_selectedTerritory);
-      getMap().setRoute(defaultRoute, m_mouseSelectedPoint, m_mouseCurrentPoint, null);
-      getMap().setMouseShadowUnits(m_selectedUnits);
+      final Route defaultRoute = getData().getMap().getRoute(selectedTerritory, selectedTerritory);
+      getMap().setRoute(defaultRoute, mouseSelectedPoint, mouseCurrentPoint, null);
+      getMap().setMouseShadowUnits(selectedUnits);
     }
   };
   private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, md) -> {
     if (!getActive()) {
       return;
     }
-    if (m_currentAction != null) {
+    if (currentAction != null) {
       return;
     }
     if (!units.isEmpty()) {
@@ -760,7 +761,7 @@ class EditPanel extends ActionPanel {
       if (territory == null) {
         return;
       }
-      if (m_currentAction == m_changeTerritoryOwnerAction) {
+      if (currentAction == changeTerritoryOwnerAction) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta == null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".",
@@ -775,14 +776,14 @@ class EditPanel extends ActionPanel {
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player != null) {
-          final String result = m_frame.getEditDelegate().changeTerritoryOwner(territory, player);
+          final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
           if (result != null) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
                 JOptionPane.ERROR_MESSAGE);
           }
         }
         SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
-      } else if (m_currentAction == m_addUnitsAction) {
+      } else if (currentAction == addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
             new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
@@ -792,7 +793,7 @@ class EditPanel extends ActionPanel {
         if (player != null) {
           // open production panel for adding new units
           final IntegerMap<ProductionRule> production =
-              EditProductionPanel.getProduction(player, m_frame, getData(), getMap().getUIContext());
+              EditProductionPanel.getProduction(player, frame, getData(), getMap().getUIContext());
           final Collection<Unit> units = new ArrayList<>();
           for (final ProductionRule productionRule : production.keySet()) {
             final int quantity = production.getInt(productionRule);
@@ -803,7 +804,7 @@ class EditPanel extends ActionPanel {
             final UnitType type = (UnitType) resourceOrUnit;
             units.addAll(type.create(quantity, player));
           }
-          final String result = m_frame.getEditDelegate().addUnits(territory, units);
+          final String result = frame.getEditDelegate().addUnits(territory, units);
           if (result != null) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
                 JOptionPane.ERROR_MESSAGE);
@@ -819,18 +820,18 @@ class EditPanel extends ActionPanel {
         return;
       }
       if (territory != null) {
-        if (m_currentAction == null && m_selectedTerritory != null) {
-          m_mouseCurrentPoint = md.getMapPoint();
-          getMap().setMouseShadowUnits(m_selectedUnits);
+        if (currentAction == null && selectedTerritory != null) {
+          mouseCurrentPoint = md.getMapPoint();
+          getMap().setMouseShadowUnits(selectedUnits);
         }
         // highlight territory
-        if (m_currentAction == m_changeTerritoryOwnerAction || m_currentAction == m_addUnitsAction) {
-          if (m_currentTerritory != territory) {
-            if (m_currentTerritory != null) {
-              getMap().clearTerritoryOverlay(m_currentTerritory);
+        if (currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction) {
+          if (currentTerritory != territory) {
+            if (currentTerritory != null) {
+              getMap().clearTerritoryOverlay(currentTerritory);
             }
-            m_currentTerritory = territory;
-            getMap().setTerritoryOverlay(m_currentTerritory, Color.WHITE, 200);
+            currentTerritory = territory;
+            getMap().setTerritoryOverlay(currentTerritory, Color.WHITE, 200);
             getMap().repaint();
           }
         }
@@ -842,16 +843,16 @@ class EditPanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      m_selectedTerritory = null;
-      m_selectedUnits.clear();
+      selectedTerritory = null;
+      selectedUnits.clear();
       this.setEnabled(false);
-      getMap().setRoute(null, m_mouseSelectedPoint, m_mouseCurrentPoint, null);
+      getMap().setRoute(null, mouseSelectedPoint, mouseCurrentPoint, null);
       getMap().setMouseShadowUnits(null);
-      if (m_currentTerritory != null) {
-        getMap().clearTerritoryOverlay(m_currentTerritory);
+      if (currentTerritory != null) {
+        getMap().clearTerritoryOverlay(currentTerritory);
       }
-      m_currentTerritory = null;
-      m_currentAction = null;
+      currentTerritory = null;
+      currentAction = null;
       setWidgetActivation();
     }
   };

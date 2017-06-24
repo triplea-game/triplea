@@ -42,11 +42,11 @@ public class ImageScrollerLargeView extends JComponent {
 
   private final ScrollSettings scrollSettings;
 
-  protected final ImageScrollModel m_model;
-  protected double m_scale = 1;
+  protected final ImageScrollModel model;
+  protected double scale = 1;
 
-  private int m_drag_scrolling_lastx;
-  private int m_drag_scrolling_lasty;
+  private int drag_scrolling_lastx;
+  private int drag_scrolling_lasty;
   private boolean wasLastActionDragging = false;
 
   public boolean wasLastActionDraggingAndReset() {
@@ -57,16 +57,16 @@ public class ImageScrollerLargeView extends JComponent {
     return false;
   }
 
-  private final ActionListener m_timerAction = new ActionListener() {
+  private final ActionListener timerAction = new ActionListener() {
     @Override
     public final void actionPerformed(final ActionEvent e) {
       if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner() == null) {
-        m_insideCount = 0;
+        insideCount = 0;
         return;
       }
-      if (m_inside && m_edge != NONE) {
-        m_insideCount++;
-        if (m_insideCount > 6) {
+      if (inside && edge != NONE) {
+        insideCount++;
+        if (insideCount > 6) {
           // Scroll the map when the mouse has hovered inside the scroll zone for long enough
           SwingUtilities.invokeLater(new Scroller());
         }
@@ -74,23 +74,23 @@ public class ImageScrollerLargeView extends JComponent {
     }
   };
   // scrolling
-  private final Timer m_timer = new Timer(50, m_timerAction);
-  private boolean m_inside = false;
-  private int m_insideCount = 0;
-  private int m_edge = NONE;
-  private final List<ScrollListener> m_scrollListeners = new ArrayList<>();
+  private final Timer timer = new Timer(50, timerAction);
+  private boolean inside = false;
+  private int insideCount = 0;
+  private int edge = NONE;
+  private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
     scrollSettings = ClientContext.scrollSettings();
-    m_model = model;
-    m_model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
+    this.model = model;
+    this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
     final MouseWheelListener MOUSE_WHEEL_LISTENER = e -> {
       if (!e.isAltDown()) {
-        if (m_edge == NONE) {
-          m_insideCount = 0;
+        if (edge == NONE) {
+          insideCount = 0;
         }
         // compute the amount to move
         int dx = 0;
@@ -101,19 +101,19 @@ public class ImageScrollerLargeView extends JComponent {
           dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
         }
         // move left and right and test for wrap
-        int newX = (m_model.getX() + dx);
-        if (newX > m_model.getMaxWidth() - getWidth()) {
-          newX -= m_model.getMaxWidth();
+        int newX = (this.model.getX() + dx);
+        if (newX > this.model.getMaxWidth() - getWidth()) {
+          newX -= this.model.getMaxWidth();
         }
         if (newX < -getWidth()) {
-          newX += m_model.getMaxWidth();
+          newX += this.model.getMaxWidth();
         }
         // move up and down and test for edges
-        final int newY = m_model.getY() + dy;
+        final int newY = this.model.getY() + dy;
         // update the map
-        m_model.set(newX, newY);
+        this.model.set(newX, newY);
       } else {
-        double value = m_scale;
+        double value = scale;
         int positive = 1;
         if (e.getUnitsToScroll() > 0) {
           positive = -1;
@@ -153,13 +153,13 @@ public class ImageScrollerLargeView extends JComponent {
     final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
       @Override
       public void mouseEntered(final MouseEvent e) {
-        m_timer.start();
+        timer.start();
       }
 
       @Override
       public void mouseExited(final MouseEvent e) {
-        m_inside = false;
-        m_timer.stop();
+        inside = false;
+        timer.stop();
       }
 
       @Override
@@ -177,22 +177,22 @@ public class ImageScrollerLargeView extends JComponent {
       @Override
       public void mousePressed(final MouseEvent e) {
         // try to center around the click
-        m_drag_scrolling_lastx = e.getX();
-        m_drag_scrolling_lasty = e.getY();
+        drag_scrolling_lastx = e.getX();
+        drag_scrolling_lasty = e.getY();
       }
     };
     addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
     final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-        m_inside = true;
+        inside = true;
         final int x = e.getX();
         final int y = e.getY();
         final int height = getHeight();
         final int width = getWidth();
-        m_edge = getNewEdge(x, y, width, height);
-        if (m_edge == NONE) {
-          m_insideCount = 0;
+        edge = getNewEdge(x, y, width, height);
+        if (edge == NONE) {
+          insideCount = 0;
         }
       }
     };
@@ -207,25 +207,25 @@ public class ImageScrollerLargeView extends JComponent {
         // the right button must be the one down
         if ((e.getModifiersEx() & (InputEvent.BUTTON3_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK)) != 0) {
           wasLastActionDragging = true;
-          m_inside = false;
+          inside = false;
           // read in location
           final int x = e.getX();
           final int y = e.getY();
-          if (m_edge == NONE) {
-            m_insideCount = 0;
+          if (edge == NONE) {
+            insideCount = 0;
           }
           // compute the amount to move
-          final int dx = (m_drag_scrolling_lastx - x);
-          final int dy = (m_drag_scrolling_lasty - y);
+          final int dx = (drag_scrolling_lastx - x);
+          final int dy = (drag_scrolling_lasty - y);
           // move left and right and test for wrap
-          final int newX = (m_model.getX() + dx);
+          final int newX = (ImageScrollerLargeView.this.model.getX() + dx);
           // move up and down and test for edges
-          final int newY = m_model.getY() + dy;
+          final int newY = ImageScrollerLargeView.this.model.getY() + dy;
           // update the map
-          m_model.set(newX, newY);
+          ImageScrollerLargeView.this.model.set(newX, newY);
           // store the location of the mouse for the next move
-          m_drag_scrolling_lastx = e.getX();
-          m_drag_scrolling_lasty = e.getY();
+          drag_scrolling_lastx = e.getX();
+          drag_scrolling_lasty = e.getY();
         }
       }
     };
@@ -237,8 +237,8 @@ public class ImageScrollerLargeView extends JComponent {
       }
     };
     addComponentListener(COMPONENT_LISTENER);
-    m_timer.start();
-    m_model.addObserver((o, arg) -> {
+    timer.start();
+    this.model.addObserver((o, arg) -> {
       repaint();
       notifyScollListeners();
     });
@@ -248,7 +248,7 @@ public class ImageScrollerLargeView extends JComponent {
    * For subclasses needing to set the location of the image.
    */
   protected void setTopLeft(final int x, final int y) {
-    m_model.set(x, y);
+    model.set(x, y);
   }
 
   protected void setTopLeftNoWrap(int x, int y) {
@@ -258,54 +258,54 @@ public class ImageScrollerLargeView extends JComponent {
     if (y < 0) {
       y = 0;
     }
-    m_model.set(x, y);
+    model.set(x, y);
   }
 
   public int getImageWidth() {
-    return m_model.getMaxWidth();
+    return model.getMaxWidth();
   }
 
   public int getImageHeight() {
-    return m_model.getMaxHeight();
+    return model.getMaxHeight();
   }
 
   public void addScrollListener(final ScrollListener s) {
-    m_scrollListeners.add(s);
+    scrollListeners.add(s);
   }
 
   public void removeScrollListener(final ScrollListener s) {
-    m_scrollListeners.remove(s);
+    scrollListeners.remove(s);
   }
 
   private void notifyScollListeners() {
-    for (final ScrollListener element : new ArrayList<>(m_scrollListeners)) {
-      element.scrolled(m_model.getX(), m_model.getY());
+    for (final ScrollListener element : new ArrayList<>(scrollListeners)) {
+      element.scrolled(model.getX(), model.getY());
     }
   }
 
   private void scroll() {
     int dy = 0;
-    if ((m_edge & TOP) != 0) {
+    if ((edge & TOP) != 0) {
       dy = -scrollSettings.getMapEdgeScrollSpeed();
-    } else if ((m_edge & BOTTOM) != 0) {
+    } else if ((edge & BOTTOM) != 0) {
       dy = scrollSettings.getMapEdgeScrollSpeed();
     }
     int dx = 0;
-    if ((m_edge & LEFT) != 0) {
+    if ((edge & LEFT) != 0) {
       dx = -scrollSettings.getMapEdgeScrollSpeed();
-    } else if ((m_edge & RIGHT) != 0) {
+    } else if ((edge & RIGHT) != 0) {
       dx = scrollSettings.getMapEdgeScrollSpeed();
     }
 
-    dx = (int) (dx / m_scale);
-    dy = (int) (dy / m_scale);
-    final int newX = (m_model.getX() + dx);
-    final int newY = m_model.getY() + dy;
-    m_model.set(newX, newY);
+    dx = (int) (dx / scale);
+    dy = (int) (dy / scale);
+    final int newX = (model.getX() + dx);
+    final int newY = model.getY() + dy;
+    model.set(newX, newY);
   }
 
   public Dimension getImageDimensions() {
-    return new Dimension(m_model.getMaxWidth(), m_model.getMaxHeight());
+    return new Dimension(model.getMaxWidth(), model.getMaxHeight());
   }
 
   private int getNewEdge(final int x, final int y, final int width, final int height) {
@@ -324,7 +324,7 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   protected void refreshBoxSize() {
-    m_model.setBoxDimensions((int) (getWidth() / m_scale), (int) (getHeight() / m_scale));
+    model.setBoxDimensions((int) (getWidth() / scale), (int) (getHeight() / scale));
   }
 
   /**
@@ -341,7 +341,7 @@ public class ImageScrollerLargeView extends JComponent {
     // we want the ratio to be a multiple of 1/256
     // so that the tiles have integer widths and heights
     value = ((int) (value * 256)) / ((double) 256);
-    m_scale = value;
+    scale = value;
     refreshBoxSize();
   }
 
@@ -350,11 +350,11 @@ public class ImageScrollerLargeView extends JComponent {
    * image to the original.
    */
   public int getXOffset() {
-    return m_model.getX();
+    return model.getX();
   }
 
   public int getYOffset() {
-    return m_model.getY();
+    return model.getY();
   }
 
   private class Scroller implements Runnable {
@@ -365,15 +365,15 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   protected double getScaledWidth() {
-    return getWidth() / m_scale;
+    return getWidth() / scale;
   }
 
   protected double getScaledHeight() {
-    return getHeight() / m_scale;
+    return getHeight() / scale;
   }
 
   public void deactivate() {
-    m_timer.stop();
-    m_timer.removeActionListener(m_timerAction);
+    timer.stop();
+    timer.removeActionListener(timerAction);
   }
 }

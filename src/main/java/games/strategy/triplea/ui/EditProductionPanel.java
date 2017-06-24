@@ -43,9 +43,9 @@ public class EditProductionPanel extends ProductionPanel {
   @Override
   protected void initRules(final PlayerID player, final GameData data,
       final IntegerMap<ProductionRule> initialPurchase) {
-    m_data.acquireReadLock();
+    this.data.acquireReadLock();
     try {
-      m_id = player;
+      id = player;
       final Set<UnitType> unitsAllowed = new HashSet<>();
       if (player.getProductionFrontier() != null) {
         for (final ProductionRule productionRule : player.getProductionFrontier()) {
@@ -57,7 +57,7 @@ public class EditProductionPanel extends ProductionPanel {
           }
           final int initialQuantity = initialPurchase.getInt(productionRule);
           rule.setQuantity(initialQuantity);
-          m_rules.add(rule);
+          rules.add(rule);
         }
       }
       // this next part is purely to allow people to "add" neutral (null player) units to territories.
@@ -77,7 +77,7 @@ public class EditProductionPanel extends ProductionPanel {
               final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
               final Rule rule = new Rule(newRule, player);
               rule.setQuantity(0);
-              m_rules.add(rule);
+              rules.add(rule);
             }
           }
         }
@@ -86,7 +86,7 @@ public class EditProductionPanel extends ProductionPanel {
       for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
         if (!unitsAllowed.contains(ut)) {
           try {
-            final UnitImageFactory imageFactory = m_uiContext.getUnitImageFactory();
+            final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
               final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
               if (unitImage.isPresent()) {
@@ -98,7 +98,7 @@ public class EditProductionPanel extends ProductionPanel {
                 final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
                 final Rule rule = new Rule(newRule, player);
                 rule.setQuantity(0);
-                m_rules.add(rule);
+                rules.add(rule);
               }
             }
           } catch (final Exception e) { // ignore
@@ -106,7 +106,7 @@ public class EditProductionPanel extends ProductionPanel {
         }
       }
     } finally {
-      m_data.releaseReadLock();
+      this.data.releaseReadLock();
     }
   }
 }

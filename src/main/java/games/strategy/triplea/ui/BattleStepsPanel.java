@@ -26,23 +26,23 @@ class BattleStepsPanel extends JPanel implements Active {
   private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
   // if this is the target step, we want to walk to the last step
   private static final String LAST_STEP = "NULL MARKER FOR LAST STEP";
-  private final DefaultListModel<String> m_listModel = new DefaultListModel<>();
-  private final JList<String> m_list = new JList<>(m_listModel);
-  private final MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
+  private final DefaultListModel<String> listModel = new DefaultListModel<>();
+  private final JList<String> list = new JList<>(listModel);
+  private final MyListSelectionModel listSelectionModel = new MyListSelectionModel();
   // the step we want to reach
-  private String m_targetStep = null;
+  private String targetStep = null;
   // all changes to state should be done while locked on this object.
   // when we reach the target step, or when we want to walk the step
   // notifyAll on this object
-  private final Object m_mutex = new Object();
-  private final List<CountDownLatch> m_waiters = new ArrayList<>();
-  private boolean m_hasWalkThread = false;
+  private final Object mutex = new Object();
+  private final List<CountDownLatch> waiters = new ArrayList<>();
+  private boolean hasWalkThread = false;
 
   BattleStepsPanel() {
     setLayout(new BorderLayout());
-    add(m_list, BorderLayout.CENTER);
-    m_list.setBackground(this.getBackground());
-    m_list.setSelectionModel(m_listSelectionModel);
+    add(list, BorderLayout.CENTER);
+    list.setBackground(this.getBackground());
+    list.setSelectionModel(listSelectionModel);
   }
 
   @Override
@@ -51,11 +51,11 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   private void wakeAll() {
-    synchronized (m_mutex) {
-      for (final CountDownLatch l : m_waiters) {
+    synchronized (mutex) {
+      for (final CountDownLatch l : waiters) {
         l.countDown();
       }
-      m_waiters.clear();
+      waiters.clear();
     }
   }
 
@@ -66,45 +66,45 @@ class BattleStepsPanel extends JPanel implements Active {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Not in dispatch thread");
     }
-    synchronized (m_mutex) {
-      m_listModel.removeAllElements();
+    synchronized (mutex) {
+      listModel.removeAllElements();
       final Iterator<String> iter = steps.iterator();
       while (iter.hasNext()) {
-        m_listModel.addElement(iter.next());
+        listModel.addElement(iter.next());
       }
-      m_listSelectionModel.hiddenSetSelectionInterval(0);
-      if (!steps.contains(m_targetStep)) {
-        m_targetStep = null;
+      listSelectionModel.hiddenSetSelectionInterval(0);
+      if (!steps.contains(targetStep)) {
+        targetStep = null;
       }
     }
     validate();
   }
 
   private void clearTargetStep() {
-    synchronized (m_mutex) {
-      m_targetStep = null;
+    synchronized (mutex) {
+      targetStep = null;
     }
     wakeAll();
   }
 
   private boolean doneWalkingSteps() {
-    synchronized (m_mutex) {
+    synchronized (mutex) {
       // not looking for anything
-      if (m_targetStep == null) {
+      if (targetStep == null) {
         return true;
       }
       // we cant find it, something is wrong
-      if (!m_targetStep.equals(LAST_STEP) && m_listModel.lastIndexOf(m_targetStep) == -1) {
-        new IllegalStateException("Step not found:" + m_targetStep + " in:" + m_listModel).printStackTrace();
+      if (!targetStep.equals(LAST_STEP) && listModel.lastIndexOf(targetStep) == -1) {
+        new IllegalStateException("Step not found:" + targetStep + " in:" + listModel).printStackTrace();
         clearTargetStep();
         return true;
       }
       // at end, we are done
-      if (m_targetStep.equals(LAST_STEP) && m_list.getSelectedIndex() == m_listModel.getSize() - 1) {
+      if (targetStep.equals(LAST_STEP) && list.getSelectedIndex() == listModel.getSize() - 1) {
         return true;
       }
       // we found it, we are done
-      if (m_targetStep.equals(m_list.getSelectedValue())) {
+      if (targetStep.equals(list.getSelectedValue())) {
         return true;
       }
     }
@@ -122,29 +122,29 @@ class BattleStepsPanel extends JPanel implements Active {
       wakeAll();
       return;
     }
-    int index = m_list.getSelectedIndex() + 1;
-    if (index >= m_list.getModel().getSize()) {
+    int index = list.getSelectedIndex() + 1;
+    if (index >= list.getModel().getSize()) {
       index = 0;
     }
-    m_listSelectionModel.hiddenSetSelectionInterval(index);
+    listSelectionModel.hiddenSetSelectionInterval(index);
     waitThenWalk();
   }
 
   private void waitThenWalk() {
     new Thread(() -> {
-      synchronized (m_mutex) {
-        if (m_hasWalkThread) {
+      synchronized (mutex) {
+        if (hasWalkThread) {
           return;
         }
-        m_hasWalkThread = true;
+        hasWalkThread = true;
       }
       try {
         if (ThreadUtil.sleep(330)) {
           SwingUtilities.invokeLater(this::walkStep);
         }
       } finally {
-        synchronized (m_mutex) {
-          m_hasWalkThread = false;
+        synchronized (mutex) {
+          hasWalkThread = false;
         }
       }
     }).start();
@@ -155,8 +155,8 @@ class BattleStepsPanel extends JPanel implements Active {
    * this method is called from the swing event thread.
    */
   public void walkToLastStep() {
-    synchronized (m_mutex) {
-      m_targetStep = LAST_STEP;
+    synchronized (mutex) {
+      targetStep = LAST_STEP;
     }
     goToTarget();
   }
@@ -166,9 +166,9 @@ class BattleStepsPanel extends JPanel implements Active {
    * This method returns immediatly, and must be called from the swing event thread.
    */
   public void setStep(final String step) {
-    synchronized (m_mutex) {
-      if (m_listModel.indexOf(step) != -1) {
-        m_targetStep = step;
+    synchronized (mutex) {
+      if (listModel.indexOf(step) != -1) {
+        targetStep = step;
       } else {
         log.info("Could not find step name:" + step);
       }

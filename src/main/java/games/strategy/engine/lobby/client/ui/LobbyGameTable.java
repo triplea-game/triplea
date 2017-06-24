@@ -14,10 +14,10 @@ import games.strategy.net.GUID;
 
 class LobbyGameTable extends JTable {
   private static final long serialVersionUID = 8632519876114231003L;
-  private GUID m_selectedGame;
+  private GUID selectedGame;
   private boolean inTableChange = false;
-  private final Font m_defaultFont = UIManager.getDefaults().getFont("Table.font");
-  private final Font m_italicFont = new Font(m_defaultFont.getFamily(), Font.ITALIC, m_defaultFont.getSize());
+  private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
+  private final Font italicFont = new Font(defaultFont.getFamily(), Font.ITALIC, defaultFont.getSize());
 
   LobbyGameTable(final TableModel model) {
     super(model);
@@ -38,9 +38,9 @@ class LobbyGameTable extends JTable {
         final int row = tmodel.getUnderlyingModelRowAt(rowIndex);
         final GameDescription gd = lmodel.get(row);
         if (gd.getBotSupportEmail() != null && gd.getBotSupportEmail().length() > 0) {
-          c.setFont(m_italicFont);
+          c.setFont(italicFont);
         } else {
-          c.setFont(m_defaultFont);
+          c.setFont(defaultFont);
         }
       }
     }
@@ -68,9 +68,9 @@ class LobbyGameTable extends JTable {
   private void markSelection() {
     final int selected = getSelectedRow();
     if (selected >= 0) {
-      m_selectedGame = (GUID) getModel().getValueAt(selected, LobbyGameTableModel.Column.GUID.ordinal());
+      selectedGame = (GUID) getModel().getValueAt(selected, LobbyGameTableModel.Column.GUID.ordinal());
     } else {
-      m_selectedGame = null;
+      selectedGame = null;
     }
   }
 
@@ -78,12 +78,12 @@ class LobbyGameTable extends JTable {
    * Restore the selection to the marked value.
    */
   private void restoreSelection() {
-    if (m_selectedGame == null) {
+    if (selectedGame == null) {
       return;
     }
     for (int i = 0; i < getModel().getRowCount(); i++) {
       final GUID current = (GUID) getModel().getValueAt(i, LobbyGameTableModel.Column.GUID.ordinal());
-      if (current.equals(m_selectedGame)) {
+      if (current.equals(selectedGame)) {
         getSelectionModel().setSelectionInterval(i, i);
         break;
       }

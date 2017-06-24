@@ -45,15 +45,15 @@ import games.strategy.util.IntegerMap;
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
-  protected final IUIContext m_uiContext;
-  protected List<Rule> m_rules = new ArrayList<>();
-  protected JLabel m_left = new JLabel();
-  protected JButton m_done;
-  protected PlayerID m_id;
-  protected GameData m_data;
+  protected final IUIContext uiContext;
+  protected List<Rule> rules = new ArrayList<>();
+  protected JLabel left = new JLabel();
+  protected JButton done;
+  protected PlayerID id;
+  protected GameData data;
 
-  private JDialog m_dialog;
-  private boolean m_bid;
+  private JDialog dialog;
+  private boolean bid;
 
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
@@ -62,7 +62,7 @@ public class ProductionPanel extends JPanel {
   }
 
   protected ProductionPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
+    this.uiContext = uiContext;
   }
 
 
@@ -74,42 +74,42 @@ public class ProductionPanel extends JPanel {
     if (parent != null) {
       final String title = "Produce";
       final JPanel contents = this;
-      m_dialog = SwingComponents.newJDialogModal(parent, title, contents);
+      dialog = SwingComponents.newJDialogModal(parent, title, contents);
     }
-    this.m_bid = bid;
-    this.m_data = data;
+    this.bid = bid;
+    this.data = data;
     this.initRules(id, data, initialPurchase);
     this.initLayout();
     this.calculateLimits();
-    m_dialog.pack();
-    m_dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(() -> m_done.requestFocusInWindow());
+    dialog.pack();
+    dialog.setLocationRelativeTo(parent);
+    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
     // making the dialog visible will block until it is closed
-    m_dialog.setVisible(true);
-    m_dialog.dispose();
+    dialog.setVisible(true);
+    dialog.dispose();
     return getProduction();
   }
 
   // this method can be accessed by subclasses
   protected List<Rule> getRules() {
-    return m_rules;
+    return rules;
   }
 
 
   // made this protected so can be extended by edit production panel
   protected void initRules(final PlayerID player, final GameData data,
       final IntegerMap<ProductionRule> initialPurchase) {
-    m_data.acquireReadLock();
+    this.data.acquireReadLock();
     try {
-      m_id = player;
+      id = player;
       for (final ProductionRule productionRule : player.getProductionFrontier()) {
         final Rule rule = new Rule(productionRule, player);
         final int initialQuantity = initialPurchase.getInt(productionRule);
         rule.setQuantity(initialQuantity);
-        m_rules.add(rule);
+        rules.add(rule);
       }
     } finally {
-      m_data.releaseReadLock();
+      this.data.releaseReadLock();
     }
   }
 
@@ -125,10 +125,10 @@ public class ProductionPanel extends JPanel {
         ResourceCollectionUtils.getProductionResources(getResources())));
     this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
-    int rows = m_rules.size() / 7;
+    int rows = rules.size() / 7;
     rows = Math.max(2, rows);
-    for (int x = 0; x < m_rules.size(); x++) {
-      panel.add(m_rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows), 1, 1, 10, 10,
+    for (int x = 0; x < rules.size(); x++) {
+      panel.add(rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows), 1, 1, 10, 10,
           GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
     }
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -150,26 +150,26 @@ public class ProductionPanel extends JPanel {
     this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH,
         new Insets(8, 8, 8, 4), 0, 0));
     // final int startY = m_rules.size() / rows;
-    this.add(m_left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    this.add(left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    m_done = new JButton(m_done_action);
-    this.add(m_done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    done = new JButton(done_action);
+    this.add(done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     this.setMaximumSize(new Dimension(availWidth, availHeight));
   }
 
   // This method can be overridden by subclasses
   protected void setLeft(final ResourceCollection left, final int totalUnits) {
-    m_left.setText(String.format(
+    this.left.setText(String.format(
         "%d total units purchased.  You have %s left.",
         totalUnits, ResourceCollectionUtils.getProductionResources(left)));
   }
 
-  Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
+  Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   private IntegerMap<ProductionRule> getProduction() {
     final IntegerMap<ProductionRule> prod = new IntegerMap<>();
-    for (final Rule rule : m_rules) {
+    for (final Rule rule : rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
         prod.put(rule.getProductionRule(), quantity);
@@ -182,15 +182,15 @@ public class ProductionPanel extends JPanel {
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;
     final ResourceCollection resources = getResources();
-    final ResourceCollection spent = new ResourceCollection(m_data);
+    final ResourceCollection spent = new ResourceCollection(data);
     int totalUnits = 0;
-    for (final Rule current : m_rules) {
+    for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
       totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
     }
     final ResourceCollection leftToSpend = resources.difference(spent);
     setLeft(leftToSpend, totalUnits);
-    for (final Rule current : m_rules) {
+    for (final Rule current : rules) {
       int max = leftToSpend.fitsHowOften(current.getCost());
       max += current.getQuantity();
       current.setMax(max);
@@ -198,23 +198,23 @@ public class ProductionPanel extends JPanel {
   }
 
   protected ResourceCollection getResources() {
-    if (m_bid) {
+    if (bid) {
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
-      final String propertyName = m_id.getName() + " bid";
-      final int bid = m_data.getProperties().get(propertyName, 0);
-      final ResourceCollection bidCollection = new ResourceCollection(m_data);
-      m_data.acquireReadLock();
+      final String propertyName = id.getName() + " bid";
+      final int bid = data.getProperties().get(propertyName, 0);
+      final ResourceCollection bidCollection = new ResourceCollection(data);
+      data.acquireReadLock();
       try {
-        bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+        bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
       } finally {
-        m_data.releaseReadLock();
+        data.releaseReadLock();
       }
       return bidCollection;
     } else {
-      if (m_id == null || m_id.isNull()) {
-        return new ResourceCollection(m_data);
+      if (id == null || id.isNull()) {
+        return new ResourceCollection(data);
       }
-      return m_id.getResources();
+      return id.getResources();
     }
   }
 
@@ -241,7 +241,7 @@ public class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false, false);
+          icon = uiContext.getUnitImageFactory().getIcon(type, id, data, false, false);
           final UnitAttachment attach = UnitAttachment.get(type);
           final int attack = attach.getAttack(id);
           final int movement = attach.getMovement(id);
@@ -258,7 +258,7 @@ public class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = Optional.of(m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true));
+          icon = Optional.of(uiContext.getResourceImageFactory().getIcon(resource, data, true));
           info.setText("resource");
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
@@ -271,10 +271,10 @@ public class ProductionPanel extends JPanel {
       final int numberOfUnitsGiven = m_rule.getResults().totalValues();
       String text;
       if (numberOfUnitsGiven > 1) {
-        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "<br>" + "for " + numberOfUnitsGiven
+        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, data) + "<br>" + "for " + numberOfUnitsGiven
             + "<br>" + " units</html>";
       } else {
-        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
+        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, data) + "</html>";
       }
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
