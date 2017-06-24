@@ -1,21 +1,19 @@
 <!--
-## Bugs
-### Reporting
-Please check if this bug has already been reported FIRST, if it hasn't, feel free to proceed.
-Make sure to provide all the necessary information we could need when reporting a bug.
-This includes:
- - Tell us which version of TripleA you are using. Maybe the bug is already fixed in the latest pre-release.
- - ALWAYS provide steps on how to reproduce. If we don't know what exactly occurred we can't fix it.
+Save game files at the point of a problem help a lot. You can attach them to github issues by zipping them up first and then dragging and then dropping them into the github issue using the file attachment links provided by github.
 
-### Formatting
-In case TripleA opens the console and an error (a so called 'stacktrace') shows up, please post this exact error here, but please keep 2 things in mind:
-1. Always put your stacktrace in a code segment, you can do this by simply selecting the whole stacktrace and clicking on the 'Insert Code' button (&lt;&gt;)
-2. If your stacktrace is too long, please consider creating a gist on gist.github.com and pasting the code there. This keeps the issue clean and readable. Don't forget linking to your gist.
+The more detailed information you can provide when reporting problems the easier it is for us to pinpoint them. Sometimes we can use exact error messages to search the code base and pinpoint where problems are. This leads to faster fixes. The below information and anything more is of great benefit, we appreciate you reporting problems to the TripleA team
 -->
-### TripleA version I'm using:
 
-### What I did:
+### My Operating System:
 
-### What I expected to happen was:
+### TripleA version:
 
-### What actually happened was:
+### Map:
+
+### Can you describe how to trigger the error? (eg: what sequence of actions will recreate it?)
+
+### Do you have the exact error text? Please copy/paste if so
+
+### Instead of this error, what should have happened?
+
+### Any additional information that may help:
