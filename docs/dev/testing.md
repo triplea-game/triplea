@@ -1,12 +1,10 @@
----
-layout: longpage
-title: Testing
-permalink: /dev_docs/dev/testing/
----
 
 ## Game compatibility testing
 
-It is important to ensure that any proposed change does not break game compatibility (unless this has been previously agreed upon).  The following sections describe the tests that should be run to ensure game compatibility between a previously-released version (referred to below as **OLD**) and a branch containing a proposed change (referred to below as **NEW**).
+It is important to ensure that any proposed change does not break game compatibility 
+(unless this has been previously agreed upon).  The following sections describe the tests that should be 
+run to ensure game compatibility between a previously-released version (referred to below as **OLD**) and a 
+branch containing a proposed change (referred to below as **NEW**).
 
 ### Save games
 
