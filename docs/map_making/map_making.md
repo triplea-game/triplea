@@ -1,9 +1,3 @@
----
-layout: longpage
-title: Map Maker Documentation
-permalink: /dev_docs/maps/map_making
----
-
 
 ## How to Request Map XML Updates
 * This can be done using just your web browser:
