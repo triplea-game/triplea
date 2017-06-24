@@ -65,8 +65,7 @@ public class Database {
     if (!root.exists()) {
       throw new IllegalStateException("Root dir does not exist");
     }
-    final File dbRootDir = new File(root, "derby_db");
-    return dbRootDir;
+    return new File(root, "derby_db");
   }
 
   public static Connection getDerbyConnection() {
@@ -99,8 +98,7 @@ public class Database {
     try {
       conn = DriverManager.getConnection(url, props);
     } catch (final SQLException e) {
-      s_logger.log(Level.SEVERE, e.getMessage(), e);
-      throw new IllegalStateException("Could not create db connection");
+      throw new IllegalStateException("Could not create db connection", e);
     }
     ensureDbTablesAreCreated(conn);
     return conn;
