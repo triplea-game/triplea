@@ -667,12 +667,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // option shown
     // later, if our sea units die, we may ask the user to retreat
     final boolean someAirAtSea = m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
-    if (canAttackerRetreat() || someAirAtSea) {
+    if (canAttackerRetreat() || someAirAtSea || canAttackerRetreatPartialAmphib() || canAttackerRetreatPlanes()) {
       steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
-    } else if (canAttackerRetreatPartialAmphib()) {
-      steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
-    } else if (canAttackerRetreatPlanes()) {
-      steps.add(m_attacker.getName() + PLANES_WITHDRAW);
     }
     return steps;
   }
@@ -1422,7 +1418,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (subs) {
       text = retreatingPlayer.getName() + " retreat subs?";
     } else if (planes) {
-      text = retreatingPlayer.getName() + RETREAT_PLANES;
+      text = retreatingPlayer.getName() + " retreat planes?";
     } else if (partialAmphib) {
       text = retreatingPlayer.getName() + " retreat non-amphibious units?";
     } else {
@@ -1434,10 +1430,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       if (subs) {
         step = m_attacker.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
-      } else if (planes) {
-        step = m_attacker.getName() + PLANES_WITHDRAW;
-      } else if (partialAmphib) {
-        step = m_attacker.getName() + NONAMPHIB_WITHDRAW;
       } else {
         step = m_attacker.getName() + ATTACKER_WITHDRAW;
       }
