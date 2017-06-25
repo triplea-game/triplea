@@ -116,7 +116,7 @@ public class MapXmlCreator extends JFrame {
   public static final GameStep GAME_STEP_FIRST = GameStep.MAP_PROPERTIES;
   public static final String MAP_XML_CREATOR_LOGGER_NAME = "Logger for Map XML Creation";
 
-  public static enum GameStep {
+  public enum GameStep {
     MAP_PROPERTIES,
 
     TERRITORY_DEFINITIONS,

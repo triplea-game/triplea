@@ -270,7 +270,7 @@ public class WW2V3_41_Test {
     del.setDelegateBridgeAndPlayer(getDelegateBridge(british(gameData)));
     del.start();
     addTo(british(gameData), transport(gameData).create(1, british(gameData)), gameData);
-    final String error = del.placeUnits(Collections.<Unit>emptyList(), territory("United Kingdom", gameData),
+    final String error = del.placeUnits(Collections.emptyList(), territory("United Kingdom", gameData),
         IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
   }
@@ -1200,7 +1200,7 @@ public class WW2V3_41_Test {
     final Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsAirTransportable);
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results = MoveValidator.validateMove(paratroopers, r, germans,
-        Collections.<Unit>emptyList(), new HashMap<>(), false, null, gameData);
+        Collections.emptyList(), new HashMap<>(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }
 
@@ -1216,7 +1216,7 @@ public class WW2V3_41_Test {
     final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
     toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     assertEquals(2, toMove.size());
-    final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit>emptyList(),
+    final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }
@@ -1233,7 +1233,7 @@ public class WW2V3_41_Test {
     final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
     toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     assertEquals(2, toMove.size());
-    final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit>emptyList(),
+    final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }

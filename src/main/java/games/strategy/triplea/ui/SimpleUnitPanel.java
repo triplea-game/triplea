@@ -30,10 +30,10 @@ import games.strategy.util.IntegerMap;
  */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
-  private final IUIContext m_uiContext;
+  private final IUIContext uiContext;
 
   public SimpleUnitPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
+    this.uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
@@ -100,12 +100,12 @@ public class SimpleUnitPanel extends JPanel {
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
       final Optional<ImageIcon> icon =
-          m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
+          uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
       if (icon.isPresent()) {
         label.setIcon(icon.get());
       }
     } else if (unit instanceof Resource) {
-      label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
+      label.setIcon(uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
     }
     add(label);
   }

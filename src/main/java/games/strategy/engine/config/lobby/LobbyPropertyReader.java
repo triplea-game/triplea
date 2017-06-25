@@ -10,7 +10,7 @@ import games.strategy.engine.config.PropertyFileReader;
  * Reads property values from the lobby configuration file.
  */
 public class LobbyPropertyReader {
-  private static final String LOBBY_PROPERTIES_FILE = "lobby.properties";
+  private static final String LOBBY_PROPERTIES_FILE = "config/lobby/lobby.properties";
 
   private final PropertyFileReader propertyFileReader;
 

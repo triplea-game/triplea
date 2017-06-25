@@ -26,7 +26,7 @@ public interface IBattle extends java.io.Serializable {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
     private final String m_type;
 
-    private BattleType(final String type) {
+    BattleType(final String type) {
       m_type = type;
     }
 

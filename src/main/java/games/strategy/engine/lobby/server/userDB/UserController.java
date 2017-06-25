@@ -11,15 +11,15 @@ import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
 
-// TODO: rename to DbUserController
-public class DerbyUserController implements UserDaoPrimarySecondary {
+// TODO: *Controller are really *Dao classes, this is a DAO pattern, not controller!
+public class UserController implements UserDaoPrimarySecondary {
 
   private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
   private final Supplier<Connection> connectionSupplier;
   private final UserDaoPrimarySecondary.Role usageRole;
 
-  DerbyUserController(final UserDaoPrimarySecondary.Role usageRole, final Supplier<Connection> connectionSupplier) {
+  UserController(final UserDaoPrimarySecondary.Role usageRole, final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
     this.usageRole = usageRole;
   }
@@ -85,7 +85,7 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
           con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
-      ps.setBoolean(3, user.isAdmin());
+      ps.setInt(3, user.isAdmin() ? 1 : 0);
       ps.setString(4, user.getName());
       ps.execute();
       ps.close();
@@ -151,11 +151,12 @@ public class DerbyUserController implements UserDaoPrimarySecondary {
       ps.close();
       rs.close();
       // update last login time
-      ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ? ");
+      ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?");
       ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
       ps.setString(2, userName);
       ps.execute();
       ps.close();
+      con.commit();
       return true;
     } catch (final SQLException sqle) {
       s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword, sqle);

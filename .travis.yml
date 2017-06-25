@@ -9,7 +9,7 @@ addons:
       - python3-yaml
       # up-to-date java version
       - oracle-java8-installer
-install: true
+install: ./.travis/setup_lobby_database
 services:
 - postgresql
 script: ./gradlew check jacocoTestReport

@@ -10,7 +10,6 @@ import games.strategy.util.Version;
 
 public class LobbyServerPropertiesFetcher {
 
-  private final UrlRedirectResolver urlRedirectResolver;
   private final LobbyPropertyFileParser lobbyPropertyFileParser;
   private final FileDownloader fileDownloader;
 
@@ -22,17 +21,14 @@ public class LobbyServerPropertiesFetcher {
    */
   public LobbyServerPropertiesFetcher() {
     this(
-        new UrlRedirectResolver(),
         new LobbyPropertyFileParser(),
         FileDownloader.defaultDownloader);
   }
 
   @VisibleForTesting
   LobbyServerPropertiesFetcher(
-      final UrlRedirectResolver urlRedirectResolver,
       final LobbyPropertyFileParser lobbyPropertyFileParser,
       final FileDownloader fileDownloader) {
-    this.urlRedirectResolver = urlRedirectResolver;
     this.lobbyPropertyFileParser = lobbyPropertyFileParser;
     this.fileDownloader = fileDownloader;
   }
@@ -41,19 +37,17 @@ public class LobbyServerPropertiesFetcher {
    *
    * @param lobbyPropFileUrl The taret URL to scrape for a lobby properties file.
    * @param currentVersion Our current engine version. The properties file can contain
-   *                       multiple listings for different versions.
+   *        multiple listings for different versions.
    * @return Parsed LobbyServerProperties object from the data we found at the remote
-   *     url.
+   *         url.
    * @throws IOException Thrown if there is a failure doing the remote network fetching
-   *     or IO problem once we downloaded the remote file to a temp file and are then
-   *     reading it..
+   *         or IO problem once we downloaded the remote file to a temp file and are then
+   *         reading it..
    */
   public LobbyServerProperties downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion) throws IOException {
-    final String lobbyUrl = urlRedirectResolver.getUrlFollowingRedirects(lobbyPropFileUrl);
-
-    final DownloadUtils.FileDownloadResult fileDownloadResult = fileDownloader.download(lobbyUrl);
+    final DownloadUtils.FileDownloadResult fileDownloadResult = fileDownloader.download(lobbyPropFileUrl);
 
     if (!fileDownloadResult.wasSuccess) {
       throw new IOException("Failed to download: " + lobbyPropFileUrl);

@@ -2091,10 +2091,7 @@ public class Matches {
         final UnitType type = unitCanRepair.getUnitType();
         final UnitAttachment ua = UnitAttachment.get(type);
         // TODO: make sure the unit is operational
-        if (ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType())) {
-          return true;
-        }
-        return false;
+        return ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
       }
     };
   }

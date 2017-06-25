@@ -33,17 +33,17 @@ import games.strategy.util.Match;
 
 public class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
-  private final List<ChooserEntry> m_entries = new ArrayList<>();
-  private final Map<Unit, Collection<Unit>> m_dependents;
-  private JTextArea m_title;
-  private int m_total = -1;
-  private final JLabel m_leftToSelect = new JLabel();
-  private final GameData m_data;
-  private boolean m_allowMultipleHits = false;
-  private JButton m_autoSelectButton;
-  private JButton m_selectNoneButton;
-  private final IUIContext m_uiContext;
-  private final Match<Collection<Unit>> m_match;
+  private final List<ChooserEntry> entries = new ArrayList<>();
+  private final Map<Unit, Collection<Unit>> dependents;
+  private JTextArea title;
+  private int total = -1;
+  private final JLabel leftToSelect = new JLabel();
+  private final GameData data;
+  private boolean allowMultipleHits = false;
+  private JButton autoSelectButton;
+  private JButton selectNoneButton;
+  private final IUIContext uiContext;
+  private final Match<Collection<Unit>> match;
 
   /** Creates new UnitChooser. */
   public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
@@ -57,14 +57,19 @@ public class UnitChooser extends JPanel {
     this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
   }
 
+  private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
+      final IUIContext uiContext, final Match<Collection<Unit>> match) {
+    dependents = dependent;
+    this.data = data;
+    this.allowMultipleHits = allowMultipleHits;
+    this.uiContext = uiContext;
+    this.match = match;
+  }
+
   UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext) {
-    m_dependents = dependent;
-    m_data = data;
-    m_allowMultipleHits = allowMultipleHits;
-    m_uiContext = uiContext;
-    m_match = null;
+    this(dependent, data, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
@@ -76,11 +81,7 @@ public class UnitChooser extends JPanel {
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext) {
-    m_dependents = dependent;
-    m_data = data;
-    m_allowMultipleHits = allowMultipleHits;
-    m_uiContext = uiContext;
-    m_match = null;
+    this(dependent, data, allowMultipleHits, uiContext, null);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
@@ -89,11 +90,7 @@ public class UnitChooser extends JPanel {
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext, final Match<Collection<Unit>> match) {
-    m_dependents = dependent;
-    m_data = data;
-    m_allowMultipleHits = allowMultipleHits;
-    m_uiContext = uiContext;
-    m_match = match;
+    this(dependent, data, allowMultipleHits, uiContext, match);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
@@ -102,44 +99,44 @@ public class UnitChooser extends JPanel {
    * Set the maximum number of units that we can choose.
    */
   public void setMax(final int max) {
-    m_total = max;
+    total = max;
     m_textFieldListener.changedValue(null);
-    m_autoSelectButton.setVisible(false);
-    m_selectNoneButton.setVisible(false);
+    autoSelectButton.setVisible(false);
+    selectNoneButton.setVisible(false);
   }
 
   void setMaxAndShowMaxButton(final int max) {
-    m_total = max;
+    total = max;
     m_textFieldListener.changedValue(null);
-    m_autoSelectButton.setText("Max");
+    autoSelectButton.setText("Max");
   }
 
   public void setTitle(final String title) {
-    m_title.setText(title);
+    this.title.setText(title);
   }
 
   private void updateLeft() {
-    if (m_total == -1) {
+    if (total == -1) {
       return;
     }
     Iterator<ChooserEntry> iter;
     final int selected = getSelectedCount();
-    m_leftToSelect.setText("Left to select:" + (m_total - selected));
-    iter = m_entries.iterator();
+    leftToSelect.setText("Left to select:" + (total - selected));
+    iter = entries.iterator();
     while (iter.hasNext()) {
       final ChooserEntry entry = iter.next();
-      entry.setLeftToSelect(m_total - selected);
+      entry.setLeftToSelect(total - selected);
     }
-    m_leftToSelect.setText("Left to select:" + (m_total - selected));
+    leftToSelect.setText("Left to select:" + (total - selected));
   }
 
   private void checkMatches() {
     final Collection<Unit> allSelectedUnits = new ArrayList<>();
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       addToCollection(allSelectedUnits, entry, entry.getTotalHits(), false);
     }
     // check match against each scroll button
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       final Collection<Unit> newSelectedUnits = new ArrayList<>(allSelectedUnits);
       final int totalHits = entry.getTotalHits();
       final int totalUnits = entry.getCategory().getUnits().size();
@@ -151,7 +148,7 @@ public class UnitChooser extends JPanel {
           newSelectedUnits.add(unit);
         }
         if (i >= totalHits) {
-          if (m_match.match(newSelectedUnits)) {
+          if (match.match(newSelectedUnits)) {
             leftToSelect = i - totalHits;
           } else {
             break;
@@ -164,7 +161,7 @@ public class UnitChooser extends JPanel {
 
   private int getSelectedCount() {
     int selected = 0;
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       selected += entry.getTotalHits();
     }
     return selected;
@@ -193,40 +190,40 @@ public class UnitChooser extends JPanel {
   }
 
   private void addCategory(final UnitCategory category, final int defaultValue) {
-    final ChooserEntry entry = new ChooserEntry(category, m_total, m_textFieldListener, m_data, m_allowMultipleHits,
-        defaultValue, m_uiContext);
-    m_entries.add(entry);
+    final ChooserEntry entry = new ChooserEntry(category, total, m_textFieldListener, data, allowMultipleHits,
+        defaultValue, uiContext);
+    entries.add(entry);
   }
 
   private void layoutEntries() {
     this.setLayout(new GridBagLayout());
-    m_title = new JTextArea("Choose units");
-    m_title.setBackground(this.getBackground());
-    m_title.setEditable(false);
-    m_title.setWrapStyleWord(true);
+    title = new JTextArea("Choose units");
+    title.setBackground(this.getBackground());
+    title.setEditable(false);
+    title.setWrapStyleWord(true);
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    m_selectNoneButton = new JButton("None");
-    m_selectNoneButton.setPreferredSize(buttonSize);
-    m_autoSelectButton = new JButton("All");
-    m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    selectNoneButton = new JButton("None");
+    selectNoneButton.setPreferredSize(buttonSize);
+    autoSelectButton = new JButton("All");
+    autoSelectButton.setPreferredSize(buttonSize);
+    add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(e -> selectNone());
-    m_autoSelectButton.addActionListener(e -> autoSelect());
+    selectNoneButton.addActionListener(e -> selectNone());
+    autoSelectButton.addActionListener(e -> autoSelect());
     int yIndex = 1;
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       entry.createComponents(this, yIndex);
       yIndex++;
     }
-    add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+    add(autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
         GridBagConstraints.NONE, nullInsets, 0, 0));
     yIndex++;
-    add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    add(leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-    if (m_match != null) {
-      m_autoSelectButton.setVisible(false);
-      m_selectNoneButton.setVisible(false);
+    if (match != null) {
+      autoSelectButton.setVisible(false);
+      selectNoneButton.setVisible(false);
       checkMatches();
     }
   }
@@ -241,7 +238,7 @@ public class UnitChooser extends JPanel {
    */
   public List<Unit> getSelected(final boolean selectDependents) {
     final List<Unit> selectedUnits = new ArrayList<>();
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
     }
     return selectedUnits;
@@ -252,9 +249,7 @@ public class UnitChooser extends JPanel {
    */
   public List<Unit> getSelectedDamagedMultipleHitPointUnits() {
     final List<Unit> selectedUnits = new ArrayList<>();
-    final Iterator<ChooserEntry> entries = m_entries.iterator();
-    while (entries.hasNext()) {
-      final ChooserEntry chooserEntry = entries.next();
+    for (ChooserEntry chooserEntry : entries) {
       if (chooserEntry.hasMultipleHitPoints()) {
         // there may be some units being given multiple hits, while others get a single or no hits
         for (int i = 0; i < chooserEntry.size() - 1; i++) {
@@ -272,20 +267,20 @@ public class UnitChooser extends JPanel {
   }
 
   private void selectNone() {
-    for (final ChooserEntry entry : m_entries) {
+    for (final ChooserEntry entry : entries) {
       entry.selectNone();
     }
   }
 
   // does not take into account multiple hit points
   private void autoSelect() {
-    if (m_total == -1) {
-      for (final ChooserEntry entry : m_entries) {
+    if (total == -1) {
+      for (final ChooserEntry entry : entries) {
         entry.selectAll();
       }
     } else {
-      int leftToSelect = m_total - getSelectedCount();
-      for (final ChooserEntry entry : m_entries) {
+      int leftToSelect = total - getSelectedCount();
+      for (final ChooserEntry entry : entries) {
         final int canSelect = entry.getMax() - entry.getHits(0);
         if (leftToSelect >= canSelect) {
           entry.selectAll();
@@ -310,7 +305,7 @@ public class UnitChooser extends JPanel {
       final Unit current = iter.next();
       addTo.add(current);
       if (addDependents) {
-        final Collection<Unit> dependents = m_dependents.get(current);
+        final Collection<Unit> dependents = this.dependents.get(current);
         if (dependents != null) {
           addTo.addAll(dependents);
         }
@@ -321,7 +316,7 @@ public class UnitChooser extends JPanel {
   private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener() {
     @Override
     public void changedValue(final ScrollableTextField field) {
-      if (m_match != null) {
+      if (match != null) {
         checkMatches();
       } else {
         updateLeft();
@@ -485,11 +480,11 @@ class ChooserEntry {
 
   private class UnitChooserEntryIcon extends JComponent {
     private static final long serialVersionUID = 591598594559651745L;
-    private final boolean m_forceDamaged;
+    private final boolean forceDamaged;
     private final IUIContext uiContext;
 
     UnitChooserEntryIcon(final boolean forceDamaged, final IUIContext uiContext) {
-      m_forceDamaged = forceDamaged;
+      this.forceDamaged = forceDamaged;
       this.uiContext = uiContext;
     }
 
@@ -498,7 +493,7 @@ class ChooserEntry {
       super.paint(g);
       final Optional<Image> image =
           uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-              m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+              forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
       if (image.isPresent()) {
         g.drawImage(image.get(), 0, 0, this);
       }

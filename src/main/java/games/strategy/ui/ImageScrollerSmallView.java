@@ -21,17 +21,17 @@ import javax.swing.border.EtchedBorder;
  */
 public class ImageScrollerSmallView extends JComponent {
   private static final long serialVersionUID = 7010099211049677928L;
-  private final ImageScrollModel m_model;
-  private Image m_image;
+  private final ImageScrollModel model;
+  private Image image;
 
   public ImageScrollerSmallView(final Image image, final ImageScrollModel model) {
-    m_model = model;
+    this.model = model;
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
-    m_image = image;
+    this.image = image;
     this.setBorder(new EtchedBorder());
-    final int prefWidth = getInsetsWidth() + m_image.getWidth(this);
-    final int prefHeight = getInsetsHeight() + m_image.getHeight(this);
+    final int prefWidth = getInsetsWidth() + this.image.getWidth(this);
+    final int prefHeight = getInsetsHeight() + this.image.getHeight(this);
     final Dimension prefSize = new Dimension(prefWidth, prefHeight);
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
@@ -40,9 +40,9 @@ public class ImageScrollerSmallView extends JComponent {
       @Override
       public void mouseClicked(final MouseEvent e) {
         // try to center around the click
-        final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-        final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
-        m_model.set(x, y);
+        final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
+        final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
+        model.set(x, y);
       }
     };
     this.addMouseListener(MOUSE_LISTENER);
@@ -63,8 +63,8 @@ public class ImageScrollerSmallView extends JComponent {
           return;
         }
         // try to center around the click
-        final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-        final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
+        final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
+        final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
         setSelection(x, y);
       }
     };
@@ -75,10 +75,10 @@ public class ImageScrollerSmallView extends JComponent {
   public void changeImage(final Image image) {
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
-    m_image.flush();
-    m_image = image;
-    final int prefWidth = getInsetsWidth() + m_image.getWidth(this);
-    final int prefHeight = getInsetsHeight() + m_image.getHeight(this);
+    this.image.flush();
+    this.image = image;
+    final int prefWidth = getInsetsWidth() + this.image.getWidth(this);
+    final int prefHeight = getInsetsHeight() + this.image.getHeight(this);
     final Dimension prefSize = new Dimension(prefWidth, prefHeight);
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
@@ -96,34 +96,34 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   void setCoords(final int x, final int y) {
-    m_model.set(x, y);
+    model.set(x, y);
   }
 
   public Dimension getImageDimensions() {
-    return Util.getDimension(m_image, this);
+    return Util.getDimension(image, this);
   }
 
   @Override
   public void paintComponent(final Graphics g) {
-    g.drawImage(m_image, 0, 0, this);
+    g.drawImage(image, 0, 0, this);
     g.setColor(Color.lightGray);
     drawViewBox((Graphics2D) g);
   }
 
   private void drawViewBox(final Graphics2D g) {
-    if (m_model.getBoxWidth() > m_model.getMaxWidth() && m_model.getBoxHeight() > m_model.getMaxHeight()) {
+    if (model.getBoxWidth() > model.getMaxWidth() && model.getBoxHeight() > model.getMaxHeight()) {
       return;
     }
     final double ratioX = getRatioX();
     final double ratioY = getRatioY();
-    final double x = m_model.getX() * ratioX;
-    final double y = m_model.getY() * ratioY;
-    final double width = m_model.getBoxWidth() * ratioX;
-    final double height = m_model.getBoxHeight() * ratioY;
+    final double x = model.getX() * ratioX;
+    final double y = model.getY() * ratioY;
+    final double width = model.getBoxWidth() * ratioX;
+    final double height = model.getBoxHeight() * ratioY;
     final Rectangle2D.Double rect = new Rectangle2D.Double(x, y, width, height);
     g.draw(rect);
-    if (m_model.getScrollX()) {
-      final double mapWidth = m_model.getMaxWidth() * ratioX;
+    if (model.getScrollX()) {
+      final double mapWidth = model.getMaxWidth() * ratioX;
       rect.x += mapWidth;
       g.draw(rect);
       rect.x -= 2 * mapWidth;
@@ -132,20 +132,20 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   public Image getOffScreenImage() {
-    return m_image;
+    return image;
   }
 
   private void setSelection(final int x, final int y) {
-    m_model.set(x, y);
+    model.set(x, y);
   }
 
   private long mLastUpdate = 0;
 
   public double getRatioY() {
-    return m_image.getHeight(null) / (double) m_model.getMaxHeight();
+    return image.getHeight(null) / (double) model.getMaxHeight();
   }
 
   public double getRatioX() {
-    return m_image.getWidth(null) / (double) m_model.getMaxWidth();
+    return image.getWidth(null) / (double) model.getMaxWidth();
   }
 }

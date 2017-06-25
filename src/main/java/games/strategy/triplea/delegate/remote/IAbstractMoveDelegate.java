@@ -8,13 +8,13 @@ import games.strategy.engine.message.IRemote;
 /**
  * Remote interface for MoveDelegate and PlaceDelegate.
  */
-public interface IAbstractMoveDelegate extends IRemote, IDelegate {
+public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   /**
    * Get the moves already made.
    *
    * @return a list of UndoableMoves or UndoablePlacements
    */
-  List<?> getMovesMade();
+  List<T> getMovesMade();
 
 
   /**

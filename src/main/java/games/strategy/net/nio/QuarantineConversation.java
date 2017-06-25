@@ -16,7 +16,7 @@ package games.strategy.net.nio;
  * </p>
  */
 public abstract class QuarantineConversation {
-  public static enum ACTION {
+  public enum ACTION {
     NONE, TERMINATE, UNQUARANTINE
   }
 

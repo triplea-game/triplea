@@ -176,8 +176,10 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
     classifier 'server'
-    ['lobby.properties'].each { fileName ->
-        from(fileName)
+    ['config/lobby/lobby.properties'].each { fileName ->
+        from(fileName) {
+            into('config/lobby')
+        }
     }
     from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
         into('lib')

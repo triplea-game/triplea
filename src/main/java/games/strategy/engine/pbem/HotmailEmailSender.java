@@ -43,7 +43,7 @@ public class HotmailEmailSender extends GenericEmailSender {
     sender.setToAddress(getToAddress());
     sender.setUserName(getUserName());
     sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
-    sender.setPasswordSaved(isPasswordSaved());
+    sender.setCredentialsSaved(areCredentialsSaved());
     return sender;
   }
 

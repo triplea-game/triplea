@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.debug.ClientLogger;
@@ -27,8 +26,8 @@ import games.strategy.util.ThreadUtil;
 
 public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   private INode m_node;
-  private final List<IMessageListener> m_listeners = new CopyOnWriteArrayList<>();
-  private final List<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<>();
+  private final List<IMessageListener> m_listeners = new ArrayList<>();
+  private final List<IMessengerErrorListener> m_errorListeners = new ArrayList<>();
   private final CountDownLatch m_initLatch = new CountDownLatch(1);
   private Exception m_connectionRefusedError;
   private final NIOSocket m_socket;

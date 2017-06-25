@@ -15,7 +15,7 @@ public class SaveGameFileChooser extends JFileChooser {
   private static final String AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave");
   private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
   private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
-  private static SaveGameFileChooser s_instance;
+  private static SaveGameFileChooser instance;
 
   public enum AUTOSAVE_TYPE {
     AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
@@ -55,10 +55,10 @@ public class SaveGameFileChooser extends JFileChooser {
   }
 
   public static SaveGameFileChooser getInstance() {
-    if (s_instance == null) {
-      s_instance = new SaveGameFileChooser();
+    if (instance == null) {
+      instance = new SaveGameFileChooser();
     }
-    return s_instance;
+    return instance;
   }
 
   private SaveGameFileChooser() {

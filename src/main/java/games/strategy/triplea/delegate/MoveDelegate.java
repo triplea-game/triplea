@@ -315,9 +315,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge,
+  private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge bridge,
       final PlayerID player) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     final Match<Unit> crippledAlliedCarriersMatch = Match.all(Matches.isUnitAllied(player, data),
         Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
@@ -345,12 +345,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
-  private static Change giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player) {
-    final GameData data = aBridge.getData();
+  private static Change giveBonusMovement(final IDelegateBridge bridge, final PlayerID player) {
+    final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit u : t.getUnits().getUnits()) {
@@ -394,10 +394,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player) {
-    final GameData data = aBridge.getData();
+  static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final PlayerID player) {
+    final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
-        games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
+        games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
     final Match<Unit> damagedUnits =
         Match.all(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
     final Match<Unit> damagedUnitsOwned = Match.all(damagedUnits, Matches.unitIsOwnedBy(player));
@@ -440,10 +440,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
         }
       }
     }
-    aBridge.getHistoryWriter().startEvent(
+    bridge.getHistoryWriter().startEvent(
         newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.",
         new HashSet<>(newHitsMap.keySet()));
-    aBridge.addChange(ChangeFactory.unitsHit(newHitsMap));
+    bridge.addChange(ChangeFactory.unitsHit(newHitsMap));
 
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air
     // units to leave while damaged, we need to remove those air units now
@@ -460,7 +460,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       }
     }
     if (!clearAlliedAir.isEmpty()) {
-      aBridge.addChange(clearAlliedAir);
+      bridge.addChange(clearAlliedAir);
     }
   }
 

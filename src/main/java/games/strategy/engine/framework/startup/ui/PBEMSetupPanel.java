@@ -67,14 +67,14 @@ import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 public class PBEMSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
-  private final GameSelectorModel m_gameSelectorModel;
-  private final SelectAndViewEditor m_diceServerEditor;
-  private final SelectAndViewEditor m_forumPosterEditor;
-  private final SelectAndViewEditor m_emailSenderEditor;
-  private final SelectAndViewEditor m_webPosterEditor;
-  private final List<PlayerSelectorRow> m_playerTypes = new ArrayList<>();
-  private final JPanel m_localPlayerPanel = new JPanel();
-  private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
+  private final GameSelectorModel gameSelectorModel;
+  private final SelectAndViewEditor diceServerEditor;
+  private final SelectAndViewEditor forumPosterEditor;
+  private final SelectAndViewEditor emailSenderEditor;
+  private final SelectAndViewEditor webPosterEditor;
+  private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
+  private final JPanel localPlayerPanel = new JPanel();
+  private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
 
   /**
    * Creates a new instance.
@@ -83,15 +83,15 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
    */
   public PBEMSetupPanel(final GameSelectorModel model) {
-    m_gameSelectorModel = model;
-    m_diceServerEditor = new SelectAndViewEditor("Dice Server", "");
-    m_forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
-    m_emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
-    m_webPosterEditor = new SelectAndViewEditor("Send to Website", "websiteSenders.html");
+    gameSelectorModel = model;
+    diceServerEditor = new SelectAndViewEditor("Dice Server", "");
+    forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
+    emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
+    webPosterEditor = new SelectAndViewEditor("Send to Website", "websiteSenders.html");
     createComponents();
     layoutComponents();
     setupListeners();
-    if (m_gameSelectorModel.getGameData() != null) {
+    if (gameSelectorModel.getGameData() != null) {
       loadAll();
     }
     setWidgetActivation();
@@ -99,13 +99,13 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 
 
   private void createComponents() {
-    JScrollPane scrollPane = new JScrollPane(m_localPlayerPanel);
-    m_localPlayerPanel.addHierarchyListener(new HierarchyListener() {
+    final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
+    localPlayerPanel.addHierarchyListener(new HierarchyListener() {
       @Override
       public void hierarchyChanged(HierarchyEvent e) {
-        Window window = SwingUtilities.getWindowAncestor(m_localPlayerPanel);
+        final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
         if (window instanceof Dialog) {
-          Dialog dialog = (Dialog) window;
+          final Dialog dialog = (Dialog) window;
           if (!dialog.isResizable()) {
             dialog.setResizable(true);
             dialog.setMinimumSize(new Dimension(700, 700));
@@ -113,7 +113,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
         }
       }
     });
-    m_localPlayerSelection.addActionListener(
+    localPlayerSelection.addActionListener(
         e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, scrollPane, "Select Local Players and AI's",
             JOptionPane.PLAIN_MESSAGE));
   }
@@ -124,24 +124,24 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // Empty border works as margin
     setBorder(new EmptyBorder(10, 10, 10, 10));
     int row = 0;
-    add(m_diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
+    add(diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
     // the play by Forum settings
-    m_forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
-    add(m_forumPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
+    forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
+    add(forumPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
     final JPanel emailPanel = new JPanel(new GridBagLayout());
     emailPanel.setBorder(new TitledBorder("Play By Email"));
     add(emailPanel, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
     int panelRow = 0;
-    emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow++, 1, 1, 1.0d, 0d,
+    emailPanel.add(emailSenderEditor, new GridBagConstraints(0, panelRow++, 1, 1, 1.0d, 0d,
         GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
 
     // add selection of local players
-    add(m_localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
+    add(localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
         GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
-    layoutPlayerComponents(m_localPlayerPanel, m_playerTypes, m_gameSelectorModel.getGameData());
+    layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
     setWidgetActivation();
   }
 
@@ -157,19 +157,19 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void setupListeners() {
     // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects
     // another game)
-    m_gameSelectorModel.addObserver(this);
+    gameSelectorModel.addObserver(this);
     // subscribe to editor changes, so we cannotify the MainPanel
-    m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-    m_forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-    m_emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-    m_webPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+    diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+    forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+    emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+    webPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
   }
 
   private void loadAll() {
-    loadDiceServer(m_gameSelectorModel.getGameData());
-    loadForumPosters(m_gameSelectorModel.getGameData());
-    loadEmailSender(m_gameSelectorModel.getGameData());
-    loadWebPosters(m_gameSelectorModel.getGameData());
+    loadDiceServer(gameSelectorModel.getGameData());
+    loadForumPosters(gameSelectorModel.getGameData());
+    loadEmailSender(gameSelectorModel.getGameData());
+    loadWebPosters(gameSelectorModel.getGameData());
   }
 
   /**
@@ -190,12 +190,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
         diceRoller.setGameId(cached.getGameId());
       }
     }
-    m_diceServerEditor.setBeans(diceRollers);
-    if (m_gameSelectorModel.isSavedGame()) {
+    diceServerEditor.setBeans(diceRollers);
+    if (gameSelectorModel.isSavedGame()) {
       // get the dice roller from the save game, if any
       final IRemoteDiceServer roller = (IRemoteDiceServer) data.getProperties().get(DICE_ROLLER);
       if (roller != null) {
-        m_diceServerEditor.setSelectedBean(roller);
+        diceServerEditor.setSelectedBean(roller);
       }
     }
   }
@@ -214,7 +214,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAWarClubForumPoster.class));
     forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAForumPoster.class));
-    m_forumPosterEditor.setBeans(forumPosters);
+    forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
     if (forumPoster != null) {
@@ -224,8 +224,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         forumPoster.setUsername(cached.getUsername());
         forumPoster.setPassword(cached.getPassword());
+        forumPoster.setCredentialsSaved(cached.areCredentialsSaved());
       }
-      m_forumPosterEditor.setSelectedBean(forumPoster);
+      forumPosterEditor.setSelectedBean(forumPoster);
     }
   }
 
@@ -235,13 +236,13 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final TripleAWebPoster poster = (TripleAWebPoster) findCachedOrCreateNew(TripleAWebPoster.class);
     poster.setParties(data.getPlayerList().getNames());
     webPosters.add(poster);
-    m_webPosterEditor.setBeans(webPosters);
+    webPosterEditor.setBeans(webPosters);
     // now get the poster stored in the save game
     final IWebPoster webPoster = (IWebPoster) data.getProperties().get(PBEMMessagePoster.WEB_POSTER_PROP_NAME);
     if (webPoster != null) {
       poster.addToAllHosts(webPoster.getHost());
       webPoster.setAllHosts(poster.getAllHosts());
-      m_webPosterEditor.setSelectedBean(webPoster);
+      webPosterEditor.setSelectedBean(webPoster);
     }
   }
 
@@ -259,7 +260,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     emailSenders.add((IEmailSender) findCachedOrCreateNew(GmailEmailSender.class));
     emailSenders.add((IEmailSender) findCachedOrCreateNew(HotmailEmailSender.class));
     emailSenders.add((IEmailSender) findCachedOrCreateNew(GenericEmailSender.class));
-    m_emailSenderEditor.setBeans(emailSenders);
+    emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
     if (sender != null) {
@@ -268,8 +269,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         sender.setUserName(cached.getUserName());
         sender.setPassword(cached.getPassword());
+        sender.setCredentialsSaved(cached.areCredentialsSaved());
       }
-      m_emailSenderEditor.setSelectedBean(sender);
+      emailSenderEditor.setSelectedBean(sender);
     }
   }
 
@@ -295,7 +297,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void shutDown() {
-    m_gameSelectorModel.deleteObserver(this);
+    gameSelectorModel.deleteObserver(this);
   }
 
   /**
@@ -303,7 +305,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public void cancel() {
-    m_gameSelectorModel.deleteObserver(this);
+    gameSelectorModel.deleteObserver(this);
   }
 
   /**
@@ -311,20 +313,20 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public boolean canGameStart() {
-    if (m_gameSelectorModel.getGameData() == null) {
+    if (gameSelectorModel.getGameData() == null) {
       return false;
     }
-    final boolean diceServerValid = m_diceServerEditor.isBeanValid();
-    final boolean summaryValid = m_forumPosterEditor.isBeanValid();
-    final boolean webSiteValid = m_webPosterEditor.isBeanValid();
-    final boolean emailValid = m_emailSenderEditor.isBeanValid();
+    final boolean diceServerValid = diceServerEditor.isBeanValid();
+    final boolean summaryValid = forumPosterEditor.isBeanValid();
+    final boolean webSiteValid = webPosterEditor.isBeanValid();
+    final boolean emailValid = emailSenderEditor.isBeanValid();
     final boolean pbemReady =
-        diceServerValid && summaryValid && emailValid && webSiteValid && m_gameSelectorModel.getGameData() != null;
+        diceServerValid && summaryValid && emailValid && webSiteValid && gameSelectorModel.getGameData() != null;
     if (!pbemReady) {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerSelectorRow player : m_playerTypes) {
+    for (final PlayerSelectorRow player : playerTypes) {
       if (player.isPlayerEnabled()) {
         return true;
       }
@@ -335,10 +337,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   @Override
   public void postStartGame() {
     // // store the dice server
-    final GameData data = m_gameSelectorModel.getGameData();
-    data.getProperties().set(DICE_ROLLER, m_diceServerEditor.getBean());
+    final GameData data = gameSelectorModel.getGameData();
+    data.getProperties().set(DICE_ROLLER, diceServerEditor.getBean());
     // store the Turn Summary Poster
-    final IForumPoster poster = (IForumPoster) m_forumPosterEditor.getBean();
+    final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
       IForumPoster summaryPoster = poster;
       // clone the poster, the remove sensitive info, and put the clone into the game data
@@ -348,7 +350,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       data.getProperties().set(PBEMMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
     }
     // store the email poster
-    IEmailSender sender = (IEmailSender) m_emailSenderEditor.getBean();
+    IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
     if (sender != null) {
       // create a clone, delete the sensitive information in the clone, and use it in the game
       // the locally cached version still has the password so the user doesn't have to enter it every time
@@ -357,7 +359,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
     }
     // store the web site poster
-    IWebPoster webPoster = (IWebPoster) m_webPosterEditor.getBean();
+    IWebPoster webPoster = (IWebPoster) webPosterEditor.getBean();
     if (webPoster != null) {
       webPoster = webPoster.doClone();
       webPoster.clearSensitiveInfo();
@@ -397,27 +399,27 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   @Override
   public ILauncher getLauncher() {
     // update local cache and write to disk before game starts
-    final IForumPoster poster = (IForumPoster) m_forumPosterEditor.getBean();
+    final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
       LocalBeanCache.INSTANCE.storeSerializable(poster.getClass().getCanonicalName(), poster);
     }
-    final IEmailSender sender = (IEmailSender) m_emailSenderEditor.getBean();
+    final IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
     if (sender != null) {
       LocalBeanCache.INSTANCE.storeSerializable(sender.getClass().getCanonicalName(), sender);
     }
-    final IWebPoster web = (IWebPoster) m_webPosterEditor.getBean();
+    final IWebPoster web = (IWebPoster) webPosterEditor.getBean();
     if (web != null) {
       LocalBeanCache.INSTANCE.storeSerializable(web.getClass().getCanonicalName(), web);
     }
-    final IRemoteDiceServer server = (IRemoteDiceServer) m_diceServerEditor.getBean();
+    final IRemoteDiceServer server = (IRemoteDiceServer) diceServerEditor.getBean();
     LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
     LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
-    final String gameUuid = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
-    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUuid);
+    final String gameUuid = (String) gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
+    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) diceServerEditor.getBean(), gameUuid);
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerSelectorRow player : m_playerTypes) {
+    for (final PlayerSelectorRow player : this.playerTypes) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
@@ -425,9 +427,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // disable-able players, or the alliances
     // list, for a local game
     final PlayerListing pl =
-        new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(),
-            m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), null, null);
-    return new LocalLauncher(m_gameSelectorModel, randomSource, pl);
+        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
+            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+    return new LocalLauncher(gameSelectorModel, randomSource, pl);
   }
 
   /**
@@ -455,7 +457,7 @@ enum LocalBeanCache {
 
   Map<String, IBean> map = new HashMap<>();
 
-  private LocalBeanCache() {
+  LocalBeanCache() {
     file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
     map = loadMap();
     // add a shutdown, just in case someone forgets to call writeToDisk
@@ -484,8 +486,7 @@ enum LocalBeanCache {
       } catch (final Exception e) {
         // on error we delete the cache file, if we can
         file.delete();
-        System.err.println("Serialization cache invalid: " + e.getMessage());
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("serialized local bean cache invalid", e);
       }
     }
     return new HashMap<>();
@@ -512,10 +513,9 @@ enum LocalBeanCache {
     synchronized (mutex) {
       try (FileOutputStream fout = new FileOutputStream(file, false);
           ObjectOutputStream out = new ObjectOutputStream(fout)) {
-
         out.writeObject(map);
       } catch (final IOException e) {
-        // ignore
+        ClientLogger.logQuietly("failed to write local bean cache", e);
       }
     }
   }
