@@ -19,13 +19,13 @@ During a Gradle build, Checkstyle runs as part of the `check` task:
 $ ./gradlew clean check
 ```
 
-To run Checkstyle on its own, use the `checkstyleMain` and `checkstyleTest` tasks:
+To run Checkstyle on its own, use the `checkstyleMain`, `checkstyleTest`, and `checkstyleIntegTest` tasks:
 
 ```
-$ ./gradlew clean checkstyleMain checkstyleTest
+$ ./gradlew clean checkstyleMain checkstyleTest checkstyleIntegTest
 ```
 
-Checkstyle will generate HTML and XML reports for both the main and test code.  These reports can be found within the folder `build/reports/checkstyle`.
+Checkstyle will generate HTML and XML reports for the main, unit test, and integration test code.  These reports can be found within the folder `build/reports/checkstyle`.
 
 You are **strongly encouraged** to run the `check` task before submitting a PR to avoid adding unnecessary commits for Checkstyle violations you may have introduced.
 
