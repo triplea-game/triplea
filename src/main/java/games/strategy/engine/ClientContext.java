@@ -3,9 +3,9 @@ package games.strategy.engine;
 import java.util.List;
 
 import games.strategy.engine.config.client.GameEnginePropertyReader;
+import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.triplea.settings.ai.AiSettings;
 import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
