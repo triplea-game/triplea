@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -65,7 +65,7 @@ import games.strategy.util.Version;
  * History object.
  * </p>
  */
-public class GameData implements java.io.Serializable {
+public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -74,9 +74,9 @@ public class GameData implements java.io.Serializable {
   private String gameName;
   private Version gameVersion;
   private int diceSides;
-  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
-  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
-  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
+  private transient List<TerritoryListener> territoryListeners = new ArrayList<>();
+  private transient List<GameDataChangeListener> dataChangeListeners = new ArrayList<>();
+  private transient List<GameMapListener> gameMapListeners = new ArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -350,9 +350,9 @@ public class GameData implements java.io.Serializable {
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    territoryListeners = new CopyOnWriteArrayList<>();
-    dataChangeListeners = new CopyOnWriteArrayList<>();
-    gameMapListeners = new CopyOnWriteArrayList<>();
+    territoryListeners = new ArrayList<>();
+    dataChangeListeners = new ArrayList<>();
+    gameMapListeners = new ArrayList<>();
   }
 
   /**

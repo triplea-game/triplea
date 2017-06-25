@@ -224,6 +224,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         forumPoster.setUsername(cached.getUsername());
         forumPoster.setPassword(cached.getPassword());
+        forumPoster.setCredentialsSaved(cached.areCredentialsSaved());
       }
       forumPosterEditor.setSelectedBean(forumPoster);
     }
@@ -268,6 +269,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       if (cached != null) {
         sender.setUserName(cached.getUserName());
         sender.setPassword(cached.getPassword());
+        sender.setCredentialsSaved(cached.areCredentialsSaved());
       }
       emailSenderEditor.setSelectedBean(sender);
     }
@@ -484,8 +486,7 @@ enum LocalBeanCache {
       } catch (final Exception e) {
         // on error we delete the cache file, if we can
         file.delete();
-        System.err.println("Serialization cache invalid: " + e.getMessage());
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("serialized local bean cache invalid", e);
       }
     }
     return new HashMap<>();
@@ -512,10 +513,9 @@ enum LocalBeanCache {
     synchronized (mutex) {
       try (FileOutputStream fout = new FileOutputStream(file, false);
           ObjectOutputStream out = new ObjectOutputStream(fout)) {
-
         out.writeObject(map);
       } catch (final IOException e) {
-        // ignore
+        ClientLogger.logQuietly("failed to write local bean cache", e);
       }
     }
   }

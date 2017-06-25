@@ -2,8 +2,8 @@ package games.strategy.ui;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
@@ -15,7 +15,7 @@ public class DoubleTextField extends JTextField {
   private double max = Double.MAX_VALUE;
   private double min = Double.MIN_VALUE;
   private String terr = null;
-  private final List<DoubleTextFieldChangeListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<DoubleTextFieldChangeListener> listeners = new ArrayList<>();
 
   /** Creates new DoubleTextField. */
   public DoubleTextField() {

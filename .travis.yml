@@ -7,12 +7,10 @@ addons:
       # python for map file splitter
       - python3
       - python3-yaml
-install: true
+install: ./.travis/setup_lobby_database
 services:
 - postgresql
-script:
-- ./.travis/setup_lobby_database
-- ./gradlew check jacocoTestReport
+script: ./gradlew check jacocoTestReport
 after_success: 
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle

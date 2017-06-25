@@ -20,11 +20,8 @@ import games.strategy.util.Version;
 @RunWith(MockitoJUnitRunner.class)
 public class LobbyServerPropertiesFetcherTest {
 
-
   private static final Version fakeVersion = new Version("0.0.0.0");
 
-  @Mock
-  private UrlRedirectResolver mockUrlRedirectResolver;
   @Mock
   private LobbyPropertyFileParser mockLobbyPropertyFileParser;
   @Mock
@@ -38,7 +35,6 @@ public class LobbyServerPropertiesFetcherTest {
   @Before
   public void setup() {
     testObj = new LobbyServerPropertiesFetcher(
-        mockUrlRedirectResolver,
         mockLobbyPropertyFileParser,
         mockFileDownloader);
   }
@@ -56,8 +52,6 @@ public class LobbyServerPropertiesFetcherTest {
   }
 
   private void givenHappyCase() throws Exception {
-    when(mockUrlRedirectResolver.getUrlFollowingRedirects(TestData.url)).thenReturn(TestData.url);
-
     final File temp = File.createTempFile("temp", "tmp");
     temp.deleteOnExit();
     when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.success(temp));
@@ -67,8 +61,6 @@ public class LobbyServerPropertiesFetcherTest {
 
   @Test(expected = IOException.class)
   public void throwsOnDownloadFailure() throws Exception {
-    when(mockUrlRedirectResolver.getUrlFollowingRedirects(TestData.url)).thenReturn(TestData.url);
-
     final File temp = File.createTempFile("temp", "tmp");
     temp.deleteOnExit();
     when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
@@ -76,12 +68,6 @@ public class LobbyServerPropertiesFetcherTest {
     testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion);
   }
 
-  @Test(expected = IOException.class)
-  public void throwsOnRedirectResolutionFailure() throws Exception {
-    when(mockUrlRedirectResolver.getUrlFollowingRedirects(TestData.url))
-        .thenThrow(new IOException("simulated failure"));
-    testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion);
-  }
 
   private interface TestData {
     String url = "someUrl";

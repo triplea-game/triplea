@@ -1061,18 +1061,10 @@ public class ProTerritoryManager {
               patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(alliedUnits),
                   new ArrayList<>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
 
-
               ProLogger.debug("Checking strafing territory: " + t + ", alliedPlayer="
                   + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
                   + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
                   + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
-
-              if (patd.getMaxBattleResult().getWinPercentage() >= ProData.winPercentage) {
-                System.out.println(data.getSequence().getRound() + " - " + player.getName() + ". strafing territory: "
-                    + t + ", alliedPlayer=" + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
-                    + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
-                    + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
-              }
             }
           }
         }

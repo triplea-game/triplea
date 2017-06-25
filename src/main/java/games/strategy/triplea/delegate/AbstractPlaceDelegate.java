@@ -326,7 +326,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Change place = ChangeFactory.addUnits(at, placeableUnits);
     change.add(remove);
     change.add(place);
-    final UndoablePlacement current_placement = new UndoablePlacement(m_player, change, producer, at, placeableUnits);
+    final UndoablePlacement current_placement = new UndoablePlacement(change, producer, at, placeableUnits);
     m_placements.add(current_placement);
     updateUndoablePlacementIndexes();
     final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();

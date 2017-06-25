@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -71,9 +70,9 @@ import games.strategy.util.Tuple;
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private static final Logger logger = Logger.getLogger(MapPanel.class.getName());
-  private final List<MapSelectionListener> mapSelectionListeners = new CopyOnWriteArrayList<>();
-  private final List<UnitSelectionListener> unitSelectionListeners = new CopyOnWriteArrayList<>();
-  private final List<MouseOverUnitListener> mouseOverUnitsListeners = new CopyOnWriteArrayList<>();
+  private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
+  private final List<UnitSelectionListener> unitSelectionListeners = new ArrayList<>();
+  private final List<MouseOverUnitListener> mouseOverUnitsListeners = new ArrayList<>();
   private GameData m_data;
   // the territory that the mouse is
   private Territory currentTerritory;

@@ -21,6 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClients;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -102,6 +103,7 @@ public final class DownloadUtils {
   private static CloseableHttpClient newHttpClient() {
     return HttpClients.custom()
         .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build())
+        .setRedirectStrategy(new DefaultRedirectStrategy())
         .build();
   }
 
@@ -113,6 +115,7 @@ public final class DownloadUtils {
 
   /**
    * Creaetes a temp file, downloads the contents of a target uri to that file, returns the file.
+   * 
    * @param uri The URI whose contents will be downloaded
    */
   public static FileDownloadResult downloadToFile(final String uri) {
@@ -170,7 +173,6 @@ public final class DownloadUtils {
       downloadToFile(uri, os, client);
     }
   }
-
 
 
 

@@ -1,9 +1,9 @@
 package games.strategy.engine.framework.headlessGameServer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
 
@@ -26,7 +26,7 @@ import games.strategy.util.ThreadUtil;
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private static final long serialVersionUID = 9021977178348892504L;
-  private final List<Observer> m_listeners = new CopyOnWriteArrayList<>();
+  private final List<Observer> m_listeners = new ArrayList<>();
   private final ServerModel m_model;
   private final GameSelectorModel m_gameSelectorModel;
   private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();

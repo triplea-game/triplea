@@ -1,10 +1,10 @@
 package games.strategy.engine.framework;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -41,7 +41,7 @@ public abstract class AbstractGame implements IGame {
   protected IGameModifiedChannel m_gameModifiedChannel;
   protected final PlayerManager m_playerManager;
   protected boolean m_firstRun = true;
-  protected final List<GameStepListener> gameStepListeners = new CopyOnWriteArrayList<>();
+  protected final List<GameStepListener> gameStepListeners = new ArrayList<>();
 
   protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
