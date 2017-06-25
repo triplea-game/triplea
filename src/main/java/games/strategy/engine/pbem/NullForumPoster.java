@@ -33,7 +33,7 @@ public class NullForumPoster implements IForumPoster {
   public void setPassword(final String s) {}
 
   @Override
-  public void setPasswordSaved(final boolean passwordSaved) {}
+  public void setCredentialsSaved(final boolean credentialsSaved) {}
 
   @Override
   public String getTopicId() {
@@ -51,7 +51,7 @@ public class NullForumPoster implements IForumPoster {
   }
 
   @Override
-  public boolean isPasswordSaved() {
+  public boolean areCredentialsSaved() {
     return false;
   }
 
