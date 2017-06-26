@@ -12,8 +12,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.userdb.BadWordController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.server.userdb.BadWordController;
 import games.strategy.engine.lobby.server.userdb.DbUserController;
 import games.strategy.engine.lobby.server.userdb.HashedPassword;
 import games.strategy.net.MacFinder;
