@@ -116,9 +116,6 @@ public class Foo {
   
   // any new private methods called by second public method
 }
-
-
-
 ```
 
 ### Variables
@@ -136,7 +133,7 @@ int firstSquared = first * first;
 int second = 3;
 int secondSquared = second * second;
 
-double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
+double distance = Math.sqrt(firstSquared + secondSquared);
 ```
 
 Instead of:
@@ -147,5 +144,5 @@ int second = 3;
 int firstSquared = first * first;
 int secondSquared = second * second;
 
-double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
+double distance = Math.sqrt(firstSquared + secondSquared);
 ```
