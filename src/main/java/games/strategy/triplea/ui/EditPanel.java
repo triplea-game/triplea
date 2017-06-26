@@ -200,18 +200,18 @@ class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        Resource PUs = null;
+        Resource pus = null;
         getData().acquireReadLock();
         try {
-          PUs = getData().getResourceList().getResource(Constants.PUS);
+          pus = getData().getResourceList().getResource(Constants.PUS);
         } finally {
           getData().releaseReadLock();
         }
-        if (PUs == null) {
+        if (pus == null) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final int oldTotal = player.getResources().getQuantity(PUs);
+        final int oldTotal = player.getResources().getQuantity(pus);
         int newTotal = oldTotal;
         final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
         PUsField.setMaximumSize(PUsField.getPreferredSize());

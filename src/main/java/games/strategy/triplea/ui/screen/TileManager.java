@@ -388,22 +388,22 @@ public class TileManager {
     try {
       // make a square
       final Rectangle bounds = mapData.getBoundingRect(focusOn);
-      int square_length = Math.max(bounds.width, bounds.height);
-      final int grow = square_length / 4;
+      int squareLength = Math.max(bounds.width, bounds.height);
+      final int grow = squareLength / 4;
       bounds.x -= grow;
       bounds.y -= grow;
-      square_length += grow * 2;
+      squareLength += grow * 2;
       // make sure it is not bigger than the whole map
       final int mapDataWidth = mapData.getMapDimensions().width;
       final int mapDataHeight = mapData.getMapDimensions().height;
-      if (square_length > mapDataWidth) {
-        square_length = mapDataWidth;
+      if (squareLength > mapDataWidth) {
+        squareLength = mapDataWidth;
       }
-      if (square_length > mapDataHeight) {
-        square_length = mapDataHeight;
+      if (squareLength > mapDataHeight) {
+        squareLength = mapDataHeight;
       }
-      bounds.width = square_length;
-      bounds.height = square_length;
+      bounds.width = squareLength;
+      bounds.height = squareLength;
       // keep it in bounds
       if (!mapData.scrollWrapX()) {
         if (bounds.x < 0) {
@@ -421,7 +421,7 @@ public class TileManager {
           bounds.y = mapDataHeight - bounds.height;
         }
       }
-      final Image rVal = Util.createImage(square_length, square_length, false);
+      final Image rVal = Util.createImage(squareLength, squareLength, false);
       final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
       graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,

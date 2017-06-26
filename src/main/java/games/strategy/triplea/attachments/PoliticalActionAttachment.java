@@ -51,8 +51,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
 
   public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch) {
-    PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    PoliticalActionAttachment paa = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+    if (paa == null) {
       if (playersToSearch == null) {
         throw new IllegalStateException(
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
@@ -61,16 +61,16 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
           if (otherPlayer == player) {
             continue;
           }
-          rVal = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
+          paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
+          if (paa != null) {
+            return paa;
           }
         }
         throw new IllegalStateException(
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
     }
-    return rVal;
+    return paa;
   }
 
   // list of relationship changes to be performed if this action is performed sucessfully

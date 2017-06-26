@@ -1063,8 +1063,8 @@ public class MoveValidator {
           result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
         } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
           Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          for (Unit aTransportsToLoad : transportsToLoad) {
-            final TripleAUnit trn = (TripleAUnit) aTransportsToLoad;
+          for (Unit transportToLoad : transportsToLoad) {
+            final TripleAUnit trn = (TripleAUnit) transportToLoad;
             if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd())) {
               final UnitAttachment ua = UnitAttachment.get(unit.getType());
               // UnitAttachment trna = UnitAttachment.get(trn.getType());

@@ -226,15 +226,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int max = Integer.MIN_VALUE;
-    T rVal = null;
+    int maxValue = Integer.MIN_VALUE;
+    T maxKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() > max) {
-        max = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() > maxValue) {
+        maxValue = entry.getValue();
+        maxKey = entry.getKey();
       }
     }
-    return rVal;
+    return maxKey;
   }
 
   /**
@@ -244,15 +244,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int min = Integer.MAX_VALUE;
-    T rVal = null;
+    int minValue = Integer.MAX_VALUE;
+    T minKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() < min) {
-        min = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() < minValue) {
+        minValue = entry.getValue();
+        minKey = entry.getKey();
       }
     }
-    return rVal;
+    return minKey;
   }
 
   /**

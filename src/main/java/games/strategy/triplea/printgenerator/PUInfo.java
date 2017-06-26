@@ -18,9 +18,9 @@ public class PUInfo {
   protected void saveToFile(final PrintGenerationData printData) {
     final GameData m_data = printData.getData();
     final PrintGenerationData m_printData = printData;
-    Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
-    while (m_playerIterator.hasNext()) {
-      final PlayerID currentPlayer = m_playerIterator.next();
+    Iterator<PlayerID> playerIterator = m_data.getPlayerList().iterator();
+    while (playerIterator.hasNext()) {
+      final PlayerID currentPlayer = playerIterator.next();
       final Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();
       final Map<Resource, Integer> resourceMap = new HashMap<>();
       while (resourceIterator.hasNext()) {
@@ -53,9 +53,9 @@ public class PUInfo {
       }
       resourceWriter.write("\r\n");
       // Print Player's and Resource Amount's
-      m_playerIterator = m_data.getPlayerList().iterator();
-      while (m_playerIterator.hasNext()) {
-        final PlayerID currentPlayer = m_playerIterator.next();
+      playerIterator = m_data.getPlayerList().iterator();
+      while (playerIterator.hasNext()) {
+        final PlayerID currentPlayer = playerIterator.next();
         resourceWriter.write(currentPlayer.getName());
         final Map<Resource, Integer> resourceMap = m_infoMap.get(currentPlayer);
         final Iterator<Resource> resIterator = resourceMap.keySet().iterator();
