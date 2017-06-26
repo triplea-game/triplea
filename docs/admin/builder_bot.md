@@ -6,7 +6,7 @@ An admin owned account used for automated build tasks that require repository wr
 
 
 ## Personal Access Keys
-- *Travis Automated Releases Ley*
+- *Travis Automated Releases Key*
   - Description: This key allows Travis to push to github releases. It is set up by the
       Travis ruby set up program when first configuring travis with TripleA.
   - Access: encrypted in the travis.yml file
