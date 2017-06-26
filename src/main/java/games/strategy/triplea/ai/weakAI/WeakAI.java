@@ -732,12 +732,12 @@ public class WeakAI extends AbstractAI {
   }
 
   @Override
-  public void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  public void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     if (purchaseForBid) {
       // bid will only buy land units, due to weak ai placement for bid not being able to handle sea units
       final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-      int leftToSpend = PUsToSpend;
+      int leftToSpend = pusToSpend;
       final List<ProductionRule> rules = player.getProductionFrontier().getRules();
       final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
       int minCost = Integer.MAX_VALUE;

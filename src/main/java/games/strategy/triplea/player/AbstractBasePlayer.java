@@ -31,8 +31,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    * Anything that overrides this MUST call super.initialize(iPlayerBridge, playerID);
    */
   @Override
-  public void initialize(final IPlayerBridge iPlayerBridge, final PlayerID playerId) {
-    playerBridge = iPlayerBridge;
+  public void initialize(final IPlayerBridge playerBridge, final PlayerID playerId) {
+    this.playerBridge = playerBridge;
     this.playerID = playerId;
   }
 

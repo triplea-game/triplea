@@ -4,10 +4,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 
 public class DelegateFinder {
-  private static IDelegate findDelegate(final GameData data, final String delegate_name) {
-    final IDelegate delegate = data.getDelegateList().getDelegate(delegate_name);
+  private static IDelegate findDelegate(final GameData data, final String delegateName) {
+    final IDelegate delegate = data.getDelegateList().getDelegate(delegateName);
     if (delegate == null) {
-      throw new IllegalStateException(delegate_name + " delegate not found");
+      throw new IllegalStateException(delegateName + " delegate not found");
     }
     return delegate;
   }

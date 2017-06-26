@@ -101,22 +101,22 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   /**
    * @param type
    *        referring unit type
-   * @param max_units
+   * @param maxUnits
    *        maximal number of units
    * @return up to count units of a given type currently in the collection.
    */
-  public Collection<Unit> getUnits(final UnitType type, final int max_units) {
-    if (max_units == 0) {
+  public Collection<Unit> getUnits(final UnitType type, final int maxUnits) {
+    if (maxUnits == 0) {
       return new ArrayList<>();
     }
-    if (max_units < 0) {
-      throw new IllegalArgumentException("value must be positiive.  Instead its:" + max_units);
+    if (maxUnits < 0) {
+      throw new IllegalArgumentException("value must be positiive.  Instead its:" + maxUnits);
     }
     final Collection<Unit> rVal = new ArrayList<>();
     for (final Unit current : m_units) {
       if (current.getType().equals(type)) {
         rVal.add(current);
-        if (rVal.size() == max_units) {
+        if (rVal.size() == maxUnits) {
           return rVal;
         }
       }

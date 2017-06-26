@@ -213,13 +213,13 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
    * @return whether all territories in this route match the given match (start territory is not tested).
    */
-  public boolean allMatch(final Match<Territory> aMatch) {
+  public boolean allMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (!aMatch.match(t)) {
+      if (!match.match(t)) {
         return false;
       }
     }
@@ -227,13 +227,13 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
    * @return whether some territories in this route match the given match (start territory is not tested).
    */
-  public boolean someMatch(final Match<Territory> aMatch) {
+  public boolean someMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (aMatch.match(t)) {
+      if (match.match(t)) {
         return true;
       }
     }
@@ -241,17 +241,17 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
    * @return whether all territories in this route match the given match (start and end territories are not tested).
    */
-  public boolean allMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps) {
+  public boolean allMatchMiddleSteps(final Match<Territory> match, final boolean defaultWhenNoMiddleSteps) {
     final List<Territory> middle = getMiddleSteps();
     if (middle.isEmpty()) {
       return defaultWhenNoMiddleSteps;
     }
     for (final Territory t : middle) {
-      if (!aMatch.match(t)) {
+      if (!match.match(t)) {
         return false;
       }
     }
@@ -259,12 +259,12 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
    * @return all territories in this route match the given match (start territory is not tested).
    */
-  public Collection<Territory> getMatches(final Match<Territory> aMatch) {
-    return Match.getMatches(m_steps, aMatch);
+  public Collection<Territory> getMatches(final Match<Territory> match) {
+    return Match.getMatches(m_steps, match);
   }
 
   @Override

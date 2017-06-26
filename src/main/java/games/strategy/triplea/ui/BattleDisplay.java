@@ -181,9 +181,9 @@ public class BattleDisplay extends JPanel {
     return prefs.getBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, true);
   }
 
-  public static void setShowEnemyCasualtyNotification(final boolean aVal) {
+  public static void setShowEnemyCasualtyNotification(final boolean showEnemyCasualtyNotification) {
     final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, aVal);
+    prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, showEnemyCasualtyNotification);
   }
 
   public static boolean getFocusOnOwnCasualtiesNotification() {
@@ -191,14 +191,14 @@ public class BattleDisplay extends JPanel {
     return prefs.getBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, false);
   }
 
-  public static void setFocusOnOwnCasualtiesNotification(final boolean aVal) {
+  public static void setFocusOnOwnCasualtiesNotification(final boolean focusOnOwnCasualtiesNotification) {
     final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, aVal);
+    prefs.putBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, focusOnOwnCasualtiesNotification);
   }
 
-  public static void setConfirmDefensiveRolls(final boolean aVal) {
+  public static void setConfirmDefensiveRolls(final boolean confirmDefensiveRolls) {
     final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, aVal);
+    prefs.putBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, confirmDefensiveRolls);
   }
 
   public static boolean getConfirmDefensiveRolls() {
@@ -210,12 +210,12 @@ public class BattleDisplay extends JPanel {
   /**
    * updates the panel content according to killed units for the player.
    *
-   * @param aKilledUnits
+   * @param killedUnits
    *        list of units killed
    * @param playerId
    *        player kills belongs to
    */
-  private Collection<Unit> updateKilledUnits(final Collection<Unit> aKilledUnits, final PlayerID playerId) {
+  private Collection<Unit> updateKilledUnits(final Collection<Unit> killedUnits, final PlayerID playerId) {
     final JPanel lCausalityPanel;
     if (playerId.equals(defender)) {
       lCausalityPanel = casualtiesInstantPanelDefender;
@@ -225,7 +225,7 @@ public class BattleDisplay extends JPanel {
     Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
     try {
-      dependentsMap = BattleCalculator.getDependents(aKilledUnits);
+      dependentsMap = BattleCalculator.getDependents(killedUnits);
     } finally {
       gameData.releaseReadLock();
     }
@@ -235,7 +235,7 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
       dependentUnitsReturned.addAll(dependentCollection);
     }
-    for (final UnitCategory category : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
+    for (final UnitCategory category : UnitSeperator.categorize(killedUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.createUnitImageJLabel(category.getType(), category.getOwner(), gameData);
       panel.add(unit);

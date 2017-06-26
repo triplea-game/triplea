@@ -101,13 +101,13 @@ public class RepairPanel extends ActionPanel {
   };
 
   // Spin through the territories to get this.
-  private static int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> m_repair) {
-    final Collection<Unit> units = m_repair.keySet();
+  private static int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> repair) {
+    final Collection<Unit> units = repair.keySet();
     final Iterator<Unit> iter = units.iterator();
     int totalValues = 0;
     while (iter.hasNext()) {
       final Unit unit = iter.next();
-      totalValues += m_repair.get(unit).totalValues();
+      totalValues += repair.get(unit).totalValues();
     }
     return totalValues;
   }
