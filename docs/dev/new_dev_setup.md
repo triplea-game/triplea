@@ -16,10 +16,13 @@
 
 ### Gradle - Building and Running the Code
 
-
 Useful build commands:
 
 ```
 ./gradlew test
 ./gradlew run
 ```
+
+## Set up IDE Formatter
+See [code format](https://github.com/triplea-game/triplea/blob/master/docs/dev/code_format.md)
+
