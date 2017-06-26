@@ -1,23 +1,17 @@
-
-For the most part, we are following [Google java style](http://google.github.io/styleguide/javaguide.html)
+Unless specified otherwise, follow: [Google java style](http://google.github.io/styleguide/javaguide.html)
 
 ## Format
-Please import these IDE formatter templates:
+
+### Eclipse
+
+Project preferences > Java > java format, import and select the eclipse format xml file.
 
 - [https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea_java_eclipse_format_style.xml](https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea_java_eclipse_format_style.xml)
 - [https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea_java_eclipse_cleanup.xml](https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea_java_eclipse_cleanup.xml)
 - [https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea.importorder](https://github.com/triplea-game/triplea/blob/master/eclipse/format/triplea.importorder)
 
-### Installing the formatter in IntelliJ
-- Download the plugin "Eclipse Code Formatter", use that to import the eclipse formatter.  Do not simply use the XML file without the plugin.
-- Open up settings and go to 'other settings' and enable the plugin. Make sure the following are checked: 
-   - "Use the Eclipse code formatter", 
-   - "Enable Java", 
-   - "Use Eclipse 4.4 Java formatter / otherwise Eclipse 4.5 ....", 
-   - "Optimize Imports"
-
-### Installing the formatter in eclipse
-Project preferences > Java > java format, import and select the eclipse format xml file.
+### IntelliJ
+- Use plugin "Eclipse Code Formatter"
 
 ## Current Deviations from google formatter
 - setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="120"
