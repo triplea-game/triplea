@@ -5,7 +5,6 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -35,11 +34,9 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   @Override
   public boolean postTurnSummary(final String summary, final String title) {
-    final NameValuePair username = new BasicNameValuePair("username", getUsername());
-    final NameValuePair password = new BasicNameValuePair("password", getPassword());
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      final int userId = getUserId(client, username, password);
-      final String token = getToken(client, userId, password);
+      final int userId = getUserId(client);
+      final String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
         m_turnSummaryRef = "Sucessfully posted!";
@@ -91,9 +88,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     client.execute(httpDelete);
   }
 
-  private static int getUserId(final CloseableHttpClient client, final NameValuePair username,
-      final NameValuePair password) throws Exception {
-    final JSONObject jsonObject = login(client, Arrays.asList(username, password));
+  private int getUserId(final CloseableHttpClient client) throws Exception {
+    final JSONObject jsonObject = login(client);
     checkUser(jsonObject);
     return jsonObject.getInt("uid");
   }
@@ -110,10 +106,11 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private static JSONObject login(final CloseableHttpClient client, final List<NameValuePair> entity)
-      throws IOException {
+  private JSONObject login(final CloseableHttpClient client) throws IOException {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
-    post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
+    post.setEntity(new UrlEncodedFormEntity(
+        Arrays.asList(newUsernameParameter(), newPasswordParameter()),
+        StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
@@ -121,10 +118,19 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private static String getToken(final CloseableHttpClient client, final int userId, final NameValuePair password)
-      throws Exception {
+  private NameValuePair newUsernameParameter() {
+    return new BasicNameValuePair("username", getUsername());
+  }
+
+  private NameValuePair newPasswordParameter() {
+    return new BasicNameValuePair("password", getPassword());
+  }
+
+  private String getToken(final CloseableHttpClient client, final int userId) throws Exception {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
-    post.setEntity(new UrlEncodedFormEntity(Collections.singletonList(password), StandardCharsets.UTF_8));
+    post.setEntity(new UrlEncodedFormEntity(
+        Collections.singletonList(newPasswordParameter()),
+        StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
