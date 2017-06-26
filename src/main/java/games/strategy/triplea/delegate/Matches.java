@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
@@ -17,7 +16,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -2220,6 +2218,7 @@ public class Matches {
       return (ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0);
     }
   };
+
   public static final Match<Unit> UnitCreatesResources = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -2230,46 +2229,7 @@ public class Matches {
       return (ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0);
     }
   };
-  /** Any unit that creates at least a single positive resource. */
-  public static final Match<Unit> UnitCreatesResourcesPositive = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      if (!UnitCreatesResources.match(unit)) {
-        return false;
-      }
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null || ua.getCreatesResourcesList() == null) {
-        return false;
-      }
-      final IntegerMap<Resource> resources = ua.getCreatesResourcesList();
-      for (final Entry<Resource, Integer> entry : resources.entrySet()) {
-        if (entry.getValue() > 0) {
-          return true;
-        }
-      }
-      return false;
-    }
-  };
-  /** Any unit that does not create a single positive resource, but does create at least a single negative resource. */
-  public static final Match<Unit> UnitCreatesResourcesNegative = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      if (!UnitCreatesResources.match(unit) || UnitCreatesResourcesPositive.match(unit)) {
-        return false;
-      }
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null || ua.getCreatesResourcesList() == null) {
-        return false;
-      }
-      final IntegerMap<Resource> resources = ua.getCreatesResourcesList();
-      for (final Entry<Resource, Integer> entry : resources.entrySet()) {
-        if (entry.getValue() < 0) {
-          return true;
-        }
-      }
-      return false;
-    }
-  };
+
   public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = new Match<UnitType>() {
     @Override
     public boolean match(final UnitType obj) {
@@ -2281,6 +2241,7 @@ public class Matches {
       return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
     }
   };
+
   public static final Match<Unit> UnitConsumesUnitsOnCreation = new Match<Unit>() {
     @Override
     public boolean match(final Unit obj) {
