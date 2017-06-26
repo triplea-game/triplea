@@ -16,10 +16,20 @@
 
 ### Gradle - Building and Running the Code
 
-
 Useful build commands:
 
 ```
 ./gradlew test
 ./gradlew run
 ```
+
+## Set up IDE Formatter
+See [code format](https://github.com/triplea-game/triplea/blob/master/docs/dev/code_format.md)
+
+
+## Useful Tools
+
+- SCM breeze, useful Git CLI helper: https://github.com/ndbroadbent/scm_breeze
+- EGit in Eclipse: http://www.eclipse.org/egit/
+  - more assistance can be found on http://www.vogella.com/tutorials/EclipseGit/article.html
+
