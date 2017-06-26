@@ -9,7 +9,7 @@ public class ProDummyGameModifiedChannel implements IGameModifiedChannel {
   public void addChildToEvent(final String text, final Object renderingData) {}
 
   @Override
-  public void gameDataChanged(final Change aChange) {}
+  public void gameDataChanged(final Change change) {}
 
   @Override
   public void shutDown() {}

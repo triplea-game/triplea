@@ -31,9 +31,9 @@ public class ClientGame extends AbstractGame {
     super(data, gamePlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
-      public void gameDataChanged(final Change aChange) {
-        m_data.performChange(aChange);
-        m_data.getHistory().getHistoryWriter().addChange(aChange);
+      public void gameDataChanged(final Change change) {
+        m_data.performChange(change);
+        m_data.getHistory().getHistoryWriter().addChange(change);
       }
 
       @Override
@@ -187,7 +187,7 @@ public class ClientGame extends AbstractGame {
   }
 
   @Override
-  public void addChange(final Change aChange) {
+  public void addChange(final Change change) {
     throw new UnsupportedOperationException();
   }
 

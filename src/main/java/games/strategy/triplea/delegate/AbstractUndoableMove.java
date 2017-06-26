@@ -66,8 +66,8 @@ public abstract class AbstractUndoableMove implements Serializable {
     return m_change;
   }
 
-  public final void addChange(final Change aChange) {
-    m_change.add(aChange);
+  public final void addChange(final Change change) {
+    m_change.add(change);
   }
 
   public Collection<Unit> getUnits() {

@@ -809,7 +809,7 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-  public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand,
+  public boolean getOKToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
       final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty() || messageAndDialogThreadPool == null) {
       return true;
@@ -826,7 +826,7 @@ public class TripleAFrame extends MainGameFrame {
     final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     int carrierCount = 0;
-    for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_id)) {
+    for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, id)) {
       carrierCount += p.getUnits().getMatches(Matches.UnitIsCarrier).size();
     }
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
@@ -1310,25 +1310,25 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun,
-      final IPoliticsDelegate iPoliticsDelegate) {
+      final IPoliticsDelegate politicsDelegate) {
     if (messageAndDialogThreadPool == null) {
       return null;
     }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPolitics(player);
     requestWindowFocus();
-    return actionButtons.waitForPoliticalAction(firstRun, iPoliticsDelegate);
+    return actionButtons.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
   public UserActionAttachment getUserActionChoice(final PlayerID player, final boolean firstRun,
-      final IUserActionDelegate iUserActionDelegate) {
+      final IUserActionDelegate userActionDelegate) {
     if (messageAndDialogThreadPool == null) {
       return null;
     }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToUserActions(player);
     requestWindowFocus();
-    return actionButtons.waitForUserActionAction(firstRun, iUserActionDelegate);
+    return actionButtons.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
   public TechRoll getTechRolls(final PlayerID id) {

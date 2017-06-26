@@ -127,11 +127,11 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     }
   }
 
-  public int getCombatEffect(final UnitType aType, final boolean defending) {
+  public int getCombatEffect(final UnitType type, final boolean defending) {
     if (defending) {
-      return m_combatDefenseEffect.getInt(aType);
+      return m_combatDefenseEffect.getInt(type);
     } else {
-      return m_combatOffenseEffect.getInt(aType);
+      return m_combatOffenseEffect.getInt(type);
     }
   }
 

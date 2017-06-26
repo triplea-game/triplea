@@ -95,10 +95,10 @@ public class ServerGame extends AbstractGame {
     super(data, localPlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
-      public void gameDataChanged(final Change aChange) {
+      public void gameDataChanged(final Change change) {
         assertCorrectCaller();
-        m_data.performChange(aChange);
-        m_data.getHistory().getHistoryWriter().addChange(aChange);
+        m_data.performChange(change);
+        m_data.getHistory().getHistoryWriter().addChange(change);
       }
 
       private void assertCorrectCaller() {
@@ -607,10 +607,10 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public void addChange(final Change aChange) {
+  public void addChange(final Change change) {
     // let our channel subscribor do the change,
     // that way all changes will happen in the same thread
-    getGameModifiedBroadcaster().gameDataChanged(aChange);
+    getGameModifiedBroadcaster().gameDataChanged(change);
   }
 
   @Override

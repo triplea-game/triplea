@@ -67,8 +67,8 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void addChange(final Change aChange) {
-    m_bridge.addChange(aChange);
+  public void addChange(final Change change) {
+    m_bridge.addChange(change);
   }
 
   @Override

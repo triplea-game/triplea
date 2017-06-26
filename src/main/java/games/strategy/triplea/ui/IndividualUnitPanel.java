@@ -298,8 +298,8 @@ class SingleUnitPanel extends JPanel {
     return unit;
   }
 
-  public void createComponents(final JPanel panel, final int yIndex) {
-    panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+  public void createComponents(final JPanel panel, final int rowIndex) {
+    panel.add(this, new GridBagConstraints(0, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     textField.addChangeListener(countTextFieldListener);
   }

@@ -102,25 +102,25 @@ public final class TileImageFactory {
     }
   }
 
-  public static void setShowMapBlendMode(final String aString) {
-    s_showMapBlendMode = aString;
+  public static void setShowMapBlendMode(final String showMapBlendMode) {
+    s_showMapBlendMode = showMapBlendMode;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.put(SHOW_MAP_BLEND_MODE, s_showMapBlendMode);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + aString, ex);
+      ClientLogger.logQuietly("faild to save value: " + showMapBlendMode, ex);
     }
   }
 
-  public static void setShowMapBlendAlpha(final float aFloat) {
-    s_showMapBlendAlpha = aFloat;
+  public static void setShowMapBlendAlpha(final float showMapBlendAlpha) {
+    s_showMapBlendAlpha = showMapBlendAlpha;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putFloat(SHOW_MAP_BLEND_ALPHA, s_showMapBlendAlpha);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + aFloat, ex);
+      ClientLogger.logQuietly("faild to save value: " + showMapBlendAlpha, ex);
     }
   }
 
@@ -362,8 +362,8 @@ public final class TileImageFactory {
     return configuration.createCompatibleImage(width, height);
   }
 
-  public void setM_imageCache(final HashMap<String, ImageRef> m_imageCache) {
-    this.m_imageCache = m_imageCache;
+  public void setM_imageCache(final HashMap<String, ImageRef> imageCache) {
+    this.m_imageCache = imageCache;
   }
 
   public HashMap<String, ImageRef> getM_imageCache() {

@@ -104,7 +104,7 @@ public class EconomyPanel extends AbstractStatPanel {
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       synchronized (this) {
         m_isDirty = true;
       }

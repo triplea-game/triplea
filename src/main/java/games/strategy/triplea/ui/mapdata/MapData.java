@@ -514,10 +514,10 @@ public class MapData implements Closeable {
     verifyKeys(data, m_place, "place");
   }
 
-  private static void verifyKeys(final GameData data, final Map<String, ?> aMap, final String dataTypeForErrorMessage)
+  private static void verifyKeys(final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage)
       throws IllegalStateException {
     final StringBuilder errors = new StringBuilder();
-    final Iterator<String> iter = aMap.keySet().iterator();
+    final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
       final String name = iter.next();
       final Territory terr = data.getMap().getTerritory(name);
@@ -527,7 +527,7 @@ public class MapData implements Closeable {
       }
     }
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
-    final Set<String> keySet = aMap.keySet();
+    final Set<String> keySet = map.keySet();
     while (territories.hasNext()) {
       final Territory terr = territories.next();
       if (!keySet.contains(terr.getName())) {
@@ -772,13 +772,13 @@ public class MapData implements Closeable {
     return m_territoryEffects.get(territory.getName());
   }
 
-  public Optional<Image> getTerritoryEffectImage(final String m_effectName) {
+  public Optional<Image> getTerritoryEffectImage(final String effectName) {
     // TODO: what does this cache buy us? should we still keep it?
-    if (m_effectImages.get(m_effectName) != null) {
-      return Optional.of(m_effectImages.get(m_effectName));
+    if (m_effectImages.get(effectName) != null) {
+      return Optional.of(m_effectImages.get(effectName));
     }
-    final Optional<Image> effectImage = loadImage("territoryEffects/" + m_effectName + ".png");
-    m_effectImages.put(m_effectName, effectImage.orElse(null));
+    final Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + ".png");
+    m_effectImages.put(effectName, effectImage.orElse(null));
     return effectImage;
   }
 }

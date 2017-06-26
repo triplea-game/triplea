@@ -64,8 +64,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * Called before the delegate will run, AND before "start" is called.
    */
   @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
+  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
+    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
   /**
@@ -349,7 +349,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   /**
    * Select which territory to bombard.
    */
-  private IBattle selectBombardingBattle(final Unit u, final Territory uTerritory, final Collection<IBattle> battles) {
+  private IBattle selectBombardingBattle(final Unit u, final Territory unitTerritory,
+      final Collection<IBattle> battles) {
     final boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
     // If only one battle to select from just return that battle
     if ((battles.size() == 1)) {
@@ -373,7 +374,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     Territory bombardingTerritory = null;
     if (!territories.isEmpty()) {
-      bombardingTerritory = remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
+      bombardingTerritory = remotePlayer.selectBombardingTerritory(u, unitTerritory, territories, true);
     }
     if (bombardingTerritory != null) {
       return battleTerritories.get(bombardingTerritory);

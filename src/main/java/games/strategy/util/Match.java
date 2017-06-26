@@ -51,10 +51,10 @@ public abstract class Match<T> {
   /**
    * Returns the elements of the collection that match.
    */
-  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> match) {
     final List<T> matches = new ArrayList<>();
     for (final T current : collection) {
-      if (aMatch.match(current)) {
+      if (match.match(current)) {
         matches.add(current);
       }
     }
@@ -66,7 +66,7 @@ public abstract class Match<T> {
    * If n matches cannot be found will return all matches that
    * can be found.
    */
-  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> aMatch) {
+  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> match) {
     if (max == 0 || collection.isEmpty()) {
       return Collections.emptyList();
     }
@@ -75,7 +75,7 @@ public abstract class Match<T> {
     }
     final List<T> matches = new ArrayList<>(Math.min(max, collection.size()));
     for (final T current : collection) {
-      if (aMatch.match(current)) {
+      if (match.match(current)) {
         matches.add(current);
       }
       if (matches.size() == max) {
@@ -88,12 +88,12 @@ public abstract class Match<T> {
   /**
    * returns true if all elements in the collection match.
    */
-  public static <T> boolean allMatch(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
     if (collection.isEmpty()) {
       return false;
     }
     for (final T current : collection) {
-      if (!aMatch.match(current)) {
+      if (!match.match(current)) {
         return false;
       }
     }
@@ -103,12 +103,12 @@ public abstract class Match<T> {
   /**
    * Returns true if any matches could be found.
    */
-  public static <T> boolean someMatch(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> boolean someMatch(final Collection<T> collection, final Match<T> match) {
     if (collection.isEmpty()) {
       return false;
     }
     for (final T current : collection) {
-      if (aMatch.match(current)) {
+      if (match.match(current)) {
         return true;
       }
     }
@@ -118,17 +118,17 @@ public abstract class Match<T> {
   /**
    * Returns true if no matches could be found.
    */
-  public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> aMatch) {
-    return !someMatch(collection, aMatch);
+  public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> match) {
+    return !someMatch(collection, match);
   }
 
   /**
    * Returns the number of matches found.
    */
-  public static <T> int countMatches(final Collection<T> collection, final Match<T> aMatch) {
+  public static <T> int countMatches(final Collection<T> collection, final Match<T> match) {
     int count = 0;
     for (final T current : collection) {
-      if (aMatch.match(current)) {
+      if (match.match(current)) {
         count++;
       }
     }
@@ -138,12 +138,12 @@ public abstract class Match<T> {
   /**
    * return the keys where the value keyed by the key matches valueMatch.
    */
-  public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> aMap, final Match<V> valueMatch) {
+  public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> map, final Match<V> valueMatch) {
     final Set<K> rVal = new HashSet<>();
-    final Iterator<K> keys = aMap.keySet().iterator();
+    final Iterator<K> keys = map.keySet().iterator();
     while (keys.hasNext()) {
       final K key = keys.next();
-      final V value = aMap.get(key);
+      final V value = map.get(key);
       if (valueMatch.match(value)) {
         rVal.add(key);
       }

@@ -29,8 +29,8 @@ class LobbyGameTable extends JTable {
   }
 
   @Override
-  public Component prepareRenderer(final TableCellRenderer renderer, final int rowIndex, final int vColIndex) {
-    final Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+  public Component prepareRenderer(final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
+    final Component c = super.prepareRenderer(renderer, rowIndex, colIndex);
     if (this.dataModel instanceof TableSorter) {
       final TableSorter tmodel = (TableSorter) this.dataModel;
       if (tmodel.getTableModel() instanceof LobbyGameTableModel) {

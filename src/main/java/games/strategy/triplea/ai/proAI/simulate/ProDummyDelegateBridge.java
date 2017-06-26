@@ -100,9 +100,9 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public void enterDelegateExecution() {}
 
   @Override
-  public void addChange(final Change aChange) {
-    m_allChanges.add(aChange);
-    m_data.performChange(aChange);
+  public void addChange(final Change change) {
+    m_allChanges.add(change);
+    m_data.performChange(change);
   }
 
   @Override

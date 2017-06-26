@@ -170,8 +170,8 @@ class HttpDiceRollerDialog extends JDialog {
     m_buttons.add(m_reRollButton);
   }
 
-  public void appendText(final String aString) {
-    m_text.setText(m_text.getText() + aString);
+  public void appendText(final String text) {
+    m_text.setText(m_text.getText() + text);
   }
 
   public void notifyError() {

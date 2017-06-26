@@ -24,10 +24,10 @@ public interface IDelegate {
   /**
    * Called before the delegate will run and before "start" is called.
    *
-   * @param iDelegateBridge
+   * @param delegateBridge
    *        the IDelegateBridge
    */
-  void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge);
+  void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge);
 
   /**
    * Called before the delegate will run.

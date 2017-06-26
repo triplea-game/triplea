@@ -370,7 +370,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       synchronized (this) {
         m_isDirty = true;
       }
@@ -565,7 +565,7 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
   public void enterDelegateExecution() {}
 
   @Override
-  public void addChange(final Change aChange) {}
+  public void addChange(final Change change) {}
 
   @Override
   public void stopGameSequence() {}
@@ -577,7 +577,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void addChildToEvent(final String text, final Object renderingData) {}
 
   @Override
-  public void gameDataChanged(final Change aChange) {}
+  public void gameDataChanged(final Change change) {}
 
   @Override
   public void shutDown() {}
@@ -612,7 +612,7 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purcahseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     throw new UnsupportedOperationException();
   }

@@ -295,8 +295,8 @@ public class GameData implements Serializable {
     territoryListeners.forEach(territoryListener -> territoryListener.ownerChanged(t));
   }
 
-  void notifyGameDataChanged(final Change aChange) {
-    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(aChange));
+  void notifyGameDataChanged(final Change change) {
+    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
   }
 
   void notifyMapDataChanged() {

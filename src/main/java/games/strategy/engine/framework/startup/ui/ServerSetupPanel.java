@@ -79,8 +79,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     }
   }
 
-  public synchronized void repostLobbyWatcher(final IGame iGame) {
-    if (iGame != null) {
+  public synchronized void repostLobbyWatcher(final IGame game) {
+    if (game != null) {
       return;
     }
     if (canGameStart()) {

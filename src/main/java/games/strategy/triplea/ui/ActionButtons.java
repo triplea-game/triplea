@@ -220,8 +220,8 @@ public class ActionButtons extends JPanel {
    * @return null if no action was picked.
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
-      final IPoliticsDelegate iPoliticsDelegate) {
-    return politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
+      final IPoliticsDelegate politicsDelegate) {
+    return politicsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
   /**
@@ -230,8 +230,8 @@ public class ActionButtons extends JPanel {
    * @return null if no action was picked.
    */
   public UserActionAttachment waitForUserActionAction(final boolean firstRun,
-      final IUserActionDelegate iUserActionDelegate) {
-    return userActionPanel.waitForUserActionAction(firstRun, iUserActionDelegate);
+      final IUserActionDelegate userActionDelegate) {
+    return userActionPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
   /**

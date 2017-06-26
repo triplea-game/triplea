@@ -168,12 +168,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNotification(final String sNotification) {
-    if (sNotification == null) {
+  public void setNotification(final String notification) {
+    if (notification == null) {
       m_notification = null;
       return;
     }
-    m_notification = sNotification;
+    m_notification = notification;
   }
 
   public String getNotification() {

@@ -49,8 +49,8 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     }
   }
 
-  synchronized void repostLobbyWatcher(final IGame iGame) {
-    if (iGame != null) {
+  synchronized void repostLobbyWatcher(final IGame game) {
+    if (game != null) {
       return;
     }
     if (canGameStart()) {

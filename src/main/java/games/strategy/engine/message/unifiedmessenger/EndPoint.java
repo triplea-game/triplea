@@ -49,9 +49,9 @@ class EndPoint {
     return m_nextGivenNumber.getAndIncrement();
   }
 
-  private void waitTillCanBeRun(final long aNumber) {
+  private void waitTillCanBeRun(final long number) {
     synchronized (m_numberMutext) {
-      while (aNumber > m_currentRunnableNumber) {
+      while (number > m_currentRunnableNumber) {
         try {
           m_numberMutext.wait();
         } catch (final InterruptedException e) {

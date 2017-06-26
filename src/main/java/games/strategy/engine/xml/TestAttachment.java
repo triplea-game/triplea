@@ -27,7 +27,7 @@ public class TestAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void setName(final String aString) {}
+  public void setName(final String name) {}
 
   public void setValue(final String value) {
     m_value = value;

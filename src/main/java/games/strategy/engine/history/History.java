@@ -159,13 +159,13 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  synchronized void changeAdded(final Change aChange) {
-    m_changes.add(aChange);
+  synchronized void changeAdded(final Change change) {
+    m_changes.add(change);
     if (m_currentNode == null) {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      m_data.performChange(aChange);
+      m_data.performChange(change);
     }
   }
 

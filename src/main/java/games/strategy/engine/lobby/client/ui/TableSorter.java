@@ -266,8 +266,8 @@ class TableSorter extends AbstractTableModel {
   }
 
   @Override
-  public void setValueAt(final Object aValue, final int row, final int column) {
-    tableModel.setValueAt(aValue, modelIndex(row), column);
+  public void setValueAt(final Object value, final int row, final int column) {
+    tableModel.setValueAt(value, modelIndex(row), column);
   }
 
   // Helper classes

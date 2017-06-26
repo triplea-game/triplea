@@ -78,16 +78,16 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void addChange(final Change aChange) {
-    if (aChange instanceof CompositeChange) {
-      final CompositeChange c = (CompositeChange) aChange;
+  public void addChange(final Change change) {
+    if (change instanceof CompositeChange) {
+      final CompositeChange c = (CompositeChange) change;
       if (c.getChanges().size() == 1) {
         addChange(c.getChanges().get(0));
         return;
       }
     }
-    if (!aChange.isEmpty()) {
-      m_game.addChange(aChange);
+    if (!change.isEmpty()) {
+      m_game.addChange(change);
     }
   }
 

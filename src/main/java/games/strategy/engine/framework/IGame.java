@@ -43,7 +43,7 @@ public interface IGame {
   /**
    * Should not be called outside of engine code.
    */
-  void addChange(Change aChange);
+  void addChange(Change change);
 
   boolean canSave();
 

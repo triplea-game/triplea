@@ -108,18 +108,18 @@ public class ChangeFactory {
     return new ProductionFrontierChange(frontier, player);
   }
 
-  public static Change changePlayerWhoAmIChange(final PlayerID player, final String humanOrAI_colon_playerName) {
-    return new PlayerWhoAmIChange(humanOrAI_colon_playerName, player);
+  public static Change changePlayerWhoAmIChange(final PlayerID player, final String encodedPlayerTypeAndName) {
+    return new PlayerWhoAmIChange(encodedPlayerTypeAndName, player);
   }
 
   public static Change changeResourcesChange(final PlayerID player, final Resource resource, final int quantity) {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  public static Change removeResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
+  public static Change removeResourceCollection(final PlayerID id, final ResourceCollection resourceCollection) {
     final CompositeChange cChange = new CompositeChange();
-    for (final Resource r : rCollection.getResourcesCopy().keySet()) {
-      cChange.add(new ChangeResourceChange(id, r, -rCollection.getQuantity(r)));
+    for (final Resource r : resourceCollection.getResourcesCopy().keySet()) {
+      cChange.add(new ChangeResourceChange(id, r, -resourceCollection.getQuantity(r)));
     }
     return cChange;
   }

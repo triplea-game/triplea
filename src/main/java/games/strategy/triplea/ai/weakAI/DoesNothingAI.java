@@ -19,11 +19,11 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
-      (new WeakAI(this.getName(), this.getType())).purchase(purchaseForBid, PUsToSpend, purchaseDelegate, data, player);
+      (new WeakAI(this.getName(), this.getType())).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
     }
     pause();
   }

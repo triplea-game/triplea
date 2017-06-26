@@ -44,7 +44,7 @@ public interface IDelegateBridge {
    * directly since this method allows us to send the changes to other
    * machines.
    */
-  void addChange(Change aChange);
+  void addChange(Change change);
 
   /**
    * equivalent to getRandom(max,1,annotation)[0].

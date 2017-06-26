@@ -135,7 +135,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public abstract String move(final Collection<Unit> units, final Route route,
-      final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
+      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
       final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,

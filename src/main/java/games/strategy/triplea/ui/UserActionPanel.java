@@ -83,10 +83,10 @@ public class UserActionPanel extends ActionPanel {
    * @return the choice of action
    */
   public UserActionAttachment waitForUserActionAction(final boolean firstRun,
-      final IUserActionDelegate iUserActionsDelegate) {
+      final IUserActionDelegate userActionsDelegate) {
     this.firstRun = firstRun;
 
-    validUserActions = new ArrayList<>(iUserActionsDelegate.getValidActions());
+    validUserActions = new ArrayList<>(userActionsDelegate.getValidActions());
     Collections.sort(validUserActions, new UserActionComparator());
     if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing

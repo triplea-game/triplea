@@ -18,24 +18,24 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
    *        - the units to move.
    * @param route
    *        - the route to move along
-   * @param m_transportsThatCanBeLoaded
+   * @param transportsThatCanBeLoaded
    *        - transports that can be loaded while moving, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded);
+  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded);
 
   /**
    * @param units
    *        - the units to move.
    * @param route
    *        - the route to move along
-   * @param m_transportsThatCanBeLoaded
+   * @param transportsThatCanBeLoaded
    *        - transports that can be loaded while moving, must be non null
    * @param newDependents
    *        - units that will be made into new dependents if this move is successful, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded,
+  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded,
       Map<Unit, Collection<Unit>> newDependents);
 
   /**
