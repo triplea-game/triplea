@@ -33,17 +33,13 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   private static final String tripleAForumURL = "https://forums.triplea-game.org";
 
-  private NameValuePair username;
-  private NameValuePair password;
-
-
   @Override
   public boolean postTurnSummary(final String summary, final String title) {
-    username = new BasicNameValuePair("username", getUsername());
-    password = new BasicNameValuePair("password", getPassword());
+    final NameValuePair username = new BasicNameValuePair("username", getUsername());
+    final NameValuePair password = new BasicNameValuePair("password", getPassword());
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      final int userId = getUserId(client);
-      final String token = getToken(client, userId);
+      final int userId = getUserId(client, username, password);
+      final String token = getToken(client, userId, password);
       try {
         post(client, token, "### " + title + "\n" + summary);
         m_turnSummaryRef = "Sucessfully posted!";
@@ -95,7 +91,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     client.execute(httpDelete);
   }
 
-  private int getUserId(final CloseableHttpClient client) throws Exception {
+  private static int getUserId(final CloseableHttpClient client, final NameValuePair username,
+      final NameValuePair password) throws Exception {
     final JSONObject jsonObject = login(client, Arrays.asList(username, password));
     checkUser(jsonObject);
     return jsonObject.getInt("uid");
@@ -124,7 +121,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private String getToken(final CloseableHttpClient client, final int userId) throws Exception {
+  private static String getToken(final CloseableHttpClient client, final int userId, final NameValuePair password)
+      throws Exception {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
     post.setEntity(new UrlEncodedFormEntity(Collections.singletonList(password), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
