@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
+import games.strategy.engine.lobby.server.userdb.MutedMacController;
+import games.strategy.engine.lobby.server.userdb.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -42,7 +42,7 @@ import games.strategy.net.nio.ServerQuarantineConversation;
  * A Messenger that can have many clients connected to it.
  */
 public class ServerMessenger implements IServerMessenger, NIOSocketListener {
-  private static Logger logger = Logger.getLogger(ServerMessenger.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerMessenger.class.getName());
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
@@ -341,7 +341,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     final Class<? extends Object>[] argTypes = new Class<?>[1];
     args.add(message);
     argTypes[0] = args.get(0).getClass();
-    RemoteName rn;
+    final RemoteName rn;
     if (isLobby()) {
       rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
     } else {

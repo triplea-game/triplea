@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.userdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
+
+import games.strategy.engine.lobby.server.userDB.DBUser;
 
 // TODO: *Controller are really *Dao classes, this is a DAO pattern, not controller!
 public class UserController implements UserDaoPrimarySecondary {
