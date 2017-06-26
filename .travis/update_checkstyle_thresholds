@@ -87,10 +87,13 @@ update_remote_thresholds() {
     \"sha\": \"$old_hash\" \
   }"
   curl \
+      --silent \
+      --show-error \
       -X PUT \
       --header "Accept: application/vnd.github.v3+json" \
       --data "$update_request" \
-      "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES"
+      --user ":$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" \
+      "https://api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES"
 }
 
 main
