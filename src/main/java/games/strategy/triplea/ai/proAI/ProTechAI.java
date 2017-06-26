@@ -544,8 +544,9 @@ final class ProTechAI {
     if (Properties.getIgnoreSubInMovement(data)) {
       unitCondBuilder.add(sub);
     }
-    final Match<Territory> routeCond =
-        Match.all(Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), Matches.TerritoryIsWater);
+    final Match<Territory> routeCond = Match.all(
+        Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
+        Matches.TerritoryIsWater);
     final Match<Territory> routeCondition;
     if (attacking) {
       routeCondition = Match.any(Matches.territoryIs(destination), routeCond);

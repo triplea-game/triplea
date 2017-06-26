@@ -237,8 +237,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
         Matches.unitIsOwnedBy(m_player));
 
     // right now, land units on transports have movement taken away when they their transport moves
-    moveableUnitOwnedByMeBuilder.add(Match.any(Matches.unitHasMovementLeft,
-        Match.all(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
+    moveableUnitOwnedByMeBuilder.add(Match.any(
+        Matches.unitHasMovementLeft,
+        Match.all(
+            Matches.UnitIsLand,
+            Matches.unitIsBeingTransported())));
 
     // if not non combat, cannot move aa units
     if (GameStepPropertiesHelper.isCombatMove(getData())) {

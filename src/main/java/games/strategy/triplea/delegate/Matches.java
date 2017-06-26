@@ -2060,7 +2060,9 @@ public class Matches {
     if (Properties.getIgnoreSubInMovement(data)) {
       unitCondBuilder.add(sub);
     }
-    return Match.all(Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), Matches.TerritoryIsWater);
+    return Match.all(
+        Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
+        Matches.TerritoryIsWater);
   }
 
   public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>() {
