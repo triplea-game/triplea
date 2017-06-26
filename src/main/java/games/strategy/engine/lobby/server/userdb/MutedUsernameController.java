@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.userdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

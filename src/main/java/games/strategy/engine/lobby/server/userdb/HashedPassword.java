@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.userdb;
 
 import com.google.common.base.Strings;
 
@@ -7,7 +7,7 @@ import games.strategy.util.MD5Crypt;
 public class HashedPassword {
   public final String value;
 
-  public HashedPassword(String hashedPassword) {
+  public HashedPassword(final String hashedPassword) {
     this.value = Strings.nullToEmpty(hashedPassword);
   }
 

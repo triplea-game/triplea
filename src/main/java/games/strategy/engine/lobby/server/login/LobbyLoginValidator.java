@@ -14,12 +14,12 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
-import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
+import games.strategy.engine.lobby.server.userdb.BadWordController;
+import games.strategy.engine.lobby.server.userdb.BannedMacController;
+import games.strategy.engine.lobby.server.userdb.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DbUserController;
-import games.strategy.engine.lobby.server.userDB.HashedPassword;
+import games.strategy.engine.lobby.server.userdb.DbUserController;
+import games.strategy.engine.lobby.server.userdb.HashedPassword;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
