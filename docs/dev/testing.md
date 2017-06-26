@@ -38,3 +38,28 @@ Ensure compatibility between network nodes running different versions.
 1. Connect to lobby started in (1) using NEW and start a game with bot.
     * Ensure OLD and NEW select players in adversarial roles.
 1. Progress far enough in the game to fight a battle.
+
+
+
+## Manual Regression Testing
+
+- Various maps can be opened, no delegates brokens
+- Launch an AI only game and let some AI players go at for a dozen rounds, verify no errors.
+- Join a lobby bot of live lobby, play through a combat (compatability check). 
+- Verify important combat rules are working (can be combined with above step)
+- More Compatibility checks
+  - save games
+  - network play
+  - XML parsing
+  
+- Local host + client
+  - This means start up two copies of triplea.  In one copy you click ‘host networked game’ 
+and start hosting.  In the other copy you click ‘connect to networked game’ and join.  The client should choose the 
+FIRST player in the list (this is to test that the delegates are sending data correctly).  
+Start the game and play a round against yourself, making sure everything looks good.  
+
+- Play by Email, and Play by Forum  
+  - You can test both at once by setting up a game against yourself that has both settings enabled.  
+  You will probably need to add two email addresses for this to work. 
+  - Test all forums
+  - Recommend test play by email with both a gmail and a hotmail account.  

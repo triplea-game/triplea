@@ -1,26 +1,6 @@
-
-## Manual Release Testing
-
-- Can download maps, and can see and load both maps that come with triplea and downloaded maps.
-- Launch an AI only game and let some AI players go at for a dozen rounds, verify no errors
-- Join a bot, play through a combat
-- Compatibility checks
-  - save games
-  - network play
-  - XML parsing
-  
-- Local host + client
-  - This means start up two copies of triplea.  In one copy you click ‘host networked game’ 
-and start hosting.  In the other copy you click ‘connect to networked game’ and join.  The client should choose the 
-FIRST player in the list (this is to test that the delegates are sending data correctly).  
-Start the game and play a round against yourself, making sure everything looks good.  
-
-- Play by Email, and Play by Forum  
-  - You can test both at once by setting up a game against yourself that has both settings enabled.  You will probably need to add two email addresses for this to work.  I also recommend testing the play by forum against both AxisAndAllies.org and TripleAWarClub.org, and also testing the play by email against both a gmail and a hotmail email account.  
-
-
 ## Tasks:
 
+- Make sure some thorough testing has been done
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
    - Should have just about all significant changes and bug fixes
 - Change the version number in the game_engine.properties file: https://github.com/triplea-game/triplea/blob/master/game_engine.properties
