@@ -163,8 +163,8 @@ public class AirBattle extends AbstractBattle {
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
-          final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.<Unit>newCompositeBuilder()
-              .add(Matches.UnitIsSuicide);
+          final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.newCompositeBuilder(
+              Matches.UnitIsSuicide);
           if (m_isBombingRun) {
             attackerSuicideBuilder.add(Matches.UnitIsNotStrategicBomber);
           }
@@ -646,10 +646,10 @@ public class AirBattle extends AbstractBattle {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.<Unit>newCompositeBuilder()
-            .add(Matches.unitCanAirBattle)
-            .add(Matches.unitIsEnemyOf(data, attacker))
-            .add(Matches.UnitWasInAirBattle.invert());
+        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.newCompositeBuilder(
+            Matches.unitCanAirBattle,
+            Matches.unitIsEnemyOf(data, attacker),
+            Matches.UnitWasInAirBattle.invert());
         if (!canScrambleIntoAirBattles) {
           canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
         }
@@ -663,10 +663,10 @@ public class AirBattle extends AbstractBattle {
     return new Match<Unit>() {
       @Override
       public boolean match(final Unit u) {
-        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.<Unit>newCompositeBuilder()
-            .add(Matches.unitCanIntercept)
-            .add(Matches.unitIsEnemyOf(data, attacker))
-            .add(Matches.UnitWasInAirBattle.invert());
+        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.newCompositeBuilder(
+            Matches.unitCanIntercept,
+            Matches.unitIsEnemyOf(data, attacker),
+            Matches.UnitWasInAirBattle.invert());
         if (!canScrambleIntoAirBattles) {
           canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
         }

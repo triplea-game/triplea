@@ -1478,8 +1478,8 @@ public class MoveValidator {
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
-    final Match.CompositeBuilder<Territory> noImpassableBuilder = Match.<Territory>newCompositeBuilder()
-        .add(Matches.territoryIsPassableAndNotRestricted(player, data));
+    final Match.CompositeBuilder<Territory> noImpassableBuilder = Match.newCompositeBuilder(
+        Matches.territoryIsPassableAndNotRestricted(player, data));
     // if we have air or land, we don't want to move over territories owned by players who's relationships will not let
     // us move into them
     if (hasAir) {

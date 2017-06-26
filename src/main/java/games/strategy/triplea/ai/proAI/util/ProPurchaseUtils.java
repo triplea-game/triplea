@@ -256,9 +256,9 @@ public class ProPurchaseUtils {
   }
 
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
-        .add(Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+        Matches.unitIsBeingTransported().invert());
     if (territory.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {

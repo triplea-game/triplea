@@ -233,8 +233,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOwnedBy(m_player));
+    final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedBy(m_player));
 
     // right now, land units on transports have movement taken away when they their transport moves
     moveableUnitOwnedByMeBuilder.add(Match.any(Matches.unitHasMovementLeft,

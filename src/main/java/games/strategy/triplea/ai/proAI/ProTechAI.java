@@ -535,9 +535,9 @@ final class ProTechAI {
     }
     final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
     final Match<Unit> transport = Match.all(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
-    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.UnitIsInfrastructure.invert())
-        .add(Matches.alliedUnit(player, data).invert());
+    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
+        Matches.UnitIsInfrastructure.invert(),
+        Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCondBuilder.add(transport);
     }
@@ -605,8 +605,8 @@ final class ProTechAI {
       final boolean neutral) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
-    final Match.CompositeBuilder<Territory> endCondBuilder = Match.<Territory>newCompositeBuilder()
-        .add(Matches.TerritoryIsImpassable.invert());
+    final Match.CompositeBuilder<Territory> endCondBuilder = Match.newCompositeBuilder(
+        Matches.TerritoryIsImpassable.invert());
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCondBuilder.add(Matches.TerritoryIsNeutralButNotWater.invert());
     }

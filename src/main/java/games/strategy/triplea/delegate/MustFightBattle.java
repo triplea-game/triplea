@@ -1213,11 +1213,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final Match.CompositeBuilder<Unit> enemyUnitsThatPreventRetreatBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.enemyUnit(m_attacker, m_data))
-        .add(Matches.UnitIsNotInfrastructure)
-        .add(Matches.unitIsBeingTransported().invert())
-        .add(Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> enemyUnitsThatPreventRetreatBuilder = Match.newCompositeBuilder(
+        Matches.enemyUnit(m_attacker, m_data),
+        Matches.UnitIsNotInfrastructure,
+        Matches.unitIsBeingTransported().invert(),
+        Matches.UnitIsSubmerged.invert());
     if (games.strategy.triplea.Properties.getIgnoreSubInMovement(m_data)) {
       enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotSub);
     }
@@ -1779,8 +1779,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty()) {
       return;
     }
-    final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.newCompositeBuilder(
+        Matches.UnitIsSubmerged.invert());
     if (Matches.TerritoryIsLand.match(m_battleSite)) {
       notSubmergedAndTypeBuilder.add(Matches.UnitIsSea.invert());
     } else {

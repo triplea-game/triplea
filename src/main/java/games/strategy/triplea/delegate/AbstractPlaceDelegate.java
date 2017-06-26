@@ -1080,9 +1080,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // if its an original factory then unlimited production
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
-        .add(Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+        Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
@@ -1559,9 +1559,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to,
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player))
-        .add(Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+        Matches.unitIsBeingTransported().invert());
     // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
     // land, and like sea if
     // in water.

@@ -2540,8 +2540,8 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final Match.CompositeBuilder<Unit> stackingMatchBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOfType(ut));
+    final Match.CompositeBuilder<Unit> stackingMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOfType(ut));
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
       stackingMatchBuilder.add(Matches.unitIsOwnedBy(owner));

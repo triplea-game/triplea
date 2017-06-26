@@ -210,9 +210,9 @@ public class UnitsDrawer implements IDrawable {
     // from the territory wont match the units in count
     final Territory t = data.getMap().getTerritory(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
-    final Match.CompositeBuilder<Unit> selectedUnitsBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.unitIsOfType(type))
-        .add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
+    final Match.CompositeBuilder<Unit> selectedUnitsBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOfType(type),
+        Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
     if (damaged > 0) {
       selectedUnitsBuilder.add(Matches.UnitHasTakenSomeDamage);
     } else {

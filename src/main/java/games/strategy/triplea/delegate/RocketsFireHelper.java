@@ -153,8 +153,8 @@ public class RocketsFireHelper {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
-    final Match.CompositeBuilder<Territory> allowedBuilder = Match.<Territory>newCompositeBuilder()
-        .add(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+    final Match.CompositeBuilder<Territory> allowedBuilder = Match.newCompositeBuilder(
+        Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
       allowedBuilder.add(Matches.TerritoryIsNotImpassable);
     }

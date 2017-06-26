@@ -642,11 +642,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Match<Unit> airbasesCanScramble = Match.all(Matches.unitIsEnemyOf(data, m_player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
-    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.<Territory>newCompositeBuilder()
-        .add(Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)))
-        .add(Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
-            Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)))
-        .add(Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
+    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
+        Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
+        Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
+            Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)),
+        Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
       canScrambleBuilder.add(Matches.TerritoryIsIsland);
     }

@@ -187,11 +187,11 @@ public class ProTerritoryManager {
     }
     final Match<Unit> airbasesCanScramble = Match.all(Matches.unitIsEnemyOf(data, player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
-    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.<Territory>newCompositeBuilder()
-        .add(Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)))
-        .add(Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
-            Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)))
-        .add(Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
+    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
+        Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)),
+        Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
+            Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)),
+        Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
       canScrambleBuilder.add(Matches.TerritoryIsIsland);
     }

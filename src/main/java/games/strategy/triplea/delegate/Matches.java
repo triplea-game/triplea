@@ -1737,9 +1737,9 @@ public class Matches {
             && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(t)) {
           return false;
         }
-        final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder();
-        // we ignore neutral units
-        blitzableUnitsBuilder.add(Matches.enemyUnit(player, data).invert());
+        final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder(
+            // we ignore neutral units
+            Matches.enemyUnit(player, data).invert());
         // WW2V2, cant blitz through factories and aa guns
         // WW2V1, you can
         if (!games.strategy.triplea.Properties.getWW2V2(data)
@@ -2051,9 +2051,9 @@ public class Matches {
     final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
     final Match<Unit> transport =
         Match.all(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
-    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.<Unit>newCompositeBuilder()
-        .add(Matches.UnitIsInfrastructure.invert())
-        .add(Matches.alliedUnit(player, data).invert());
+    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
+        Matches.UnitIsInfrastructure.invert(),
+        Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCondBuilder.add(transport);
     }
@@ -2917,8 +2917,8 @@ public class Matches {
         final Match<UnitType> combat;
         if (attack) {
           // ALL match
-          final Match.CompositeBuilder<UnitType> attackMatchAllBuilder = Match.<UnitType>newCompositeBuilder()
-              .add(supporterOrNotInfrastructure);
+          final Match.CompositeBuilder<UnitType> attackMatchAllBuilder = Match.newCompositeBuilder(
+              supporterOrNotInfrastructure);
           if (!includeAttackersThatCanNotMove) {
             attackMatchAllBuilder
                 .add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert())
