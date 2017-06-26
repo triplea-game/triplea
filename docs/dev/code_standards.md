@@ -1,180 +1,151 @@
+Unless specified otherwise, follow: [Google java style](http://google.github.io/styleguide/javaguide.html)
 
 ## Checkstyle
 
-This project uses Checkstyle to enforce code guidelines and standards. See the [Checkstyle]({{ "/dev_docs/dev/checkstyle/" | prepend: site.baseurl }}) page for information on setting up and running Checkstyle in your development environment.
+Introducing new checkstyle violations will fail the build, 
+for details see [Checkstyle]({{ "/dev_docs/dev/checkstyle/" | prepend: site.baseurl }}) 
 
 ## Code is formatted
 
-According to [Code Format]({{ "/dev_docs/dev/code_format/" | prepend: site.baseurl }})
-
-## Tests included for any new code
-
-- New (Non-AI) code should keep the current code coverage rate, not decrease it
-- Follow the [testing pyramid](https://martinfowler.com/bliki/TestPyramid.html), write mostly unit tests
-- Tests are difficult in the tripleA project for the existing code. Any significant changes will likely require a few iterations of simplification and test retrofits before any new  code can be added. There is some leniency for fixing/refactoring existing code cruft without retrofitting tests, there is a a lot less for new code, or major updates.
+Auto-formatter has been applied, for auto-formatter setup see:
+[New Dev Setup]({{ "/dev_docs/dev/new_dev_setup/" | prepend: site.baseurl }})
 
 
-## DRY
+## Guidelines and Preferences
 
-Do not repeat yourself: Basically [do not copy and paste](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), consolidate redundant code
+###  Avoid copy paste
+DRY: [do not copy and paste](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). 
 
-## Spell out variable names
+### Prefer to spell out variable names
+Notable exceptions, loop index 'i', exception 'e'.
 
-***Prefer***
-(note the variable names)
-<pre><code>void foo(Unit unit, Attachment attachment, int count) {
- if( count > 0 ) ...
+### Prefer library implementations when available
+Do not re-invent the wheel. Prefer first `java.lang`, then we have available guava, apache commons
+
+
+### Avoid using `null` as part of public APIs
+
+Said another way, do not pass `null` arguments, and do not return null. 
+Some techniques to avoid `null` are: 
+ - add multiple method signatures to omit `null` parameters
+ - use naturally empty objects, like an empty list instead of null. 
+ - `Optional` can sometimes be a good choice for return values.
+
+### Deprecate Correctly
+When you have a good reason to deprecate a method or class, add both a `@Deprecated` annotation 
+_and_ a `@deprecated` documentation in the javadocs. Always include a comment about how to handle
+the deprecation, can callers remove the altogether, should they replace it with a different API?
+
+Example:
+```
+/**
+ *  <...javadocs....>
+ * @Deprecated Use 'fooBar()' instead
+ */
+ @deprecated
+ public void foo(int param) {
  :
-}</code></pre>
-
-***notable exceptions***
-<pre><code>Exception e
-for(int i; ...</code></pre>
-
-***Avoid***
-<pre><code>void foo(Unit u, Attachment a, int b) {
- if( b > 0 ) ...
  :
-}</code></pre>
+```
 
-
-## Consistent Naming
-- Write TripleA with a capitol 'A'
-- Acronyms are in caps, for examaple "UIContext"
-- Stay with google java naming convention, please see: [google naming convention](http://google.github.io/styleguide/javaguide.html#s5-naming), e.g: camelCase, no underscore or 'm_' prefixes, immutable objects are in caps
-
-## Prefer library implementations when available (do not re-invent the wheel)
-- First use a `java.lang` feature if there is one to accomplish your task
-- Failing that we have guava, apache commons, and mockito that have a lot of library functions
-
-## Avoid using nulls
-Use empty collection types (empty set, empty list), or Optional instead.
-
-## Deprecate Correctly
-When you have a good reason to deprecate a method or class, add both - a @Deprecated annotation _and_ a @deprecated documentation in the javadocs
-
-## Handle exceptions
+### Handle exceptions
 
 - `ClientLogger` is a utility class to log errors. Can be used as: `ClientLogger.logError(e)`
-- Always log surrounding context, if there are any args or relevant variable values, log them, for example:
+- Always log surrounding context, if there are any args or relevant variable values, log their values, for example:
 
-<pre><code>public int processXmlData(Unit unit, XmlTransmitter transmitter) {
+```
+public int processXmlData(Unit unit, XmlTransmitter transmitter) {
   try {
      transmitter.send(unit)
   } catch (IOException e ) {
      String failMsg = String.format("Failed to send unit data: %s, using transmitter: %s", unitData, transmitter);
      ClientLogger.logError(failMsg, e);
   }
-}</code></pre>
+}
+```
 
-In the above, note that we are logging the values of the two method arguments. If there were any other interesting variable values in the method or class, we would log those too. Without this information, if we ever do get an exception, and it is related to data, we'll be scratching our heads on how to reproduce the problem.
+In the above, note that we are logging the values of the two method arguments. If there were any other interesting
+ variable values in the method or class, we would log those too. Without this information, if we ever do get an 
+ exception, and it is related to data, we'll be scratching our heads on how to reproduce the problem.
 
-## Method and variable ordering
-Try to organize methods and variables so that new elements are used immediately and only *after* they are declared. This basically attempts to allow for code to be read from top to bottom once. For some good background reading and details on how to do this, please see Chapter 5 'Formatting' in [Clean Code](http://ricardogeek.com/docs/clean_code.html)
-
-
-### Variable Ordering Example
-
-#### Prefer
-<pre><code>int first = 2;
-int firstSquared = first * first;
-
-int second = 3;
-int secondSquared = second * second;
-
-double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
-
-#### Avoid
-
-<pre><code>int first = 2;
-int second = 3;
-
-int firstSquared = first * first;
-int secondSquared = second * second;
-
-double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
-
-### Method Ordering Example
-
-#### Prefer
-
-<pre><code>  // constructor is listed first
-  public constructor() {
-     int a = helperMethod1();
-     boolean b = helperMethod2(a);
-  }
-  // helperMethod1 is the first thing used in the constructor, so we start by defining that first.
-  private int helperMethod1() {
-    :  // any methods called by helperMethod1 would be defined next
-    :  // in this example we just do generic processing, so next we define helperMethod2 since that was next
-  }
-  private boolean helperMethod2() {
-    :
-    :
-  }
-  // now when we see the first public method, we know all the private methods above it until the constructor are there
-  // only to support construction. Note that we gain now quite a bit of information based simply on where methods are places
-  public boolean firstPublicMethod1() {
-     :
-     :
-     helperMethod3();
-     helperMethod4();
-     :
-  }
-  private void helperMethod3() {
-     helperMethod5();
-     :
-  }
-  private void helperMethod5() { // We'll fully define the code path that followed helperMethod3() first
-      :                          // before we define helperMethod4()
-      :
-  }
-  private void helperMethod4() {
-      :
-      :
-  }</code></pre>
-
-### Avoid
-
-<pre><code>  // private method that is defined above the first method that uses it
-  private int helperMethod1() {
-    :
-    :
-  }
-  public constructor() {
-     int a = helperMethod1();
-     boolean b = helperMethod2(a);
-  }
-  // skipped definition of 'helperMethod1' and 'helperMethod2'
-  public boolean firstPublicMethod1() {
-     :
-     :
-     helperMethod3();
-     helperMethod4();
-     :
-  }
-  // all private methods grouped at bottom of file.
-  // There is at least some structure here, but for java files that are much longer that quickly breaks down.
-  // For example, at 500, or 1000+ lines, all of the private methods grouped togeter can become a jumble.
-  private boolean helperMethod2() {
-    :
-    :
-  }
-  // no consistent ordering here, private methods are at least grouped, but there is no
-  // consistent greater structure here.
-  private void helperMethod3() {
-     helperMethod5();
-     :
-  }
-  private void helperMethod5() {
-      :
-  }
-  private void helperMethod4() {
-      :
-      :
-  }</code></pre>
-
-
-## Mock Objects
-
+### Mock Objects
 Prefer replacing hand crafted mock objects with mockito.
+
+
+## Variable and Method Ordering
+
+
+### Methods
+
+Dependent methods are grouped together.  For some good background reading and details on how to do this, 
+please see Chapter 5 'Formatting' in [Clean Code](http://ricardogeek.com/docs/clean_code.html)
+
+
+
+#### IntelliJ Formatter Option for Method Ordering
+![keep_dependents_first](https://user-images.githubusercontent.com/12397753/27557429-72fb899c-5a6e-11e7-8f9f-59cc508ba86c.png)
+
+#### Method ordering summary
+
+- private methods are defined as soon as possible after first usage. For example, the constructor as the first
+code block will be followed by any private methods that are used in the constructor. Following that we will define
+the first public method, and then any private methods that it uses. 
+
+
+Example:
+```
+public class Foo {
+  // variables
+  
+  // constructor
+  
+  // private methods called by constructor
+  
+  // first public method
+  public void firstPublicMethod() {
+    firstPrivateMethodCalled();
+    secondPrivateMethodCalled();
+  }
+
+  // private methods called by first public method, in order in which they are called
+  private void firstPrivateMethodCalled() { }
+  private void secondPrivateMethodCalled() { }
+
+
+  // second public method
+  
+  // any new private methods called by second public method
+}
+
+
+
+```
+
+### Variables
+
+This is similar to methods, they are defined as close to their usage as possible. Rule of thumb, minimize the number
+of lines between declaration and first usage. Another way to think of this, do not declare variables all at top,
+declare them before usage.
+
+Example:
+
+```
+int first = 2;
+int firstSquared = first * first;
+
+int second = 3;
+int secondSquared = second * second;
+
+double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
+```
+
+Instead of:
+```
+int first = 2;
+int second = 3;
+
+int firstSquared = first * first;
+int secondSquared = second * second;
+
+double distance = Math.sqrt(firstSquared + secondSquared);</code></pre>
+```
