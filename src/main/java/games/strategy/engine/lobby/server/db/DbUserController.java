@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.db;
 
 import static games.strategy.util.PredicateUtils.not;
 
@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+
+import games.strategy.engine.lobby.server.userDB.DBUser;
 
 /**
  * Interface for interacting with database user operations. For example, add user, delete user..
