@@ -159,7 +159,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), expire);
+        controller.zBanUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), expire);
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -200,7 +200,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+        controller.zBanMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
             expire);
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
@@ -228,7 +228,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Instant.ofEpochMilli(0));
+        controller.zBanUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Instant.ofEpochMilli(0));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -268,7 +268,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+        controller.zBanMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
             Instant.ofEpochMilli(0));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);

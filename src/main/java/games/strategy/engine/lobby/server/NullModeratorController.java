@@ -15,7 +15,7 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Instant banExpires) {
+  public void zBanMac(final INode node, final String hashedMac, final Instant banExpires) {
     // nothing
   }
 
@@ -63,32 +63,32 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Instant banExpires) {
+  public void zBanUsername(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void banIp(final INode node, final Instant banExpires) {
+  public void zBanIp(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void banMac(final INode node, final Instant banExpires) {
+  public void zBanMac(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
-  public void muteUsername(final INode node, final Instant muteExpires) {
+  public void zMuteUsername(final INode node, final Instant muteExpires) {
     // nothing
   }
 
   @Override
-  public void muteIp(final INode node, final Instant muteExpires) {
+  public void zMuteIp(final INode node, final Instant muteExpires) {
     // nothing
   }
 
   @Override
-  public void muteMac(final INode node, final Instant muteExpires) {
+  public void zMuteMac(final INode node, final Instant muteExpires) {
     // nothing
   }
 

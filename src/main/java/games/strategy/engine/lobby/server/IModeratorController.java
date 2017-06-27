@@ -15,6 +15,8 @@ public interface IModeratorController extends IRemote {
    * </p>
    */
   void boot(INode node);
+  
+  //Remove the z Prefix of all methods in the next incompatible release
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -22,13 +24,13 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void banUsername(INode node, Date banExpires) {
-    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
+    zBanUsername(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
   /**
    * Ban the username of the given INode.
    */
-  void banUsername(INode node, Instant banExpires);
+  void zBanUsername(INode node, Instant banExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -36,7 +38,7 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void banIp(INode node, Date banExpires) {
-    banIp(node, banExpires != null ? banExpires.toInstant() : null);
+    zBanIp(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
   /**
@@ -45,7 +47,7 @@ public interface IModeratorController extends IRemote {
    * @deprecated Remove usages of this, banUserName and banMac are sufficient
    */
   @Deprecated
-  void banIp(INode node, Instant banExpires);
+  void zBanIp(INode node, Instant banExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -53,13 +55,13 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void banMac(INode node, Date banExpires) {
-    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+    zBanMac(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
   /**
    * Ban the mac of the given INode.
    */
-  void banMac(INode node, Instant banExpires);
+  void zBanMac(INode node, Instant banExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -67,13 +69,13 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void banMac(final INode node, final String hashedMac, final Date banExpires) {
-    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+    zBanMac(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
   /**
    * Ban the mac.
    */
-  void banMac(final INode node, final String hashedMac, final Instant banExpires);
+  void zBanMac(final INode node, final String hashedMac, final Instant banExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -81,13 +83,13 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void muteUsername(INode node, Date muteExpires) {
-    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+    zMuteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
 
   /**
    * Mute the username of the given INode.
    */
-  void muteUsername(INode node, Instant muteExpires);
+  void zMuteUsername(INode node, Instant muteExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -95,7 +97,7 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void muteIp(INode node, Date muteExpires) {
-    muteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
+    zMuteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
 
   /**
@@ -104,7 +106,7 @@ public interface IModeratorController extends IRemote {
    * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
    */
   @Deprecated
-  void muteIp(INode node, Instant muteExpires);
+  void zMuteIp(INode node, Instant muteExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -112,13 +114,13 @@ public interface IModeratorController extends IRemote {
    */
   @Deprecated
   default void muteMac(INode node, Date muteExpires) {
-    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+    zMuteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
 
   /**
    * Mute the mac of the given INode.
    */
-  void muteMac(INode node, Instant muteExpires);
+  void zMuteMac(INode node, Instant muteExpires);
 
   /**
    * Get list of people in the game.

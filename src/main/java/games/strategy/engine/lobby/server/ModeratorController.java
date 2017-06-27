@@ -21,7 +21,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Instant banExpires) {
+  public void zBanUsername(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -57,12 +57,12 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banIp(final INode node, final Instant banExpires) {
+  public void zBanIp(final INode node, final Instant banExpires) {
     // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
-  public void banMac(final INode node, final Instant banExpires) {
+  public void zBanMac(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -79,7 +79,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Instant banExpires) {
+  public void zBanMac(final INode node, final String hashedMac, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -95,7 +95,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteUsername(final INode node, final Instant muteExpires) {
+  public void zMuteUsername(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -114,12 +114,12 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteIp(final INode node, final Instant muteExpires) {
+  public void zMuteIp(final INode node, final Instant muteExpires) {
     // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override
-  public void muteMac(final INode node, final Instant muteExpires) {
+  public void zMuteMac(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
