@@ -2,14 +2,13 @@ language: java
 jdk:
 - oraclejdk8
 addons:
+  postgresql: "9.5"
   apt:
     packages:
       # python for map file splitter
       - python3
       - python3-yaml
 install: ./.travis/setup_lobby_database
-services:
-- postgresql
 script: ./gradlew check jacocoTestReport
 after_success: 
 - ./.travis/update_checkstyle_thresholds
