@@ -37,8 +37,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1739,9 +1737,9 @@ public class Matches {
             && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(t)) {
           return false;
         }
-        final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder();
-        // we ignore neutral units
-        blitzableUnitsBuilder.add(Matches.enemyUnit(player, data).invert());
+        final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder(
+            // we ignore neutral units
+            Matches.enemyUnit(player, data).invert());
         // WW2V2, cant blitz through factories and aa guns
         // WW2V1, you can
         if (!games.strategy.triplea.Properties.getWW2V2(data)
@@ -2050,21 +2048,21 @@ public class Matches {
   }
 
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
-    final CompositeMatch<Unit> ignore =
-        new CompositeMatchAnd<>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
     final Match<Unit> sub = Match.all(Matches.UnitIsSub.invert());
     final Match<Unit> transport =
         Match.all(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
-    final CompositeMatch<Unit> unitCond = ignore;
+    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
+        Matches.UnitIsInfrastructure.invert(),
+        Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
-      unitCond.add(transport);
+      unitCondBuilder.add(transport);
     }
     if (Properties.getIgnoreSubInMovement(data)) {
-      unitCond.add(sub);
+      unitCondBuilder.add(sub);
     }
-    final Match<Territory> routeCondition = Match.all(
-        Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
-    return routeCondition;
+    return Match.all(
+        Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
+        Matches.TerritoryIsWater);
   }
 
   public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>() {

@@ -40,7 +40,6 @@ import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -644,14 +643,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Match<Unit> airbasesCanScramble = Match.all(Matches.unitIsEnemyOf(data, m_player),
         Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
-    final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<>(
-        Match.any(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
-        Matches.territoryHasUnitsThatMatch(Match.all(Matches.UnitCanScramble,
-            Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)),
+    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
+        Match.any(
+            Matches.TerritoryIsWater,
+            Matches.isTerritoryEnemy(m_player, data)),
+        Matches.territoryHasUnitsThatMatch(Match.all(
+            Matches.UnitCanScramble,
+            Matches.unitIsEnemyOf(data, m_player),
+            Matches.UnitIsNotDisabled)),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
-      canScramble.add(Matches.TerritoryIsIsland);
+      canScrambleBuilder.add(Matches.TerritoryIsIsland);
     }
+    final Match<Territory> canScramble = canScrambleBuilder.all();
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
         m_battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();

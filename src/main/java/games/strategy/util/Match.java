@@ -236,10 +236,15 @@ public abstract class Match<T> {
   /**
    * Creates a new builder for incrementally constructing composite matches.
    *
+   * @param matches An array of matches to initially add to the builder; must not be {@code null}.
+   *
    * @return A new composite match builder; never {@code null}.
    */
-  public static <T> CompositeBuilder<T> newCompositeBuilder() {
-    return new CompositeBuilder<>();
+  @SafeVarargs
+  public static <T> CompositeBuilder<T> newCompositeBuilder(final Match<T>... matches) {
+    checkNotNull(matches);
+
+    return new CompositeBuilder<>(Arrays.asList(matches));
   }
 
   /**
@@ -252,9 +257,11 @@ public abstract class Match<T> {
    * @param <T> The type of object that is tested by the match condition.
    */
   public static final class CompositeBuilder<T> {
-    private final Collection<Match<T>> matches = new ArrayList<>();
+    private final Collection<Match<T>> matches;
 
-    private CompositeBuilder() {}
+    private CompositeBuilder(final Collection<Match<T>> matches) {
+      this.matches = new ArrayList<>(matches);
+    }
 
     /**
      * Adds a new condition to the composite match under construction.
