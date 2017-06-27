@@ -15,7 +15,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
-public class DbUserControllerIntegrationTest {
+public class DbUserControllerTest {
 
   private static final DbTestConnection DERBY =
       new DbTestConnection(Database::getDerbyConnection, new DbUserController());
