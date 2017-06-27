@@ -146,6 +146,10 @@ class PlayerSelectorRow {
     }
   }
 
+  void setPlayerType(String playerType) {
+    playerTypes.setSelectedItem(playerType);
+  }
+
   String getPlayerName() {
     return playerName;
   }

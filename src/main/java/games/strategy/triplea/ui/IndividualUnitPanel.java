@@ -172,17 +172,17 @@ public class IndividualUnitPanel extends JPanel {
         nullInsets, 0, 0));
     m_selectNoneButton.addActionListener(e -> selectNone());
     m_autoSelectButton.addActionListener(e -> autoSelect());
-    int yIndex = 1;
+    int rowIndex = 1;
     for (final SingleUnitPanel entry : entries) {
-      entry.createComponents(this, yIndex);
-      yIndex++;
+      entry.createComponents(this, rowIndex);
+      rowIndex++;
     }
     if (showSelectAll) {
-      add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+      add(m_autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
-      yIndex++;
+      rowIndex++;
     }
-    add(leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    add(leftToSelect, new GridBagConstraints(0, rowIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
@@ -298,8 +298,8 @@ class SingleUnitPanel extends JPanel {
     return unit;
   }
 
-  public void createComponents(final JPanel panel, final int yIndex) {
-    panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+  public void createComponents(final JPanel panel, final int rowIndex) {
+    panel.add(this, new GridBagConstraints(0, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     textField.addChangeListener(countTextFieldListener);
   }

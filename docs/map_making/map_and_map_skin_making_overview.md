@@ -1,9 +1,3 @@
----
-layout: longpage
-title: Map and Map Skin Making Overview
-permalink: /map_and_map_skin_making_overview/
-root: /dev_docs/
----
 <h2>Map and Map Skin Making Overview :: Quick Nav</h2>
 <ul>
 	<li>

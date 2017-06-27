@@ -52,8 +52,8 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     moves = Collections.emptyList();
   }
 
-  public void setMoves(final List<AbstractUndoableMove> m_undoableMoves) {
-    moves = m_undoableMoves;
+  public void setMoves(final List<AbstractUndoableMove> undoableMoves) {
+    moves = undoableMoves;
     SwingUtilities.invokeLater(() -> initLayout());
   }
 

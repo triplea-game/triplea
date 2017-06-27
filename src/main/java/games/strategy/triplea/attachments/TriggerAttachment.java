@@ -107,8 +107,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch) {
-    TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    TriggerAttachment ta = (TriggerAttachment) player.getAttachment(nameOfAttachment);
+    if (ta == null) {
       if (playersToSearch == null) {
         throw new IllegalStateException(
             "Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
@@ -117,16 +117,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (otherPlayer == player) {
             continue;
           }
-          rVal = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
+          ta = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
+          if (ta != null) {
+            return ta;
           }
         }
         throw new IllegalStateException(
             "Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
     }
-    return rVal;
+    return ta;
   }
 
   /**

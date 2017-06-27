@@ -2,12 +2,12 @@ package games.strategy.engine.lobby.server;
 
 import java.time.Instant;
 
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
-import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.MutedMacController;
+import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DbUserController;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
@@ -35,6 +35,25 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+  }
+
+  private void assertUserIsAdmin() {
+    if (!isAdmin()) {
+      throw new IllegalStateException("Not an admin");
+    }
+  }
+
+  @Override
+  public boolean isAdmin() {
+    final INode node = MessageContext.getSender();
+    return isPlayerAdmin(node);
+  }
+
+  @Override
+  public boolean isPlayerAdmin(final INode node) {
+    final String name = getRealName(node);
+    final DBUser user = new DbUserController().getUserByName(name);
+    return user != null && user.isAdmin();
   }
 
   @Override
@@ -281,25 +300,6 @@ public class ModeratorController extends AbstractModeratorController {
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
-  }
-
-  private void assertUserIsAdmin() {
-    if (!isAdmin()) {
-      throw new IllegalStateException("Not an admin");
-    }
-  }
-
-  @Override
-  public boolean isAdmin() {
-    final INode node = MessageContext.getSender();
-    return isPlayerAdmin(node);
-  }
-
-  @Override
-  public boolean isPlayerAdmin(final INode node) {
-    final String name = getRealName(node);
-    final DBUser user = new DbUserController().getUserByName(name);
-    return user != null && user.isAdmin();
   }
 
   @Override

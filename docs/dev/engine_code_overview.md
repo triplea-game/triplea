@@ -1,10 +1,3 @@
----
-layout: longpage
-title: Engine Code Overview
-permalink: /engine_code_overview/
-root: /dev_docs/
----
-
 
 ## Design Goals
 

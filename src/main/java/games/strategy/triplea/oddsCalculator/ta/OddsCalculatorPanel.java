@@ -935,13 +935,13 @@ class PlayerUnitsPanel extends JPanel {
    * available if the unit is producable, or if a player has one
    */
   private Collection<UnitType> getUnitTypes(final PlayerID player) {
-    Collection<UnitType> rVal = new HashSet<>();
+    Collection<UnitType> unitTypes = new HashSet<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
       for (final ProductionRule rule : frontier) {
         for (final NamedAttachable type : rule.getResults().keySet()) {
           if (type instanceof UnitType) {
-            rVal.add((UnitType) type);
+            unitTypes.add((UnitType) type);
           }
         }
       }
@@ -949,7 +949,7 @@ class PlayerUnitsPanel extends JPanel {
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnits()) {
         if (u.getOwner().equals(player)) {
-          rVal.add(u.getType());
+          unitTypes.add(u.getType());
         }
       }
     }
@@ -958,9 +958,9 @@ class PlayerUnitsPanel extends JPanel {
     // in addition, as of right now AA guns cannot fire on the offensive side, so we want to take them out too, unless
     // they have other
     // combat abilities.
-    rVal = Match.getMatches(rVal,
+    unitTypes = Match.getMatches(unitTypes,
         Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
-    return rVal;
+    return unitTypes;
   }
 
   public void addChangeListener(final WidgetChangedListener listener) {

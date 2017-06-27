@@ -469,12 +469,12 @@ class DummyDelegateBridge implements IDelegateBridge {
   public void enterDelegateExecution() {}
 
   @Override
-  public void addChange(final Change aChange) {
-    if (!(aChange instanceof UnitHitsChange)) {
+  public void addChange(final Change change) {
+    if (!(change instanceof UnitHitsChange)) {
       return;
     }
-    m_allChanges.add(aChange);
-    m_data.performChange(aChange);
+    m_allChanges.add(change);
+    m_data.performChange(change);
   }
 
   @Override
@@ -495,7 +495,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void addChildToEvent(final String text, final Object renderingData) {}
 
   @Override
-  public void gameDataChanged(final Change aChange) {}
+  public void gameDataChanged(final Change change) {}
 
   @Override
   public void shutDown() {}
@@ -565,7 +565,7 @@ class DummyPlayer extends AbstractAI {
       final PlayerID player) {}
 
   @Override
-  protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purcahseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {}
 
   @Override

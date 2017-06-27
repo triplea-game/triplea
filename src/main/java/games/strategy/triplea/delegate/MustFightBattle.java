@@ -36,8 +36,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -667,12 +665,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // option shown
     // later, if our sea units die, we may ask the user to retreat
     final boolean someAirAtSea = m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
-    if (canAttackerRetreat() || someAirAtSea) {
+    if (canAttackerRetreat() || someAirAtSea || canAttackerRetreatPartialAmphib() || canAttackerRetreatPlanes()) {
       steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
-    } else if (canAttackerRetreatPartialAmphib()) {
-      steps.add(m_attacker.getName() + NONAMPHIB_WITHDRAW);
-    } else if (canAttackerRetreatPlanes()) {
-      steps.add(m_attacker.getName() + PLANES_WITHDRAW);
     }
     return steps;
   }
@@ -1215,17 +1209,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat =
-        new CompositeMatchAnd<>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure,
-            Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> enemyUnitsThatPreventRetreatBuilder = Match.newCompositeBuilder(
+        Matches.enemyUnit(m_attacker, m_data),
+        Matches.UnitIsNotInfrastructure,
+        Matches.unitIsBeingTransported().invert(),
+        Matches.UnitIsSubmerged.invert());
     if (games.strategy.triplea.Properties.getIgnoreSubInMovement(m_data)) {
-      enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotSub);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotSub);
     }
     if (games.strategy.triplea.Properties.getIgnoreTransportInMovement(m_data)) {
-      enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
     }
-    Collection<Territory> possible =
-        Match.getMatches(m_attackingFrom, Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).invert());
+    Collection<Territory> possible = Match.getMatches(m_attackingFrom,
+        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreatBuilder.all()).invert());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
     if (isWW2V2() || isWW2V3()) {
@@ -1422,7 +1418,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (subs) {
       text = retreatingPlayer.getName() + " retreat subs?";
     } else if (planes) {
-      text = retreatingPlayer.getName() + RETREAT_PLANES;
+      text = retreatingPlayer.getName() + " retreat planes?";
     } else if (partialAmphib) {
       text = retreatingPlayer.getName() + " retreat non-amphibious units?";
     } else {
@@ -1434,10 +1430,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       if (subs) {
         step = m_attacker.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
-      } else if (planes) {
-        step = m_attacker.getName() + PLANES_WITHDRAW;
-      } else if (partialAmphib) {
-        step = m_attacker.getName() + NONAMPHIB_WITHDRAW;
       } else {
         step = m_attacker.getName() + ATTACKER_WITHDRAW;
       }
@@ -1779,12 +1771,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty()) {
       return;
     }
-    final CompositeMatch<Unit> notSubmergedAndType = new CompositeMatchAnd<>(Matches.UnitIsSubmerged.invert());
+    final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.newCompositeBuilder(
+        Matches.UnitIsSubmerged.invert());
     if (Matches.TerritoryIsLand.match(m_battleSite)) {
-      notSubmergedAndType.add(Matches.UnitIsSea.invert());
+      notSubmergedAndTypeBuilder.add(Matches.UnitIsSea.invert());
     } else {
-      notSubmergedAndType.add(Matches.UnitIsLand.invert());
+      notSubmergedAndTypeBuilder.add(Matches.UnitIsLand.invert());
     }
+    final Match<Unit> notSubmergedAndType = notSubmergedAndTypeBuilder.all();
     final Collection<Unit> unitsToKill;
     final boolean hasUnitsThatCanRollLeft;
     if (attacker) {

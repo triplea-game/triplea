@@ -2,9 +2,9 @@ package games.strategy.engine.lobby.server;
 
 import java.util.logging.Logger;
 
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DbUserController;
-import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
