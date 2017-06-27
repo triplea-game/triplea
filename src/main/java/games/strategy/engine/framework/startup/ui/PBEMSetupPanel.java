@@ -93,7 +93,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     setWidgetActivation();
   }
 
-
   private void createComponents() {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
     localPlayerPanel.addHierarchyListener(new HierarchyListener() {
@@ -261,8 +260,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * @return a IBean either loaded from the cache or created
    */
   private static <T extends IBean> T findCachedOrCreateNew(final Class<T> theClassType) {
-    @SuppressWarnings("unchecked")
-    T cached = (T) LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName());
+    T cached = theClassType.cast(LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName()));
     if (cached == null) {
       try {
         cached = theClassType.getDeclaredConstructor().newInstance();
