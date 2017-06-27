@@ -2,12 +2,12 @@ package games.strategy.engine.lobby.server;
 
 import java.util.Date;
 
+import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.MutedMacController;
+import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userdb.BannedMacController;
-import games.strategy.engine.lobby.server.userdb.BannedUsernameController;
-import games.strategy.engine.lobby.server.userdb.DbUserController;
-import games.strategy.engine.lobby.server.userdb.MutedMacController;
-import games.strategy.engine.lobby.server.userdb.MutedUsernameController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;

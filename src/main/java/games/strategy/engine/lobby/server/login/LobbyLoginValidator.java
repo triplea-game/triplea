@@ -7,19 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.db.BadWordController;
+import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.HashedPassword;
+import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userdb.BadWordController;
-import games.strategy.engine.lobby.server.userdb.BannedMacController;
-import games.strategy.engine.lobby.server.userdb.BannedUsernameController;
-import games.strategy.engine.lobby.server.userdb.DbUserController;
-import games.strategy.engine.lobby.server.userdb.HashedPassword;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
@@ -27,10 +27,10 @@ import games.strategy.util.Version;
 
 public class LobbyLoginValidator implements ILoginValidator {
   static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
-  static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
-  static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
-  static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
-  static final String INVALID_MAC = "Invalid mac address.";
+  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
+  private static final String INVALID_MAC = "Invalid mac address.";
   private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
@@ -116,7 +116,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
   }
 
-  static String getBanDurationBreakdown(final Timestamp stamp) {
+  private static String getBanDurationBreakdown(final Timestamp stamp) {
     if (stamp == null) {
       return "Banned Forever";
     }
@@ -156,13 +156,9 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
-    final DbUserController dbUserController = new DbUserController();
-    if (!dbUserController.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-      if (dbUserController.doesUserExist(clientName)) {
-        return "Incorrect password";
-      } else {
-        return "Username does not exist";
-      }
+    final UserDao userDao = new DbUserController();
+    if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+      return "Incorrect username or password";
     } else {
       return null;
     }
@@ -207,12 +203,15 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "Password is not hashed correctly";
     }
 
+    if (new DbUserController().doesUserExist(user.getName())) {
+      return "That user name has already been taken";
+    }
+
     try {
       new DbUserController().createUser(user, password);
       return null;
-    } catch (final IllegalStateException ise) {
-      s_logger.log(Level.SEVERE, "Error creating user: " + user + ", err: " + ise.getMessage(), ise);
-      return ise.getMessage();
+    } catch (final Exception e) {
+      return e.getMessage();
     }
   }
 }

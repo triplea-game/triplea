@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
+import games.strategy.engine.lobby.server.db.MutedMacController;
+import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userdb.MutedMacController;
-import games.strategy.engine.lobby.server.userdb.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;

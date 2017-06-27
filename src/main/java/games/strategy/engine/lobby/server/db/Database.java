@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userdb;
+package games.strategy.engine.lobby.server.db;
 
 import java.io.File;
 import java.sql.CallableStatement;
