@@ -51,23 +51,24 @@ public interface IEmailSender extends IBean {
   String getPassword();
 
   /**
-   * Indicates the password will be saved with the sender.
+   * Indicates the credentials will be saved with the sender.
    *
-   * @return {@code true} if the password will be saved with the sender or {@code false} if the password is not saved.
+   * @return {@code true} if the credentials will be saved with the sender or {@code false} if the credentials are not
+   *         saved.
    */
-  boolean isPasswordSaved();
+  boolean areCredentialsSaved();
 
   void setUserName(String userName);
 
   void setPassword(String password);
 
   /**
-   * Indicate the password should be saved with the sender.
+   * Indicate the credentials should be saved with the sender.
    *
-   * @param passwordSaved {@code true} if the password should be saved with the sender or {@code false} if the password
-   *        should not be saved.
+   * @param credentialsSaved {@code true} if the credentials should be saved with the sender or {@code false} if the
+   *        credentials should not be saved.
    */
-  void setPasswordSaved(boolean passwordSaved);
+  void setCredentialsSaved(boolean credentialsSaved);
 
   /**
    * Should we also post at the end of combat move.

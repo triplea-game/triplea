@@ -131,7 +131,7 @@ public class History extends DefaultTreeModel {
     assertCorrectThread();
     getGameData().acquireWriteLock();
     try {
-      final int lastChange = getLastChange(removeAfterNode);
+      final int lastChange = getLastChange(removeAfterNode) + 1;
       while (m_changes.size() > lastChange) {
         m_changes.remove(lastChange);
       }
@@ -159,13 +159,13 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  synchronized void changeAdded(final Change aChange) {
-    m_changes.add(aChange);
+  synchronized void changeAdded(final Change change) {
+    m_changes.add(change);
     if (m_currentNode == null) {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      m_data.performChange(aChange);
+      m_data.performChange(change);
     }
   }
 

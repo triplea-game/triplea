@@ -80,13 +80,14 @@ final class ProTechAI {
    * determines all air units within range of territory (using 2 for fighters and 3 for bombers)
    * does not check for extended range fighters or bombers
    *
-   * @param tFirst
+   * @param transportsFirst
    *        - can transports be killed before other sea units
    * @param ignoreOnlyPlanes
    *        - if true, returns 0.0F if only planes can attack the territory
    */
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
-      final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes, final List<Territory> ignoreTerr) {
+      final PlayerID player, final boolean transportsFirst, final boolean ignoreOnlyPlanes,
+      final List<Territory> ignoreTerr) {
     PlayerID ePlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
     final HashMap<PlayerID, Float> ePAttackMap = new HashMap<>();
@@ -152,7 +153,7 @@ final class ProTechAI {
         }
         final List<Unit> enemies = t.getUnits().getMatches(Matches.unitIsOwnedBy(ePlayer));
         enemyWaterUnits.addAll(enemies);
-        firstStrength += strength(enemies, true, onWater, tFirst);
+        firstStrength += strength(enemies, true, onWater, transportsFirst);
         checked.add(t);
       }
       if (Matches.TerritoryIsLand.match(location)) {
@@ -169,7 +170,7 @@ final class ProTechAI {
         final List<Route> r = new ArrayList<>();
         final List<Unit> ships = findAttackers(location, 3, ignore, ePlayer, data, enemyShip,
             Matches.territoryIsBlockedSea(ePlayer, data), ignoreTerr, r, true);
-        secondStrength = strength(ships, true, true, tFirst);
+        secondStrength = strength(ships, true, true, transportsFirst);
         enemyWaterUnits.addAll(ships);
       }
       final List<Unit> attackPlanes =
@@ -243,7 +244,7 @@ final class ProTechAI {
                 }
               }
             }
-            seaStrength += strength(loadedUnits, true, false, tFirst);
+            seaStrength += strength(loadedUnits, true, false, transportsFirst);
             transportsCounted = true;
           }
         }
@@ -359,21 +360,22 @@ final class ProTechAI {
    *        - Territory expecting to be blitzed
    * @param blitzTerr
    *        - Territory which is being blitzed through (not guaranteed to be all possible route territories!)
-   * @param ePlayer
+   * @param enemyPlayer
    *        - the enemy Player
    * @return actual strength of enemy units (armor)
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
-      final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer) {
+      final List<Territory> blockTerr, final GameData data, final PlayerID enemyPlayer) {
     final HashSet<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Match<Unit> blitzUnit =
-        Match.all(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
+        Match.all(Matches.unitIsOwnedBy(enemyPlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
     final Match<Territory> validBlitzRoute = Match.all(
-        Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.territoryIsNotImpassableToLandUnits(ePlayer, data));
+        Matches.territoryHasNoEnemyUnits(enemyPlayer, data),
+        Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
-        findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
+        findAttackers(blitzHere, 2, ignore, enemyPlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
     for (final Route r : routes) {
       if (r.numberOfSteps() == 2) {
         blitzTerrRoutes.add(r);

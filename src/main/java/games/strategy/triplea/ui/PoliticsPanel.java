@@ -82,11 +82,11 @@ public class PoliticsPanel extends ActionPanel {
    * @return the choice of political action
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
-      final IPoliticsDelegate iPoliticsDelegate) {
+      final IPoliticsDelegate politicsDelegate) {
     this.firstRun = firstRun;
 
     // Never use a delegate or bridge from a UI. Multiplayer games will not work.
-    validPoliticalActions = new ArrayList<>(iPoliticsDelegate.getValidActions());
+    validPoliticalActions = new ArrayList<>(politicsDelegate.getValidActions());
     Collections.sort(validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
     if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing

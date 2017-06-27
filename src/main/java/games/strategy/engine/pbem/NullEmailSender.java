@@ -55,7 +55,7 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
-  public boolean isPasswordSaved() {
+  public boolean areCredentialsSaved() {
     return false;
   }
 
@@ -66,7 +66,7 @@ public class NullEmailSender implements IEmailSender {
   public void setPassword(final String password) {}
 
   @Override
-  public void setPasswordSaved(final boolean passwordSaved) {}
+  public void setCredentialsSaved(final boolean credentialsSaved) {}
 
   @Override
   public String getHelpText() {

@@ -1273,8 +1273,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {
               taa.setAttackBonus("1:" + jet.getName());
+              taa.setAirAttackBonus("1:" + jet.getName());
             } else {
               taa.setDefenseBonus("1:" + jet.getName());
+              taa.setAirDefenseBonus("1:" + jet.getName());
             }
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION)) {
@@ -1301,7 +1303,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
           for (final UnitType rocket : allRockets) {
             taa.setRocketDiceNumber("1:" + rocket.getName());
           }
-          // taa.setRocketDiceSides(Integer.toString(data.getDiceSides()));
           taa.setRocketDistance("3");
           taa.setRocketNumberPerTerritory("1");
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_DESTROYER_BOMBARD)) {

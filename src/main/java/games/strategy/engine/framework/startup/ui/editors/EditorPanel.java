@@ -61,12 +61,12 @@ public abstract class EditorPanel extends JPanel {
    *        the field to validate
    * @param label
    *        the associated label (or null)
-   * @param IValidator
+   * @param validator
    *        the validator
    * @return true if text field content is valid
    */
-  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator IValidator) {
-    return validateText(field.getText(), label, IValidator);
+  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator validator) {
+    return validateText(field.getText(), label, validator);
   }
 
   /**
@@ -77,14 +77,14 @@ public abstract class EditorPanel extends JPanel {
    *        the text to validate
    * @param label
    *        the associated label (or null)
-   * @param IValidator
+   * @param validator
    *        the validator
    * @return true if text field content is valid
    */
-  protected boolean validateText(final String text, final JLabel label, final IValidator IValidator) {
+  protected boolean validateText(final String text, final JLabel label, final IValidator validator) {
     boolean valid = true;
     Color color = labelColor;
-    if (!IValidator.isValid(text)) {
+    if (!validator.isValid(text)) {
       valid = false;
       color = Color.RED;
       label.setForeground(color);

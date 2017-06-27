@@ -160,22 +160,22 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purchaseForBid, int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    if (PUsToSpend <= 0) {
+    if (pusToSpend <= 0) {
       return;
     }
     if (purchaseForBid) {
       calc.setData(data);
-      storedPurchaseTerritories = purchaseAI.bid(PUsToSpend, purchaseDelegate, data);
+      storedPurchaseTerritories = purchaseAI.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
       // Repair factories
-      PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
+      pusToSpend = purchaseAI.repair(pusToSpend, purchaseDelegate, data, player);
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
