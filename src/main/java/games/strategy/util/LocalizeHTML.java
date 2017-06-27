@@ -67,7 +67,7 @@ public class LocalizeHTML {
       return htmlText;
     }
     ResourceLoader ourResourceLoader = resourceLoader;
-    String rVal = htmlText;
+    String localizedHtmlText = htmlText;
     final Pattern patternTag = Pattern.compile(PATTERN_HTML_IMG_TAG);
     final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);
     final Matcher matcherTag = patternTag.matcher(htmlText);
@@ -103,11 +103,11 @@ public class LocalizeHTML {
             continue;
           }
 
-          rVal = rVal.replaceAll(link, replacementUrl.toString());
+          localizedHtmlText = localizedHtmlText.replaceAll(link, replacementUrl.toString());
         }
       }
     }
 
-    return rVal;
+    return localizedHtmlText;
   }
 }

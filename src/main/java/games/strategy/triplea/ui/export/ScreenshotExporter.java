@@ -95,34 +95,34 @@ public final class ScreenshotExporter {
       mapPanel.drawMapImage(mapGraphics);
       mapPanel.setTopLeft(xOffset, yOffset);
       // overlay title
-      Color title_color = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
-      if (title_color == null) {
-        title_color = Color.BLACK;
+      Color titleColor = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
+      if (titleColor == null) {
+        titleColor = Color.BLACK;
       }
       final String s_title_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
       final String s_title_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
       final String s_title_size = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
-      int title_x;
-      int title_y;
-      int title_size;
+      int titleX;
+      int titleY;
+      int titleSize;
       try {
-        title_x = (int) (Integer.parseInt(s_title_x) * scale);
-        title_y = (int) (Integer.parseInt(s_title_y) * scale);
-        title_size = Integer.parseInt(s_title_size);
+        titleX = (int) (Integer.parseInt(s_title_x) * scale);
+        titleY = (int) (Integer.parseInt(s_title_y) * scale);
+        titleSize = Integer.parseInt(s_title_size);
       } catch (final NumberFormatException nfe) {
         // choose safe defaults
-        title_x = (int) (15 * scale);
-        title_y = (int) (15 * scale);
-        title_size = 15;
+        titleX = (int) (15 * scale);
+        titleY = (int) (15 * scale);
+        titleSize = 15;
       }
       // everything else should be scaled down onto map image
       final AffineTransform transform = new AffineTransform();
       transform.scale(scale, scale);
       mapGraphics.setTransform(transform);
-      mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
-      mapGraphics.setColor(title_color);
+      mapGraphics.setFont(new Font("Ariel", Font.BOLD, titleSize));
+      mapGraphics.setColor(titleColor);
       if (iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(gameData.getGameName() + " Round " + round, title_x, title_y);
+        mapGraphics.drawString(gameData.getGameName() + " Round " + round, titleX, titleY);
       }
 
       // save Image as .png

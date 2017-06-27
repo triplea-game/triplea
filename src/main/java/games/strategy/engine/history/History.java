@@ -74,22 +74,22 @@ public class History extends DefaultTreeModel {
   }
 
   private int getLastChange(final HistoryNode node) {
-    int rVal;
+    int lastChangeIndex;
     if (node == getRoot()) {
-      rVal = 0;
+      lastChangeIndex = 0;
     } else if (node instanceof Event) {
-      rVal = ((Event) node).getChangeEndIndex();
+      lastChangeIndex = ((Event) node).getChangeEndIndex();
     } else if (node instanceof EventChild) {
-      rVal = ((Event) node.getParent()).getChangeEndIndex();
+      lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
     } else if (node instanceof IndexedHistoryNode) {
-      rVal = ((IndexedHistoryNode) node).getChangeStartIndex();
+      lastChangeIndex = ((IndexedHistoryNode) node).getChangeStartIndex();
     } else {
-      rVal = 0;
+      lastChangeIndex = 0;
     }
-    if (rVal == -1) {
+    if (lastChangeIndex == -1) {
       return m_changes.size();
     }
-    return rVal;
+    return lastChangeIndex;
   }
 
   public Change getDelta(final HistoryNode start, final HistoryNode end) {

@@ -174,17 +174,17 @@ public class ProPurchaseUtils {
     if (bestDefenseOption != null) {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
       int remainingUnitProduction = getUnitProduction(t, data, player);
-      int PUsSpent = 0;
+      int pusSpent = 0;
       while (true) {
 
         // If out of PUs or production then break
-        if (bestDefenseOption.getCost() > (PUsRemaining - PUsSpent)
+        if (bestDefenseOption.getCost() > (PUsRemaining - pusSpent)
             || remainingUnitProduction < bestDefenseOption.getQuantity()) {
           break;
         }
 
         // Create new temp defenders
-        PUsSpent += bestDefenseOption.getCost();
+        pusSpent += bestDefenseOption.getCost();
         remainingUnitProduction -= bestDefenseOption.getQuantity();
         placeUnits.addAll(bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
       }

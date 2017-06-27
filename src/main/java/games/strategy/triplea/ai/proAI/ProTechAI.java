@@ -51,22 +51,22 @@ final class ProTechAI {
     final int PUs = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
     final int TechTokens = player.getResources().getQuantity(techtokens);
-    int TokensToBuy = 0;
+    int tokensToBuy = 0;
     if (!capDanger && TechTokens < 3 && PUs > Math.random() * 160) {
-      TokensToBuy = 1;
+      tokensToBuy = 1;
     }
-    if (TechTokens > 0 || TokensToBuy > 0) {
+    if (TechTokens > 0 || tokensToBuy > 0) {
       final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(data, player);
       // retaining 65% chance of choosing land advances using basic ww2v3 model.
       if (data.getTechnologyFrontier().isEmpty()) {
         if (Math.random() > 0.35) {
-          techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(1), TokensToBuy, null);
+          techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(1), tokensToBuy, null);
         } else {
-          techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(0), TokensToBuy, null);
+          techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(0), tokensToBuy, null);
         }
       } else {
         final int rand = (int) (Math.random() * cats.size());
-        techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy, null);
+        techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(rand), tokensToBuy, null);
       }
     }
   }
@@ -86,7 +86,7 @@ final class ProTechAI {
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player, final boolean transportsFirst, final boolean ignoreOnlyPlanes,
       final List<Territory> ignoreTerr) {
-    PlayerID ePlayer = null;
+    PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
     final HashMap<PlayerID, Float> ePAttackMap = new HashMap<>();
     final Iterator<PlayerID> playerIter = enemyPlayers.iterator();
@@ -106,12 +106,18 @@ final class ProTechAI {
       float blitzStrength = 0.0F;
       float strength = 0.0F;
       float airStrength = 0.0F;
-      ePlayer = playerIter.next();
-      final Match<Unit> enemyPlane = Match.all(Matches.UnitIsAir, Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanMove);
-      final Match<Unit> enemyTransport = Match.all(Matches.unitIsOwnedBy(ePlayer),
+      enemyPlayer = playerIter.next();
+      final Match<Unit> enemyPlane = Match.all(
+          Matches.UnitIsAir,
+          Matches.unitIsOwnedBy(enemyPlayer),
+          Matches.UnitCanMove);
+      final Match<Unit> enemyTransport = Match.all(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
-      final Match<Unit> enemyShip = Match.all(Matches.unitIsOwnedBy(ePlayer), Matches.UnitIsSea, Matches.UnitCanMove);
-      final Match<Unit> enemyTransportable = Match.all(Matches.unitIsOwnedBy(ePlayer),
+      final Match<Unit> enemyShip = Match.all(
+          Matches.unitIsOwnedBy(enemyPlayer),
+          Matches.UnitIsSea,
+          Matches.UnitCanMove);
+      final Match<Unit> enemyTransportable = Match.all(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
       final Match<Unit> aTransport = Match.all(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
@@ -149,13 +155,13 @@ final class ProTechAI {
         if (ignoreTerr != null && ignoreTerr.contains(t)) {
           continue;
         }
-        final List<Unit> enemies = t.getUnits().getMatches(Matches.unitIsOwnedBy(ePlayer));
+        final List<Unit> enemies = t.getUnits().getMatches(Matches.unitIsOwnedBy(enemyPlayer));
         enemyWaterUnits.addAll(enemies);
         firstStrength += strength(enemies, true, onWater, transportsFirst);
         checked.add(t);
       }
       if (Matches.TerritoryIsLand.match(location)) {
-        blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, ePlayer);
+        blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, enemyPlayer);
       } else { // get ships attack strength
         // old assumed fleets won't split up, new lets them. no biggie.
         // assumes max ship movement is 3.
@@ -166,13 +172,13 @@ final class ProTechAI {
         final HashSet<Integer> ignore = new HashSet<>();
         ignore.add(1);
         final List<Route> r = new ArrayList<>();
-        final List<Unit> ships = findAttackers(location, 3, ignore, ePlayer, data, enemyShip,
-            Matches.territoryIsBlockedSea(ePlayer, data), ignoreTerr, r, true);
+        final List<Unit> ships = findAttackers(location, 3, ignore, enemyPlayer, data, enemyShip,
+            Matches.territoryIsBlockedSea(enemyPlayer, data), ignoreTerr, r, true);
         secondStrength = strength(ships, true, true, transportsFirst);
         enemyWaterUnits.addAll(ships);
       }
       final List<Unit> attackPlanes =
-          findPlaneAttackersThatCanLand(location, maxFighterDistance, ePlayer, data, ignoreTerr, checked);
+          findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, ignoreTerr, checked);
       airStrength += allairstrength(attackPlanes, true);
       if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.TerritoryIsLand.match(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
@@ -183,7 +189,7 @@ final class ProTechAI {
           final Iterator<Territory> iterTerr = waterTerr.iterator();
           while (!transportsCounted && iterTerr.hasNext()) {
             final Territory waterCheck = iterTerr.next();
-            if (ePlayer == null) {
+            if (enemyPlayer == null) {
               continue;
             }
             final List<Unit> transports = t4.getUnits().getMatches(enemyTransport);
@@ -191,7 +197,7 @@ final class ProTechAI {
               continue;
             }
             if (!t4.equals(waterCheck)) {
-              final Route seaRoute = getMaxSeaRoute(data, t4, waterCheck, ePlayer, true, maxTransportDistance);
+              final Route seaRoute = getMaxSeaRoute(data, t4, waterCheck, enemyPlayer, true, maxTransportDistance);
               if (seaRoute == null || seaRoute.getEnd() == null || seaRoute.getEnd() != waterCheck) {
                 continue;
               }
@@ -206,24 +212,24 @@ final class ProTechAI {
                 availOther += 1;
                 continue;
               } else {
-                int Inf = 2;
-                int Other = 1;
+                int inf = 2;
+                int other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
                   if (Matches.UnitIsInfantry.match(checkUnit)) {
-                    Inf--;
+                    inf--;
                   }
                   if (Matches.UnitIsNotInfantry.match(checkUnit)) {
-                    Inf--;
-                    Other--;
+                    inf--;
+                    other--;
                   }
                   loadedUnits.add(checkUnit);
                 }
-                availInf += Inf;
-                availOther += Other;
+                availInf += inf;
+                availOther += other;
               }
             }
             final Set<Territory> transNeighbors =
-                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(ePlayer, data));
+                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
             for (final Territory xN : transNeighbors) {
               final List<Unit> aTransUnits = xN.getUnits().getMatches(enemyTransportable);
               aTransUnits.removeAll(alreadyLoaded);
@@ -262,17 +268,17 @@ final class ProTechAI {
       if (!nonTransportsInAttack) {
         strength = 0.0F;
       }
-      ePAttackMap.put(ePlayer, strength);
+      ePAttackMap.put(enemyPlayer, strength);
     }
     float maxStrength = 0.0F;
     for (final PlayerID xP : enemyPlayers) {
       if (ePAttackMap.get(xP) > maxStrength) {
-        ePlayer = xP;
+        enemyPlayer = xP;
         maxStrength = ePAttackMap.get(xP);
       }
     }
     for (final PlayerID xP : enemyPlayers) {
-      if (ePlayer != xP) {
+      if (enemyPlayer != xP) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += ePAttackMap.get(xP) * 0.40F;
       }

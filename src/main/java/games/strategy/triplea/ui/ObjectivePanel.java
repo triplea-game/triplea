@@ -765,11 +765,11 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     // This line was very important to get it working with JDK1.4
     final TableColumnModel columnModel = table.getColumnModel();
     setSize(columnModel.getColumn(column).getWidth(), 100000);
-    int height_wanted = (int) getPreferredSize().getHeight();
-    addSize(table, row, column, height_wanted);
-    height_wanted = findTotalMaximumRowSize(table, row);
-    if (height_wanted != table.getRowHeight(row)) {
-      table.setRowHeight(row, height_wanted);
+    int heightWanted = (int) getPreferredSize().getHeight();
+    addSize(table, row, column, heightWanted);
+    heightWanted = findTotalMaximumRowSize(table, row);
+    if (heightWanted != table.getRowHeight(row)) {
+      table.setRowHeight(row, heightWanted);
     }
     return this;
   }
@@ -792,17 +792,17 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
    * its hash table for this row.
    */
   private static int findTotalMaximumRowSize(final JTable table, final int row) {
-    int maximum_height = 0;
+    int maximumHeight = 0;
     final Enumeration<?> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn tc = (TableColumn) columns.nextElement();
       final TableCellRenderer cellRenderer = tc.getCellRenderer();
       if (cellRenderer instanceof EditorPaneTableCellRenderer) {
         final EditorPaneTableCellRenderer tar = (EditorPaneTableCellRenderer) cellRenderer;
-        maximum_height = Math.max(maximum_height, tar.findMaximumRowSize(table, row));
+        maximumHeight = Math.max(maximumHeight, tar.findMaximumRowSize(table, row));
       }
     }
-    return maximum_height;
+    return maximumHeight;
   }
 
   private int findMaximumRowSize(final JTable table, final int row) {
@@ -814,11 +814,11 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
     if (rowheights == null) {
       return 0;
     }
-    int maximum_height = 0;
+    int maximumHeight = 0;
     for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
       final int cellHeight = entry.getValue();
-      maximum_height = Math.max(maximum_height, cellHeight);
+      maximumHeight = Math.max(maximumHeight, cellHeight);
     }
-    return maximum_height;
+    return maximumHeight;
   }
 }

@@ -79,13 +79,13 @@ public class BattleCalculator {
     if (units == null || units.isEmpty()) {
       return 0;
     }
-    int rVal = 0;
+    int totalHitPoints = 0;
     for (final Unit u : units) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      rVal += ua.getHitPoints();
-      rVal -= u.getHits();
+      totalHitPoints += ua.getHitPoints();
+      totalHitPoints -= u.getHits();
     }
-    return rVal;
+    return totalHitPoints;
   }
 
   private static int getTotalHitpointsLeft(final Unit unit) {

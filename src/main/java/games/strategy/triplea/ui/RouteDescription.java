@@ -53,11 +53,11 @@ public class RouteDescription {
     if (other.m_end == null && this.m_end == null) {
       return true;
     }
-    int xDiff = m_end.x - other.m_end.x;
-    xDiff *= xDiff;
-    int yDiff = m_end.y - other.m_end.y;
-    yDiff *= yDiff;
-    final int endDiff = (int) Math.sqrt(xDiff + yDiff);
+    int diffX = m_end.x - other.m_end.x;
+    diffX *= diffX;
+    int diffY = m_end.y - other.m_end.y;
+    diffY *= diffY;
+    final int endDiff = (int) Math.sqrt(diffX + diffY);
     return endDiff < 6;
   }
 
