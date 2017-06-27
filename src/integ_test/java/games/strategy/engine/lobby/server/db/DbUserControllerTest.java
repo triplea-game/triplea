@@ -6,14 +6,13 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.junit.Test;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
-import games.strategy.util.ThreadUtil;
-import games.strategy.util.Util;
 
 public class DbUserControllerTest {
 
@@ -45,7 +44,7 @@ public class DbUserControllerTest {
   }
 
   private static DBUser givenUser() {
-    final String name = Util.createUniqueTimeStamp();
+    final String name = UUID.randomUUID().toString().substring(0, 20);
     final String email = name + "@none.none";
     return new DBUser(
         new DBUser.UserName(name),
@@ -138,23 +137,7 @@ public class DbUserControllerTest {
     final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
     dbTestConnection.controller.createUser(user, password);
 
-    ThreadUtil.sleep(1);
-    final long loginTimeMustBeAfter = System.currentTimeMillis();
-    ThreadUtil.sleep(1);
-
     assertTrue(dbTestConnection.controller.login(user.getName(), password));
-
-    try (final Connection con = dbTestConnection.connectionSupplier.get()) {
-      final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
-      final ResultSet rs = con.createStatement().executeQuery(sql);
-      assertTrue(rs.next());
-      assertTrue(
-          String.format("lastLogin %s, should be after %s",
-              rs.getTimestamp("lastLogin").getTime(), loginTimeMustBeAfter),
-
-          rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
-    }
-    // make sure last login time was updated
   }
 
   @Test
