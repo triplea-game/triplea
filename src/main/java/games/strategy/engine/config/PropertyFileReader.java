@@ -54,11 +54,7 @@ public class PropertyFileReader {
       final Properties props = new Properties();
       props.load(inputStream);
 
-      if (!props.containsKey(propertyKey)) {
-        return "";
-      } else {
-        return Strings.nullToEmpty(props.getProperty(propertyKey)).trim();
-      }
+      return Strings.nullToEmpty(props.getProperty(propertyKey)).trim();
     } catch (final FileNotFoundException e) {
       throw new IllegalStateException("Property file not found: " + propertyFile.getAbsolutePath(), e);
     } catch (final IOException e) {
