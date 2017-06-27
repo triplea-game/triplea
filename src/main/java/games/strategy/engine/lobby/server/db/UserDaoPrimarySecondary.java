@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userdb;
+package games.strategy.engine.lobby.server.db;
 
 /**
  * Allows for configuration flagging of multiple UserDao instances.

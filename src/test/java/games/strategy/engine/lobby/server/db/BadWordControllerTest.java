@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userdb;
+package games.strategy.engine.lobby.server.db;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
