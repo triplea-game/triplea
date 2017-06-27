@@ -13,22 +13,15 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
-// TODO: *Controller are really *Dao classes, this is a DAO pattern, not controller!
-public class UserController implements UserDaoPrimarySecondary {
+// TODO: Lobby DB Migration - merge with DbUserController once completed
+public class UserController implements UserDao {
 
   private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
   private final Supplier<Connection> connectionSupplier;
-  private final UserDaoPrimarySecondary.Role usageRole;
 
-  UserController(final UserDaoPrimarySecondary.Role usageRole, final Supplier<Connection> connectionSupplier) {
+  UserController(final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
-    this.usageRole = usageRole;
-  }
-
-  @Override
-  public boolean isPrimary() {
-    return usageRole == Role.PRIMARY;
   }
 
   /**
