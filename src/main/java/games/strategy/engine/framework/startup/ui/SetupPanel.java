@@ -82,7 +82,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     return new ArrayList<>();
   }
 
-  void layoutPlayerComponents(JPanel panel, List<PlayerSelectorRow> playerRows, GameData data) {
+  void layoutPlayerComponents(final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
     panel.removeAll();
     playerRows.clear();
     panel.setLayout(new GridBagLayout());
@@ -110,9 +110,11 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     final JLabel nameLabel = new JLabel("Name");
     panel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes);
-    setAllTypes.setSelectedIndex(-1);
-    panel.add(setAllTypes, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+    final JComboBox<String> setAllTypesComboBox = new JComboBox<>(playerTypes);
+    setAllTypesComboBox.setSelectedIndex(-1);
+    setAllTypesComboBox.setAction(
+        SwingAction.of(e -> playerRows.forEach(row -> row.setPlayerType(setAllTypesComboBox.getSelectedItem().toString()))));
+    panel.add(setAllTypesComboBox, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
     final JLabel typeLabel = new JLabel("Type");
     panel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -154,10 +156,6 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     });
     resourceModifiers.setAction(resourceModifiersAction);
 
-    final Action setAllTypesAction = SwingAction.of(e -> {
-      playerRows.forEach(row -> row.setPlayerType(setAllTypes.getSelectedItem().toString()));
-    });
-    setAllTypes.setAction(setAllTypesAction);
 
     panel.validate();
     panel.invalidate();
