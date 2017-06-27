@@ -93,7 +93,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     setWidgetActivation();
   }
 
-
   private void createComponents() {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
     localPlayerPanel.addHierarchyListener(new HierarchyListener() {
@@ -204,10 +203,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
     final List<IForumPoster> forumPosters = new ArrayList<>();
-    forumPosters.add((IForumPoster) findCachedOrCreateNew(NullForumPoster.class));
-    forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
-    forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAWarClubForumPoster.class));
-    forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAForumPoster.class));
+    forumPosters.add(findCachedOrCreateNew(NullForumPoster.class));
+    forumPosters.add(findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
+    forumPosters.add(findCachedOrCreateNew(TripleAWarClubForumPoster.class));
+    forumPosters.add(findCachedOrCreateNew(TripleAForumPoster.class));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
@@ -234,10 +233,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
     final List<IEmailSender> emailSenders = new ArrayList<>();
-    emailSenders.add((IEmailSender) findCachedOrCreateNew(NullEmailSender.class));
-    emailSenders.add((IEmailSender) findCachedOrCreateNew(GmailEmailSender.class));
-    emailSenders.add((IEmailSender) findCachedOrCreateNew(HotmailEmailSender.class));
-    emailSenders.add((IEmailSender) findCachedOrCreateNew(GenericEmailSender.class));
+    emailSenders.add(findCachedOrCreateNew(NullEmailSender.class));
+    emailSenders.add(findCachedOrCreateNew(GmailEmailSender.class));
+    emailSenders.add(findCachedOrCreateNew(HotmailEmailSender.class));
+    emailSenders.add(findCachedOrCreateNew(GenericEmailSender.class));
     emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
@@ -260,8 +259,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    *        the type of class
    * @return a IBean either loaded from the cache or created
    */
-  private static IBean findCachedOrCreateNew(final Class<? extends IBean> theClassType) {
-    IBean cached = LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName());
+  private static <T extends IBean> T findCachedOrCreateNew(final Class<T> theClassType) {
+    T cached = theClassType.cast(LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName()));
     if (cached == null) {
       try {
         cached = theClassType.getDeclaredConstructor().newInstance();
