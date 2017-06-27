@@ -28,10 +28,10 @@ class CountryChart {
     final PrintGenerationData m_printData = printData;
     final Collection<Territory> m_terrCollection =
         Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    Iterator<Territory> m_terrIterator = m_terrCollection.iterator();
+    Iterator<Territory> terrIterator = m_terrCollection.iterator();
     Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();
-    while (m_terrIterator.hasNext()) {
-      final Territory currentTerritory = m_terrIterator.next();
+    while (terrIterator.hasNext()) {
+      final Territory currentTerritory = terrIterator.next();
       final UnitCollection unitsHere = currentTerritory.getUnits();
       final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
       while (availableUnits.hasNext()) {
@@ -67,10 +67,10 @@ class CountryChart {
       }
       countryFileWriter.write("\r\n");
       // Print Territories and Info
-      m_terrIterator =
+      terrIterator =
           Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
-      while (m_terrIterator.hasNext()) {
-        final Territory currentTerritory = m_terrIterator.next();
+      while (terrIterator.hasNext()) {
+        final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());
         final List<Map<UnitType, Integer>> currentList = m_infoMap.get(currentTerritory);
         final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();

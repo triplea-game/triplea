@@ -98,8 +98,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch, final boolean allowNull) {
-    RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
+    if (ra == null) {
       if (playersToSearch == null) {
         if (!allowNull) {
           throw new IllegalStateException(
@@ -110,9 +110,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           if (otherPlayer == player) {
             continue;
           }
-          rVal = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
+          ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
+          if (ra != null) {
+            return ra;
           }
         }
         if (!allowNull) {
@@ -121,7 +121,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
       }
     }
-    return rVal;
+    return ra;
   }
 
   /**

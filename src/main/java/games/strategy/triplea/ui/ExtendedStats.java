@@ -206,12 +206,12 @@ public class ExtendedStats extends StatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int rVal = 0;
+      int matchCount = 0;
       final Match<Unit> ownedBy = Match.all(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
       for (final Territory place : data.getMap().getTerritories()) {
-        rVal += place.getUnits().countMatches(ownedBy);
+        matchCount += place.getUnits().countMatches(ownedBy);
       }
-      return rVal;
+      return matchCount;
     }
   }
 

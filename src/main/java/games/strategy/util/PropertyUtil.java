@@ -44,11 +44,9 @@ public class PropertyUtil {
 
   public static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
-    Field rVal = null;
     if (!justFromSuper) {
       try {
-        rVal = c.getDeclaredField(name); // TODO: unchecked reflection
-        return rVal;
+        return c.getDeclaredField(name); // TODO: unchecked reflection
       } catch (final NoSuchFieldException e) {
         return getFieldIncludingFromSuperClasses(c, name, true);
       }
@@ -57,8 +55,7 @@ public class PropertyUtil {
         throw new IllegalStateException("No such Property Field: " + name);
       }
       try {
-        rVal = c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
-        return rVal;
+        return c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
       } catch (final NoSuchFieldException e) {
         return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
       }

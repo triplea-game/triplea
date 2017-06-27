@@ -131,15 +131,15 @@ public class ProUtils {
   }
 
   public static double getPlayerProduction(final PlayerID player, final GameData data) {
-    int rVal = 0;
+    int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
       if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place)) {
-        rVal += TerritoryAttachment.getProduction(place);
+        production += TerritoryAttachment.getProduction(place);
       }
     }
-    rVal *= Properties.getPU_Multiplier(data);
-    return rVal;
+    production *= Properties.getPU_Multiplier(data);
+    return production;
   }
 
   public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) {

@@ -211,15 +211,15 @@ public class UnitChooser extends JPanel {
         nullInsets, 0, 0));
     selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
-    int yIndex = 1;
+    int rowIndex = 1;
     for (final ChooserEntry entry : entries) {
-      entry.createComponents(this, yIndex);
-      yIndex++;
+      entry.createComponents(this, rowIndex);
+      rowIndex++;
     }
-    add(autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+    add(autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
         GridBagConstraints.NONE, nullInsets, 0, 0));
-    yIndex++;
-    add(leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    rowIndex++;
+    add(leftToSelect, new GridBagConstraints(0, rowIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     if (match != null) {
       autoSelectButton.setVisible(false);

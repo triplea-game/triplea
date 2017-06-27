@@ -935,13 +935,13 @@ class PlayerUnitsPanel extends JPanel {
    * available if the unit is producable, or if a player has one
    */
   private Collection<UnitType> getUnitTypes(final PlayerID player) {
-    Collection<UnitType> rVal = new HashSet<>();
+    Collection<UnitType> unitTypes = new HashSet<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
       for (final ProductionRule rule : frontier) {
         for (final NamedAttachable type : rule.getResults().keySet()) {
           if (type instanceof UnitType) {
-            rVal.add((UnitType) type);
+            unitTypes.add((UnitType) type);
           }
         }
       }
@@ -949,12 +949,15 @@ class PlayerUnitsPanel extends JPanel {
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnits()) {
         if (u.getOwner().equals(player)) {
-          rVal.add(u.getType());
+          unitTypes.add(u.getType());
         }
       }
     }
-    rVal = Match.getMatches(rVal, Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
-    return rVal;
+
+    // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
+    unitTypes = Match.getMatches(unitTypes,
+        Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
+    return unitTypes;
   }
 
   public void addChangeListener(final WidgetChangedListener listener) {

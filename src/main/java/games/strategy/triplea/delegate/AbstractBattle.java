@@ -285,15 +285,15 @@ public abstract class AbstractBattle implements IBattle {
       playerUnitCount.add(unit.getOwner(), 1);
     }
     int max = -1;
-    PlayerID rVal = null;
+    PlayerID player = null;
     for (final PlayerID current : playerUnitCount.keySet()) {
       final int count = playerUnitCount.getInt(current);
       if (count > max) {
         max = count;
-        rVal = current;
+        player = current;
       }
     }
-    return rVal;
+    return player;
   }
 
   /**

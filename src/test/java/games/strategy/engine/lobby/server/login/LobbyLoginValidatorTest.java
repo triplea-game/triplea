@@ -12,10 +12,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.userDB.BadWordController;
+import games.strategy.engine.lobby.server.db.BadWordController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DbUserController;
-import games.strategy.engine.lobby.server.userDB.HashedPassword;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;

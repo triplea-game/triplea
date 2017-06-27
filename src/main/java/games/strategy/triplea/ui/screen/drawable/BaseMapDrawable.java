@@ -21,16 +21,16 @@ public class BaseMapDrawable extends MapTileDrawable {
     if (m_noImage) {
       return null;
     }
-    Image rVal;
+    Image image;
     if (m_unscaled) {
-      rVal = m_uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(m_x, m_y);
+      image = m_uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(m_x, m_y);
     } else {
-      rVal = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y);
+      image = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y);
     }
-    if (rVal == null) {
+    if (image == null) {
       m_noImage = true;
     }
-    return rVal;
+    return image;
   }
 
   @Override

@@ -68,12 +68,12 @@ public class TransportTracker {
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    Collection<Unit> rVal = transporting(transport);
-    if (rVal == null) {
-      rVal = new ArrayList<>();
+    Collection<Unit> units = transporting(transport);
+    if (units == null) {
+      units = new ArrayList<>();
     }
-    rVal.addAll(unloaded(transport));
-    return rVal;
+    units.addAll(unloaded(transport));
+    return units;
   }
 
   /**
