@@ -20,11 +20,14 @@ public class DbUserControllerIntegrationTest {
   private static final DbTestConnection DERBY =
       new DbTestConnection(Database::getDerbyConnection, new DbUserController());
 
+  // test override to swap the default connection, postgres is primary, Derby is secondary
   private static final DbTestConnection POSTGRES =
-      new DbTestConnection(Database::getPostgresConnection, new DbUserController(
-          new UserController(
-              UserDaoPrimarySecondary.Role.PRIMARY,
-              Database::getPostgresConnection)));
+      new DbTestConnection(
+          Database::getPostgresConnection,
+          new DbUserController(
+              new UserController(Database::getPostgresConnection),
+              new UserController(Database::getDerbyConnection),
+              new MigrationCounter()));
 
   @Test
   public void testCreate() throws Exception {
