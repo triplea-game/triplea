@@ -211,15 +211,15 @@ public class UnitChooser extends JPanel {
         nullInsets, 0, 0));
     selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
-    int yIndex = 1;
+    int rowIndex = 1;
     for (final ChooserEntry entry : entries) {
-      entry.createComponents(this, yIndex);
-      yIndex++;
+      entry.createComponents(this, rowIndex);
+      rowIndex++;
     }
-    add(autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+    add(autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
         GridBagConstraints.NONE, nullInsets, 0, 0));
-    yIndex++;
-    add(leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    rowIndex++;
+    add(leftToSelect, new GridBagConstraints(0, rowIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     if (match != null) {
       autoSelectButton.setVisible(false);
@@ -359,7 +359,7 @@ class ChooserEntry {
     m_uiContext = uiContext;
   }
 
-  public void createComponents(final JPanel panel, final int yIndex) {
+  public void createComponents(final JPanel panel, final int rowIndex) {
     int gridx = 0;
     for (int i =
         0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++) {
@@ -369,22 +369,22 @@ class ChooserEntry {
       scroll.addChangeListener(m_hitTextFieldListener);
       final JLabel label = new JLabel("x" + m_category.getUnits().size());
       m_hitLabel.add(label);
-      panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0,
+      panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
       if (i == 0) {
         if (m_category.getMovement() != -1) {
-          panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0,
+          panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0, 0,
               GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
         }
         if (m_category.getTransportCost() != -1) {
-          panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(gridx, yIndex, 1, 1, 0,
+          panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0,
               0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
         }
         gridx++;
       }
-      panel.add(label, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+      panel.add(label, new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-      panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+      panel.add(scroll, new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
       scroll.addChangeListener(field -> updateLeftToSelect());
     }

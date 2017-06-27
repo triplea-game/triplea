@@ -509,7 +509,7 @@ public class HistoryLog extends JFrame {
 
   // copied from StatPanel
   private static int getProduction(final PlayerID player, final GameData data) {
-    int rVal = 0;
+    int production = 0;
     final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
     while (iter.hasNext()) {
       boolean isConvoyOrLand = false;
@@ -523,10 +523,10 @@ public class HistoryLog extends JFrame {
       }
       if (place.getOwner().equals(player) && isConvoyOrLand) {
         if (ta != null) {
-          rVal += ta.getProduction();
+          production += ta.getProduction();
         }
       }
     }
-    return rVal;
+    return production;
   }
 }

@@ -74,22 +74,22 @@ public class History extends DefaultTreeModel {
   }
 
   private int getLastChange(final HistoryNode node) {
-    int rVal;
+    int lastChangeIndex;
     if (node == getRoot()) {
-      rVal = 0;
+      lastChangeIndex = 0;
     } else if (node instanceof Event) {
-      rVal = ((Event) node).getChangeEndIndex();
+      lastChangeIndex = ((Event) node).getChangeEndIndex();
     } else if (node instanceof EventChild) {
-      rVal = ((Event) node.getParent()).getChangeEndIndex();
+      lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
     } else if (node instanceof IndexedHistoryNode) {
-      rVal = ((IndexedHistoryNode) node).getChangeStartIndex();
+      lastChangeIndex = ((IndexedHistoryNode) node).getChangeStartIndex();
     } else {
-      rVal = 0;
+      lastChangeIndex = 0;
     }
-    if (rVal == -1) {
+    if (lastChangeIndex == -1) {
       return m_changes.size();
     }
-    return rVal;
+    return lastChangeIndex;
   }
 
   public Change getDelta(final HistoryNode start, final HistoryNode end) {
@@ -131,7 +131,7 @@ public class History extends DefaultTreeModel {
     assertCorrectThread();
     getGameData().acquireWriteLock();
     try {
-      final int lastChange = getLastChange(removeAfterNode);
+      final int lastChange = getLastChange(removeAfterNode) + 1;
       while (m_changes.size() > lastChange) {
         m_changes.remove(lastChange);
       }
@@ -159,13 +159,13 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  synchronized void changeAdded(final Change aChange) {
-    m_changes.add(aChange);
+  synchronized void changeAdded(final Change change) {
+    m_changes.add(change);
     if (m_currentNode == null) {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      m_data.performChange(aChange);
+      m_data.performChange(change);
     }
   }
 

@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -89,12 +90,13 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
       panel.add(new JLabel("No game selected!"));
       return;
     }
+
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
     final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
     final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
     final List<PlayerID> players = data.getPlayerList().getPlayers();
-    // if the xml was created correctly, this list will be in turn order. we want to keep it that way.
+
     int gridx = 0;
     int gridy = 1;
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
@@ -102,18 +104,25 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
       panel.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     }
+    final JLabel setAllTypesLabel = new JLabel("Set All To:");
+    panel.add(setAllTypesLabel, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
     final JLabel nameLabel = new JLabel("Name");
     panel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes);
+    setAllTypes.setSelectedIndex(-1);
+    panel.add(setAllTypes, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
     final JLabel typeLabel = new JLabel("Type");
     panel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel allianceLabel = new JLabel("Alliance");
     panel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
-    JButton resourceModifiers = new JButton();
+    final JButton resourceModifiers = new JButton();
     panel.add(resourceModifiers, new GridBagConstraints(gridx, gridy - 1, 3, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
+        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
     final JLabel incomeLabel = new JLabel("Income");
     panel.add(incomeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
@@ -124,6 +133,8 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
     puIncomeBonusLabel.setVisible(false);
     gridx++;
+
+    // Add players in the order they were defined in the XML
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
@@ -135,13 +146,18 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
       }
     }
 
-    Action resourceModifiersAction = SwingAction.of("Resource Modifiers", e -> {
-      boolean isVisible = incomeLabel.isVisible();
+    final Action resourceModifiersAction = SwingAction.of("Resource Modifiers", e -> {
+      final boolean isVisible = incomeLabel.isVisible();
       incomeLabel.setVisible(!isVisible);
       puIncomeBonusLabel.setVisible(!isVisible);
       playerRows.forEach(row -> row.setResourceModifiersVisble(!isVisible));
     });
     resourceModifiers.setAction(resourceModifiersAction);
+
+    final Action setAllTypesAction = SwingAction.of(e -> {
+      playerRows.forEach(row -> row.setPlayerType(setAllTypes.getSelectedItem().toString()));
+    });
+    setAllTypes.setAction(setAllTypesAction);
 
     panel.validate();
     panel.invalidate();

@@ -1,9 +1,4 @@
----
-layout: longpage
-title: Developer Documentation
-permalink: /developer_documentation/
-root: /dev_docs/
----
+
 <h2>Developer Documentation :: Quick Nav</h2>
 <ul>
 	<li>
