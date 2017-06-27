@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,22 +11,17 @@ import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
 
-// TODO: *Controller are really *Dao classes, this is a DAO pattern, not controller!
-public class UserController implements UserDaoPrimarySecondary {
+import games.strategy.engine.lobby.server.userDB.DBUser;
+
+// TODO: Lobby DB Migration - merge with DbUserController once completed
+public class UserController implements UserDao {
 
   private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
 
   private final Supplier<Connection> connectionSupplier;
-  private final UserDaoPrimarySecondary.Role usageRole;
 
-  UserController(final UserDaoPrimarySecondary.Role usageRole, final Supplier<Connection> connectionSupplier) {
+  UserController(final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
-    this.usageRole = usageRole;
-  }
-
-  @Override
-  public boolean isPrimary() {
-    return usageRole == Role.PRIMARY;
   }
 
   /**
@@ -103,9 +98,8 @@ public class UserController implements UserDaoPrimarySecondary {
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
-    if (doesUserExist(user.getName())) {
-      throw new IllegalStateException("That user name has already been taken");
-    }
+    Preconditions.checkState(hashedPassword.isValidSyntax());
+
     final Connection con = connectionSupplier.get();
     try {
       final PreparedStatement ps = con.prepareStatement(
@@ -120,18 +114,12 @@ public class UserController implements UserDaoPrimarySecondary {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      // TODO: let's instead first check if the user exists, if we do that then we can just
-      // treat this as a normal error.
-      if (sqle.getErrorCode() == 30000) {
-        s_logger.info("Tried to create duplicate user for name:" + user.getName() + " error:" + sqle.getMessage());
-        throw new IllegalStateException("That user name is already taken");
-      }
       s_logger.log(
           Level.SEVERE,
           String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
               user.getName(), user.getEmail(), hashedPassword.value.replaceAll(".", "*")),
           sqle);
-      throw new IllegalStateException(sqle);
+      throw new RuntimeException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -139,6 +127,8 @@ public class UserController implements UserDaoPrimarySecondary {
 
   @Override
   public boolean login(final String userName, final HashedPassword hashedPassword) {
+    Preconditions.checkState(hashedPassword.isValidSyntax());
+
     final Connection con = connectionSupplier.get();
     try {
       PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");

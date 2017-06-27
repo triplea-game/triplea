@@ -1,4 +1,6 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.server.db;
+
+import games.strategy.engine.lobby.server.userDB.DBUser;
 
 public interface UserDao {
 
