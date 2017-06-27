@@ -3,8 +3,6 @@ package games.strategy.engine.lobby.server.login;
 import java.net.InetAddress;
 import java.util.logging.Logger;
 
-import games.strategy.util.TimeManager;
-
 /**
  * This class is used to allow an access log to be easily created. The log settings should
  * be set up to log messages from this class to a seperate access log file.
