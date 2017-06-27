@@ -51,7 +51,7 @@ public class DbUserController implements UserDao {
   @Override
   public HashedPassword getPassword(final String userName) {
     return Optional.ofNullable(secondaryDao.getPassword(userName))
-        .orElse(primaryDao.getPassword(userName));
+        .orElseGet(() -> primaryDao.getPassword(userName));
   }
 
   @Override
@@ -106,7 +106,6 @@ public class DbUserController implements UserDao {
   @Override
   public DBUser getUserByName(final String userName) {
     return Optional.ofNullable(secondaryDao.getUserByName(userName))
-        .orElse(primaryDao.getUserByName(userName));
+        .orElseGet(() -> primaryDao.getUserByName(userName));
   }
-
 }
