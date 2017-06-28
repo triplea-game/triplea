@@ -25,9 +25,13 @@ TripleA Game Features
 - Many community created maps available for in-game download
 - Generic game engine allows you to [build your own maps and mods](https://github.com/triplea-maps/Project)
 
-Reporting Bugs / Feature Requests
-=================================
-- http://www.triplea-game.org/bug_report/
+Reporting Bugs 
+==============
+- Please use: https://github.com/triplea-game/triplea/issues/new
+
+Feature Requests
+================
+- Create a new forum topic at: https://forums.triplea-game.org/category/42/feature-requests-and-ideas
 
 Lobby Game Bot Hosting
 ======================
@@ -35,6 +39,6 @@ Lobby Game Bot Hosting
 
 Development
 ===========
-- Accepted feature requests: https://github.com/triplea-game/triplea/wiki/Feature-Back-Log
-- Full project documentation, including 'how to get started guides' are at: http://www.triplea-game.org/dev_docs/
+- Project documentation, including 'how to get started guides' at: http://www.triplea-game.org/dev_docs/
 - Broken map list: https://github.com/triplea-game/triplea/wiki/Broken-Maps
+- Additional feature request list: https://github.com/triplea-game/triplea/issues?q=label%3A%22ice+box+-+revisit+later%22+is%3Aclosed (list is not to be added to, if picked up, re-open and remove the ice-box label)
