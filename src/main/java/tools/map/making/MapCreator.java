@@ -10,7 +10,6 @@ import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -504,14 +503,11 @@ public class MapCreator extends JFrame {
       if (s_runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageReconstructor.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              TileImageReconstructor.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            TileImageReconstructor.main(new String[0]);
+          } catch (final Exception ex) {
+            ClientLogger.logQuietly(ex);
           }
         }).start();
       }
@@ -524,7 +520,7 @@ public class MapCreator extends JFrame {
 
   private static void runUtility(final Class<?> javaClass) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, Optional.of(s_memory + "M"));
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
       // no need for quotes, that will just screw up the process builder
       commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath());

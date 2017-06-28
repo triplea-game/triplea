@@ -468,13 +468,9 @@ public class GameRunner {
     return img;
   }
 
-  static void startGame(final String savegamePath, final String classpath, final Optional<String> maxMemory) {
+  static void startGame(final String savegamePath, final String classpath) {
     final List<String> commands = new ArrayList<>();
-    if (maxMemory.isPresent()) {
-      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
-    } else {
-      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
-    }
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
     if (savegamePath != null && savegamePath.length() > 0) {
       commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
     }

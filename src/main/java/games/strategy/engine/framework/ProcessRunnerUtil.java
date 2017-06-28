@@ -30,8 +30,8 @@ public class ProcessRunnerUtil {
     populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
   }
 
-  public static void populateBasicJavaArgs(final List<String> commands, final Optional<String> maxMemory) {
-    populateBasicJavaArgs(commands, System.getProperty("java.class.path"), maxMemory);
+  public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory) {
+    populateBasicJavaArgs(commands, System.getProperty("java.class.path"), Optional.of(String.valueOf(maxMemory)));
   }
 
   static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
@@ -39,7 +39,7 @@ public class ProcessRunnerUtil {
         .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst());
   }
 
-  public static void populateBasicJavaArgs(final List<String> commands, final String classpath,
+  private static void populateBasicJavaArgs(final List<String> commands, final String classpath,
       final Optional<String> maxMemory) {
     final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
