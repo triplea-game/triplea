@@ -40,8 +40,8 @@ public class ProductionTabsProperties {
   private final List<Rule> m_rules;
   private List<Tuple<String, List<Rule>>> m_ruleLists;
 
-  protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> mRules) {
-    m_rules = mRules;
+  protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> rules) {
+    m_rules = rules;
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     String propertyFile = PROPERTY_FILE + "." + playerId.getName() + ".properties";
     URL url = loader.getResource(propertyFile);
@@ -62,8 +62,8 @@ public class ProductionTabsProperties {
     }
   }
 
-  public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> mRules) {
-    return new ProductionTabsProperties(playerId, mRules);
+  public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> rules) {
+    return new ProductionTabsProperties(playerId, rules);
   }
 
   List<Tuple<String, List<Rule>>> getRuleLists() {

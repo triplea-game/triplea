@@ -1505,7 +1505,7 @@
 - mapName: Iron War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 10
+  version: 11
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -1767,57 +1767,6 @@
     <br>
     Ultimate World Variants
     <br>Includes several Ultimate World Variants including FFAs
-- mapName: TripleA Map Creator
-  url: http://downloads.sourceforge.net/project/tripleamaps/developer%20resources/map%20makers/TripleA_Map_Creator.zip
-  version: 1
-  mapType: MAP_TOOL
-  img: http://tripleamaps.sourceforge.net/images/TripleA_Map_Creator_mini.png
-  description: |
-    <br>By Wisconsin, SGB, and ComradeKev
-    <br>The TripleA Map Creator zip file should contain the following items:
-    <br>(suggest you unzip everything to a folder)
-    <br>
-    <br>    readme.txt
-    <br>    changelog.txt
-    <br>    Map Creation Guide.txt
-    <br>    Mod Creation Guide.txt
-    <br>    Settings.inf
-    <br>    TripleA Map Creator Part 1.exe
-    <br>    TripleA Map Creator Part 2.exe
-    <br>    A folder named 'Additional Utilities' containing some extra utilities.
-    <br>
-    <br>
-    <br>If you would like to make a completely new map, open the Map Creation Guide file and follow the instructions carefully.
-    <br>If you want to create a mod based off of an already created map, open the Mod Creation Guide and follow those instructions.
-    <br>
-    <br>
-    <br>Useful links:
-    <br>A Complete List of the Correct Properties / Game Settings to use:
-    <br>http://tripleadev.1671093.n2.nabble.com/Correct-Properties-list-for-reference-and-Better-XMLs-Please-tp4488213p4488213.html
-    <br>http://n2.nabble.com/Correct-Properties-list-for-reference-and-Better-XMLs-Please-tp4488213p4488213.html
-    <br>
-    <br>General How to:
-    <br>http://bit.ly/aTuuyA
-    <br>http://n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html
-    <br>http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html
-    <br>
-    <br>TripleA forum:
-    <br>http://triplea.sourceforge.net/mywiki/Forum
-    <br>
-    <br>Latest Version of TripleA:
-    <br>https://sourceforge.net/projects/triplea/files/
-    <br>
-    <br>
-    <br>
-    <br>The TripleA Map Image Extractor found in the 'Additional Utilities' folder can be used to re-create the map image by using the map's base tiles and
-        pasting them together. Having the map image can help you later on when you are making a mod.
-    <br>The TripleA Map Resizer And Shifter found in the 'Additional Utilities' folder can be used to resize any map you choose by simply choosing the map,
-        setting the scale amount or new dimensions, and having the program do the rest. You can also use it to shift the map by a specified amount.
-    <br>
-    <br>Please report any errors that you find at http://code.google.com/p/tmapc/issues/list
-    <br>Feel free to post any questions or suggestions you have on the TripleA forum at http://triplea.sourceforge.net/mywiki/Forum#nabble-td2578942
-    <br>If you would like to download the latest version of the program, visit http://code.google.com/p/tmapc/downloads/list
-    <br>You can also view the source code for the program at http://code.google.com/p/tmapc/source/browse/
 - mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1

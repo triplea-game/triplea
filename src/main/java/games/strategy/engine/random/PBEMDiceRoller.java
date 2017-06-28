@@ -77,17 +77,17 @@ public class PBEMDiceRoller implements IRandomSource {
       return s_focusWindow;
     }
     final Frame[] frames = Frame.getFrames();
-    Frame rVal = null;
+    Frame focusedFrame = null;
     for (final Frame frame : frames) {
       // find the window with focus, failing that, get something that is
       // visible
       if (frame.isFocused()) {
-        rVal = frame;
-      } else if (rVal == null && frame.isVisible()) {
-        rVal = frame;
+        focusedFrame = frame;
+      } else if (focusedFrame == null && frame.isVisible()) {
+        focusedFrame = frame;
       }
     }
-    return rVal;
+    return focusedFrame;
   }
 
   @Override
@@ -170,8 +170,8 @@ class HttpDiceRollerDialog extends JDialog {
     m_buttons.add(m_reRollButton);
   }
 
-  public void appendText(final String aString) {
-    m_text.setText(m_text.getText() + aString);
+  public void appendText(final String text) {
+    m_text.setText(m_text.getText() + text);
   }
 
   public void notifyError() {

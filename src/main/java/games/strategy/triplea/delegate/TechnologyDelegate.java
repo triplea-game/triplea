@@ -60,8 +60,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
    * Called before the delegate will run, AND before "start" is called.
    */
   @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
+  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
+    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
   /**
@@ -191,9 +191,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return new TechResults("Not enough money to pay for that many tech rolls.");
     }
     chargeForTechRolls(rollCount, whoPaysHowMuch);
-    int m_currTokens = 0;
+    int currTokens = 0;
     if (isWW2V3TechModel()) {
-      m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
+      currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
     }
     final GameData data = getData();
     if (getAvailableTechs(m_player, data).isEmpty()) {
@@ -202,7 +202,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         final String transcriptText = m_player.getName() + " No more available tech advances.";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
-            ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
+            ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -currTokens);
         m_bridge.addChange(removeTokens);
       }
       return new TechResults("No more available tech advances.");
@@ -250,7 +250,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           + (techHits > 0 ? "successful" : "unsuccessful") + " research.";
       m_bridge.getHistoryWriter().startEvent(transcriptText);
       final Change removeTokens =
-          ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
+          ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -currTokens);
       m_bridge.addChange(removeTokens);
     }
     final Collection<TechAdvance> advances;

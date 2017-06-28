@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
@@ -22,9 +22,7 @@ public class LobbyServer {
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private final Messengers m_messengers;
 
-
-  /** Creates a new instance of LobbyServer. */
-  public LobbyServer(final int port) {
+  private LobbyServer(final int port) {
     final IServerMessenger server;
     try {
       server = new ServerMessenger(ADMIN_USERNAME, port);
@@ -59,6 +57,7 @@ public class LobbyServer {
       logger.info("Starting database");
       // initialize the database
       Database.getDerbyConnection().close();
+      Database.getPostgresConnection().close();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = LobbyContext.lobbyPropertyReader().getPort();
       logger.info("Trying to listen on port:" + port);

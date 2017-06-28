@@ -44,9 +44,9 @@ public class HistorySynchronizer {
 
   private final IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel() {
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       SwingUtilities.invokeLater(() -> {
-        final Change localizedChange = (Change) translateIntoMyData(aChange);
+        final Change localizedChange = (Change) translateIntoMyData(change);
         m_data.getHistory().getHistoryWriter().addChange(localizedChange);
       });
     }

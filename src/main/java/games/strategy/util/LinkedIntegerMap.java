@@ -116,13 +116,13 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
    * Can be used to divide all numbers, if given a fractional double
    * (ie: to divide by 2, use 0.5 as the double)
    *
-   * @param RoundType
+   * @param roundType
    *        (1 = floor, 2 = round, 3 = ceil)
    */
-  public void multiplyAllValuesBy(final double multiplyBy, final int RoundType) {
+  public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
     for (final T t : keySet()) {
       double val = m_values.get(t);
-      switch (RoundType) {
+      switch (roundType) {
         case 1:
           val = Math.floor(val * multiplyBy);
           break;
@@ -226,15 +226,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int max = Integer.MIN_VALUE;
-    T rVal = null;
+    int maxValue = Integer.MIN_VALUE;
+    T maxKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() > max) {
-        max = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() > maxValue) {
+        maxValue = entry.getValue();
+        maxKey = entry.getKey();
       }
     }
-    return rVal;
+    return maxKey;
   }
 
   /**
@@ -244,15 +244,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int min = Integer.MAX_VALUE;
-    T rVal = null;
+    int minValue = Integer.MAX_VALUE;
+    T minKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() < min) {
-        min = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() < minValue) {
+        minValue = entry.getValue();
+        minKey = entry.getKey();
       }
     }
-    return rVal;
+    return minKey;
   }
 
   /**
@@ -335,8 +335,8 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     removeMatchingKeys(match.invert());
   }
 
-  public void removeMatchingKeys(final Match<T> aMatch) {
-    final Collection<T> badKeys = getKeyMatches(aMatch);
+  public void removeMatchingKeys(final Match<T> match) {
+    final Collection<T> badKeys = getKeyMatches(match);
     removeKeys(badKeys);
   }
 

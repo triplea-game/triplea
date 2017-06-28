@@ -200,18 +200,18 @@ class EditPanel extends ActionPanel {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        Resource PUs = null;
+        Resource pus = null;
         getData().acquireReadLock();
         try {
-          PUs = getData().getResourceList().getResource(Constants.PUS);
+          pus = getData().getResourceList().getResource(Constants.PUS);
         } finally {
           getData().releaseReadLock();
         }
-        if (PUs == null) {
+        if (pus == null) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
         }
-        final int oldTotal = player.getResources().getQuantity(PUs);
+        final int oldTotal = player.getResources().getQuantity(pus);
         int newTotal = oldTotal;
         final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
         PUsField.setMaximumSize(PUsField.getPreferredSize());
@@ -389,7 +389,8 @@ class EditPanel extends ActionPanel {
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
-        final String result = EditPanel.this.frame.getEditDelegate().changeUnitHitDamage(newDamageMap, selectedTerritory);
+        final String result =
+            EditPanel.this.frame.getEditDelegate().changeUnitHitDamage(newDamageMap, selectedTerritory);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -437,7 +438,8 @@ class EditPanel extends ActionPanel {
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
-        final String result = EditPanel.this.frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, selectedTerritory);
+        final String result =
+            EditPanel.this.frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, selectedTerritory);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -472,7 +474,8 @@ class EditPanel extends ActionPanel {
             + "<br />since you are using edit mode).  So if you change anything here, be on the look out for "
             + "unintended consequences!</em></html>");
         panel.add(helpText, BorderLayout.NORTH);
-        final PoliticalStateOverview pui = new PoliticalStateOverview(getData(), EditPanel.this.frame.getUIContext(), true);
+        final PoliticalStateOverview pui =
+            new PoliticalStateOverview(getData(), EditPanel.this.frame.getUIContext(), true);
         panel.add(pui, BorderLayout.CENTER);
         final JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -490,7 +493,8 @@ class EditPanel extends ActionPanel {
         if (option == JOptionPane.OK_OPTION) {
           final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges = pui.getEditChanges();
           if (relationshipChanges != null && !relationshipChanges.isEmpty()) {
-            final String result = EditPanel.this.frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
+            final String result =
+                EditPanel.this.frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
             if (result != null) {
               JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
                   JOptionPane.ERROR_MESSAGE);

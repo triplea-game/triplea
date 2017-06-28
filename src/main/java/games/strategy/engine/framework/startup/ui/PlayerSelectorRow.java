@@ -8,8 +8,10 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -30,11 +32,12 @@ class PlayerSelectorRow {
   private final JLabel puIncomeBonusLabel;
   private boolean enabled = true;
   private final JLabel name;
-  private final JLabel alliances;
+  private final JButton alliances;
   private final Collection<String> disableable;
   private final SetupPanel parent;
 
-  PlayerSelectorRow(final PlayerID player, final Map<String, String> reloadSelections,
+  PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
+      final Map<String, String> reloadSelections,
       final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances, final String[] types, final SetupPanel parent,
       final GameProperties gameProperties) {
@@ -76,13 +79,20 @@ class PlayerSelectorRow {
     }
 
     // we do not set the default for the combo box because the default is the top item, which in this case is human
-    String alliancesLabelText;
+    final String alliancesLabelText;
     if (playerAlliances.contains(playerName)) {
       alliancesLabelText = "";
     } else {
       alliancesLabelText = playerAlliances.toString();
     }
-    alliances = new JLabel(alliancesLabelText);
+    alliances = new JButton(alliancesLabelText);
+    alliances.setToolTipText("Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
+    alliances.addActionListener(e -> {
+      final String currentType = playerTypes.getSelectedItem().toString();
+      playerRows.stream()
+          .filter(row -> row.alliances.getText().equals(alliancesLabelText))
+          .forEach(row -> row.setPlayerType(currentType));
+    });
 
     // TODO: remove null check for next incompatible release
     incomePercentage = null;
@@ -133,7 +143,7 @@ class PlayerSelectorRow {
     }
   }
 
-  void setResourceModifiersVisble(boolean isVisible) {
+  void setResourceModifiersVisble(final boolean isVisible) {
     // TODO: remove null check for next incompatible release
     if (incomePercentage != null) {
       incomePercentage.setVisible(isVisible);
@@ -144,6 +154,10 @@ class PlayerSelectorRow {
       puIncomeBonus.setVisible(isVisible);
       puIncomeBonusLabel.setVisible(isVisible);
     }
+  }
+
+  void setPlayerType(final String playerType) {
+    playerTypes.setSelectedItem(playerType);
   }
 
   String getPlayerName() {

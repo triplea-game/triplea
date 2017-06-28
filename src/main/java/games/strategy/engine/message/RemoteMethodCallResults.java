@@ -18,8 +18,8 @@ public class RemoteMethodCallResults implements Externalizable {
 
   public RemoteMethodCallResults() {}
 
-  public RemoteMethodCallResults(final Object rVal) {
-    m_rVal = rVal;
+  public RemoteMethodCallResults(final Object returnValue) {
+    m_rVal = returnValue;
     m_exception = null;
   }
 

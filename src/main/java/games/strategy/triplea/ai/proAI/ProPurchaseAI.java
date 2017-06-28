@@ -65,10 +65,10 @@ class ProPurchaseAI {
     calc = ai.getCalc();
   }
 
-  int repair(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
+  int repair(int pusRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
       final PlayerID player) {
 
-    ProLogger.info("Repairing factories with PUsRemaining=" + PUsRemaining);
+    ProLogger.info("Repairing factories with PUsRemaining=" + pusRemaining);
 
     // Current data at the start of combat move
     this.data = data;
@@ -110,14 +110,14 @@ class ProPurchaseAI {
             repairMap.add(rrule, diff);
             final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
             repair.put(fixUnit, repairMap);
-            PUsRemaining -= diff;
+            pusRemaining -= diff;
             ProLogger.debug("Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + rrule);
             purchaseDelegate.purchaseRepair(repair);
           }
         }
       }
     }
-    return PUsRemaining;
+    return pusRemaining;
   }
 
   /**

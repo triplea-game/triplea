@@ -1,8 +1,3 @@
----
-layout: longpage
-title: Checkstyle
-permalink: /dev_docs/dev/checkstyle/
----
 
 This project uses [Checkstyle](http://checkstyle.sourceforge.net) to enforce code guidelines and standards.  The build is configured to fail under the following conditions:
 

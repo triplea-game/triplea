@@ -36,7 +36,6 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -175,17 +174,17 @@ public class ProPurchaseUtils {
     if (bestDefenseOption != null) {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
       int remainingUnitProduction = getUnitProduction(t, data, player);
-      int PUsSpent = 0;
+      int pusSpent = 0;
       while (true) {
 
         // If out of PUs or production then break
-        if (bestDefenseOption.getCost() > (PUsRemaining - PUsSpent)
+        if (bestDefenseOption.getCost() > (PUsRemaining - pusSpent)
             || remainingUnitProduction < bestDefenseOption.getQuantity()) {
           break;
         }
 
         // Create new temp defenders
-        PUsSpent += bestDefenseOption.getCost();
+        pusSpent += bestDefenseOption.getCost();
         remainingUnitProduction -= bestDefenseOption.getQuantity();
         placeUnits.addAll(bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
       }
@@ -257,15 +256,15 @@ public class ProPurchaseUtils {
   }
 
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
-
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+        Matches.unitIsBeingTransported().invert());
     if (territory.isWater()) {
-      factoryMatch.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatch.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
     }
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatchBuilder.all());
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =

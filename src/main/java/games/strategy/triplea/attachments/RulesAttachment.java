@@ -98,8 +98,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   public static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch, final boolean allowNull) {
-    RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
+    if (ra == null) {
       if (playersToSearch == null) {
         if (!allowNull) {
           throw new IllegalStateException(
@@ -110,9 +110,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           if (otherPlayer == player) {
             continue;
           }
-          rVal = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
+          ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
+          if (ra != null) {
+            return ra;
           }
         }
         if (!allowNull) {
@@ -121,7 +121,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
       }
     }
-    return rVal;
+    return ra;
   }
 
   /**
@@ -919,7 +919,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   /**
    * Checks for the collection of territories to see if they have units owned by the exclType alliance.
    */
-  private boolean checkUnitPresence(final Collection<Territory> Territories, final String exclType,
+  private boolean checkUnitPresence(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     int numberMet = 0;
     boolean satisfied = false;
@@ -927,7 +927,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
-    for (final Territory terr : Territories) {
+    for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
@@ -985,7 +985,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * Checks for the collection of territories to see if they have units owned by the exclType alliance.
    * It doesn't yet threshold the data
    */
-  private boolean checkUnitExclusions(final Collection<Territory> Territories, final String exclType,
+  private boolean checkUnitExclusions(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     int numberMet = 0;
     boolean satisfied = false;
@@ -993,7 +993,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
-    final Iterator<Territory> ownedTerrIter = Territories.iterator();
+    final Iterator<Territory> ownedTerrIter = territories.iterator();
     // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
     while (ownedTerrIter.hasNext()) {
       // get all the units in the territory

@@ -95,20 +95,20 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param points The {@linkplain Point} array aka the "Joints" to be drawn
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
    * @param scale The scale-factor of the Map
    */
-  private void drawJoints(final Graphics2D graphics, final Point[] points, final int xOffset, final int yOffset,
+  private void drawJoints(final Graphics2D graphics, final Point[] points, final int offsetX, final int offsetY,
       final double scale) {
     final int jointsize = 10;
     // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
     final Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
     for (Point[] joints : routeCalculator.getAllPoints(newPoints)) {
       for (final Point p : joints) {
-        graphics.fillOval((int) (((p.getX() - xOffset) - (jointsize / 2) / scale) * scale),
-            (int) (((p.getY() - yOffset) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
+        graphics.fillOval((int) (((p.getX() - offsetX) - (jointsize / 2) / scale) * scale),
+            (int) (((p.getY() - offsetY) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
       }
     }
   }
@@ -118,18 +118,18 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param routeDescription The RouteDescription object containing the CursorImage
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription, final int xOffset,
-      final int yOffset, final double scale) {
+  private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription, final int offsetX,
+      final int offsetY, final double scale) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
       for (Point[] endPoint : routeCalculator.getAllPoints(routeCalculator.getLastEndPoint())) {
         graphics.drawImage(cursorImage,
-            (int) (((endPoint[0].getX() - xOffset) - (cursorImage.getWidth() / 2)) * scale),
-            (int) (((endPoint[0].getY() - yOffset) - (cursorImage.getHeight() / 2)) * scale), null);
+            (int) (((endPoint[0].getX() - offsetX) - (cursorImage.getWidth() / 2)) * scale),
+            (int) (((endPoint[0].getY() - offsetY) - (cursorImage.getHeight() / 2)) * scale), null);
       }
     }
 
@@ -142,19 +142,19 @@ public class MapRouteDrawer {
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param start The start {@linkplain Point} of the Path
    * @param end The end {@linkplain Point} of the Path
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param jointsize The diameter of the Points being drawn
    * @param scale The scale-factor of the Map
    */
-  private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int xOffset,
-      final int yOffset, final double scale) {
+  private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int offsetX,
+      final int offsetY, final double scale) {
     final Point[] points = routeCalculator.getTranslatedRoute(start, end);
     for (Point[] newPoints : routeCalculator.getAllPoints(points)) {
-      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()), xOffset,
-          yOffset, scale);
+      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()), offsetX,
+          offsetY, scale);
       if (newPoints[0].distance(newPoints[1]) > arrowLength) {
-        drawArrow(graphics, newPoints[0].toPoint(), newPoints[1].toPoint(), xOffset, yOffset, scale);
+        drawArrow(graphics, newPoints[0].toPoint(), newPoints[1].toPoint(), offsetX, offsetY, scale);
       }
     }
   }
@@ -186,16 +186,16 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param line The Line to be drawn
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private static void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double xOffset,
-      final double yOffset, final double scale) {
+  private static void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double offsetX,
+      final double offsetY, final double scale) {
     graphics.draw(
         new Line2D.Double(
-            new Point2D.Double((line.getP1().getX() - xOffset) * scale, (line.getP1().getY() - yOffset) * scale),
-            new Point2D.Double((line.getP2().getX() - xOffset) * scale, (line.getP2().getY() - yOffset) * scale)));
+            new Point2D.Double((line.getP1().getX() - offsetX) * scale, (line.getP1().getY() - offsetY) * scale),
+            new Point2D.Double((line.getP2().getX() - offsetX) * scale, (line.getP2().getY() - offsetY) * scale)));
   }
 
   /**
@@ -263,14 +263,14 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The {@linkplain Point} array of the unit's tour
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    * @param numTerritories how many Territories the unit traveled so far
    * @param maxMovement The String indicating how man
    */
   private void drawMoveLength(final Graphics2D graphics, final Point[] points,
-      final int xOffset, final int yOffset, final double scale, final int numTerritories,
+      final int offsetX, final int offsetY, final double scale, final int numTerritories,
       final String maxMovement) {
     final Point cursorPos = points[points.length - 1];
     final String unitMovementLeft =
@@ -284,8 +284,8 @@ public class MapRouteDrawer {
     final int textYOffset = yDir > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
     for (Point[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
       graphics.drawImage(movementImage,
-          (int) ((cursorPositions[0].getX() + textXOffset - xOffset) * scale),
-          (int) ((cursorPositions[0].getY() + textYOffset - yOffset) * scale), null);
+          (int) ((cursorPositions[0].getX() + textXOffset - offsetX) * scale),
+          (int) ((cursorPositions[0].getY() + textYOffset - offsetY) * scale), null);
     }
   }
 
@@ -306,11 +306,11 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The Knot Points for the Spline-Interpolator aka the joints
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private void drawCurvedPath(final Graphics2D graphics, final Point[] points, final int xOffset, final int yOffset,
+  private void drawCurvedPath(final Graphics2D graphics, final Point[] points, final int offsetX, final int offsetY,
       final double scale) {
     final double[] index = createParameterizedIndex(points);
     final PolynomialSplineFunction xcurve =
@@ -321,7 +321,7 @@ public class MapRouteDrawer {
     final double[] ycoords = getCoords(ycurve, index);
     List<Line> lines = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
     for (Line line : lines) {
-      drawLineWithTranslate(graphics, line.toLine2D(), xOffset, yOffset, scale);
+      drawLineWithTranslate(graphics, line.toLine2D(), offsetX, offsetY, scale);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
     List<Point[]> finishingPoints = routeCalculator.getAllPoints(
@@ -330,9 +330,9 @@ public class MapRouteDrawer {
     for (Point[] finishingPointArray : finishingPoints) {
       drawLineWithTranslate(graphics,
           new Line(finishingPointArray[0], finishingPointArray[1]).toLine2D(),
-          xOffset, yOffset, scale);
+          offsetX, offsetY, scale);
       if (hasArrowEnoughSpace) {
-        drawArrow(graphics, finishingPointArray[0].toPoint(), finishingPointArray[1].toPoint(), xOffset, yOffset,
+        drawArrow(graphics, finishingPointArray[0].toPoint(), finishingPointArray[1].toPoint(), offsetX, offsetY,
             scale);
       }
     }
@@ -391,16 +391,16 @@ public class MapRouteDrawer {
    * @param graphics The {@linkplain Graphics2D} object to draw on
    * @param from The destination {@linkplain Point2D} form the Arrow
    * @param to The placement {@linkplain Point2D} for the Arrow
-   * @param xOffset The horizontal pixel-difference between the frame and the Map
-   * @param yOffset The vertical pixel-difference between the frame and the Map
+   * @param offsetX The horizontal pixel-difference between the frame and the Map
+   * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private static void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to, final int xOffset,
-      final int yOffset, final double scale) {
-    final Point2D scaledStart = new Point2D.Double((from.getX() - xOffset) * scale,
-        (from.getY() - yOffset) * scale);
-    final Point2D scaledEnd = new Point2D.Double((to.getX() - xOffset) * scale,
-        (to.getY() - yOffset) * scale);
+  private static void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to, final int offsetX,
+      final int offsetY, final double scale) {
+    final Point2D scaledStart = new Point2D.Double((from.getX() - offsetX) * scale,
+        (from.getY() - offsetY) * scale);
+    final Point2D scaledEnd = new Point2D.Double((to.getX() - offsetX) * scale,
+        (to.getY() - offsetY) * scale);
     graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
   }
 }

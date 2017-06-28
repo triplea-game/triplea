@@ -224,7 +224,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       synchronized (this) {
         isDirty = true;
       }
@@ -428,7 +428,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       isDirty = true;
       SwingUtilities.invokeLater(() -> repaint());
     }
@@ -449,17 +449,17 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int rVal = 0;
+      int production = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         /*
          * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
          */
         if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place)) {
-          rVal += TerritoryAttachment.getProduction(place);
+          production += TerritoryAttachment.getProduction(place);
         }
       }
-      rVal *= Properties.getPU_Multiplier(data);
-      return rVal;
+      production *= Properties.getPU_Multiplier(data);
+      return production;
     }
   }
 
@@ -477,12 +477,12 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int rVal = 0;
+      int matchCount = 0;
       final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
       for (final Territory place : data.getMap().getTerritories()) {
-        rVal += place.getUnits().countMatches(ownedBy);
+        matchCount += place.getUnits().countMatches(ownedBy);
       }
-      return rVal;
+      return matchCount;
     }
   }
 
@@ -496,12 +496,12 @@ public class StatPanel extends AbstractStatPanel {
     public double getValue(final PlayerID player, final GameData data) {
       final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
       final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
-      int rVal = 0;
+      int tuv = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
-        rVal += BattleCalculator.getTUV(owned, costs);
+        tuv += BattleCalculator.getTUV(owned, costs);
       }
-      return rVal;
+      return tuv;
     }
   }
 
@@ -513,7 +513,7 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int rVal = 0;
+      int victoryCities = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         if (!place.getOwner().equals(player)) {
           continue;
@@ -523,10 +523,10 @@ public class StatPanel extends AbstractStatPanel {
           continue;
         }
         if (ta.getVictoryCity() != 0) {
-          rVal = rVal + ta.getVictoryCity();
+          victoryCities = victoryCities + ta.getVictoryCity();
         }
       }
-      return rVal;
+      return victoryCities;
     }
   }
 

@@ -72,8 +72,8 @@ public class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readSingle(final String aLine, final Map<String, Point> mapping) throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(aLine, "", false);
+  private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
+    final StringTokenizer tokens = new StringTokenizer(line, "", false);
     final String name = tokens.nextToken("(").trim();
     if (mapping.containsKey(name)) {
       throw new IOException("name found twice:" + name);
