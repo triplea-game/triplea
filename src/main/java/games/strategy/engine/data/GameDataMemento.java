@@ -39,11 +39,9 @@ public final class GameDataMemento {
   private GameDataMemento() {}
 
   @VisibleForTesting
-  static final class PropertyNames {
-    static final String NAME = "name";
-    static final String VERSION = "version";
-
-    private PropertyNames() {}
+  interface PropertyNames {
+    String NAME = "name";
+    String VERSION = "version";
   }
 
   private static Map<ExportOptionName, Object> newDefaultExportOptionsByName() {
