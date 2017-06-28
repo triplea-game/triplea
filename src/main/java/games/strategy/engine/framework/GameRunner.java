@@ -43,7 +43,6 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.MainPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -121,8 +120,7 @@ public class GameRunner {
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
-          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, Memory.TRIPLEA_MEMORY_SET, MAP_FOLDER};
-
+          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
 
 
   /**
@@ -137,13 +135,6 @@ public class GameRunner {
     if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
       usage();
       return;
-    }
-    // do after we handle command line args (the isMemorySet flag might have been passed as a command line arg,
-    // in that case it is parsed and set as a system prop when we handle command line ags, the code below
-    // checks for the system prop)
-    if (!Memory.isMemoryXmxSet()) {
-      GameRunner.startNewTripleA(Memory.getMaxMemoryInBytes());
-      return; // close this current instance down without further processing
     }
     SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
 
@@ -486,17 +477,9 @@ public class GameRunner {
     return img;
   }
 
-  public static void startNewTripleA(final Long maxMemory) {
-    startGame(System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), null, maxMemory);
-  }
-
-  static void startGame(final String savegamePath, final String classpath, final Long maxMemory) {
+  static void startGame(final String savegamePath, final String classpath) {
     final List<String> commands = new ArrayList<>();
-    if (maxMemory != null && maxMemory > (32 * 1024 * 1024)) {
-      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath, maxMemory);
-    } else {
-      ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
-    }
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
     if (savegamePath != null && savegamePath.length() > 0) {
       commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
     }

@@ -3,13 +3,14 @@ package games.strategy.engine.framework;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.system.Memory;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.Version;
 
@@ -30,20 +31,16 @@ public class ProcessRunnerUtil {
   }
 
   public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory) {
-    populateBasicJavaArgs(commands, System.getProperty("java.class.path"), maxMemory);
+    populateBasicJavaArgs(commands, System.getProperty("java.class.path"), Optional.of(String.valueOf(maxMemory)));
   }
 
   static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to
-    // add 64m to that to
-    // compensate
-    // final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-    final long maxMemory = Memory.getMaxMemoryInBytes();
-    System.out.println("Setting memory for new triplea process to: " + (maxMemory / (1024 * 1024)) + "m");
-    populateBasicJavaArgs(commands, newClasspath, maxMemory);
+    populateBasicJavaArgs(commands, newClasspath, ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+        .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst());
   }
 
-  public static void populateBasicJavaArgs(final List<String> commands, final String classpath, final long maxMemory) {
+  private static void populateBasicJavaArgs(final List<String> commands, final String classpath,
+      final Optional<String> maxMemory) {
     final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
@@ -52,10 +49,10 @@ public class ProcessRunnerUtil {
     } else {
       commands.add(System.getProperty("java.class.path"));
     }
-    commands.add("-Xmx" + maxMemory);
-    // this should never ever go above 1000mb, because some users have errors because some JVM's can't handle
-    // that much
-    // commands.add("-Xmx896m");
+    if (maxMemory.isPresent()) {
+      System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
+      commands.add("-Xmx" + maxMemory.get());
+    }
     // preserve noddraw to fix 1742775
     final String[] preservedSystemProperties = {"sun.java2d.noddraw"};
     for (final String key : preservedSystemProperties) {
@@ -84,10 +81,6 @@ public class ProcessRunnerUtil {
         // nothing
       }
     }
-    // since we are setting the xmx already, we need to
-    // make sure this property is set so that triplea
-    // doesn't restart
-    commands.add("-D" + Memory.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
   }
 
   public static void exec(final List<String> commands) {

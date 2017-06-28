@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import games.strategy.engine.ClientFileSystemHelper;
-
 /**
  * Class that accepts and queues download requests. Download requests are started in background
  * thread, this class ensures N are in progress until all are done.
@@ -61,7 +59,7 @@ public final class DownloadCoordinator {
 
     if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS && !pendingDownloads.isEmpty()) {
       final DownloadFile downloadFile = pendingDownloads.remove();
-      downloadFile.startAsyncDownload(ClientFileSystemHelper.createTempFile());
+      downloadFile.startAsyncDownload();
       activeDownloads.add(downloadFile);
     }
   }

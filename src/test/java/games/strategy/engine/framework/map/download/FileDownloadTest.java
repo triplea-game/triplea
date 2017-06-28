@@ -4,9 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -15,9 +13,6 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileDownloadTest {
-  @Rule
-  public final TemporaryFolder temporaryFolder = new TemporaryFolder();
-
   @Mock
   private DownloadFileDescription mockDownload;
 
@@ -26,7 +21,7 @@ public class FileDownloadTest {
     final DownloadFile testObj = new DownloadFile(mockDownload, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
-    testObj.startAsyncDownload(temporaryFolder.newFile());
+    testObj.startAsyncDownload();
     assertThat(testObj.getDownloadState(), is(DownloadState.DOWNLOADING));
 
     testObj.cancelDownload();
