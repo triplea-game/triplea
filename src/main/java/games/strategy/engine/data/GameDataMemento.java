@@ -77,7 +77,7 @@ public final class GameDataMemento {
   /**
    * Names the options that can be specified when creating a new game data memento exporter.
    */
-  public static enum ExportOptionName {
+  public enum ExportOptionName {
     /**
      * Indicates delegates should be excluded from the memento (value type: {@code Boolean}).
      */
