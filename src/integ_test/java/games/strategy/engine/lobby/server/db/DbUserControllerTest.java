@@ -6,25 +6,27 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.junit.Test;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
-import games.strategy.util.ThreadUtil;
-import games.strategy.util.Util;
 
-public class DbUserControllerIntegrationTest {
+public class DbUserControllerTest {
 
   private static final DbTestConnection DERBY =
       new DbTestConnection(Database::getDerbyConnection, new DbUserController());
 
+  // test override to swap the default connection, postgres is primary, Derby is secondary
   private static final DbTestConnection POSTGRES =
-      new DbTestConnection(Database::getPostgresConnection, new DbUserController(
-          new UserController(
-              UserDaoPrimarySecondary.Role.PRIMARY,
-              Database::getPostgresConnection)));
+      new DbTestConnection(
+          Database::getPostgresConnection,
+          new DbUserController(
+              new UserController(Database::getPostgresConnection),
+              new UserController(Database::getDerbyConnection),
+              new MigrationCounter()));
 
   @Test
   public void testCreate() throws Exception {
@@ -42,7 +44,7 @@ public class DbUserControllerIntegrationTest {
   }
 
   private static DBUser givenUser() {
-    final String name = Util.createUniqueTimeStamp();
+    final String name = UUID.randomUUID().toString().substring(0, 20);
     final String email = name + "@none.none";
     return new DBUser(
         new DBUser.UserName(name),
@@ -135,23 +137,7 @@ public class DbUserControllerIntegrationTest {
     final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
     dbTestConnection.controller.createUser(user, password);
 
-    ThreadUtil.sleep(1);
-    final long loginTimeMustBeAfter = System.currentTimeMillis();
-    ThreadUtil.sleep(1);
-
     assertTrue(dbTestConnection.controller.login(user.getName(), password));
-
-    try (final Connection con = dbTestConnection.connectionSupplier.get()) {
-      final String sql = " select * from TA_USERS where userName = '" + user.getName() + "'";
-      final ResultSet rs = con.createStatement().executeQuery(sql);
-      assertTrue(rs.next());
-      assertTrue(
-          String.format("lastLogin %s, should be after %s",
-              rs.getTimestamp("lastLogin").getTime(), loginTimeMustBeAfter),
-
-          rs.getTimestamp("lastLogin").getTime() >= loginTimeMustBeAfter);
-    }
-    // make sure last login time was updated
   }
 
   @Test

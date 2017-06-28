@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /**
  * Given a key, returns the value pair from a properties configuration file.
@@ -53,11 +54,7 @@ public class PropertyFileReader {
       final Properties props = new Properties();
       props.load(inputStream);
 
-      if (!props.containsKey(propertyKey)) {
-        return "";
-      } else {
-        return props.getProperty(propertyKey).trim();
-      }
+      return Strings.nullToEmpty(props.getProperty(propertyKey)).trim();
     } catch (final FileNotFoundException e) {
       throw new IllegalStateException("Property file not found: " + propertyFile.getAbsolutePath(), e);
     } catch (final IOException e) {

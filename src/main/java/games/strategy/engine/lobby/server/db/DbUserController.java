@@ -1,12 +1,6 @@
 package games.strategy.engine.lobby.server.db;
 
-import static games.strategy.util.PredicateUtils.not;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -24,28 +18,16 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
  * TODO: rename to: UserController
  */
 public class DbUserController implements UserDao {
-  private static final Logger logger = Logger.getLogger(DbUserController.class.getName());
 
-  /**
-   * Stores a convenience reference to the authoritative DAO implementation.
-   * We use this datasource for reading, we always write to it, any errors during read/write are considered
-   * critical (on the other hand secondary DAO read/write errors can be logged and ignored)
-   */
   private final UserDao primaryDao;
-  private final Collection<UserDao> secondaryDaoSet;
+  private final UserDao secondaryDao;
+  private final MigrationCounter migrationCounter;
 
-
-  /**
-   * The default constructor uses a production configuration.
-   */
   public DbUserController() {
     this(
-        new UserController(
-            UserDaoPrimarySecondary.Role.PRIMARY,
-            Database::getDerbyConnection),
-        new UserController(
-            UserDaoPrimarySecondary.Role.SECONDARY,
-            Database::getPostgresConnection));
+        new UserController(Database::getDerbyConnection),
+        new UserController(Database::getPostgresConnection),
+        new MigrationCounter());
   }
 
   /**
@@ -53,18 +35,13 @@ public class DbUserController implements UserDao {
    * Everything else is stored as secondary, we will parallel write to secondary (ignoring errors),
    * but will only read from the primary.
    */
-  @VisibleForTesting DbUserController(final UserDaoPrimarySecondary ... userDaos) {
-    final List<UserDao> primaryDaoList = Arrays.stream(userDaos)
-        .filter(UserDaoPrimarySecondary::isPrimary)
-        .collect(Collectors.toList());
-    Preconditions.checkState(
-        primaryDaoList.size() == 1,
-        "Startup Assumption - exactly one UserDao implementation is 'primary'");
-    primaryDao = primaryDaoList.get(0);
-
-    secondaryDaoSet = Arrays.stream(userDaos)
-        .filter(not(UserDaoPrimarySecondary::isPrimary))
-        .collect(Collectors.toSet());
+  @VisibleForTesting DbUserController(
+      final UserDao primaryDao,
+      final UserDao secondaryDao,
+      final MigrationCounter migrationCounter) {
+    this.primaryDao = primaryDao;
+    this.secondaryDao = secondaryDao;
+    this.migrationCounter = migrationCounter;
   }
 
 
@@ -73,24 +50,21 @@ public class DbUserController implements UserDao {
    */
   @Override
   public HashedPassword getPassword(final String userName) {
-    return primaryDao.getPassword(userName);
+    return Optional.ofNullable(secondaryDao.getPassword(userName))
+        .orElseGet(() -> primaryDao.getPassword(userName));
   }
 
   @Override
   public boolean doesUserExist(final String userName) {
-    return primaryDao.doesUserExist(userName);
+    return secondaryDao.doesUserExist(userName) || primaryDao.doesUserExist(userName);
   }
 
   @Override
   public void updateUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+    Preconditions.checkArgument(password.isValidSyntax());
     primaryDao.updateUser(user, password);
-    try {
-      new Thread(() -> secondaryDaoSet.forEach(dao -> dao.updateUser(user, password))).start();
-    } catch (final Exception e) {
-      logger.warning(
-          "Secondary datasource failure, this is okay if we are still setting up a new datasource. " + e.getMessage());
-    }
+    secondaryDao.updateUser(user, password);
   }
 
   /**
@@ -100,13 +74,9 @@ public class DbUserController implements UserDao {
   @Override
   public void createUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+    Preconditions.checkArgument(password.isValidSyntax());
     primaryDao.createUser(user, password);
-    try {
-      new Thread(() -> secondaryDaoSet.forEach(dao -> dao.createUser(user, password))).start();
-    } catch (final Exception e) {
-      logger.warning("Secondary datasource failure, this is okay if we are still setting "
-          + "up a new datasource, error: " + e.getMessage());
-    }
+    secondaryDao.createUser(user, password);
   }
 
   /**
@@ -115,7 +85,19 @@ public class DbUserController implements UserDao {
    */
   @Override
   public boolean login(final String userName, final HashedPassword password) {
-    return primaryDao.login(userName, password);
+    if (secondaryDao.login(userName, password)) {
+      migrationCounter.secondaryLoginSuccess();
+      return true;
+    }
+
+    if (primaryDao.login(userName, password)) {
+      migrationCounter.primaryLoginSuccess();
+      secondaryDao.createUser(primaryDao.getUserByName(userName), password);
+      return true;
+    }
+
+    migrationCounter.loginFailure();
+    return false;
   }
 
   /**
@@ -123,7 +105,7 @@ public class DbUserController implements UserDao {
    */
   @Override
   public DBUser getUserByName(final String userName) {
-    return primaryDao.getUserByName(userName);
+    return Optional.ofNullable(secondaryDao.getUserByName(userName))
+        .orElseGet(() -> primaryDao.getUserByName(userName));
   }
-
 }
