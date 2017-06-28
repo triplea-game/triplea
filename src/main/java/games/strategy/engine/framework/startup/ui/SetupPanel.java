@@ -137,7 +137,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     // Add players in the order they were defined in the XML
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
-          new PlayerSelectorRow(player, reloadSelections, disableable, playersEnablementListing,
+          new PlayerSelectorRow(playerRows, player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, this, data.getProperties());
       playerRows.add(selector);
       if (!player.isHidden()) {
