@@ -47,7 +47,6 @@ public final class SerializableMementoExporter {
     checkNotNull(os);
 
     try (final ObjectOutputStream oos = newObjectOutputStream(os)) {
-      writeMetadata(oos);
       writeMemento(oos, memento);
     } catch (final IOException e) {
       throw new SerializableMementoExportException(e);
@@ -56,11 +55,6 @@ public final class SerializableMementoExporter {
 
   private ObjectOutputStream newObjectOutputStream(final OutputStream os) throws IOException {
     return new ObjectOutputStream(new CloseShieldOutputStream(os), persistenceDelegateRegistry);
-  }
-
-  private static void writeMetadata(final ObjectOutputStream oos) throws IOException {
-    oos.writeUTF(SerializableFormatConstants.MIME_TYPE);
-    oos.writeLong(SerializableFormatConstants.CURRENT_VERSION);
   }
 
   private static void writeMemento(final ObjectOutputStream oos, final Memento memento) throws IOException {

@@ -47,7 +47,6 @@ public final class SerializableMementoImporter {
     checkNotNull(is);
 
     try (final ObjectInputStream ois = newObjectInputStream(is)) {
-      readMetadata(ois);
       return readMemento(ois);
     } catch (final IOException | ClassNotFoundException e) {
       throw new SerializableMementoImportException(e);
@@ -56,18 +55,6 @@ public final class SerializableMementoImporter {
 
   private ObjectInputStream newObjectInputStream(final InputStream is) throws IOException {
     return new ObjectInputStream(new CloseShieldInputStream(is), persistenceDelegateRegistry);
-  }
-
-  private static void readMetadata(final ObjectInputStream ois) throws SerializableMementoImportException, IOException {
-    final String mimeType = ois.readUTF();
-    if (!SerializableFormatConstants.MIME_TYPE.equals(mimeType)) {
-      throw new SerializableMementoImportException("an illegal MIME type was specified in the stream");
-    }
-
-    final long version = ois.readLong();
-    if (version != SerializableFormatConstants.CURRENT_VERSION) {
-      throw new SerializableMementoImportException("an incompatible version was specified in the stream");
-    }
   }
 
   private static Memento readMemento(final ObjectInputStream ois) throws IOException, ClassNotFoundException {
