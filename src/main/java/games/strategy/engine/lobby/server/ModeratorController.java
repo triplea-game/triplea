@@ -57,11 +57,6 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanIp(final INode node, final Instant banExpires) {
-    // TODO: remove once we confirm no backwards compat issues
-  }
-
-  @Override
   public void zzBanMac(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
@@ -111,11 +106,6 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
-  }
-
-  @Override
-  public void zzMuteIp(final INode node, final Instant muteExpires) {
-    // TODO: remove once we confirm no backwards compat issues
   }
 
   @Override

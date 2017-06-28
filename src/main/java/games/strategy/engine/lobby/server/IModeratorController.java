@@ -37,17 +37,7 @@ public interface IModeratorController extends IRemote {
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void banIp(INode node, Date banExpires) {
-    zzBanIp(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  /**
-   * Ban the ip of the given INode.
-   *
-   * @deprecated Remove usages of this, banUserName and banMac are sufficient
-   */
-  @Deprecated
-  void zzBanIp(INode node, Instant banExpires);
+  default void banIp(INode node, Date banExpires) {}
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -96,17 +86,7 @@ public interface IModeratorController extends IRemote {
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void muteIp(INode node, Date muteExpires) {
-    zzMuteIp(node, muteExpires != null ? muteExpires.toInstant() : null);
-  }
-
-  /**
-   * Mute the ip of the given INode.
-   *
-   * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
-   */
-  @Deprecated
-  void zzMuteIp(INode node, Instant muteExpires);
+  default void muteIp(INode node, Date muteExpires) {}
 
   /**
    * @deprecated Kept to maintain backwards compatibility.

@@ -68,22 +68,12 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanIp(final INode node, final Instant banExpires) {
-    // nothing
-  }
-
-  @Override
   public void zzBanMac(final INode node, final Instant banExpires) {
     // nothing
   }
 
   @Override
   public void zzMuteUsername(final INode node, final Instant muteExpires) {
-    // nothing
-  }
-
-  @Override
-  public void zzMuteIp(final INode node, final Instant muteExpires) {
     // nothing
   }
 
