@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Test;
 
-public class GameEnginePropertyReaderTest {
+public class GameEnginePropertyReaderIntegrationTest {
   @Test
   public void remoteLobbyUrlReaderWorks() {
     final GameEnginePropertyReader testObj = new GameEnginePropertyReader();
