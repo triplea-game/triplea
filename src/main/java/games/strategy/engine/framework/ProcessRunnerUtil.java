@@ -53,16 +53,6 @@ public class ProcessRunnerUtil {
       System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
       commands.add("-Xmx" + maxMemory.get());
     }
-    // preserve noddraw to fix 1742775
-    final String[] preservedSystemProperties = {"sun.java2d.noddraw"};
-    for (final String key : preservedSystemProperties) {
-      if (System.getProperties().getProperty(key) != null) {
-        final String value = System.getProperties().getProperty(key);
-        if (value.matches("[a-zA-Z0-9.]+")) {
-          commands.add("-D" + key + "=" + value);
-        }
-      }
-    }
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
