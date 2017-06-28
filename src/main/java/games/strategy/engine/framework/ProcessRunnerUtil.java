@@ -50,6 +50,7 @@ public class ProcessRunnerUtil {
       commands.add(System.getProperty("java.class.path"));
     }
     if (maxMemory.isPresent()) {
+      System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
       commands.add("-Xmx" + maxMemory.get());
     }
     // preserve noddraw to fix 1742775
