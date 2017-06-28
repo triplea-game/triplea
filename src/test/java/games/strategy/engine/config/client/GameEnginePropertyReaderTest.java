@@ -3,7 +3,6 @@ package games.strategy.engine.config.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
-
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -44,36 +42,8 @@ public class GameEnginePropertyReaderTest {
     testObj = new GameEnginePropertyReader(
         mockPropertyFileReader,
         mockLobbyServerPropertiesFetcher,
-        mockBackupPropertyFetcher
-    );
+        mockBackupPropertyFetcher);
   }
-
-  @Test
-  public void maxMemoryNotSetCases() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.MAX_MEMORY))
-        .thenReturn("");
-
-    assertThat(testObj.readMaxMemory().isSet, is(false));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void maxMemoryWithInvalidValueSet() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.MAX_MEMORY))
-        .thenReturn("invalid");
-
-    testObj.readMaxMemory();
-  }
-
-  @Test
-  public void maxMemory() {
-    final long value = 1234L;
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.MAX_MEMORY))
-        .thenReturn(String.valueOf(value));
-
-    assertThat(testObj.readMaxMemory().isSet, is(true));
-    assertThat(testObj.readMaxMemory().value, is(value));
-  }
-
 
   @Test
   public void engineVersion() {

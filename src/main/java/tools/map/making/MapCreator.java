@@ -503,14 +503,11 @@ public class MapCreator extends JFrame {
       if (s_runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageReconstructor.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              TileImageReconstructor.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            TileImageReconstructor.main(new String[0]);
+          } catch (final Exception ex) {
+            ClientLogger.logQuietly(ex);
           }
         }).start();
       }

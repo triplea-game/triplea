@@ -3,7 +3,6 @@ package games.strategy.engine.config.client;
 import java.io.IOException;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.PropertyFileReader;
@@ -52,7 +51,7 @@ public class GameEnginePropertyReader {
    * configuration that we would pass back in case github is not available.
    *
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
-   *     Otherwise backup values from client config.
+   *         Otherwise backup values from client config.
    */
   public LobbyServerProperties fetchLobbyServerProperties() {
     final String lobbyPropsUrl =
@@ -82,26 +81,11 @@ public class GameEnginePropertyReader {
     return propertyFileReader.readProperty(PropertyKeys.MAP_LISTING_SOURCE_FILE);
   }
 
-  /**
-   * Reads the max memory user setting from configuration and returns a result object.
-   * The result object contains an 'isSet' flag, and the value set by user if set.
-   */
-  public MaxMemorySetting readMaxMemory() {
-    final String value = propertyFileReader.readProperty(PropertyKeys.MAX_MEMORY);
-
-    if (Strings.nullToEmpty(value).isEmpty()) {
-      return MaxMemorySetting.NOT_SET;
-    }
-
-    return MaxMemorySetting.of(value);
-  }
-
   @VisibleForTesting
   interface PropertyKeys {
     String MAP_LISTING_SOURCE_FILE = "map_list_file";
     String ENGINE_VERSION = "engine_version";
     String LOBBY_PROP_FILE_URL = "lobby_properties_file_url";
     String LOBBY_BACKUP_HOST_ADDRESS = "lobby_backup_url";
-    String MAX_MEMORY = "max_memory";
   }
 }
