@@ -155,10 +155,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.zBanUsername(clickedOn, (Instant) null);
+          controller.zzBanUsername(clickedOn, (Instant) null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.zBanMac(clickedOn, (Instant) null);
+          controller.zzBanMac(clickedOn, (Instant) null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
@@ -189,10 +189,10 @@ public class LobbyFrame extends JFrame {
       }
       final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedBanType.toLowerCase().contains("name")) {
-        controller.zBanUsername(clickedOn, expire);
+        controller.zzBanUsername(clickedOn, expire);
       }
       if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.zBanMac(clickedOn, expire);
+        controller.zzBanMac(clickedOn, expire);
       }
       // Should we keep this auto?
       controller.boot(clickedOn);
@@ -232,10 +232,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.zMuteUsername(clickedOn, (Instant) null);
+          controller.zzMuteUsername(clickedOn, (Instant) null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.zMuteMac(clickedOn, (Instant) null);
+          controller.zzMuteMac(clickedOn, (Instant) null);
         }
         return;
       }
@@ -264,10 +264,10 @@ public class LobbyFrame extends JFrame {
       }
       final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.zMuteUsername(clickedOn, expire);
+        controller.zzMuteUsername(clickedOn, expire);
       }
       if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.zMuteMac(clickedOn, expire);
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Quick Mute", e -> {
@@ -288,8 +288,8 @@ public class LobbyFrame extends JFrame {
           return;
         }
         final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.zMuteUsername(clickedOn, expire);
-        controller.zMuteMac(clickedOn, expire);
+        controller.zzMuteUsername(clickedOn, expire);
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Show player information", e -> {
