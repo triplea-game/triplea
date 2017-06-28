@@ -240,12 +240,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
 
   private void scheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
-    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), checkTime.toEpochMilli());
+    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username),
+        checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
   private void scheduleMacUnmuteAt(final String mac, final Instant checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
-    unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli());
+    unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
   // TODO: remove 'ip' parameter if can confirm no backwards compat issues
@@ -380,7 +381,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedUsernames.remove(username);
             }
           }
-        }, expires.toEpochMilli());
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
@@ -409,7 +410,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedIpAddresses.remove(ip);
             }
           }
-        }, expires.toEpochMilli());
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
@@ -438,7 +439,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedMacAddresses.remove(mac);
             }
           }
-        }, expires.toEpochMilli());
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
