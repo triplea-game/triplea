@@ -17,28 +17,6 @@ public final class TestGameDataMementoFactory {
   private TestGameDataMementoFactory() {}
 
   /**
-   * Creates a new game data memento that is valid in all respects.
-   *
-   * @return A new game data memento; never {@code null}.
-   */
-  public static Memento newValidMemento() {
-    return newMementoWithProperties(newValidMementoPropertiesByName());
-  }
-
-  private static Map<String, Object> newValidMementoPropertiesByName() {
-    final GameData gameData = TestGameDataFactory.newValidGameData();
-    return Maps.newHashMap(ImmutableMap.<String, Object>builder()
-        .put(GameDataMemento.PropertyNames.NAME, gameData.getGameName())
-        .put(GameDataMemento.PropertyNames.VERSION, gameData.getGameVersion())
-        // TODO: handle other properties
-        .build());
-  }
-
-  private static PropertyBagMemento newMementoWithProperties(final Map<String, Object> propertiesByName) {
-    return new PropertyBagMemento(GameDataMemento.SCHEMA_ID, GameDataMemento.CURRENT_SCHEMA_VERSION, propertiesByName);
-  }
-
-  /**
    * Creates a new game data memento that is valid in all respects but includes (or overrides) the specified property.
    *
    * @param name The property name; must not be {@code null}.
@@ -52,6 +30,19 @@ public final class TestGameDataMementoFactory {
     final Map<String, Object> propertiesByName = newValidMementoPropertiesByName();
     propertiesByName.put(name, value);
     return newMementoWithProperties(propertiesByName);
+  }
+
+  private static Map<String, Object> newValidMementoPropertiesByName() {
+    final GameData gameData = TestGameDataFactory.newValidGameData();
+    return Maps.newHashMap(ImmutableMap.<String, Object>builder()
+        .put(GameDataMemento.PropertyNames.NAME, gameData.getGameName())
+        .put(GameDataMemento.PropertyNames.VERSION, gameData.getGameVersion())
+        // TODO: handle other properties
+        .build());
+  }
+
+  private static PropertyBagMemento newMementoWithProperties(final Map<String, Object> propertiesByName) {
+    return new PropertyBagMemento(GameDataMemento.SCHEMA_ID, propertiesByName);
   }
 
   /**

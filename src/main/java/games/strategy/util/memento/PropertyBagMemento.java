@@ -18,26 +18,19 @@ public final class PropertyBagMemento implements Memento {
 
   private final String schemaId;
 
-  private final long schemaVersion;
-
   /**
    * Initializes a new instance of the {@code PropertyBagMemento} class.
    *
    * @param schemaId The memento schema identifier; must not be {@code null}.
-   * @param schemaVersion The memento schema version.
    * @param propertiesByName The collection of originator properties; must not be {@code null}. The key is the property
    *        name. The value is the property value.
    */
-  public PropertyBagMemento(
-      final String schemaId,
-      final long schemaVersion,
-      final Map<String, Object> propertiesByName) {
+  public PropertyBagMemento(final String schemaId, final Map<String, Object> propertiesByName) {
     checkNotNull(schemaId);
     checkNotNull(propertiesByName);
 
     this.propertiesByName = new HashMap<>(propertiesByName);
     this.schemaId = schemaId;
-    this.schemaVersion = schemaVersion;
   }
 
   /**
@@ -59,15 +52,6 @@ public final class PropertyBagMemento implements Memento {
     return schemaId;
   }
 
-  /**
-   * Gets the memento schema version.
-   *
-   * @return The memento schema version.
-   */
-  public long getSchemaVersion() {
-    return schemaVersion;
-  }
-
   @Override
   public boolean equals(final Object obj) {
     if (obj == this) {
@@ -78,13 +62,12 @@ public final class PropertyBagMemento implements Memento {
 
     final PropertyBagMemento other = (PropertyBagMemento) obj;
     return schemaId.equals(other.schemaId)
-        && (schemaVersion == other.schemaVersion)
         && propertiesByName.equals(other.propertiesByName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(schemaId, schemaVersion, propertiesByName);
+    return Objects.hash(schemaId, propertiesByName);
   }
 
   @Override
@@ -95,8 +78,6 @@ public final class PropertyBagMemento implements Memento {
     sb.append(propertiesByName);
     sb.append(", schemaId=");
     sb.append(schemaId);
-    sb.append(", schemaVersion=");
-    sb.append(schemaVersion);
     sb.append("]");
     return sb.toString();
   }

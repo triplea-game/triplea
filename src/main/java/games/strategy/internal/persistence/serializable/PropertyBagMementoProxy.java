@@ -22,11 +22,6 @@ public final class PropertyBagMementoProxy implements Serializable {
   private final String schemaId;
 
   /**
-   * @serial The memento schema version.
-   */
-  private final long schemaVersion;
-
-  /**
    * Initializes a new instance of the {@code PropertyBagMementoProxy} class from the specified
    * {@code PropertyBagMemento} instance.
    *
@@ -37,10 +32,9 @@ public final class PropertyBagMementoProxy implements Serializable {
 
     propertiesByName = memento.getPropertiesByName();
     schemaId = memento.getSchemaId();
-    schemaVersion = memento.getSchemaVersion();
   }
 
   private Object readResolve() {
-    return new PropertyBagMemento(schemaId, schemaVersion, propertiesByName);
+    return new PropertyBagMemento(schemaId, propertiesByName);
   }
 }

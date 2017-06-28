@@ -3,7 +3,6 @@ package games.strategy.util.memento;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Implementation of {@link MementoImporter} for instances of {@link PropertyBagMemento}.
@@ -11,7 +10,7 @@ import java.util.Optional;
  * @param <T> The type of the memento originator.
  */
 public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
-  private final HandlerSupplier<T> handlerSupplier;
+  private final Handler<T> handler;
 
   private final String schemaId;
 
@@ -19,13 +18,13 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
    * Initializes a new instance of the {@code PropertyBagMementoImporter} class.
    *
    * @param schemaId The schema identifier of the memento to import; must not be {@code null}.
-   * @param handlerSupplier A supplier of import handlers for each supported version; must not be {@code null}.
+   * @param handler The import handler for the schema; must not be {@code null}.
    */
-  public PropertyBagMementoImporter(final String schemaId, final HandlerSupplier<T> handlerSupplier) {
+  public PropertyBagMementoImporter(final String schemaId, final Handler<T> handler) {
     checkNotNull(schemaId);
-    checkNotNull(handlerSupplier);
+    checkNotNull(handler);
 
-    this.handlerSupplier = handlerSupplier;
+    this.handler = handler;
     this.schemaId = schemaId;
   }
 
@@ -56,8 +55,6 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
       throw newUnsupportedSchemaIdException(memento.getSchemaId());
     }
 
-    final Handler<T> handler = handlerSupplier.getHandler(memento.getSchemaVersion())
-        .orElseThrow(() -> newUnsupportedSchemaVersionException(memento.getSchemaVersion()));
     return handler.importProperties(memento.getPropertiesByName());
   }
 
@@ -68,10 +65,6 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
 
   private static MementoImportException newUnsupportedSchemaIdException(final String schemaId) {
     return new MementoImportException(String.format("schema ID '%s' is unsupported", schemaId));
-  }
-
-  private static MementoImportException newUnsupportedSchemaVersionException(final long schemaVersion) {
-    return new MementoImportException(String.format("schema version %d is unsupported", schemaVersion));
   }
 
   /**
@@ -92,23 +85,5 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
      * @throws MementoImportException If an error occurs while importing the originator properties.
      */
     T importProperties(Map<String, Object> propertiesByName) throws MementoImportException;
-  }
-
-  /**
-   * Supplies memento import handlers for each supported schema version.
-   *
-   * @param <T> The type of the memento originator.
-   */
-  @FunctionalInterface
-  public interface HandlerSupplier<T> {
-    /**
-     * Gets the memento import handler for the specified schema version.
-     *
-     * @param schemaVersion The memento schema version to import.
-     *
-     * @return The memento import handler for the specified schema version or empty if no handler is available; never
-     *         {@code null}.
-     */
-    Optional<Handler<T>> getHandler(long schemaVersion);
   }
 }

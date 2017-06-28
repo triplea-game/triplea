@@ -14,7 +14,7 @@ public final class PropertyBagMementoPersistenceDelegateAsPersistenceDelegateTes
 
   @Override
   protected PropertyBagMemento createSubject() {
-    return new PropertyBagMemento("schema-id", 8L, ImmutableMap.<String, Object>of(
+    return new PropertyBagMemento("schema-id", ImmutableMap.<String, Object>of(
         "property1", 42L,
         "property2", "2112"));
   }
