@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -107,7 +108,7 @@ public class GameDataManager {
             return null;
           }
           final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
-          GameRunner.startGame(savegamePath, newClassPath, null);
+          GameRunner.startGame(savegamePath, newClassPath, Optional.empty());
           if (closeCurrentInstance) {
             ThreadUtil.sleep(1000);
             System.exit(0);

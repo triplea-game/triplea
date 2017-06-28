@@ -10,6 +10,7 @@ import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -523,7 +524,7 @@ public class MapCreator extends JFrame {
 
   private static void runUtility(final Class<?> javaClass) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, Optional.of(s_memory + "M"));
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
       // no need for quotes, that will just screw up the process builder
       commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath());
