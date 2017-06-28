@@ -14,7 +14,7 @@ import org.junit.Test;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
 
-public class DbUserControllerTest {
+public class DbUserControllerIntegrationTest {
 
   private static final DbTestConnection DERBY =
       new DbTestConnection(Database::getDerbyConnection, new DbUserController());
