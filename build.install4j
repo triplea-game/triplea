@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="6.1.6" transformSequenceNumber="5">
   <directoryPresets config="./game_engine.properties" />
-  <application name="TripleA_${compiler:sys.version}" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="TripleA_${compiler:sys.version}" publisher="TripleA Developer Team" publisherWeb="triplea-game.github.io" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
+  <application name="TripleA" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -440,7 +440,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
     if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
         applicationsDir.mkdirs();
     }
-    File desktopFile = new File(applicationsDir, "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop");
+    File desktopFile = new File(applicationsDir, "TripleA-0.desktop");
     File mimeappsFile = new File(applicationsDir, "mimeapps.list");
     if(!desktopFile.exists()){
         return true;
@@ -778,7 +778,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         String mimeTypePrefix = mimeType + "=";
         while(scanner.hasNextLine()){
             String nextLine = scanner.nextLine();
-            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop")){
+            if(!nextLine.equalsIgnoreCase(mimeTypePrefix + "TripleA-0.desktop")){
                 builder.append(nextLine).append('\n');
             }
         }
