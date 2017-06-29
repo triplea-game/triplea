@@ -187,6 +187,7 @@ public abstract class Match<T> {
    * @return A new match; never {@code null}.
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <T> Match<T> all(final Match<T>... matches) {
     checkNotNull(matches);
 
@@ -214,6 +215,7 @@ public abstract class Match<T> {
    * @return A new match; never {@code null}.
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <T> Match<T> any(final Match<T>... matches) {
     checkNotNull(matches);
 
@@ -241,6 +243,7 @@ public abstract class Match<T> {
    * @return A new composite match builder; never {@code null}.
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <T> CompositeBuilder<T> newCompositeBuilder(final Match<T>... matches) {
     checkNotNull(matches);
 
