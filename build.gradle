@@ -209,8 +209,7 @@ task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJR
 
 task setRunnableLinux(dependsOn: [generateInstallers]) {
     doLast {
-        def linuxFile = "TripleA_${version}_unix.sh"
-        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
+        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: 'TripleA_unix.sh')
     }
 }
 
