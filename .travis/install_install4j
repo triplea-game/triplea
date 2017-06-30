@@ -12,7 +12,7 @@ fi
 mkdir -p ~/.install4j6/jres
 
 echo "Downloading and installing install4j"
-wget -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_6_1_5.sh
+wget -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_6_1_6.sh
 chmod +x install4j_unix.sh
 ./install4j_unix.sh -q
 
