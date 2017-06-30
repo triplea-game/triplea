@@ -826,44 +826,43 @@ public class MapPanel extends ImageScrollerLargeView {
   Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
   }
-}
 
+  private static final class BackgroundDrawer implements Runnable {
+    private MapPanel mapPanel;
 
-class BackgroundDrawer implements Runnable {
-  private MapPanel mapPanel;
+    BackgroundDrawer(final MapPanel panel) {
+      mapPanel = panel;
+    }
 
-  BackgroundDrawer(final MapPanel panel) {
-    mapPanel = panel;
-  }
+    void stop() {
+      // the thread will eventually wake up and notice we are done
+      mapPanel = null;
+    }
 
-  public void stop() {
-    // the thread will eventually wake up and notice we are done
-    mapPanel = null;
-  }
-
-  @Override
-  public void run() {
-    while (mapPanel != null) {
-      final BlockingQueue<Tile> undrawnTiles;
-      final MapPanel panel = mapPanel;
-      undrawnTiles = panel.getUndrawnTiles();
-      final Tile tile;
-      try {
-        tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
-      } catch (final InterruptedException e) {
-        continue;
+    @Override
+    public void run() {
+      while (mapPanel != null) {
+        final BlockingQueue<Tile> undrawnTiles;
+        final MapPanel panel = mapPanel;
+        undrawnTiles = panel.getUndrawnTiles();
+        final Tile tile;
+        try {
+          tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException e) {
+          continue;
+        }
+        if (tile == null) {
+          continue;
+        }
+        final GameData data = mapPanel.getData();
+        data.acquireReadLock();
+        try {
+          tile.getImage(data, mapPanel.getUIContext().getMapData());
+        } finally {
+          data.releaseReadLock();
+        }
+        SwingUtilities.invokeLater(mapPanel::repaint);
       }
-      if (tile == null) {
-        continue;
-      }
-      final GameData data = mapPanel.getData();
-      data.acquireReadLock();
-      try {
-        tile.getImage(data, mapPanel.getUIContext().getMapData());
-      } finally {
-        data.releaseReadLock();
-      }
-      SwingUtilities.invokeLater(mapPanel::repaint);
     }
   }
 }

@@ -396,38 +396,37 @@ public class HistoryPanel extends JPanel {
     mouseWasOverPanel = mouseOverPanel;
     lastParent = parent;
   }
-}
 
+  private static final class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
+    private static final long serialVersionUID = -72258573320689596L;
+    private final ImageIcon icon = new ImageIcon();
+    private final IUIContext uiContext;
 
-class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
-  private static final long serialVersionUID = -72258573320689596L;
-  private final ImageIcon icon = new ImageIcon();
-  private final IUIContext uiContext;
+    HistoryTreeCellRenderer(final IUIContext uiContext) {
+      this.uiContext = uiContext;
+    }
 
-  public HistoryTreeCellRenderer(final IUIContext uiContext) {
-    this. uiContext = uiContext;
-  }
-
-  @Override
-  public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
-      final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
-    if (value instanceof Step) {
-      final PlayerID player = ((Step) value).getPlayerID();
-      if (player != null) {
-        if (uiContext != null) {
-          super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
-          icon.setImage(uiContext.getFlagImageFactory().getSmallFlag(player));
-          setIcon(icon);
+    @Override
+    public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
+        final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
+      if (value instanceof Step) {
+        final PlayerID player = ((Step) value).getPlayerID();
+        if (player != null) {
+          if (uiContext != null) {
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+            icon.setImage(uiContext.getFlagImageFactory().getSmallFlag(player));
+            setIcon(icon);
+          } else {
+            final String text = value.toString() + " (" + player.getName() + ")";
+            super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
+          }
         } else {
-          final String text = value.toString() + " (" + player.getName() + ")";
-          super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
+          super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
         }
       } else {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
       }
-    } else {
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+      return this;
     }
-    return this;
   }
 }
