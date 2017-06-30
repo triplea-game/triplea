@@ -245,8 +245,7 @@ public class GameRunner {
 
       final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
       if (fileName.length() > 0) {
-        final File f = new File(fileName);
-        gameSelectorModel.load(f, mainFrame);
+        new Thread(() -> gameSelectorModel.load(new File(fileName), mainFrame)).start();
       }
       mainFrame.setVisible(true);
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
