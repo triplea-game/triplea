@@ -64,7 +64,7 @@
       </java>
       <includedFiles />
       <unextractableFiles />
-      <vmOptionsFile mode="content" overwriteMode="5" fileMode="644">
+      <vmOptionsFile mode="content" overwriteMode="3" fileMode="644">
         <content>-Xmx1G
 -Xms1G</content>
       </vmOptionsFile>
