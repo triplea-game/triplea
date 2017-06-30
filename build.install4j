@@ -55,7 +55,7 @@
           <versionLine x="144" y="22" text="version ${compiler:sys.version}" fontSize="8" fontColor="0,0,0" bold="false" />
         </text>
       </splashScreen>
-      <java mainClass="games.strategy.engine.framework.GameRunner" vmParameters="-Xmx1024M" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
+      <java mainClass="games.strategy.engine.framework.GameRunner" vmParameters="" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
         <classPath>
           <archive location="bin/triplea.jar" failOnError="false" />
         </classPath>
