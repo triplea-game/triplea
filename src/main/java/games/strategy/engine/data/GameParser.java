@@ -77,101 +77,100 @@ public class GameParser {
     if (stream == null) {
       throw new IllegalArgumentException("Stream must be non null");
     }
-    Document doc = null;
     try {
-      doc = getDocument(stream);
+      final Element root = getDocument(stream).getDocumentElement();
+      data = new GameData();
+      // mandatory fields
+      // get the name of the map
+      parseInfo(getSingleChild("info", root));
+      if (gameName != null) {
+        gameName.set(data.getGameName());
+      }
+      // test minimum engine version FIRST
+      parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
+      parseGameLoader(getSingleChild("loader", root));
+      // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check
+      // and
+      // see if we have any
+      // SAX errors we need to show
+      if (!errorsSAX.isEmpty()) {
+        for (final SAXParseException error : errorsSAX) {
+          System.err.println("SAXParseException: game: "
+              + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
+              + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
+        }
+      }
+      parseDiceSides(getSingleChild("diceSides", root, true));
+      final Element playerListNode = getSingleChild("playerList", root);
+      parsePlayerList(playerListNode);
+      parseAlliances(playerListNode);
+      final Node properties = getSingleChild("propertyList", root, true);
+      if (properties != null) {
+        parseProperties(properties);
+      }
+      // everything until here is needed to select a game, the rest can be parsed when a game is selected
+      if (delayParsing) {
+        return data;
+      }
+      parseMap(getSingleChild("map", root));
+      final Element resourceList = getSingleChild("resourceList", root, true);
+      if (resourceList != null) {
+        parseResources(resourceList);
+      }
+      final Element unitList = getSingleChild("unitList", root, true);
+      if (unitList != null) {
+        parseUnits(unitList);
+      }
+      // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
+      final Element relationshipTypes = getSingleChild("relationshipTypes", root, true);
+      if (relationshipTypes != null) {
+        parseRelationshipTypes(relationshipTypes);
+      }
+      final Element territoryEffectList = getSingleChild("territoryEffectList", root, true);
+      if (territoryEffectList != null) {
+        parseTerritoryEffects(territoryEffectList);
+      }
+      parseGamePlay(getSingleChild("gamePlay", root));
+      final Element production = getSingleChild("production", root, true);
+      if (production != null) {
+        parseProduction(production);
+      }
+      final Element technology = getSingleChild("technology", root, true);
+      if (technology != null) {
+        parseTechnology(technology);
+      } else {
+        TechAdvance.createDefaultTechAdvances(data);
+      }
+      final Element attachmentList = getSingleChild("attachmentList", root, true);
+      if (attachmentList != null) {
+        parseAttachments(attachmentList);
+      }
+      final Node initialization = getSingleChild("initialize", root, true);
+      if (initialization != null) {
+        parseInitialization(initialization);
+      }
+      // set & override default relationships
+      // sets the relationship between all players and the NullPlayer to NullRelation
+      // (with archeType War)
+      data.getRelationshipTracker().setNullPlayerRelations();
+      // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
+      data.getRelationshipTracker().setSelfRelations();
+      // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
+      // options/properties)
+      if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
+        checkThatAllUnitsHaveAttachments(data);
+        TechAbilityAttachment.setDefaultTechnologyAttachments(data);
+      }
+      try {
+        validate();
+      } catch (final Exception e) {
+        ClientLogger.logQuietly("Error parsing: " + mapName, e);
+        throw new GameParseException(mapName, e);
+      }
+      return data;
     } catch (final IOException | ParserConfigurationException e) {
       throw new IllegalStateException("Error parsing: " + mapName, e);
     }
-    final Element root = doc.getDocumentElement();
-    data = new GameData();
-    // mandatory fields
-    // get the name of the map
-    parseInfo(getSingleChild("info", root));
-    if (gameName != null) {
-      gameName.set(data.getGameName());
-    }
-    // test minimum engine version FIRST
-    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
-    parseGameLoader(getSingleChild("loader", root));
-    // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
-    // see if we have any
-    // SAX errors we need to show
-    if (!errorsSAX.isEmpty()) {
-      for (final SAXParseException error : errorsSAX) {
-        System.err.println("SAXParseException: game: "
-            + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
-            + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
-      }
-    }
-    parseDiceSides(getSingleChild("diceSides", root, true));
-    final Element playerListNode = getSingleChild("playerList", root);
-    parsePlayerList(playerListNode);
-    parseAlliances(playerListNode);
-    final Node properties = getSingleChild("propertyList", root, true);
-    if (properties != null) {
-      parseProperties(properties);
-    }
-    // everything until here is needed to select a game, the rest can be parsed when a game is selected
-    if (delayParsing) {
-      return data;
-    }
-    parseMap(getSingleChild("map", root));
-    final Element resourceList = getSingleChild("resourceList", root, true);
-    if (resourceList != null) {
-      parseResources(resourceList);
-    }
-    final Element unitList = getSingleChild("unitList", root, true);
-    if (unitList != null) {
-      parseUnits(unitList);
-    }
-    // Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
-    final Element relationshipTypes = getSingleChild("relationshipTypes", root, true);
-    if (relationshipTypes != null) {
-      parseRelationshipTypes(relationshipTypes);
-    }
-    final Element territoryEffectList = getSingleChild("territoryEffectList", root, true);
-    if (territoryEffectList != null) {
-      parseTerritoryEffects(territoryEffectList);
-    }
-    parseGamePlay(getSingleChild("gamePlay", root));
-    final Element production = getSingleChild("production", root, true);
-    if (production != null) {
-      parseProduction(production);
-    }
-    final Element technology = getSingleChild("technology", root, true);
-    if (technology != null) {
-      parseTechnology(technology);
-    } else {
-      TechAdvance.createDefaultTechAdvances(data);
-    }
-    final Element attachmentList = getSingleChild("attachmentList", root, true);
-    if (attachmentList != null) {
-      parseAttachments(attachmentList);
-    }
-    final Node initialization = getSingleChild("initialize", root, true);
-    if (initialization != null) {
-      parseInitialization(initialization);
-    }
-    // set & override default relationships
-    // sets the relationship between all players and the NullPlayer to NullRelation
-    // (with archeType War)
-    data.getRelationshipTracker().setNullPlayerRelations();
-    // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
-    data.getRelationshipTracker().setSelfRelations();
-    // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
-    // options/properties)
-    if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
-      checkThatAllUnitsHaveAttachments(data);
-      TechAbilityAttachment.setDefaultTechnologyAttachments(data);
-    }
-    try {
-      validate();
-    } catch (final Exception e) {
-      ClientLogger.logQuietly("Error parsing: " + mapName, e);
-      throw new GameParseException(mapName, e);
-    }
-    return data;
   }
 
   private void parseDiceSides(final Node diceSides) {
