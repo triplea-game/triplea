@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -74,9 +75,9 @@ public class GameData implements Serializable {
   private String gameName;
   private Version gameVersion;
   private int diceSides;
-  private transient List<TerritoryListener> territoryListeners = new ArrayList<>();
-  private transient List<GameDataChangeListener> dataChangeListeners = new ArrayList<>();
-  private transient List<GameMapListener> gameMapListeners = new ArrayList<>();
+  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
