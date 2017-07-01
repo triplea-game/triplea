@@ -1,6 +1,6 @@
 package games.strategy.engine.data;
 
-import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ALLIANCE;
+import static tools.map.xml.creator.MapXmlHelper.*;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ATTACHMENT;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ATTACHMENT_LIST;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_BOOLEAN;
@@ -36,10 +36,10 @@ import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_UNIT_LIST;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_UNIT_PLACEMENT;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_VALUE;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -47,11 +47,14 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 public abstract class TripleaHandler extends DefaultHandler {
 
   private final GameData gameData;
   private final Deque<PseudoElement> stack = new LinkedList<>();
-  private static final Map<String, String> requiredParents = new HashMap<>();
+  private static final Multimap<String, String> requiredParents = HashMultimap.create();
 
   static {
     requiredParents.put(XML_NODE_NAME_GAME, null);
@@ -79,18 +82,24 @@ public abstract class TripleaHandler extends DefaultHandler {
     requiredParents.put(XML_NODE_NAME_UNIT, XML_NODE_NAME_UNIT_LIST);
     requiredParents.put(XML_NODE_NAME_DELEGATE, XML_NODE_NAME_GAME_PLAY);
     requiredParents.put(XML_NODE_NAME_SEQUENCE, XML_NODE_NAME_GAME_PLAY);
+    requiredParents.put("offset", XML_NODE_NAME_GAME_PLAY);
     requiredParents.put(XML_NODE_NAME_STEP, XML_NODE_NAME_SEQUENCE);
     requiredParents.put(XML_NODE_NAME_PRODUCTION_RULE, XML_NODE_NAME_PRODUCTION);
+    requiredParents.put("repairRule", XML_NODE_NAME_PRODUCTION);
+    requiredParents.put("repairFrontier", XML_NODE_NAME_PRODUCTION);
     requiredParents.put("playerProduction", XML_NODE_NAME_PRODUCTION);
+    requiredParents.put("playerRepair", XML_NODE_NAME_PRODUCTION);// TODO
     requiredParents.put(XML_NODE_NAME_PRODUCTION_FRONTIER, XML_NODE_NAME_PRODUCTION);
-    requiredParents.put(XML_NODE_NAME_COST, XML_NODE_NAME_PRODUCTION_RULE);
-    requiredParents.put(XML_NODE_NAME_RESULT, XML_NODE_NAME_PRODUCTION_RULE);
+    requiredParents.putAll(XML_NODE_NAME_COST, Arrays.asList(XML_NODE_NAME_PRODUCTION_RULE, "repairRule"));
+    requiredParents.putAll(XML_NODE_NAME_RESULT, Arrays.asList(XML_NODE_NAME_PRODUCTION_RULE, "repairRule"));
     requiredParents.put(XML_NODE_NAME_FRONTIER_RULES, XML_NODE_NAME_PRODUCTION_FRONTIER);
     requiredParents.put(XML_NODE_NAME_ATTACHMENT, XML_NODE_NAME_ATTACHMENT_LIST);
     requiredParents.put(XML_NODE_NAME_OPTION, XML_NODE_NAME_ATTACHMENT);
     requiredParents.put(XML_NODE_NAME_OWNER_INITIALIZE, XML_NODE_NAME_INITIALIZE);
     requiredParents.put(XML_NODE_NAME_UNIT_INITIALIZE, XML_NODE_NAME_INITIALIZE);
     requiredParents.put("resourceInitialize", XML_NODE_NAME_INITIALIZE);
+    requiredParents.put("relationshipInitialize", XML_NODE_NAME_INITIALIZE);
+    requiredParents.put("relationship", "relationshipInitialize");
     requiredParents.put(XML_NODE_NAME_TERRITORY_OWNER, XML_NODE_NAME_OWNER_INITIALIZE);
     requiredParents.put(XML_NODE_NAME_UNIT_PLACEMENT, XML_NODE_NAME_UNIT_INITIALIZE);
     requiredParents.put("resourceGiven", "resourceInitialize");
@@ -98,11 +107,16 @@ public abstract class TripleaHandler extends DefaultHandler {
     requiredParents.put(XML_NODE_NAME_NUMBER, XML_NODE_NAME_PROPERTY);
     requiredParents.put(XML_NODE_NAME_BOOLEAN, XML_NODE_NAME_PROPERTY);
     requiredParents.put(XML_NODE_NAME_VALUE, XML_NODE_NAME_PROPERTY);
+    requiredParents.put("string", XML_NODE_NAME_PROPERTY);
     requiredParents.put("technologies", "technology");
     requiredParents.put("techname", "technologies");
     requiredParents.put("playerTech", "technology");
     requiredParents.put("category", "playerTech");
     requiredParents.put("tech", "category");
+    requiredParents.put("repairRules", "repairFrontier");
+    requiredParents.put("relationshipType", "relationshipTypes");
+    requiredParents.put("territoryEffect", "territoryEffectList");
+    requiredParents.put("stepProperty", XML_NODE_NAME_STEP);
   }
 
   public TripleaHandler(GameData gameData) {
@@ -282,12 +296,13 @@ public abstract class TripleaHandler extends DefaultHandler {
   private void checkParentNode(String qname) throws GameParseException {
     if (!stack.isEmpty()) {
       String actualName = stack.peek().getName();
-      String parent = requiredParents.get(qname);
-      if (parent == null) {
+      Collection<String> parents = requiredParents.get(qname);
+      if (parents.isEmpty()) {
         throw new GameParseException("Unknown element '" + qname + "'");
-      } else if (!actualName.equals(parent)) {
+      } else if (!parents.contains(actualName)) {
         throw new GameParseException(
-            "Parent of '" + qname + "' must be '" + parent + "', but was '" + actualName + "'");
+            "Parent of '" + qname + "' must be one of " + Arrays.toString(parents.toArray()) + ", but was '"
+                + actualName + "'");
       }
     } else if (!qname.equals(XML_NODE_NAME_GAME)) {
       throw new GameParseException("Root element must be 'game', found '" + qname + "' instead");

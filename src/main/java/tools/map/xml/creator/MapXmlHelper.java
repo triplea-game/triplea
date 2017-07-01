@@ -718,7 +718,8 @@ public class MapXmlHelper {
 
       @Override
       protected void handleProductionFrontier(Attributes attributes) throws GameParseException {
-        playerName = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME).substring(10);
+        String value = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME);
+        playerName = value.length() >= 10 ? attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME).substring(10) : "";
       }
 
       @Override
