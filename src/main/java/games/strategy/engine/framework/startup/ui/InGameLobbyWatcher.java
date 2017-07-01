@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.Frame;
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observer;
@@ -165,8 +165,8 @@ public class InGameLobbyWatcher {
     this.serverMessenger = serverMessenger;
     final String password = System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY);
     final boolean passworded = password != null && password.length() > 0;
-    final Date startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? new Date()
+    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
+        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
     final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
         ? (HeadlessGameServer.headless() ? 0 : 1) : oldWatcher.gameDescription.getPlayerCount();

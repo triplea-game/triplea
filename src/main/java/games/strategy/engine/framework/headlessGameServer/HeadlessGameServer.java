@@ -2,7 +2,8 @@ package games.strategy.engine.framework.headlessGameServer;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -50,7 +51,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private ServerGame m_iGame = null;
   private boolean m_shutDown = false;
-  private final String m_startDate = TimeManager.getGMTString(new Date());
+  private final String startDate = TimeManager.getFullUtcString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
     return s_instance;
@@ -240,8 +241,8 @@ public class HeadlessGameServer {
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
-    // milliseconds (48 hours max)
-    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(60 * 24 * 2, minutes)) * 1000 * 60);
+    // (48 hours max)
+    Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {
@@ -262,9 +263,9 @@ public class HeadlessGameServer {
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
               System.out.println("Remote Mute of Player: " + playerName);
-              messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
-              messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
-              messenger.NotifyMacMutingOfPlayer(mac, new Date(expire));
+              messenger.notifyUsernameMutingOfPlayer(realName, expire);
+              messenger.notifyIpMutingOfPlayer(ip, expire);
+              messenger.notifyMacMutingOfPlayer(mac, expire);
               return;
             }
           }
@@ -325,7 +326,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // milliseconds (30 days max)
-    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(24 * 30, hours)) * 1000 * 60 * 60);
+    final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {
@@ -347,17 +348,17 @@ public class HeadlessGameServer {
             if (realName.equals(playerName)) {
               System.out.println("Remote Ban of Player: " + playerName);
               try {
-                messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
+                messenger.notifyUsernameMiniBanningOfPlayer(realName, expire);
               } catch (final Exception e) {
                 ClientLogger.logQuietly(e);
               }
               try {
-                messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
+                messenger.notifyIpMiniBanningOfPlayer(ip, expire);
               } catch (final Exception e) {
                 ClientLogger.logQuietly(e);
               }
               try {
-                messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
+                messenger.notifyMacMiniBanningOfPlayer(mac, expire);
               } catch (final Exception e) {
                 ClientLogger.logQuietly(e);
               }
@@ -482,7 +483,7 @@ public class HeadlessGameServer {
   }
 
   String getStatus() {
-    String message = "Server Start Date: " + m_startDate;
+    String message = "Server Start Date: " + startDate;
     final ServerGame game = getIGame();
     if (game != null) {
       message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
