@@ -2,11 +2,12 @@ package games.strategy.engine.data;
 
 import org.xml.sax.Attributes;
 
+import com.google.common.base.Joiner;
+
 public class PseudoElement {
 
   private final String qname;
   private final Attributes attributes;
-  private String innerValue = null;
 
   public PseudoElement(String qname, Attributes attributes) {
     this.qname = qname;
@@ -21,15 +22,17 @@ public class PseudoElement {
     return attributes;
   }
 
-  public void setInnerValue(String value) {
-    if (innerValue == null) {
-      innerValue = value;
-    } else {
-      throw new IllegalStateException("Inner value can only be set once");
-    }
+  @Override
+  public String toString() {
+    return qname + ": " + attrToString(attributes);
   }
 
-  public String getInnerValue() {
-    return innerValue;
+  public static String attrToString(Attributes attributes) {
+    Joiner joiner = Joiner.on(' ');
+    final String[] attrs = new String[attributes.getLength()];
+    for (int i = 0; i < attributes.getLength(); i++) {
+      attrs[i] = attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\"";
+    }
+    return joiner.join(attrs);
   }
 }

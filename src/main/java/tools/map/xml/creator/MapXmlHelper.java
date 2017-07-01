@@ -32,7 +32,6 @@ import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.data.PseudoElement;
 import games.strategy.engine.data.TripleaHandler;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.CanalAttachment;
@@ -325,7 +324,7 @@ public class MapXmlHelper {
     getResourceList().add(index, value);
   }
 
-  static void putTerritoryDefintions(final String key, final HashMap<Definition, Boolean> value) {
+  static void putTerritoryDefintions(final String key, final Map<Definition, Boolean> value) {
     getTerritoryDefintionsMap().put(key, value);
   }
 
@@ -385,7 +384,7 @@ public class MapXmlHelper {
     getUnitPlacementsMap().put(key, value);
   }
 
-  static void putGameSettings(final String key, final ArrayList<String> value) {
+  static void putGameSettings(final String key, final List<String> value) {
     getGameSettingsMap().put(key, value);
   }
 
@@ -475,7 +474,7 @@ public class MapXmlHelper {
       private String resourceOrUnit = null;
 
       private String playerName = null;
-      private final ArrayList<String> frontierRules = new ArrayList<>();
+      private final List<String> frontierRules = new ArrayList<>();
 
 
       private CanalTerritoriesTuple canalDef = null;
@@ -483,7 +482,7 @@ public class MapXmlHelper {
       private SortedSet<String> newLandTerritories = new TreeSet<>();
       private String attachmentAttachTo = null;
 
-      private final ArrayList<String> settingValues = new ArrayList<>();
+      private List<String> settingValues = new ArrayList<>();
 
       @Override
       protected void handleInfo(Attributes attributes) throws GameParseException {
@@ -663,9 +662,11 @@ public class MapXmlHelper {
 
       @Override
       protected void handleProperty(Attributes attributes) throws GameParseException {
+        settingValues = new ArrayList<>();
         final String propertyName = attributes.getValue(XML_ATTR_PROPERTY_NAME_NAME);
         if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
             || propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_MAP_NAME)) {
+          setNotes(attributes.getValue(XML_NODE_NAME_VALUE));
           return;
         }
         settingValues.add(attributes.getValue(XML_NODE_NAME_VALUE));
@@ -686,11 +687,6 @@ public class MapXmlHelper {
         settingValues.add("0"); // max
         getGameSettingsMap().put(getCurrentParent().getAttributes().getValue(XML_ATTR_PROPERTY_NAME_NAME),
             settingValues);
-      }
-
-      @Override
-      protected void handleValue(PseudoElement element) throws GameParseException {
-        setNotes(element.getInnerValue());
       }
 
       @Override
@@ -933,14 +929,14 @@ public class MapXmlHelper {
     if (!getTerritoryOwnershipsMap().isEmpty()) {
       final Element ownerInitialize = doc.createElement(XML_NODE_NAME_OWNER_INITIALIZE);
       initialize.appendChild(ownerInitialize);
-      final HashMap<String, ArrayList<String>> playerTerritories = Maps.newHashMap();
+      final Map<String, List<String>> playerTerritories = new HashMap<>();
       for (final String player : getPlayerNames()) {
         playerTerritories.put(player, new ArrayList<>());
       }
       for (final Entry<String, String> ownershipEntry : getTerritoryOwnershipsMap().entrySet()) {
         playerTerritories.get(ownershipEntry.getValue()).add(ownershipEntry.getKey());
       }
-      for (final Entry<String, ArrayList<String>> playerTerritoriesEntry : playerTerritories.entrySet()) {
+      for (final Entry<String, List<String>> playerTerritoriesEntry : playerTerritories.entrySet()) {
         doc.createComment(" " + playerTerritoriesEntry.getKey() + " Owned Territories ");
         final Element territoryOwnerTemplate = doc.createElement(XML_NODE_NAME_TERRITORY_OWNER);
         territoryOwnerTemplate.setAttribute(XML_ATTR_UNIT_PLACEMENT_NAME_OWNER, playerTerritoriesEntry.getKey());
@@ -1040,7 +1036,7 @@ public class MapXmlHelper {
       final int production = productionEntry.getValue();
       if (production > 0) {
         final String territoryName = productionEntry.getKey();
-        final ArrayList<String> attachmentOptions = new ArrayList<>();
+        final List<String> attachmentOptions = new ArrayList<>();
         attachmentOptions.add(territoryName);
         attachmentOptions.add(Integer.toString(production));
         territoryAttachments.put("production_" + territoryName, attachmentOptions);
@@ -1053,7 +1049,7 @@ public class MapXmlHelper {
       final String territoryName = territoryDefinition.getKey();
       for (final Entry<Definition, Boolean> definition : territoryDefinition.getValue().entrySet()) {
         if (definition.getValue() == Boolean.TRUE) {
-          final ArrayList<String> attachmentOptions = new ArrayList<>();
+          final List<String> attachmentOptions = new ArrayList<>();
           attachmentOptions.add(territoryName);
           attachmentOptions.add("true");
           // TODO: handle capital different based on owner
@@ -1176,17 +1172,17 @@ public class MapXmlHelper {
       appendChildrenWithTwoAttributesFromList(doc, playerList, getPlayerNames(), XML_NODE_NAME_PLAYER,
           XML_ATTR_PLAYER_NAME_NAME, XML_ATTR_PLAYER_NAME_OPTIONAL, XML_ATTR_VALUE_PLAYER_OPTIONAL_NAME_FALSE);
 
-      final HashMap<String, ArrayList<String>> alliances = Maps.newHashMap();
+      final Map<String, List<String>> alliances = Maps.newHashMap();
       for (final Entry<String, String> allianceEntry : getPlayerAllianceMap().entrySet()) {
         final String allianceName = allianceEntry.getValue();
-        ArrayList<String> players = alliances.get(allianceName);
+        List<String> players = alliances.get(allianceName);
         if (players == null) {
           players = new ArrayList<>();
           alliances.put(allianceName, players);
         }
         players.add(allianceEntry.getKey());
       }
-      for (final Entry<String, ArrayList<String>> allianceEntry : alliances.entrySet()) {
+      for (final Entry<String, List<String>> allianceEntry : alliances.entrySet()) {
         final String allianceName = allianceEntry.getKey();
         playerList.appendChild(doc.createComment(" " + allianceName + " Alliance "));
         appendChildrenWithTwoAttributesFromList(doc, playerList, allianceEntry.getValue(), XML_NODE_NAME_ALLIANCE,
@@ -1268,7 +1264,7 @@ public class MapXmlHelper {
 
   protected static void writeAttachmentNodes(final Document doc, final Element attachmentList,
       final Map<String, List<String>> hashMap, final Element attachmentTemplate) {
-    final HashMap<String, List<Element>> playerAttachOptions = Maps.newHashMap();
+    final Map<String, List<Element>> playerAttachOptions = Maps.newHashMap();
     for (final Entry<String, List<String>> technologyDefinition : hashMap.entrySet()) {
       final List<String> definitionValues = technologyDefinition.getValue();
       final Element option = doc.createElement(XML_NODE_NAME_OPTION);

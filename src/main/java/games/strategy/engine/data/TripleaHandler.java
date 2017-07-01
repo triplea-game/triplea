@@ -38,13 +38,13 @@ import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_VALUE;
 
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 public abstract class TripleaHandler extends DefaultHandler {
@@ -113,16 +113,13 @@ public abstract class TripleaHandler extends DefaultHandler {
   public void startElement(String uri, String localName, String qname, Attributes attributes) throws SAXException {
     checkParentNode(qname);
     handleElement(qname, attributes);
-    stack.addFirst(new PseudoElement(qname, attributes));
+    stack.addFirst(new PseudoElement(qname, new AttributesImpl(attributes)));
   }
 
   @Override
   public void endElement(String uri, String localName, String qname) throws SAXException {
-    PseudoElement element = stack.pop();
+    stack.pop();
     switch (qname) {
-      case XML_NODE_NAME_VALUE:
-        handleValue(element);
-        break;
       case XML_NODE_NAME_MAP:
         handleMap();
         break;
@@ -154,11 +151,6 @@ public abstract class TripleaHandler extends DefaultHandler {
         handlePropertyList();
         break;
     }
-  }
-
-  @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
-    stack.peek().setInnerValue(new String(ch));
   }
 
   @Override
@@ -270,6 +262,7 @@ public abstract class TripleaHandler extends DefaultHandler {
       case XML_NODE_NAME_ATTACHMENT:
         handleAttachment(attributes);
         break;
+      case XML_NODE_NAME_VALUE:
       case XML_NODE_NAME_SEQUENCE:
       case XML_NODE_NAME_RESOURCE_LIST:
       case XML_NODE_NAME_UNIT_LIST:
@@ -349,8 +342,6 @@ public abstract class TripleaHandler extends DefaultHandler {
 
   protected abstract void handleTech(Attributes attributes) throws GameParseException;
 
-  protected abstract void handleValue(PseudoElement element) throws GameParseException;
-
   protected abstract void handleMap() throws GameParseException;
 
   protected abstract void handlePlayerList() throws GameParseException;
@@ -380,14 +371,5 @@ public abstract class TripleaHandler extends DefaultHandler {
       throw new IllegalStateException("This method must only be called while parsing");
     }
     return stack.peek();
-  }
-
-  protected PseudoElement getParentsParentParent() {
-    if (stack.size() < 2) {
-      throw new IllegalStateException("The stack contains too few elements");
-    }
-    Iterator<PseudoElement> iterator = stack.iterator();
-    iterator.next();
-    return iterator.next();
   }
 }
