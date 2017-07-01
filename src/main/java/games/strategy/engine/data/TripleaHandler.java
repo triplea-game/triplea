@@ -90,10 +90,10 @@ public abstract class TripleaHandler extends DefaultHandler {
     requiredParents.put(XML_NODE_NAME_OPTION, XML_NODE_NAME_ATTACHMENT);
     requiredParents.put(XML_NODE_NAME_OWNER_INITIALIZE, XML_NODE_NAME_INITIALIZE);
     requiredParents.put(XML_NODE_NAME_UNIT_INITIALIZE, XML_NODE_NAME_INITIALIZE);
-    requiredParents.put("resouceInitialize", XML_NODE_NAME_INITIALIZE);
+    requiredParents.put("resourceInitialize", XML_NODE_NAME_INITIALIZE);
     requiredParents.put(XML_NODE_NAME_TERRITORY_OWNER, XML_NODE_NAME_OWNER_INITIALIZE);
     requiredParents.put(XML_NODE_NAME_UNIT_PLACEMENT, XML_NODE_NAME_UNIT_INITIALIZE);
-    requiredParents.put("resourceGiven", "resouceInitialize");
+    requiredParents.put("resourceGiven", "resourceInitialize");
     requiredParents.put(XML_NODE_NAME_PROPERTY, XML_NODE_NAME_PROPERTY_LIST);
     requiredParents.put(XML_NODE_NAME_NUMBER, XML_NODE_NAME_PROPERTY);
     requiredParents.put(XML_NODE_NAME_BOOLEAN, XML_NODE_NAME_PROPERTY);
@@ -267,6 +267,9 @@ public abstract class TripleaHandler extends DefaultHandler {
       case XML_NODE_NAME_PRODUCTION_FRONTIER:
         handleProductionFrontier(attributes);
         break;
+      case XML_NODE_NAME_ATTACHMENT:
+        handleAttachment(attributes);
+        break;
       case XML_NODE_NAME_SEQUENCE:
       case XML_NODE_NAME_RESOURCE_LIST:
       case XML_NODE_NAME_UNIT_LIST:
@@ -365,6 +368,8 @@ public abstract class TripleaHandler extends DefaultHandler {
   protected abstract void handleAttachmentList() throws GameParseException;
 
   protected abstract void handleAttachment() throws GameParseException;
+
+  protected abstract void handleAttachment(Attributes attributes) throws GameParseException;
 
   protected abstract void handleInitialize() throws GameParseException;
 

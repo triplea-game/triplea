@@ -611,7 +611,7 @@ public class MapXmlHelper {
               attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME) + "_" + attachmentAttachTo,
               Arrays.asList(attachmentAttachTo, attributes.getValue(XML_NODE_NAME_VALUE)));
         } else if (attachmentName.equals(Constants.INF_ATTACHMENT_NAME)
-            && attachmentType.equals(XML_ATTR_ATTACHMENT_NAME_TERRITORY)) {
+            && attachmentType.equals(XML_ATTR_ATTACHMENT_NAME_TERRITORY) && canalDef == null) {
           final String attachOptAttrName = attributes.getValue(XML_ATTR_OPTION_NAME_NAME);
           if (attachOptAttrName.equals(XML_ATTR_VALUE_OPTION_NAME_CANAL_NAME)) {
             newCanalName = attributes.getValue(XML_NODE_NAME_VALUE);
@@ -623,7 +623,6 @@ public class MapXmlHelper {
             newLandTerritories.addAll(Arrays
                 .asList(attributes.getValue(XML_ATTR_OPTION_NAME_VALUE).split(XML_ATTR_VALUE_SEPARATOR_OPTION_VALUE)));
           }
-          this.attachmentAttachTo = attachmentAttachTo;
         } else if (attachmentName.equals(Constants.TERRITORY_ATTACHMENT_NAME)
             && attachmentType.equals(XML_ATTR_ATTACHMENT_NAME_NAME)) {
           final String optionNameAttr = attributes.getValue(XML_ATTR_OPTION_NAME_NAME);
@@ -759,7 +758,6 @@ public class MapXmlHelper {
         canalDef = null;
         newCanalName = null;
         newLandTerritories = new TreeSet<>();
-        attachmentAttachTo = null;
       }
 
       @Override
@@ -773,6 +771,11 @@ public class MapXmlHelper {
         if (!getGameSettingsMap().isEmpty()) {
           stepToGo.set(getNotes().length() > 0 ? GameStep.MAP_FINISHED : GameStep.GAME_SETTINGS);
         }
+      }
+
+      @Override
+      protected void handleAttachment(Attributes attributes) throws GameParseException {
+        attachmentAttachTo = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_ATTACH_TO);
       }
     });
     return stepToGo.get();
