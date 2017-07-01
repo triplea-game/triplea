@@ -22,6 +22,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
@@ -642,37 +643,25 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
-    final boolean canScrambleIntoAirBattles = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.newCompositeBuilder(
-            Matches.unitCanAirBattle,
-            Matches.unitIsEnemyOf(data, attacker),
-            Matches.UnitWasInAirBattle.invert());
-        if (!canScrambleIntoAirBattles) {
-          canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
-        }
-        return canInterceptBuilder.all().match(u);
-      }
-    };
+    final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
+        Matches.unitCanAirBattle,
+        Matches.unitIsEnemyOf(data, attacker),
+        Matches.UnitWasInAirBattle.invert());
+    if (!Properties.getCanScrambleIntoAirBattles(data)) {
+      matchBuilder.add(Matches.UnitWasScrambled.invert());
+    }
+    return matchBuilder.all();
   }
 
   private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
-    final boolean canScrambleIntoAirBattles = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
-    return new Match<Unit>() {
-      @Override
-      public boolean match(final Unit u) {
-        final Match.CompositeBuilder<Unit> canInterceptBuilder = Match.newCompositeBuilder(
-            Matches.unitCanIntercept,
-            Matches.unitIsEnemyOf(data, attacker),
-            Matches.UnitWasInAirBattle.invert());
-        if (!canScrambleIntoAirBattles) {
-          canInterceptBuilder.add(Matches.UnitWasScrambled.invert());
-        }
-        return canInterceptBuilder.all().match(u);
-      }
-    };
+    final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
+        Matches.unitCanIntercept,
+        Matches.unitIsEnemyOf(data, attacker),
+        Matches.UnitWasInAirBattle.invert());
+    if (!Properties.getCanScrambleIntoAirBattles(data)) {
+      matchBuilder.add(Matches.UnitWasScrambled.invert());
+    }
+    return matchBuilder.all();
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
