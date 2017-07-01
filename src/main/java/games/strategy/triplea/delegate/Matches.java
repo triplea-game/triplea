@@ -76,15 +76,11 @@ import games.strategy.util.Util;
 public class Matches {
   public static final Match<Object> IsTerritory = Match.of(o -> o != null && o instanceof Territory);
 
-  public static final Match<Unit> UnitHasMoreThanOneHitPointTotal = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      return UnitTypeHasMoreThanOneHitPointTotal.match(unit.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeHasMoreThanOneHitPointTotal =
       Match.of(ut -> UnitAttachment.get(ut).getHitPoints() > 1);
+
+  public static final Match<Unit> UnitHasMoreThanOneHitPointTotal =
+      Match.of(unit -> UnitTypeHasMoreThanOneHitPointTotal.match(unit.getType()));
 
   public static final Match<Unit> UnitHasTakenSomeDamage = Match.of(unit -> unit.getHits() > 0);
 
@@ -278,14 +274,9 @@ public class Matches {
 
   public static final Match<Unit> UnitIsAirBase = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsAirBase());
 
-  public static final Match<Unit> UnitCanBeDamaged = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      return UnitTypeCanBeDamaged.match(unit.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeCanBeDamaged = Match.of(ut -> UnitAttachment.get(ut).getCanBeDamaged());
+
+  public static final Match<Unit> UnitCanBeDamaged = Match.of(unit -> UnitTypeCanBeDamaged.match(unit.getType()));
 
   static Match<Unit> unitIsAtMaxDamageOrNotCanBeDamaged(final Territory t) {
     return Match.of(unit -> {
@@ -347,17 +338,13 @@ public class Matches {
     return ua.getCanDieFromReachingMaxDamage();
   });
 
-  public static final Match<Unit> UnitIsInfrastructure = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit unit) {
-      return UnitTypeIsInfrastructure.match(unit.getType());
-    }
-  };
-
-  public static final Match<Unit> UnitIsNotInfrastructure = UnitIsInfrastructure.invert();
-
   public static final Match<UnitType> UnitTypeIsInfrastructure =
       Match.of(ut -> UnitAttachment.get(ut).getIsInfrastructure());
+
+  public static final Match<Unit> UnitIsInfrastructure =
+      Match.of(unit -> UnitTypeIsInfrastructure.match(unit.getType()));
+
+  public static final Match<Unit> UnitIsNotInfrastructure = UnitIsInfrastructure.invert();
 
   /**
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
@@ -395,14 +382,6 @@ public class Matches {
   public static final Match<Unit> UnitWasScrambled = Match.of(obj -> ((TripleAUnit) obj).getWasScrambled());
 
   public static final Match<Unit> UnitWasInAirBattle = Match.of(obj -> ((TripleAUnit) obj).getWasInAirBattle());
-
-  public static final Match<Territory> TerritoryIsIsland = new Match<Territory>() {
-    @Override
-    public boolean match(final Territory t) {
-      final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
-      return neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next());
-    }
-  };
 
   public static Match<Unit> unitCanBombard(final PlayerID id) {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getCanBombard(id));
@@ -470,48 +449,23 @@ public class Matches {
   public static final Match<UnitType> UnitTypeCanBeTransported =
       Match.of(type -> UnitAttachment.get(type).getTransportCost() != -1);
 
-  public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeCanProduceUnits.match(obj.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeCanProduceUnits =
       Match.of(obj -> UnitAttachment.get(obj).getCanProduceUnits());
 
-  public static final Match<Unit> UnitCanNotProduceUnits = UnitCanProduceUnits.invert();
+  public static final Match<Unit> UnitCanProduceUnits = Match.of(obj -> UnitTypeCanProduceUnits.match(obj.getType()));
 
-  public static final Match<UnitType> UnitTypeIsInfrastructureButNotAAofAnyKind = new Match<UnitType>() {
-    @Override
-    public boolean match(final UnitType type) {
-      return UnitTypeIsInfrastructure.match(type) && !UnitTypeIsAAforAnything.match(type);
-    }
-  };
+  public static final Match<Unit> UnitCanNotProduceUnits = UnitCanProduceUnits.invert();
 
   public static final Match<UnitType> UnitTypeIsInfantry = Match.of(type -> UnitAttachment.get(type).getIsInfantry());
 
   public static final Match<UnitType> UnitTypeIsArtillery = Match.of(type -> UnitAttachment.get(type).getArtillery());
 
-  public static final Match<Unit> UnitHasMaxBuildRestrictions = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      final UnitType type = obj.getType();
-      return UnitTypeHasMaxBuildRestrictions.match(type);
-    }
-  };
-
   public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions =
       Match.of(type -> UnitAttachment.get(type).getMaxBuiltPerPlayer() >= 0);
 
-  public static final Match<Unit> UnitIsRocket = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsRocket.match(obj.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeIsRocket = Match.of(obj -> UnitAttachment.get(obj).getIsRocket());
+
+  public static final Match<Unit> UnitIsRocket = Match.of(obj -> UnitTypeIsRocket.match(obj.getType()));
 
   public static final Match<Unit> UnitHasPlacementLimit = Match.of(obj -> {
     final UnitType type = obj.getUnitType();
@@ -531,15 +485,11 @@ public class Matches {
     return ua.getAttackingLimit() != null;
   });
 
-  public static final Match<Unit> UnitCanNotMoveDuringCombatMove = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeCanNotMoveDuringCombatMove.match(obj.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeCanNotMoveDuringCombatMove =
       Match.of(type -> UnitAttachment.get(type).getCanNotMoveDuringCombatMove());
+
+  public static final Match<Unit> UnitCanNotMoveDuringCombatMove =
+      Match.of(obj -> UnitTypeCanNotMoveDuringCombatMove.match(obj.getType()));
 
   public static Match<Unit> unitIsAaThatCanHitTheseUnits(final Collection<Unit> targets,
       final Match<Unit> typeOfAa, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
@@ -601,69 +551,43 @@ public class Matches {
             : UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
   }
 
-  public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsAAforCombatOnly.match(obj.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeIsAAforCombatOnly =
       Match.of(obj -> UnitAttachment.get(obj).getIsAAforCombatOnly());
 
-  public static final Match<Unit> UnitIsAAforBombingThisUnitOnly = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsAAforBombingThisUnitOnly.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitIsAAforCombatOnly =
+      Match.of(obj -> UnitTypeIsAAforCombatOnly.match(obj.getType()));
 
   public static final Match<UnitType> UnitTypeIsAAforBombingThisUnitOnly =
       Match.of(obj -> UnitAttachment.get(obj).getIsAAforBombingThisUnitOnly());
 
-  public static final Match<Unit> UnitIsAAforFlyOverOnly = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsAAforFlyOverOnly.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitIsAAforBombingThisUnitOnly =
+      Match.of(obj -> UnitTypeIsAAforBombingThisUnitOnly.match(obj.getType()));
 
   public static final Match<UnitType> UnitTypeIsAAforFlyOverOnly =
       Match.of(obj -> UnitAttachment.get(obj).getIsAAforFlyOverOnly());
 
-  public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsAAforAnything.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitIsAAforFlyOverOnly =
+      Match.of(obj -> UnitTypeIsAAforFlyOverOnly.match(obj.getType()));
 
   public static final Match<UnitType> UnitTypeIsAAforAnything = Match.of(obj -> {
     final UnitAttachment ua = UnitAttachment.get(obj);
     return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
   });
 
-  public static final Match<Unit> UnitIsNotAA = UnitIsAAforAnything.invert();
+  public static final Match<Unit> UnitIsAAforAnything = Match.of(obj -> UnitTypeIsAAforAnything.match(obj.getType()));
 
-  public static final Match<Unit> UnitMaxAAattacksIsInfinite = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeMaxAAattacksIsInfinite.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitIsNotAA = UnitIsAAforAnything.invert();
 
   public static final Match<UnitType> UnitTypeMaxAAattacksIsInfinite =
       Match.of(obj -> UnitAttachment.get(obj).getMaxAAattacks() == -1);
 
-  public static final Match<Unit> UnitMayOverStackAA = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeMayOverStackAA.match(obj.getType());
-    }
-  };
+  public static final Match<Unit> UnitMaxAAattacksIsInfinite =
+      Match.of(obj -> UnitTypeMaxAAattacksIsInfinite.match(obj.getType()));
 
   public static final Match<UnitType> UnitTypeMayOverStackAA =
       Match.of(obj -> UnitAttachment.get(obj).getMayOverStackAA());
+
+  public static final Match<Unit> UnitMayOverStackAA = Match.of(obj -> UnitTypeMayOverStackAA.match(obj.getType()));
 
   public static final Match<Unit> UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero = Match.of(obj -> {
     final UnitAttachment ua = UnitAttachment.get(obj.getType());
@@ -741,6 +665,11 @@ public class Matches {
   public static final Match<Territory> TerritoryIsLandOrWater = Match.of(Objects::nonNull);
 
   public static final Match<Territory> TerritoryIsWater = Match.of(Territory::isWater);
+
+  public static final Match<Territory> TerritoryIsIsland = Match.of(t -> {
+    final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
+    return neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next());
+  });
 
   public static final Match<Territory> TerritoryIsVictoryCity = Match.of(t -> {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -1837,13 +1766,6 @@ public class Matches {
     return false;
   });
 
-  public static final Match<Unit> UnitIsConstruction = new Match<Unit>() {
-    @Override
-    public boolean match(final Unit obj) {
-      return UnitTypeIsConstruction.match(obj.getType());
-    }
-  };
-
   public static final Match<UnitType> UnitTypeIsConstruction = Match.of(type -> {
     final UnitAttachment ua = UnitAttachment.get(type);
     if (ua == null) {
@@ -1851,6 +1773,8 @@ public class Matches {
     }
     return ua.getIsConstruction();
   });
+
+  public static final Match<Unit> UnitIsConstruction = Match.of(obj -> UnitTypeIsConstruction.match(obj.getType()));
 
   public static final Match<Unit> UnitIsNotConstruction = UnitIsConstruction.invert();
 
