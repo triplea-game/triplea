@@ -20,6 +20,7 @@ import java.util.function.Function;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,6 +29,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -247,14 +249,6 @@ public class GameParser {
   public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setValidating(true);
-    // get the dtd location
-    final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
-    final URL url = GameParser.class.getResource(dtdFile);
-    if (url == null) {
-      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
-    }
-    final String dtdSystem = url.toExternalForm();
-    final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
     final DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setErrorHandler(new ErrorHandler() {
       @Override
@@ -272,7 +266,25 @@ public class GameParser {
         errorsSAX.add(exception);
       }
     });
-    return builder.parse(input, system);
+    return builder.parse(input, getDtdString());
+  }
+
+  private String getDtdString() {
+    // get the dtd location
+    final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
+    final URL url = GameParser.class.getResource(dtdFile);
+    if (url == null) {
+      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
+    }
+    final String dtdSystem = url.toExternalForm();
+    return dtdSystem.substring(0, dtdSystem.length() - DTD_FILE_NAME.length());
+  }
+
+  public void parse(final InputStream input, DefaultHandler handler)
+      throws SAXException, IOException, ParserConfigurationException {
+    final SAXParserFactory factory = SAXParserFactory.newInstance();
+    factory.setValidating(true);
+    factory.newSAXParser().parse(input, handler, getDtdString());
   }
 
   private <T> T getValidatedObject(final Element element, final String attribute,
