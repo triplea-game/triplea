@@ -743,6 +743,11 @@ public class MapXmlHelper {
       }
 
       @Override
+      protected void handleAttachment(Attributes attributes) throws GameParseException {
+        attachmentAttachTo = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_ATTACH_TO);
+      }
+
+      @Override
       protected void handleAttachment() throws GameParseException {
         if (canalDef == null) {
           final SortedSet<String> newWaterTerritories = new TreeSet<>();
@@ -770,10 +775,6 @@ public class MapXmlHelper {
         }
       }
 
-      @Override
-      protected void handleAttachment(Attributes attributes) throws GameParseException {
-        attachmentAttachTo = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_ATTACH_TO);
-      }
     });
     return stepToGo.get();
   }
@@ -1381,21 +1382,19 @@ public class MapXmlHelper {
     return sb.toString();
   }
 
-}
+  static class Wrapper<T> {
+    private T object;
 
+    Wrapper(T object) {
+      this.object = object;
+    }
 
-class Wrapper<T> {
-  private T t;
+    void set(T object) {
+      this.object = object;
+    }
 
-  Wrapper(T t) {
-    this.t = t;
-  }
-
-  void set(T t) {
-    this.t = t;
-  }
-
-  T get() {
-    return t;
+    T get() {
+      return object;
+    }
   }
 }
