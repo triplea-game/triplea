@@ -1,6 +1,6 @@
 package games.strategy.engine.data;
 
-import static tools.map.xml.creator.MapXmlHelper.*;
+import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ALLIANCE;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ATTACHMENT;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_ATTACHMENT_LIST;
 import static tools.map.xml.creator.MapXmlHelper.XML_NODE_NAME_BOOLEAN;
@@ -289,6 +289,7 @@ public abstract class TripleaHandler extends DefaultHandler {
       case "technologies":
       case "playerTech":
       case "category":
+      default:
         break;
     }
   }

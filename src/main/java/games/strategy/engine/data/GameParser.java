@@ -175,6 +175,16 @@ public class GameParser {
     }
   }
 
+  /**
+   * A XML-SAX parser method which accepts a subclass of {@link DefaultHandler}.
+   */
+  public void parse(final InputStream input, DefaultHandler handler)
+      throws SAXException, IOException, ParserConfigurationException {
+    final SAXParserFactory factory = SAXParserFactory.newInstance();
+    factory.setValidating(true);
+    factory.newSAXParser().parse(input, handler, getDtdString());
+  }
+
   private void parseDiceSides(final Node diceSides) {
     if (diceSides == null) {
       data.setDiceSides(6);
@@ -278,13 +288,6 @@ public class GameParser {
     }
     final String dtdSystem = url.toExternalForm();
     return dtdSystem.substring(0, dtdSystem.length() - DTD_FILE_NAME.length());
-  }
-
-  public void parse(final InputStream input, DefaultHandler handler)
-      throws SAXException, IOException, ParserConfigurationException {
-    final SAXParserFactory factory = SAXParserFactory.newInstance();
-    factory.setValidating(true);
-    factory.newSAXParser().parse(input, handler, getDtdString());
   }
 
   private <T> T getValidatedObject(final Element element, final String attribute,

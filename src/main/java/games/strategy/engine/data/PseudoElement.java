@@ -27,6 +27,9 @@ public class PseudoElement {
     return qname + ": " + attrToString(attributes);
   }
 
+  /**
+   * A Small utility method which nicely formats an attribute as a String.
+   */
   public static String attrToString(Attributes attributes) {
     Joiner joiner = Joiner.on(' ');
     final String[] attrs = new String[attributes.getLength()];
