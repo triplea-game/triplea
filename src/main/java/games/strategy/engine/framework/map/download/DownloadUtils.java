@@ -14,14 +14,11 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClients;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -101,10 +98,7 @@ public final class DownloadUtils {
   }
 
   private static CloseableHttpClient newHttpClient() {
-    return HttpClients.custom()
-        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build())
-        .setRedirectStrategy(new DefaultRedirectStrategy())
-        .build();
+    return HttpClients.custom().disableCookieManagement().build();
   }
 
   private static HttpRequestBase newHttpHeadRequest(final String uri) {
