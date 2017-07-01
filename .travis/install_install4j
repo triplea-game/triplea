@@ -14,7 +14,7 @@ mkdir -p ~/.install4j6/jres
 echo "Downloading and installing install4j"
 wget --no-verbose -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_6_1_6.sh
 chmod +x install4j_unix.sh
-./install4j_unix.sh -q
+./install4j_unix.sh -q -dir ~/install4j6
 
 mkdir -p ~/.gradle
 
