@@ -182,20 +182,19 @@ class BattleStepsPanel extends JPanel implements Active {
     }
     waitThenWalk();
   }
-}
 
+  /**
+   * Doesnt allow the user to change the selection, must be done through
+   * hiddenSetSelectionInterval.
+   */
+  private static final class MyListSelectionModel extends DefaultListSelectionModel {
+    private static final long serialVersionUID = -4359950441657840015L;
 
-/**
- * Doesnt allow the user to change the selection, must be done through
- * hiddenSetSelectionInterval.
- */
-class MyListSelectionModel extends DefaultListSelectionModel {
-  private static final long serialVersionUID = -4359950441657840015L;
+    @Override
+    public void setSelectionInterval(final int index0, final int index1) {}
 
-  @Override
-  public void setSelectionInterval(final int index0, final int index1) {}
-
-  public void hiddenSetSelectionInterval(final int index) {
-    super.setSelectionInterval(index, index);
+    void hiddenSetSelectionInterval(final int index) {
+      super.setSelectionInterval(index, index);
+    }
   }
 }

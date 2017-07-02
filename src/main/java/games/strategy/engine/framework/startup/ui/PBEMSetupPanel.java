@@ -406,94 +406,90 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     }
   }
 
-}
+  /**
+   * A cache for serialized beans that should be stored locally.
+   * This is used to store settings which are not game related, and should therefore not go into the options cache
+   * This is often used by editors to remember previous values
+   */
+  private enum LocalBeanCache {
+    INSTANCE;
+    private final File file;
+    private final Object mutex = new Object();
 
+    Map<String, IBean> map = new HashMap<>();
 
-/**
- * A cache for serialized beans that should be stored locally.
- * This is used to store settings which are not game related, and should therefore not go into the options cache
- * This is often used by editors to remember previous values
- */
-enum LocalBeanCache {
-  INSTANCE;
-  private final File file;
-  private final Object mutex = new Object();
+    LocalBeanCache() {
+      file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
+      map = loadMap();
+      // add a shutdown, just in case someone forgets to call writeToDisk
+      final Thread shutdown = new Thread(this::writeToDisk);
+      Runtime.getRuntime().addShutdownHook(shutdown);
+    }
 
-  Map<String, IBean> map = new HashMap<>();
-
-  LocalBeanCache() {
-    file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
-    map = loadMap();
-    // add a shutdown, just in case someone forgets to call writeToDisk
-    final Thread shutdown = new Thread(this::writeToDisk);
-    Runtime.getRuntime().addShutdownHook(shutdown);
-  }
-
-  @SuppressWarnings("unchecked")
-  private Map<String, IBean> loadMap() {
-    if (file.exists()) {
-      try (FileInputStream fin = new FileInputStream(file);
-          ObjectInput oin = new ObjectInputStream(fin)) {
-        final Object o = oin.readObject();
-        if (o instanceof Map) {
-          final Map<?, ?> m = (Map<?, ?>) o;
-          for (final Object o1 : m.keySet()) {
-            if (!(o1 instanceof String)) {
-              throw new Exception("Map is corrupt");
+    @SuppressWarnings("unchecked")
+    private Map<String, IBean> loadMap() {
+      if (file.exists()) {
+        try (FileInputStream fin = new FileInputStream(file);
+            ObjectInput oin = new ObjectInputStream(fin)) {
+          final Object o = oin.readObject();
+          if (o instanceof Map) {
+            final Map<?, ?> m = (Map<?, ?>) o;
+            for (final Object o1 : m.keySet()) {
+              if (!(o1 instanceof String)) {
+                throw new Exception("Map is corrupt");
+              }
             }
+          } else {
+            throw new Exception("File is corrupt");
           }
-        } else {
-          throw new Exception("File is corrupt");
+          // we know that the map has proper type key/value
+          return (HashMap<String, IBean>) o;
+        } catch (final Exception e) {
+          // on error we delete the cache file, if we can
+          file.delete();
+          ClientLogger.logQuietly("serialized local bean cache invalid", e);
         }
-        // we know that the map has proper type key/value
-        return (HashMap<String, IBean>) o;
-      } catch (final Exception e) {
-        // on error we delete the cache file, if we can
-        file.delete();
-        ClientLogger.logQuietly("serialized local bean cache invalid", e);
+      }
+      return new HashMap<>();
+    }
+
+    /**
+     * adds a new Serializable to the cache
+     *
+     * @param key
+     *        the key the serializable should be stored under. Take care not to override a serializable stored by other
+     *        code
+     *        it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as key
+     * @param bean
+     *        the bean
+     */
+    void storeSerializable(final String key, final IBean bean) {
+      map.put(key, bean);
+    }
+
+    /**
+     * Call to have the cache written to disk.
+     */
+    void writeToDisk() {
+      synchronized (mutex) {
+        try (FileOutputStream fout = new FileOutputStream(file, false);
+            ObjectOutputStream out = new ObjectOutputStream(fout)) {
+          out.writeObject(map);
+        } catch (final IOException e) {
+          ClientLogger.logQuietly("failed to write local bean cache", e);
+        }
       }
     }
-    return new HashMap<>();
-  }
 
-  /**
-   * adds a new Serializable to the cache
-   *
-   * @param key
-   *        the key the serializable should be stored under. Take care not to override a serializable stored by other
-   *        code
-   *        it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as key
-   * @param bean
-   *        the bean
-   */
-  public void storeSerializable(final String key, final IBean bean) {
-    map.put(key, bean);
-  }
-
-  /**
-   * Call to have the cache written to disk.
-   */
-  public void writeToDisk() {
-    synchronized (mutex) {
-      try (FileOutputStream fout = new FileOutputStream(file, false);
-          ObjectOutputStream out = new ObjectOutputStream(fout)) {
-        out.writeObject(map);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly("failed to write local bean cache", e);
-      }
+    /**
+     * Get a serializable from the cache.
+     *
+     * @param key
+     *        the key ot was stored under
+     * @return the serializable or null if one doesn't exists under the given key
+     */
+    IBean getSerializable(final String key) {
+      return map.get(key);
     }
   }
-
-  /**
-   * Get a serializable from the cache.
-   *
-   * @param key
-   *        the key ot was stored under
-   * @return the serializable or null if one doesn't exists under the given key
-   */
-  public IBean getSerializable(final String key) {
-    return map.get(key);
-  }
-
-
 }

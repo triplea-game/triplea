@@ -432,8 +432,147 @@ public class ObjectivePanel extends AbstractStatPanel {
     objectiveModel.setGameData(data);
     objectiveModel.gameDataChanged(null);
   }
-}
 
+  private static final class ColorTableCellRenderer extends DefaultTableCellRenderer {
+    private static final long serialVersionUID = 4197520597103598219L;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
+      adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      final JLabel renderer =
+          (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      renderer.setHorizontalAlignment(SwingConstants.CENTER);
+      if (value == null) {
+        renderer.setBorder(BorderFactory.createEmptyBorder());
+      } else if (value.toString().contains("T")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+      } else if (value.toString().contains("U")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
+      } else if (value.toString().contains("u")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
+      } else {
+        renderer.setBorder(BorderFactory.createEmptyBorder());
+      }
+      return renderer;
+    }
+  }
+
+  // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
+  private static final class EditorPaneCellEditor extends DefaultCellEditor {
+    private static final long serialVersionUID = 509377442956621991L;
+
+    EditorPaneCellEditor() {
+      super(new JTextField());
+      final JEditorPane textArea = new JEditorPane();
+      // textArea.setWrapStyleWord(true);
+      // textArea.setLineWrap(true);
+      textArea.setEditable(false);
+      textArea.setContentType("text/html");
+      final JScrollPane scrollPane = new JScrollPane(textArea);
+      scrollPane.setBorder(null);
+      editorComponent = scrollPane;
+      delegate = new DefaultCellEditor.EditorDelegate() {
+        private static final long serialVersionUID = 5746645959173385516L;
+
+        @Override
+        public void setValue(final Object value) {
+          textArea.setText((value != null) ? value.toString() : "");
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+          return textArea.getText();
+        }
+      };
+    }
+  }
+
+  // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
+  private static final class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
+    private static final long serialVersionUID = -2835145877164663862L;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+    private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
+
+    EditorPaneTableCellRenderer() {
+      // setLineWrap(true);
+      // setWrapStyleWord(true);
+      setEditable(false);
+      setContentType("text/html");
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
+      // set the colors, etc. using the standard for that platform
+      adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+      setForeground(adaptee.getForeground());
+      setBackground(adaptee.getBackground());
+      setBorder(adaptee.getBorder());
+      setFont(adaptee.getFont());
+      setText(adaptee.getText());
+      // This line was very important to get it working with JDK1.4
+      final TableColumnModel columnModel = table.getColumnModel();
+      setSize(columnModel.getColumn(column).getWidth(), 100000);
+      int heightWanted = (int) getPreferredSize().getHeight();
+      addSize(table, row, column, heightWanted);
+      heightWanted = findTotalMaximumRowSize(table, row);
+      if (heightWanted != table.getRowHeight(row)) {
+        table.setRowHeight(row, heightWanted);
+      }
+      return this;
+    }
+
+    private void addSize(final JTable table, final int row, final int column, final int height) {
+      Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
+      if (rows == null) {
+        cellSizes.put(table, rows = new HashMap<>());
+      }
+      Map<Integer, Integer> rowheights = rows.get(row);
+      if (rowheights == null) {
+        rows.put(row, rowheights = new HashMap<>());
+      }
+      rowheights.put(column, height);
+    }
+
+    /**
+     * Look through all columns and get the renderer. If it is
+     * also a TextAreaRenderer, we look at the maximum height in
+     * its hash table for this row.
+     */
+    private static int findTotalMaximumRowSize(final JTable table, final int row) {
+      int maximumHeight = 0;
+      final Enumeration<?> columns = table.getColumnModel().getColumns();
+      while (columns.hasMoreElements()) {
+        final TableColumn tc = (TableColumn) columns.nextElement();
+        final TableCellRenderer cellRenderer = tc.getCellRenderer();
+        if (cellRenderer instanceof EditorPaneTableCellRenderer) {
+          final EditorPaneTableCellRenderer tar = (EditorPaneTableCellRenderer) cellRenderer;
+          maximumHeight = Math.max(maximumHeight, tar.findMaximumRowSize(table, row));
+        }
+      }
+      return maximumHeight;
+    }
+
+    private int findMaximumRowSize(final JTable table, final int row) {
+      final Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
+      if (rows == null) {
+        return 0;
+      }
+      final Map<Integer, Integer> rowheights = rows.get(row);
+      if (rowheights == null) {
+        return 0;
+      }
+      int maximumHeight = 0;
+      for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
+        final int cellHeight = entry.getValue();
+        maximumHeight = Math.max(maximumHeight, cellHeight);
+      }
+      return maximumHeight;
+    }
+  }
+}
 
 /** TODO: copy paste overlap with NotifcationMessages.java */
 class ObjectiveProperties {
@@ -678,147 +817,4 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
     throw new UnsupportedOperationException();
   }
 
-}
-
-
-class ColorTableCellRenderer extends DefaultTableCellRenderer {
-  private static final long serialVersionUID = 4197520597103598219L;
-  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-
-  @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-      final boolean hasFocus, final int row, final int column) {
-    adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    final JLabel renderer =
-        (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    renderer.setHorizontalAlignment(SwingConstants.CENTER);
-    if (value == null) {
-      renderer.setBorder(BorderFactory.createEmptyBorder());
-    } else if (value.toString().contains("T")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
-    } else if (value.toString().contains("U")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
-    } else if (value.toString().contains("u")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
-    } else {
-      renderer.setBorder(BorderFactory.createEmptyBorder());
-    }
-    return renderer;
-  }
-}
-
-
-// author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-class EditorPaneCellEditor extends DefaultCellEditor {
-  private static final long serialVersionUID = 509377442956621991L;
-
-  public EditorPaneCellEditor() {
-    super(new JTextField());
-    final JEditorPane textArea = new JEditorPane();
-    // textArea.setWrapStyleWord(true);
-    // textArea.setLineWrap(true);
-    textArea.setEditable(false);
-    textArea.setContentType("text/html");
-    final JScrollPane scrollPane = new JScrollPane(textArea);
-    scrollPane.setBorder(null);
-    editorComponent = scrollPane;
-    delegate = new DefaultCellEditor.EditorDelegate() {
-      private static final long serialVersionUID = 5746645959173385516L;
-
-      @Override
-      public void setValue(final Object value) {
-        textArea.setText((value != null) ? value.toString() : "");
-      }
-
-      @Override
-      public Object getCellEditorValue() {
-        return textArea.getText();
-      }
-    };
-  }
-}
-
-
-// author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
-  private static final long serialVersionUID = -2835145877164663862L;
-  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-  private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
-
-  public EditorPaneTableCellRenderer() {
-    // setLineWrap(true);
-    // setWrapStyleWord(true);
-    setEditable(false);
-    setContentType("text/html");
-  }
-
-  @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected,
-      final boolean hasFocus, final int row, final int column) {
-    // set the colors, etc. using the standard for that platform
-    adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
-    setForeground(adaptee.getForeground());
-    setBackground(adaptee.getBackground());
-    setBorder(adaptee.getBorder());
-    setFont(adaptee.getFont());
-    setText(adaptee.getText());
-    // This line was very important to get it working with JDK1.4
-    final TableColumnModel columnModel = table.getColumnModel();
-    setSize(columnModel.getColumn(column).getWidth(), 100000);
-    int heightWanted = (int) getPreferredSize().getHeight();
-    addSize(table, row, column, heightWanted);
-    heightWanted = findTotalMaximumRowSize(table, row);
-    if (heightWanted != table.getRowHeight(row)) {
-      table.setRowHeight(row, heightWanted);
-    }
-    return this;
-  }
-
-  private void addSize(final JTable table, final int row, final int column, final int height) {
-    Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
-    if (rows == null) {
-      cellSizes.put(table, rows = new HashMap<>());
-    }
-    Map<Integer, Integer> rowheights = rows.get(row);
-    if (rowheights == null) {
-      rows.put(row, rowheights = new HashMap<>());
-    }
-    rowheights.put(column, height);
-  }
-
-  /**
-   * Look through all columns and get the renderer. If it is
-   * also a TextAreaRenderer, we look at the maximum height in
-   * its hash table for this row.
-   */
-  private static int findTotalMaximumRowSize(final JTable table, final int row) {
-    int maximumHeight = 0;
-    final Enumeration<?> columns = table.getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn tc = (TableColumn) columns.nextElement();
-      final TableCellRenderer cellRenderer = tc.getCellRenderer();
-      if (cellRenderer instanceof EditorPaneTableCellRenderer) {
-        final EditorPaneTableCellRenderer tar = (EditorPaneTableCellRenderer) cellRenderer;
-        maximumHeight = Math.max(maximumHeight, tar.findMaximumRowSize(table, row));
-      }
-    }
-    return maximumHeight;
-  }
-
-  private int findMaximumRowSize(final JTable table, final int row) {
-    final Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
-    if (rows == null) {
-      return 0;
-    }
-    final Map<Integer, Integer> rowheights = rows.get(row);
-    if (rowheights == null) {
-      return 0;
-    }
-    int maximumHeight = 0;
-    for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
-      final int cellHeight = entry.getValue();
-      maximumHeight = Math.max(maximumHeight, cellHeight);
-    }
-    return maximumHeight;
-  }
 }

@@ -231,68 +231,69 @@ public class PoliticsPanel extends ActionPanel {
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
   }
-}
 
+  private static final class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
+    private final GameData m_data;
+    private final PlayerID m_player;
 
-class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
-  private final GameData m_data;
-  private final PlayerID m_player;
+    PoliticalActionComparator(final PlayerID currentPlayer, final GameData data) {
+      m_data = data;
+      m_player = currentPlayer;
+    }
 
-  public PoliticalActionComparator(final PlayerID currentPlayer, final GameData data) {
-    m_data = data;
-    m_player = currentPlayer;
-  }
-
-  @Override
-  public int compare(final PoliticalActionAttachment paa1, final PoliticalActionAttachment paa2) {
-    if (paa1.equals(paa2)) {
+    @Override
+    public int compare(final PoliticalActionAttachment paa1, final PoliticalActionAttachment paa2) {
+      if (paa1.equals(paa2)) {
+        return 0;
+      }
+      final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
+      final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
+      final RelationshipTypeList relationshipTypeList;
+      m_data.acquireReadLock();
+      try {
+        relationshipTypeList = m_data.getRelationshipTypeList();
+      } finally {
+        m_data.releaseReadLock();
+      }
+      final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
+      final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
+      // sort by player
+      final PlayerID paa1p1 = m_data.getPlayerList().getPlayerID(paa1RelationChange[0]);
+      final PlayerID paa1p2 = m_data.getPlayerList().getPlayerID(paa1RelationChange[1]);
+      final PlayerID paa2p1 = m_data.getPlayerList().getPlayerID(paa2RelationChange[0]);
+      final PlayerID paa2p2 = m_data.getPlayerList().getPlayerID(paa2RelationChange[1]);
+      final PlayerID paa1OtherPlayer = (m_player.equals(paa1p1) ? paa1p2 : paa1p1);
+      final PlayerID paa2OtherPlayer = (m_player.equals(paa2p1) ? paa2p2 : paa2p1);
+      if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
+        final int order = new PlayerOrderComparator(m_data).compare(paa1OtherPlayer, paa2OtherPlayer);
+        if (order != 0) {
+          return order;
+        }
+      }
+      // sort by achetype
+      if (!paa1NewType.equals(paa2NewType)) {
+        if (paa1NewType.getRelationshipTypeAttachment().isWar()
+            && !paa2NewType.getRelationshipTypeAttachment().isWar()) {
+          return -1;
+        }
+        if (!paa1NewType.getRelationshipTypeAttachment().isWar()
+            && paa2NewType.getRelationshipTypeAttachment().isWar()) {
+          return 1;
+        }
+        if (paa1NewType.getRelationshipTypeAttachment().isNeutral()
+            && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
+          return -1;
+        }
+        if (paa1NewType.getRelationshipTypeAttachment().isAllied()
+            && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
+          return 1;
+        }
+      }
+      // sort by name of new relationship type
+      if (!paa1NewType.getName().equals(paa2NewType.getName())) {
+        return paa1NewType.getName().compareTo(paa2NewType.getName());
+      }
       return 0;
     }
-    final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
-    final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
-    final RelationshipTypeList relationshipTypeList;
-    m_data.acquireReadLock();
-    try {
-      relationshipTypeList = m_data.getRelationshipTypeList();
-    } finally {
-      m_data.releaseReadLock();
-    }
-    final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
-    final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
-    // sort by player
-    final PlayerID paa1p1 = m_data.getPlayerList().getPlayerID(paa1RelationChange[0]);
-    final PlayerID paa1p2 = m_data.getPlayerList().getPlayerID(paa1RelationChange[1]);
-    final PlayerID paa2p1 = m_data.getPlayerList().getPlayerID(paa2RelationChange[0]);
-    final PlayerID paa2p2 = m_data.getPlayerList().getPlayerID(paa2RelationChange[1]);
-    final PlayerID paa1OtherPlayer = (m_player.equals(paa1p1) ? paa1p2 : paa1p1);
-    final PlayerID paa2OtherPlayer = (m_player.equals(paa2p1) ? paa2p2 : paa2p1);
-    if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
-      final int order = new PlayerOrderComparator(m_data).compare(paa1OtherPlayer, paa2OtherPlayer);
-      if (order != 0) {
-        return order;
-      }
-    }
-    // sort by achetype
-    if (!paa1NewType.equals(paa2NewType)) {
-      if (paa1NewType.getRelationshipTypeAttachment().isWar() && !paa2NewType.getRelationshipTypeAttachment().isWar()) {
-        return -1;
-      }
-      if (!paa1NewType.getRelationshipTypeAttachment().isWar() && paa2NewType.getRelationshipTypeAttachment().isWar()) {
-        return 1;
-      }
-      if (paa1NewType.getRelationshipTypeAttachment().isNeutral()
-          && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
-        return -1;
-      }
-      if (paa1NewType.getRelationshipTypeAttachment().isAllied()
-          && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
-        return 1;
-      }
-    }
-    // sort by name of new relationship type
-    if (!paa1NewType.getName().equals(paa2NewType.getName())) {
-      return paa1NewType.getName().compareTo(paa2NewType.getName());
-    }
-    return 0;
   }
 }

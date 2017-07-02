@@ -84,26 +84,25 @@ public class PlayerChooser extends JOptionPane {
     }
     return null;
   }
-}
 
+  private static final class PlayerChooserRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = -2185921124436293304L;
+    private final IUIContext uiContext;
 
-class PlayerChooserRenderer extends DefaultListCellRenderer {
-  private static final long serialVersionUID = -2185921124436293304L;
-  private final IUIContext uiContext;
-
-  PlayerChooserRenderer(final IUIContext uiContext) {
-    this.uiContext = uiContext;
-  }
-
-  @Override
-  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
-      final boolean isSelected, final boolean cellHasFocus) {
-    super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-    if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
-      setIcon(new ImageIcon(Util.createImage(32, 32, true)));
-    } else {
-      setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
+    PlayerChooserRenderer(final IUIContext uiContext) {
+      this.uiContext = uiContext;
     }
-    return this;
+
+    @Override
+    public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
+        final boolean isSelected, final boolean cellHasFocus) {
+      super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
+      if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
+        setIcon(new ImageIcon(Util.createImage(32, 32, true)));
+      } else {
+        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
+      }
+      return this;
+    }
   }
 }
