@@ -23,8 +23,12 @@ import games.strategy.triplea.Constants;
 
 class PlayerSelectorRow {
 
+  private static final String PLAYER_TYPE_AI = "AI";
+  private static final String PLAYER_TYPE_DOES_NOTHING = "DoesNothing";
+
   private final JCheckBox enabledCheckBox;
   private final String playerName;
+  private final boolean isHidden;
   private final JComboBox<String> playerTypes;
   private JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
@@ -37,13 +41,13 @@ class PlayerSelectorRow {
   private final SetupPanel parent;
 
   PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
-      final Map<String, String> reloadSelections,
-      final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
-      final Collection<String> playerAlliances, final String[] types, final SetupPanel parent,
-      final GameProperties gameProperties) {
+      final Map<String, String> reloadSelections, final Collection<String> disableable,
+      final HashMap<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
+      final String[] types, final SetupPanel parent, final GameProperties gameProperties) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
+    isHidden = player.isHidden();
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
@@ -73,9 +77,12 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (player.isAiDefault()) {
+    } else if (player.getDefaultType().equals(PLAYER_TYPE_AI)) {
       // the 4th in the list should be Pro AI (Hard AI)
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
+    } else if (player.getDefaultType().equals(PLAYER_TYPE_DOES_NOTHING)) {
+      // the 5th in the list should be Does Nothing AI
+      playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 4))]);
     }
 
     // we do not set the default for the combo box because the default is the top item, which in this case is human
@@ -157,7 +164,9 @@ class PlayerSelectorRow {
   }
 
   void setPlayerType(final String playerType) {
-    playerTypes.setSelectedItem(playerType);
+    if (enabled && !isHidden) {
+      playerTypes.setSelectedItem(playerType);
+    }
   }
 
   String getPlayerName() {
