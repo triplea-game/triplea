@@ -89,6 +89,8 @@ public abstract class Match<T> {
    * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
+    // XXX: This method should probably return true when the collection is empty to be consistent with Stream#allMatch
+    // (i.e. the match is vacuously satisfied)
     if (collection.isEmpty()) {
       return false;
     }
