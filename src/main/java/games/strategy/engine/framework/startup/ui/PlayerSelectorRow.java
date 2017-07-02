@@ -77,10 +77,10 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (player.getDefaultType().equals(PLAYER_TYPE_AI)) {
+    } else if (PLAYER_TYPE_AI.equals(player.getDefaultType())) {
       // the 4th in the list should be Pro AI (Hard AI)
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-    } else if (player.getDefaultType().equals(PLAYER_TYPE_DOES_NOTHING)) {
+    } else if (PLAYER_TYPE_DOES_NOTHING.equals(player.getDefaultType())) {
       // the 5th in the list should be Does Nothing AI
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 4))]);
     }
