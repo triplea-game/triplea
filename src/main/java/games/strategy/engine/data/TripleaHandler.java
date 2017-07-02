@@ -164,6 +164,8 @@ public abstract class TripleaHandler extends DefaultHandler {
       case XML_NODE_NAME_PROPERTY_LIST:
         handlePropertyList();
         break;
+      default:
+        break;
     }
   }
 
