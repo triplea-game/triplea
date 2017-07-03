@@ -1,0 +1,11 @@
+#
+# Dockerfile for building a lobby database image that can be used for development/testing.
+#
+# This image MUST NOT be used for production!
+#
+
+FROM postgres:9.5
+MAINTAINER "tripleabuilderbot@gmail.com"
+
+COPY ["./.travis/setup_lobby_database", "/docker-entrypoint-initdb.d/setup_lobby_database.sh"]
+COPY ["./config/lobby/db", "/config/lobby/db"]
