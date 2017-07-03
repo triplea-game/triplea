@@ -23,8 +23,12 @@ import games.strategy.triplea.Constants;
 
 class PlayerSelectorRow {
 
+  private static final String PLAYER_TYPE_AI = "AI";
+  private static final String PLAYER_TYPE_DOES_NOTHING = "DoesNothing";
+
   private final JCheckBox enabledCheckBox;
   private final String playerName;
+  private final boolean isHidden;
   private final JComboBox<String> playerTypes;
   private JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
@@ -32,18 +36,18 @@ class PlayerSelectorRow {
   private final JLabel puIncomeBonusLabel;
   private boolean enabled = true;
   private final JLabel name;
-  private final JButton alliances;
+  private JButton alliances;
   private final Collection<String> disableable;
   private final SetupPanel parent;
 
   PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
-      final Map<String, String> reloadSelections,
-      final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
-      final Collection<String> playerAlliances, final String[] types, final SetupPanel parent,
-      final GameProperties gameProperties) {
+      final Map<String, String> reloadSelections, final Collection<String> disableable,
+      final HashMap<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
+      final String[] types, final SetupPanel parent, final GameProperties gameProperties) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
+    isHidden = player.isHidden();
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
@@ -73,26 +77,26 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (player.isAiDefault()) {
+    } else if (PLAYER_TYPE_AI.equals(player.getDefaultType())) {
       // the 4th in the list should be Pro AI (Hard AI)
       playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
+    } else if (PLAYER_TYPE_DOES_NOTHING.equals(player.getDefaultType())) {
+      // the 5th in the list should be Does Nothing AI
+      playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 4))]);
     }
 
-    // we do not set the default for the combo box because the default is the top item, which in this case is human
-    final String alliancesLabelText;
-    if (playerAlliances.contains(playerName)) {
-      alliancesLabelText = "";
-    } else {
-      alliancesLabelText = playerAlliances.toString();
+    alliances = null;
+    if (!playerAlliances.contains(playerName)) {
+      final String alliancesLabelText = playerAlliances.toString();
+      alliances = new JButton(alliancesLabelText);
+      alliances.setToolTipText("Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
+      alliances.addActionListener(e -> {
+        final String currentType = playerTypes.getSelectedItem().toString();
+        playerRows.stream()
+            .filter(row -> row.alliances.getText().equals(alliancesLabelText))
+            .forEach(row -> row.setPlayerType(currentType));
+      });
     }
-    alliances = new JButton(alliancesLabelText);
-    alliances.setToolTipText("Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
-    alliances.addActionListener(e -> {
-      final String currentType = playerTypes.getSelectedItem().toString();
-      playerRows.stream()
-          .filter(row -> row.alliances.getText().equals(alliancesLabelText))
-          .forEach(row -> row.setPlayerType(currentType));
-    });
 
     // TODO: remove null check for next incompatible release
     incomePercentage = null;
@@ -123,8 +127,11 @@ class PlayerSelectorRow {
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     container.add(playerTypes, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    if (alliances != null) {
+      container.add(alliances, new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    }
+    gridx++;
     // TODO: remove null check for next incompatible release
     if (incomePercentage != null) {
       container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -157,7 +164,9 @@ class PlayerSelectorRow {
   }
 
   void setPlayerType(final String playerType) {
-    playerTypes.setSelectedItem(playerType);
+    if (enabled && !isHidden) {
+      playerTypes.setSelectedItem(playerType);
+    }
   }
 
   String getPlayerName() {
@@ -174,7 +183,9 @@ class PlayerSelectorRow {
 
   private void setWidgetActivation() {
     name.setEnabled(enabled);
-    alliances.setEnabled(enabled);
+    if (alliances != null) {
+      alliances.setEnabled(enabled);
+    }
     enabledCheckBox.setEnabled(disableable.contains(playerName));
     // TODO: remove null check for next incompatible release
     if (incomePercentage != null) {
