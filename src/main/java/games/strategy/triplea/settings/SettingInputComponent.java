@@ -3,6 +3,8 @@ package games.strategy.triplea.settings;
 /**
  * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
  * each setting in the object, and to update the value.
+ *
+ * @param <T> The type of the object that contains the settings data.
  */
 public interface SettingInputComponent<T extends HasDefaults> {
 

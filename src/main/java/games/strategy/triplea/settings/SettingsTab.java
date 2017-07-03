@@ -5,6 +5,9 @@ import java.util.List;
 
 import games.strategy.ui.SwingComponents;
 
+/**
+ * @param <T> The type of the object that contains the settings data.
+ */
 public interface SettingsTab<T extends HasDefaults> {
   String getTabTitle();
 
