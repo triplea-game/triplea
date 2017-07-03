@@ -15,11 +15,6 @@ sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" game_engine.proper
 ## java package and runs install4j
 ./gradlew release
 
-#Rename installer files to display the current version
-
-mv build/releases/TripleA_macos.dmg build/releases/TripleA_${TAGGED_VERSION}_macos.dmg
-mv build/releases/TripleA_unix.sh build/releases/TripleA_${TAGGED_VERSION}_unix.sh
-
 ## After build task, rename the windows installers that were created to have explicit 32bit and 64bit extensions
-mv build/releases/TripleA_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-mv build/releases/TripleA_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
+mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
+mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
