@@ -596,8 +596,8 @@ class DummyPlayer extends AbstractAI {
     }
     if (submerge) {
       // submerge if all air vs subs
-      final Match<Unit> seaSub = Match.all(Matches.UnitIsSea, Matches.UnitIsSub);
-      final Match<Unit> planeNotDestroyer = Match.all(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+      final Match<Unit> seaSub = Match.allOf(Matches.UnitIsSea, Matches.UnitIsSub);
+      final Match<Unit> planeNotDestroyer = Match.allOf(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {

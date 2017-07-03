@@ -40,29 +40,29 @@ public class MatchTest {
   }
 
   @Test
-  public void testAll() {
-    assertTrue(Match.all().match(VALUE));
+  public void testAllOf() {
+    assertTrue(Match.allOf().match(VALUE));
 
-    assertTrue(Match.all(Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.never()).match(VALUE));
+    assertTrue(Match.allOf(Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.never()).match(VALUE));
 
-    assertTrue(Match.all(Match.always(), Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.always(), Match.never()).match(VALUE));
-    assertFalse(Match.all(Match.never(), Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.never(), Match.never()).match(VALUE));
+    assertTrue(Match.allOf(Match.always(), Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.always(), Match.never()).match(VALUE));
+    assertFalse(Match.allOf(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.never(), Match.never()).match(VALUE));
   }
 
   @Test
-  public void testAny() {
-    assertFalse(Match.any().match(VALUE));
+  public void testAnyOf() {
+    assertFalse(Match.anyOf().match(VALUE));
 
-    assertTrue(Match.any(Match.always()).match(VALUE));
-    assertFalse(Match.any(Match.never()).match(VALUE));
+    assertTrue(Match.anyOf(Match.always()).match(VALUE));
+    assertFalse(Match.anyOf(Match.never()).match(VALUE));
 
-    assertTrue(Match.any(Match.always(), Match.always()).match(VALUE));
-    assertTrue(Match.any(Match.always(), Match.never()).match(VALUE));
-    assertTrue(Match.any(Match.never(), Match.always()).match(VALUE));
-    assertFalse(Match.any(Match.never(), Match.never()).match(VALUE));
+    assertTrue(Match.anyOf(Match.always(), Match.always()).match(VALUE));
+    assertTrue(Match.anyOf(Match.always(), Match.never()).match(VALUE));
+    assertTrue(Match.anyOf(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.anyOf(Match.never(), Match.never()).match(VALUE));
   }
 
   @Test

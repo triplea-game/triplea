@@ -892,7 +892,7 @@ class OddsCalculatorPanel extends JPanel {
         if (defender) {
           predicate = Matches.UnitTypeIsNotSea;
         } else {
-          predicate = Match.any(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+          predicate = Match.anyOf(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
         }
       } else {
         predicate = Matches.UnitTypeIsSeaOrAir;

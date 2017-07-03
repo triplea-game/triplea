@@ -144,7 +144,7 @@ public class RocketsFireHelper {
   }
 
   Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return Match.all(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
+    return Match.allOf(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
         Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved);
   }
 
@@ -159,11 +159,11 @@ public class RocketsFireHelper {
       allowedBuilder.add(Matches.TerritoryIsNotImpassable);
     }
     final Match<Unit> attackableUnits =
-        Match.all(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowedBuilder.all());
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().someMatch(Match.all(attackableUnits,
+        if (current.getUnits().someMatch(Match.allOf(attackableUnits,
             Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
@@ -186,7 +186,7 @@ public class RocketsFireHelper {
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        Match.all(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
         Match.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<>();

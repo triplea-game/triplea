@@ -40,7 +40,7 @@ public class CompositeRouteFinder {
 
   Route findRoute(final Territory start, final Territory end) {
     final Set<Territory> allMatchingTers =
-        new HashSet<>(Match.getMatches(m_map.getTerritories(), Match.any(m_matches.keySet())));
+        new HashSet<>(Match.getMatches(m_map.getTerritories(), Match.anyOf(m_matches.keySet())));
     final Map<Territory, Integer> terScoreMap = createScoreMap();
     final Map<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;

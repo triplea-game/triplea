@@ -124,7 +124,7 @@ public class ProductionRepairPanel extends JPanel {
       this.id = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       final Match<Unit> myDamagedUnits =
-          Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
+          Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
               Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
