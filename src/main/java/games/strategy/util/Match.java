@@ -26,9 +26,18 @@ import java.util.function.Predicate;
  * count the number of matches, see if any elements match etc.
  * </p>
  *
+ * <p>
+ * Instances of this class are immutable.
+ * </p>
+ *
  * @param <T> The type of object that is tested by the match condition.
  */
-public abstract class Match<T> {
+public final class Match<T> {
+  private final Predicate<T> condition;
+
+  private Match(final Predicate<T> condition) {
+    this.condition = condition;
+  }
 
   /**
    * Returns a match whose condition is always satisfied.
@@ -89,6 +98,8 @@ public abstract class Match<T> {
    * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
+    // XXX: This method should probably return true when the collection is empty to be consistent with Stream#allMatch
+    // (i.e. the match is vacuously satisfied)
     if (collection.isEmpty()) {
       return false;
     }
@@ -152,13 +163,14 @@ public abstract class Match<T> {
   }
 
   /**
-   * Subclasses must override this method.
    * Returns true if the object matches some condition.
    */
-  public abstract boolean match(T o);
+  public boolean match(final T value) {
+    return condition.test(value);
+  }
 
-  public final Match<T> invert() {
-    return Match.of(not(this::match));
+  public Match<T> invert() {
+    return Match.of(not(condition));
   }
 
   /**
@@ -171,12 +183,7 @@ public abstract class Match<T> {
   public static <T> Match<T> of(final Predicate<T> condition) {
     checkNotNull(condition);
 
-    return new Match<T>() {
-      @Override
-      public boolean match(final T value) {
-        return condition.test(value);
-      }
-    };
+    return new Match<>(condition);
   }
 
   /**
