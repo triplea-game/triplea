@@ -92,8 +92,10 @@ public class DownloadMapsWindow extends JFrame {
         dia.setLocationRelativeTo(null);
         dia.setMinimumSize(new Dimension(200, 200));
         dia.setVisible(true);
-        dia.requestFocus();
-        dia.toFront();
+        SwingUtilities.invokeLater(() -> {
+          dia.requestFocus();
+          dia.toFront();
+        });
       });
     };
     final String popupWindowTitle = "Downloading list of available maps...";
