@@ -85,50 +85,36 @@ public class MapData implements Closeable {
   private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
-  // default colour if none is defined.
-  private final List<Color> m_defaultColours = Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE,
+
+  private final List<Color> defaultColors = Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE,
       Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY);
-  // maps PlayerName as String to Color
-  private final Map<String, Color> m_playerColors = new HashMap<>();
-  // maps String -> List of points
-  private Map<String, List<Point>> m_place;
-  // maps String -> Collection of Polygons
-  private Map<String, List<Polygon>> m_polys;
-  // maps String -> Point
-  private Map<String, Point> m_centers;
-  // maps String -> Point
-  private Map<String, Point> m_vcPlace;
-  // maps String -> Point
-  private Map<String, Point> m_blockadePlace;
-  // maps String -> Point
-  private Map<String, Point> m_convoyPlace;
-  // maps String -> Point
-  private Map<String, Point> m_commentPlace;
-  // maps String -> Point
-  private Map<String, Point> m_PUPlace;
-  // maps String -> Point
-  private Map<String, Point> m_namePlace;
-  // maps String -> Point
-  private Map<String, Point> m_kamikazePlace;
-  // maps String -> Point
-  private Map<String, Point> m_capitolPlace;
-  // maps String -> List of String
-  private Map<String, List<String>> m_contains;
-  private Properties m_mapProperties;
-  private Map<String, List<Point>> m_territoryEffects;
-  // we shouldnt draw the names to these territories
-  private Set<String> m_undrawnTerritoriesNames;
-  private Map<Image, List<Point>> m_decorations;
-  private Map<String, Image> m_territoryNameImages;
-  private final Map<String, Image> m_effectImages = new HashMap<>();
-  private final ResourceLoader m_resourceLoader;
+  private final Map<String, Color> playerColors = new HashMap<>();
+  private Map<String, List<Point>> place;
+  private Map<String, List<Polygon>> polys;
+  private Map<String, Point> centers;
+  private Map<String, Point> vcPlace;
+  private Map<String, Point> blockadePlace;
+  private Map<String, Point> convoyPlace;
+  private Map<String, Point> commentPlace;
+  private Map<String, Point> puPlace;
+  private Map<String, Point> namePlace;
+  private Map<String, Point> kamikazePlace;
+  private Map<String, Point> capitolPlace;
+  private Map<String, List<String>> contains;
+  private Properties mapProperties;
+  private Map<String, List<Point>> territoryEffects;
+  private Set<String> undrawnTerritoriesNames;
+  private Map<Image, List<Point>> decorations;
+  private Map<String, Image> territoryNameImages;
+  private final Map<String, Image> effectImages = new HashMap<>();
+  private final ResourceLoader resourceLoader;
 
   public boolean scrollWrapX() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
   }
 
   public boolean scrollWrapY() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
   }
 
   public MapData(final String mapNameDir) {
@@ -144,11 +130,11 @@ public class MapData implements Closeable {
    *        mapNameDir the given map directory
    */
   public MapData(final ResourceLoader loader) {
-    m_resourceLoader = loader;
+    resourceLoader = loader;
     try {
       final String prefix = "";
-      m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
-      m_territoryEffects =
+      place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
+      territoryEffects =
           PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
 
       if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
@@ -159,19 +145,19 @@ public class MapData implements Closeable {
                 + " relative to the map folder, or relative to the root of the map zip");
       }
       
-      m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
-      m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
-      m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
-      m_convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
-      m_commentPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + COMMENT_MARKERS));
-      m_blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
-      m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
-      m_PUPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
-      m_namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
-      m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
-      m_mapProperties = new Properties();
-      m_decorations = loadDecorations();
-      m_territoryNameImages = territoryNameImages();
+      polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
+      centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
+      vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
+      convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
+      commentPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + COMMENT_MARKERS));
+      blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
+      capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
+      puPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
+      namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
+      kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
+      mapProperties = new Properties();
+      decorations = loadDecorations();
+      territoryNameImages = territoryNameImages();
       try {
         final URL url = loader.getResource(prefix + MAP_PROPERTIES);
         if (url == null) {
@@ -179,7 +165,7 @@ public class MapData implements Closeable {
         }
         final Optional<InputStream> inputStream = UrlStreams.openStream(url);
         if (inputStream.isPresent()) {
-          m_mapProperties.load(inputStream.get());
+          mapProperties.load(inputStream.get());
         }
       } catch (final Exception e) {
         System.out.println("Error reading map.properties:" + e);
@@ -192,16 +178,16 @@ public class MapData implements Closeable {
 
   @Override
   public void close() {
-    m_resourceLoader.close();
+    resourceLoader.close();
   }
 
   private Map<String, Image> territoryNameImages() {
-    if (!m_resourceLoader.hasPath("territoryNames/")) {
+    if (!resourceLoader.hasPath("territoryNames/")) {
       return new HashMap<>();
     }
 
     final Map<String, Image> territoryNameImages = new HashMap<>();
-    for (final String name : m_centers.keySet()) {
+    for (final String name : centers.keySet()) {
       final Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
 
       if (territoryNameImage.isPresent()) {
@@ -234,7 +220,7 @@ public class MapData implements Closeable {
   }
 
   private Map<Image, List<Point>> loadDecorations() {
-    final URL decorationsFileUrl = m_resourceLoader.getResource(DECORATIONS_FILE);
+    final URL decorationsFileUrl = resourceLoader.getResource(DECORATIONS_FILE);
     if (decorationsFileUrl == null) {
       return Collections.emptyMap();
     }
@@ -253,11 +239,11 @@ public class MapData implements Closeable {
   }
 
   public double getDefaultUnitScale() {
-    if (m_mapProperties.getProperty(PROPERTY_UNITS_SCALE) == null) {
+    if (mapProperties.getProperty(PROPERTY_UNITS_SCALE) == null) {
       return 1.0;
     }
     try {
-      return Double.parseDouble(m_mapProperties.getProperty(PROPERTY_UNITS_SCALE));
+      return Double.parseDouble(mapProperties.getProperty(PROPERTY_UNITS_SCALE));
     } catch (final NumberFormatException e) {
       ClientLogger.logQuietly(e);
       return 1.0;
@@ -268,11 +254,11 @@ public class MapData implements Closeable {
    * Does not take account of any scaling.
    */
   public int getDefaultUnitWidth() {
-    if (m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH) == null) {
+    if (mapProperties.getProperty(PROPERTY_UNITS_WIDTH) == null) {
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
     try {
-      return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
+      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
     } catch (final NumberFormatException e) {
       ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -283,11 +269,11 @@ public class MapData implements Closeable {
    * Does not take account of any scaling.
    */
   public int getDefaultUnitHeight() {
-    if (m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT) == null) {
+    if (mapProperties.getProperty(PROPERTY_UNITS_HEIGHT) == null) {
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
     try {
-      return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
+      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
     } catch (final NumberFormatException e) {
       ClientLogger.logQuietly(e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -299,11 +285,11 @@ public class MapData implements Closeable {
    */
   public int getDefaultUnitCounterOffsetWidth() {
     // if it is not set, divide by 4 so that it is roughly centered
-    if (m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH) == null) {
+    if (mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH) == null) {
       return getDefaultUnitWidth() / 4;
     }
     try {
-      return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
+      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
     } catch (final NumberFormatException e) {
       ClientLogger.logQuietly(e);
       return getDefaultUnitWidth() / 4;
@@ -315,11 +301,11 @@ public class MapData implements Closeable {
    */
   public int getDefaultUnitCounterOffsetHeight() {
     // put at bottom of unit, if not set
-    if (m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT) == null) {
+    if (mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT) == null) {
       return getDefaultUnitHeight();
     }
     try {
-      return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
+      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
     } catch (final NumberFormatException e) {
       ClientLogger.logQuietly(e);
       return getDefaultUnitHeight();
@@ -328,78 +314,78 @@ public class MapData implements Closeable {
 
   public int getDefaultUnitsStackSize() {
     // zero = normal behavior
-    final String stack = m_mapProperties.getProperty(PROPERTY_UNITS_STACK_SIZE, "0");
+    final String stack = mapProperties.getProperty(PROPERTY_UNITS_STACK_SIZE, "0");
     return Math.max(0, Integer.parseInt(stack));
   }
 
   public boolean shouldDrawTerritoryName(final String territoryName) {
-    if (m_undrawnTerritoriesNames == null) {
-      final String property = m_mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
-      m_undrawnTerritoriesNames = new HashSet<>(Arrays.asList(property.split(",")));
+    if (undrawnTerritoriesNames == null) {
+      final String property = mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
+      undrawnTerritoriesNames = new HashSet<>(Arrays.asList(property.split(",")));
     }
-    return !m_undrawnTerritoriesNames.contains(territoryName);
+    return !undrawnTerritoriesNames.contains(territoryName);
   }
 
   public boolean getHasRelief() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true"));
   }
 
   public int getMapCursorHotspotX() {
     return Math.max(0,
-        Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
+        Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
   }
 
   public int getMapCursorHotspotY() {
     return Math.max(0,
-        Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
+        Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
   }
 
   public boolean getHasMapBlends() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false"));
   }
 
   public String getMapBlendMode() {
-    return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
+    return String.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
   }
 
   public float getMapBlendAlpha() {
-    return Float.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDALPHA, "0.5f"));
+    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDALPHA, "0.5f"));
   }
 
   public boolean drawCapitolMarkers() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true"));
   }
 
   public boolean drawTerritoryNames() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true"));
   }
 
   public boolean drawResources() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true"));
   }
 
   public boolean drawComments() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true"));
   }
 
   public boolean drawSeaZoneNames() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false"));
   }
 
   public boolean drawNamesFromTopLeft() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
   }
 
   public boolean useNation_convoyFlags() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
   }
 
   public boolean useTerritoryEffectMarkers() {
-    return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
+    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
   private void initializeContains() {
-    m_contains = new HashMap<>();
+    contains = new HashMap<>();
     final Iterator<String> seaIter = getTerritories().iterator();
     while (seaIter.hasNext()) {
       final List<String> contained = new ArrayList<>();
@@ -420,19 +406,19 @@ public class MapData implements Closeable {
         }
       }
       if (!contained.isEmpty()) {
-        m_contains.put(seaTerritory, contained);
+        contains.put(seaTerritory, contained);
       }
     }
   }
 
   public boolean getBooleanProperty(final String propertiesKey) {
-    return Boolean.valueOf(m_mapProperties.getProperty(propertiesKey, "true"));
+    return Boolean.valueOf(mapProperties.getProperty(propertiesKey, "true"));
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
     String colorString;
-    if (m_mapProperties.getProperty(propertiesKey) != null) {
-      colorString = m_mapProperties.getProperty(propertiesKey);
+    if (mapProperties.getProperty(propertiesKey) != null) {
+      colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
         throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
@@ -447,8 +433,8 @@ public class MapData implements Closeable {
 
   public Color getPlayerColor(final String playerName) {
     // already loaded, just return
-    if (m_playerColors.containsKey(playerName)) {
-      return m_playerColors.get(playerName);
+    if (playerColors.containsKey(playerName)) {
+      return playerColors.get(playerName);
     }
     // look in map.properties
     final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
@@ -460,11 +446,11 @@ public class MapData implements Closeable {
     }
     if (color == null) {
       System.out.println("No color defined for " + playerName + ".  Edit map.properties in the map folder to set it");
-      color = m_defaultColours.remove(0);
+      color = defaultColors.remove(0);
     }
     // dont crash, use one of our default colors
     // its ugly, but usable
-    m_playerColors.put(playerName, color);
+    playerColors.put(playerName, color);
     return color;
   }
 
@@ -472,7 +458,7 @@ public class MapData implements Closeable {
    * returns the named property, or null.
    */
   public String getProperty(final String propertiesKey) {
-    return m_mapProperties.getProperty(propertiesKey);
+    return mapProperties.getProperty(propertiesKey);
   }
 
   /**
@@ -488,14 +474,14 @@ public class MapData implements Closeable {
    *         used, instead you should use aGameData.getMap().getTerritories()
    */
   public Set<String> getTerritories() {
-    return m_polys.keySet();
+    return polys.keySet();
   }
 
   /**
    * Does this territory have any territories contained within it.
    */
   public boolean hasContainedTerritory(final String territoryName) {
-    return m_contains.containsKey(territoryName);
+    return contains.containsKey(territoryName);
   }
 
   /**
@@ -505,13 +491,13 @@ public class MapData implements Closeable {
    * @return possiblly null
    */
   public List<String> getContainedTerritory(final String territoryName) {
-    return m_contains.get(territoryName);
+    return contains.get(territoryName);
   }
 
   public void verify(final GameData data) {
-    verifyKeys(data, m_centers, "centers");
-    verifyKeys(data, m_polys, "polygons");
-    verifyKeys(data, m_place, "place");
+    verifyKeys(data, centers, "centers");
+    verifyKeys(data, polys, "polygons");
+    verifyKeys(data, place, "place");
   }
 
   private static void verifyKeys(final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage)
@@ -541,11 +527,11 @@ public class MapData implements Closeable {
   }
 
   public List<Point> getPlacementPoints(final Territory terr) {
-    return m_place.get(terr.getName());
+    return place.get(terr.getName());
   }
 
   public List<Polygon> getPolygons(final String terr) {
-    return m_polys.get(terr);
+    return polys.get(terr);
   }
 
   public List<Polygon> getPolygons(final Territory terr) {
@@ -553,10 +539,10 @@ public class MapData implements Closeable {
   }
 
   public Point getCenter(final String terr) {
-    if (m_centers.get(terr) == null) {
+    if (centers.get(terr) == null) {
       throw new IllegalStateException("Missing " + CENTERS_FILE + " data for " + terr);
     }
-    return new Point(m_centers.get(terr));
+    return new Point(centers.get(terr));
   }
 
   public Point getCenter(final Territory terr) {
@@ -564,50 +550,50 @@ public class MapData implements Closeable {
   }
 
   public Point getCapitolMarkerLocation(final Territory terr) {
-    if (m_capitolPlace.containsKey(terr.getName())) {
-      return m_capitolPlace.get(terr.getName());
+    if (capitolPlace.containsKey(terr.getName())) {
+      return capitolPlace.get(terr.getName());
     }
     return getCenter(terr);
   }
 
   public Point getConvoyMarkerLocation(final Territory terr) {
-    if (m_convoyPlace.containsKey(terr.getName())) {
-      return m_convoyPlace.get(terr.getName());
+    if (convoyPlace.containsKey(terr.getName())) {
+      return convoyPlace.get(terr.getName());
     }
     return getCenter(terr);
   }
 
   public Optional<Point> getCommentMarkerLocation(final Territory terr) {
-    return Optional.ofNullable(m_commentPlace.get(terr.getName()));
+    return Optional.ofNullable(commentPlace.get(terr.getName()));
   }
 
   public Point getKamikazeMarkerLocation(final Territory terr) {
-    if (m_kamikazePlace.containsKey(terr.getName())) {
-      return m_kamikazePlace.get(terr.getName());
+    if (kamikazePlace.containsKey(terr.getName())) {
+      return kamikazePlace.get(terr.getName());
     }
     return getCenter(terr);
   }
 
   public Point getVCPlacementPoint(final Territory terr) {
-    if (m_vcPlace.containsKey(terr.getName())) {
-      return m_vcPlace.get(terr.getName());
+    if (vcPlace.containsKey(terr.getName())) {
+      return vcPlace.get(terr.getName());
     }
     return getCenter(terr);
   }
 
   public Point getBlockadePlacementPoint(final Territory terr) {
-    if (m_blockadePlace.containsKey(terr.getName())) {
-      return m_blockadePlace.get(terr.getName());
+    if (blockadePlace.containsKey(terr.getName())) {
+      return blockadePlace.get(terr.getName());
     }
     return getCenter(terr);
   }
 
   public Optional<Point> getPUPlacementPoint(final Territory terr) {
-    return Optional.ofNullable(m_PUPlace.get(terr.getName()));
+    return Optional.ofNullable(puPlace.get(terr.getName()));
   }
 
   public Optional<Point> getNamePlacementPoint(final Territory terr) {
-    return Optional.ofNullable(m_namePlace.get(terr.getName()));
+    return Optional.ofNullable(namePlace.get(terr.getName()));
   }
 
   /**
@@ -617,10 +603,10 @@ public class MapData implements Closeable {
     String seaName = null;
     // try to find a land territory.
     // sea zones often surround a land territory
-    final Iterator<String> keyIter = m_polys.keySet().iterator();
+    final Iterator<String> keyIter = polys.keySet().iterator();
     while (keyIter.hasNext()) {
       final String name = keyIter.next();
-      final Collection<Polygon> polygons = m_polys.get(name);
+      final Collection<Polygon> polygons = polys.get(name);
       final Iterator<Polygon> polyIter = polygons.iterator();
       while (polyIter.hasNext()) {
         final Polygon poly = polyIter.next();
@@ -637,8 +623,8 @@ public class MapData implements Closeable {
   }
 
   public Dimension getMapDimensions() {
-    final String widthProperty = m_mapProperties.getProperty(PROPERTY_MAP_WIDTH);
-    final String heightProperty = m_mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
+    final String widthProperty = mapProperties.getProperty(PROPERTY_MAP_WIDTH);
+    final String heightProperty = mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
     if (widthProperty == null || heightProperty == null) {
       throw new IllegalStateException(
           "Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
@@ -654,9 +640,9 @@ public class MapData implements Closeable {
   }
 
   public Rectangle getBoundingRect(final String name) {
-    final List<Polygon> polys = m_polys.get(name);
+    final List<Polygon> polys = this.polys.get(name);
     if (polys == null) {
-      throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
+      throw new IllegalStateException("No polygons found for:" + name + " All territories:" + this.polys.keySet());
     }
     final Iterator<Polygon> polyIter = polys.iterator();
     final Rectangle bounds = polyIter.next().getBounds();
@@ -743,7 +729,7 @@ public class MapData implements Closeable {
   }
 
   private Optional<Image> loadImage(final String imageName) {
-    final URL url = m_resourceLoader.getResource(imageName);
+    final URL url = resourceLoader.getResource(imageName);
     if (url == null) {
       // this is actually pretty common that we try to read images that are not there. Let the caller
       // decide if this is an error or not.
@@ -758,27 +744,27 @@ public class MapData implements Closeable {
   }
 
   public Map<String, Image> getTerritoryNameImages() {
-    return Collections.unmodifiableMap(m_territoryNameImages);
+    return Collections.unmodifiableMap(territoryNameImages);
   }
 
   public Map<Image, List<Point>> getDecorations() {
-    return Collections.unmodifiableMap(m_decorations);
+    return Collections.unmodifiableMap(decorations);
   }
 
   public List<Point> getTerritoryEffectPoints(final Territory territory) {
-    if (m_territoryEffects.get(territory.getName()) == null) {
+    if (territoryEffects.get(territory.getName()) == null) {
       return Arrays.asList(getCenter(territory));
     }
-    return m_territoryEffects.get(territory.getName());
+    return territoryEffects.get(territory.getName());
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
     // TODO: what does this cache buy us? should we still keep it?
-    if (m_effectImages.get(effectName) != null) {
-      return Optional.of(m_effectImages.get(effectName));
+    if (effectImages.get(effectName) != null) {
+      return Optional.of(effectImages.get(effectName));
     }
     final Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + ".png");
-    m_effectImages.put(effectName, effectImage.orElse(null));
+    effectImages.put(effectName, effectImage.orElse(null));
     return effectImage;
   }
 }
