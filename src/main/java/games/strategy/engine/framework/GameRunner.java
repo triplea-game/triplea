@@ -235,19 +235,19 @@ public class GameRunner {
    */
   public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
-      gameSelectorModel.loadDefaultGame(mainFrame);
-
       mainFrame.requestFocus();
       mainFrame.toFront();
       mainFrame.setVisible(true);
-
       SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+      
+      new Thread(() -> {
+        gameSelectorModel.loadDefaultGame(mainFrame, false);
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+      }).start();
 
-      final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-      if (fileName.length() > 0) {
-        new Thread(() -> gameSelectorModel.load(new File(fileName), mainFrame)).start();
-      }
-      mainFrame.setVisible(true);
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
       } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {

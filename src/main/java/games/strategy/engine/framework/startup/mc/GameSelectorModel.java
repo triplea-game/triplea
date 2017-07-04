@@ -99,7 +99,7 @@ public class GameSelectorModel extends Observable {
     return null;
   }
 
-  public synchronized void load(final File file, final Component ui) {
+  public void load(final File file, final Component ui) {
     if (!file.exists()) {
       if (ui == null) {
         System.out.println("Could not find file:" + file);
@@ -272,7 +272,7 @@ public class GameSelectorModel extends Observable {
    *        we only call with
    *        'true' if loading the user preferred map failed).
    */
-  private synchronized void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
+  public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
     // load the previously saved value
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     if (forceFactoryDefault) {
