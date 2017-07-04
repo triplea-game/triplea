@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
 
-public class DownloadPane extends VBox {
+class DownloadPane extends VBox {
 
   private final TripleA triplea;
 

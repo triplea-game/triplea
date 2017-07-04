@@ -40,7 +40,6 @@ public class PropertyFileReader {
   /**
    * Returns the value corresponding to a given property key, returns empty if the key is not found.
    * Usage example:
-   * 
    * <pre>
    * <code>
    * String myValue = readProperty("keyValue");

@@ -16,7 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class MainMenuPane extends BorderPane {
+class MainMenuPane extends BorderPane {
 
   private final TripleA triplea;
   private final DownloadPane downloadPane;

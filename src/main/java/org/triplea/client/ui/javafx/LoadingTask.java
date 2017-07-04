@@ -6,6 +6,9 @@ import java.util.function.Function;
 
 import javafx.application.Platform;
 
+/**
+ * A utility class for executing synchronous Tasks using the JavaFX-UI.
+ */
 public final class LoadingTask<T> {
 
   private final Function<LoadingTask<T>, T> function;

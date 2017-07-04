@@ -6,7 +6,10 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
 
-public enum FxmlManager {
+/**
+ * Enum with relative Paths to fxml-related resources.
+ */
+enum FxmlManager {
   ROOT_CONTAINER("./fxml/TripleAMain.fxml"),
   DOWNLOAD_PANE("./fxml/TripleADownload.fxml"),
   MAIN_MANU_PANE("./fxml/TripleAMainMenu.fxml"),

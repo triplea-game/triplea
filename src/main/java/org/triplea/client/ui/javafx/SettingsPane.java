@@ -11,7 +11,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class SettingsPane extends StackPane {
+class SettingsPane extends StackPane {
   private final TripleA triplea;
 
   @FXML

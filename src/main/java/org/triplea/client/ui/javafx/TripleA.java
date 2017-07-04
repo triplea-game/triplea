@@ -16,6 +16,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * The Main-UI-Class for the JavaFX-UI.
+ * The root of everything.
+ */
 public class TripleA extends Application {
 
   @FXML
