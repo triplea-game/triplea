@@ -12,6 +12,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -154,8 +155,9 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void error(final String message, final Component ui) {
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
-        JOptionPane.ERROR_MESSAGE);
+    SwingUtilities.invokeLater(
+        () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+            JOptionPane.ERROR_MESSAGE));
   }
 
   public synchronized GameData getGameData() {
