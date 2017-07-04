@@ -17,22 +17,22 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class BattleDrawable extends TerritoryDrawable implements IDrawable {
-  private final String m_territoryName;
+  private final String territoryName;
 
   public BattleDrawable(final String territoryName) {
-    m_territoryName = territoryName;
+    this.territoryName = territoryName;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Set<PlayerID> players = new HashSet<>();
-    for (final Unit u : data.getMap().getTerritory(m_territoryName).getUnits()) {
+    for (final Unit u : data.getMap().getTerritory(territoryName).getUnits()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());
       }
     }
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     PlayerID attacker = null;
     boolean draw = false;
     for (final PlayerID p : players) {

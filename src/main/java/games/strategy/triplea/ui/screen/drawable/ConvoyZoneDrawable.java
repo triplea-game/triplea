@@ -14,15 +14,15 @@ import games.strategy.triplea.ui.mapdata.MapData;
 
 // Rewritten class to use country markers rather than shading for Convoy Centers/Routes.
 public class ConvoyZoneDrawable implements IDrawable {
-  private final String m_player;
-  private final String m_location;
-  private final IUIContext m_uiContext;
+  private final String player;
+  private final String location;
+  private final IUIContext uiContext;
 
   public ConvoyZoneDrawable(final PlayerID player, final Territory location, final IUIContext uiContext) {
     super();
-    m_player = player.getName();
-    m_location = location.getName();
-    m_uiContext = uiContext;
+    this.player = player.getName();
+    this.location = location.getName();
+    this.uiContext = uiContext;
   }
 
   @Override
@@ -30,11 +30,11 @@ public class ConvoyZoneDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     Image img;
     if (mapData.useNation_convoyFlags()) {
-      img = m_uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerID(m_player));
+      img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerID(player));
     } else {
-      img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
+      img = uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(player));
     }
-    final Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(m_location));
+    final Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 

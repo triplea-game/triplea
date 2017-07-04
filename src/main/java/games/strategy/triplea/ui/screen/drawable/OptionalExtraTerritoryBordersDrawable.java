@@ -13,18 +13,18 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
-  private final String m_territoryName;
-  private final OptionalExtraBorderLevel m_level;
+  private final String territoryName;
+  private final OptionalExtraBorderLevel level;
 
   public OptionalExtraTerritoryBordersDrawable(final String territoryName, final OptionalExtraBorderLevel level) {
-    m_territoryName = territoryName;
-    m_level = level;
+    this.territoryName = territoryName;
+    this.level = level;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     final Iterator<Polygon> iter2 = polys.iterator();
     while (iter2.hasNext()) {
@@ -43,7 +43,7 @@ public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
 
   @Override
   public int getLevel() {
-    if (m_level == OptionalExtraBorderLevel.HIGH) {
+    if (level == OptionalExtraBorderLevel.HIGH) {
       return OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL;
     }
     return OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL;

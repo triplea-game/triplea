@@ -15,20 +15,20 @@ import games.strategy.triplea.ui.mapdata.MapData;
 
 // Class to use 'Faded' country markers for Kamikaze Zones.
 public class KamikazeZoneDrawable implements IDrawable {
-  private final String m_location;
-  private final IUIContext m_uiContext;
+  private final String location;
+  private final IUIContext uiContext;
 
-  public KamikazeZoneDrawable(final Territory location, final IUIContext uiContext2) {
+  public KamikazeZoneDrawable(final Territory location, final IUIContext uiContext) {
     super();
-    m_location = location.getName();
-    m_uiContext = uiContext2;
+    this.location = location.getName();
+    this.uiContext = uiContext;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     // Change so only original owner gets the kamikazi zone marker
-    final Territory terr = data.getMap().getTerritory(m_location);
+    final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
     PlayerID owner = null;
     if (games.strategy.triplea.Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
@@ -46,8 +46,8 @@ public class KamikazeZoneDrawable implements IDrawable {
         }
       }
     }
-    final Image img = m_uiContext.getFlagImageFactory().getFadedFlag(owner);
-    final Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
+    final Image img = uiContext.getFlagImageFactory().getFadedFlag(owner);
+    final Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 

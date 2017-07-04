@@ -20,18 +20,18 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TerritoryNameDrawable implements IDrawable {
-  private final String m_territoryName;
-  private final IUIContext m_uiContext;
+  private final String territoryName;
+  private final IUIContext uiContext;
 
-  public TerritoryNameDrawable(final String territoryName, final IUIContext context) {
-    this.m_territoryName = territoryName;
-    this.m_uiContext = context;
+  public TerritoryNameDrawable(final String territoryName, final IUIContext uiContext) {
+    this.territoryName = territoryName;
+    this.uiContext = uiContext;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
     final boolean showSeaNames = mapData.drawSeaZoneNames();
@@ -97,7 +97,7 @@ public class TerritoryNameDrawable implements IDrawable {
       }
     }
     // draw territory names
-    if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName)) {
+    if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(territoryName)) {
       if (!territory.isWater() || showSeaNames) {
         final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
         draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
@@ -105,7 +105,7 @@ public class TerritoryNameDrawable implements IDrawable {
     }
     // draw the PUs.
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
-      final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
+      final Image img = uiContext.getPUImageFactory().getPUImage(ta.getProduction());
       final String prod = Integer.valueOf(ta.getProduction()).toString();
       final Optional<Point> place = mapData.getPUPlacementPoint(territory);
       // if pu_place.txt is specified draw there
@@ -113,7 +113,7 @@ public class TerritoryNameDrawable implements IDrawable {
         draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
       } else {
         // otherwise, draw under the territory name
-        draw(bounds, graphics, x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
+        draw(bounds, graphics, x + ((fm.stringWidth(territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
             y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
       }
     }

@@ -11,16 +11,16 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
-  private final String m_territoryName;
+  private final String territoryName;
 
   public LandTerritoryDrawable(final String territoryName) {
-    m_territoryName = territoryName;
+    this.territoryName = territoryName;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     Color territoryColor;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta != null && ta.getIsImpassable()) {
