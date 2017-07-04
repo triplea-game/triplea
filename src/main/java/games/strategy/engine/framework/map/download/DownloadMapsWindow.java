@@ -92,6 +92,7 @@ public class DownloadMapsWindow extends JFrame {
         dia.setLocationRelativeTo(null);
         dia.setMinimumSize(new Dimension(200, 200));
         dia.setVisible(true);
+        // ensure Download Maps window is displayed on top (#1260)
         SwingUtilities.invokeLater(() -> {
           dia.requestFocus();
           dia.toFront();
