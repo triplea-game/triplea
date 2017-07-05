@@ -164,13 +164,13 @@ public class MovePerformer implements Serializable {
           change.add(markFuelCostResourceChange(units, route, id, data));
         }
         markTransportsMovement(arrived, transporting, route);
-        if (route.someMatch(mustFightThrough) && arrived.size() != 0) {
+        if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
           boolean bombing = false;
           boolean ignoreBattle = false;
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
-              Match.all(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
+              Match.allOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder(
               Matches.UnitIsStrategicBomber);
@@ -246,7 +246,7 @@ public class MovePerformer implements Serializable {
             // could get really
             // difficult if we want these recorded in battle records).
             for (final Territory t : route
-                .getMatches(Match.all(
+                .getMatches(Match.allOf(
                     Matches
                         .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
                             id),
@@ -287,7 +287,7 @@ public class MovePerformer implements Serializable {
   }
 
   private static Match<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
-    return Match.any(
+    return Match.anyOf(
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data),
         Matches.territoryHasNonSubmergedEnemyUnits(id, data),
         Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
@@ -338,11 +338,11 @@ public class MovePerformer implements Serializable {
     }
     if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .someMatch(Match.all(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
+            .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Match.getMatches(units, Match.all(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {
+      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
@@ -358,8 +358,8 @@ public class MovePerformer implements Serializable {
       return;
     }
     final GameData data = m_bridge.getData();
-    final Match<Unit> paratroopNAirTransports = Match.any(Matches.UnitIsAirTransport, Matches.UnitIsAirTransportable);
-    final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports)
+    final Match<Unit> paratroopNAirTransports = Match.anyOf(Matches.UnitIsAirTransport, Matches.UnitIsAirTransportable);
+    final boolean paratroopsLanding = Match.anyMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
         MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport));

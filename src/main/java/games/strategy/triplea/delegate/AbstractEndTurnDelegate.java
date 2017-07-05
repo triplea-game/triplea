@@ -306,7 +306,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           if (PossibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
             final Collection<Unit> units =
-                currTerritory.getUnits().getMatches(Match.all(Matches.unitOwnedBy(Player),
+                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(Player),
                     Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
@@ -367,7 +367,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Match<Unit> enemyUnits = Match.all(Matches.enemyUnit(player, data));
+    final Match<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();
@@ -377,7 +377,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
       final List<Territory> viableNeighbors =
-          Match.getMatches(map.getNeighbors(b), Match.all(Matches.isTerritoryOwnedBy(player),
+          Match.getMatches(map.getNeighbors(b), Match.allOf(Matches.isTerritoryOwnedBy(player),
               Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {

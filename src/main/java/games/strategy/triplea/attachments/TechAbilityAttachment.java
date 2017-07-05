@@ -1268,7 +1268,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              Match.all(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
+              Match.allOf(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
           final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {

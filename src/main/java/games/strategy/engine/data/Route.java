@@ -229,9 +229,9 @@ public class Route implements Serializable, Iterable<Territory> {
   /**
    * @param match
    *        referring match
-   * @return whether some territories in this route match the given match (start territory is not tested).
+   * @return whether any territories in this route match the given match (start territory is not tested).
    */
-  public boolean someMatch(final Match<Territory> match) {
+  public boolean anyMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
       if (match.match(t)) {
         return true;
@@ -410,7 +410,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (getStart().isWater()) {
       return true;
     }
-    return Match.someMatch(getSteps(), Matches.TerritoryIsWater);
+    return Match.anyMatch(getSteps(), Matches.TerritoryIsWater);
   }
 
   /**

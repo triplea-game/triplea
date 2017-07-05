@@ -318,8 +318,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final List<Territory> notOwned = Match.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
-        final Match<Unit> ownedFactories = Match.all(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+        final boolean nonFactoryUnitsLeft = Match.anyMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
+        final Match<Unit> ownedFactories = Match.allOf(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
@@ -331,7 +331,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.all(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             final List<Territory> doesNotHaveFactoryYet =
@@ -362,7 +362,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.all(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             if (capitals.isEmpty()) {
@@ -393,7 +393,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.all(
+            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                 Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
           }
           if (capitals.isEmpty()) {

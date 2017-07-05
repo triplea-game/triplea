@@ -69,7 +69,7 @@ public class LHTRTest {
     delegate.end();
     // make sure the fighter is still there
     // in lhtr fighters can hover, and carriers placed beneath them
-    assertTrue(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
+    assertTrue(baltic.getUnits().anyMatch(Matches.unitIsOfType(fighterType)));
   }
 
   @Test
@@ -93,7 +93,7 @@ public class LHTRTest {
     delegate.end();
     // there is no pending carrier to be placed
     // the fighter cannot hover
-    assertFalse(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
+    assertFalse(baltic.getUnits().anyMatch(Matches.unitIsOfType(fighterType)));
   }
 
   @Test

@@ -121,7 +121,7 @@ public class PlacePanel extends AbstractMovePanel {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.getUnits().someMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
         } else {
@@ -135,7 +135,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
-          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.any(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {

@@ -69,12 +69,12 @@ class EditValidator {
     // check land/water sanity
     if (territory.isWater()) {
       if (!Match.allMatch(units, Matches.UnitIsSea)) {
-        if (Match.someMatch(units, Matches.UnitIsLand)) {
+        if (Match.anyMatch(units, Matches.UnitIsLand)) {
           if (!Match.allMatch(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -89,13 +89,13 @@ class EditValidator {
             return "Can't add land units to water without enough transports";
           }
         }
-        if (Match.someMatch(units, Matches.UnitIsAir)) {
-          if (Match.someMatch(units, Match.all(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+        if (Match.anyMatch(units, Matches.UnitIsAir)) {
+          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers = Match.all(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits = Match.all(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyCarriers = Match.allOf(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
@@ -113,7 +113,7 @@ class EditValidator {
        * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.TerritoryIsWater.match(territory))
        * return "Can't add units to enemy territory";
        */
-      if (Match.someMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.UnitIsSea)) {
         return "Can't add sea units to land";
       }
     }

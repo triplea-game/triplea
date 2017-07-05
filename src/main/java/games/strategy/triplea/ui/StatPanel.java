@@ -182,7 +182,7 @@ public class StatPanel extends AbstractStatPanel {
 
     public void setStatCollums() {
       stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
-      if (Match.someMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
+      if (Match.anyMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
         StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);

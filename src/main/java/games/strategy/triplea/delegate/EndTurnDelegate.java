@@ -74,7 +74,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerID();
-    final Match<Unit> myCreatorsMatch = Match.all(Matches.unitIsOwnedBy(player), Matches.UnitCreatesUnits);
+    final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitCreatesUnits);
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -106,7 +106,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           change.add(place);
         }
         if (!toAddSea.isEmpty()) {
-          final Match<Territory> myTerrs = Match.all(Matches.TerritoryIsWater);
+          final Match<Territory> myTerrs = Match.allOf(Matches.TerritoryIsWater);
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
@@ -119,7 +119,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Match<Territory> myTerrs = Match.all(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
+          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
@@ -165,7 +165,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Find total unit generated resources for all owned units
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerID();
-    final Match<Unit> myCreatorsMatch = Match.all(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
+    final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -217,9 +217,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final boolean useTriggers = games.strategy.triplea.Properties.getTriggers(data);
     if (useTriggers) {
       // add conditions required for triggers
-      final Match<TriggerAttachment> endTurnDelegateTriggerMatch = Match.all(
+      final Match<TriggerAttachment> endTurnDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.any(TriggerAttachment.resourceMatch()));
+          Match.anyOf(TriggerAttachment.resourceMatch()));
       toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
       allConditionsNeeded.addAll(

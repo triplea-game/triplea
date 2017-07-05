@@ -645,7 +645,7 @@ public class DiceRoll implements Externalizable {
       if (!((allies && rule.getAllied()) || (!allies && rule.getEnemy()))) {
         continue;
       }
-      final Match<Unit> canSupport = Match.all(
+      final Match<Unit> canSupport = Match.allOf(
           Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
       final List<Unit> supporters = Match.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();

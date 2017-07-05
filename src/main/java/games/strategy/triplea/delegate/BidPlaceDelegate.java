@@ -36,18 +36,18 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     // we can place if no enemy units and its water
     if (to.isWater()) {
-      if (Match.someMatch(units, Matches.UnitIsLand)) {
+      if (Match.anyMatch(units, Matches.UnitIsLand)) {
         return "Cant place land units at sea";
-      } else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData()))) {
+      } else if (to.getUnits().anyMatch(Matches.enemyUnit(player, getData()))) {
         return "Cant place in sea zone containing enemy units";
-      } else if (!to.getUnits().someMatch(Matches.unitIsOwnedBy(player))) {
+      } else if (!to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
         return "Cant place in sea zone that does not contain a unit owned by you";
       } else {
         return null;
       }
     } else {
       // we can place on territories we own
-      if (Match.someMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.UnitIsSea)) {
         return "Cant place sea units on land";
       } else if (to.getOwner() == null) {
         return "You dont own " + to.getName();
@@ -55,7 +55,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
         if (pa != null && pa.getGiveUnitControl() != null && pa.getGiveUnitControl().contains(player)) {
           return null;
-        } else if (to.getUnits().someMatch(Matches.unitIsOwnedBy(player))) {
+        } else if (to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
           return null;
         }
         return "You dont own " + to.getName();
@@ -115,11 +115,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final Match<Unit> groundUnits =
         // we add factories and constructions later
-        Match.all(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
-    final Match<Unit> airUnits = Match.all(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
+        Match.allOf(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
+    final Match<Unit> airUnits = Match.allOf(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
-    if (Match.someMatch(units, Matches.UnitIsConstruction)) {
+    if (Match.anyMatch(units, Matches.UnitIsConstruction)) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
@@ -137,7 +137,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
-    if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
+    if (Match.anyMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
       final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {

@@ -238,7 +238,8 @@ public class GameRunner {
       mainFrame.requestFocus();
       mainFrame.toFront();
       mainFrame.setVisible(true);
-      SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+
+      SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
       
       new Thread(() -> {
         gameSelectorModel.loadDefaultGame(mainFrame, false);

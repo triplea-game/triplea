@@ -288,8 +288,8 @@ public class BattleTracker implements java.io.Serializable {
       if (changeTracker != null) {
         changeTracker.addChange(change);
       }
-      if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand)
-          || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea)) {
+      if (games.strategy.util.Match.anyMatch(units, Matches.UnitIsLand)
+          || games.strategy.util.Match.anyMatch(units, Matches.UnitIsSea)) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
     }
@@ -390,11 +390,11 @@ public class BattleTracker implements java.io.Serializable {
     if (unitsNotUnloadedTilEndOfRoute != null) {
       presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
     }
-    final boolean canConquerMiddleSteps = Match.someMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
+    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
     final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
-    final Match<Territory> conquerable = Match.all(
+    final Match<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
-        Match.any(
+        Match.anyOf(
             Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
     final Collection<Territory> conquered = new ArrayList<>();
@@ -498,7 +498,7 @@ public class BattleTracker implements java.io.Serializable {
           - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
           - Match.countMatches(arrivedUnits, Matches.UnitIsSubmerged);
       // If transports are restricted from controlling sea zones, subtract them
-      final Match<Unit> transportsCanNotControl = Match.all(
+      final Match<Unit> transportsCanNotControl = Match.allOf(
           Matches.UnitIsTransportAndNotDestroyer,
           Matches.UnitIsTransportButNotCombatTransport);
       if (!games.strategy.triplea.Properties.getTransportControlSeaZone(data)) {
@@ -676,7 +676,7 @@ public class BattleTracker implements java.io.Serializable {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id);
       } else if (ta != null && ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id);
-      } else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz)) {
+      } else if (m_blitzed.contains(territory) && Match.anyMatch(arrivedUnits, Matches.UnitCanBlitz)) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id);
       } else {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id);
@@ -684,8 +684,8 @@ public class BattleTracker implements java.io.Serializable {
     }
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
-    if (Match.someMatch(territory.getUnits().getUnits(),
-        Match.all(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
+    if (Match.anyMatch(territory.getUnits().getUnits(),
+        Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -743,7 +743,7 @@ public class BattleTracker implements java.io.Serializable {
     // destroy any units that should be destroyed on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
       final Match<Unit> enemyToBeDestroyed =
-          Match.all(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
+          Match.allOf(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -769,7 +769,7 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
-    final Match<Unit> enemyToBeDestroyed = Match.all(Matches.enemyUnit(id, data),
+    final Match<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
         Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
@@ -781,8 +781,8 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // take over non combatants
-    final Match<Unit> enemyNonCom = Match.all(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
-    final Match<Unit> willBeCaptured = Match.any(enemyNonCom,
+    final Match<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
+    final Match<Unit> willBeCaptured = Match.anyOf(enemyNonCom,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
@@ -880,7 +880,7 @@ public class BattleTracker implements java.io.Serializable {
     // make amphibious assaults dependent on possible naval invasions
     // its only a dependency if we are unloading
     final IBattle precede = getDependentAmphibiousAssault(route);
-    if (precede != null && Match.someMatch(units, Matches.UnitIsLand)) {
+    if (precede != null && Match.anyMatch(units, Matches.UnitIsLand)) {
       addDependency(battle, precede);
     }
     // dont let land battles in the same territory occur before bombing

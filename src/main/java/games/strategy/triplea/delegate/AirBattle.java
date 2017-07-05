@@ -115,7 +115,7 @@ public class AirBattle extends AbstractBattle {
 
   private boolean shouldFightAirBattle() {
     if (m_isBombingRun) {
-      return Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
+      return Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
     } else {
       return !m_attackingUnits.isEmpty() && !m_defendingUnits.isEmpty();
     }
@@ -169,14 +169,14 @@ public class AirBattle extends AbstractBattle {
           if (m_isBombingRun) {
             attackerSuicideBuilder.add(Matches.UnitIsNotStrategicBomber);
           }
-          if (Match.someMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
+          if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
             final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
-          if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide)) {
+          if (Match.anyMatch(m_defendingUnits, Matches.UnitIsSuicide)) {
             final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
@@ -304,7 +304,7 @@ public class AirBattle extends AbstractBattle {
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
-            .getMatches(Match.all(Matches.enemyUnit(bridge.getPlayerID(), m_data),
+            .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), m_data),
                 Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
                 Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
@@ -347,7 +347,7 @@ public class AirBattle extends AbstractBattle {
     final String text;
     if (!m_attackingUnits.isEmpty()) {
       if (m_isBombingRun) {
-        if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber)) {
+        if (Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber)) {
           m_whoWon = WhoWon.ATTACKER;
           if (m_defendingUnits.isEmpty()) {
             m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
@@ -679,11 +679,11 @@ public class AirBattle extends AbstractBattle {
         }
       }
     } else {
-      return territory.getUnits().someMatch(defendingAirMatch);
+      return territory.getUnits().anyMatch(defendingAirMatch);
     }
     // should we check if the territory also has an air base?
-    return territory.getUnits().someMatch(defendingAirMatch)
-        || Match.someMatch(data.getMap().getNeighbors(territory, maxScrambleDistance),
+    return territory.getUnits().anyMatch(defendingAirMatch)
+        || Match.anyMatch(data.getMap().getNeighbors(territory, maxScrambleDistance),
             Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }
 

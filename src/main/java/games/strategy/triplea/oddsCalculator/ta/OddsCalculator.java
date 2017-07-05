@@ -596,8 +596,8 @@ class DummyPlayer extends AbstractAI {
     }
     if (submerge) {
       // submerge if all air vs subs
-      final Match<Unit> seaSub = Match.all(Matches.UnitIsSea, Matches.UnitIsSub);
-      final Match<Unit> planeNotDestroyer = Match.all(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+      final Match<Unit> seaSub = Match.allOf(Matches.UnitIsSea, Matches.UnitIsSub);
+      final Match<Unit> planeNotDestroyer = Match.allOf(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {
@@ -654,8 +654,8 @@ class DummyPlayer extends AbstractAI {
       final List<Unit> notKilled = new ArrayList<>(selectFrom);
       notKilled.removeAll(rKilled);
       // no land units left, but we have a non land unit to kill and land unit was killed
-      if (!Match.someMatch(notKilled, Matches.UnitIsLand) && Match.someMatch(notKilled, Matches.UnitIsNotLand)
-          && Match.someMatch(rKilled, Matches.UnitIsLand)) {
+      if (!Match.anyMatch(notKilled, Matches.UnitIsLand) && Match.anyMatch(notKilled, Matches.UnitIsNotLand)
+          && Match.anyMatch(rKilled, Matches.UnitIsLand)) {
         final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
         // sort according to cost
         Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());

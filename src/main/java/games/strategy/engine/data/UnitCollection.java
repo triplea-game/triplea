@@ -218,7 +218,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     return true;
   }
 
-  public boolean someMatch(final Match<Unit> matcher) {
+  public boolean anyMatch(final Match<Unit> matcher) {
     for (final Unit unit : m_units) {
       if (matcher.match(unit)) {
         return true;

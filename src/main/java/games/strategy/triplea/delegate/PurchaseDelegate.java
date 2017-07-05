@@ -63,9 +63,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = Match.all(
+        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = Match.allOf(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-            Match.any(TriggerAttachment.prodMatch(),
+            Match.anyOf(TriggerAttachment.prodMatch(),
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -173,7 +173,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           // count how many units are yet to be placed or are in the field
           int currentlyBuilt = m_player.getUnits().countMatches(Matches.unitIsOfType(type));
 
-          final Match<Unit> unitTypeOwnedBy = Match.all(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+          final Match<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

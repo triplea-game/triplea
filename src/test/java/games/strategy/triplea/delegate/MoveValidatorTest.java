@@ -113,8 +113,8 @@ public class MoveValidatorTest extends DelegateTest {
   @Test
   public void testHasSomeLand() {
     final Collection<Unit> units = transport.create(3, british);
-    assertTrue(!Match.someMatch(units, Matches.UnitIsLand));
+    assertTrue(!Match.anyMatch(units, Matches.UnitIsLand));
     units.addAll(infantry.create(2, british));
-    assertTrue(Match.someMatch(units, Matches.UnitIsLand));
+    assertTrue(Match.anyMatch(units, Matches.UnitIsLand));
   }
 }
