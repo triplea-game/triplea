@@ -1811,7 +1811,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     // if All attackers are AIR submerge any defending subs ..m_defendingUnits.removeAll(m_killed);
-    if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir) && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub)) {
+    if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)
+        && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub)) {
       // Get all defending subs (including allies) in the territory.
       final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
       // submerge defending subs

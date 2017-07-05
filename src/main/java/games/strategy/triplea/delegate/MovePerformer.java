@@ -188,7 +188,8 @@ public class MovePerformer implements Serializable {
                       .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber),
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
-              || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatchNotEmpty(arrived, Matches.unitCanEscort));
+              || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle
+                  && Match.allMatchNotEmpty(arrived, Matches.unitCanEscort));
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
@@ -224,8 +225,10 @@ public class MovePerformer implements Serializable {
           }
           // Ignore Trn on Trn forces.
           if (isIgnoreTransportInMovement(bridge.getData())) {
-            final boolean allOwnedTransports = Match.allMatchNotEmpty(arrived, Matches.UnitIsTransportButNotCombatTransport);
-            final boolean allEnemyTransports = Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
+            final boolean allOwnedTransports =
+                Match.allMatchNotEmpty(arrived, Matches.UnitIsTransportButNotCombatTransport);
+            final boolean allEnemyTransports =
+                Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
             // If everybody is a transport, don't create a battle
             if (allOwnedTransports && allEnemyTransports) {
               ignoreBattle = true;

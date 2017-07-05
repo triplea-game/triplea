@@ -253,7 +253,7 @@ public class BattleTracker implements java.io.Serializable {
 
     this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
-  
+
   public void addBattle(final Route route, final Collection<Unit> units, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
@@ -1128,8 +1128,8 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   /**
-   *  Kill undefended transports. Done first to remove potentially dependent sea battles
-   *  Which could block amphibious assaults later
+   * Kill undefended transports. Done first to remove potentially dependent sea battles
+   * Which could block amphibious assaults later
    */
   public void fightDefenselessBattles(final IDelegateBridge bridge) {
     final GameData gameData = bridge.getData();
@@ -1141,17 +1141,18 @@ public class BattleTracker implements java.io.Serializable {
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty() && DiceRoll.getTotalPower(
           DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,
-            territory, TerritoryEffectHelper.getEffects(territory), false, null), gameData) == 0) {
+              territory, TerritoryEffectHelper.getEffects(territory), false, null),
+          gameData) == 0) {
         battle.fight(bridge);
       }
     }
     getPendingBattleSites(false).stream()
-         .map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
-         .forEach(battle -> {
-           if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
-             battle.fight(bridge);
-           }
-         });
+        .map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
+        .forEach(battle -> {
+          if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
+            battle.fight(bridge);
+          }
+        });
   }
 
   private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
@@ -1160,13 +1161,13 @@ public class BattleTracker implements java.io.Serializable {
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
-        TerritoryEffectHelper.getEffects(territory), gameData, false, false));
+            TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;
   }
 
   /**
-   *  Fight battle automatically if there is only one left to pick from.
+   * Fight battle automatically if there is only one left to pick from.
    */
   public void fightBattleIfOnlyOne(final IDelegateBridge bridge) {
     final Collection<Territory> territories = getPendingBattleSites(false);

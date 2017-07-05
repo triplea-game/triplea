@@ -453,7 +453,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we need to remove any units which are participating in bombing raids
         attackingUnits.removeAll(bombingBattle.getAttackingUnits());
       }
-      if (attackingUnits.isEmpty() || Match.allMatchNotEmpty(attackingUnits, Matches.UnitIsInfrastructure)) {
+      if (Match.allMatch(attackingUnits, Matches.UnitIsInfrastructure)) {
         continue;
       }
       IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
@@ -461,7 +461,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them
         // separately, after aa
         // fires)
-        if (enemyUnits.isEmpty() || Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsInfrastructure)) {
+        if (Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
           landParatroopers(player, territory, bridge);
         }
         bridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());

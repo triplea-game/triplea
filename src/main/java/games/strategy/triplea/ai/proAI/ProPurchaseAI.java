@@ -1158,7 +1158,8 @@ class ProPurchaseAI {
         ProBattleResult result = calc.calculateBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
             initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
-            Properties.getSubRetreatBeforeBattle(data) && Match.allMatchNotEmpty(initialDefendingUnits, Matches.UnitIsSub)
+            Properties.getSubRetreatBeforeBattle(data)
+                && Match.allMatchNotEmpty(initialDefendingUnits, Matches.UnitIsSub)
                 && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
 

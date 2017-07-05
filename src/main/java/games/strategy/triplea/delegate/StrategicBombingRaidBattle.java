@@ -338,12 +338,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       validAttackingUnitsForThisRoll = attackers;
       determineAttackers = false;
     }
-    
+
     public FireAA() {
       validAttackingUnitsForThisRoll = Collections.emptyList();
       determineAttackers = true;
     }
-      
+
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
