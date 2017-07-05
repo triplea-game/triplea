@@ -119,7 +119,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
    * Calculates odds using the stored game data.
    */
   @Override
-  @SuppressWarnings("unchecked")
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
@@ -135,11 +134,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     m_defender =
         m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
     m_location = m_data.getMap().getTerritory(location.getName());
-    m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
-    m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
-    m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
-    m_territoryEffects =
-        (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
+    m_attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, m_data);
+    m_defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, m_data);
+    m_bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
+    m_territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
     m_data.performChange(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
     m_data.performChange(ChangeFactory.addUnits(m_location, m_attackingUnits));
     m_data.performChange(ChangeFactory.addUnits(m_location, m_defendingUnits));
