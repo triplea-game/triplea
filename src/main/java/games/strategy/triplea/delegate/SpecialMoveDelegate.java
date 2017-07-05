@@ -291,7 +291,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+    return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }

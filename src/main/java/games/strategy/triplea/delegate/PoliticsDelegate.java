@@ -57,9 +57,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.all(
+      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.any(TriggerAttachment.relationshipChangeMatch()));
+          Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
@@ -174,7 +174,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
     final Match<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
-        Match.any(
+        Match.anyOf(
             Matches.politicalActionIsRelationshipChangeOf(null,
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert(),
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether, data),

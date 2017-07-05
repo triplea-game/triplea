@@ -1217,7 +1217,7 @@ class ProNonCombatMoveAI {
           final Set<Territory> cantHoldTerritories = new HashSet<>();
           while (true) {
             final Match<Territory> match =
-                Match.all(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
+                Match.allOf(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
                     Matches.territoryIsInList(cantHoldTerritories).invert());
             final Route route = data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), match);
             if (route == null

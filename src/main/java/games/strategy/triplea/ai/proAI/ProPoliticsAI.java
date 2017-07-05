@@ -50,7 +50,7 @@ class ProPoliticsAI {
         AIPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Match.getMatches(actionChoicesTowardsWar, Match.all(
+        Match.getMatches(actionChoicesTowardsWar, Match.allOf(
             Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 

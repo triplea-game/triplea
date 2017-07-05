@@ -91,8 +91,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // fill in defenders
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    final Match<Unit> defenders = Match.all(Matches.enemyUnit(m_attacker, m_data),
-        Match.any(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+    final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
+        Match.anyOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
     if (m_targets.isEmpty()) {
@@ -355,9 +355,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> airborneTypesTargettedToo =
             TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.any(
+          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.anyOf(
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.all(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
         final IExecutable roll = new IExecutable() {

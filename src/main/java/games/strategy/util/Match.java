@@ -195,10 +195,10 @@ public final class Match<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> all(final Match<T>... matches) {
+  public static <T> Match<T> allOf(final Match<T>... matches) {
     checkNotNull(matches);
 
-    return all(Arrays.asList(matches));
+    return allOf(Arrays.asList(matches));
   }
 
   /**
@@ -208,7 +208,7 @@ public final class Match<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> all(final Collection<Match<T>> matches) {
+  public static <T> Match<T> allOf(final Collection<Match<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().allMatch(match -> match.match(value)));
@@ -223,10 +223,10 @@ public final class Match<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> any(final Match<T>... matches) {
+  public static <T> Match<T> anyOf(final Match<T>... matches) {
     checkNotNull(matches);
 
-    return any(Arrays.asList(matches));
+    return anyOf(Arrays.asList(matches));
   }
 
   /**
@@ -236,7 +236,7 @@ public final class Match<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> any(final Collection<Match<T>> matches) {
+  public static <T> Match<T> anyOf(final Collection<Match<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().anyMatch(match -> match.match(value)));
@@ -294,7 +294,7 @@ public final class Match<T> {
      * @return A new match; never {@code null}.
      */
     public Match<T> all() {
-      return Match.all(matches);
+      return Match.allOf(matches);
     }
 
     /**
@@ -304,7 +304,7 @@ public final class Match<T> {
      * @return A new match; never {@code null}.
      */
     public Match<T> any() {
-      return Match.any(matches);
+      return Match.anyOf(matches);
     }
   }
 }

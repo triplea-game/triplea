@@ -1008,7 +1008,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, Match.all(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Match.getMatches(allUnits, Match.allOf(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;

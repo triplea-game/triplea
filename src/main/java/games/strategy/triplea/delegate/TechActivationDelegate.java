@@ -57,9 +57,9 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = Match.all(
+      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.any(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
+          Match.anyOf(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
               TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(

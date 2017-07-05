@@ -73,7 +73,7 @@ class ProPurchaseAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    final Match<Unit> ourFactories = Match.all(Matches.unitIsOwnedBy(player),
+    final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player),
         Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
     final List<Territory> rfactories = Match.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));

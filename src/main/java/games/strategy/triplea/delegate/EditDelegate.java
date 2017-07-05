@@ -89,7 +89,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
@@ -149,7 +149,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final Match<Unit> enemyNonCom = Match.all(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
+      final Match<Unit> enemyNonCom = Match.allOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
       m_bridge.addChange(ChangeFactory.markNoMovementChange(units));
