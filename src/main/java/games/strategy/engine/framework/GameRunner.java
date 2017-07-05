@@ -44,6 +44,7 @@ import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.ProgressWindow;
@@ -242,6 +243,7 @@ public class GameRunner {
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
       
       new Thread(() -> {
+        ProAI.gameOverClearCache();
         gameSelectorModel.loadDefaultGame(mainFrame, false);
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
