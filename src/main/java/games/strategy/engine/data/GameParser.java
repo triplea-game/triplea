@@ -1366,7 +1366,7 @@ public class GameParser {
         unitDamage = 0;
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
-      territory.getUnits().addAllUnits(type.create(quantity, owner, false, hits, unitDamage));
+      territory.getUnits().addAll(type.create(quantity, owner, false, hits, unitDamage));
     }
   }
 
@@ -1375,7 +1375,7 @@ public class GameParser {
       final PlayerID player = getPlayerId(current, "player", true);
       final UnitType type = getUnitType(current, "unitType", true);
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
-      player.getUnits().addAllUnits(type.create(quantity, player));
+      player.getUnits().addAll(type.create(quantity, player));
     }
   }
 

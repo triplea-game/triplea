@@ -142,7 +142,7 @@ public class UnitCollectionTest {
   public void addUnit() {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Unit unitDefaultPlayer = new Unit(unitTypeOne, defaultPlayerId, mockGameData);
-    unitCollection.addUnit(unitDefaultPlayer);
+    unitCollection.add(unitDefaultPlayer);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(1)));
     assertThat(unitCollection.getUnits().iterator().next(), is(equalTo(unitDefaultPlayer)));
@@ -154,7 +154,7 @@ public class UnitCollectionTest {
   public void addAllUnitsFromCollection() {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(unitsOfOtherPlayerOfUnitTypeOne.size())));
     final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
@@ -166,8 +166,8 @@ public class UnitCollectionTest {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     final UnitCollection unitCollectionTwo = new UnitCollection(otherPlayerId, mockGameData);
-    unitCollectionTwo.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
-    unitCollection.addAllUnits(unitCollectionTwo);
+    unitCollectionTwo.addAll(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitCollectionTwo);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(unitsOfOtherPlayerOfUnitTypeOne.size())));
     final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
@@ -177,10 +177,10 @@ public class UnitCollectionTest {
   @Test
   public void removeAllUnits() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
-    unitCollection.removeAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.removeAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(0)));
     final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
@@ -201,12 +201,12 @@ public class UnitCollectionTest {
   }
 
   private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeTwoToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getDefaultPlayerUnitsOfUnitTypeTwo());
+    unitCollection.addAll(getDefaultPlayerUnitsOfUnitTypeTwo());
     return unitCollection;
   }
 
   private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getDefaultPlayerUnitsOfUnitTypeOne());
+    unitCollection.addAll(getDefaultPlayerUnitsOfUnitTypeOne());
     return unitCollection;
   }
 
@@ -227,8 +227,8 @@ public class UnitCollectionTest {
   }
 
   private UnitCollection addAllOtherPlayerUnitsToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getOtherPlayerUnitsOfUnitTypeOne());
-    unitCollection.addAllUnits(getOtherPlayerUnitsOfUnitTypeTwo());
+    unitCollection.addAll(getOtherPlayerUnitsOfUnitTypeOne());
+    unitCollection.addAll(getOtherPlayerUnitsOfUnitTypeTwo());
     return unitCollection;
   }
 
@@ -360,7 +360,7 @@ public class UnitCollectionTest {
   public void getUnits() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     assertThat(unitCollection.getUnits().containsAll(unitsOfOtherPlayerOfUnitTypeOne), is(equalTo(false)));
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
     assertThat(unitCollection.getUnits().containsAll(unitsOfOtherPlayerOfUnitTypeOne), is(equalTo(true)));
   }
 
@@ -452,7 +452,7 @@ public class UnitCollectionTest {
   @Test
   public void iterator() {
     final Collection<Unit> unitsOfDefaultPlayerOfUnitTypeTwo = getDefaultPlayerUnitsOfUnitTypeTwo();
-    unitCollection.addAllUnits(unitsOfDefaultPlayerOfUnitTypeTwo);
+    unitCollection.addAll(unitsOfDefaultPlayerOfUnitTypeTwo);
     final Iterator<Unit> collectionIterator = unitsOfDefaultPlayerOfUnitTypeTwo.iterator();
     final Iterator<Unit> unitCollectionIterator = unitCollection.iterator();
     unitCollectionIterator.forEachRemaining(u -> assertThat(u, is(collectionIterator.next())));
