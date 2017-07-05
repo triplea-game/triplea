@@ -150,10 +150,10 @@ public class DownloadMapsWindow extends JFrame {
       assert state == State.UNINITIALIZED;
 
       state = State.INITIALIZING;
-      BackgroundTaskRunner.runInBackground("Downloading list of available maps...", () -> {
-        final List<DownloadFileDescription> downloads = ClientContext.getMapDownloadList();
-        SwingUtilities.invokeLater(() -> createAndShow(mapNames, downloads));
-      });
+      BackgroundTaskRunner.runInBackground(
+          "Downloading list of available maps...",
+          ClientContext::getMapDownloadList,
+          downloads -> createAndShow(mapNames, downloads));
     }
 
     private void createAndShow(final Collection<String> mapNames, final List<DownloadFileDescription> downloads) {
@@ -174,12 +174,8 @@ public class DownloadMapsWindow extends JFrame {
       assert window != null;
 
       window.setVisible(true);
-
-      // ensure Download Maps window is displayed on top (#1260)
-      SwingUtilities.invokeLater(() -> {
-        window.requestFocus();
-        window.toFront();
-      });
+      window.requestFocus();
+      window.toFront();
     }
   }
 
