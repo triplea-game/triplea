@@ -109,7 +109,7 @@ public class MatchTest {
 
   @Test
   public void testAllMatch() {
-    assertFalse("empty collection", Match.allMatch(Arrays.asList(), IS_ZERO_MATCH));
+    assertTrue("empty collection", Match.allMatch(Arrays.asList(), IS_ZERO_MATCH));
     assertFalse("none match", Match.allMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
     assertFalse("some match", Match.allMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
     assertTrue("all match (one element)", Match.allMatch(Arrays.asList(0), IS_ZERO_MATCH));
