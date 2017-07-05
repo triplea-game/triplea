@@ -92,10 +92,7 @@ public final class Match<T> {
    * returns false if the collection is empty.
    */
   public static <T> boolean allMatchNotEmpty(final Collection<T> collection, final Match<T> match) {
-    if (collection.isEmpty()) {
-      return false;
-    }
-    return allMatch(collection, match);
+    return !collection.isEmpty() && allMatch(collection, match);
   }
 
   /**
