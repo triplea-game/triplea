@@ -33,7 +33,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
+import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
 import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.BattleDrawable;
 import games.strategy.triplea.ui.screen.drawable.BlockadeZoneDrawable;
@@ -60,18 +60,17 @@ import games.strategy.util.Tuple;
 public class TileManager {
   private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
-  private List<Tile> m_tiles = new ArrayList<>();
-  private final Lock m_lock = new ReentrantLock();
-  private final Map<String, IDrawable> m_territoryOverlays = new HashMap<>();
-  // maps territoryname - collection of drawables
-  private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<>();
-  // maps territoryname - collection of tiles where the territory is drawn
-  private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<>();
-  private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<>();
-  private final IUIContext m_uiContext;
+
+  private List<Tile> tiles = new ArrayList<>();
+  private final Lock lock = new ReentrantLock();
+  private final Map<String, IDrawable> territoryOverlays = new HashMap<>();
+  private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
+  private final Map<String, Set<Tile>> territoryTiles = new HashMap<>();
+  private final Collection<UnitsDrawer> allUnitDrawables = new ArrayList<>();
+  private final IUIContext uiContext;
 
   public TileManager(final IUIContext uiContext) {
-    m_uiContext = uiContext;
+    this.uiContext = uiContext;
   }
 
   /**
@@ -85,7 +84,7 @@ public class TileManager {
     // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as
     // well as the original
     // rectangle
-    final MapData mapData = m_uiContext.getMapData();
+    final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
     final boolean testXshift =
         (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
@@ -114,14 +113,14 @@ public class TileManager {
     acquireLock();
     try {
       final List<Tile> rVal = new ArrayList<>();
-      for (final Tile tile : m_tiles) {
+      for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
         if (bounds.contains(tileBounds) || tileBounds.intersects(bounds)) {
           rVal.add(tile);
         }
       }
       if (boundsXshift != null) {
-        for (final Tile tile : m_tiles) {
+        for (final Tile tile : tiles) {
           final Rectangle tileBounds = tile.getBounds();
           if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift)) {
             rVal.add(tile);
@@ -129,7 +128,7 @@ public class TileManager {
         }
       }
       if (boundsYshift != null) {
-        for (final Tile tile : m_tiles) {
+        for (final Tile tile : tiles) {
           final Rectangle tileBounds = tile.getBounds();
           if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift)) {
             rVal.add(tile);
@@ -143,17 +142,17 @@ public class TileManager {
   }
 
   private void acquireLock() {
-    Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
+    Tile.S_TILE_LOCKUTIL.acquireLock(lock);
   }
 
   private void releaseLock() {
-    Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
+    Tile.S_TILE_LOCKUTIL.releaseLock(lock);
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
     acquireLock();
     try {
-      return new ArrayList<>(m_allUnitDrawables);
+      return new ArrayList<>(allUnitDrawables);
     } finally {
       releaseLock();
     }
@@ -163,11 +162,11 @@ public class TileManager {
     acquireLock();
     try {
       // create our tiles
-      m_tiles = new ArrayList<>();
+      tiles = new ArrayList<>();
       for (int x = 0; (x) * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; (y) * TILE_SIZE < bounds.height; y++) {
-          m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
-              m_uiContext.getScale()));
+          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
+              uiContext.getScale()));
         }
       }
     } finally {
@@ -180,14 +179,14 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        final Iterator<Tile> allTiles = m_tiles.iterator();
+        final Iterator<Tile> allTiles = tiles.iterator();
         while (allTiles.hasNext()) {
           final Tile tile = allTiles.next();
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
           final int y = tile.getBounds().y / TILE_SIZE;
-          tile.addDrawable(new BaseMapDrawable(x, y, m_uiContext));
-          tile.addDrawable(new ReliefMapDrawable(x, y, m_uiContext));
+          tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
+          tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
         }
         final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
         while (territories.hasNext()) {
@@ -252,31 +251,31 @@ public class TileManager {
   }
 
   private void clearTerritory(final Territory territory) {
-    if (m_territoryTiles.get(territory.getName()) == null) {
+    if (territoryTiles.get(territory.getName()) == null) {
       return;
     }
-    final Collection<IDrawable> drawables = m_territoryDrawables.get(territory.getName());
+    final Collection<IDrawable> drawables = territoryDrawables.get(territory.getName());
     if (drawables == null || drawables.isEmpty()) {
       return;
     }
-    final Iterator<Tile> tiles = m_territoryTiles.get(territory.getName()).iterator();
+    final Iterator<Tile> tiles = territoryTiles.get(territory.getName()).iterator();
     while (tiles.hasNext()) {
       final Tile tile = tiles.next();
       tile.removeDrawables(drawables);
     }
-    m_allUnitDrawables.removeAll(drawables);
+    allUnitDrawables.removeAll(drawables);
   }
 
   private void drawTerritory(final Territory territory, final GameData data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
-    if (m_territoryOverlays.get(territory.getName()) != null) {
-      drawing.add(m_territoryOverlays.get(territory.getName()));
+    if (territoryOverlays.get(territory.getName()) != null) {
+      drawing.add(territoryOverlays.get(territory.getName()));
     }
-    if (m_uiContext.getShowTerritoryEffects()) {
+    if (uiContext.getShowTerritoryEffects()) {
       drawTerritoryEffects(territory, mapData, drawing);
     }
-    if (m_uiContext.getShowUnits()) {
+    if (uiContext.getShowUnits()) {
       drawUnits(territory, mapData, drawnOn, drawing);
     }
     drawing.add(new BattleDrawable(territory.getName()));
@@ -287,31 +286,31 @@ public class TileManager {
       if (ta != null) {
         // Kamikaze Zones
         if (ta.getKamikazeZone()) {
-          drawing.add(new KamikazeZoneDrawable(territory, m_uiContext));
+          drawing.add(new KamikazeZoneDrawable(territory, uiContext));
         }
         // Blockades
         if (ta.getBlockadeZone()) {
-          drawing.add(new BlockadeZoneDrawable(territory, m_uiContext));
+          drawing.add(new BlockadeZoneDrawable(territory, uiContext));
         }
         // Convoy Routes
         if (ta.getConvoyRoute()) {
-          drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, m_uiContext));
+          drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, uiContext));
         }
         // Convoy Centers
         if (ta.getProduction() > 0) {
-          drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, m_uiContext));
+          drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, uiContext));
         }
       }
       drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
     }
-    final OptionalExtraBorderLevel optionalBorderLevel = m_uiContext.getDrawTerritoryBordersAgain();
+    final OptionalExtraBorderLevel optionalBorderLevel = uiContext.getDrawTerritoryBordersAgain();
     if (optionalBorderLevel != OptionalExtraBorderLevel.LOW) {
       drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
     }
-    drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));
+    drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
       final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
-      drawing.add(new CapitolMarkerDrawable(capitalOf, territory, m_uiContext));
+      drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {
       drawing.add(new VCDrawable(territory));
@@ -323,8 +322,8 @@ public class TileManager {
       drawnOn.add(tile);
       tile.addDrawables(drawing);
     }
-    m_territoryDrawables.put(territory.getName(), drawing);
-    m_territoryTiles.put(territory.getName(), drawnOn);
+    territoryDrawables.put(territory.getName(), drawing);
+    territoryTiles.put(territory.getName(), drawnOn);
   }
 
   private static void drawTerritoryEffects(final Territory territory, final MapData mapData,
@@ -354,17 +353,17 @@ public class TileManager {
         overflow = false;
       } else {
         lastPlace = new Point(lastPlace);
-        lastPlace.x += m_uiContext.getUnitImageFactory().getUnitImageWidth();
+        lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
         overflow = true;
       }
       final UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
           category.getOwner().getName(), lastPlace, category.getDamaged(), category.getBombingDamage(),
-          category.getDisabled(), overflow, territory.getName(), m_uiContext);
+          category.getDisabled(), overflow, territory.getName(), uiContext);
       drawing.add(drawable);
-      m_allUnitDrawables.add(drawable);
+      allUnitDrawables.add(drawable);
       final Iterator<Tile> tiles =
-          getTiles(new Rectangle(lastPlace.x, lastPlace.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(),
-              m_uiContext.getUnitImageFactory().getUnitImageHeight())).iterator();
+          getTiles(new Rectangle(lastPlace.x, lastPlace.y, uiContext.getUnitImageFactory().getUnitImageWidth(),
+              uiContext.getUnitImageFactory().getUnitImageHeight())).iterator();
       while (tiles.hasNext()) {
         final Tile tile = tiles.next();
         tile.addDrawable(drawable);
@@ -476,7 +475,7 @@ public class TileManager {
     // the base tiles are scaled to save memory
     // but we want to draw them unscaled here
     // so unscale them
-    if (m_uiContext.getScale() != 1) {
+    if (uiContext.getScale() != 1) {
       final List<IDrawable> toAdd = new ArrayList<>();
       final Iterator<IDrawable> iter = drawablesSet.iterator();
       while (iter.hasNext()) {
@@ -506,7 +505,7 @@ public class TileManager {
       } else {
         c = new Color(0, 0, 0);
       }
-      final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, OP.FILL);
+      final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, Operation.FILL);
       told.draw(bounds, data, graphics, mapData, null, null);
     }
     graphics.setStroke(new BasicStroke(10));
@@ -526,13 +525,13 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        for (final UnitsDrawer drawer : m_allUnitDrawables) {
+        for (final UnitsDrawer drawer : allUnitDrawables) {
           final List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
           if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits)) {
             final Point placementPoint = drawer.getPlacementPoint();
             return new Rectangle(placementPoint.x, placementPoint.y,
-                m_uiContext.getUnitImageFactory().getUnitImageWidth(),
-                m_uiContext.getUnitImageFactory().getUnitImageHeight());
+                uiContext.getUnitImageFactory().getUnitImageWidth(),
+                uiContext.getUnitImageFactory().getUnitImageHeight());
           }
         }
         return null;
@@ -549,10 +548,10 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        for (final UnitsDrawer drawer : m_allUnitDrawables) {
+        for (final UnitsDrawer drawer : allUnitDrawables) {
           final Point placementPoint = drawer.getPlacementPoint();
-          if (x > placementPoint.x && x < placementPoint.x + m_uiContext.getUnitImageFactory().getUnitImageWidth()) {
-            if (y > placementPoint.y && y < placementPoint.y + m_uiContext.getUnitImageFactory().getUnitImageHeight()) {
+          if (x > placementPoint.x && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()) {
+            if (y > placementPoint.y && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
               return drawer.getUnits(gameData);
             }
           }
@@ -570,8 +569,8 @@ public class TileManager {
       final MapData mapData) {
     acquireLock();
     try {
-      final IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), alpha, OP.DRAW);
-      m_territoryOverlays.put(territory.getName(), drawable);
+      final IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), alpha, Operation.DRAW);
+      territoryOverlays.put(territory.getName(), drawable);
     } finally {
       releaseLock();
     }
@@ -582,8 +581,8 @@ public class TileManager {
       final MapData mapData) {
     acquireLock();
     try {
-      final IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), OP.DRAW);
-      m_territoryOverlays.put(territory.getName(), drawable);
+      final IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), Operation.DRAW);
+      territoryOverlays.put(territory.getName(), drawable);
     } finally {
       releaseLock();
     }
@@ -593,7 +592,7 @@ public class TileManager {
   public void clearTerritoryOverlay(final Territory territory, final GameData data, final MapData mapData) {
     acquireLock();
     try {
-      m_territoryOverlays.remove(territory.getName());
+      territoryOverlays.remove(territory.getName());
     } finally {
       releaseLock();
     }
