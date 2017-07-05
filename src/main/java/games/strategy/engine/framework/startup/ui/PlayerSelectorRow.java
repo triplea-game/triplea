@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleA;
 
 class PlayerSelectorRow {
 
@@ -28,7 +29,7 @@ class PlayerSelectorRow {
 
   private final JCheckBox enabledCheckBox;
   private final String playerName;
-  private final boolean isHidden;
+  private final PlayerID player;
   private final JComboBox<String> playerTypes;
   private JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
@@ -47,7 +48,7 @@ class PlayerSelectorRow {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
-    isHidden = player.isHidden();
+    this.player = player;
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
@@ -77,12 +78,8 @@ class PlayerSelectorRow {
     }
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
-    } else if (PLAYER_TYPE_AI.equals(player.getDefaultType())) {
-      // the 4th in the list should be Pro AI (Hard AI)
-      playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-    } else if (PLAYER_TYPE_DOES_NOTHING.equals(player.getDefaultType())) {
-      // the 5th in the list should be Does Nothing AI
-      playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 4))]);
+    } else {
+      setDefaultPlayerType();
     }
 
     alliances = null;
@@ -164,8 +161,20 @@ class PlayerSelectorRow {
   }
 
   void setPlayerType(final String playerType) {
-    if (enabled && !isHidden) {
+    if (enabled && !player.isHidden()) {
       playerTypes.setSelectedItem(playerType);
+    }
+  }
+
+  void setDefaultPlayerType() {
+    if (enabled && !player.isHidden()) {
+      if (PLAYER_TYPE_AI.equals(player.getDefaultType())) {
+        playerTypes.setSelectedItem(TripleA.PRO_COMPUTER_PLAYER_TYPE);
+      } else if (PLAYER_TYPE_DOES_NOTHING.equals(player.getDefaultType())) {
+        playerTypes.setSelectedItem(TripleA.DOESNOTHINGAI_COMPUTER_PLAYER_TYPE);
+      } else {
+        playerTypes.setSelectedItem(TripleA.HUMAN_PLAYER_TYPE);
+      }
     }
   }
 
