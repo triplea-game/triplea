@@ -114,7 +114,7 @@ public final class Match<T> {
   /**
    * Returns true if any matches could be found.
    */
-  public static <T> boolean someMatch(final Collection<T> collection, final Match<T> match) {
+  public static <T> boolean anyMatch(final Collection<T> collection, final Match<T> match) {
     if (collection.isEmpty()) {
       return false;
     }
@@ -130,7 +130,7 @@ public final class Match<T> {
    * Returns true if no matches could be found.
    */
   public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> match) {
-    return !someMatch(collection, match);
+    return !anyMatch(collection, match);
   }
 
   /**

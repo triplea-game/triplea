@@ -307,7 +307,7 @@ public class WeakAI extends AbstractAI {
       // move sea units to the capitol, unless they are loaded transports
       if (t.isWater()) {
         // land units, move all towards the end point
-        if (t.getUnits().someMatch(Matches.UnitIsLand)) {
+        if (t.getUnits().anyMatch(Matches.UnitIsLand)) {
           // move along amphi route
           if (lastSeaZoneOnAmphib != null) {
             // two move route to end
@@ -319,7 +319,7 @@ public class WeakAI extends AbstractAI {
             }
           }
         }
-        if (nonCombat && t.getUnits().someMatch(ownedAndNotMoved)) {
+        if (nonCombat && t.getUnits().anyMatch(ownedAndNotMoved)) {
           // move toward the start of the amphib route
           if (firstSeaZoneOnAmphib != null) {
             final Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
@@ -357,7 +357,7 @@ public class WeakAI extends AbstractAI {
       if (!t.isWater()) {
         continue;
       }
-      if (!t.getUnits().someMatch(Matches.enemyUnit(player, data))) {
+      if (!t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
         continue;
       }
       final Territory enemy = t;
@@ -371,7 +371,7 @@ public class WeakAI extends AbstractAI {
         final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.TerritoryIsWater);
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
-          if (owned.getUnits().someMatch(Matches.UnitIsLand)) {
+          if (owned.getUnits().anyMatch(Matches.UnitIsLand)) {
             dontMoveFrom.add(owned);
             continue;
           }
@@ -573,8 +573,8 @@ public class WeakAI extends AbstractAI {
       if (!ta1.isCapital() && ta2.isCapital()) {
         return 1;
       }
-      final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
-      final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      final boolean factoryInT1 = o1.getUnits().anyMatch(Matches.UnitCanProduceUnits);
+      final boolean factoryInT2 = o2.getUnits().anyMatch(Matches.UnitCanProduceUnits);
       // next take territories which can produce
       if (factoryInT1 && !factoryInT2) {
         return -1;
@@ -582,8 +582,8 @@ public class WeakAI extends AbstractAI {
       if (!factoryInT1 && factoryInT2) {
         return 1;
       }
-      final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
-      final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
+      final boolean infrastructureInT1 = o1.getUnits().anyMatch(Matches.UnitIsInfrastructure);
+      final boolean infrastructureInT2 = o2.getUnits().anyMatch(Matches.UnitIsInfrastructure);
       // next take territories with infrastructure
       if (infrastructureInT1 && !infrastructureInT2) {
         return -1;
@@ -1007,7 +1007,7 @@ public class WeakAI extends AbstractAI {
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {
-      if (t != capitol && t.getOwner().equals(player) && t.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
+      if (t != capitol && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.UnitCanProduceUnits)) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }

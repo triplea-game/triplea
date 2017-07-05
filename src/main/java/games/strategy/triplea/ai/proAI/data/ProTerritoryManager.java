@@ -571,7 +571,7 @@ public class ProTerritoryManager {
             continue;
           }
           if (myRoute.hasMoreThenOneStep()
-              && Match.someMatch(myRoute.getMiddleSteps(), Matches.isTerritoryEnemy(player, data))
+              && Match.anyMatch(myRoute.getMiddleSteps(), Matches.isTerritoryEnemy(player, data))
               && Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
                   .match(myLandUnit)) {
             continue; // If blitzing then make sure none of the territories cause blitz ability to be lost
@@ -632,7 +632,7 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
-        if (t.getUnits().someMatch(Matches.unitIsAlliedCarrier(player, data))) {
+        if (t.getUnits().anyMatch(Matches.unitIsAlliedCarrier(player, data))) {
           possibleCarrierTerritories.add(t);
         }
       }

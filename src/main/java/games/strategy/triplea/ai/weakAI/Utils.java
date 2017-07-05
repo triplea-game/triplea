@@ -107,7 +107,7 @@ class Utils {
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {
-      if (t2.getUnits().someMatch(limitShips)) {
+      if (t2.getUnits().anyMatch(limitShips)) {
         shipTerr.add(t2);
       }
     }

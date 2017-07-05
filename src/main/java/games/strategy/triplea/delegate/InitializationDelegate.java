@@ -122,7 +122,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       final Collection<Unit> units = current.getUnits().getUnits();
-      if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand)) {
+      if (units.size() == 0 || !Match.anyMatch(units, Matches.UnitIsLand)) {
         continue;
       }
       // map transports, try to fill

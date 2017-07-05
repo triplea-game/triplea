@@ -130,7 +130,7 @@ public class MovePanel extends AbstractMovePanel {
 
     final Comparator<Unit> unitComparator;
     // sort units based on which transports are allowed to unload
-    if (route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) {
+    if (route.isUnload() && Match.anyMatch(units, Matches.UnitIsLand)) {
       unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
     } else {
       unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
@@ -558,7 +558,7 @@ public class MovePanel extends AbstractMovePanel {
     if (!route.isLoad()) {
       return Collections.emptyList();
     }
-    if (Match.someMatch(unitsToLoad, Matches.UnitIsAir)) {
+    if (Match.anyMatch(unitsToLoad, Matches.UnitIsAir)) {
       return Collections.emptyList();
     }
     final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
@@ -842,7 +842,7 @@ public class MovePanel extends AbstractMovePanel {
         // Load Bombers with paratroops
         if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
-            && Match.someMatch(selectedUnits, Match.allOf(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
+            && Match.anyMatch(selectedUnits, Match.allOf(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
           final PlayerID player = getCurrentPlayer();
           // TODO Transporting allied units
           // Get the potential units to load
@@ -1093,14 +1093,14 @@ public class MovePanel extends AbstractMovePanel {
       final Match.CompositeBuilder<Unit> paratroopNBombersBuilder = Match.newCompositeBuilder(
           Matches.UnitIsAirTransport,
           Matches.UnitIsAirTransportable);
-      final boolean paratroopsLanding = Match.someMatch(units, paratroopNBombersBuilder.all());
-      if (route.isLoad() && Match.someMatch(units, Matches.UnitIsLand)) {
+      final boolean paratroopsLanding = Match.anyMatch(units, paratroopNBombersBuilder.all());
+      if (route.isLoad() && Match.anyMatch(units, Matches.UnitIsLand)) {
         transports = getTransportsToLoad(route, units, false);
         if (transports.isEmpty()) {
           cancelMove();
           return;
         }
-      } else if ((route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) || paratroopsLanding) {
+      } else if ((route.isUnload() && Match.anyMatch(units, Matches.UnitIsLand)) || paratroopsLanding) {
         final List<Unit> unloadAble = Match.getMatches(selectedUnits, getUnloadableMatch());
         final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
         canMove.addAll(Match.getMatches(selectedUnits, getUnloadableMatch().invert()));
@@ -1231,7 +1231,7 @@ public class MovePanel extends AbstractMovePanel {
       }
       final PlayerID owner = getUnitOwner(selectedUnits);
       final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(owner), Matches.UnitCanMove);
-      final boolean someOwned = Match.someMatch(units, match);
+      final boolean someOwned = Match.anyMatch(units, match);
       final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
       if (someOwned && isCorrectTerritory) {
         final Map<Territory, List<Unit>> highlight = new HashMap<>();

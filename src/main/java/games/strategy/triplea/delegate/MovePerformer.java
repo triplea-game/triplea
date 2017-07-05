@@ -164,7 +164,7 @@ public class MovePerformer implements Serializable {
           change.add(markFuelCostResourceChange(units, route, id, data));
         }
         markTransportsMovement(arrived, transporting, route);
-        if (route.someMatch(mustFightThrough) && arrived.size() != 0) {
+        if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
           boolean bombing = false;
           boolean ignoreBattle = false;
           // could it be a bombing raid
@@ -338,7 +338,7 @@ public class MovePerformer implements Serializable {
     }
     if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .someMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
+            .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
@@ -359,7 +359,7 @@ public class MovePerformer implements Serializable {
     }
     final GameData data = m_bridge.getData();
     final Match<Unit> paratroopNAirTransports = Match.anyOf(Matches.UnitIsAirTransport, Matches.UnitIsAirTransportable);
-    final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports)
+    final boolean paratroopsLanding = Match.anyMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
         MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport));

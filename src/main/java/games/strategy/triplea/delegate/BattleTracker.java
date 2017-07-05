@@ -288,8 +288,8 @@ public class BattleTracker implements java.io.Serializable {
       if (changeTracker != null) {
         changeTracker.addChange(change);
       }
-      if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand)
-          || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea)) {
+      if (games.strategy.util.Match.anyMatch(units, Matches.UnitIsLand)
+          || games.strategy.util.Match.anyMatch(units, Matches.UnitIsSea)) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
     }
@@ -390,7 +390,7 @@ public class BattleTracker implements java.io.Serializable {
     if (unitsNotUnloadedTilEndOfRoute != null) {
       presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
     }
-    final boolean canConquerMiddleSteps = Match.someMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
+    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
     final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
     final Match<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
@@ -676,7 +676,7 @@ public class BattleTracker implements java.io.Serializable {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id);
       } else if (ta != null && ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id);
-      } else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz)) {
+      } else if (m_blitzed.contains(territory) && Match.anyMatch(arrivedUnits, Matches.UnitCanBlitz)) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id);
       } else {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id);
@@ -684,7 +684,7 @@ public class BattleTracker implements java.io.Serializable {
     }
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
-    if (Match.someMatch(territory.getUnits().getUnits(),
+    if (Match.anyMatch(territory.getUnits().getUnits(),
         Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
@@ -880,7 +880,7 @@ public class BattleTracker implements java.io.Serializable {
     // make amphibious assaults dependent on possible naval invasions
     // its only a dependency if we are unloading
     final IBattle precede = getDependentAmphibiousAssault(route);
-    if (precede != null && Match.someMatch(units, Matches.UnitIsLand)) {
+    if (precede != null && Match.anyMatch(units, Matches.UnitIsLand)) {
       addDependency(battle, precede);
     }
     // dont let land battles in the same territory occur before bombing
