@@ -136,7 +136,7 @@ public class RocketsFireHelper {
       if (tracker.wasConquered(current)) {
         continue;
       }
-      if (current.getUnits().someMatch(ownedRockets)) {
+      if (current.getUnits().anyMatch(ownedRockets)) {
         territories.add(current);
       }
     }
@@ -163,7 +163,7 @@ public class RocketsFireHelper {
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowedBuilder.all());
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().someMatch(Match.allOf(attackableUnits,
+        if (current.getUnits().anyMatch(Match.allOf(attackableUnits,
             Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
@@ -419,7 +419,7 @@ public class RocketsFireHelper {
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    if (Match.someMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
+    if (Match.anyMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
       final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
       unitsCanDie
           .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));

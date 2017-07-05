@@ -407,7 +407,7 @@ final class ProTechAI {
       }
       for (final Territory neighbor : data.getMap().getNeighbors(current)) {
         if (!distance.keySet().contains(neighbor)) {
-          if (!neighbor.getUnits().someMatch(unitCondition)) {
+          if (!neighbor.getUnits().anyMatch(unitCondition)) {
             if (!routeCondition.match(neighbor)) {
               continue;
             }
@@ -675,7 +675,7 @@ final class ProTechAI {
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> tNeighbors = data.getMap().getTerritories();
     for (final Territory t2 : tNeighbors) {
-      if (t2.getUnits().someMatch(limitShips)) {
+      if (t2.getUnits().anyMatch(limitShips)) {
         shipTerr.add(t2);
       }
     }

@@ -39,7 +39,7 @@ public class UnitsThatCantFightUtil {
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }
-      if (current.getUnits().someMatch(enemyAttackUnits)) {
+      if (current.getUnits().anyMatch(enemyAttackUnits)) {
         cantFight.add(current);
       }
     }

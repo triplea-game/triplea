@@ -119,12 +119,12 @@ class AAInMoveUtil implements Serializable {
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnits().someMatch(hasAa)) {
+      if (current.getUnits().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(current);
       }
     }
     if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
-      if (route.getEnd().getUnits().someMatch(hasAa)) {
+      if (route.getEnd().getUnits().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }
     } else {
@@ -136,7 +136,7 @@ class AAInMoveUtil implements Serializable {
       // battle.
       // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
       // fire
-      if (route.getStart().getUnits().someMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
+      if (route.getStart().getUnits().anyMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
         territoriesWhereAaWillFire.add(route.getStart());
       }
     }
@@ -148,7 +148,7 @@ class AAInMoveUtil implements Serializable {
   }
 
   private PlayerID movingPlayer(final Collection<Unit> units) {
-    if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player))) {
+    if (Match.anyMatch(units, Matches.unitIsOwnedBy(m_player))) {
       return m_player;
     }
     if (units != null) {
@@ -248,7 +248,7 @@ class AAInMoveUtil implements Serializable {
       }
       return PlayerID.NULL_PLAYERID;
     } else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()
-        && Match.someMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner()))) {
+        && Match.anyMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
     }
     for (final Unit u : defendingUnits) {

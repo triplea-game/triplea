@@ -463,7 +463,7 @@ class ProCombatMoveAI {
 
       // Remove empty convoy zones that can't be held
       if (!patd.isCanHold() && enemyAttackOptions.getMax(t) != null && t.isWater()
-          && !t.getUnits().someMatch(Matches.enemyUnit(player, data))) {
+          && !t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
         ProLogger.debug("Removing convoy zone that can't be held: " + t.getName() + ", enemyAttackers="
             + enemyAttackOptions.getMax(t).getMaxUnits());
         it.remove();
@@ -545,7 +545,7 @@ class ProCombatMoveAI {
     // Find land territories with no can't move units and adjacent to enemy land units
     final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : ProData.myUnitTerritories) {
-      final boolean hasAlliedLandUnits = Match.someMatch(t.getUnits().getUnits(),
+      final boolean hasAlliedLandUnits = Match.anyMatch(t.getUnits().getUnits(),
           ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data, t));
       final Set<Territory> enemyNeighbors = data.getMap().getNeighbors(t,
           Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitIsLand));
@@ -719,9 +719,9 @@ class ProCombatMoveAI {
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
-          final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
+          final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
           if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
-            final int noAaBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly) ? 0 : 1;
+            final int noAaBombingDefense = t.getUnits().anyMatch(Matches.UnitIsAAforBombingThisUnitOnly) ? 0 : 1;
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);
             if (ta != null) {
@@ -776,7 +776,7 @@ class ProCombatMoveAI {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, attackingUnits, defendingUnits);
-            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            final boolean hasAa = Match.anyMatch(defendingUnits, Matches.UnitIsAAforAnything);
             if (!hasAa && !isOverwhelmingWin) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
@@ -1017,7 +1017,7 @@ class ProCombatMoveAI {
 
         // Add destroyer if territory has subs and a destroyer has been already added
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
-        if (Match.someMatch(defendingUnits, Matches.UnitIsSub)
+        if (Match.anyMatch(defendingUnits, Matches.UnitIsSub)
             && Match.noneMatch(attackMap.get(t).getUnits(), Matches.UnitIsDestroyer)) {
           attackMap.get(t).addUnit(unit);
           it.remove();
@@ -1040,7 +1040,7 @@ class ProCombatMoveAI {
         }
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
         double estimate = ProBattleUtils.estimateStrengthDifference(t, attackMap.get(t).getUnits(), defendingUnits);
-        final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+        final boolean hasAa = Match.anyMatch(defendingUnits, Matches.UnitIsAAforAnything);
         if (hasAa) {
           estimate -= 10;
         }
@@ -1130,7 +1130,7 @@ class ProCombatMoveAI {
                 Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
-            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            final boolean hasAa = Match.anyMatch(defendingUnits, Matches.UnitIsAAforAnything);
             if (!hasNoDefenders && !isOverwhelmingWin && (!hasAa || result.getWinPercentage() < minWinPercentage)) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
@@ -1188,7 +1188,7 @@ class ProCombatMoveAI {
                 Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
-            final boolean hasAa = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
+            final boolean hasAa = Match.anyMatch(defendingUnits, Matches.UnitIsAAforAnything);
             if (!isAirUnit || (!hasNoDefenders && !isOverwhelmingWin
                 && (!hasAa || result.getWinPercentage() < minWinPercentage))) {
               minWinPercentage = result.getWinPercentage();
@@ -1382,7 +1382,7 @@ class ProCombatMoveAI {
       final Set<Territory> canBombardTerritories = new HashSet<>();
       for (final ProTerritory patd : prioritizedTerritories) {
         final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
-        final boolean hasDefenders = Match.someMatch(defendingUnits, Matches.UnitIsInfrastructure.invert());
+        final boolean hasDefenders = Match.anyMatch(defendingUnits, Matches.UnitIsInfrastructure.invert());
         if (bombardMap.get(u).contains(patd.getTerritory()) && !patd.getTransportTerritoryMap().isEmpty()
             && hasDefenders && !TransportTracker.isTransporting(u)) {
           canBombardTerritories.add(patd.getTerritory());

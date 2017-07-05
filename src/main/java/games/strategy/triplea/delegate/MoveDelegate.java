@@ -248,7 +248,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       moveableUnitOwnedByMeBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
     }
     for (final Territory item : getData().getMap().getTerritories()) {
-      if (item.getUnits().someMatch(moveableUnitOwnedByMeBuilder.all())) {
+      if (item.getUnits().anyMatch(moveableUnitOwnedByMeBuilder.all())) {
         return true;
       }
     }
@@ -528,7 +528,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     Collection<Unit> kamikazeUnits = new ArrayList<>();
 
     // confirm kamikaze moves, and remove them from unresolved units
-    if (getKamikazeAir || Match.someMatch(units, Matches.UnitIsKamikaze)) {
+    if (getKamikazeAir || Match.anyMatch(units, Matches.UnitIsKamikaze)) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
       if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
@@ -581,7 +581,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player)) {
-      if (p.getUnits().someMatch(Matches.UnitIsCarrier)) {
+      if (p.getUnits().anyMatch(Matches.UnitIsCarrier)) {
         hasProducedCarriers = true;
         break;
       }
@@ -595,7 +595,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // Check if player still has units to place
       if (!player.equals(m_player)) {
         util.removeAirThatCantLand(player,
-            ((player.getUnits().someMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
+            ((player.getUnits().anyMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
       }
     }
   }

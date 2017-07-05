@@ -66,7 +66,7 @@ import games.strategy.util.Util;
  * </p>
  *
  * <pre>
- * boolean hasLand = Match.someMatch(someCollection, Matches.UnitIsAir);
+ * boolean hasLand = Match.anyMatch(someCollection, Matches.UnitIsAir);
  * </pre>
  *
  * <p>
@@ -414,7 +414,7 @@ public class Matches {
       Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1);
 
   static Match<Territory> territoryHasOwnedCarrier(final PlayerID player) {
-    return Match.of(t -> t.getUnits().someMatch(Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier)));
   }
 
   public static Match<Unit> unitIsAlliedCarrier(final PlayerID player, final GameData data) {
@@ -504,7 +504,7 @@ public class Matches {
           return true;
         }
       }
-      return Match.someMatch(targets, Match.allOf(Matches.UnitIsAirborne,
+      return Match.anyMatch(targets, Match.allOf(Matches.UnitIsAirborne,
           Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
     });
   }
@@ -832,7 +832,7 @@ public class Matches {
       if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
         return false;
       }
-      return t.getUnits().someMatch(Match.allOf(Matches.alliedUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(Matches.alliedUnit(player, data), unitMatch));
     });
   }
 
@@ -842,7 +842,7 @@ public class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      return t.getUnits().someMatch(Match.allOf(Matches.unitIsOwnedBy(player), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(player), unitMatch));
     });
   }
 
@@ -851,7 +851,7 @@ public class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      return t.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      return t.getUnits().anyMatch(Matches.UnitCanProduceUnits);
     });
   }
 
@@ -861,7 +861,7 @@ public class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      if (!t.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
+      if (!t.getUnits().anyMatch(Matches.UnitCanProduceUnits)) {
         return false;
       }
       final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
@@ -874,7 +874,7 @@ public class Matches {
       if (!isTerritoryAllied(player, data).match(t)) {
         return false;
       }
-      return t.getUnits().someMatch(Matches.UnitCanProduceUnits);
+      return t.getUnits().anyMatch(Matches.UnitCanProduceUnits);
     });
   }
 
@@ -887,7 +887,7 @@ public class Matches {
       if (t.getOwner().isNull()) {
         return false;
       }
-      return t.getUnits().someMatch(Match.allOf(Matches.enemyUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(Matches.enemyUnit(player, data), unitMatch));
     });
   }
 
@@ -1329,49 +1329,49 @@ public class Matches {
   }
 
   public static Match<Territory> territoryHasLandUnitsOwnedBy(final PlayerID player) {
-    return Match.of(t -> t.getUnits().someMatch(Match.allOf(unitIsOwnedBy(player), UnitIsLand)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), UnitIsLand)));
   }
 
   public static Match<Territory> territoryHasUnitsOwnedBy(final PlayerID player) {
     final Match<Unit> unitOwnedBy = unitIsOwnedBy(player);
-    return Match.of(t -> t.getUnits().someMatch(unitOwnedBy));
+    return Match.of(t -> t.getUnits().anyMatch(unitOwnedBy));
   }
 
   public static Match<Territory> territoryHasUnitsThatMatch(final Match<Unit> cond) {
-    return Match.of(t -> t.getUnits().someMatch(cond));
+    return Match.of(t -> t.getUnits().anyMatch(cond));
   }
 
   public static Match<Territory> territoryHasEnemyAaForAnything(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(unitIsEnemyAaForAnything(player, data)));
+    return Match.of(t -> t.getUnits().anyMatch(unitIsEnemyAaForAnything(player, data)));
   }
 
   public static Match<Territory> territoryHasEnemyAaForCombatOnly(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(unitIsEnemyAaForCombat(player, data)));
+    return Match.of(t -> t.getUnits().anyMatch(unitIsEnemyAaForCombat(player, data)));
   }
 
   public static Match<Territory> territoryHasNoEnemyUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> !t.getUnits().someMatch(enemyUnit(player, data)));
+    return Match.of(t -> !t.getUnits().anyMatch(enemyUnit(player, data)));
   }
 
   public static Match<Territory> territoryHasAlliedUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(alliedUnit(player, data)));
+    return Match.of(t -> t.getUnits().anyMatch(alliedUnit(player, data)));
   }
 
   static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data) {
     final Match<Unit> match = Match.allOf(enemyUnit(player, data), UnitIsSubmerged.invert());
-    return Match.of(t -> t.getUnits().someMatch(match));
+    return Match.of(t -> t.getUnits().anyMatch(match));
   }
 
   public static Match<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(Match.allOf(enemyUnit(player, data), UnitIsLand)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), UnitIsLand)));
   }
 
   public static Match<Territory> territoryHasEnemySeaUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(Match.allOf(enemyUnit(player, data), UnitIsSea)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), UnitIsSea)));
   }
 
   public static Match<Territory> territoryHasEnemyUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().someMatch(enemyUnit(player, data)));
+    return Match.of(t -> t.getUnits().anyMatch(enemyUnit(player, data)));
   }
 
   /**
@@ -1573,7 +1573,7 @@ public class Matches {
       }
       final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(player, data),
           Matches.UnitCanRepairOthers, Matches.unitCanRepairThisUnit(damagedUnit));
-      if (Match.someMatch(territory.getUnits().getUnits(), repairUnit)) {
+      if (Match.anyMatch(territory.getUnits().getUnits(), repairUnit)) {
         return true;
       }
       if (Matches.UnitIsSea.match(damagedUnit)) {
@@ -1581,7 +1581,7 @@ public class Matches {
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
         for (final Territory current : neighbors) {
-          if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand)) {
+          if (Match.anyMatch(current.getUnits().getUnits(), repairUnitLand)) {
             return true;
           }
         }
@@ -1590,7 +1590,7 @@ public class Matches {
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.TerritoryIsWater));
         for (final Territory current : neighbors) {
-          if (Match.someMatch(current.getUnits().getUnits(), repairUnitSea)) {
+          if (Match.anyMatch(current.getUnits().getUnits(), repairUnitSea)) {
             return true;
           }
         }
@@ -1637,7 +1637,7 @@ public class Matches {
     return Match.of(unitWhichWillGetBonus -> {
       final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
           unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
-      if (Match.someMatch(territory.getUnits().getUnits(), givesBonusUnit)) {
+      if (Match.anyMatch(territory.getUnits().getUnits(), givesBonusUnit)) {
         return true;
       }
       if (Matches.UnitIsSea.match(unitWhichWillGetBonus)) {
@@ -1645,7 +1645,7 @@ public class Matches {
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
         for (final Territory current : neighbors) {
-          if (Match.someMatch(current.getUnits().getUnits(), givesBonusUnitLand)) {
+          if (Match.anyMatch(current.getUnits().getUnits(), givesBonusUnitLand)) {
             return true;
           }
         }

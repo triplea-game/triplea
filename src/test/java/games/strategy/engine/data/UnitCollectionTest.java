@@ -408,17 +408,17 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void someMatch() {
+  public void anyMatch() {
     final UnitCollection defaultPlayerUnitsOfUnitTypeOneUnitCollection =
         addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(unitCollection);
-    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.someMatch(Matches.unitIsOfType(unitTypeOne)),
+    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeOne)),
         is(equalTo(true)));
-    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.someMatch(Matches.unitIsOfType(unitTypeTwo)),
+    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeTwo)),
         is(equalTo(false)));
     final UnitCollection allDefaultPlayerUnitCollection =
         addAllDefaultPlayerUnitsOfUnitTypeTwoToUnitCollection(defaultPlayerUnitsOfUnitTypeOneUnitCollection);
-    assertThat(allDefaultPlayerUnitCollection.someMatch(Matches.unitIsOfType(unitTypeOne)), is(equalTo(true)));
-    assertThat(allDefaultPlayerUnitCollection.someMatch(Matches.unitIsOfType(unitTypeTwo)), is(equalTo(true)));
+    assertThat(allDefaultPlayerUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeOne)), is(equalTo(true)));
+    assertThat(allDefaultPlayerUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeTwo)), is(equalTo(true)));
   }
 
   @Test

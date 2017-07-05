@@ -547,7 +547,7 @@ class ProPurchaseAI {
 
       // Determine if need destroyer
       boolean needDestroyer = false;
-      if (Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
+      if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
           && Match.noneMatch(ownedLocalUnits, Matches.UnitIsDestroyer)) {
         needDestroyer = true;
       }
@@ -712,9 +712,9 @@ class ProPurchaseAI {
 
       // Check if territory needs AA
       final boolean enemyCanBomb =
-          Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
-      final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
-      final boolean hasAaBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly);
+          Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
+      final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
+      final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.UnitIsAAforBombingThisUnitOnly);
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed
           + ", hasAABombingDefense=" + hasAaBombingDefense);
       if (!enemyCanBomb || !territoryCanBeBombed || hasAaBombingDefense) {
@@ -1146,7 +1146,7 @@ class ProPurchaseAI {
       if (enemyAttackOptions.getMax(t) != null) {
 
         // Determine if need destroyer
-        if (Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
+        if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
             && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.UnitIsDestroyer)) {
           needDestroyer = true;
         }

@@ -318,7 +318,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final List<Territory> notOwned = Match.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
+        final boolean nonFactoryUnitsLeft = Match.anyMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
         final Match<Unit> ownedFactories = Match.allOf(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);

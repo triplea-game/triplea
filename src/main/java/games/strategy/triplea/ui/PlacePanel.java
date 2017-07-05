@@ -121,7 +121,7 @@ public class PlacePanel extends AbstractMovePanel {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.getUnits().someMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
         } else {
