@@ -134,7 +134,7 @@ public class MoveValidator {
       final PlayerID player, final MoveValidationResult result) {
     if (!units.isEmpty()
         && !getEditMode(data)
-        && !Match.allMatch(Match.getMatches(units,
+        && !Match.allMatchNotEmpty(Match.getMatches(units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true)
                 .invert()),
             Matches.unitIsOwnedBy(player))) {
@@ -234,7 +234,7 @@ public class MoveValidator {
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
       if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
-          && !Match.allMatch(units, Matches.UnitIsAir)) {
+          && !Match.allMatchNotEmpty(units, Matches.UnitIsAir)) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
       for (final Unit u : Match.getMatches(units, Match.allOf(Matches.UnitCanBlitz.invert(), Matches.UnitIsNotAir))) {
@@ -249,7 +249,7 @@ public class MoveValidator {
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
       if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
-          && !Match.allMatch(units, Matches.UnitIsAir)) {
+          && !Match.allMatchNotEmpty(units, Matches.UnitIsAir)) {
         return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
       }
     }
@@ -262,7 +262,7 @@ public class MoveValidator {
     }
     // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
     if (route.hasNeutralBeforeEnd()) {
-      if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
+      if (!Match.allMatchNotEmpty(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
         return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
       }
     }
@@ -328,7 +328,7 @@ public class MoveValidator {
     // make sure no conquered territories on route
     if (MoveValidator.hasConqueredNonBlitzedNonWaterOnRoute(route, data)) {
       // unless we are all air or we are in non combat OR the route is water (was a bug in convoy zone movement)
-      if (!Match.allMatch(units, Matches.UnitIsAir)) {
+      if (!Match.allMatchNotEmpty(units, Matches.UnitIsAir)) {
         // what if we are paratroopers?
         return result.setErrorReturnResult("Cannot move through newly captured territories");
       }
@@ -336,7 +336,7 @@ public class MoveValidator {
     // See if they've already been in combat
     if (Match.anyMatch(units, Matches.UnitWasInCombat) && Match.anyMatch(units, Matches.UnitWasUnloadedThisTurn)) {
       final Collection<Territory> end = Collections.singleton(route.getEnd());
-      if (Match.allMatch(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data))
+      if (Match.allMatchNotEmpty(end, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data))
           && !route.getEnd().getUnits().isEmpty()) {
         return result.setErrorReturnResult("Units cannot participate in multiple battles");
       }
@@ -379,7 +379,7 @@ public class MoveValidator {
       }
     }
     // Subs can't travel under DDs
-    if (isSubmersibleSubsAllowed(data) && Match.allMatch(units, Matches.UnitIsSub)) {
+    if (isSubmersibleSubsAllowed(data) && Match.allMatchNotEmpty(units, Matches.UnitIsSub)) {
       // this is ok unless there are destroyer on the path
       if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
         return result.setErrorReturnResult("Cannot move submarines under destroyers");
@@ -391,8 +391,8 @@ public class MoveValidator {
             Matches.enemyUnit(player, data).invert(),
             Matches.UnitIsSubmerged);
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
-            && !(Match.allMatch(units, Matches.UnitIsAir) && end.isWater())) {
-          if (!Match.allMatch(units, Matches.UnitIsSub)
+            && !(Match.allMatchNotEmpty(units, Matches.UnitIsAir) && end.isWater())) {
+          if (!Match.allMatchNotEmpty(units, Matches.UnitIsSub)
               || !games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
             return result.setErrorReturnResult("Cannot advance to battle in non combat");
           }
@@ -401,7 +401,7 @@ public class MoveValidator {
     }
     // if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
-    if (Match.allMatch(units, Matches.UnitIsAir)
+    if (Match.allMatchNotEmpty(units, Matches.UnitIsAir)
         || (Match.noneMatch(units, Matches.UnitIsSea) && !nonParatroopersPresent(player, units))) {
       // if there are non-paratroopers present, then we cannot fly over stuff
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
@@ -469,12 +469,12 @@ public class MoveValidator {
       return result;
     }
     // if we are all air, then its ok
-    if (Match.allMatch(units, Matches.UnitIsAir)) {
+    if (Match.allMatchNotEmpty(units, Matches.UnitIsAir)) {
       return result;
     }
     // subs may possibly carry units...
     if (isSubmersibleSubsAllowed(data)
-        && Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransported().invert()), Matches.UnitIsSub)) {
+        && Match.allMatchNotEmpty(Match.getMatches(units, Matches.unitIsBeingTransported().invert()), Matches.UnitIsSub)) {
       // this is ok unless there are destroyer on the path
       if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
         return result.setErrorReturnResult("Cannot move submarines under destroyers");
@@ -595,7 +595,7 @@ public class MoveValidator {
       }
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
       if (route.hasNeutralBeforeEnd()) {
-        if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
+        if (!Match.allMatchNotEmpty(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
           return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
         }
       }
@@ -896,7 +896,7 @@ public class MoveValidator {
       final List<UndoableMove> undoableMoves, final Collection<Unit> units, final Route route, final PlayerID player,
       final Collection<Unit> transportsToLoad, final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data);
-    if (Match.allMatch(units, Matches.UnitIsAir)) {
+    if (Match.allMatchNotEmpty(units, Matches.UnitIsAir)) {
       return result;
     }
     if (!route.hasWater()) {
@@ -1113,7 +1113,7 @@ public class MoveValidator {
 
   static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
-    if (!Match.allMatch(units, Match.anyOf(Matches.UnitIsAirTransportable, Matches.UnitIsAirTransport,
+    if (!Match.allMatchNotEmpty(units, Match.anyOf(Matches.UnitIsAirTransportable, Matches.UnitIsAirTransport,
         Matches.UnitIsAir))) {
       return false;
     }
@@ -1139,7 +1139,7 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
-    if (!Match.allMatch(units, Match.anyOf(Matches.UnitIsAir, Matches.UnitIsLand))) {
+    if (!Match.allMatchNotEmpty(units, Match.anyOf(Matches.UnitIsAir, Matches.UnitIsLand))) {
       return true;
     }
     for (final Unit unit : Match.getMatches(units, Matches.UnitIsNotAirTransportable)) {
@@ -1290,7 +1290,7 @@ public class MoveValidator {
    */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
       final Collection<Unit> units, final PlayerID player, final GameData data) {
-    if (units != null && Match.allMatch(units, Matches.unitIsOfTypes(canalAttachment.getExcludedUnits(data)))) {
+    if (units != null && Match.allMatchNotEmpty(units, Matches.unitIsOfTypes(canalAttachment.getExcludedUnits(data)))) {
       return Optional.empty();
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {

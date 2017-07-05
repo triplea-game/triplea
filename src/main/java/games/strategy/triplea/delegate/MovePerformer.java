@@ -181,14 +181,14 @@ public class MovePerformer implements Serializable {
           if (canCreateAirBattle) {
             allBombingRaidBuilder.add(Matches.unitCanEscort);
           }
-          final boolean allCanBomb = Match.allMatch(arrived, allBombingRaidBuilder.any());
+          final boolean allCanBomb = Match.allMatchNotEmpty(arrived, allBombingRaidBuilder.any());
           final Collection<Unit> enemyTargets =
               Match.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment
                       .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber),
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
-              || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatch(arrived, Matches.unitCanEscort));
+              || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatchNotEmpty(arrived, Matches.unitCanEscort));
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
@@ -224,8 +224,8 @@ public class MovePerformer implements Serializable {
           }
           // Ignore Trn on Trn forces.
           if (isIgnoreTransportInMovement(bridge.getData())) {
-            final boolean allOwnedTransports = Match.allMatch(arrived, Matches.UnitIsTransportButNotCombatTransport);
-            final boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
+            final boolean allOwnedTransports = Match.allMatchNotEmpty(arrived, Matches.UnitIsTransportButNotCombatTransport);
+            final boolean allEnemyTransports = Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsTransportButNotCombatTransport);
             // If everybody is a transport, don't create a battle
             if (allOwnedTransports && allEnemyTransports) {
               ignoreBattle = true;
@@ -254,8 +254,8 @@ public class MovePerformer implements Serializable {
               if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
                 continue;
               }
-              if ((t.equals(route.getEnd()) && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
-                  || (!t.equals(route.getEnd()) && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir))) {
+              if ((t.equals(route.getEnd()) && Match.allMatchNotEmpty(arrivedCopyForBattles, Matches.UnitIsAir))
+                  || (!t.equals(route.getEnd()) && Match.allMatchNotEmpty(presentFromStartTilEnd, Matches.UnitIsAir))) {
                 continue;
               }
               // createdBattle = true;

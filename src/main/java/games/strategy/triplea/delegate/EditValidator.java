@@ -68,16 +68,16 @@ class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (!Match.allMatch(units, Matches.UnitIsSea)) {
+      if (!Match.allMatchNotEmpty(units, Matches.UnitIsSea)) {
         if (Match.anyMatch(units, Matches.UnitIsLand)) {
-          if (!Match.allMatch(units, Matches.alliedUnit(player, data))) {
+          if (!Match.allMatchNotEmpty(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (!Match.allMatchNotEmpty(landUnitsToAdd, Matches.UnitCanBeTransported)) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -222,10 +222,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatch(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
+    if (!Match.allMatchNotEmpty(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
       return "Not all units have more than one total hitpoints";
     }
     for (final Unit u : units) {
@@ -256,10 +256,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatch(units, Matches.UnitCanBeDamaged)) {
+    if (!Match.allMatchNotEmpty(units, Matches.UnitCanBeDamaged)) {
       return "Not all units can take bombing damage";
     }
     for (final Unit u : units) {

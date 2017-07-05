@@ -89,6 +89,17 @@ public final class Match<T> {
 
   /**
    * returns true if all elements in the collection match.
+   * returns false if the collection is empty.
+   */
+  public static <T> boolean allMatchNotEmpty(final Collection<T> collection, final Match<T> match) {
+    if (collection.isEmpty()) {
+      return false;
+    }
+    return allMatch(collection, match);
+  }
+
+  /**
+   * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
     return collection.stream().allMatch(match::match);
