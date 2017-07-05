@@ -2,6 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
@@ -46,13 +48,22 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static final long serialVersionUID = -1542210716764178580L;
+  private static final Logger LOGGER = Logger.getLogger(DownloadMapsWindow.class.getName());
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
+  private static final SingletonManager SINGLETON_MANAGER = new SingletonManager();
 
   private final MapDownloadProgressPanel progressPanel;
 
+  /**
+   * Shows the Download Maps window.
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
+   */
   public static void showDownloadMapsWindow() {
+    checkState(SwingUtilities.isEventDispatchThread());
+
     showDownloadMapsWindowAndDownload(Collections.emptyList());
   }
 
@@ -64,8 +75,11 @@ public class DownloadMapsWindow extends JFrame {
    * </p>
    *
    * @param mapName The name of the map to download; must not be {@code null}.
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void showDownloadMapsWindowAndDownload(final String mapName) {
+    checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapName);
 
     showDownloadMapsWindowAndDownload(Collections.singletonList(mapName));
@@ -79,34 +93,112 @@ public class DownloadMapsWindow extends JFrame {
    * </p>
    *
    * @param mapNames The collection containing the names of the maps to download; must not be {@code null}.
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void showDownloadMapsWindowAndDownload(final Collection<String> mapNames) {
+    checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapNames);
 
-    final Runnable downloadAndShowWindow = () -> {
-      final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
+    SINGLETON_MANAGER.showAndDownload(mapNames);
+  }
 
-      SwingUtilities.invokeLater(() -> {
-        final DownloadMapsWindow dia = new DownloadMapsWindow(mapNames, allDownloads);
-        dia.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        dia.setLocationRelativeTo(null);
-        dia.setMinimumSize(new Dimension(200, 200));
-        dia.setVisible(true);
-        // ensure Download Maps window is displayed on top (#1260)
-        SwingUtilities.invokeLater(() -> {
-          dia.requestFocus();
-          dia.toFront();
-        });
+  private static final class SingletonManager {
+    private enum State {
+      UNINITIALIZED, INITIALIZING, INITIALIZED;
+    }
+
+    private State state;
+    private DownloadMapsWindow window;
+
+    SingletonManager() {
+      uninitialize();
+    }
+
+    private void uninitialize() {
+      assert SwingUtilities.isEventDispatchThread();
+
+      state = State.UNINITIALIZED;
+      window = null;
+    }
+
+    void showAndDownload(final Collection<String> mapNames) {
+      assert SwingUtilities.isEventDispatchThread();
+
+      switch (state) {
+        case UNINITIALIZED:
+          initialize(mapNames);
+          break;
+
+        case INITIALIZING:
+          logMapDownloadRequestIgnored(mapNames);
+          // do nothing; window will be shown when initialization is complete
+          break;
+
+        case INITIALIZED:
+          logMapDownloadRequestIgnored(mapNames);
+          show();
+          break;
+
+        default:
+          throw new AssertionError("unknown state");
+      }
+    }
+
+    private void initialize(final Collection<String> mapNames) {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.UNINITIALIZED;
+
+      state = State.INITIALIZING;
+      BackgroundTaskRunner.runInBackground("Downloading list of available maps...", () -> {
+        final List<DownloadFileDescription> downloads = ClientContext.getMapDownloadList();
+        SwingUtilities.invokeLater(() -> createAndShow(mapNames, downloads));
       });
-    };
-    final String popupWindowTitle = "Downloading list of available maps...";
-    BackgroundTaskRunner.runInBackground(popupWindowTitle, downloadAndShowWindow);
+    }
+
+    private void createAndShow(final Collection<String> mapNames, final List<DownloadFileDescription> downloads) {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.INITIALIZING;
+      assert window == null;
+
+      window = new DownloadMapsWindow(mapNames, downloads);
+      SwingComponents.addWindowClosedListener(window, this::uninitialize);
+      state = State.INITIALIZED;
+
+      show();
+    }
+
+    private void show() {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.INITIALIZED;
+      assert window != null;
+
+      window.setVisible(true);
+
+      // ensure Download Maps window is displayed on top (#1260)
+      SwingUtilities.invokeLater(() -> {
+        window.requestFocus();
+        window.toFront();
+      });
+    }
+  }
+
+  private static void logMapDownloadRequestIgnored(final Collection<String> mapNames) {
+    if (!mapNames.isEmpty()) {
+      LOGGER.info("ignoring request to download maps because window initialization has already started");
+    }
   }
 
   private DownloadMapsWindow(
       final Collection<String> pendingDownloadMapNames,
       final List<DownloadFileDescription> allDownloads) {
     super("Download Maps");
+
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    setLocationRelativeTo(null);
+    setMinimumSize(new Dimension(200, 200));
+
     setIconImage(GameRunner.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel();
 
@@ -133,7 +225,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
 
-    SwingComponents.addWindowCloseListener(this, () -> progressPanel.cancel());
+    SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
 
     final JTabbedPane outerTabs = new JTabbedPane();
 

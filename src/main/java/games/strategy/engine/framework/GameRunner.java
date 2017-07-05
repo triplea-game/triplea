@@ -241,7 +241,7 @@ public class GameRunner {
       mainFrame.toFront();
       mainFrame.setVisible(true);
 
-      SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+      SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
       final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
       if (fileName.length() > 0) {
