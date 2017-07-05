@@ -9,8 +9,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -164,12 +162,7 @@ public class DownloadMapsWindow extends JFrame {
       assert window == null;
 
       window = new DownloadMapsWindow(mapNames, downloads);
-      window.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(final WindowEvent e) {
-          uninitialize();
-        }
-      });
+      SwingComponents.addWindowClosedListener(window, this::uninitialize);
       state = State.INITIALIZED;
 
       show();
@@ -232,7 +225,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
 
-    SwingComponents.addWindowCloseListener(this, () -> progressPanel.cancel());
+    SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
 
     final JTabbedPane outerTabs = new JTabbedPane();
 

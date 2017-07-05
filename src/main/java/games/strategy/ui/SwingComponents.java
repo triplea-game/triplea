@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -223,11 +224,38 @@ public class SwingComponents {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, msg));
   }
 
-  public static void addWindowCloseListener(final Window window, final Runnable closeAction) {
+  /**
+   * Executes the specified action when the specified window is in the process of being closed.
+   *
+   * @param window The window to which the action is attached; must not be {@code null}.
+   * @param action The action to execute; must not be {@code null}.
+   */
+  public static void addWindowClosingListener(final Window window, final Runnable action) {
+    checkNotNull(window);
+    checkNotNull(action);
+
     window.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
-        closeAction.run();
+        action.run();
+      }
+    });
+  }
+
+  /**
+   * Executes the specified action when the specified window has been closed.
+   *
+   * @param window The window to which the action is attached; must not be {@code null}.
+   * @param action The action to execute; must not be {@code null}.
+   */
+  public static void addWindowClosedListener(final Window window, final Runnable action) {
+    checkNotNull(window);
+    checkNotNull(action);
+
+    window.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(final WindowEvent e) {
+        action.run();
       }
     });
   }
