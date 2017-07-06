@@ -1742,6 +1742,7 @@ public class TripleAFrame extends MainGameFrame {
               // TODO: this could be solved easily if rounds/steps were changes,
               // but that could greatly increase the file size :(
               // TODO: this also does not undo the runcount of each delegate step
+              @SuppressWarnings("unchecked")
               final Enumeration<TreeNode> enumeration =
                   ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
               enumeration.nextElement();
