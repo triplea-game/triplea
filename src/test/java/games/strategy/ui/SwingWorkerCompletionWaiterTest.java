@@ -1,5 +1,6 @@
 package games.strategy.ui;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.beans.PropertyChangeEvent;
@@ -7,38 +8,29 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.SwingWorker;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class SwingWorkerCompletionWaiterTest {
-  @InjectMocks
-  private SwingWorkerCompletionWaiter waiter;
 
-  @Mock
-  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+	private SwingWorkerCompletionWaiter.ProgressWindow progressWindow = mock(SwingWorkerCompletionWaiter.ProgressWindow.class);
 
-  @Test
-  public void testShouldOpenProgressWindowWhenWorkerStarted() {
-    waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.STARTED));
+	private SwingWorkerCompletionWaiter waiter = new SwingWorkerCompletionWaiter(progressWindow);
 
-    verify(progressWindow).open();
-  }
+	@Test
+	public void testShouldOpenProgressWindowWhenWorkerStarted() {
+		waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.STARTED));
 
-  @Test
-  public void testShouldCloseProgressWindowWhenWorkerDone() {
-    waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.DONE));
+		verify(progressWindow).open();
+	}
 
-    verify(progressWindow).close();
-  }
+	@Test
+	public void testShouldCloseProgressWindowWhenWorkerDone() {
+		waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.DONE));
 
-  private static PropertyChangeEvent newSwingWorkerStateEvent(final SwingWorker.StateValue stateValue) {
-    return new PropertyChangeEvent(
-        new Object(),
-        SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME,
-        null,
-        stateValue);
-  }
+		verify(progressWindow).close();
+	}
+
+	private static PropertyChangeEvent newSwingWorkerStateEvent(
+			final SwingWorker.StateValue stateValue) {
+		return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null, stateValue);
+	}
 }
