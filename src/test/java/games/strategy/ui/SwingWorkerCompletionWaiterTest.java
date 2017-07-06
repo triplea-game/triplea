@@ -11,26 +11,28 @@ import org.junit.Test;
 
 public final class SwingWorkerCompletionWaiterTest {
 
-	private SwingWorkerCompletionWaiter.ProgressWindow progressWindow = mock(SwingWorkerCompletionWaiter.ProgressWindow.class);
+  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow =
+      mock(SwingWorkerCompletionWaiter.ProgressWindow.class);
 
-	private SwingWorkerCompletionWaiter waiter = new SwingWorkerCompletionWaiter(progressWindow);
+  private SwingWorkerCompletionWaiter waiter = new SwingWorkerCompletionWaiter(progressWindow);
 
-	@Test
-	public void testShouldOpenProgressWindowWhenWorkerStarted() {
-		waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.STARTED));
+  @Test
+  public void testShouldOpenProgressWindowWhenWorkerStarted() {
+    waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.STARTED));
 
-		verify(progressWindow).open();
-	}
+    verify(progressWindow).open();
+  }
 
-	@Test
-	public void testShouldCloseProgressWindowWhenWorkerDone() {
-		waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.DONE));
+  @Test
+  public void testShouldCloseProgressWindowWhenWorkerDone() {
+    waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.DONE));
 
-		verify(progressWindow).close();
-	}
+    verify(progressWindow).close();
+  }
 
-	private static PropertyChangeEvent newSwingWorkerStateEvent(
-			final SwingWorker.StateValue stateValue) {
-		return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null, stateValue);
-	}
+  private static PropertyChangeEvent newSwingWorkerStateEvent(
+      final SwingWorker.StateValue stateValue) {
+    return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null,
+        stateValue);
+  }
 }
