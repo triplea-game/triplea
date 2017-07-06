@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DbUserControllerTest {
 
   private DbUserController testObj;

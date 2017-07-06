@@ -44,7 +44,7 @@ import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLength
 public final class DownloadUtilsTests {
   private static final String URI = "some://uri";
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class DownloadToFileTest {
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -123,7 +123,7 @@ public final class DownloadUtilsTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class GetDownloadLengthFromCacheTest {
     @Mock
     private DownloadLengthSupplier downloadLengthSupplier;
@@ -173,7 +173,7 @@ public final class DownloadUtilsTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class GetDownloadLengthFromHostTest {
     @Mock
     private CloseableHttpClient client;

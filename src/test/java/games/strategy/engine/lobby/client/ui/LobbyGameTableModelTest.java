@@ -25,7 +25,7 @@ import games.strategy.net.INode;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Tuple;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LobbyGameTableModelTest {
 
   private LobbyGameTableModel testObj;

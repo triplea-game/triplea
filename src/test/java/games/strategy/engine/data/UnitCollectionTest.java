@@ -20,7 +20,7 @@ import org.mockito.stubbing.Answer;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UnitCollectionTest {
 
   @Mock

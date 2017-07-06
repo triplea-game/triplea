@@ -17,7 +17,7 @@ import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LobbyServerPropertiesFetcherTest {
 
   private static final Version fakeVersion = new Version("0.0.0.0");

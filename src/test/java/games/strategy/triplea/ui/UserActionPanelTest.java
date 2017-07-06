@@ -120,9 +120,8 @@ public final class UserActionPanelTest {
 
   @Test
   public void testCanSpendResourcesOnUserActions_ShouldReturnFalseWhenNoUserActionHasCost() {
-    final Collection<UserActionAttachment> userActions = Arrays.asList(
-        createUserActionWithCost(0),
-        createUserActionWithCost(0));
+    final Collection<UserActionAttachment> userActions =
+        Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(0));
 
     final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
@@ -131,9 +130,8 @@ public final class UserActionPanelTest {
 
   @Test
   public void testCanSpendResourcesOnUserActions_ShouldReturnTrueWhenAtLeastOneUserActionHasCost() {
-    final Collection<UserActionAttachment> userActions = Arrays.asList(
-        createUserActionWithCost(0),
-        createUserActionWithCost(5));
+    final Collection<UserActionAttachment> userActions =
+        Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(5));
 
     final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 

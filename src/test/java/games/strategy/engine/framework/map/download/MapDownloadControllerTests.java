@@ -129,7 +129,7 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class PreventPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
@@ -146,7 +146,7 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class ShouldPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
