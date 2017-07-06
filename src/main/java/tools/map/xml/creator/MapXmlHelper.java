@@ -1,5 +1,40 @@
 package tools.map.xml.creator;
 
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_ALLIANCE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_ATTACHMENT;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_ATTACHMENT_LIST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_BOOLEAN;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_CONNECTION;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_COST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_DELEGATE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_FRONTIER_RULES;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_GAME;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_GAME_PLAY;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_INITIALIZE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_MAP;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_NUMBER;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_OPTION;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_OWNER_INITIALIZE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PLAYER;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PLAYER_LIST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PRODUCTION;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PRODUCTION_FRONTIER;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PRODUCTION_RULE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PROPERTY;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_PROPERTY_LIST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_RESOURCE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_RESOURCE_LIST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_RESULT;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_SEQUENCE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_STEP;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_TERRITORY;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_TERRITORY_OWNER;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_UNIT;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_UNIT_INITIALIZE;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_UNIT_LIST;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_UNIT_PLACEMENT;
+import static games.strategy.engine.data.TripleaHandler.XML_NODE_NAME_VALUE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,42 +87,6 @@ public class MapXmlHelper {
   public static final String XML_ATTR_STEP_NAME_DISPLAY = "display";
   public static final String XML_ATTR_CONNECTION_NAME_T2 = "t2";
   public static final String XML_ATTR_CONNECTION_NAME_T1 = "t1";
-  // XML Node Constants
-  public static final String XML_NODE_NAME_ALLIANCE = "alliance";
-  public static final String XML_NODE_NAME_ATTACHMENT = "attachment";
-  public static final String XML_NODE_NAME_ATTACHMENT_LIST = "attachmentList";
-  public static final String XML_NODE_NAME_BOOLEAN = "boolean";
-  public static final String XML_NODE_NAME_CONNECTION = "connection";
-  public static final String XML_NODE_NAME_COST = "cost";
-  public static final String XML_NODE_NAME_DELEGATE = "delegate";
-  public static final String XML_NODE_NAME_FRONTIER_RULES = "frontierRules";
-  public static final String XML_NODE_NAME_GAME = "game";
-  public static final String XML_NODE_NAME_GAME_PLAY = "gamePlay";
-  public static final String XML_NODE_NAME_INFO = "info";
-  public static final String XML_NODE_NAME_INITIALIZE = "initialize";
-  public static final String XML_NODE_NAME_MAP = "map";
-  public static final String XML_NODE_NAME_NUMBER = "number";
-  public static final String XML_NODE_NAME_OPTION = "option";
-  public static final String XML_NODE_NAME_OWNER_INITIALIZE = "ownerInitialize";
-  public static final String XML_NODE_NAME_PLAYER = "player";
-  public static final String XML_NODE_NAME_PLAYER_LIST = "playerList";
-  public static final String XML_NODE_NAME_PRODUCTION = "production";
-  public static final String XML_NODE_NAME_PRODUCTION_FRONTIER = "productionFrontier";
-  public static final String XML_NODE_NAME_PRODUCTION_RULE = "productionRule";
-  public static final String XML_NODE_NAME_PROPERTY = "property";
-  public static final String XML_NODE_NAME_PROPERTY_LIST = "propertyList";
-  public static final String XML_NODE_NAME_RESOURCE = "resource";
-  public static final String XML_NODE_NAME_RESOURCE_LIST = "resourceList";
-  public static final String XML_NODE_NAME_RESULT = "result";
-  public static final String XML_NODE_NAME_SEQUENCE = "sequence";
-  public static final String XML_NODE_NAME_STEP = "step";
-  public static final String XML_NODE_NAME_TERRITORY = "territory";
-  public static final String XML_NODE_NAME_TERRITORY_OWNER = "territoryOwner";
-  public static final String XML_NODE_NAME_UNIT_INITIALIZE = "unitInitialize";
-  public static final String XML_NODE_NAME_UNIT_LIST = "unitList";
-  public static final String XML_NODE_NAME_UNIT_PLACEMENT = "unitPlacement";
-  public static final String XML_NODE_NAME_VALUE = "value";
-  public static final String XML_NODE_NAME_UNIT = "unit";
 
   // XML Attribute Constants
   public static final String XML_ATTR_ALLIANCE_NAME_PLAYER = "player";
@@ -695,7 +694,8 @@ public class MapXmlHelper {
       @Override
       protected void handleMap() throws GameParseException {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(), (getTerritoryConnectionsMap().isEmpty()
-            ? GameStep.TERRITORY_DEFINITIONS : GameStep.TERRITORY_CONNECTIONS)));
+            ? GameStep.TERRITORY_DEFINITIONS
+            : GameStep.TERRITORY_CONNECTIONS)));
       }
 
       @Override

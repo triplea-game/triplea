@@ -4,7 +4,7 @@ import org.xml.sax.Attributes;
 
 import com.google.common.base.Joiner;
 
-public class PseudoElement {
+public final class PseudoElement {
 
   private final String qname;
   private final Attributes attributes;
