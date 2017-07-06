@@ -308,6 +308,7 @@ class ExportMenu {
       }
       text.append("\n");
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
+      @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       PlayerID currentPlayer = null;
       int round = 0;

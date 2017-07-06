@@ -167,6 +167,7 @@ public class CommentPanel extends JPanel {
   private void loadHistory() {
     final Document doc = text.getDocument();
     final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
+    @SuppressWarnings("unchecked")
     final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
     final Pattern p = Pattern.compile("^COMMENT: (.*)");
     String player = "";
