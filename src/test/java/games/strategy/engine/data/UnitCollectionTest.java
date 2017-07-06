@@ -3,7 +3,7 @@ package games.strategy.engine.data;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -158,11 +158,11 @@ public class UnitCollectionTest {
   public void removeAll() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
-
+    reset(defaultPlayerId);
     unitCollection.removeAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(0)));
-    verify(defaultPlayerId, times(2)).notifyChanged();
+    verify(defaultPlayerId).notifyChanged();
   }
 
   @Test
