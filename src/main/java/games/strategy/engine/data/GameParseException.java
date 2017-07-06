@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import org.xml.sax.SAXException;
-
-public class GameParseException extends SAXException {
+public class GameParseException extends Exception {
   private static final long serialVersionUID = 4015574053053781872L;
 
   public GameParseException(final String error) {
@@ -13,11 +11,11 @@ public class GameParseException extends SAXException {
     this("MapName: " + mapName + ", " + error);
   }
 
-  public GameParseException(final String mapName, final String error, final Exception cause) {
+  public GameParseException(final String mapName, final String error, final Throwable cause) {
     this("MapName: " + mapName + ", " + error, cause);
   }
 
-  public GameParseException(final String message, final Exception cause) {
+  public GameParseException(final String message, final Throwable cause) {
     super(message, cause);
   }
 

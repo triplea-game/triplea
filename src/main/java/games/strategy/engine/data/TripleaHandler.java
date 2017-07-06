@@ -125,7 +125,11 @@ public abstract class TripleaHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qname, Attributes attributes) throws SAXException {
-    checkParentNode(qname);
+    try {
+      checkParentNode(qname);
+    } catch (GameParseException e) {
+      throw new SAXException(e);
+    }
     handleElement(qname, attributes);
     stack.addFirst(new PseudoElement(qname, new AttributesImpl(attributes)));
   }
@@ -133,39 +137,43 @@ public abstract class TripleaHandler extends DefaultHandler {
   @Override
   public void endElement(String uri, String localName, String qname) throws SAXException {
     stack.pop();
-    switch (qname) {
-      case XML_NODE_NAME_MAP:
-        handleMap();
-        break;
-      case XML_NODE_NAME_PLAYER_LIST:
-        handlePlayerList();
-        break;
-      case XML_NODE_NAME_PRODUCTION:
-        handleProduction();
-        break;
-      case XML_NODE_NAME_PRODUCTION_RULE:
-        handleProductionRule();
-        break;
-      case XML_NODE_NAME_PRODUCTION_FRONTIER:
-        handleProductionFrontier();
-        break;
-      case XML_NODE_NAME_GAME_PLAY:
-        handleGamePlay();
-        break;
-      case XML_NODE_NAME_ATTACHMENT_LIST:
-        handleAttachmentList();
-        break;
-      case XML_NODE_NAME_ATTACHMENT:
-        handleAttachment();
-        break;
-      case XML_NODE_NAME_INITIALIZE:
-        handleInitialize();
-        break;
-      case XML_NODE_NAME_PROPERTY_LIST:
-        handlePropertyList();
-        break;
-      default:
-        break;
+    try {
+      switch (qname) {
+        case XML_NODE_NAME_MAP:
+          handleMap();
+          break;
+        case XML_NODE_NAME_PLAYER_LIST:
+          handlePlayerList();
+          break;
+        case XML_NODE_NAME_PRODUCTION:
+          handleProduction();
+          break;
+        case XML_NODE_NAME_PRODUCTION_RULE:
+          handleProductionRule();
+          break;
+        case XML_NODE_NAME_PRODUCTION_FRONTIER:
+          handleProductionFrontier();
+          break;
+        case XML_NODE_NAME_GAME_PLAY:
+          handleGamePlay();
+          break;
+        case XML_NODE_NAME_ATTACHMENT_LIST:
+          handleAttachmentList();
+          break;
+        case XML_NODE_NAME_ATTACHMENT:
+          handleAttachment();
+          break;
+        case XML_NODE_NAME_INITIALIZE:
+          handleInitialize();
+          break;
+        case XML_NODE_NAME_PROPERTY_LIST:
+          handlePropertyList();
+          break;
+        default:
+          break;
+      }
+    } catch (GameParseException e) {
+      throw new SAXException(e);
     }
   }
 
@@ -199,100 +207,104 @@ public abstract class TripleaHandler extends DefaultHandler {
   }
 
   private void handleElement(String qname, Attributes attributes) throws SAXException {
-    switch (qname) {
-      case XML_NODE_NAME_INFO:
-        handleInfo(attributes);
-        break;
-      case "loader":
-        handleLoader(attributes);
-        break;
-      case "triplea":
-        handleTriplea(attributes);
-        break;
-      case "diceSides":
-        handleDiceSides(attributes);
-        break;
-      case XML_NODE_NAME_TERRITORY:
-        handleTerritory(attributes);
-        break;
-      case XML_NODE_NAME_CONNECTION:
-        handleConnection(attributes);
-        break;
-      case XML_NODE_NAME_RESOURCE:
-        handleResource(attributes);
-        break;
-      case XML_NODE_NAME_PLAYER:
-        handlePlayer(attributes);
-        break;
-      case XML_NODE_NAME_ALLIANCE:
-        handleAlliance(attributes);
-        break;
-      case XML_NODE_NAME_UNIT:
-        handleUnit(attributes);
-        break;
-      case XML_NODE_NAME_DELEGATE:
-        handleDelegate(attributes);
-        break;
-      case XML_NODE_NAME_STEP:
-        handleStep(attributes);
-        break;
-      case "playerProduction":
-        handlePlayerProduction(attributes);
-        break;
-      case XML_NODE_NAME_COST:
-        handleCost(attributes);
-        break;
-      case XML_NODE_NAME_RESULT:
-        handleResult(attributes);
-        break;
-      case XML_NODE_NAME_FRONTIER_RULES:
-        handleFrontierRules(attributes);
-        break;
-      case XML_NODE_NAME_OPTION:
-        handleOption(attributes);
-        break;
-      case XML_NODE_NAME_TERRITORY_OWNER:
-        handleTerritoryOwner(attributes);
-        break;
-      case XML_NODE_NAME_UNIT_PLACEMENT:
-        handleUnitPlacement(attributes);
-        break;
-      case "resourceGiven":
-        handleResourceGiven(attributes);
-        break;
-      case XML_NODE_NAME_PROPERTY:
-        handleProperty(attributes);
-        break;
-      case XML_NODE_NAME_NUMBER:
-        handleNumber();
-        break;
-      case XML_NODE_NAME_BOOLEAN:
-        handleBoolean();
-        break;
-      case "tech":
-        handleTech(attributes);
-        break;
-      case XML_NODE_NAME_PRODUCTION_FRONTIER:
-        handleProductionFrontier(attributes);
-        break;
-      case XML_NODE_NAME_ATTACHMENT:
-        handleAttachment(attributes);
-        break;
-      case XML_NODE_NAME_VALUE:
-      case XML_NODE_NAME_SEQUENCE:
-      case XML_NODE_NAME_RESOURCE_LIST:
-      case XML_NODE_NAME_UNIT_LIST:
-      case "relationshipTypes":
-      case "territoryEffectList":
-      case "technology":
-      case XML_NODE_NAME_OWNER_INITIALIZE:
-      case XML_NODE_NAME_UNIT_INITIALIZE:
-      case "resouceInitialize":
-      case "technologies":
-      case "playerTech":
-      case "category":
-      default:
-        break;
+    try {
+      switch (qname) {
+        case XML_NODE_NAME_INFO:
+          handleInfo(attributes);
+          break;
+        case "loader":
+          handleLoader(attributes);
+          break;
+        case "triplea":
+          handleTriplea(attributes);
+          break;
+        case "diceSides":
+          handleDiceSides(attributes);
+          break;
+        case XML_NODE_NAME_TERRITORY:
+          handleTerritory(attributes);
+          break;
+        case XML_NODE_NAME_CONNECTION:
+          handleConnection(attributes);
+          break;
+        case XML_NODE_NAME_RESOURCE:
+          handleResource(attributes);
+          break;
+        case XML_NODE_NAME_PLAYER:
+          handlePlayer(attributes);
+          break;
+        case XML_NODE_NAME_ALLIANCE:
+          handleAlliance(attributes);
+          break;
+        case XML_NODE_NAME_UNIT:
+          handleUnit(attributes);
+          break;
+        case XML_NODE_NAME_DELEGATE:
+          handleDelegate(attributes);
+          break;
+        case XML_NODE_NAME_STEP:
+          handleStep(attributes);
+          break;
+        case "playerProduction":
+          handlePlayerProduction(attributes);
+          break;
+        case XML_NODE_NAME_COST:
+          handleCost(attributes);
+          break;
+        case XML_NODE_NAME_RESULT:
+          handleResult(attributes);
+          break;
+        case XML_NODE_NAME_FRONTIER_RULES:
+          handleFrontierRules(attributes);
+          break;
+        case XML_NODE_NAME_OPTION:
+          handleOption(attributes);
+          break;
+        case XML_NODE_NAME_TERRITORY_OWNER:
+          handleTerritoryOwner(attributes);
+          break;
+        case XML_NODE_NAME_UNIT_PLACEMENT:
+          handleUnitPlacement(attributes);
+          break;
+        case "resourceGiven":
+          handleResourceGiven(attributes);
+          break;
+        case XML_NODE_NAME_PROPERTY:
+          handleProperty(attributes);
+          break;
+        case XML_NODE_NAME_NUMBER:
+          handleNumber();
+          break;
+        case XML_NODE_NAME_BOOLEAN:
+          handleBoolean();
+          break;
+        case "tech":
+          handleTech(attributes);
+          break;
+        case XML_NODE_NAME_PRODUCTION_FRONTIER:
+          handleProductionFrontier(attributes);
+          break;
+        case XML_NODE_NAME_ATTACHMENT:
+          handleAttachment(attributes);
+          break;
+        case XML_NODE_NAME_VALUE:
+        case XML_NODE_NAME_SEQUENCE:
+        case XML_NODE_NAME_RESOURCE_LIST:
+        case XML_NODE_NAME_UNIT_LIST:
+        case "relationshipTypes":
+        case "territoryEffectList":
+        case "technology":
+        case XML_NODE_NAME_OWNER_INITIALIZE:
+        case XML_NODE_NAME_UNIT_INITIALIZE:
+        case "resouceInitialize":
+        case "technologies":
+        case "playerTech":
+        case "category":
+        default:
+          break;
+      }
+    } catch (GameParseException e) {
+      throw new SAXException(e);
     }
   }
 
