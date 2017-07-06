@@ -180,7 +180,6 @@ public class HistoryPanel extends JPanel {
     }
     final TreePath path = tree.getSelectionPath();
     final TreeNode selected = (TreeNode) path.getLastPathComponent();
-    @SuppressWarnings("unchecked")
     final Enumeration<TreeNode> nodeEnum =
         ((DefaultMutableTreeNode) tree.getModel().getRoot()).depthFirstEnumeration();
     TreeNode previous = null;
@@ -223,7 +222,6 @@ public class HistoryPanel extends JPanel {
     }
     final TreePath path = tree.getSelectionPath();
     final TreeNode selected = (TreeNode) path.getLastPathComponent();
-    @SuppressWarnings("unchecked")
     final Enumeration<TreeNode> nodeEnum = ((DefaultMutableTreeNode) tree.getModel().getRoot()).preorderEnumeration();
     TreeNode next = null;
     boolean foundSelected = false;
