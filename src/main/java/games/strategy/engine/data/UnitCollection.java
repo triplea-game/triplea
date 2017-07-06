@@ -40,11 +40,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return result;
   }
 
-  void addAll(final UnitCollection collection) {
-    m_units.addAll(collection.m_units);
-    m_holder.notifyChanged();
-  }
-
   @Override
   public boolean addAll(final Collection<? extends Unit> units) {
     final boolean result = m_units.addAll(units);

@@ -139,7 +139,7 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void addUnit() {
+  public void add() {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Unit unitDefaultPlayer = new Unit(unitTypeOne, defaultPlayerId, mockGameData);
     unitCollection.add(unitDefaultPlayer);
@@ -151,7 +151,7 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void addAllUnitsFromCollection() {
+  public void addAllFromCollection() {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
@@ -162,7 +162,7 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void addAllUnitsFromUnitCollection() {
+  public void addAllFromUnitCollection() {
     final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     final UnitCollection unitCollectionTwo = new UnitCollection(otherPlayerId, mockGameData);
@@ -175,7 +175,7 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void removeAllUnits() {
+  public void removeAll() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
 

@@ -90,7 +90,10 @@ public final class Match<T> {
   /**
    * returns true if all elements in the collection match.
    * returns false if the collection is empty.
+   * 
+   * @deprecated Check if the collection you provided is empty on your own.
    */
+  @Deprecated
   public static <T> boolean allMatchNotEmpty(final Collection<T> collection, final Match<T> match) {
     return !collection.isEmpty() && allMatch(collection, match);
   }
@@ -127,7 +130,8 @@ public final class Match<T> {
    * return the keys where the value keyed by the key matches valueMatch.
    */
   public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> map, final Match<V> valueMatch) {
-    return map.keySet().stream().filter(key -> valueMatch.match(map.get(key))).collect(Collectors.toSet());
+    return map.entrySet().stream().filter(entry -> valueMatch.match(entry.getValue())).map(entry -> entry.getKey())
+        .collect(Collectors.toSet());
   }
 
   /**
