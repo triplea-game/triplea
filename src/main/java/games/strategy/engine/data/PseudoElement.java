@@ -4,6 +4,9 @@ import org.xml.sax.Attributes;
 
 import com.google.common.base.Joiner;
 
+/**
+ * Data class for wrapping the important parameters of DefaultHandler methods into a single object.
+ */
 public final class PseudoElement {
 
   private final String qname;

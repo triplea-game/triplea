@@ -14,6 +14,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+/**
+ * Abstract common implementation of a DefaultHandler.
+ */
 public abstract class TripleaHandler extends DefaultHandler {
 
   public static final String XML_NODE_NAME_ALLIANCE = "alliance";
