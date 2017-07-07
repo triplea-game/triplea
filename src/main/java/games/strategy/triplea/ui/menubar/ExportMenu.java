@@ -24,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -308,13 +309,12 @@ class ExportMenu {
       text.append("\n");
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       @SuppressWarnings("unchecked")
-      final Enumeration<HistoryNode> nodes =
-          ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+      final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       PlayerID currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
-        final HistoryNode element = nodes.nextElement();
+        final HistoryNode element = (HistoryNode) nodes.nextElement();
         if (element instanceof Round) {
           round++;
         }

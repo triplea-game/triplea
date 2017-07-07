@@ -40,13 +40,13 @@ public class RemoteMessenger implements IRemoteMessenger {
   }
 
   @Override
-  public boolean isServer() {
-    return m_unifiedMessenger.isServer();
+  public void unregisterRemote(final String name) {
+    m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
   }
 
   @Override
-  public void unregisterRemote(final String name) {
-    m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
+  public boolean isServer() {
+    return m_unifiedMessenger.isServer();
   }
 
   @Override

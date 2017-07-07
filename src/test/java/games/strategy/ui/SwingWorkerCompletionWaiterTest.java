@@ -1,20 +1,29 @@
 package games.strategy.ui;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.SwingWorker;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SwingWorkerCompletionWaiterTest {
 
-  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow =
-      mock(SwingWorkerCompletionWaiter.ProgressWindow.class);
+  private SwingWorkerCompletionWaiter waiter;
 
-  private SwingWorkerCompletionWaiter waiter = new SwingWorkerCompletionWaiter(progressWindow);
+  @Mock
+  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+
+  @Before
+  public void setUp() {
+    waiter = new SwingWorkerCompletionWaiter(progressWindow);
+  }
 
   @Test
   public void testShouldOpenProgressWindowWhenWorkerStarted() {

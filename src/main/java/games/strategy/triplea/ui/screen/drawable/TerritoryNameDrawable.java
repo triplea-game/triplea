@@ -119,6 +119,29 @@ public class TerritoryNameDrawable implements IDrawable {
     }
   }
 
+  private static void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
+      final String prod, final boolean drawFromTopLeft) {
+    int normalizedY = y;
+    if (img == null) {
+      if (graphics.getFont().getSize() <= 0) {
+        return;
+      }
+      if (drawFromTopLeft) {
+        final FontMetrics fm = graphics.getFontMetrics();
+        normalizedY += fm.getHeight();
+      }
+      graphics.drawString(prod, x - bounds.x, normalizedY - bounds.y);
+    } else {
+      // we want to be consistent
+      // drawString takes y as the base line position
+      // drawImage takes x as the top right corner
+      if (!drawFromTopLeft) {
+        normalizedY -= img.getHeight(null);
+      }
+      graphics.drawImage(img, x - bounds.x, normalizedY - bounds.y, null);
+    }
+  }
+
   /**
    * Find the best rectangle inside the territory to place the name in. Finds the rectangle
    * that can fit the name, that is the closest to the vertical center, and has a large width at
@@ -175,29 +198,6 @@ public class TerritoryNameDrawable implements IDrawable {
       }
     }
     return false;
-  }
-
-  private static void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
-      final String prod, final boolean drawFromTopLeft) {
-    int normalizedY = y;
-    if (img == null) {
-      if (graphics.getFont().getSize() <= 0) {
-        return;
-      }
-      if (drawFromTopLeft) {
-        final FontMetrics fm = graphics.getFontMetrics();
-        normalizedY += fm.getHeight();
-      }
-      graphics.drawString(prod, x - bounds.x, normalizedY - bounds.y);
-    } else {
-      // we want to be consistent
-      // drawString takes y as the base line position
-      // drawImage takes x as the top right corner
-      if (!drawFromTopLeft) {
-        normalizedY -= img.getHeight(null);
-      }
-      graphics.drawImage(img, x - bounds.x, normalizedY - bounds.y, null);
-    }
   }
 
   @Override

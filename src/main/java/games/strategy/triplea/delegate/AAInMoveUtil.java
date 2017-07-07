@@ -75,6 +75,86 @@ class AAInMoveUtil implements Serializable {
     return m_casualties;
   }
 
+  /**
+   * Fire the aa units in the given territory, hits are removed from units.
+   */
+  private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove) {
+    if (units.isEmpty()) {
+      return;
+    }
+    final PlayerID movingPlayer = movingPlayer(units);
+    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
+    final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
+        airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
+    // comes ordered alphabetically already
+    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
+    // stacks are backwards
+    Collections.reverse(AAtypes);
+    for (final String currentTypeAa : AAtypes) {
+      final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
+      final Set<UnitType> targetUnitTypesForThisTypeAa =
+          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
+      final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
+      final Collection<Unit> validTargetedUnitsForThisRoll =
+          Match.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
+              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+      // once we fire the AA guns, we can't undo
+      // otherwise you could keep undoing and redoing
+      // until you got the roll you wanted
+      currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
+      final DiceRoll[] dice = new DiceRoll[1];
+      final IExecutable rollDice = new IExecutable() {
+        private static final long serialVersionUID = 4714364489659654758L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          // get rid of units already killed, so we don't target them twice
+          validTargetedUnitsForThisRoll.removeAll(m_casualties);
+          if (!validTargetedUnitsForThisRoll.isEmpty()) {
+            dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
+          }
+        }
+      };
+      final IExecutable selectCasualties = new IExecutable() {
+        private static final long serialVersionUID = -8633263235214834617L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          if (!validTargetedUnitsForThisRoll.isEmpty()) {
+            final int hitCount = dice[0].getHits();
+            if (hitCount == 0) {
+              if (currentTypeAa.equals("AA")) {
+                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                    findDefender(currentPossibleAa, territory));
+              } else {
+                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                    findDefender(currentPossibleAa, territory));
+              }
+              getRemotePlayer().reportMessage("No " + currentTypeAa + " hits in " + territory.getName(),
+                  "No " + currentTypeAa + " hits in " + territory.getName());
+            } else {
+              if (currentTypeAa.equals("AA")) {
+                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                    findDefender(currentPossibleAa, territory));
+              } else {
+                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                    findDefender(currentPossibleAa, territory));
+              }
+              selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAa, defendingAa, territory,
+                  currentTypeAa);
+            }
+          }
+        }
+      };
+      // push in reverse order of execution
+      m_executionStack.push(selectCasualties);
+      m_executionStack.push(rollDice);
+    }
+  }
+
   private void populateExecutionStack(final Route route, final Collection<Unit> units,
       final Comparator<Unit> decreasingMovement, final UndoableMove currentMove) {
     final List<Unit> targets = new ArrayList<>(units);
@@ -159,86 +239,6 @@ class AAInMoveUtil implements Serializable {
       }
     }
     return PlayerID.NULL_PLAYERID;
-  }
-
-  /**
-   * Fire the aa units in the given territory, hits are removed from units.
-   */
-  private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove) {
-    if (units.isEmpty()) {
-      return;
-    }
-    final PlayerID movingPlayer = movingPlayer(units);
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
-    final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
-        airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
-    // comes ordered alphabetically already
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
-    // stacks are backwards
-    Collections.reverse(AAtypes);
-    for (final String currentTypeAa : AAtypes) {
-      final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
-      final Set<UnitType> targetUnitTypesForThisTypeAa =
-          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
-      final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
-      final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
-      // once we fire the AA guns, we can't undo
-      // otherwise you could keep undoing and redoing
-      // until you got the roll you wanted
-      currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
-      final DiceRoll[] dice = new DiceRoll[1];
-      final IExecutable rollDice = new IExecutable() {
-        private static final long serialVersionUID = 4714364489659654758L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          // get rid of units already killed, so we don't target them twice
-          validTargetedUnitsForThisRoll.removeAll(m_casualties);
-          if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
-          }
-        }
-      };
-      final IExecutable selectCasualties = new IExecutable() {
-        private static final long serialVersionUID = -8633263235214834617L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            final int hitCount = dice[0].getHits();
-            if (hitCount == 0) {
-              if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                    findDefender(currentPossibleAa, territory));
-              } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                    findDefender(currentPossibleAa, territory));
-              }
-              getRemotePlayer().reportMessage("No " + currentTypeAa + " hits in " + territory.getName(),
-                  "No " + currentTypeAa + " hits in " + territory.getName());
-            } else {
-              if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                    findDefender(currentPossibleAa, territory));
-              } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                    findDefender(currentPossibleAa, territory));
-              }
-              selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAa, defendingAa, territory,
-                  currentTypeAa);
-            }
-          }
-        }
-      };
-      // push in reverse order of execution
-      m_executionStack.push(selectCasualties);
-      m_executionStack.push(rollDice);
-    }
   }
 
   private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {

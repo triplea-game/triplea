@@ -46,7 +46,11 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     if (!(editMode instanceof Boolean)) {
       return false;
     }
-    return (Boolean) editMode;
+    return (boolean) editMode;
+  }
+
+  public boolean getEditMode() {
+    return getEditMode(getData());
   }
 
   protected String checkPlayerID() {
@@ -76,10 +80,6 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);
     m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, editMode, getData()));
     return null;
-  }
-
-  public boolean getEditMode() {
-    return getEditMode(getData());
   }
 
   public String addComment(final String message) {

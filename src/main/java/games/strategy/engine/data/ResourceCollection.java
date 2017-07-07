@@ -41,10 +41,6 @@ public class ResourceCollection extends GameDataComponent {
     change(resource, quantity);
   }
 
-  public void add(final ResourceCollection otherResources) {
-    m_resources.add(otherResources.m_resources);
-  }
-
   /**
    * You cannot remove more than the collection contains.
    *
@@ -83,12 +79,12 @@ public class ResourceCollection extends GameDataComponent {
     m_resources.put(resource, quantity);
   }
 
-  public int getQuantity(final Resource resource) {
-    return m_resources.getInt(resource);
-  }
-
   public IntegerMap<Resource> getResourcesCopy() {
     return new IntegerMap<>(m_resources);
+  }
+
+  public int getQuantity(final Resource resource) {
+    return m_resources.getInt(resource);
   }
 
   public int getQuantity(final String name) {
@@ -125,6 +121,10 @@ public class ResourceCollection extends GameDataComponent {
     for (final Resource resource : cost.keySet()) {
       removeResource(resource, cost.getInt(resource));
     }
+  }
+
+  public void add(final ResourceCollection otherResources) {
+    m_resources.add(otherResources.m_resources);
   }
 
   public void add(final IntegerMap<Resource> resources) {

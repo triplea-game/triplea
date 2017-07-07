@@ -15,8 +15,8 @@ public interface IModeratorController extends IRemote {
    * </p>
    */
   void boot(INode node);
-  
-  //Remove the z Prefix of all methods in the next incompatible release
+
+  // Remove the z Prefix of all methods in the next incompatible release
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -49,11 +49,6 @@ public interface IModeratorController extends IRemote {
   }
 
   /**
-   * Ban the mac of the given INode.
-   */
-  void zzBanMac(INode node, Instant banExpires);
-
-  /**
    * @deprecated Kept to maintain backwards compatibility.
    *             Remove with next incompatible release.
    */
@@ -61,6 +56,11 @@ public interface IModeratorController extends IRemote {
   default void banMac(final INode node, final String hashedMac, final Date banExpires) {
     zzBanMac(node, banExpires != null ? banExpires.toInstant() : null);
   }
+
+  /**
+   * Ban the mac of the given INode.
+   */
+  void zzBanMac(INode node, Instant banExpires);
 
   /**
    * Ban the mac.

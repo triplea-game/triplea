@@ -20,6 +20,11 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
+  public void zzBanMac(final INode node, final Instant banExpires) {
+    // nothing
+  }
+
+  @Override
   public String mutePlayerHeadlessHostBot(final INode node, final String playerNameToBeMuted, final int minutes,
       final String hashedPassword, final String salt) {
     return null;
@@ -64,11 +69,6 @@ public class NullModeratorController extends AbstractModeratorController {
 
   @Override
   public void zzBanUsername(final INode node, final Instant banExpires) {
-    // nothing
-  }
-
-  @Override
-  public void zzBanMac(final INode node, final Instant banExpires) {
     // nothing
   }
 

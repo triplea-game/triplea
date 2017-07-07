@@ -111,6 +111,12 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
+  private void add(final LinkedIntegerMap<T> map) {
+    for (final T key : map.keySet()) {
+      add(key, map.getInt(key));
+    }
+  }
+
   /**
    * Will multiply all values by a given double.
    * Can be used to divide all numbers, if given a fractional double
@@ -264,12 +270,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
       sum += value;
     }
     return sum;
-  }
-
-  private void add(final LinkedIntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      add(key, map.getInt(key));
-    }
   }
 
   /**

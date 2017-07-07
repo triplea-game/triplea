@@ -39,6 +39,13 @@ public final class EventThreadJOptionPane {
             useJLabel ? createJLabelInScrollPane((String) message) : message, title, messageType));
   }
 
+  public static void showMessageDialog(final Component parentComponent, final Object message,
+      final CountDownLatchHandler latchHandler) {
+    invokeAndWait(
+        latchHandler,
+        () -> JOptionPane.showMessageDialog(parentComponent, message));
+  }
+
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
     invokeAndWait(latchHandler, () -> {
       runnable.run();
@@ -63,6 +70,11 @@ public final class EventThreadJOptionPane {
     }
     awaitLatch(latchHandler, latch);
     return result.get();
+  }
+
+  @VisibleForTesting
+  static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
+    return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
   private static JScrollPane createJLabelInScrollPane(final String message) {
@@ -98,13 +110,6 @@ public final class EventThreadJOptionPane {
     }
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message,
-      final CountDownLatchHandler latchHandler) {
-    invokeAndWait(
-        latchHandler,
-        () -> JOptionPane.showMessageDialog(parentComponent, message));
-  }
-
   public static int showOptionDialog(final Component parentComponent, final Object message, final String title,
       final int optionType, final int messageType, final Icon icon, final Object[] options, final Object initialValue,
       final CountDownLatchHandler latchHandler) {
@@ -112,11 +117,6 @@ public final class EventThreadJOptionPane {
         latchHandler,
         () -> JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
             initialValue));
-  }
-
-  @VisibleForTesting
-  static int invokeAndWait(final CountDownLatchHandler latchHandler, final IntSupplier supplier) {
-    return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
   public static int showConfirmDialog(final Component parentComponent, final Object message, final String title,

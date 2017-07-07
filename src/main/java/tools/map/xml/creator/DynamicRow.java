@@ -53,6 +53,8 @@ public abstract class DynamicRow {
     addToParentComponentWithGbc(parent, rowIndex, MapXmlUiHelper.getGbcDefaultTemplateWith(0, rowIndex));
   }
 
+  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate);
+  
   public void addToParentComponentWithGbc(final JComponent parent, final int rowIndex,
       final GridBagConstraints gbcTemplate) {
     gbcTemplate.gridy = rowIndex;
@@ -108,7 +110,6 @@ public abstract class DynamicRow {
 
   protected abstract ArrayList<JComponent> getComponentList();
 
-  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate);
 
   protected abstract void adaptRowSpecifics(final DynamicRow newRow);
 
