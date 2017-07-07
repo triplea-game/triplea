@@ -106,6 +106,23 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
+   * @param types
+   *        map of unit types
+   * @return collection of units of each type up to max.
+   */
+  public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
+    final Collection<Unit> units = new ArrayList<>();
+    for (final UnitType type : types.keySet()) {
+      units.addAll(getUnits(type, types.getInt(type)));
+    }
+    return units;
+  }
+
+  public Collection<Unit> getUnits() {
+    return new ArrayList<>(m_units);
+  }
+
+  /**
    * @return integer map of UnitType.
    */
   public IntegerMap<UnitType> getUnitsByType() {
@@ -130,19 +147,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return count;
   }
 
-  /**
-   * @param types
-   *        map of unit types
-   * @return collection of units of each type up to max.
-   */
-  public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
-    final Collection<Unit> units = new ArrayList<>();
-    for (final UnitType type : types.keySet()) {
-      units.addAll(getUnits(type, types.getInt(type)));
-    }
-    return units;
-  }
-
   @Override
   public int size() {
     return m_units.size();
@@ -151,10 +155,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   @Override
   public boolean isEmpty() {
     return m_units.isEmpty();
-  }
-
-  public Collection<Unit> getUnits() {
-    return new ArrayList<>(m_units);
   }
 
   /**
