@@ -7,6 +7,13 @@ import java.util.Map;
 
 import games.strategy.util.memento.PropertyBagMemento;
 
+/**
+ * A serializable proxy for the {@code PropertyBagMemento} class.
+ *
+ * <p>
+ * Instances of this class are immutable.
+ * </p>
+ */
 public final class PropertyBagMementoProxy implements Serializable {
   private static final long serialVersionUID = 7813364982800353383L;
 
