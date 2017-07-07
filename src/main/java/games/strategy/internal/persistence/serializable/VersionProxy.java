@@ -10,7 +10,7 @@ import games.strategy.util.Version;
  * A serializable proxy for the {@code Version} class.
  *
  * <p>
- * Instances of this class are not thread safe.
+ * Instances of this class are immutable.
  * </p>
  */
 public final class VersionProxy implements Serializable {
