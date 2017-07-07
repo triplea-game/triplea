@@ -65,7 +65,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.TripleaHandler;
 import games.strategy.triplea.Constants;
@@ -484,23 +483,23 @@ public class MapXmlHelper {
       private List<String> settingValues = new ArrayList<>();
 
       @Override
-      protected void handleInfo(Attributes attributes) throws GameParseException {
+      protected void handleInfo(Attributes attributes) {
         for (int i = 0; i < attributes.getLength(); i++) {
           getXmlStringsMap().put("info_@" + attributes.getQName(i), attributes.getValue(i));
         }
       }
 
       @Override
-      protected void handleLoader(Attributes attributes) throws GameParseException {}
+      protected void handleLoader(Attributes attributes) {}
 
       @Override
-      protected void handleTriplea(Attributes attributes) throws GameParseException {}
+      protected void handleTriplea(Attributes attributes) {}
 
       @Override
-      protected void handleDiceSides(Attributes attributes) throws GameParseException {}
+      protected void handleDiceSides(Attributes attributes) {}
 
       @Override
-      protected void handleTerritory(Attributes attributes) throws GameParseException {
+      protected void handleTerritory(Attributes attributes) {
         Map<Definition, Boolean> terrDef = new HashMap<>();
         String terrName = null;
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -515,7 +514,7 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleConnection(Attributes attributes) throws GameParseException {
+      protected void handleConnection(Attributes attributes) {
         String t1Name = attributes.getValue(0);
         String t2Name = attributes.getValue(1);
         if (t1Name.compareTo(t2Name) > 0) {
@@ -534,12 +533,12 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleResource(Attributes attributes) throws GameParseException {
+      protected void handleResource(Attributes attributes) {
         getResourceList().add(attributes.getValue(0));
       }
 
       @Override
-      protected void handlePlayer(Attributes attributes) throws GameParseException {
+      protected void handlePlayer(Attributes attributes) {
         final String playerNameAttr = attributes.getValue(XML_ATTR_PLAYER_NAME_NAME);
         getPlayerNames().add(playerNameAttr);
         getPlayerInitResourcesMap().put(playerNameAttr, 0);
@@ -548,16 +547,16 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleAlliance(Attributes attributes) throws GameParseException {
+      protected void handleAlliance(Attributes attributes) {
         getPlayerAllianceMap().put(attributes.getValue(XML_ATTR_ALLIANCE_NAME_PLAYER),
             attributes.getValue(XML_ATTR_ALLIANCE_NAME_ALLIANCE));
       }
 
       @Override
-      protected void handleUnit(Attributes attributes) throws GameParseException {}
+      protected void handleUnit(Attributes attributes) {}
 
       @Override
-      protected void handleDelegate(Attributes attributes) throws GameParseException {
+      protected void handleDelegate(Attributes attributes) {
         getGamePlaySequenceMap().put(attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME),
             Arrays.asList(
                 attributes.getValue(XML_ATTR_ATTACHMENT_NAME_JAVA_CLASS).replace(TRIPLEA_JAVA_CLASS_DELEGATE_PATH, ""),
@@ -565,7 +564,7 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleStep(Attributes attributes) throws GameParseException {
+      protected void handleStep(Attributes attributes) {
         final String maxRunCount = attributes.getValue(XML_ATTR_STEP_NAME_MAX_RUN_COUNT);
         getPlayerSequenceMap().put(attributes.getValue(XML_ATTR_STEP_NAME_NAME),
             Triple.of(attributes.getValue(XML_ATTR_STEP_NAME_DELEGATE),
@@ -574,26 +573,26 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handlePlayerProduction(Attributes attributes) throws GameParseException {}
+      protected void handlePlayerProduction(Attributes attributes) {}
 
       @Override
-      protected void handleCost(Attributes attributes) throws GameParseException {
+      protected void handleCost(Attributes attributes) {
         costQuantity = attributes.getValue(XML_ATTR_RESULT_NAME_QUANTITY);
       }
 
       @Override
-      protected void handleResult(Attributes attributes) throws GameParseException {
+      protected void handleResult(Attributes attributes) {
         resultQuantity = attributes.getValue(XML_ATTR_RESULT_NAME_QUANTITY);
         resourceOrUnit = attributes.getValue(XML_ATTR_RESULT_NAME_RESOURCE_OR_UNIT);
       }
 
       @Override
-      protected void handleFrontierRules(Attributes attributes) throws GameParseException {
+      protected void handleFrontierRules(Attributes attributes) {
         frontierRules.add(attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME).substring(3));
       }
 
       @Override
-      protected void handleOption(Attributes attributes) throws GameParseException {
+      protected void handleOption(Attributes attributes) {
         final Attributes parentAttributes = getCurrentParent().getAttributes();
         final String attachmentName = parentAttributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME);
         final String attachmentType = parentAttributes.getValue(XML_ATTR_ATTACHMENT_NAME_TYPE);
@@ -638,7 +637,7 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleUnitPlacement(Attributes attributes) throws GameParseException {
+      protected void handleUnitPlacement(Attributes attributes) {
         final String territory = attributes.getValue(XML_NODE_NAME_TERRITORY);
         final String owner = attributes.getValue(XML_ATTR_UNIT_PLACEMENT_NAME_OWNER);
         final Map<String, Map<String, Integer>> terrPlacements =
@@ -651,16 +650,16 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleTerritoryOwner(Attributes attributes) throws GameParseException {
+      protected void handleTerritoryOwner(Attributes attributes) {
         getTerritoryOwnershipsMap().put(attributes.getValue(XML_NODE_NAME_TERRITORY),
             attributes.getValue(XML_ATTR_UNIT_PLACEMENT_NAME_OWNER));
       }
 
       @Override
-      protected void handleResourceGiven(Attributes attributes) throws GameParseException {}
+      protected void handleResourceGiven(Attributes attributes) {}
 
       @Override
-      protected void handleProperty(Attributes attributes) throws GameParseException {
+      protected void handleProperty(Attributes attributes) {
         settingValues = new ArrayList<>();
         final String propertyName = attributes.getValue(XML_ATTR_PROPERTY_NAME_NAME);
         if (propertyName.equals(XML_ATTR_VALUE_PROPERTY_NAME_NOTES)
@@ -673,7 +672,7 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleNumber() throws GameParseException {
+      protected void handleNumber() {
         Attributes attributes = getCurrentParent().getAttributes();
         settingValues.add(attributes.getValue(XML_ATTR_NUMBER_NAME_MIN));
         settingValues.add(attributes.getValue(XML_ATTR_NUMBER_NAME_MAX));
@@ -681,7 +680,7 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleBoolean() throws GameParseException {
+      protected void handleBoolean() {
         settingValues.add("0"); // min
         settingValues.add("0"); // max
         getGameSettingsMap().put(getCurrentParent().getAttributes().getValue(XML_ATTR_PROPERTY_NAME_NAME),
@@ -689,66 +688,66 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleTech(Attributes attributes) throws GameParseException {}
+      protected void handleTech(Attributes attributes) {}
 
       @Override
-      protected void handleMap() throws GameParseException {
+      protected void handleMap() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(), (getTerritoryConnectionsMap().isEmpty()
             ? GameStep.TERRITORY_DEFINITIONS
             : GameStep.TERRITORY_CONNECTIONS)));
       }
 
       @Override
-      protected void handlePlayerList() throws GameParseException {
+      protected void handlePlayerList() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(), GameStep.PLAYERS_AND_ALLIANCES));
       }
 
       @Override
-      protected void handleProduction() throws GameParseException {
+      protected void handleProduction() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(),
             (getProductionFrontiersMap().isEmpty() ? GameStep.UNIT_DEFINITIONS : GameStep.PRODUCTION_FRONTIERS)));
       }
 
       @Override
-      protected void handleProductionRule() throws GameParseException {
+      protected void handleProductionRule() {
         putUnitDefinitions(resourceOrUnit,
             Arrays.asList(Integer.parseInt(costQuantity), Integer.parseInt(resultQuantity)));
         resourceOrUnit = costQuantity = resultQuantity = null;
       }
 
       @Override
-      protected void handleProductionFrontier(Attributes attributes) throws GameParseException {
+      protected void handleProductionFrontier(Attributes attributes) {
         String value = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME);
         playerName = value.length() >= 10 ? attributes.getValue(XML_ATTR_ATTACHMENT_NAME_NAME).substring(10) : "";
       }
 
       @Override
-      protected void handleProductionFrontier() throws GameParseException {
+      protected void handleProductionFrontier() {
         getProductionFrontiersMap().put(playerName, frontierRules);
         frontierRules.clear();
         playerName = null;
       }
 
       @Override
-      protected void handleGamePlay() throws GameParseException {
+      protected void handleGamePlay() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(),
             getPlayerSequenceMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION));
       }
 
       @Override
-      protected void handleAttachmentList() throws GameParseException {
+      protected void handleAttachmentList() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(MapXmlCreator.getMaxGameStep(stepToGo.get(),
             getUnitAttachmentsMap().isEmpty() ? GameStep.PRODUCTION_FRONTIERS : GameStep.UNIT_ATTACHMENTS),
             getTerritoyProductionsMap().isEmpty() ? GameStep.UNIT_ATTACHMENTS : GameStep.TERRITORY_PRODUCTION));
       }
 
       @Override
-      protected void handleAttachment(Attributes attributes) throws GameParseException {
+      protected void handleAttachment(Attributes attributes) {
         attachmentAttachTo = attributes.getValue(XML_ATTR_ATTACHMENT_NAME_ATTACH_TO);
       }
 
       @Override
-      protected void handleAttachment() throws GameParseException {
+      protected void handleAttachment() {
         if (canalDef == null) {
           final SortedSet<String> newWaterTerritories = new TreeSet<>();
           newWaterTerritories.add(attachmentAttachTo);
@@ -763,13 +762,13 @@ public class MapXmlHelper {
       }
 
       @Override
-      protected void handleInitialize() throws GameParseException {
+      protected void handleInitialize() {
         stepToGo.set(MapXmlCreator.getMaxGameStep(stepToGo.get(),
             getUnitPlacementsMap().isEmpty() ? GameStep.TERRITORY_OWNERSHIP : GameStep.UNIT_PLACEMENTS));
       }
 
       @Override
-      protected void handlePropertyList() throws GameParseException {
+      protected void handlePropertyList() {
         if (!getGameSettingsMap().isEmpty()) {
           stepToGo.set(getNotes().length() > 0 ? GameStep.MAP_FINISHED : GameStep.GAME_SETTINGS);
         }
