@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * A fixture for testing the basic aspects of classes that implement the {@link PersistenceDelegateRegistry} interface.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public abstract class AbstractPersistenceDelegateRegistryTestCase {
   @Mock
   private PersistenceDelegate persistenceDelegate;
