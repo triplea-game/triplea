@@ -242,8 +242,8 @@ public class GameRunner {
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
       
+      ProAI.gameOverClearCache();
       new Thread(() -> {
-        ProAI.gameOverClearCache();
         gameSelectorModel.loadDefaultGame(mainFrame, false);
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
