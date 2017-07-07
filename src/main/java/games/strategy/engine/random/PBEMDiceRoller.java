@@ -72,6 +72,11 @@ public class PBEMDiceRoller implements IRandomSource {
     return dialog.getDiceRoll();
   }
 
+  @Override
+  public int getRandom(final int max, final String annotation) throws IllegalStateException {
+    return getRandom(max, 1, annotation)[0];
+  }
+
   private static Frame getFocusedFrame() {
     if (s_focusWindow != null) {
       return s_focusWindow;
@@ -88,11 +93,6 @@ public class PBEMDiceRoller implements IRandomSource {
       }
     }
     return focusedFrame;
-  }
-
-  @Override
-  public int getRandom(final int max, final String annotation) throws IllegalStateException {
-    return getRandom(max, 1, annotation)[0];
   }
 
   /**

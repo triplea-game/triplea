@@ -86,17 +86,17 @@ public class TripleADisplay implements ITripleADisplay {
     m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
   }
 
+  @Override
+  public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {
+    m_ui.getBattlePanel().notifyRetreat(retreating);
+  }
+
   /**
    * Show dice for the given battle and step.
    */
   @Override
   public void notifyDice(final DiceRoll dice, final String stepName) {
     m_ui.getBattlePanel().showDice(dice, stepName);
-  }
-
-  @Override
-  public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {
-    m_ui.getBattlePanel().notifyRetreat(retreating);
   }
 
   @Override

@@ -61,6 +61,21 @@ public class ProductionRepairPanel extends JPanel {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
+  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
+    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
+    // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
+    for (final Rule rule : rules) {
+      final int quantity = rule.getQuantity();
+      if (quantity != 0) {
+        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
+        final Unit unit = rule.getUnit();
+        repairRule.put(rule.getProductionRule(), quantity);
+        prod.put(unit, repairRule);
+      }
+    }
+    return prod;
+  }
+
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
@@ -177,21 +192,6 @@ public class ProductionRepairPanel extends JPanel {
   }
 
   Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
-
-  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
-    // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-    for (final Rule rule : rules) {
-      final int quantity = rule.getQuantity();
-      if (quantity != 0) {
-        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
-        final Unit unit = rule.getUnit();
-        repairRule.put(rule.getProductionRule(), quantity);
-        prod.put(unit, repairRule);
-      }
-    }
-    return prod;
-  }
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;

@@ -253,7 +253,31 @@ public class BattleTracker implements java.io.Serializable {
 
     this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
-  
+
+  private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
+      final GameData data, final HashMap<Unit, HashSet<Unit>> targets) {
+    IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
+    if (battle == null) {
+      battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
+      m_pendingBattles.add(battle);
+      getBattleRecords().addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
+    }
+    final Change change = battle.addAttackChange(route, units, targets);
+    // when state is moved to the game data, this will change
+    if (!change.isEmpty()) {
+      throw new IllegalStateException("Non empty change");
+    }
+    // dont let land battles in the same territory occur before bombing battles
+    final IBattle dependent = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
+    if (dependent != null) {
+      addDependency(dependent, battle);
+    }
+    final IBattle dependentAirBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
+    if (dependentAirBattle != null) {
+      addDependency(dependentAirBattle, battle);
+    }
+  }
+
   public void addBattle(final Route route, final Collection<Unit> units, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
@@ -308,30 +332,6 @@ public class BattleTracker implements java.io.Serializable {
     bridge.addChange(change);
     if (changeTracker != null) {
       changeTracker.addChange(change);
-    }
-  }
-
-  private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
-      final GameData data, final HashMap<Unit, HashSet<Unit>> targets) {
-    IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
-    if (battle == null) {
-      battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
-      m_pendingBattles.add(battle);
-      getBattleRecords().addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
-    }
-    final Change change = battle.addAttackChange(route, units, targets);
-    // when state is moved to the game data, this will change
-    if (!change.isEmpty()) {
-      throw new IllegalStateException("Non empty change");
-    }
-    // dont let land battles in the same territory occur before bombing battles
-    final IBattle dependent = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
-    if (dependent != null) {
-      addDependency(dependent, battle);
-    }
-    final IBattle dependentAirBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
-    if (dependentAirBattle != null) {
-      addDependency(dependentAirBattle, battle);
     }
   }
 
@@ -914,16 +914,6 @@ public class BattleTracker implements java.io.Serializable {
     return null;
   }
 
-  Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
-    final Collection<IBattle> battles = new HashSet<>();
-    for (final IBattle battle : m_pendingBattles) {
-      if (battle.getTerritory().equals(t) && (type == null || type.equals(battle.getBattleType()))) {
-        battles.add(battle);
-      }
-    }
-    return battles;
-  }
-
   public IBattle getPendingBattle(final GUID guid) {
     if (guid == null) {
       return null;
@@ -934,6 +924,16 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     return null;
+  }
+
+  Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
+    final Collection<IBattle> battles = new HashSet<>();
+    for (final IBattle battle : m_pendingBattles) {
+      if (battle.getTerritory().equals(t) && (type == null || type.equals(battle.getBattleType()))) {
+        battles.add(battle);
+      }
+    }
+    return battles;
   }
 
   /**

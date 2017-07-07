@@ -61,6 +61,17 @@ public class ProductionPanel extends JPanel {
     return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
   }
 
+  private IntegerMap<ProductionRule> getProduction() {
+    final IntegerMap<ProductionRule> prod = new IntegerMap<>();
+    for (final Rule rule : rules) {
+      final int quantity = rule.getQuantity();
+      if (quantity != 0) {
+        prod.put(rule.getProductionRule(), quantity);
+      }
+    }
+    return prod;
+  }
+
   protected ProductionPanel(final IUIContext uiContext) {
     this.uiContext = uiContext;
   }
@@ -166,17 +177,6 @@ public class ProductionPanel extends JPanel {
   }
 
   Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
-
-  private IntegerMap<ProductionRule> getProduction() {
-    final IntegerMap<ProductionRule> prod = new IntegerMap<>();
-    for (final Rule rule : rules) {
-      final int quantity = rule.getQuantity();
-      if (quantity != 0) {
-        prod.put(rule.getProductionRule(), quantity);
-      }
-    }
-    return prod;
-  }
 
   // This method can be overridden by subclasses
   protected void calculateLimits() {

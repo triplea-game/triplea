@@ -140,6 +140,20 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return undoMove(moveIndex, false);
   }
 
+  protected final String undoMove(final int moveIndex, final boolean suppressError) {
+    // clean up any state we may have
+    CANCEL_MOVE_ACTION.actionPerformed(null);
+    // undo the move
+    final String error = getMoveDelegate().undoMove(moveIndex);
+    if (error != null && !suppressError) {
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+    } else {
+      updateMoves();
+    }
+    undoMoveSpecific();
+    return error;
+  }
+
   /**
    * Executes an undo move for any of the units passed in as a parameter.
    *
@@ -195,21 +209,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
     }
     Collections.sort(moveIndexes);
     return moveIndexes;
-  }
-
-
-  protected final String undoMove(final int moveIndex, final boolean suppressError) {
-    // clean up any state we may have
-    CANCEL_MOVE_ACTION.actionPerformed(null);
-    // undo the move
-    final String error = getMoveDelegate().undoMove(moveIndex);
-    if (error != null && !suppressError) {
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
-    } else {
-      updateMoves();
-    }
-    undoMoveSpecific();
-    return error;
   }
 
   /**
