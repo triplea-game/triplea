@@ -29,7 +29,6 @@ import games.strategy.triplea.TripleAUnit;
 @RunWith(MockitoJUnitRunner.class)
 public class BattleTrackerTest {
 
-
   @Mock
   private IDelegateBridge mockDelegateBridge;
   @Mock
@@ -68,8 +67,7 @@ public class BattleTrackerTest {
     when(mockDelegateBridge.getData()).thenReturn(mockGameData);
     when(mockGameData.getProperties()).thenReturn(mockGameProperties);
     when(mockGameData.getRelationshipTracker()).thenReturn(mockRelationshipTracker);
-    when(mockGameProperties.get(Constants.RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false))
-        .thenReturn(true);
+    when(mockGameProperties.get(Constants.RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false)).thenReturn(true);
     when(mockGetBattleFunction.apply(territory, IBattle.BattleType.BOMBING_RAID)).thenReturn(mockBattle);
 
     // set up the testObj to have the bombing battle
