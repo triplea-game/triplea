@@ -11,6 +11,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -430,5 +431,45 @@ public abstract class TripleaHandler extends DefaultHandler {
       throw new IllegalStateException("This method must only be called while parsing");
     }
     return stack.peek();
+  }
+
+
+  /**
+   * Data class for wrapping the important parameters of DefaultHandler methods into a single object.
+   */
+  protected final class PseudoElement {
+
+    private final String qname;
+    private final Attributes attributes;
+
+    public PseudoElement(String qname, Attributes attributes) {
+      this.qname = qname;
+      this.attributes = attributes;
+    }
+
+    public String getName() {
+      return qname;
+    }
+
+    public Attributes getAttributes() {
+      return attributes;
+    }
+
+    @Override
+    public String toString() {
+      return qname + ": " + attrToString(attributes);
+    }
+  }
+
+  /**
+   * A Small utility method which nicely formats an attribute as a String.
+   */
+  public static String attrToString(Attributes attributes) {
+    Joiner joiner = Joiner.on(' ');
+    final String[] attrs = new String[attributes.getLength()];
+    for (int i = 0; i < attributes.getLength(); i++) {
+      attrs[i] = attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\"";
+    }
+    return joiner.join(attrs);
   }
 }
