@@ -736,6 +736,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return producers;
   }
 
+  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
+      final Collection<Unit> unitsToPlace) {
+    return getAllProducers(to, player, unitsToPlace, false);
+  }
+
   /**
    * Test whether or not the territory has the factory resources to support
    * the placement. AlreadyProduced maps territory->units already produced
@@ -1655,11 +1660,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected boolean isUnitPlacementRestrictions() {
     return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
-  }
-
-  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
-      final Collection<Unit> unitsToPlace) {
-    return getAllProducers(to, player, unitsToPlace, false);
   }
 
   protected boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player) {

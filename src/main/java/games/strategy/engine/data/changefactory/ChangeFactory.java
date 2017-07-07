@@ -84,12 +84,12 @@ public class ChangeFactory {
     return new AddUnits(territory.getUnits(), units);
   }
 
-  public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
-    return new RemoveUnits(territory.getUnits(), units);
-  }
-
   public static Change addUnits(final PlayerID player, final Collection<Unit> units) {
     return new AddUnits(player.getUnits(), units);
+  }
+
+  public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
+    return new RemoveUnits(territory.getUnits(), units);
   }
 
   public static Change removeUnits(final PlayerID player, final Collection<Unit> units) {

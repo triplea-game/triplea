@@ -168,13 +168,13 @@ public class CommentPanel extends JPanel {
     final Document doc = text.getDocument();
     final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
     @SuppressWarnings("unchecked")
-    final Enumeration<HistoryNode> nodeEnum = rootNode.preorderEnumeration();
+    final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
     final Pattern p = Pattern.compile("^COMMENT: (.*)");
     String player = "";
     int round = 0;
     Icon icon = null;
     while (nodeEnum.hasMoreElements()) {
-      final HistoryNode node = nodeEnum.nextElement();
+      final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
       if (node instanceof Round) {
         round++;
       } else if (node instanceof Step) {

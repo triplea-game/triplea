@@ -119,7 +119,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
    * Calculates odds using the stored game data.
    */
   @Override
-  @SuppressWarnings("unchecked")
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
@@ -135,11 +134,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     m_defender =
         m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
     m_location = m_data.getMap().getTerritory(location.getName());
-    m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
-    m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
-    m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
-    m_territoryEffects =
-        (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
+    m_attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, m_data);
+    m_defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, m_data);
+    m_bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
+    m_territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
     m_data.performChange(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
     m_data.performChange(ChangeFactory.addUnits(m_location, m_attackingUnits));
     m_data.performChange(ChangeFactory.addUnits(m_location, m_defendingUnits));
@@ -161,6 +159,48 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
     return calculate(m_runCount);
+  }
+
+  private AggregateResults calculate(final int count) {
+    m_isRunning = true;
+    final long start = System.currentTimeMillis();
+    final AggregateResults rVal = new AggregateResults(count);
+    final BattleTracker battleTracker = new BattleTracker();
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
+    // the AI and a human
+    // are both using the calc)
+    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
+    // per-thread, per-calc
+    // caching
+    final List<Unit> attackerOrderOfLosses =
+        OddsCalculator.getUnitListByOrderOfLoss(m_attackerOrderOfLosses, m_attackingUnits, m_data);
+    final List<Unit> defenderOrderOfLosses =
+        OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
+    for (int i = 0; i < count && !m_cancelled; i++) {
+      final CompositeChange allChanges = new CompositeChange();
+      final DummyDelegateBridge bridge1 =
+          new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
+              m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft, m_retreatWhenOnlyAirLeft);
+      final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
+      final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
+      battle.setHeadless(true);
+      battle.isAmphibious();
+      battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits,
+          (m_amphibious ? m_attackingUnits : new ArrayList<>()), m_defender, m_territoryEffects);
+      // battle.setAttackingFromAndMap(attackingFromMap);
+      bridge1.setBattle(battle);
+      battle.fight(bridge);
+      rVal.addResult(new BattleResults(battle, m_data));
+      // restore the game to its original state
+      m_data.performChange(allChanges.invert());
+      battleTracker.clear();
+      battleTracker.clearBattleRecords();
+    }
+    // BattleCalculator.DisableCasualtySortingCaching();
+    rVal.setTime(System.currentTimeMillis() - start);
+    m_isRunning = false;
+    m_cancelled = false;
+    return rVal;
   }
 
   @Override
@@ -229,48 +269,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   @Override
   public int getThreadCount() {
     return 1;
-  }
-
-  private AggregateResults calculate(final int count) {
-    m_isRunning = true;
-    final long start = System.currentTimeMillis();
-    final AggregateResults rVal = new AggregateResults(count);
-    final BattleTracker battleTracker = new BattleTracker();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
-    // the AI and a human
-    // are both using the calc)
-    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
-    // per-thread, per-calc
-    // caching
-    final List<Unit> attackerOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(m_attackerOrderOfLosses, m_attackingUnits, m_data);
-    final List<Unit> defenderOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
-    for (int i = 0; i < count && !m_cancelled; i++) {
-      final CompositeChange allChanges = new CompositeChange();
-      final DummyDelegateBridge bridge1 =
-          new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-              m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft, m_retreatWhenOnlyAirLeft);
-      final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
-      final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
-      battle.setHeadless(true);
-      battle.isAmphibious();
-      battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits,
-          (m_amphibious ? m_attackingUnits : new ArrayList<>()), m_defender, m_territoryEffects);
-      // battle.setAttackingFromAndMap(attackingFromMap);
-      bridge1.setBattle(battle);
-      battle.fight(bridge);
-      rVal.addResult(new BattleResults(battle, m_data));
-      // restore the game to its original state
-      m_data.performChange(allChanges.invert());
-      battleTracker.clear();
-      battleTracker.clearBattleRecords();
-    }
-    // BattleCalculator.DisableCasualtySortingCaching();
-    rVal.setTime(System.currentTimeMillis() - start);
-    m_isRunning = false;
-    m_cancelled = false;
-    return rVal;
   }
 
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
@@ -504,11 +502,11 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void startHistoryEvent(final String event) {}
 
   @Override
+  public void startHistoryEvent(final String event, final Object renderingData) {}
+  
+  @Override
   public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
       final String displayName, final boolean loadedFromSavedGame) {}
-
-  @Override
-  public void startHistoryEvent(final String event, final Object renderingData) {}
 }
 
 

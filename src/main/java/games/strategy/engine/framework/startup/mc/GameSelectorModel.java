@@ -85,20 +85,6 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  public GameData getGameData(final InputStream input) {
-    final GameDataManager manager = new GameDataManager();
-    GameData newData;
-    try {
-      newData = manager.loadGame(input, null);
-      if (newData != null) {
-        return newData;
-      }
-    } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-    }
-    return null;
-  }
-
   public void load(final File file, final Component ui) {
     if (!file.exists()) {
       if (ui == null) {
@@ -149,6 +135,24 @@ public class GameSelectorModel extends Observable {
     }
   }
 
+  public GameData getGameData(final InputStream input) {
+    final GameDataManager manager = new GameDataManager();
+    GameData newData;
+    try {
+      newData = manager.loadGame(input, null);
+      if (newData != null) {
+        return newData;
+      }
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
+    }
+    return null;
+  }
+
+  public synchronized GameData getGameData() {
+    return m_data;
+  }
+
   public boolean isSavedGame() {
     return !m_fileName.endsWith(".xml");
   }
@@ -156,10 +160,6 @@ public class GameSelectorModel extends Observable {
   private static void error(final String message, final Component ui) {
     JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
         JOptionPane.ERROR_MESSAGE);
-  }
-
-  public synchronized GameData getGameData() {
-    return m_data;
   }
 
   void setCanSelect(final boolean canSelect) {

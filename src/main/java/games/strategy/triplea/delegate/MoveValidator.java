@@ -215,6 +215,52 @@ public class MoveValidator {
     return result.setErrorReturnResult(validateCanal(route, units, player, data));
   }
 
+  /**
+   * Test a route's canals to see if you can move through it.
+   *
+   * @param units
+   *        (Can be null. If null we will assume all units would be stopped by the canal.)
+   */
+  public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
+      final GameData data) {
+    for (final Territory routeTerritory : route.getAllTerritories()) {
+      final Optional<String> result = validateCanal(routeTerritory, route, units, player, data);
+      if (result.isPresent()) {
+        return result.get();
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it
+   * can be passed through otherwise returns a failure message indicating why the canal can't be passed through.
+   *
+   * @param route
+   *        (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we
+   *        will not test the
+   *        canal)
+   * @param units
+   *        (Can be null. If null we will assume all units would be stopped by the canal.)
+   */
+  public static Optional<String> validateCanal(final Territory territory, final Route route,
+      final Collection<Unit> units, final PlayerID player, final GameData data) {
+    Optional<String> failureMessage = Optional.empty();
+    final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
+    for (final CanalAttachment canalAttachment : canalAttachments) {
+      if (!isCanalOnRoute(canalAttachment, route, data)) {
+        continue; // Only check canals that are on the route
+      }
+      failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
+      final boolean canPass = !failureMessage.isPresent();
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+        break; // If need to control any canal and can pass OR need to control all canals and can't pass
+      }
+    }
+    return failureMessage;
+  }
+
   private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units,
       final Route route, final PlayerID player, final MoveValidationResult result) {
     if (getEditMode(data)) {
@@ -1215,52 +1261,6 @@ public class MoveValidator {
       }
     }
     return result;
-  }
-
-  /**
-   * Test a route's canals to see if you can move through it.
-   *
-   * @param units
-   *        (Can be null. If null we will assume all units would be stopped by the canal.)
-   */
-  public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
-      final GameData data) {
-    for (final Territory routeTerritory : route.getAllTerritories()) {
-      final Optional<String> result = validateCanal(routeTerritory, route, units, player, data);
-      if (result.isPresent()) {
-        return result.get();
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it
-   * can be passed through otherwise returns a failure message indicating why the canal can't be passed through.
-   *
-   * @param route
-   *        (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we
-   *        will not test the
-   *        canal)
-   * @param units
-   *        (Can be null. If null we will assume all units would be stopped by the canal.)
-   */
-  public static Optional<String> validateCanal(final Territory territory, final Route route,
-      final Collection<Unit> units, final PlayerID player, final GameData data) {
-    Optional<String> failureMessage = Optional.empty();
-    final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
-    for (final CanalAttachment canalAttachment : canalAttachments) {
-      if (!isCanalOnRoute(canalAttachment, route, data)) {
-        continue; // Only check canals that are on the route
-      }
-      failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      final boolean canPass = !failureMessage.isPresent();
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
-        break; // If need to control any canal and can pass OR need to control all canals and can't pass
-      }
-    }
-    return failureMessage;
   }
 
   /*

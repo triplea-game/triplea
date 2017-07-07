@@ -6,19 +6,23 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.SwingWorker;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SwingWorkerCompletionWaiterTest {
-  @InjectMocks
   private SwingWorkerCompletionWaiter waiter;
 
   @Mock
   private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+
+  @Before
+  public void setUp() {
+    waiter = new SwingWorkerCompletionWaiter(progressWindow);
+  }
 
   @Test
   public void testShouldOpenProgressWindowWhenWorkerStarted() {

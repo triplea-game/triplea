@@ -16,7 +16,7 @@ public class GameDataUtils {
 
   /**
    * Create a deep copy of GameData.
-   * <Strong>You should have the game datas read or write lock before calling this method</STRONG>
+   * <strong>You should have the game data's read or write lock before calling this method</strong>
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
@@ -37,7 +37,8 @@ public class GameDataUtils {
    * Translate units,territories and other game data objects from one
    * game data into another.
    */
-  public static Object translateIntoOtherGameData(final Object object, final GameData translateInto) {
+  @SuppressWarnings("unchecked")
+  public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
       ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
       final GameObjectOutputStream out = new GameObjectOutputStream(sink);
@@ -49,7 +50,7 @@ public class GameDataUtils {
       final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
       final ObjectInputStream in = factory.create(source);
       try {
-        return in.readObject();
+        return (T) in.readObject();
       } catch (final ClassNotFoundException ex) {
         // should never happen
         throw new RuntimeException(ex);
