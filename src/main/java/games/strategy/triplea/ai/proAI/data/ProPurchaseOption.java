@@ -173,6 +173,10 @@ public class ProPurchaseOption {
     return transportEfficiency;
   }
 
+  public double getTransportEfficiency(final GameData data) {
+    return Math.pow(transportEfficiency, 30) / quantity;
+  }
+
   public double getCarrierEfficiency() {
     return carrierEfficiency;
   }
@@ -289,10 +293,6 @@ public class ProPurchaseOption {
     final double defenseValue = (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
     return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor / cost,
         30) / quantity;
-  }
-
-  public double getTransportEfficiency(final GameData data) {
-    return Math.pow(transportEfficiency, 30) / quantity;
   }
 
   private double calculateLandDistanceFactor(final int enemyDistance) {

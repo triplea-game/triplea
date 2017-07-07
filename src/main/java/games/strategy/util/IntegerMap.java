@@ -96,6 +96,12 @@ public class IntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
+  public void add(final IntegerMap<T> map) {
+    for (final T key : map.keySet()) {
+      add(key, map.getInt(key));
+    }
+  }
+
   /**
    * Will multiply all values by a given double.
    * Can be used to divide all numbers, if given a fractional double
@@ -249,12 +255,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
       sum += value;
     }
     return sum;
-  }
-
-  public void add(final IntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      add(key, map.getInt(key));
-    }
   }
 
   public void subtract(final IntegerMap<T> map) {

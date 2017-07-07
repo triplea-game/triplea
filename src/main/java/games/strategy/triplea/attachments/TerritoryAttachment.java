@@ -156,6 +156,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     return ta.getProduction();
   }
 
+  public int getProduction() {
+    return m_production;
+  }
+
   /**
    * Convenience method since TerritoryAttachment.get could return null.
    */
@@ -165,6 +169,10 @@ public class TerritoryAttachment extends DefaultAttachment {
       return 0;
     }
     return ta.getUnitProduction();
+  }
+
+  public int getUnitProduction() {
+    return m_unitProduction;
   }
 
   private String m_capital = null;
@@ -323,17 +331,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_production = getInt(value);
   }
 
-  public int getProduction() {
-    return m_production;
-  }
-
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitProduction(final String value) {
     m_unitProduction = Integer.parseInt(value);
-  }
-
-  public int getUnitProduction() {
-    return m_unitProduction;
   }
 
   /**

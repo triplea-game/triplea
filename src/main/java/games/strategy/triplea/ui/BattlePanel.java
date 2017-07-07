@@ -155,6 +155,14 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
+  public void notifyRetreat(final Collection<Unit> retreating) {
+    SwingUtilities.invokeLater(() -> {
+      if (battleDisplay != null) {
+        battleDisplay.notifyRetreat(retreating);
+      }
+    });
+  }
+
   public void showDice(final DiceRoll dice, final String step) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
@@ -417,14 +425,6 @@ public class BattlePanel extends ActionPanel {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
         battleDisplay.setStep(step);
-      }
-    });
-  }
-
-  public void notifyRetreat(final Collection<Unit> retreating) {
-    SwingUtilities.invokeLater(() -> {
-      if (battleDisplay != null) {
-        battleDisplay.notifyRetreat(retreating);
       }
     });
   }
