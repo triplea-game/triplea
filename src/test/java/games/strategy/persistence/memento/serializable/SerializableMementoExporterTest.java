@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import games.strategy.persistence.serializable.DefaultPersistenceDelegateRegistry;
 import games.strategy.util.memento.Memento;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SerializableMementoExporterTest {
   private final Memento memento = newMemento();
 

@@ -16,7 +16,7 @@ import games.strategy.persistence.serializable.DefaultPersistenceDelegateRegistr
 import games.strategy.persistence.serializable.PersistenceDelegateRegistry;
 import games.strategy.util.memento.Memento;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SerializableMementoImporterTest {
   private final PersistenceDelegateRegistry persistenceDelegateRegistry = new DefaultPersistenceDelegateRegistry();
 
