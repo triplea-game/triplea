@@ -819,6 +819,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final List<Unit> sortedAttackingUnits = getUnitsInBattle(true, m_attackingUnits, bridge);
+        if (DiceRoll.getTotalPower(
+            DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedAttackingUnits, m_defendingUnits, false, false,
+                m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data) > 0) {
+          final List<Unit> sortedDefendingUnits = getUnitsInBattle(false, m_defendingUnits, bridge);
+          if (DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedDefendingUnits,
+              m_defendingUnits, true, false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite),
+              false, null), m_data) == 0) {
+            remove(new ArrayList<>(Match.getMatches(sortedDefendingUnits, Matches.UnitIsInfrastructure.invert())),
+                bridge, m_battleSite, true);
+          }
+        }
         clearWaitingToDie(bridge);
       }
     });
@@ -2756,6 +2768,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       m_battleTracker.removeBattle(this);
     }
+  }
+
+  private List<Unit> getUnitsInBattle(final boolean attack, final List<Unit> units, final IDelegateBridge bridge) {
+    final Match<Unit> unitTypes = Matches.unitCanBeInBattle(attack, !m_battleSite.isWater(), 1, false, !attack, true);
+    final List<Unit> sortedUnits = new ArrayList<>(Match.getMatches(units, unitTypes));
+    Collections.sort(sortedUnits, new UnitBattleComparator(false,
+        BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
+        TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+    Collections.reverse(sortedUnits);
+    return sortedUnits;
   }
 
   /**
