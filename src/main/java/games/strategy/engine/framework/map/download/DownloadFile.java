@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
@@ -15,6 +16,7 @@ import games.strategy.engine.ClientFileSystemHelper;
  * This class notifies listeners as appropriate while download state changes.
  */
 final class DownloadFile {
+  @VisibleForTesting
   enum DownloadState {
     NOT_STARTED, DOWNLOADING, CANCELLED, DONE
   }
@@ -35,13 +37,8 @@ final class DownloadFile {
   }
 
   void startAsyncDownload() {
-    final File fileToDownloadTo = ClientFileSystemHelper.createTempFile();
-    fileToDownloadTo.deleteOnExit();
-    final FileSizeWatcher watcher = new FileSizeWatcher(
-        fileToDownloadTo,
-        bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
     state = DownloadState.DOWNLOADING;
-    createDownloadThread(watcher).start();
+    createDownloadThread().start();
   }
 
   /*
@@ -49,37 +46,52 @@ final class DownloadFile {
    * complete and if the download state is not cancelled, it will then move
    * the completed download temp file to: 'downloadDescription.getInstallLocation()'
    */
-  private Thread createDownloadThread(final FileSizeWatcher watcher) {
+  private Thread createDownloadThread() {
     return new Thread(() -> {
-      final File fileToDownloadTo = watcher.getFile();
-      if (state != DownloadState.CANCELLED) {
-        final String url = download.getUrl();
-        try {
-          DownloadUtils.downloadToFile(url, fileToDownloadTo);
-        } catch (final Exception e) {
-          ClientLogger.logError("Failed to download: " + url, e);
-        }
-        if (state == DownloadState.CANCELLED) {
-          return;
-        }
-        state = DownloadState.DONE;
-        try {
-          Files.move(fileToDownloadTo, download.getInstallLocation());
-
-          final DownloadFileProperties props = new DownloadFileProperties();
-          props.setFrom(download);
-          DownloadFileProperties.saveForZip(download.getInstallLocation(), props);
-
-        } catch (final Exception e) {
-          final String msg = "Failed to move downloaded file (" + fileToDownloadTo.getAbsolutePath() + ") to: "
-              + download.getInstallLocation().getAbsolutePath();
-          ClientLogger.logError(msg, e);
-        }
+      if (state == DownloadState.CANCELLED) {
+        return;
       }
 
-      watcher.stop();
+      final File tempFile = newTempFile();
+      final FileSizeWatcher watcher = new FileSizeWatcher(
+          tempFile,
+          bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
+      try {
+        DownloadUtils.downloadToFile(download.getUrl(), tempFile);
+      } catch (final IOException e) {
+        ClientLogger.logError("Failed to download: " + download.getUrl(), e);
+        return;
+      } finally {
+        watcher.stop();
+      }
+
+      if (state == DownloadState.CANCELLED) {
+        return;
+      }
+
+      state = DownloadState.DONE;
+
+      try {
+        Files.move(tempFile, download.getInstallLocation());
+      } catch (final IOException e) {
+        ClientLogger.logError(
+            String.format("Failed to move downloaded file (%s) to: %s", tempFile, download.getInstallLocation()),
+            e);
+        return;
+      }
+
+      final DownloadFileProperties props = new DownloadFileProperties();
+      props.setFrom(download);
+      DownloadFileProperties.saveForZip(download.getInstallLocation(), props);
+
       downloadListener.downloadStopped(download);
     });
+  }
+
+  private static File newTempFile() {
+    final File file = ClientFileSystemHelper.createTempFile();
+    file.deleteOnExit();
+    return file;
   }
 
   @VisibleForTesting
