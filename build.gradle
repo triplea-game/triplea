@@ -155,7 +155,7 @@ task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 
 task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
     classifier 'all_platforms'
-    ['assets', 'dice_servers', 'maps', 'old'].each { folder ->
+    ['assets', 'dice_servers', 'old'].each { folder ->
         from(folder) {
             into(folder)
         }
@@ -164,11 +164,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
         into('icons')
         exclude("icon.icns")
     }
-    ['readme.html', 'changelog.txt', 'game_engine.properties',
-     'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
-     'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
-        from(fileName)
-    }
+    from('game_engine.properties')
     from(renameShadowJar.output) {
         into('bin')
     }
