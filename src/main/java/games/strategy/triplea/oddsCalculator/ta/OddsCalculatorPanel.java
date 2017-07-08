@@ -363,8 +363,6 @@ class OddsCalculatorPanel extends JPanel {
         });
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
-    dialog.pack();
-    dialog.setLocationRelativeTo(this);
     final Thread calcThread = new Thread(() -> {
       try {
         // find a territory to fight in

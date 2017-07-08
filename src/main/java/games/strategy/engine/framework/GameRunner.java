@@ -42,6 +42,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.SystemPreferenceKey;
@@ -195,6 +196,10 @@ public class GameRunner {
 
   public static ProgressWindow newProgressWindow(final String title) {
     return new ProgressWindow(mainFrame, title);
+  }
+
+  public static WaitDialog newWaitDialog(final String message) {
+    return new WaitDialog(mainFrame, message);
   }
 
   /**
