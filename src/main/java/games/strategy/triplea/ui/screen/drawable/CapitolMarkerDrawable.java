@@ -13,26 +13,26 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class CapitolMarkerDrawable implements IDrawable {
-  private final String m_player;
-  private final String m_location;
-  private final IUIContext m_uiContext;
+  private final String player;
+  private final String location;
+  private final IUIContext uiContext;
 
   public CapitolMarkerDrawable(final PlayerID player, final Territory location, final IUIContext uiContext) {
     super();
     if (player == null) {
       throw new IllegalStateException("no player for capitol:" + location);
     }
-    m_player = player.getName();
-    m_location = location.getName();
-    m_uiContext = uiContext;
+    this.player = player.getName();
+    this.location = location.getName();
+    this.uiContext = uiContext;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     // Changed back to use Large flags
-    final Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
-    final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
+    final Image img = uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(player));
+    final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 

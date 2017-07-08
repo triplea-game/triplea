@@ -13,16 +13,16 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class SeaZoneOutlineDrawable implements IDrawable {
-  private final String m_territoryName;
+  private final String territoryName;
 
   public SeaZoneOutlineDrawable(final String territoryName) {
-    m_territoryName = territoryName;
+    this.territoryName = territoryName;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     final Iterator<Polygon> iter2 = polys.iterator();
     while (iter2.hasNext()) {
