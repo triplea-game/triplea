@@ -331,7 +331,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           continue;
         }
         // If all units from a territory are air- no bombard
-        if (Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir)) {
+        if (Match.allMatchNotEmpty(attackingFromMap.get(neighbor), Matches.UnitIsAir)) {
           continue;
         }
         Collection<IBattle> battles = possibleBombardingTerritories.get(neighbor);
@@ -453,7 +453,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we need to remove any units which are participating in bombing raids
         attackingUnits.removeAll(bombingBattle.getAttackingUnits());
       }
-      if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsInfrastructure)) {
+      if (Match.allMatch(attackingUnits, Matches.UnitIsInfrastructure)) {
         continue;
       }
       IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
@@ -461,7 +461,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them
         // separately, after aa
         // fires)
-        if (enemyUnits.isEmpty() || Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
+        if (Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
           landParatroopers(player, territory, bridge);
         }
         bridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
@@ -491,10 +491,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
       }
       // Reach stalemate if all attacking and defending units are transports
-      if ((ignoreTransports && Match.allMatch(attackingUnits, seaTransports)
-          && Match.allMatch(enemyUnits, seaTransports))
-          || ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert()))
-              && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+      if ((ignoreTransports && Match.allMatchNotEmpty(attackingUnits, seaTransports)
+          && Match.allMatchNotEmpty(enemyUnits, seaTransports))
+          || ((Match.allMatchNotEmpty(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert()))
+              && Match.allMatchNotEmpty(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
         battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
             BattleRecord.BattleResultDescription.STALEMATE, results);
@@ -519,7 +519,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (ignoreTransports || ignoreSubs) {
           // TODO check if incoming units can attack before asking
           // if only enemy transports... attack them?
-          if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports)) {
+          if (ignoreTransports && Match.allMatchNotEmpty(enemyUnits, seaTransports)) {
             if (!remotePlayer.selectAttackTransports(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -530,7 +530,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
           // if only enemy subs... attack them?
-          if (ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub)) {
+          if (ignoreSubs && Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsSub)) {
             if (!remotePlayer.selectAttackSubs(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -541,7 +541,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
           // if only enemy transports and subs... attack them?
-          if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs)) {
+          if (ignoreSubs && ignoreTransports && Match.allMatchNotEmpty(enemyUnits, seaTranportsOrSubs)) {
             if (!remotePlayer.selectAttackUnits(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -945,7 +945,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   public static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (!Match.allMatch(airbases, Match.allOf(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
+    if (!Match.allMatchNotEmpty(airbases, Match.allOf(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
     // find how many is the max this territory can scramble
@@ -1505,7 +1505,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     availableLand.removeAll(canNotLand);
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
-    if (Match.allMatch(strandedAir, Matches.UnitCanLandOnCarrier)) {
+    if (Match.allMatchNotEmpty(strandedAir, Matches.UnitCanLandOnCarrier)) {
       final HashSet<Territory> availableWater = new HashSet<>();
       availableWater.addAll(Match.getMatches(possibleTerrs,
           Match.allOf(

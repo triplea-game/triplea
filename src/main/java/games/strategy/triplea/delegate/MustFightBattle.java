@@ -379,15 +379,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // play a sound
       if (Match.anyMatch(m_attackingUnits, Matches.UnitIsSea)
           || Match.anyMatch(m_defendingUnits, Matches.UnitIsSea)) {
-        if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub)
+        if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsSub)
             || (Match.anyMatch(m_attackingUnits, Matches.UnitIsSub)
                 && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub))) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker);
         } else {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker);
         }
-      } else if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)
-          && Match.allMatch(m_defendingUnits, Matches.UnitIsAir)) {
+      } else if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)
+          && Match.allMatchNotEmpty(m_defendingUnits, Matches.UnitIsAir)) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker);
       } else {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, m_attacker);
@@ -876,8 +876,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           endBattle(bridge);
           attackerWins(bridge);
         } else if (shouldEndBattleDueToMaxRounds()
-            || (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
-                && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+            || (Match.allMatchNotEmpty(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
+                && Match.allMatchNotEmpty(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
           endBattle(bridge);
           nobodyWins(bridge);
         }
@@ -1201,7 +1201,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // non-paratrooper non-amphibious
     // land units.
     // If attacker is all planes, just return collection of current territory
-    if (m_headless || Match.allMatch(m_attackingUnits, Matches.UnitIsAir)
+    if (m_headless || Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)
         || games.strategy.triplea.Properties.getRetreatingUnitsRemainInPlace(m_data)) {
       final Collection<Territory> oneTerritory = new ArrayList<>(2);
       oneTerritory.add(m_battleSite);
@@ -1227,7 +1227,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (isWW2V2() || isWW2V3()) {
       possible = Match.getMatches(possible, Match.of(t -> {
         final Collection<Unit> units = m_attackingFromMap.get(t);
-        return !Match.allMatch(units, Matches.UnitIsAir);
+        return !Match.allMatchNotEmpty(units, Matches.UnitIsAir);
       }));
     }
 
@@ -1266,7 +1266,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!isTransportCasualtiesRestricted()) {
       return false;
     }
-    return Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
+    return Match.allMatchNotEmpty(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
   }
 
   private boolean canAttackerRetreatSubs() {
@@ -1811,13 +1811,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     // if All attackers are AIR submerge any defending subs ..m_defendingUnits.removeAll(m_killed);
-    if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub)) {
+    if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)
+        && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub)) {
       // Get all defending subs (including allies) in the territory.
       final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
       // submerge defending subs
       submergeUnits(defendingSubs, true, bridge);
       // checking defending air on attacking subs
-    } else if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir)
+    } else if (Match.allMatchNotEmpty(m_defendingUnits, Matches.UnitIsAir)
         && Match.anyMatch(m_attackingUnits, Matches.UnitIsSub)) {
       // Get all attacking subs in the territory
       final List<Unit> attackingSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
@@ -2034,7 +2035,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && Match.anyMatch(attackedDefenders, Matches.UnitIsSub)) {
       attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsSub));
     }
-    if (Match.allMatch(suicideAttackers, Matches.UnitIsSub)) {
+    if (Match.allMatchNotEmpty(suicideAttackers, Matches.UnitIsSub)) {
       attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsAir));
     }
     if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0) {
@@ -2065,7 +2066,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && Match.anyMatch(attackedAttackers, Matches.UnitIsSub)) {
       attackedAttackers.removeAll(Match.getMatches(attackedAttackers, Matches.UnitIsSub));
     }
-    if (Match.allMatch(suicideDefenders, Matches.UnitIsSub)) {
+    if (Match.allMatchNotEmpty(suicideDefenders, Matches.UnitIsSub)) {
       suicideDefenders.removeAll(Match.getMatches(suicideDefenders, Matches.UnitIsAir));
     }
     if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0) {
@@ -2543,7 +2544,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!m_headless) {
       if (Matches.TerritoryIsWater.match(m_battleSite)) {
-        if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)) {
+        if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
               m_attacker);
         } else {
@@ -2555,7 +2556,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         // no sounds for a successful land battle, because land battle means we are going to capture a territory, and we
         // have capture sounds
         // for that
-        if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir)) {
+        if (Match.allMatchNotEmpty(m_attackingUnits, Matches.UnitIsAir)) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
               m_attacker);
         }

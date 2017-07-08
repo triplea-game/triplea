@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -14,7 +15,7 @@ import games.strategy.util.Match;
 /**
  * A collection of units.
  */
-public class UnitCollection extends GameDataComponent implements Iterable<Unit> {
+public class UnitCollection extends GameDataComponent implements Collection<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
   private final List<Unit> m_units = new ArrayList<>();
   private final NamedUnitHolder m_holder;
@@ -32,24 +33,25 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     m_holder = holder;
   }
 
-  void addUnit(final Unit unit) {
-    m_units.add(unit);
+  @Override
+  public boolean add(final Unit unit) {
+    final boolean result = m_units.add(unit);
     m_holder.notifyChanged();
+    return result;
   }
 
-  void addAllUnits(final UnitCollection collection) {
-    m_units.addAll(collection.m_units);
+  @Override
+  public boolean addAll(final Collection<? extends Unit> units) {
+    final boolean result = m_units.addAll(units);
     m_holder.notifyChanged();
+    return result;
   }
 
-  public void addAllUnits(final Collection<Unit> units) {
-    m_units.addAll(units);
+  @Override
+  public boolean removeAll(final Collection<?> units) {
+    final boolean result = m_units.removeAll(units);
     m_holder.notifyChanged();
-  }
-
-  public void removeAllUnits(final Collection<Unit> units) {
-    m_units.removeAll(units);
-    m_holder.notifyChanged();
+    return result;
   }
 
   public int getUnitCount() {
@@ -57,40 +59,19 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   int getUnitCount(final UnitType type) {
-    int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().getType().equals(type)) {
-        count++;
-      }
-    }
-    return count;
+    return (int) m_units.stream().filter(u -> u.getType().equals(type)).count();
   }
 
   public int getUnitCount(final UnitType type, final PlayerID owner) {
-    int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      final Unit current = iterator.next();
-      if (current.getType().equals(type) && current.getOwner().equals(owner)) {
-        count++;
-      }
-    }
-    return count;
+    return (int) m_units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
   }
 
   int getUnitCount(final PlayerID owner) {
-    int count = 0;
-    final Iterator<Unit> iterator = m_units.iterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().getOwner().equals(owner)) {
-        count++;
-      }
-    }
-    return count;
+    return (int) m_units.stream().filter(u -> u.getOwner().equals(owner)).count();
   }
 
-  public boolean containsAll(final Collection<Unit> units) {
+  @Override
+  public boolean containsAll(final Collection<?> units) {
     // much faster for large sets
     if (m_units.size() > 500 && units.size() > 500) {
       return new HashSet<>(m_units).containsAll(units);
@@ -125,35 +106,6 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   /**
-   * @return integer map of UnitType.
-   */
-  public IntegerMap<UnitType> getUnitsByType() {
-    final IntegerMap<UnitType> units = new IntegerMap<>();
-    for (final UnitType type : getData().getUnitTypeList()) {
-      final int count = getUnitCount(type);
-      if (count > 0) {
-        units.put(type, count);
-      }
-    }
-    return units;
-  }
-
-  /**
-   * @param id
-   *        referring player ID
-   * @return map of UnitType (only of units for the specified player).
-   */
-  public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
-    final IntegerMap<UnitType> count = new IntegerMap<>();
-    for (final Unit unit : m_units) {
-      if (unit.getOwner().equals(id)) {
-        count.add(unit.getType(), 1);
-      }
-    }
-    return count;
-  }
-
-  /**
    * @param types
    *        map of unit types
    * @return collection of units of each type up to max.
@@ -166,16 +118,43 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
     return units;
   }
 
+  public Collection<Unit> getUnits() {
+    return new ArrayList<>(m_units);
+  }
+
+  /**
+   * @return integer map of UnitType.
+   */
+  public IntegerMap<UnitType> getUnitsByType() {
+    final IntegerMap<UnitType> units = new IntegerMap<>();
+    getData().getUnitTypeList().forEach(type -> {
+      final int count = getUnitCount(type);
+      if (count > 0) {
+        units.put(type, count);
+      }
+    });
+    return units;
+  }
+
+  /**
+   * @param id
+   *        referring player ID
+   * @return map of UnitType (only of units for the specified player).
+   */
+  public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
+    final IntegerMap<UnitType> count = new IntegerMap<>();
+    m_units.stream().filter(unit -> unit.getOwner().equals(id)).forEach(unit -> count.add(unit.getType(), 1));
+    return count;
+  }
+
+  @Override
   public int size() {
     return m_units.size();
   }
 
+  @Override
   public boolean isEmpty() {
     return m_units.isEmpty();
-  }
-
-  public Collection<Unit> getUnits() {
-    return new ArrayList<>(m_units);
   }
 
   /**
@@ -183,11 +162,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    */
   public Set<PlayerID> getPlayersWithUnits() {
     // note nulls are handled by PlayerID.NULL_PLAYERID
-    final Set<PlayerID> ids = new HashSet<>();
-    for (final Unit unit : m_units) {
-      ids.add(unit.getOwner());
-    }
-    return ids;
+    return m_units.stream().map(unit -> unit.getOwner()).collect(Collectors.toSet());
   }
 
   /**
@@ -195,9 +170,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
     final IntegerMap<PlayerID> count = new IntegerMap<>();
-    for (final Unit unit : m_units) {
-      count.add(unit.getOwner(), 1);
-    }
+    m_units.stream().forEach(unit -> count.add(unit.getOwner(), 1));
     return count;
   }
 
@@ -210,21 +183,11 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   public boolean allMatch(final Match<Unit> matcher) {
-    for (final Unit unit : m_units) {
-      if (!matcher.match(unit)) {
-        return false;
-      }
-    }
-    return true;
+    return Match.allMatch(m_units, matcher);
   }
 
   public boolean anyMatch(final Match<Unit> matcher) {
-    for (final Unit unit : m_units) {
-      if (matcher.match(unit)) {
-        return true;
-      }
-    }
-    return false;
+    return Match.anyMatch(m_units, matcher);
   }
 
   public int countMatches(final Match<Unit> predicate) {
@@ -232,13 +195,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   public List<Unit> getMatches(final Match<Unit> predicate) {
-    final List<Unit> values = new ArrayList<>();
-    for (final Unit unit : m_units) {
-      if (predicate.match(unit)) {
-        values.add(unit);
-      }
-    }
-    return values;
+    return Match.getMatches(m_units, predicate);
   }
 
   @Override
@@ -256,5 +213,38 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   @Override
   public Iterator<Unit> iterator() {
     return Collections.unmodifiableList(m_units).iterator();
+  }
+
+  @Override
+  public boolean contains(Object object) {
+    return m_units.contains(object);
+  }
+
+  @Override
+  public Object[] toArray() {
+    return m_units.toArray();
+  }
+
+  @Override
+  public <T> T[] toArray(T[] array) {
+    return m_units.toArray(array);
+  }
+
+  @Override
+  public boolean remove(Object object) {
+    final boolean result = m_units.remove(object);
+    m_holder.notifyChanged();
+    return result;
+  }
+
+  @Override
+  public boolean retainAll(Collection<?> collection) {
+    return m_units.retainAll(collection);
+  }
+
+  @Override
+  public void clear() {
+    m_units.clear();
+    m_holder.notifyChanged();
   }
 }

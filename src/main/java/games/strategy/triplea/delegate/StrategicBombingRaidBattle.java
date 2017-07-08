@@ -338,12 +338,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       validAttackingUnitsForThisRoll = attackers;
       determineAttackers = false;
     }
-    
+
     public FireAA() {
       validAttackingUnitsForThisRoll = Collections.emptyList();
       determineAttackers = true;
     }
-      
+
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
@@ -467,7 +467,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
-        Match.allMatch(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        Match.allMatchNotEmpty(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,
