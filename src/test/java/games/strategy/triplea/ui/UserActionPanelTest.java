@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -23,43 +22,23 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
-import games.strategy.util.IntegerMap;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class UserActionPanelTest {
   @Mock
   private GameData data;
 
   private Resource pus;
 
-  private Resource techTokens;
-
-  private Resource vps;
-
   @Before
   public void setUp() {
-    pus = createResource(Constants.PUS);
-    techTokens = createResource(Constants.TECH_TOKENS);
-    vps = createResource(Constants.VPS);
-    setGameResources(pus, techTokens, vps);
-  }
-
-  private Resource createResource(final String name) {
-    return new Resource(name, data);
-  }
-
-  private void setGameResources(final Resource... resources) {
-    final ResourceList gameResources = mock(ResourceList.class);
-    for (final Resource resource : resources) {
-      when(gameResources.getResource(resource.getName())).thenReturn(resource);
-    }
-
-    when(data.getResourceList()).thenReturn(gameResources);
+    pus = new Resource(Constants.PUS, data);
   }
 
   @Test
   public void testCanPlayerAffordUserAction_ShouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
-    final PlayerID player = createPlayerWithResources(pus);
+    givenGameHasPuResource();
+    final PlayerID player = createPlayer();
     final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
     final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -67,9 +46,15 @@ public final class UserActionPanelTest {
     assertThat(canAffordUserAction, is(false));
   }
 
-  private PlayerID createPlayerWithResources(final Resource... resources) {
+  private void givenGameHasPuResource() {
+    final ResourceList gameResources = mock(ResourceList.class);
+    when(gameResources.getResource(pus.getName())).thenReturn(pus);
+    when(data.getResourceList()).thenReturn(gameResources);
+  }
+
+  private PlayerID createPlayer() {
     final PlayerID player = new PlayerID("player", data);
-    player.getResources().add(new IntegerMap<>(Arrays.stream(resources).collect(toList()), 42));
+    player.getResources().addResource(pus, 42);
     return player;
   }
 
@@ -81,7 +66,8 @@ public final class UserActionPanelTest {
 
   @Test
   public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
-    final PlayerID player = createPlayerWithResources(pus);
+    givenGameHasPuResource();
+    final PlayerID player = createPlayer();
     final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus));
 
     final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -91,7 +77,8 @@ public final class UserActionPanelTest {
 
   @Test
   public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
-    final PlayerID player = createPlayerWithResources(pus);
+    givenGameHasPuResource();
+    final PlayerID player = createPlayer();
     final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) - 1);
 
     final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -101,7 +88,8 @@ public final class UserActionPanelTest {
 
   @Test
   public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
-    final PlayerID player = createPlayerWithResources();
+    givenGameHasPuResource();
+    final PlayerID player = createPlayer();
     final UserActionAttachment userAction = createUserActionWithCost(0);
 
     final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
