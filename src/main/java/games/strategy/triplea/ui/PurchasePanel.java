@@ -49,7 +49,7 @@ public class PurchasePanel extends ActionPanel {
     purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUIContext());
     purhcasedUnits = new SimpleUnitPanel(map.getUIContext());
     buyButton = new JButton(BUY);
-    buyButton.addActionListener(PURCHASE_ACTION);
+    buyButton.addActionListener(purchaseAction);
     purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
   }
 
@@ -65,7 +65,7 @@ public class PurchasePanel extends ActionPanel {
       buyButton.setText(BUY);
       add(buyButton);
 
-      add(new JButton(DoneAction));
+      add(new JButton(doneAction));
 
       add(Box.createVerticalStrut(9));
 
@@ -90,7 +90,7 @@ public class PurchasePanel extends ActionPanel {
         getData().releaseReadLock();
       }
       add(Box.createVerticalGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      SwingUtilities.invokeLater(refresh);
     });
   }
 
@@ -103,12 +103,12 @@ public class PurchasePanel extends ActionPanel {
     this.bid = bid;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> purchaseAction.actionPerformed(null));
     waitForRelease();
     return purchase;
   }
 
-  private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy") {
+  private final AbstractAction purchaseAction = new AbstractAction("Buy") {
     private static final long serialVersionUID = -2931438906267249990L;
 
     @Override
@@ -143,7 +143,7 @@ public class PurchasePanel extends ActionPanel {
     return totalUnits;
   }
 
-  private final Action DoneAction = new AbstractAction("Done") {
+  private final Action doneAction = new AbstractAction("Done") {
     private static final long serialVersionUID = -209781523508962628L;
 
     @Override

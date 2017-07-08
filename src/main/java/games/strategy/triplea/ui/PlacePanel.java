@@ -72,7 +72,7 @@ public class PlacePanel extends AbstractMovePanel {
     return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(getData());
   }
 
-  private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+  private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails e) {
       if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
@@ -182,12 +182,12 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void cleanUpSpecific() {
-    getMap().removeMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().removeMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override
   protected final void setUpSpecific() {
-    getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().addMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override

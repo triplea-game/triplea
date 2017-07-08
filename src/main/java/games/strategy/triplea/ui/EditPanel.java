@@ -100,7 +100,7 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         EditPanel.this.frame.showActionPanelTab();
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     addUnitsAction = new AbstractAction("Add Units") {
@@ -158,7 +158,7 @@ class EditPanel extends ActionPanel {
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
-            CANCEL_EDIT_ACTION.actionPerformed(null);
+            cancelEditAction.actionPerformed(null);
             return;
           }
           bestUnits = chooser.getSelected(true);
@@ -170,7 +170,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result,
               MyFormatter.pluralize("Could not remove unit", selectedUnits.size()), JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner") {
@@ -197,7 +197,7 @@ class EditPanel extends ActionPanel {
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         Resource pus = null;
@@ -208,7 +208,7 @@ class EditPanel extends ActionPanel {
           getData().releaseReadLock();
         }
         if (pus == null) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final int oldTotal = player.getResources().getQuantity(pus);
@@ -218,7 +218,7 @@ class EditPanel extends ActionPanel {
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField),
             "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         try {
@@ -231,7 +231,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     addTechAction = new AbstractAction("Add Technology") {
@@ -247,7 +247,7 @@ class EditPanel extends ActionPanel {
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         Vector<TechAdvance> techs = null;
@@ -258,7 +258,7 @@ class EditPanel extends ActionPanel {
           getData().releaseReadLock();
         }
         if (techs == null || techs.isEmpty()) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final JList<?> techList = new JList<>(techs);
@@ -269,7 +269,7 @@ class EditPanel extends ActionPanel {
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final Set<TechAdvance> advance = new HashSet<>();
@@ -285,7 +285,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     removeTechAction = new AbstractAction("Remove Technology") {
@@ -301,7 +301,7 @@ class EditPanel extends ActionPanel {
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         Vector<TechAdvance> techs = null;
@@ -321,7 +321,7 @@ class EditPanel extends ActionPanel {
           getData().releaseReadLock();
         }
         if (techs == null || techs.isEmpty()) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final JList<?> techList = new JList<>(techs);
@@ -332,7 +332,7 @@ class EditPanel extends ActionPanel {
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to remove",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final Set<TechAdvance> advance = new HashSet<>();
@@ -348,7 +348,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     changeUnitHitDamageAction = new AbstractAction("Change Unit Hit Damage") {
@@ -360,13 +360,13 @@ class EditPanel extends ActionPanel {
         setWidgetActivation();
         final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
         units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
         if (units.isEmpty()) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
@@ -385,7 +385,7 @@ class EditPanel extends ActionPanel {
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
@@ -395,7 +395,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     changeUnitBombingDamageAction = new AbstractAction("Change Unit Bombing Damage") {
@@ -407,13 +407,13 @@ class EditPanel extends ActionPanel {
         setWidgetActivation();
         final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitCanBeDamaged);
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
         units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
         if (units.isEmpty()) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
@@ -434,7 +434,7 @@ class EditPanel extends ActionPanel {
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
-          CANCEL_EDIT_ACTION.actionPerformed(null);
+          cancelEditAction.actionPerformed(null);
           return;
         }
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
@@ -444,7 +444,7 @@ class EditPanel extends ActionPanel {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     changePoliticalRelationships = new AbstractAction("Change Political Relationships") {
@@ -501,7 +501,7 @@ class EditPanel extends ActionPanel {
             }
           }
         }
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       }
     };
     m_actionLabel.setText("Edit Mode Actions");
@@ -613,20 +613,20 @@ class EditPanel extends ActionPanel {
   public void setActive(final boolean active) {
     if (frame.getEditDelegate() == null) {
       // current turn belongs to remote player or AI player
-      getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
-      getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
-      getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+      getMap().removeMapSelectionListener(mapSelectionListener);
+      getMap().removeUnitSelectionListener(unitSelectionListener);
+      getMap().removeMouseOverUnitListener(mouseOverUnitListener);
       setWidgetActivation();
     } else if (!this.active && active) {
-      getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
-      getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
-      getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+      getMap().addMapSelectionListener(mapSelectionListener);
+      getMap().addUnitSelectionListener(unitSelectionListener);
+      getMap().addMouseOverUnitListener(mouseOverUnitListener);
       setWidgetActivation();
     } else if (!active && this.active) {
-      getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
-      getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
-      getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
-      CANCEL_EDIT_ACTION.actionPerformed(null);
+      getMap().removeMapSelectionListener(mapSelectionListener);
+      getMap().removeUnitSelectionListener(unitSelectionListener);
+      getMap().removeMouseOverUnitListener(mouseOverUnitListener);
+      cancelEditAction.actionPerformed(null);
     }
     this.active = active;
   }
@@ -636,7 +636,7 @@ class EditPanel extends ActionPanel {
     return active;
   }
 
-  private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener() {
+  private final UnitSelectionListener unitSelectionListener = new UnitSelectionListener() {
     @Override
     public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails md) {
       // check if we can handle this event, are we active?
@@ -660,7 +660,7 @@ class EditPanel extends ActionPanel {
       if (!rightMouse && (currentAction == addUnitsAction)) {
         // clicking on unit or territory selects territory
         selectedTerritory = t;
-        MAP_SELECTION_LISTENER.territorySelected(t, md);
+        mapSelectionListener.territorySelected(t, md);
       } else if (!rightMouse) {
         // delete units
         selectUnitsToRemove(units, t, md);
@@ -693,7 +693,7 @@ class EditPanel extends ActionPanel {
       }
       // nothing left, cancel edit
       if (selectedUnits.isEmpty()) {
-        CANCEL_EDIT_ACTION.actionPerformed(null);
+        cancelEditAction.actionPerformed(null);
       } else {
         getMap().setMouseShadowUnits(selectedUnits);
       }
@@ -724,7 +724,7 @@ class EditPanel extends ActionPanel {
         selectedTerritory = t;
         mouseSelectedPoint = md.getMapPoint();
         mouseCurrentPoint = md.getMapPoint();
-        CANCEL_EDIT_ACTION.setEnabled(true);
+        cancelEditAction.setEnabled(true);
       }
       // select all
       if (md.isShiftDown()) {
@@ -744,7 +744,8 @@ class EditPanel extends ActionPanel {
       getMap().setMouseShadowUnits(selectedUnits);
     }
   };
-  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, md) -> {
+
+  private final MouseOverUnitListener mouseOverUnitListener = (units, territory, md) -> {
     if (!getActive()) {
       return;
     }
@@ -759,7 +760,8 @@ class EditPanel extends ActionPanel {
       getMap().setUnitHighlight(null);
     }
   };
-  private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+
+  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails md) {
       if (territory == null) {
@@ -786,7 +788,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
+        SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
       } else if (currentAction == addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
@@ -814,7 +816,7 @@ class EditPanel extends ActionPanel {
                 JOptionPane.ERROR_MESSAGE);
           }
         }
-        SwingUtilities.invokeLater(() -> CANCEL_EDIT_ACTION.actionPerformed(null));
+        SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
       }
     }
 
@@ -842,7 +844,8 @@ class EditPanel extends ActionPanel {
       }
     }
   };
-  private final AbstractAction CANCEL_EDIT_ACTION = new AbstractAction("Cancel") {
+
+  private final AbstractAction cancelEditAction = new AbstractAction("Cancel") {
     private static final long serialVersionUID = 6394987295241603443L;
 
     @Override

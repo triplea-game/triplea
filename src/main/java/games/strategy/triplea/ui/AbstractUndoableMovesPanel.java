@@ -173,20 +173,20 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
 
   class UndoMoveActionListener extends AbstractAction {
     private static final long serialVersionUID = -397312652244693138L;
-    private final int m_moveIndex;
+    private final int moveIndex;
 
     public UndoMoveActionListener(final int index) {
       super("Undo");
-      m_moveIndex = index;
+      moveIndex = index;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
       // Record position of scroll bar as percentage.
       scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-      final String error = movePanel.undoMove(m_moveIndex);
+      final String error = movePanel.undoMove(moveIndex);
       if (error == null) {
-        previousVisibleIndex = Math.max(0, m_moveIndex - 1);
+        previousVisibleIndex = Math.max(0, moveIndex - 1);
       } else {
         previousVisibleIndex = null;
       }
@@ -213,20 +213,20 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
 
   class ViewAction extends AbstractAction {
     private static final long serialVersionUID = -6999284663802575467L;
-    private final AbstractUndoableMove m_move;
+    private final AbstractUndoableMove move;
 
     public ViewAction(final AbstractUndoableMove move) {
       super("Show");
-      m_move = move;
+      this.move = move;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
       movePanel.cancelMove();
-      if (!movePanel.getMap().isShowing(m_move.getEnd())) {
-        movePanel.getMap().centerOn(m_move.getEnd());
+      if (!movePanel.getMap().isShowing(move.getEnd())) {
+        movePanel.getMap().centerOn(move.getEnd());
       }
-      specificViewAction(m_move);
+      specificViewAction(move);
     }
   }
 

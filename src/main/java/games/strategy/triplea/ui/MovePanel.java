@@ -703,7 +703,7 @@ public class MovePanel extends AbstractMovePanel {
     return chooser.getSelected(false);
   }
 
-  private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener() {
+  private final UnitSelectionListener unitSelectionListener = new UnitSelectionListener() {
     @Override
     public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails me) {
       if (!getListening()) {
@@ -1223,7 +1223,7 @@ public class MovePanel extends AbstractMovePanel {
     return true;
   }
 
-  private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
+  private final MouseOverUnitListener mouseOverUnitListener = new MouseOverUnitListener() {
     @Override
     public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
       if (!getListening()) {
@@ -1242,7 +1242,8 @@ public class MovePanel extends AbstractMovePanel {
       }
     }
   };
-  private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+
+  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails me) {}
 
@@ -1336,9 +1337,9 @@ public class MovePanel extends AbstractMovePanel {
 
   @Override
   protected final void cleanUpSpecific() {
-    getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
-    getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
-    getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+    getMap().removeMapSelectionListener(mapSelectionListener);
+    getMap().removeUnitSelectionListener(unitSelectionListener);
+    getMap().removeMouseOverUnitListener(mouseOverUnitListener);
     getMap().setUnitHighlight(null);
     selectedUnits.clear();
     updateRouteAndMouseShadowUnits(null);
@@ -1380,9 +1381,9 @@ public class MovePanel extends AbstractMovePanel {
   protected final void setUpSpecific() {
     setFirstSelectedTerritory(null);
     forced = null;
-    getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
-    getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
-    getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+    getMap().addMapSelectionListener(mapSelectionListener);
+    getMap().addUnitSelectionListener(unitSelectionListener);
+    getMap().addMouseOverUnitListener(mouseOverUnitListener);
   }
 
   KeyListener getCustomKeyListeners() {

@@ -38,7 +38,7 @@ public class RepairPanel extends ActionPanel {
     super(data, map);
     unitsPanel = new SimpleUnitPanel(map.getUIContext());
     buyButton = new JButton(BUY);
-    buyButton.addActionListener(PURCHASE_ACTION);
+    buyButton.addActionListener(purchaseAction);
   }
 
   @Override
@@ -51,7 +51,7 @@ public class RepairPanel extends ActionPanel {
       buyButton.setText(BUY);
       add(actionLabel);
       add(buyButton);
-      add(new JButton(DoneAction));
+      add(new JButton(doneAction));
       repairdSoFar.setText("");
       add(Box.createVerticalStrut(9));
       add(repairdSoFar);
@@ -59,7 +59,7 @@ public class RepairPanel extends ActionPanel {
       unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
       add(unitsPanel);
       add(Box.createVerticalGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      SwingUtilities.invokeLater(refresh);
     });
   }
 
@@ -74,12 +74,12 @@ public class RepairPanel extends ActionPanel {
     this.allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> purchaseAction.actionPerformed(null));
     waitForRelease();
     return repair;
   }
 
-  private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy") {
+  private final AbstractAction purchaseAction = new AbstractAction("Buy") {
     private static final long serialVersionUID = 5572043262815077402L;
 
     @Override
@@ -112,7 +112,7 @@ public class RepairPanel extends ActionPanel {
     return totalValues;
   }
 
-  private final Action DoneAction = new AbstractAction("Done") {
+  private final Action doneAction = new AbstractAction("Done") {
     private static final long serialVersionUID = -2002286381161651398L;
 
     @Override

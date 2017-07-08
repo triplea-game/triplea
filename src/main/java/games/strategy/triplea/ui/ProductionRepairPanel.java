@@ -181,7 +181,7 @@ public class ProductionRepairPanel extends JPanel {
     }
     add(left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    done = new JButton(done_action);
+    done = new JButton(doneAction);
     add(done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
   }
@@ -191,7 +191,7 @@ public class ProductionRepairPanel extends JPanel {
     this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
 
-  Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
+  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;

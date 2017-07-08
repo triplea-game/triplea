@@ -65,10 +65,10 @@ public class PoliticsPanel extends ActionPanel {
       removeAll();
       actionLabel.setText(id.getName() + " Politics");
       add(actionLabel);
-      selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
+      selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
       selectPoliticalActionButton.setEnabled(false);
       add(selectPoliticalActionButton);
-      doneButton = new JButton(DontBotherAction);
+      doneButton = new JButton(dontBotherAction);
       doneButton.setEnabled(false);
       SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
       add(doneButton);
@@ -99,7 +99,7 @@ public class PoliticsPanel extends ActionPanel {
         selectPoliticalActionButton.setEnabled(true);
         doneButton.setEnabled(true);
         // press the politics button for us.
-        SelectPoliticalActionAction.actionPerformed(null);
+        selectPoliticalActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
@@ -110,7 +110,7 @@ public class PoliticsPanel extends ActionPanel {
    * Fires up a JDialog showing the political landscape and valid actions,
    * choosing an action will release this model and trigger waitForRelease().
    */
-  private final Action SelectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
+  private final Action selectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 96;
     final int availWidth = screenResolution.width - 30;
@@ -192,7 +192,7 @@ public class PoliticsPanel extends ActionPanel {
   /**
    * This will stop the politicsPhase.
    */
-  private final Action DontBotherAction = SwingAction.of("Done", e -> {
+  private final Action dontBotherAction = SwingAction.of("Done", e -> {
     if (!firstRun || youSureDoNothing()) {
       choice = null;
       release();
@@ -233,12 +233,12 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   private static final class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
-    private final GameData m_data;
-    private final PlayerID m_player;
+    private final GameData gameData;
+    private final PlayerID player;
 
     PoliticalActionComparator(final PlayerID currentPlayer, final GameData data) {
-      m_data = data;
-      m_player = currentPlayer;
+      gameData = data;
+      player = currentPlayer;
     }
 
     @Override
@@ -249,23 +249,23 @@ public class PoliticsPanel extends ActionPanel {
       final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
       final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
       final RelationshipTypeList relationshipTypeList;
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
-        relationshipTypeList = m_data.getRelationshipTypeList();
+        relationshipTypeList = gameData.getRelationshipTypeList();
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
       final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
       final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
       // sort by player
-      final PlayerID paa1p1 = m_data.getPlayerList().getPlayerID(paa1RelationChange[0]);
-      final PlayerID paa1p2 = m_data.getPlayerList().getPlayerID(paa1RelationChange[1]);
-      final PlayerID paa2p1 = m_data.getPlayerList().getPlayerID(paa2RelationChange[0]);
-      final PlayerID paa2p2 = m_data.getPlayerList().getPlayerID(paa2RelationChange[1]);
-      final PlayerID paa1OtherPlayer = (m_player.equals(paa1p1) ? paa1p2 : paa1p1);
-      final PlayerID paa2OtherPlayer = (m_player.equals(paa2p1) ? paa2p2 : paa2p1);
+      final PlayerID paa1p1 = gameData.getPlayerList().getPlayerID(paa1RelationChange[0]);
+      final PlayerID paa1p2 = gameData.getPlayerList().getPlayerID(paa1RelationChange[1]);
+      final PlayerID paa2p1 = gameData.getPlayerList().getPlayerID(paa2RelationChange[0]);
+      final PlayerID paa2p2 = gameData.getPlayerList().getPlayerID(paa2RelationChange[1]);
+      final PlayerID paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
+      final PlayerID paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
       if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
-        final int order = new PlayerOrderComparator(m_data).compare(paa1OtherPlayer, paa2OtherPlayer);
+        final int order = new PlayerOrderComparator(gameData).compare(paa1OtherPlayer, paa2OtherPlayer);
         if (order != 0) {
           return order;
         }
