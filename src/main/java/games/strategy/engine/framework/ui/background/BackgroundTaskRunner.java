@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 
 /**
  * Provides methods for running tasks in the background to avoid blocking the UI.
@@ -45,7 +46,7 @@ public final class BackgroundTaskRunner {
     checkNotNull(backgroundAction);
     checkNotNull(completionAction);
 
-    final WaitDialog waitDialog = new WaitDialog(null, message);
+    final WaitDialog waitDialog = GameRunner.newWaitDialog(message);
     final SwingWorker<T, Void> worker = new SwingWorker<T, Void>() {
       @Override
       protected T doInBackground() {
@@ -68,8 +69,6 @@ public final class BackgroundTaskRunner {
     };
     worker.execute();
 
-    waitDialog.setLocationRelativeTo(null);
-    waitDialog.pack();
     waitDialog.setVisible(true);
   }
 }
