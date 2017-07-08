@@ -98,7 +98,7 @@
             <object class="com.install4j.runtime.beans.applications.InstallerApplication" id="InstallerApplication0">
               <void property="customHeaderImage">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./build/assets/icons/triplea_icon_16_16.png</string>
+                  <string>./build/assets/icons/triplea_icon_48_48.png</string>
                 </object>
               </void>
               <void property="customIconImageFiles">
