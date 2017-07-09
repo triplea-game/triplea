@@ -17,7 +17,10 @@ description = 'TripleA is a free online turn based strategy game and board game 
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 ext {
+    rootFilesDir = file("$buildDir/rootFiles")
     schemasDir = file('config/triplea/schemas')
+
+    gameEnginePropertiesFile = file('game_engine.properties')
 }
 
 compileJava {
@@ -153,7 +156,17 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
+task prepareGameEngineProperties(type: Copy, group: 'release') {
+    inputs.file gameEnginePropertiesFile
+
+    from gameEnginePropertiesFile
+    filter { it.replaceAll(/^(engine_version)\s*=.*$/, "\$1 = $version") }
+    into rootFilesDir
+}
+
+task prepareRootFiles(group: 'release', dependsOn: [prepareGameEngineProperties]) {}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets, prepareRootFiles]) {
     classifier 'all_platforms'
     ['assets', 'dice_servers', 'old'].each { folder ->
         from(folder) {
@@ -164,7 +177,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
         into('icons')
         exclude("icon.icns")
     }
-    from('game_engine.properties')
+    from("$rootFilesDir/${gameEnginePropertiesFile.name}")
     from(renameShadowJar.output) {
         into('bin')
     }
@@ -203,7 +216,7 @@ task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJR
     }
 }
 
-task prepareInstallers(dependsOn: [generateInstallers]) {
+task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
         def releasesDir = "$buildDir/releases"
 
