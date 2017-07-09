@@ -44,6 +44,7 @@ import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.ProgressWindow;
@@ -235,20 +236,21 @@ public class GameRunner {
    */
   public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
-      gameSelectorModel.loadDefaultGame(mainFrame);
-
       mainFrame.requestFocus();
       mainFrame.toFront();
       mainFrame.setVisible(true);
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
+      
+      ProAI.gameOverClearCache();
+      new Thread(() -> {
+        gameSelectorModel.loadDefaultGame(mainFrame, false);
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+      }).start();
 
-      final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-      if (fileName.length() > 0) {
-        final File f = new File(fileName);
-        gameSelectorModel.load(f, mainFrame);
-      }
-      mainFrame.setVisible(true);
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
       } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {

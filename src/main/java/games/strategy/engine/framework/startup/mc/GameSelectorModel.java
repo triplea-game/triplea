@@ -12,6 +12,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -109,7 +110,7 @@ public class GameSelectorModel extends Observable {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
         try (FileInputStream fis = new FileInputStream(file)) {
-          newData = (new GameParser(file.getAbsolutePath())).parse(fis, gameName, false);
+          newData = new GameParser(file.getAbsolutePath()).parse(fis, gameName, false);
         }
       } else {
         // try to load it as a saved game whatever the extension
@@ -158,8 +159,9 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void error(final String message, final Component ui) {
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
-        JOptionPane.ERROR_MESSAGE);
+    SwingUtilities.invokeLater(
+        () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+            JOptionPane.ERROR_MESSAGE));
   }
 
   void setCanSelect(final boolean canSelect) {
@@ -262,7 +264,7 @@ public class GameSelectorModel extends Observable {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAI.gameOverClearCache();
-    loadDefaultGame(ui, false);
+    new Thread(() -> loadDefaultGame(ui, false)).start();
   }
 
   /**
@@ -272,7 +274,7 @@ public class GameSelectorModel extends Observable {
    *        we only call with
    *        'true' if loading the user preferred map failed).
    */
-  private void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
+  public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
     // load the previously saved value
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     if (forceFactoryDefault) {
