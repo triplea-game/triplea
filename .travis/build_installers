@@ -9,8 +9,5 @@
 
 export TAGGED_VERSION=$1
 
-## update engine version number to have the build number
-sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" game_engine.properties
-
 ## java package and runs install4j
 ./gradlew release
