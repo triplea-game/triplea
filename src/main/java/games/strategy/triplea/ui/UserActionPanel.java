@@ -67,10 +67,10 @@ public class UserActionPanel extends ActionPanel {
       removeAll();
       actionLabel.setText(id.getName() + " Actions and Operations");
       add(actionLabel);
-      selectUserActionButton = new JButton(SelectUserActionAction);
+      selectUserActionButton = new JButton(selectUserActionAction);
       selectUserActionButton.setEnabled(false);
       add(selectUserActionButton);
-      doneButton = new JButton(DontBotherAction);
+      doneButton = new JButton(dontBotherAction);
       doneButton.setEnabled(false);
       SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
       add(doneButton);
@@ -99,7 +99,7 @@ public class UserActionPanel extends ActionPanel {
         selectUserActionButton.setEnabled(true);
         doneButton.setEnabled(true);
         // press the user action button for us.
-        SelectUserActionAction.actionPerformed(null);
+        selectUserActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
@@ -110,7 +110,7 @@ public class UserActionPanel extends ActionPanel {
    * Fires up a JDialog showing valid actions,
    * choosing an action will release this model and trigger waitForRelease().
    */
-  private final Action SelectUserActionAction = new AbstractAction("Take Action...") {
+  private final Action selectUserActionAction = new AbstractAction("Take Action...") {
     private static final long serialVersionUID = 2389485901611958851L;
 
     @Override
@@ -215,7 +215,7 @@ public class UserActionPanel extends ActionPanel {
   /**
    * This will stop the user action Phase.
    */
-  private final Action DontBotherAction = new AbstractAction("Done") {
+  private final Action dontBotherAction = new AbstractAction("Done") {
     private static final long serialVersionUID = 2835948679299520899L;
 
     @Override

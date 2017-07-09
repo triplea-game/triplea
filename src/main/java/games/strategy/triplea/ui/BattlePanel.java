@@ -132,7 +132,7 @@ public class BattlePanel extends ActionPanel {
           }
         }
         add(panel, BorderLayout.NORTH);
-        SwingUtilities.invokeLater(REFRESH);
+        SwingUtilities.invokeLater(refresh);
       }
 
       private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb,
@@ -442,11 +442,11 @@ public class BattlePanel extends ActionPanel {
 
   class CenterBattleAction extends AbstractAction {
     private static final long serialVersionUID = -5071133874755970334L;
-    Territory m_territory;
+    Territory battleSite;
 
     CenterBattleAction(final Territory battleSite) {
       super("Center");
-      m_territory = battleSite;
+      this.battleSite = battleSite;
     }
 
     @Override
@@ -457,56 +457,56 @@ public class BattlePanel extends ActionPanel {
       if (oldCenteredTerritory != null) {
         getMap().clearTerritoryOverlay(oldCenteredTerritory);
       }
-      getMap().centerOn(m_territory);
+      getMap().centerOn(battleSite);
       centerBattleActionTimer = new Timer();
-      centerBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, centerBattleActionTimer), 150, 150);
-      oldCenteredTerritory = m_territory;
+      centerBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(battleSite, centerBattleActionTimer), 150, 150);
+      oldCenteredTerritory = battleSite;
     }
 
     class MyTimerTask extends TimerTask {
       private final Territory territory;
-      private final Timer m_stopTimer;
-      private int m_count = 0;
+      private final Timer stopTimer;
+      private int count = 0;
 
       MyTimerTask(final Territory battleSite, final Timer stopTimer) {
         territory = battleSite;
-        m_stopTimer = stopTimer;
+        this.stopTimer = stopTimer;
       }
 
       @Override
       public void run() {
-        if (m_count == 5) {
-          m_stopTimer.cancel();
+        if (count == 5) {
+          stopTimer.cancel();
         }
-        if ((m_count % 3) == 0) {
+        if ((count % 3) == 0) {
           getMap().setTerritoryOverlayForBorder(territory, Color.white);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // TODO: getUIContext().getMapData().getBoundingRect(battleSite)); what kind of additional transformation
           // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         } else {
           getMap().clearTerritoryOverlay(territory);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // TODO: getUIContext().getMapData().getBoundingRect(battleSite)); what kind of additional transformation
           // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         }
-        m_count++;
+        count++;
       }
     }
   }
 
   class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
-    Territory m_territory;
-    boolean m_bomb;
-    BattleType m_type;
+    Territory territory;
+    boolean bomb;
+    BattleType battleType;
 
     FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType) {
       super(battleType.toString() + " in " + battleSite.getName() + "...");
-      m_territory = battleSite;
-      m_bomb = bomb;
-      m_type = battleType;
+      territory = battleSite;
+      this.bomb = bomb;
+      this.battleType = battleType;
     }
 
     @Override
@@ -514,7 +514,7 @@ public class BattlePanel extends ActionPanel {
       if (oldCenteredTerritory != null) {
         getMap().clearTerritoryOverlay(oldCenteredTerritory);
       }
-      fightBattleMessage = new FightBattleDetails(m_territory, m_bomb, m_type);
+      fightBattleMessage = new FightBattleDetails(territory, bomb, battleType);
       release();
     }
   }

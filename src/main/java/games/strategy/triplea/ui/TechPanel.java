@@ -59,10 +59,10 @@ public class TechPanel extends ActionPanel {
       add(actionLabel);
       if (isWW2V3TechModel()) {
         add(new JButton(getTechTokenAction));
-        add(new JButton(JustRollTech));
+        add(new JButton(justRollTech));
       } else {
         add(new JButton(getTechRollsAction));
-        add(new JButton(DontBother));
+        add(new JButton(dontBother));
       }
     });
   }
@@ -144,10 +144,12 @@ public class TechPanel extends ActionPanel {
     }
     release();
   });
-  private final Action DontBother = SwingAction.of("Done", e -> {
+
+  private final Action dontBother = SwingAction.of("Done", e -> {
     techRoll = null;
     release();
   });
+
   private final Action getTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
     final PlayerID currentPlayer = getCurrentPlayer();
     currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
@@ -206,7 +208,8 @@ public class TechPanel extends ActionPanel {
 
 
   });
-  private final Action JustRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
+
+  private final Action justRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
     currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
     // If this player has tokens, roll them.
     if (currTokens > 0) {

@@ -49,7 +49,9 @@ public abstract class AbstractMovePanel extends ActionPanel {
       }
     }
   };
-  private final Action DONE_MOVE_ACTION = new WeakAction("Done", doneMove);
+
+  private final Action doneMoveAction = new WeakAction("Done", doneMove);
+
   private final Action cancelMove = new AbstractAction("Cancel") {
     private static final long serialVersionUID = -257745862234175428L;
 
@@ -60,14 +62,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
         frame.clearStatusMessage();
       }
       this.setEnabled(false);
-      CANCEL_MOVE_ACTION.setEnabled(false);
+      cancelMoveAction.setEnabled(false);
     }
   };
 
   protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    CANCEL_MOVE_ACTION.setEnabled(false);
+    cancelMoveAction.setEnabled(false);
     undoableMoves = Collections.emptyList();
   }
 
@@ -81,7 +83,8 @@ public abstract class AbstractMovePanel extends ActionPanel {
    */
   protected abstract void cancelMoveAction();
 
-  private final AbstractAction CANCEL_MOVE_ACTION = new WeakAction("Cancel", cancelMove);
+  private final AbstractAction cancelMoveAction = new WeakAction("Cancel", cancelMove);
+
   protected AbstractUndoableMovesPanel undoableMovesPanel;
   private IPlayerBridge bridge;
 
@@ -115,7 +118,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected final void enableCancelButton() {
-    CANCEL_MOVE_ACTION.setEnabled(true);
+    cancelMoveAction.setEnabled(true);
   }
 
   protected final GameData getGameData() {
@@ -133,7 +136,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   public final void cancelMove() {
-    CANCEL_MOVE_ACTION.actionPerformed(null);
+    cancelMoveAction.actionPerformed(null);
   }
 
   public final String undoMove(final int moveIndex) {
@@ -142,7 +145,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
-    CANCEL_MOVE_ACTION.actionPerformed(null);
+    cancelMoveAction.actionPerformed(null);
     // undo the move
     final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
@@ -225,13 +228,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = false;
       cleanUpSpecific();
       bridge = null;
-      CANCEL_MOVE_ACTION.setEnabled(false);
+      cancelMoveAction.setEnabled(false);
       final JComponent rootPane = getRootPane();
       if (rootPane != null) {
         rootPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null);
       }
       removeAll();
-      REFRESH.run();
+      refresh.run();
     });
   }
 
@@ -243,7 +246,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   @Override
   public final void setActive(final boolean active) {
     super.setActive(active);
-    SwingUtilities.invokeLater(() -> CANCEL_MOVE_ACTION.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> cancelMoveAction.actionPerformed(null));
   }
 
   protected final void display(final PlayerID id, final String actionLabel) {
@@ -253,14 +256,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(CANCEL_MOVE_ACTION)));
+        add(leftBox(new JButton(cancelMoveAction)));
       }
-      add(leftBox(new JButton(DONE_MOVE_ACTION)));
+      add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();
       add(Box.createVerticalStrut(entryPadding));
       add(undoableMovesPanel);
       add(Box.createGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      SwingUtilities.invokeLater(refresh);
     });
   }
 
@@ -287,7 +290,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = true;
       if (getRootPane() != null) {
         final String key = MOVE_PANEL_CANCEL;
-        getRootPane().getActionMap().put(key, CANCEL_MOVE_ACTION);
+        getRootPane().getActionMap().put(key, cancelMoveAction);
         getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
       }
