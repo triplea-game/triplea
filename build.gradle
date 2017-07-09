@@ -203,14 +203,20 @@ task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJR
     }
 }
 
-task setRunnableLinux(dependsOn: [generateInstallers]) {
+task prepareInstallers(dependsOn: [generateInstallers]) {
     doLast {
-        def linuxFile = "TripleA_${version}_unix.sh"
-        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
+        def releasesDir = "$buildDir/releases"
+
+        ant.chmod(dir: releasesDir, perm: '+x', includes: "TripleA_${version}_unix.sh")
+
+        file("$releasesDir/TripleA_${version}_windows.exe")
+            .renameTo("$releasesDir/TripleA_${version}_windows-32bit.exe")
+        file("$releasesDir/TripleA_${version}_windows-x64.exe")
+            .renameTo("$releasesDir/TripleA_${version}_windows-64bit.exe")
     }
 }
 
-task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
+task release(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({
