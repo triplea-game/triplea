@@ -21,6 +21,7 @@ ext {
     schemasDir = file('config/triplea/schemas')
 
     gameEnginePropertiesFile = file('game_engine.properties')
+    gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
 
 compileJava {
@@ -156,12 +157,19 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 }
 
-task prepareGameEngineProperties(type: Copy, group: 'release') {
+task prepareGameEngineProperties(group: 'release') {
     inputs.file gameEnginePropertiesFile
+    outputs.file gameEnginePropertiesArtifactFile
 
-    from gameEnginePropertiesFile
-    filter { it.replaceAll(/^(engine_version)\s*=.*$/, "\$1 = $version") }
-    into rootFilesDir
+    doLast {
+        copy {
+            from gameEnginePropertiesFile
+            into gameEnginePropertiesArtifactFile.parent
+        }
+        ant.propertyfile(file: gameEnginePropertiesArtifactFile) {
+            entry key: 'engine_version', value: version
+        }
+    }
 }
 
 task prepareRootFiles(group: 'release', dependsOn: [prepareGameEngineProperties]) {}
@@ -177,7 +185,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updat
         into('icons')
         exclude("icon.icns")
     }
-    from("$rootFilesDir/${gameEnginePropertiesFile.name}")
+    from(gameEnginePropertiesArtifactFile)
     from(renameShadowJar.output) {
         into('bin')
     }
