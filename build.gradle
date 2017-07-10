@@ -11,7 +11,6 @@ plugins {
 
 apply from: 'gradle/scripts/yaml.gradle'
 
-version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
@@ -24,6 +23,24 @@ ext {
     gameEnginePropertiesFile = file('game_engine.properties')
     gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
+
+def getEngineVersion() {
+    if (project.hasProperty('engineVersion')) {
+        return project.engineVersion
+    }
+
+    def props = new Properties()
+    gameEnginePropertiesFile.withInputStream { props.load(it) }
+    def devEngineVersion = props.getProperty('engine_version')
+    if (devEngineVersion) {
+        return "${devEngineVersion}.dev"
+    }
+
+    throw new GradleException("unable to determine engine version: "
+        + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
+}
+
+version = getEngineVersion()
 
 compileJava {
     options.encoding = 'UTF-8'
