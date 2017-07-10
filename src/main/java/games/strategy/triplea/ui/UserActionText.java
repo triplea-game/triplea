@@ -43,8 +43,8 @@ public class UserActionText {
   }
 
   public static UserActionText getInstance() {
-    if (s_text == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10
-                                                                                            // seconds
+    // cache properties for 10 seconds
+    if (s_text == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) {
       s_text = new UserActionText();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

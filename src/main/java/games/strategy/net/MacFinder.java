@@ -21,7 +21,7 @@ import games.strategy.util.MD5Crypt;
 public class MacFinder {
 
   /**
-   * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
+   * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3.
    */
   public static String getHashedMacAddress() {
     final String mac = getMacAddress();
@@ -39,9 +39,9 @@ public class MacFinder {
     // First, try to get the mac address of the local host network interface
     try {
       final InetAddress address = InetAddress.getLocalHost();
-      final NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
-      if (localHostNI != null) {
-        final byte[] rawMac = localHostNI.getHardwareAddress();
+      final NetworkInterface localHostNetworkInterface = NetworkInterface.getByInetAddress(address);
+      if (localHostNetworkInterface != null) {
+        final byte[] rawMac = localHostNetworkInterface.getHardwareAddress();
         final String mac = convertMacBytesToString(rawMac);
         if (isMacValid(mac)) {
           return mac;
@@ -223,10 +223,7 @@ public class MacFinder {
       }
       i++;
     }
-    if (periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0) {
-      return false;
-    }
-    return true;
+    return !(periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0);
   }
 
   private static String tryToParseMACFromOutput(final String output, final List<String> possibleSeparators,

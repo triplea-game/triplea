@@ -31,14 +31,14 @@ public class RemoteRandom implements IRemoteRandom {
   private int[] m_localNumbers;
 
   /**
-   * @param id
+   * Creates a new instance of RemoteRandom.
    */
   public RemoteRandom(final IGame game) {
     m_game = game;
   }
 
   @Override
-  public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID)
+  public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultId)
       throws IllegalStateException {
     if (m_waitingForUnlock) {
       throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation. "
@@ -52,14 +52,14 @@ public class RemoteRandom implements IRemoteRandom {
     if (m_remoteVaultID != null) {
       m_game.getVault().release(m_remoteVaultID);
     }
-    m_remoteVaultID = remoteVaultID;
+    m_remoteVaultID = remoteVaultId;
     m_annotation = annotation;
     m_max = max;
     m_localNumbers = m_plainRandom.getRandom(max, count, annotation);
-    m_game.getVault().waitForID(remoteVaultID, 15000);
-    if (!m_game.getVault().knowsAbout(remoteVaultID)) {
+    m_game.getVault().waitForID(remoteVaultId, 15000);
+    if (!m_game.getVault().knowsAbout(remoteVaultId)) {
       throw new IllegalStateException(
-          "Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultID);
+          "Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultId);
     }
     return m_localNumbers;
   }

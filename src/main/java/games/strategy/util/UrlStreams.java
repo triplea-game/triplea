@@ -31,10 +31,10 @@ public final class UrlStreams {
   /**
    * Opens an input stream to a given uri.
    *
-   * @throws IllegalStateException if the given uri is malformed
-   *
    * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
    *         containing an input stream to the parameter uri.
+   *
+   * @throws IllegalStateException if the given uri is malformed
    */
   public static Optional<InputStream> openStream(final URI uri) {
     try {
@@ -44,7 +44,7 @@ public final class UrlStreams {
     }
   }
 
-  /** Used to obtain a connection from a given URL */
+  /** Used to obtain a connection from a given URL. */
   private final Function<URL, URLConnection> urlConnectionFactory;
 
 
@@ -60,7 +60,7 @@ public final class UrlStreams {
   }
 
   /**
-   * For test, a constructor that allows mock object injection
+   * For test, a constructor that allows mock object injection.
    */
   protected UrlStreams(final Function<URL, URLConnection> connectionFactory) {
     this.urlConnectionFactory = connectionFactory;

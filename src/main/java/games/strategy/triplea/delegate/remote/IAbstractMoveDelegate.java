@@ -6,20 +6,20 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 
 /**
- * Remote interface for MoveDelegate and PlaceDelegate
+ * Remote interface for MoveDelegate and PlaceDelegate.
  */
-public interface IAbstractMoveDelegate extends IRemote, IDelegate {
+public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   /**
-   * Get the moves already made
+   * Get the moves already made.
    *
    * @return a list of UndoableMoves or UndoablePlacements
    */
-  List<?> getMovesMade();
+  List<T> getMovesMade();
 
 
   /**
    * @param moveIndex
-   *        - an index in the list getMovesMade
+   *        - an index in the list getMovesMade.
    * @return an error string if the move could not be undone, null otherwise
    */
   String undoMove(int moveIndex);

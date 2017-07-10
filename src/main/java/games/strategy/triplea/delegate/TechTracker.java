@@ -17,15 +17,12 @@ import games.strategy.triplea.attachments.TechAttachment;
 public class TechTracker implements java.io.Serializable {
   private static final long serialVersionUID = 4705039229340373735L;
 
-  /** Creates new TechTracker */
+  /** Creates new TechTracker. */
   public TechTracker() {}
 
   /**
    * Returns what tech advances this player already has successfully researched (including ones that may not be in their
    * tech frontier).
-   *
-   * @param id
-   * @param data
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data) {
     final Collection<TechAdvance> rVal = new ArrayList<>();
@@ -43,9 +40,6 @@ public class TechTracker implements java.io.Serializable {
    * Returns what tech categories are no longer available for this player, because all techs in them have been
    * successfully researched
    * already.
-   *
-   * @param data
-   * @param id
    */
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final GameData data,
       final PlayerID id) {
@@ -79,7 +73,7 @@ public class TechTracker implements java.io.Serializable {
     advance.perform(player, bridge);
   }
 
-  public static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
+  static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
       final TechAdvance advance) {
     Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {

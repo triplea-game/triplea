@@ -19,7 +19,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -56,7 +55,7 @@ public class UndoableMove extends AbstractUndoableMove {
     return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
   }
 
-  public String getReasonCantUndo() {
+  String getReasonCantUndo() {
     if (m_reasonCantUndo != null) {
       return m_reasonCantUndo;
     } else if (!m_dependOnMe.isEmpty()) {
@@ -127,8 +126,8 @@ public class UndoableMove extends AbstractUndoableMove {
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
-                .getMatches(new CompositeMatchAnd<>(Matches.enemyUnit(bridge.getPlayerID(), data),
-                    Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
+                .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), data),
+                    Matches.unitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
                     Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
@@ -169,28 +168,21 @@ public class UndoableMove extends AbstractUndoableMove {
         System.err.println(undoableMoves);
         throw new IllegalStateException("other should not be null");
       }
-      if ( // if the other move has moves that depend on this
-      !Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
-      // if the other move has transports that we are loading
-          !Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
+      if (// if the other move has moves that depend on this
+          !Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
+          // if the other move has transports that we are loading
+          || !Util.intersection(other.m_units, this.m_loaded).isEmpty()
           // or we are moving through a previously conqueured territory
           // we should be able to take this out later
           // we need to add logic for this move to take over the same territories
           // when the other move is undone
-          !Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty() ||
+          || !Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
-          !Util.intersection(other.m_units, this.m_unloaded).isEmpty()
+          || !Util.intersection(other.m_units, this.m_unloaded).isEmpty()
           || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
         m_iDependOn.add(other);
         other.m_dependOnMe.add(this);
       }
-    }
-  }
-
-  // for use with airborne moving
-  public void addDependency(final List<UndoableMove> undoableMoves) {
-    for (final UndoableMove other : undoableMoves) {
-      addDependency(other);
     }
   }
 

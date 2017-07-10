@@ -18,11 +18,11 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
 
 public class MessengerLoginTest {
-  private int SERVER_PORT = -1;
+  private int serverPort = -1;
 
   @Before
   public void setUp() {
-    SERVER_PORT = TestUtil.getUniquePort();
+    serverPort = TestUtil.getUniquePort();
   }
 
   @Test
@@ -51,13 +51,13 @@ public class MessengerLoginTest {
         return new HashMap<>();
       }
     };
-    final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+    final ServerMessenger server = new ServerMessenger("test", serverPort);
     try {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger client =
-          new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
+          new ClientMessenger("localhost", serverPort, "fee", mac, new DefaultObjectStreamFactory(), login);
       client.shutDown();
     } finally {
       server.shutDown();
@@ -88,13 +88,13 @@ public class MessengerLoginTest {
         return new HashMap<>();
       }
     };
-    final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+    final ServerMessenger server = new ServerMessenger("test", serverPort);
     try {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
       try {
         final String mac = MacFinder.getHashedMacAddress();
-        new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
+        new ClientMessenger("localhost", serverPort, "fee", mac, new DefaultObjectStreamFactory(), login);
         fail("we should not have logged in");
       } catch (final CouldNotLogInException expected) {
         // we expect this exception
@@ -131,13 +131,13 @@ public class MessengerLoginTest {
         return rVal;
       }
     };
-    final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+    final ServerMessenger server = new ServerMessenger("test", serverPort);
     try {
       server.setLoginValidator(validator);
       server.setAcceptNewConnections(true);
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger client =
-          new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
+          new ClientMessenger("localhost", serverPort, "fee", mac, new DefaultObjectStreamFactory(), login);
       client.shutDown();
     } finally {
       server.shutDown();

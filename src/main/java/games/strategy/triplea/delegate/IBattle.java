@@ -21,11 +21,12 @@ public interface IBattle extends java.io.Serializable {
   enum WhoWon {
     NOTFINISHED, DRAW, ATTACKER, DEFENDER
   }
+
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
     private final String m_type;
 
-    private BattleType(final String type) {
+    BattleType(final String type) {
       m_type = type;
     }
 
@@ -87,7 +88,7 @@ public interface IBattle extends java.io.Serializable {
   void fight(IDelegateBridge bridge);
 
   /**
-   * @return whether this battle is over or not
+   * @return whether this battle is over or not.
    */
   boolean isOver();
 
@@ -115,7 +116,7 @@ public interface IBattle extends java.io.Serializable {
   void addBombardingUnit(Unit u);
 
   /**
-   * @return whether battle is amphibious
+   * @return whether battle is amphibious.
    */
   boolean isAmphibious();
 
@@ -142,33 +143,32 @@ public interface IBattle extends java.io.Serializable {
   boolean isEmpty();
 
   /**
-   * @param units
    * @return units which are dependent on the given units.
    */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
   /**
-   * @return units which are actually assaulting amphibiously
+   * @return units which are actually assaulting amphibiously.
    */
   Collection<Unit> getAmphibiousLandAttackers();
 
   /**
-   * @return units which are actually bombarding
+   * @return units which are actually bombarding.
    */
   Collection<Unit> getBombardingUnits();
 
   /**
-   * @return what round this battle is in
+   * @return what round this battle is in.
    */
   int getBattleRound();
 
   /**
-   * @return units which are attacking
+   * @return units which are attacking.
    */
   Collection<Unit> getAttackingUnits();
 
   /**
-   * @return units which are defending
+   * @return units which are defending.
    */
   Collection<Unit> getDefendingUnits();
 

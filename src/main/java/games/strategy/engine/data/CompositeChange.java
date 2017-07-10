@@ -51,7 +51,7 @@ public class CompositeChange extends Change {
   }
 
   /**
-   * @return true if this change is empty, or composed of empty changes
+   * @return true if this change is empty, or composed of empty changes.
    */
   @Override
   public boolean isEmpty() {

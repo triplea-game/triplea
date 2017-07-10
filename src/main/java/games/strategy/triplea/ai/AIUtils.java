@@ -16,7 +16,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -25,7 +24,7 @@ import games.strategy.util.Match;
 public class AIUtils {
 
   /**
-   * @return a comparator that sorts cheaper units before expensive ones
+   * @return a comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
     return (o1, o2) -> getCost(o1.getType(), o1.getOwner(), o1.getData())
@@ -34,9 +33,10 @@ public class AIUtils {
 
   /**
    * How many PU's does it cost the given player to produce the given unit type.
+   *
    * <p>
    * If the player cannot produce the given unit, return Integer.MAX_VALUE
-   * <p>
+   * </p>
    */
   static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
@@ -50,8 +50,10 @@ public class AIUtils {
 
   /**
    * Get the production rule for the given player, for the given unit type.
+   *
    * <p>
    * If no such rule can be found, then return null.
+   * </p>
    */
   private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
@@ -128,8 +130,8 @@ public class AIUtils {
     return -1;
   }
 
-  public static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
-    if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier))) {
+  static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
+    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.UnitCanLandOnCarrier))) {
       return units;
     }
     // Clone the current list
@@ -155,7 +157,7 @@ public class AIUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+              Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
             break;
@@ -184,7 +186,7 @@ public class AIUtils {
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
@@ -192,9 +194,7 @@ public class AIUtils {
             // Place next carrier right before this plane (which just filled the old carrier that was just moved)
             indexToPlaceCarrierAt = i;
             spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
-          } else
-          // If it's later in the list
-          {
+          } else { // If it's later in the list
             final int oldIndex = result.indexOf(seekedCarrier);
             int carrierPlaceLocation = indexToPlaceCarrierAt;
             // Place carrier where it's supposed to go
@@ -224,7 +224,7 @@ public class AIUtils {
             }
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;

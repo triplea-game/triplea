@@ -16,7 +16,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
 
 /**
- * At the end of the turn collect units, not income!
+ * At the end of the turn collect units, not income.
  */
 @MapSupport
 public class NoPUPurchaseDelegate extends PurchaseDelegate {

@@ -7,34 +7,35 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.UndoableMove;
 
 /**
- * Remote interface for MoveDelegate
+ * Remote interface for MoveDelegate.
  */
-public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPosterDelegate {
+public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
    * @param units
-   *        - the units to move
+   *        - the units to move.
    * @param route
    *        - the route to move along
-   * @param m_transportsThatCanBeLoaded
+   * @param transportsThatCanBeLoaded
    *        - transports that can be loaded while moving, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded);
+  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded);
 
   /**
    * @param units
-   *        - the units to move
+   *        - the units to move.
    * @param route
    *        - the route to move along
-   * @param m_transportsThatCanBeLoaded
+   * @param transportsThatCanBeLoaded
    *        - transports that can be loaded while moving, must be non null
    * @param newDependents
    *        - units that will be made into new dependents if this move is successful, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded,
+  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded,
       Map<Unit, Collection<Unit>> newDependents);
 
   /**
@@ -49,7 +50,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
   String move(Collection<Unit> units, Route route);
 
   /**
-   * Get what air units must move before the end of the players turn
+   * Get what air units must move before the end of the players turn.
    *
    * @param player
    *        referring player ID
@@ -60,7 +61,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /**
-   * Get what units must have combat ability
+   * Get what units must have combat ability.
    *
    * @return a list of Territories with units that can't fight
    */

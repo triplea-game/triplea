@@ -3,8 +3,10 @@ package games.strategy.triplea.settings;
 /**
  * Wrapper API around a 'settings' object, allows for a GUI interface that allows a user to read descriptions about
  * each setting in the object, and to update the value.
+ *
+ * @param <T> The type of the object that contains the settings data.
  */
-public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
+public interface SettingInputComponent<T extends HasDefaults> {
 
   /**
    * @return Short two or three word label of the user setting. Use 'getDescription' to provide more detail.
@@ -36,7 +38,7 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    *
    * @param toUpdate The 'Settings' data object to be updated.
    */
-  boolean updateSettings(SettingsObjectType toUpdate);
+  boolean updateSettings(T toUpdate);
 
   /**
    * Method to read the settings value from the SettingsObject that has the value saved.
@@ -44,11 +46,11 @@ public interface SettingInputComponent<SettingsObjectType extends HasDefaults> {
    * @param settingsType Settings object which has the current stored user setting value
    * @return An extracted value corresponding to the current setting from the 'settings' object.
    */
-  String getValue(SettingsObjectType settingsType);
+  String getValue(T settingsType);
 
   /**
    * In cases where we try to update to an invalid value, set Value is called to restore the default/previous valid
-   * value
+   * value.
    */
   void setValue(String valueToSet);
 

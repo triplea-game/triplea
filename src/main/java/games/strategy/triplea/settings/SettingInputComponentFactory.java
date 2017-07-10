@@ -43,7 +43,7 @@ public final class SettingInputComponentFactory {
   }
 
   /**
-   * Factory method to create instances of this interface, backed by TextField component types
+   * Factory method to create instances of this interface, backed by TextField component types.
    */
   public static <Z extends HasDefaults> SettingInputComponent<Z> buildTextComponent(
       final String label,
@@ -132,17 +132,15 @@ public final class SettingInputComponentFactory {
     }
   }
 
-  private static class SettingsModelReaderWriter<Type extends HasDefaults> {
-    private final Function<Type, String> settingsReader;
-    private final BiConsumer<Type, String> settingsWriter;
+  private static class SettingsModelReaderWriter<T extends HasDefaults> {
+    private final Function<T, String> settingsReader;
+    private final BiConsumer<T, String> settingsWriter;
 
-    SettingsModelReaderWriter(Function<Type, String> settingsReader,
-        BiConsumer<Type, String> settingsWriter) {
+    SettingsModelReaderWriter(Function<T, String> settingsReader,
+        BiConsumer<T, String> settingsWriter) {
       this.settingsWriter = settingsWriter;
       this.settingsReader = settingsReader;
     }
-
-
   }
 
   private static <T extends HasDefaults> SettingInputComponent<T> build(

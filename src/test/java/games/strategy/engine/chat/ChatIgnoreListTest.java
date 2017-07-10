@@ -22,7 +22,7 @@ public class ChatIgnoreListTest {
     clearStore();
   }
 
-  private void clearStore() throws BackingStoreException {
+  private static void clearStore() throws BackingStoreException {
     final Preferences prefs = ChatIgnoreList.getPrefNode();
     prefs.clear();
     prefs.flush();

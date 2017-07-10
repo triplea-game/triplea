@@ -44,11 +44,9 @@ public class PropertyUtil {
 
   public static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
-    Field rVal = null;
     if (!justFromSuper) {
       try {
-        rVal = c.getDeclaredField(name); // TODO: unchecked reflection
-        return rVal;
+        return c.getDeclaredField(name); // TODO: unchecked reflection
       } catch (final NoSuchFieldException e) {
         return getFieldIncludingFromSuperClasses(c, name, true);
       }
@@ -57,8 +55,7 @@ public class PropertyUtil {
         throw new IllegalStateException("No such Property Field: " + name);
       }
       try {
-        rVal = c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
-        return rVal;
+        return c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
       } catch (final NoSuchFieldException e) {
         return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
       }
@@ -90,11 +87,10 @@ public class PropertyUtil {
     }
   }
 
-
-  private static String capitalizeFirstLetter(final String aString) {
-    char first = aString.charAt(0);
+  private static String capitalizeFirstLetter(final String str) {
+    char first = str.charAt(0);
     first = Character.toUpperCase(first);
-    return first + aString.substring(1);
+    return first + str.substring(1);
   }
 
   private static Method getSetter(final String propertyName, final Object subject, final Object value) {

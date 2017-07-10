@@ -9,8 +9,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
+import games.strategy.engine.lobby.server.db.MutedMacController;
+import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -43,17 +43,15 @@ import games.strategy.net.nio.ServerQuarantineConversation;
  * A Messenger that can have many clients connected to it.
  */
 public class ServerMessenger implements IServerMessenger, NIOSocketListener {
-  private static Logger logger = Logger.getLogger(ServerMessenger.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerMessenger.class.getName());
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
   private boolean shutdown = false;
   private final NIOSocket nioSocket;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
-  private final List<IMessengerErrorListener> errorListeners =
-      new CopyOnWriteArrayList<>();
-  private final List<IConnectionChangeListener> connectionListeners =
-      new CopyOnWriteArrayList<>();
+  private final List<IMessengerErrorListener> errorListeners = new CopyOnWriteArrayList<>();
+  private final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;
   // all our nodes
@@ -88,7 +86,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return loginValidator;
   }
 
-  /** Creates new ServerMessenger */
+  /** Creates new ServerMessenger. */
   public ServerMessenger(final String name, final int portNumber) throws IOException {
     this(name, portNumber, new DefaultObjectStreamFactory());
   }
@@ -198,61 +196,62 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   // which can be very slow
   private final List<String> m_liveMutedUsernames = new ArrayList<>();
 
-  public boolean IsUsernameMuted(final String username) {
+  private boolean isUsernameMuted(final String username) {
     synchronized (m_cachedListLock) {
       return m_liveMutedUsernames.contains(username);
     }
   }
 
   @Override
-  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {
+  public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {
     synchronized (m_cachedListLock) {
       if (!m_liveMutedUsernames.contains(username)) {
         m_liveMutedUsernames.add(username);
       }
       if (muteExpires != null) {
-        ScheduleUsernameUnmuteAt(username, muteExpires.getTime());
+        scheduleUsernameUnmuteAt(username, muteExpires);
       }
     }
   }
 
   @Override
-  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {
+  public void notifyIpMutingOfPlayer(final String ip, final Instant muteExpires) {
     // TODO: remove if no backwards compat issues
   }
 
   private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
 
-  public boolean IsMacMuted(final String mac) {
+  private boolean isMacMuted(final String mac) {
     synchronized (m_cachedListLock) {
       return m_liveMutedMacAddresses.contains(mac);
     }
   }
 
   @Override
-  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {
+  public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {
     synchronized (m_cachedListLock) {
       if (!m_liveMutedMacAddresses.contains(mac)) {
         m_liveMutedMacAddresses.add(mac);
       }
       if (muteExpires != null) {
-        ScheduleMacUnmuteAt(mac, muteExpires.getTime());
+        scheduleMacUnmuteAt(mac, muteExpires);
       }
     }
   }
 
-  private void ScheduleUsernameUnmuteAt(final String username, final long checkTime) {
+  private void scheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
-    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username), new Date(checkTime));
+    unmuteUsernameTimer.schedule(getUsernameUnmuteTask(username),
+        checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
-  private void ScheduleMacUnmuteAt(final String mac, final long checkTime) {
+  private void scheduleMacUnmuteAt(final String mac, final Instant checkTime) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
-    unmuteMacTimer.schedule(getMacUnmuteTask(mac), new Date(checkTime));
+    unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
   // TODO: remove 'ip' parameter if can confirm no backwards compat issues
-  public void NotifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
+  public void notifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
     synchronized (m_cachedListLock) {
       m_cachedMacAddresses.put(uniquePlayerName, mac);
       if (isLobby()) {
@@ -262,7 +261,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedUsernames.add(realName);
-            ScheduleUsernameUnmuteAt(realName, muteTill);
+            scheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
           }
         }
         if (!m_liveMutedMacAddresses.contains(mac)) {
@@ -270,7 +269,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
             m_liveMutedMacAddresses.add(mac);
-            ScheduleMacUnmuteAt(mac, muteTill);
+            scheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
           }
         }
       }
@@ -283,7 +282,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return m_playersThatLeftMacs_Last10;
   }
 
-  private void NotifyPlayerRemoval(final INode node) {
+  private void notifyPlayerRemoval(final INode node) {
     synchronized (m_cachedListLock) {
       m_playersThatLeftMacs_Last10.put(node.getName(), m_cachedMacAddresses.get(node.getName()));
       if (m_playersThatLeftMacs_Last10.size() > 10) {
@@ -306,25 +305,24 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (!expectedReceive.equals(msg.getFrom())) {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
-    if (msg.getMessage() instanceof HubInvoke) // Chat messages are always HubInvoke's
-    {
+    if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
-        if (IsUsernameMuted(realName)) {
+        if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
-        } else if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
+        } else if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
         }
       } else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName()
           .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
-        if (IsUsernameMuted(realName)) {
+        if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
-        if (IsMacMuted(getPlayerMac(msg.getFrom().getName()))) {
+        if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
         }
@@ -345,7 +343,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     final Class<? extends Object>[] argTypes = new Class<?>[1];
     args.add(message);
     argTypes[0] = args.get(0).getClass();
-    RemoteName rn;
+    final RemoteName rn;
     if (isLobby()) {
       rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
     } else {
@@ -363,14 +361,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedUsernames = new ArrayList<>();
 
   @Override
-  public boolean IsUsernameMiniBanned(final String username) {
+  public boolean isUsernameMiniBanned(final String username) {
     synchronized (m_cachedListLock) {
       return m_miniBannedUsernames.contains(username);
     }
   }
 
   @Override
-  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {
+  public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedUsernames.contains(username)) {
         m_miniBannedUsernames.add(username);
@@ -384,7 +382,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedUsernames.remove(username);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
@@ -392,14 +390,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedIpAddresses = new ArrayList<>();
 
   @Override
-  public boolean IsIpMiniBanned(final String ip) {
+  public boolean isIpMiniBanned(final String ip) {
     synchronized (m_cachedListLock) {
       return m_miniBannedIpAddresses.contains(ip);
     }
   }
 
   @Override
-  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {
+  public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedIpAddresses.contains(ip)) {
         m_miniBannedIpAddresses.add(ip);
@@ -413,7 +411,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedIpAddresses.remove(ip);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
@@ -421,14 +419,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final List<String> m_miniBannedMacAddresses = new ArrayList<>();
 
   @Override
-  public boolean IsMacMiniBanned(final String mac) {
+  public boolean isMacMiniBanned(final String mac) {
     synchronized (m_cachedListLock) {
       return m_miniBannedMacAddresses.contains(mac);
     }
   }
 
   @Override
-  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {
+  public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {
     synchronized (m_cachedListLock) {
       if (!m_miniBannedMacAddresses.contains(mac)) {
         m_miniBannedMacAddresses.add(mac);
@@ -442,7 +440,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
               m_miniBannedMacAddresses.remove(mac);
             }
           }
-        }, new Date(expires.getTime()));
+        }, expires.toEpochMilli() - System.currentTimeMillis());
       }
     }
   }
@@ -555,9 +553,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return acceptNewConnection;
   }
 
-  /**
-   * Get the local node
-   */
   @Override
   public INode getLocalNode() {
     return node;
@@ -664,7 +659,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (nodeToRemove.equals(this.node)) {
       throw new IllegalArgumentException("Cant remove ourself!");
     }
-    NotifyPlayerRemoval(nodeToRemove);
+    notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
       logger.info("Could not remove connection to node:" + nodeToRemove);

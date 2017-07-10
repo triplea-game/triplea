@@ -24,23 +24,21 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel actionLabel = new JLabel();
-  private final JLabel m_leftToPlaceLabel = new JLabel();
-  private PlaceData m_placeData;
-  private final SimpleUnitPanel m_unitsToPlace;
+  private final JLabel leftToPlaceLabel = new JLabel();
+  private PlaceData placeData;
+  private final SimpleUnitPanel unitsToPlace;
 
-  /** Creates new PlacePanel */
+  /** Creates new PlacePanel. */
   public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);
-    m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
-    m_leftToPlaceLabel.setText("Units left to place:");
+    undoableMovesPanel = new UndoablePlacementsPanel(data, this);
+    unitsToPlace = new SimpleUnitPanel(map.getUIContext());
+    leftToPlaceLabel.setText("Units left to place:");
   }
 
   @Override
@@ -53,13 +51,13 @@ public class PlacePanel extends AbstractMovePanel {
         .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
-  public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
+  PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
     setUp(playerBridge);
     // workaround: meant to be in setUpSpecific, but it requires a variable
     refreshActionLabelText(bid);
     waitForRelease();
     cleanUp();
-    return m_placeData;
+    return placeData;
   }
 
   private boolean canProduceFightersOnCarriers() {
@@ -74,13 +72,13 @@ public class PlacePanel extends AbstractMovePanel {
     return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(getData());
   }
 
-  private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+  private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails e) {
       if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
         return;
       }
-      final int maxUnits[] = new int[1];
+      final int[] maxUnits = new int[1];
       final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
       if (units.isEmpty()) {
         return;
@@ -105,17 +103,17 @@ public class PlacePanel extends AbstractMovePanel {
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option == JOptionPane.OK_OPTION) {
         final Collection<Unit> choosen = chooser.getSelected();
-        m_placeData = new PlaceData(choosen, territory);
+        placeData = new PlaceData(choosen, territory);
         updateUnits();
         if (choosen.containsAll(units)) {
-          m_leftToPlaceLabel.setText("");
+          leftToPlaceLabel.setText("");
         }
         release();
       }
     }
   };
 
-  private Collection<Unit> getUnitsToPlace(final Territory territory, final int maxUnits[]) {
+  private Collection<Unit> getUnitsToPlace(final Territory territory, final int[] maxUnits) {
     getData().acquireReadLock();
     try {
       // not our territory
@@ -123,7 +121,7 @@ public class PlacePanel extends AbstractMovePanel {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.getUnits().someMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
         } else {
@@ -137,8 +135,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
-          final CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier =
-              new CompositeMatchOr<>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
@@ -163,7 +160,7 @@ public class PlacePanel extends AbstractMovePanel {
 
   private void updateUnits() {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
-    m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
+    unitsToPlace.setUnitsFromCategories(unitCategories, getData());
   }
 
   @Override
@@ -179,18 +176,18 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void undoMoveSpecific() {
-    m_leftToPlaceLabel.setText("Units left to place:");
+    leftToPlaceLabel.setText("Units left to place:");
     updateUnits();
   }
 
   @Override
   protected final void cleanUpSpecific() {
-    getMap().removeMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().removeMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override
   protected final void setUpSpecific() {
-    getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().addMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override
@@ -204,7 +201,7 @@ public class PlacePanel extends AbstractMovePanel {
         return false;
       }
     }
-    m_placeData = null;
+    placeData = null;
     return true;
   }
 
@@ -215,8 +212,8 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void addAdditionalButtons() {
-    add(leftBox(m_leftToPlaceLabel));
-    add(m_unitsToPlace);
+    add(leftBox(leftToPlaceLabel));
+    add(unitsToPlace);
     updateUnits();
   }
 }

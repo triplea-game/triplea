@@ -1,15 +1,14 @@
 package games.strategy.engine.chat;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.DefaultListCellRenderer;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -18,6 +17,7 @@ import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.util.TimeManager;
 
 /**
  * Headless version of ChatPanel.
@@ -28,7 +28,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private Chat m_chat;
   private boolean m_showTime = true;
   private StringBuffer m_allText = new StringBuffer();
-  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final ChatFloodControl floodControl = new ChatFloodControl();
   private final Set<String> m_hiddenPlayers = new HashSet<>();
   private final Set<INode> m_players = new HashSet<>();
@@ -107,6 +106,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
             m_out.println();
           }
         } catch (final Exception e) {
+          ClientLogger.logQuietly(e);
         }
         for (final ChatMessage message : m_chat.getChatHistory()) {
           if (message.getFrom().equals(m_chat.getServerNode().getName())) {
@@ -127,13 +127,13 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     }
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {
     addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
@@ -163,7 +163,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
-    final String time = simpleDateFormat.format(new Date());
+    final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final String prefix = thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from)
         : (m_showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";
@@ -177,6 +177,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         m_out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -193,6 +194,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         m_out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
+      ClientLogger.logQuietly(e);
     }
   }
 

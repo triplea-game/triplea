@@ -6,7 +6,7 @@ public class RelationshipType extends NamedAttachable {
   private static final long serialVersionUID = 5348310616624709971L;
 
   /**
-   * create new RelationshipType
+   * create new RelationshipType.
    *
    * @param name
    *        name of the relationshipType
@@ -18,7 +18,7 @@ public class RelationshipType extends NamedAttachable {
   }
 
   /**
-   * convenience method to get the relationshipTypeAttachment of this relationshipType
+   * convenience method to get the relationshipTypeAttachment of this relationshipType.
    *
    * @return the relationshipTypeAttachment of this relationshipType
    */

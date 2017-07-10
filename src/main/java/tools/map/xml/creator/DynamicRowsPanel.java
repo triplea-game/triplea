@@ -92,7 +92,7 @@ public abstract class DynamicRowsPanel {
     me.get().initializeSpecifics();
   }
 
-  public void removeComponents(final ArrayList<JComponent> componentList) {
+  void removeComponents(final ArrayList<JComponent> componentList) {
     for (final JComponent component : componentList) {
       ownPanel.remove(component);
     }
@@ -115,7 +115,7 @@ public abstract class DynamicRowsPanel {
   }
 
   /**
-   * @return number of rows
+   * @return number of rows.
    */
   public int countRows() {
     return rows.size() + 1;
@@ -126,24 +126,24 @@ public abstract class DynamicRowsPanel {
 
     final int countPlayers = countRows();
     newRow.addToParentComponentWithGbc(ownPanel, countPlayers,
-        MapXmlUIHelper.getGbcDefaultTemplateWith(0, countPlayers));
+        MapXmlUiHelper.getGbcDefaultTemplateWith(0, countPlayers));
     rows.add(newRow);
 
     final int finalButtonGridY = countPlayers + 1;
-    addFinalButtonRow(MapXmlUIHelper.getGbcDefaultTemplateWith(0, finalButtonGridY));
+    addFinalButtonRow(MapXmlUiHelper.getGbcDefaultTemplateWith(0, finalButtonGridY));
   }
 
   protected void addFinalButtonRow(final GridBagConstraints gbcTemplate) {
-    int xValue = 0;
+    int colIndex = 0;
     for (final JButton button : finalRowButtons) {
       final GridBagConstraints gbcCurrentButton = (GridBagConstraints) gbcTemplate.clone();
-      gbcCurrentButton.gridx = xValue;
-      ++xValue;
+      gbcCurrentButton.gridx = colIndex;
+      ++colIndex;
       ownPanel.add(button, gbcCurrentButton);
     }
   }
 
-  public void removeFinalButtonRow() {
+  void removeFinalButtonRow() {
     for (final JButton button : finalRowButtons) {
       ownPanel.remove(button);
     }

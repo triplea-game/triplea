@@ -16,9 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UrlStreamsTest {
 
   private UrlStreams testObj;
@@ -39,7 +39,7 @@ public class UrlStreamsTest {
   }
 
   /**
-   * Check that we turned off caching on a mocked UrlConnection
+   * Check that we turned off caching on a mocked UrlConnection.
    */
   @Test
   public void cacheIsOff() throws Exception {

@@ -10,9 +10,13 @@ import games.strategy.triplea.attachments.RulesAttachment;
 /**
  * PropertyUtil test sets / gets variables via reflection.
  *
+ * <p>
  * The set in PropertyUtil done through a setter method, the get is done by reading the private variable value directly.
+ * </p>
  *
+ * <p>
  * To test we set up some sample test objects and do read/set property operations on them.
+ * </p>
  */
 public class PropertyUtilTest {
   @Test
@@ -40,17 +44,17 @@ public class PropertyUtilTest {
     PropertyUtil.set("bar", NEW_VALUE, testClass);
     assertThat(testClass.bar, is(NEW_VALUE));
 
-    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, testClass), is(NEW_VALUE));
+    assertThat(PropertyUtil.getPropertyFieldObject(BAR, testClass), is(NEW_VALUE));
   }
 
   @Test
   public void testGetField() {
-    assertThat((String) PropertyUtil.getPropertyFieldObject("bar", new PropertyClass()), is(DEFAULT));
+    assertThat(PropertyUtil.getPropertyFieldObject("bar", new PropertyClass()), is(DEFAULT));
   }
 
   @Test
   public void testGetFieldWithPrefixedPropertyNames() {
-    assertThat((String) PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
+    assertThat(PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
   }
 
 
@@ -70,49 +74,50 @@ public class PropertyUtilTest {
     final NoOpSetterClass testClass = new NoOpSetterClass();
     PropertyUtil.set(BAR, NEW_VALUE, testClass);
     assertThat(
-        "we are only really checking that the setter method was called, which did not do anything, thus we shoudl still have a default value.",
+        "we are only really checking that the setter method was called, which did not do anything, thus we should "
+            + "still have a default value.",
         testClass.bar, is("default"));
   }
 
-
-}
-
-
-class NoSetterClass {
-  @SuppressWarnings("unused")
-  private final String bar = PropertyUtilTest.DEFAULT;
-}
-
-
-class InvalidSetterClass {
-  @SuppressWarnings("unused")
-  private final String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar() {}
-}
-
-
-class NoOpSetterClass {
-  protected String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar(final String value) {}
-}
-
-
-class PropertyClass {
-  protected String bar = PropertyUtilTest.DEFAULT;
-
-  public void setBar(final String newValue) {
-    bar = newValue;
+  private static class NoSetterClass {
+    
+    @SuppressWarnings("unused")
+    private final String bar = PropertyUtilTest.DEFAULT;
   }
-}
 
+  private static class InvalidSetterClass {
+    
+    @SuppressWarnings("unused")
+    private final String bar = PropertyUtilTest.DEFAULT;
+    
+    @SuppressWarnings("unused")
+    public void setBar() {}
+  }
 
-class mUnderBarClass {
-  @SuppressWarnings("unused")
-  private String m_bar = PropertyUtilTest.DEFAULT;
+  private static class NoOpSetterClass {
+    protected String bar = PropertyUtilTest.DEFAULT;
+    
+    @SuppressWarnings("unused")
+    public void setBar(final String value) {}
+  }
 
-  public void setBar(final String newValue) {
-    m_bar = newValue;
+  private static class PropertyClass {
+    protected String bar = PropertyUtilTest.DEFAULT;
+    
+    @SuppressWarnings("unused")
+    public void setBar(final String newValue) {
+      bar = newValue;
+    }
+  }
+
+  private static class mUnderBarClass {
+    
+    @SuppressWarnings("unused")
+    private String m_bar = PropertyUtilTest.DEFAULT;
+    
+    @SuppressWarnings("unused")
+    public void setBar(final String newValue) {
+      m_bar = newValue;
+    }
   }
 }

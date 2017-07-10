@@ -23,15 +23,21 @@ import games.strategy.engine.message.RemoteName;
 /**
  * A vault is a secure way for the client and server to share information without
  * trusting each other.
+ *
  * <p>
  * Data can be locked in the vault by a node. This data then is not readable by other nodes until the data is unlocked.
+ * </p>
+ *
  * <p>
  * When the data is unlocked by the original node, other nodes can read the data. When data is put in the vault, it cant
  * be changed by the
  * originating node.
+ * </p>
+ *
  * <p>
- * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultID id)<code> method
+ * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultID id)</code> method
  * should be called when it is no longer needed.
+ * </p>
  */
 public class Vault {
   private static final RemoteName VAULT_CHANNEL =
@@ -54,7 +60,7 @@ public class Vault {
   private final Object m_waitForLock = new Object();
 
   /**
-   * @param channelMessenger
+   * Creates a new instance of Vault.
    */
   public Vault(final IChannelMessenger channelMessenger) {
     m_channelMessenger = channelMessenger;
@@ -102,8 +108,10 @@ public class Vault {
   /**
    * place data in the vault. An encrypted form of the data is sent at this
    * time to all nodes.
+   *
    * <p>
    * The same key used to encrypt the KNOWN_VALUE so that nodes can verify the key when it is used to decrypt the data.
+   * </p>
    *
    * @param data
    *        - the data to lock
@@ -141,8 +149,10 @@ public class Vault {
 
   /**
    * Join known and data into one array.
+   *
    * <p>
    * package access so we can test.
+   * </p>
    */
   static byte[] joinDataAndKnown(final byte[] data) {
     final byte[] dataAndCheck = new byte[KNOWN_VAL.length + data.length];
@@ -153,8 +163,10 @@ public class Vault {
 
   /**
    * allow other nodes to see the data.
+   *
    * <p>
    * You can only unlock data that was locked by the same instance of the Vault
+   * </p>
    *
    * @param id
    *        - the vault id to unlock
@@ -207,10 +219,14 @@ public class Vault {
 
   /**
    * Allow all data associated with the given vault id to be released and garbage collected
+   *
    * <p>
    * An id can be released by any node.
+   * </p>
+   *
    * <p>
    * If the id has already been released, then nothing will happen.
+   * </p>
    */
   public void release(final VaultID id) {
     getRemoteBroadcaster().release(id);
@@ -284,11 +300,11 @@ public class Vault {
    * Waits until we know about a given vault id.
    * waits for at most timeout milliseconds
    */
-  public void waitForID(final VaultID id, final long timeoutMS) {
-    if (timeoutMS <= 0) {
+  public void waitForID(final VaultID id, final long timeoutMs) {
+    if (timeoutMs <= 0) {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }
-    final long endTime = timeoutMS + System.currentTimeMillis();
+    final long endTime = timeoutMs + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !knowsAbout(id)) {
       synchronized (m_waitForLock) {
         if (knowsAbout(id)) {
@@ -307,7 +323,7 @@ public class Vault {
   }
 
   /**
-   * Wait until the given id is unlocked
+   * Wait until the given id is unlocked.
    */
   public void waitForIdToUnlock(final VaultID id, final long timeout) {
     if (timeout <= 0) {

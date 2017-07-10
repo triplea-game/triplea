@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.Action;
@@ -22,11 +25,11 @@ import javax.swing.SpinnerNumberModel;
 
 import com.google.common.collect.ImmutableList;
 
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -42,24 +45,24 @@ public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
   private static final List<String> banOrMuteOptions = ImmutableList.of(
-    "Mac Address Only",
-    "User Name only",
-    "Name and Mac",
-    "Cancel");
+      "Mac Address Only",
+      "User Name only",
+      "Name and Mac",
+      "Cancel");
 
   private final LobbyClient m_client;
   private final ChatMessagePanel m_chatMessagePanel;
 
-  public LobbyFrame(final LobbyClient client, final LobbyServerProperties props) {
+  public LobbyFrame(final LobbyClient client) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
-      m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
+        m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
-    showServerMessage(props);
+    showServerMessage(ClientContext.gameEnginePropertyReader().fetchLobbyServerProperties());
     m_chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
@@ -96,7 +99,7 @@ public class LobbyFrame extends JFrame {
   }
 
   private void showServerMessage(final LobbyServerProperties props) {
-    if (props.serverMessage != null && props.serverMessage.length() > 0) {
+    if (!props.serverMessage.isEmpty()) {
       m_chatMessagePanel.addServerMessage(props.serverMessage);
     }
   }
@@ -118,14 +121,16 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     rVal.add(SwingAction.of("Ban Player", e -> {
-      final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
-        "<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
-        "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
-        banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
-      if (resultBT < 0) {
+      final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
+          "<html>Select the type of ban: <br>"
+              + "Please consult other admins before banning longer than 1 day. <br>"
+              + "And please remember to report this ban.</html>",
+          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+      if (resultBanType < 0) {
         return;
       }
-      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBT];
+      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBanType];
       if (selectedBanType.equals("Cancel")) {
         return;
       }
@@ -138,56 +143,56 @@ public class LobbyFrame extends JFrame {
       timeUnits.add("Year");
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
-      final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
           "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTU < 0) {
+      if (resultTimespanUnit < 0) {
         return;
       }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTU];
+      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
       if (selectedTimeUnit.equalsIgnoreCase("Cancel")) {
         return;
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.banUsername(clickedOn, null);
+          controller.zzBanUsername(clickedOn, (Instant) null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.banMac(clickedOn, null);
+          controller.zzBanMac(clickedOn, (Instant) null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
         return;
       }
-      final String resultLOT = JOptionPane.showInputDialog(LobbyFrame.this,
+      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
           "Now please enter the length of time to ban the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLOT == null) {
+      if (resultLengthOfTime == null) {
         return;
       }
-      final long result2 = Long.parseLong(resultLOT);
+      final long result2 = Long.parseLong(resultLengthOfTime);
       if (result2 < 0) {
         return;
       }
-      long ticks = 0;
+      TemporalUnit unit = null;
       if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
+        unit = ChronoUnit.MINUTES;
       } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
+        unit = ChronoUnit.HOURS;
       } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
+        unit = ChronoUnit.DAYS;
       } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+        unit = ChronoUnit.WEEKS;
       } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+        unit = ChronoUnit.MONTHS;
       } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+        unit = ChronoUnit.YEARS;
       }
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedBanType.toLowerCase().contains("name")) {
-        controller.banUsername(clickedOn, new Date(expire));
+        controller.zzBanUsername(clickedOn, expire);
       }
       if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.banMac(clickedOn, new Date(expire));
+        controller.zzBanMac(clickedOn, expire);
       }
       // Should we keep this auto?
       controller.boot(clickedOn);
@@ -195,14 +200,14 @@ public class LobbyFrame extends JFrame {
 
 
     rVal.add(SwingAction.of("Mute Player", e -> {
-      final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
+      final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
-          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banOrMuteOptions.toArray(),
-          banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
-      if (resultMT < 0) {
+          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+      if (resultMuteType < 0) {
         return;
       }
-      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMT];
+      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMuteType];
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
@@ -215,54 +220,54 @@ public class LobbyFrame extends JFrame {
       timeUnits.add("Year");
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
-      final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
           "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTU < 0) {
+      if (resultTimespanUnit < 0) {
         return;
       }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTU];
+      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
       if (selectedTimeUnit.equals("Cancel")) {
         return;
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.muteUsername(clickedOn, null);
+          controller.zzMuteUsername(clickedOn, (Instant) null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.muteMac(clickedOn, null);
+          controller.zzMuteMac(clickedOn, (Instant) null);
         }
         return;
       }
-      final String resultLOT = JOptionPane.showInputDialog(LobbyFrame.this,
+      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
           "Now please enter the length of time to mute the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLOT == null) {
+      if (resultLengthOfTime == null) {
         return;
       }
-      final long result2 = Long.parseLong(resultLOT);
+      final long result2 = Long.parseLong(resultLengthOfTime);
       if (result2 < 0) {
         return;
       }
-      long ticks = 0;
+      TemporalUnit unit = null;
       if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
+        unit = ChronoUnit.MINUTES;
       } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
+        unit = ChronoUnit.HOURS;
       } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
+        unit = ChronoUnit.DAYS;
       } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+        unit = ChronoUnit.WEEKS;
       } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+        unit = ChronoUnit.MONTHS;
       } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+        unit = ChronoUnit.YEARS;
       }
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.muteUsername(clickedOn, new Date(expire));
+        controller.zzMuteUsername(clickedOn, expire);
       }
       if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.muteMac(clickedOn, new Date(expire));
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Quick Mute", e -> {
@@ -278,14 +283,13 @@ public class LobbyFrame extends JFrame {
         if (value == null) {
           return;
         }
-        final long resultML = Long.parseLong(value.toString());
-        if (resultML < 0) {
+        final long resultMuteLengthInMinutes = Long.parseLong(value.toString());
+        if (resultMuteLengthInMinutes < 0) {
           return;
         }
-        final long ticks = resultML * 1000 * 60;
-        final long expire = System.currentTimeMillis() + ticks;
-        controller.muteUsername(clickedOn, new Date(expire));
-        controller.muteMac(clickedOn, new Date(expire));
+        final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
+        controller.zzMuteUsername(clickedOn, expire);
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Show player information", e -> {
@@ -318,7 +322,7 @@ public class LobbyFrame extends JFrame {
   public void shutdown() {
     setVisible(false);
     dispose();
-    MainFrame.getInstance().setVisible(true);
+    GameRunner.showMainFrame();
     m_client.getMessenger().shutDown();
     GameRunner.exitGameIfFinished();
   }

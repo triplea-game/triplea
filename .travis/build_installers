@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Builds the installer files that would be deployed to github releases.
+# .travis.yml names the files that will be deployed, those files are outputs from this task.
+#
+# To build the installers we use gradle for the heavy lifting. Gradle does the java compile
+# and packaging and runs install4j to generate the final installer files.
+#
+
+export TAGGED_VERSION=$1
+
+## update engine version number to have the build number
+sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" game_engine.properties
+
+## java package and runs install4j
+./gradlew release
+
+## After build task, rename the windows installers that were created to have explicit 32bit and 64bit extensions
+mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
+mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe

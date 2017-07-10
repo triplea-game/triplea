@@ -32,7 +32,7 @@ class TechnologyDefinitionsRow extends DynamicRow {
     Dimension dimension = textFieldTechnologyName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
     textFieldTechnologyName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldTechnologyName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldTechnologyName, () -> {
       final String inputText = textFieldTechnologyName.getText().trim();
       final String curr_playerName = (String) comboBoxPlayerName.getSelectedItem();
       if (currentRowName.startsWith(inputText + "_")) {
@@ -100,9 +100,9 @@ class TechnologyDefinitionsRow extends DynamicRow {
     comboBoxAlreadyEnabled.setPreferredSize(dimension);
     comboBoxAlreadyEnabled.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, alreadyEnabled));
     comboBoxAlreadyEnabled.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new technology name, lets rename everything
-    MapXmlHelper.getTechnologyDefinitionsMap().get(currentRowName).set(1,
-        (String) comboBoxAlreadyEnabled.getSelectedItem())));
+        // everything is okay with the new technology name, lets rename everything
+        MapXmlHelper.getTechnologyDefinitionsMap().get(currentRowName).set(1,
+            (String) comboBoxAlreadyEnabled.getSelectedItem())));
   }
 
   @Override
@@ -115,18 +115,18 @@ class TechnologyDefinitionsRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldTechnologyName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldTechnologyName, gbcTemplate);
 
-    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tClassName.gridx = 1;
     parent.add(comboBoxPlayerName, gbc_tClassName);
 
-    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tDisplayName.gridx = 2;
     parent.add(comboBoxAlreadyEnabled, gbc_tDisplayName);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 3;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

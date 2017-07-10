@@ -19,20 +19,22 @@ public class TechResults implements java.io.Serializable {
   }
 
   /**
-   * @return whether there was an error
+   * @return whether there was an error.
    */
   public boolean isError() {
     return m_errorString != null;
   }
 
   /**
-   * @return string error or null if no error occurred (use isError to see if there was an error)
+   * @return string error or null if no error occurred (use isError to see if there was an error).
    */
   public String getErrorString() {
     return m_errorString;
   }
 
   /**
+   * Creates a new TechResults.
+   *
    * @param rolls
    *        rolls
    * @param remainder
@@ -70,7 +72,7 @@ public class TechResults implements java.io.Serializable {
   }
 
   /**
-   * @return a List of Strings
+   * @return a List of Strings.
    */
   public List<String> getAdvances() {
     return m_advances;

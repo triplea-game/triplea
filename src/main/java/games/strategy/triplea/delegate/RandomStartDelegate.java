@@ -20,7 +20,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -97,7 +96,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer)) {
         m_currentPickingPlayer = playersCanPick.get(0);
       }
-      if(!ThreadUtil.sleep(250)) {
+      if (!ThreadUtil.sleep(250)) {
         return;
       }
       Territory picked;
@@ -221,23 +220,20 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return new CompositeMatchAnd<>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
+    return Match.allOf(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
   }
 
-  public Match<PlayerID> getPlayerCanPickMatch() {
-    return new Match<PlayerID>() {
-      @Override
-      public boolean match(final PlayerID player) {
-        if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
-          return false;
-        }
-        if (player.getUnits().isEmpty()) {
-          return false;
-        }
-        return !player.getIsDisabled();
+  private Match<PlayerID> getPlayerCanPickMatch() {
+    return Match.of(player -> {
+      if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
+        return false;
       }
-    };
+      if (player.getUnits().isEmpty()) {
+        return false;
+      }
+      return !player.getIsDisabled();
+    });
   }
 
   @Override
@@ -269,23 +265,5 @@ class UnitCostComparator implements Comparator<Unit> {
   @Override
   public int compare(final Unit u1, final Unit u2) {
     return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
-  }
-}
-
-
-class UnitTypeCostComparator implements Comparator<UnitType> {
-  private final IntegerMap<UnitType> m_costs;
-
-  public UnitTypeCostComparator(final IntegerMap<UnitType> costs) {
-    m_costs = costs;
-  }
-
-  public UnitTypeCostComparator(final PlayerID player, final GameData data) {
-    m_costs = BattleCalculator.getCostsForTUV(player, data);
-  }
-
-  @Override
-  public int compare(final UnitType u1, final UnitType u2) {
-    return m_costs.getInt(u1) - m_costs.getInt(u2);
   }
 }

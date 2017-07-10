@@ -11,7 +11,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
   private List<ProductionRule> m_cachedRules;
 
   /**
-   * Creates new ProductionFrontier
+   * Creates new ProductionFrontier.
    *
    * @param name
    *        name of production frontier

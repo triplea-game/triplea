@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 /**
- * A string property with a simple text field editor
+ * A string property with a simple text field editor.
  */
 public class StringProperty extends AEditableProperty {
   private static final long serialVersionUID = 4382624884674152208L;

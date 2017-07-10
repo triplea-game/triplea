@@ -50,8 +50,8 @@ public abstract class ImageScrollPanePanel {
     return mapXmlCreator;
   }
 
-  protected static Map<String, List<Polygon>> polygons = Maps.newHashMap(); // hash map for polygon
-                                                                            // points
+  // hash map for polygon points
+  protected static Map<String, List<Polygon>> polygons = Maps.newHashMap();
   public static boolean polygonsInvalid = true;
 
   private JPanel imagePanel;
@@ -69,7 +69,7 @@ public abstract class ImageScrollPanePanel {
   protected abstract void paintPreparation(final Map<String, Point> centers);
 
   protected abstract void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start);
+      final Point item, final int textStartX);
 
   protected abstract void paintOwnSpecifics(final Graphics g, final Map<String, Point> centers);
 
@@ -102,9 +102,6 @@ public abstract class ImageScrollPanePanel {
     return imagePanel;
   }
 
-  /**
-   *
-   */
   protected void addMouseAdapterToImagePanel() {
     final MouseAdapter imageMouseAdapter = new MouseAdapter() {
       private final Cursor defCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
@@ -199,7 +196,7 @@ public abstract class ImageScrollPanePanel {
     };
   }
 
-  private Dimension getImageDimension(final Image mapImage) {
+  private static Dimension getImageDimension(final Image mapImage) {
     return new Dimension(mapImage.getWidth(mapXmlCreator), mapImage.getHeight(mapXmlCreator));
   }
 
@@ -222,7 +219,8 @@ public abstract class ImageScrollPanePanel {
     if (MapXmlCreator.mapPolygonsFile != null
         || file.exists()
             && (JOptionPane.showConfirmDialog(new JPanel(),
-                "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territory shapes?",
+                "A polygons.txt file was found in the map's folder, do you want to use the file to supply the "
+                    + "territory shapes?",
                 "File Suggestion",
                 1) == 0)) {
       try {

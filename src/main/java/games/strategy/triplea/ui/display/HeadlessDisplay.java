@@ -34,7 +34,7 @@ public class HeadlessDisplay implements ITripleADisplay {
       final String message, final String title) {}
 
   @Override
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+  public void showBattle(final GUID battleId, final Territory location, final String battleTitle,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie,
@@ -44,26 +44,26 @@ public class HeadlessDisplay implements ITripleADisplay {
       final Collection<Unit> amphibiousLandAttackers) {}
 
   @Override
-  public void listBattleSteps(final GUID battleID, final List<String> steps) {}
+  public void listBattleSteps(final GUID battleId, final List<String> steps) {}
 
   @Override
-  public void battleEnd(final GUID battleID, final String message) {}
+  public void battleEnd(final GUID battleId, final String message) {}
 
   @Override
-  public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final GUID battleId, final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed,
       final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead,
+  public void deadUnitNotification(final GUID battleId, final PlayerID player, final Collection<Unit> dead,
       final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final GUID battleId, final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
-  public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {}
+  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {}
 
   @Override
   public void notifyRetreat(final String shortMessage, final String message, final String step,

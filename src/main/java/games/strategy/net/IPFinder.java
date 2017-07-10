@@ -79,7 +79,7 @@ public class IPFinder {
     }
     // all else fails, return localhost
     return InetAddress.getLocalHost();
-  }// end static findInetAddress()
+  } // end static findInetAddress()
 
   private static boolean isPrivateNetworkAddress(final InetAddress address) {
     // stupid java signed byte type
@@ -97,9 +97,7 @@ public class IPFinder {
           || (bytes[0] == _192 && bytes[1] == _168) || (bytes[0] == _169 && bytes[1] == _254)) {
         return true;
       }
-    }
-    // ip 6
-    else {
+    } else { // ip 6
       // http://en.wikipedia.org/wiki/IPv6#Addressing
       if ((bytes[0] == _252 && bytes[1] == 0) || bytes[0] == _254) {
         return true;

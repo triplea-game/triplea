@@ -1,8 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Point;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+
+import javax.swing.SwingUtilities;
 
 public class MouseDetails {
   private final MouseEvent m_mouseEvent;
@@ -13,7 +14,7 @@ public class MouseDetails {
   // this is in absolute pixels of the unscaled map
   private final double m_y;
 
-  public MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
+  MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
     super();
     m_mouseEvent = mouseEvent;
     m_x = x;
@@ -33,7 +34,7 @@ public class MouseDetails {
   }
 
   public boolean isRightButton() {
-    return (m_mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
+    return SwingUtilities.isRightMouseButton(m_mouseEvent);
   }
 
   public boolean isControlDown() {
@@ -49,7 +50,7 @@ public class MouseDetails {
   }
 
   /**
-   * @return this point is in the map co-ordinates, unscaled
+   * @return this point is in the map co-ordinates, unscaled.
    */
   public Point getMapPoint() {
     return new Point((int) m_x, (int) m_y);

@@ -55,12 +55,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
 public class SwingComponents {
   private static final String PERIOD = ".";
+
+  public static JFrame newJFrame(final String title, final JComponent contents) {
+    final JFrame frame = new JFrame(title);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    frame.setIconImage(GameRunner.getGameIcon(frame));
+    frame.getContentPane().add(contents, BorderLayout.CENTER);
+    frame.pack();
+
+    frame.setLocationRelativeTo(null);
+    return frame;
+  }
 
   public static JTabbedPane newJTabbedPane() {
     return new JTabbedPaneWithFixedWidthTabs();
@@ -99,12 +111,6 @@ public class SwingComponents {
       group.add(radioButton);
     }
     return group;
-  }
-
-  public static JDialog newJDialog(String title) {
-    JDialog dialog = new JDialog(MainFrame.getInstance(), title);
-    dialog.setModal(false);
-    return dialog;
   }
 
   public static class ModalJDialog extends JDialog {
@@ -148,7 +154,7 @@ public class SwingComponents {
   private static final Set<String> visiblePrompts = new HashSet<>();
 
   /**
-   * Creates a JPanel with BorderLayout and adds a west component and an east component
+   * Creates a JPanel with BorderLayout and adds a west component and an east component.
    */
   public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
     final JPanel panel = new JPanel();
@@ -218,17 +224,38 @@ public class SwingComponents {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, msg));
   }
 
-  public static JFrame newJFrameWithCloseAction(final Runnable closeListener) {
-    final JFrame frame = new JFrame();
-    addWindowCloseListener(frame, closeListener);
-    return frame;
-  }
+  /**
+   * Executes the specified action when the specified window is in the process of being closed.
+   *
+   * @param window The window to which the action is attached; must not be {@code null}.
+   * @param action The action to execute; must not be {@code null}.
+   */
+  public static void addWindowClosingListener(final Window window, final Runnable action) {
+    checkNotNull(window);
+    checkNotNull(action);
 
-  public static void addWindowCloseListener(final Window window, final Runnable closeAction) {
     window.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
-        closeAction.run();
+        action.run();
+      }
+    });
+  }
+
+  /**
+   * Executes the specified action when the specified window has been closed.
+   *
+   * @param window The window to which the action is attached; must not be {@code null}.
+   * @param action The action to execute; must not be {@code null}.
+   */
+  public static void addWindowClosedListener(final Window window, final Runnable action) {
+    checkNotNull(window);
+    checkNotNull(action);
+
+    window.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(final WindowEvent e) {
+        action.run();
       }
     });
   }

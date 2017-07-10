@@ -147,7 +147,7 @@ public class ProPurchaseOptionMap {
     return new ArrayList<>(landOptions);
   }
 
-  public List<ProPurchaseOption> getSeaOptions() {
+  private List<ProPurchaseOption> getSeaOptions() {
     final Set<ProPurchaseOption> seaOptions = new HashSet<>();
     seaOptions.addAll(seaDefenseOptions);
     seaOptions.addAll(seaTransportOptions);
@@ -200,7 +200,7 @@ public class ProPurchaseOptionMap {
     return specialOptions;
   }
 
-  private void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name) {
+  private static void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name) {
     final StringBuilder sb = new StringBuilder(name);
     for (final ProPurchaseOption ppo : purchaseOptions) {
       sb.append(ppo.getUnitType().getName());

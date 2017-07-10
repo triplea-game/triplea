@@ -39,11 +39,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   /**
    * Throws an error if format is invalid.
    */
-  protected static int getInt(final String aString) {
+  protected static int getInt(final String value) {
     try {
-      return Integer.parseInt(aString);
+      return Integer.parseInt(value);
     } catch (final NumberFormatException nfe) {
-      throw new IllegalArgumentException("Attachments: " + aString + " is not a valid int value");
+      throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value");
     }
   }
 
@@ -77,8 +77,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   /**
-   * @param property
-   * @return null or the toString() of the field value
+   * @return null or the toString() of the field value.
    */
   public String getRawPropertyString(final String property) {
     final Object obj = PropertyUtil.getPropertyFieldObject(property, this);
@@ -106,8 +105,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   @InternalDoNotExport
-  public void setName(final String aString) {
-    m_name = aString;
+  public void setName(final String name) {
+    m_name = name;
   }
 
   /**

@@ -9,7 +9,7 @@ import java.util.Arrays;
 class ResourceLocationTracker {
 
   /**
-   * master zip is the zipped folder format you get when downloading from a map repo via the 'clone or download' button
+   * master zip is the zipped folder format you get when downloading from a map repo via the 'clone or download' button.
    */
   static final String MASTER_ZIP_MAGIC_PREFIX = "-master/map/";
 
@@ -20,9 +20,9 @@ class ResourceLocationTracker {
   /**
    *
    * @param mapName Used to construct any special resource loading path prefixes, used as needed depending upon which
-   *                resources are in the path
+   *        resources are in the path
    * @param resourcePaths The list of paths used for a map as resources. From this we can determine if the map is being
-   *                      loaded from a zip or a directory, and if zip, if it matches any particular naming.
+   *        loaded from a zip or a directory, and if zip, if it matches any particular naming.
    */
   ResourceLocationTracker(String mapName, URL[] resourcePaths) {
     boolean isUsingMasterZip = Arrays.asList(resourcePaths)
@@ -30,7 +30,7 @@ class ResourceLocationTracker {
 
 
     // map skins will have the full path name as their map name.
-    if(mapName.endsWith("-master.zip")) {
+    if (mapName.endsWith("-master.zip")) {
       mapPrefix = mapName.substring(0, mapName.length() - "-master.zip".length()) + MASTER_ZIP_MAGIC_PREFIX;
     } else {
       mapPrefix = isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
@@ -38,13 +38,15 @@ class ResourceLocationTracker {
   }
 
   /**
-   * Will return an empty string unless a special prefix is needed, in which case  that prefix is constructed
+   * Will return an empty string unless a special prefix is needed, in which case that prefix is constructed
    * based on the map name.
    *
+   * <p>
    * The 'mapPrefix' is the path within a map zip file where we will then find any map contents.
    * For example, if the map prefix is "map", then when we expand the map zip, we would expect
    * "/map" to be the first folder we see, and we woudl expect things like "/map/game" and
    * "/map/polygons.txt" to exist.
+   * </p>
    */
   String getMapPrefix() {
     return mapPrefix;

@@ -27,9 +27,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   private String m_currentStep;
   private String m_currentDelegate;
 
-  /** Creates new DefaultPlayerBridge */
-  public DefaultPlayerBridge(final IGame aGame) {
-    m_game = aGame;
+  /** Creates new DefaultPlayerBridge. */
+  public DefaultPlayerBridge(final IGame game) {
+    m_game = game;
     final GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
       if (stepName == null) {
         throw new IllegalArgumentException("Null step");
@@ -57,7 +57,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   }
 
   /**
-   * Return the game data
+   * Return the game data.
    */
   @Override
   public GameData getGameData() {

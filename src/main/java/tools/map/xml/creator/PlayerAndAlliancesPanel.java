@@ -26,7 +26,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!me.isPresent() || !(me.get() instanceof PlayerAndAlliancesPanel)) {
       me = Optional.of(new PlayerAndAlliancesPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -77,17 +77,17 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
     // <3> Add Main Input Rows
     final String[] alliancesArray = alliances.toArray(new String[alliances.size()]);
-    int yValue = 1;
+    int rowIndex = 1;
     for (final String playerName : MapXmlHelper.getPlayerNames()) {
       final GridBagConstraints gbc_tPlayerName = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
       gbc_tPlayerName.gridx = 0;
-      gridBadConstLabelPlayerName.gridy = yValue;
+      gridBadConstLabelPlayerName.gridy = rowIndex;
       final PlayerAndAlliancesRow newRow = new PlayerAndAlliancesRow(this, getOwnPanel(), playerName,
           MapXmlHelper.getPlayerAllianceMap().get(playerName), alliancesArray,
           MapXmlHelper.getPlayerInitResourcesMap().get(playerName));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tPlayerName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tPlayerName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
@@ -95,7 +95,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     final JButton buttonAddAlliance = new JButton("Add Alliance");
     final JButton buttonRemoveAlliance = new JButton("Remove Alliance");
 
-    buttonAddPlayer.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddPlayer.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddPlayer.addActionListener(SwingAction.of("Add Player", e -> {
       String newPlayerName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new player name:",
           "Player" + (MapXmlHelper.getPlayerNames().size() + 1));
@@ -141,7 +141,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddPlayer);
 
-    buttonAddAlliance.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddAlliance.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddAlliance.addActionListener(SwingAction.of("Add Alliance", e -> {
       String newAllianceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new alliance name:",
           "Alliance" + (alliances.size() + 1));
@@ -170,7 +170,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
     }));
     addButton(buttonAddAlliance);
 
-    buttonRemoveAlliance.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonRemoveAlliance.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonRemoveAlliance.setEnabled(alliances.size() > 1);
     buttonRemoveAlliance.addActionListener(SwingAction.of("Remove Alliance", e -> {
       final String removeAllianceName = (String) JOptionPane.showInputDialog(getOwnPanel(),
@@ -216,7 +216,7 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddPlayer = (GridBagConstraints) gridBadConstLabelPlayerName.clone();
     gridBadConstButtonAddPlayer.gridx = 0;
-    gridBadConstButtonAddPlayer.gridy = yValue;
+    gridBadConstButtonAddPlayer.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddPlayer);
   }
 
@@ -249,8 +249,8 @@ public class PlayerAndAlliancesPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }
 }

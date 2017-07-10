@@ -31,9 +31,9 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    * Anything that overrides this MUST call super.initialize(iPlayerBridge, playerID);
    */
   @Override
-  public void initialize(final IPlayerBridge iPlayerBridge, final PlayerID playerID) {
-    playerBridge = iPlayerBridge;
-    this.playerID = playerID;
+  public void initialize(final IPlayerBridge playerBridge, final PlayerID playerId) {
+    this.playerBridge = playerBridge;
+    this.playerID = playerId;
   }
 
   /**
@@ -98,9 +98,9 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
         // TODO: what is the right amount of time to wait before we give up?
         if (i > 310) {
           System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
-              + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
-              + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: "
-              + getGameData().getGameName());
+              + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
+              + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
+              + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
           // getPlayerBridge().printErrorStatus();
           // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
           break;

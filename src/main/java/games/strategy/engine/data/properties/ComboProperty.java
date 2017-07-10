@@ -9,7 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 /**
- * A String property that uses a list for selecting the value
+ * A String property that uses a list for selecting the value.
  */
 public class ComboProperty<T> extends AEditableProperty {
   private static final long serialVersionUID = -3098612299805630587L;
@@ -19,7 +19,7 @@ public class ComboProperty<T> extends AEditableProperty {
 
   /**
    * @param name
-   *        name of the property
+   *        name of the property.
    * @param defaultValue
    *        default string value
    * @param possibleValues
@@ -31,7 +31,7 @@ public class ComboProperty<T> extends AEditableProperty {
   }
 
   @SuppressWarnings("unchecked")
-  public ComboProperty(final String name, final String description, final T defaultValue,
+  private ComboProperty(final String name, final String description, final T defaultValue,
       final Collection<T> possibleValues, final boolean allowNone) {
     super(name, description);
     if (!allowNone && !possibleValues.contains(defaultValue) && defaultValue == null) {

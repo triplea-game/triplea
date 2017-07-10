@@ -42,7 +42,6 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -50,20 +49,25 @@ import games.strategy.util.Tuple;
 
 /**
  * Base class for AIs.
+ *
  * <p>
  * Control pausing with the AI pause menu option.
  * AIs should note that any data that is stored in the AI instance, will be lost when the game is restarted.
  * We cannot save data with an AI, since the player may choose to restart the game with a different AI,
  * or with a human player.
+ * </p>
+ *
  * <p>
  * If an AI finds itself starting in the middle of a move phase, or the middle of a purchase phase,
  * (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable
  * for the AI to play badly for a turn, but the AI should recover, and play correctly when the next phase
  * of the game starts.
+ * </p>
+ *
  * <p>
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
  * through an IDelegate using a change).
- * <p>
+ * </p>
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
 
@@ -119,11 +123,11 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
-      throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+      throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
+          + "size of default casualty selections");
     }
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
@@ -154,6 +158,12 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
+  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
+      final Territory unitTerritory) {
+    return candidates.iterator().next();
+  }
+
+  @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
     final List<Unit> rVal = new ArrayList<>();
@@ -177,7 +187,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
     return null;
   }
@@ -216,14 +226,14 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       return true;
     }
     // would we normally be allies?
-    final List<String> allies = Arrays.asList(new String[] {Constants.PLAYER_NAME_AMERICANS,
+    final List<String> allies = Arrays.asList(Constants.PLAYER_NAME_AMERICANS,
         Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH, Constants.PLAYER_NAME_CANADIANS,
-        Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS});
+        Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS);
     if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
-    final List<String> axis = Arrays.asList(new String[] {Constants.PLAYER_NAME_GERMANS, Constants.PLAYER_NAME_ITALIANS,
-        Constants.PLAYER_NAME_JAPANESE, Constants.PLAYER_NAME_PUPPET_STATES});
+    final List<String> axis = Arrays.asList(Constants.PLAYER_NAME_GERMANS, Constants.PLAYER_NAME_ITALIANS,
+        Constants.PLAYER_NAME_JAPANESE, Constants.PLAYER_NAME_PUPPET_STATES);
     if (axis.contains(getPlayerID().getName()) && axis.contains(playerSendingProposal.getName())) {
       return true;
     }
@@ -308,9 +318,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final List<Territory> notOwned = Match.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
-        final Match<Unit> ownedFactories =
-            new CompositeMatchAnd<>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+        final boolean nonFactoryUnitsLeft = Match.anyMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
+        final Match<Unit> ownedFactories = Match.allOf(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
@@ -322,7 +331,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             final List<Territory> doesNotHaveFactoryYet =
@@ -331,7 +340,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Match.getAlwaysMatch());
+                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Match.always());
               picked = distanceMap.lowestKey();
             }
           }
@@ -342,7 +351,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(test.get(0), territoryChoices, Match.getAlwaysMatch());
+                  data.getMap().getDistance(test.get(0), territoryChoices, Match.always());
               for (int i = 0; i < maxTerritoriesToPopulate; i++) {
                 final Territory choice = distanceMap.lowestKey();
                 distanceMap.removeKey(choice);
@@ -353,14 +362,14 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             if (capitals.isEmpty()) {
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), territoryChoices, Match.getAlwaysMatch());
+                  data.getMap().getDistance(capitals.get(0), territoryChoices, Match.always());
               if (territoryChoices.contains(capitals.get(0))) {
                 distanceMap.put(capitals.get(0), 0);
               }
@@ -384,14 +393,14 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<>(
+            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), Match.allOf(
                 Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
           }
           if (capitals.isEmpty()) {
             picked = territoryChoices.get(0);
           } else {
             final IntegerMap<Territory> distanceMap =
-                data.getMap().getDistance(capitals.get(0), notOwned, Match.getAlwaysMatch());
+                data.getMap().getDistance(capitals.get(0), notOwned, Match.always());
             picked = distanceMap.lowestKey();
           }
         }
@@ -461,6 +470,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     } else if (name.endsWith("Move")) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       if (name.endsWith("AirborneCombatMove")) {
+        // do nothing
       } else {
         move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
       }
@@ -484,7 +494,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
    *
    * @param purcahseForBid
    *        - is this a bid purchase, or a normal purchase
-   * @param PUsToSpend
+   * @param pusToSpend
    *        - how many PUs we have to spend
    * @param purchaseDelegate
    *        - the purchase delgate to buy things with
@@ -493,7 +503,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
    * @param player
    *        - the player to buy for
    */
-  protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate,
+  protected abstract void purchase(boolean purchaseForBid, int pusToSpend, IPurchaseDelegate purchaseDelegate,
       GameData data, PlayerID player);
 
   /**
@@ -539,6 +549,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
 
   /**
    * No need to override this.
+   *
+   * @param endTurnForumPosterDelegate The delegate to end the turn with.
+   * @param data The game data.
+   * @param player The player whose turn is ending.
    */
   protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
       final PlayerID player) {
@@ -593,26 +607,25 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        int MAX_WAR_ACTIONS_PER_TURN =
-            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
-        if ((MAX_WAR_ACTIONS_PER_TURN > 0)
+        int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        if ((maxWarActionsPerTurn > 0)
             && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
                 / numPlayers < 0.4) {
           if (Math.random() < .9) {
-            MAX_WAR_ACTIONS_PER_TURN = 0;
+            maxWarActionsPerTurn = 0;
           } else {
-            MAX_WAR_ACTIONS_PER_TURN = 1;
+            maxWarActionsPerTurn = 1;
           }
         }
         final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
-        while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0) {
+        while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }
           i++;
-          if (i > MAX_WAR_ACTIONS_PER_TURN) {
+          if (i > maxWarActionsPerTurn) {
             break;
           }
           iPoliticsDelegate.attemptAction(action);
@@ -626,12 +639,12 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        final int MAX_OTHER_ACTIONS_PER_TURN =
+        final int maxOtherActionsPerTurn =
             (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
+        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }
@@ -639,7 +652,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             continue;
           }
           i++;
-          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
+          if (i > maxOtherActionsPerTurn) {
             break;
           }
           iPoliticsDelegate.attemptAction(action);

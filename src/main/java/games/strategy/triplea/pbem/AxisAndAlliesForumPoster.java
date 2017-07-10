@@ -177,7 +177,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               + m_topicId + ".0;num_replies=" + numReplies);
           httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
-          if(!ThreadUtil.sleep(15 * 1000)) {
+          if (!ThreadUtil.sleep(15 * 1000)) {
             return false;
           }
           httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
@@ -243,7 +243,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   }
 
   /**
-   * Create a clone of the poster
+   * Create a clone of the poster.
    *
    * @return a copy
    */
@@ -255,6 +255,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
     clone.setPassword(getPassword());
     clone.setUsername(getUsername());
+    clone.setCredentialsSaved(areCredentialsSaved());
     return clone;
   }
 

@@ -8,7 +8,7 @@ public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
   private String m_value;
 
-  /** Creates new TestAttachment */
+  /** Creates new TestAttachment. */
   public TestAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -27,7 +27,7 @@ public class TestAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void setName(final String aString) {}
+  public void setName(final String name) {}
 
   public void setValue(final String value) {
     m_value = value;

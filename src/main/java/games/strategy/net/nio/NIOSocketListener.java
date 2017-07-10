@@ -6,7 +6,7 @@ import games.strategy.net.INode;
 import games.strategy.net.MessageHeader;
 
 /**
- * Call backs for an NIO Socket
+ * Call backs for an NIO Socket.
  */
 public interface NIOSocketListener {
   /**

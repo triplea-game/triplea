@@ -13,12 +13,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 public class Fire implements IExecutable {
@@ -48,10 +44,10 @@ public class Fire implements IExecutable {
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
 
-  public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
+  Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
       final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits, final String stepName,
       final String text, final MustFightBattle battle, final boolean defending,
-      final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack, final boolean headless,
+      final Map<Unit, Collection<Unit>> dependentUnits, final boolean headless,
       final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     /*
@@ -88,7 +84,7 @@ public class Fire implements IExecutable {
       throw new IllegalStateException("Already rolled");
     }
     final List<Unit> units = new ArrayList<>(m_firingUnits);
-    String annotation;
+    final String annotation;
     if (m_isHeadless) {
       annotation = "";
     } else {
@@ -102,13 +98,13 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Match.countMatches(m_attackableUnits, new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea));
+        Match.countMatches(m_attackableUnits, Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
-      CasualtyDetails message;
+      final CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,
-          new CompositeMatchOr<>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
+          Match.anyOf(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
       final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits,
-          new CompositeMatchAnd<>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
+          Match.allOf(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
@@ -124,9 +120,9 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overlfows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final CompositeMatch<Unit> match = new CompositeMatchAnd<>();
-          match.add(Matches.UnitIsTransportButNotCombatTransport);
-          match.add(Matches.unitIsOwnedBy(player));
+          final Match<Unit> match = Match.allOf(
+              Matches.UnitIsTransportButNotCombatTransport,
+              Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(
@@ -144,15 +140,11 @@ public class Fire implements IExecutable {
             !m_defending, m_battleID, m_isHeadless, extraHits, true);
         m_killed.addAll(message.getKilled());
         m_confirmOwnCasualties = true;
-      }
-      // exact number of combat units
-      else if (hitCount == numPossibleHits) {
+      } else if (hitCount == numPossibleHits) { // exact number of combat units
         m_killed = nonTransports;
         m_damaged = Collections.emptyList();
         m_confirmOwnCasualties = true;
-      }
-      // less than possible number
-      else {
+      } else { // less than possible number
         message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports,
             m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
             m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
@@ -161,19 +153,15 @@ public class Fire implements IExecutable {
         m_damaged = message.getDamaged();
         m_confirmOwnCasualties = message.getAutoCalculated();
       }
-    } else
-    // not isTransportCasualtiesRestricted
-    {
+    } else { // not isTransportCasualtiesRestricted
       // they all die
       if (hitCount >= AbstractBattle.getMaxHits(m_attackableUnits)) {
         m_killed = m_attackableUnits;
         m_damaged = Collections.emptyList();
         // everything died, so we need to confirm
         m_confirmOwnCasualties = true;
-      }
-      // Choose casualties
-      else {
-        CasualtyDetails message;
+      } else { // Choose casualties
+        final CasualtyDetails message;
         message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits,
             m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
             m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
@@ -195,12 +183,8 @@ public class Fire implements IExecutable {
       try {
         AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",
             m_hitPlayer);
-      } catch (final ConnectionLostException cle) {
-        // somone else will deal with this
-        // System.out.println(cle.getMessage());
-        // cle.printStackTrace(System.out);
       } catch (final Exception e) {
-        // ignore
+        // someone else will deal with this, ignore
       }
     };
     // execute in a seperate thread to allow either player to click continue first.
@@ -220,7 +204,7 @@ public class Fire implements IExecutable {
   }
 
   /**
-   * We must execute in atomic steps, push these steps onto the stack, and let them execute
+   * We must execute in atomic steps, push these steps onto the stack, and let them execute.
    */
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
@@ -261,7 +245,7 @@ public class Fire implements IExecutable {
     stack.push(rollDice);
   }
 
-  private boolean isTransportCasualtiesRestricted(final GameData data) {
+  private static boolean isTransportCasualtiesRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
   }
 }

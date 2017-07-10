@@ -8,7 +8,7 @@ public class ResourceCollection extends GameDataComponent {
   private final IntegerMap<Resource> m_resources = new IntegerMap<>();
 
   /**
-   * Creates new ResourceCollection
+   * Creates new ResourceCollection.
    *
    * @param data
    *        game data
@@ -41,10 +41,6 @@ public class ResourceCollection extends GameDataComponent {
     change(resource, quantity);
   }
 
-  public void add(final ResourceCollection otherResources) {
-    m_resources.add(otherResources.m_resources);
-  }
-
   /**
    * You cannot remove more than the collection contains.
    *
@@ -75,9 +71,6 @@ public class ResourceCollection extends GameDataComponent {
 
   /**
    * Overwrites any current resource with the same name.
-   *
-   * @param resource
-   * @param quantity
    */
   public void putResource(final Resource resource, final int quantity) {
     if (quantity < 0) {
@@ -86,12 +79,12 @@ public class ResourceCollection extends GameDataComponent {
     m_resources.put(resource, quantity);
   }
 
-  public int getQuantity(final Resource resource) {
-    return m_resources.getInt(resource);
-  }
-
   public IntegerMap<Resource> getResourcesCopy() {
     return new IntegerMap<>(m_resources);
+  }
+
+  public int getQuantity(final Resource resource) {
+    return m_resources.getInt(resource);
   }
 
   public int getQuantity(final String name) {
@@ -112,8 +105,7 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * @param spent
-   * @return new ResourceCollection containing the difference between both collections
+   * @return new ResourceCollection containing the difference between both collections.
    */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
     final ResourceCollection returnCollection = new ResourceCollection(getData(), m_resources);
@@ -125,16 +117,14 @@ public class ResourceCollection extends GameDataComponent {
     subtract(resourceCollection.m_resources);
   }
 
-  public void subtract(final IntegerMap<Resource> cost) {
+  private void subtract(final IntegerMap<Resource> cost) {
     for (final Resource resource : cost.keySet()) {
       removeResource(resource, cost.getInt(resource));
     }
   }
 
-  public void subtract(final IntegerMap<Resource> cost, final int quantity) {
-    for (int i = 0; i < quantity; i++) {
-      subtract(cost);
-    }
+  public void add(final ResourceCollection otherResources) {
+    m_resources.add(otherResources.m_resources);
   }
 
   public void add(final IntegerMap<Resource> resources) {
@@ -151,8 +141,6 @@ public class ResourceCollection extends GameDataComponent {
 
   /**
    * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
-   *
-   * @param discount
    */
   public void discount(final double discount) {
     multiplyAllValuesBy(discount, 3);
@@ -163,7 +151,6 @@ public class ResourceCollection extends GameDataComponent {
    * divide by 2, use
    * 0.5 as the double)
    *
-   * @param multiplyBy
    * @param roundType
    *        (1 = floor, 2 = round, 3 = ceil)
    */
@@ -172,7 +159,6 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * @param cost
    * @return will return 10000 if it can fit more times than 10000. will return Integer MaxValue if cost is zero.
    */
   public int fitsHowOften(final IntegerMap<Resource> cost) {
@@ -198,7 +184,8 @@ public class ResourceCollection extends GameDataComponent {
     return toString(m_resources, getData(), ", ");
   }
 
-  public static String toString(final IntegerMap<Resource> resources, final GameData data, final String lineSeparator) {
+  private static String toString(final IntegerMap<Resource> resources, final GameData data,
+      final String lineSeparator) {
     if (resources == null || resources.isEmpty() || resources.allValuesEqual(0)) {
       return "nothing";
     }

@@ -22,8 +22,8 @@ import games.strategy.triplea.Constants;
 
 public class EconomyPanel extends AbstractStatPanel {
   private static final long serialVersionUID = -7713792841831042952L;
-  private IStat[] m_statsResource;
-  private ResourceTableModel m_resourceModel;
+  private IStat[] statsResource;
+  private ResourceTableModel resourceModel;
 
   public EconomyPanel(final GameData data) {
     super(data);
@@ -33,8 +33,8 @@ public class EconomyPanel extends AbstractStatPanel {
   @Override
   protected void initLayout() {
     setLayout(new GridLayout(1, 1));
-    m_resourceModel = new ResourceTableModel();
-    final JTable table = new JTable(m_resourceModel);
+    resourceModel = new ResourceTableModel();
+    final JTable table = new JTable(resourceModel);
     table.getTableHeader().setReorderingAllowed(false);
     final TableColumn column = table.getColumnModel().getColumn(0);
     column.setPreferredWidth(175);
@@ -44,69 +44,69 @@ public class EconomyPanel extends AbstractStatPanel {
 
   class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 5197895788633898324L;
-    private boolean m_isDirty = true;
-    private String[][] m_collectedData;
+    private boolean isDirty = true;
+    private String[][] collectedData;
 
     public ResourceTableModel() {
       setResourceCollums();
-      m_data.addDataChangeListener(this);
-      m_isDirty = true;
+      gameData.addDataChangeListener(this);
+      isDirty = true;
     }
 
     private void setResourceCollums() {
       final List<IStat> statList = new ArrayList<>();
-      for (final Resource resource : m_data.getResourceList().getResources()) {
+      for (final Resource resource : gameData.getResourceList().getResources()) {
         if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.VPS)) {
           continue;
         }
         statList.add(new ResourceStat(resource));
       }
-      m_statsResource = statList.toArray(new IStat[statList.size()]);
+      statsResource = statList.toArray(new IStat[statList.size()]);
     }
 
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
-      if (m_isDirty) {
+      if (isDirty) {
         loadData();
-        m_isDirty = false;
+        isDirty = false;
       }
-      return m_collectedData[row][col];
+      return collectedData[row][col];
     }
 
     private synchronized void loadData() {
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
-        m_collectedData = new String[players.size() + alliances.size()][m_statsResource.length + 1];
+        collectedData = new String[players.size() + alliances.size()][statsResource.length + 1];
         int row = 0;
         for (final PlayerID player : players) {
-          m_collectedData[row][0] = player.getName();
-          for (int i = 0; i < m_statsResource.length; i++) {
-            m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
+          collectedData[row][0] = player.getName();
+          for (int i = 0; i < statsResource.length; i++) {
+            collectedData[row][i + 1] =
+                statsResource[i].getFormatter().format(statsResource[i].getValue(player, gameData));
           }
           row++;
         }
         final Iterator<String> allianceIterator = alliances.iterator();
         while (allianceIterator.hasNext()) {
           final String alliance = allianceIterator.next();
-          m_collectedData[row][0] = alliance;
-          for (int i = 0; i < m_statsResource.length; i++) {
-            m_collectedData[row][i + 1] =
-                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
+          collectedData[row][0] = alliance;
+          for (int i = 0; i < statsResource.length; i++) {
+            collectedData[row][i + 1] =
+                statsResource[i].getFormatter().format(statsResource[i].getValue(alliance, gameData));
           }
           row++;
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       synchronized (this) {
-        m_isDirty = true;
+        isDirty = true;
       }
       SwingUtilities.invokeLater(() -> repaint());
     }
@@ -116,34 +116,34 @@ public class EconomyPanel extends AbstractStatPanel {
       if (col == 0) {
         return "Player";
       }
-      return m_statsResource[col - 1].getName();
+      return statsResource[col - 1].getName();
     }
 
     @Override
     public int getColumnCount() {
-      return m_statsResource.length + 1;
+      return statsResource.length + 1;
     }
 
     @Override
     public synchronized int getRowCount() {
-      if (!m_isDirty) {
-        return m_collectedData.length;
+      if (!isDirty) {
+        return collectedData.length;
       } else {
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
-          return m_data.getPlayerList().size() + getAlliances().size();
+          return gameData.getPlayerList().size() + getAlliances().size();
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
       }
     }
 
     public synchronized void setGameData(final GameData data) {
       synchronized (this) {
-        m_data.removeDataChangeListener(this);
-        m_data = data;
-        m_data.addDataChangeListener(this);
-        m_isDirty = true;
+        gameData.removeDataChangeListener(this);
+        gameData = data;
+        gameData.addDataChangeListener(this);
+        isDirty = true;
       }
       repaint();
     }
@@ -151,8 +151,8 @@ public class EconomyPanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_data = data;
-    m_resourceModel.setGameData(data);
-    m_resourceModel.gameDataChanged(null);
+    gameData = data;
+    resourceModel.setGameData(data);
+    resourceModel.gameDataChanged(null);
   }
 }

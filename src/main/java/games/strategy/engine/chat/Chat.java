@@ -22,9 +22,10 @@ import games.strategy.util.Tuple;
 
 /**
  * chat logic.
+ *
  * <p>
  * A chat can be bound to multiple chat panels.
- * <p>
+ * </p>
  */
 public class Chat {
   private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
@@ -74,7 +75,7 @@ public class Chat {
     return rVal;
   }
 
-  public String getNotesForNode(final INode node) {
+  String getNotesForNode(final INode node) {
     final LinkedHashSet<String> notes = notesMap.get(node);
     if (notes == null) {
       return null;
@@ -87,7 +88,7 @@ public class Chat {
     return sb.toString();
   }
 
-  /** Creates a new instance of Chat */
+  /** Creates a new instance of Chat. */
   public Chat(final String chatName, final Messengers messengers, final CHAT_SOUND_PROFILE chatSoundProfile) {
     this.chatSoundProfile = chatSoundProfile;
     this.messengers = messengers;
@@ -157,7 +158,7 @@ public class Chat {
   }
 
   /**
-   * Call only when mutex for node is locked!
+   * Call only when mutex for node is locked.
    *
    * @param chatters
    *        map from node to tag
@@ -183,7 +184,7 @@ public class Chat {
     }
   }
 
-  public void sendSlap(final String playerName) {
+  void sendSlap(final String playerName) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
         .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
@@ -213,7 +214,7 @@ public class Chat {
     }
   }
 
-  public void setIgnored(final INode node, final boolean isIgnored) {
+  void setIgnored(final INode node, final boolean isIgnored) {
     if (isIgnored) {
       ignoreList.add(node.getName());
     } else {

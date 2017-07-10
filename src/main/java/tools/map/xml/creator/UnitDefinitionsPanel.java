@@ -25,7 +25,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof UnitDefinitionsPanel)) {
       me = Optional.of(new UnitDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -74,23 +74,23 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelBuyQuantity, gridBadConstLabelBuyQuantity);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
     for (final Entry<String, List<Integer>> unitDefinition : MapXmlHelper.getUnitDefinitionsMap().entrySet()) {
       final GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gridBadConstLabelUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = rowIndex;
       final List<Integer> defintionValues = unitDefinition.getValue();
       final UnitDefinitionsRow newRow = new UnitDefinitionsRow(this, getOwnPanel(), unitDefinition.getKey(),
           defintionValues.get(0), defintionValues.get(1));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tUnitName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tUnitName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
     final JButton buttonAddUnit = new JButton("Add Unit");
 
-    buttonAddUnit.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       String newUnitName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new unit name:",
           "Unit" + (MapXmlHelper.getUnitDefinitionsMap().size() + 1));
@@ -121,7 +121,7 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
@@ -136,8 +136,8 @@ public class UnitDefinitionsPanel extends DynamicRowsPanel {
   protected void initializeSpecifics() {}
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }
 }

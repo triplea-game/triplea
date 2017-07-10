@@ -19,11 +19,11 @@ public interface ISound extends IChannelSubscribor {
    *
    * @param clipName
    *        The name of the sound clip to play, found in SoundPath.java
-   * @param playerID
+   * @param playerId
    *        The player who's sound we want to play (ie: russians infantry might make different sounds from german
    *        infantry, etc). Can be null.
    */
-  void playSoundForAll(final String clipName, final PlayerID playerID);
+  void playSoundForAll(final String clipName, final PlayerID playerId);
 
 
   /**

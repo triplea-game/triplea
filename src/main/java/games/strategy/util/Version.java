@@ -1,7 +1,6 @@
 package games.strategy.util;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**
@@ -12,12 +11,12 @@ import java.util.StringTokenizer;
  * equal
  */
 public class Version implements Serializable, Comparable<Object> {
-  // maintain compatability with old versions
   static final long serialVersionUID = -4770210855326775333L;
   private final int m_major;
   private final int m_minor;
   private final int m_point;
   private final int m_micro;
+  private final String exactVersion;
 
   public Version(final int major, final int minor) {
     this(major, minor, 0);
@@ -32,6 +31,7 @@ public class Version implements Serializable, Comparable<Object> {
     this.m_minor = minor;
     this.m_point = point;
     this.m_micro = micro;
+    exactVersion = toString();
   }
 
   /**
@@ -39,6 +39,7 @@ public class Version implements Serializable, Comparable<Object> {
    * xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
+    exactVersion = version;
     final StringTokenizer tokens = new StringTokenizer(version, ".", false);
     if (tokens.countTokens() < 1) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -65,6 +66,20 @@ public class Version implements Serializable, Comparable<Object> {
     }
   }
 
+  /**
+   * Returns the exact and full version number.
+   * For example, if we specify:
+   * <code>
+   * new Version(1.2.3.4.5).getMicro == 4; // true
+   * new Version(1.2.3.4.5).toString().equals("1.2.3.4"); // true
+   * new Version(1.2.3.4.5).getExactVersion.equals("1.2.3.4.5"); // true
+   * </code>
+   */
+  public String getExactVersion() {
+    // in case of deserialization, exactVersion may be null, in which case toString() it.
+    return exactVersion != null ? exactVersion : toString();
+  }
+
   @Override
   public boolean equals(final Object o) {
     return compareTo(o) == 0;
@@ -88,7 +103,7 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(other, false);
   }
 
-  public int compareTo(final Object o, final boolean ignoreMicro) {
+  private int compareTo(final Object o, final boolean ignoreMicro) {
     if (o == null) {
       return -1;
     }
@@ -99,7 +114,7 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(other, ignoreMicro);
   }
 
-  public int compareTo(final Version other, final boolean ignoreMicro) {
+  private int compareTo(final Version other, final boolean ignoreMicro) {
     if (other == null) {
       return -1;
     }
@@ -137,25 +152,6 @@ public class Version implements Serializable, Comparable<Object> {
 
   public boolean isLessThan(final Version other) {
     return compareTo(other, false) > 0;
-  }
-
-  public static Comparator<Version> getHighestToLowestComparator() {
-    return (v1, v2) -> {
-      if (v1 == null && v2 == null) {
-        return 0;
-      } else if (v1 == null) {
-        return 1;
-      } else if (v2 == null) {
-        return -1;
-      }
-      if (v1.equals(v2, false)) {
-        return 0;
-      } else if (v1.isGreaterThan(v2, false)) {
-        return -1;
-      } else {
-        return 1;
-      }
-    };
   }
 
   public String toStringFull(final String separator) {

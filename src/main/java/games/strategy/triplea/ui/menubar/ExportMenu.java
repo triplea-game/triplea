@@ -4,11 +4,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -25,8 +24,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -51,13 +52,14 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
-public class ExportMenu {
+class ExportMenu {
 
   private final TripleAFrame frame;
   private final GameData gameData;
   private final IUIContext iuiContext;
+  private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
-  public ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     gameData = frame.getGame().getData();
     iuiContext = frame.getUIContext();
@@ -65,7 +67,7 @@ public class ExportMenu {
     final JMenu menuGame = new JMenu("Export");
     menuGame.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menuGame);
-    addExportXML(menuGame);
+    addExportXml(menuGame);
     addExportStats(menuGame);
     addExportStatsFull(menuGame);
     addExportSetupCharts(menuGame);
@@ -74,16 +76,15 @@ public class ExportMenu {
   }
 
   // TODO: create a second menu option for parsing current attachments
-  private void addExportXML(final JMenu parentMenu) {
-    final Action exportXML = SwingAction.of("Export game.xml File (Beta)", e -> exportXMLFile());
-    parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
+  private void addExportXml(final JMenu parentMenu) {
+    final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXmlFile());
+    parentMenu.add(exportXml).setMnemonic(KeyEvent.VK_X);
   }
 
-  private void exportXMLFile() {
+  private void exportXmlFile() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int round = 0;
     try {
       gameData.acquireReadLock();
@@ -91,7 +92,8 @@ public class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_" + round;
+    String defaultFileName =
+        "xml_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -101,13 +103,13 @@ public class ExportMenu {
     final String xmlFile;
     try {
       gameData.acquireReadLock();
-      final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(gameData);
+      final GameDataExporter exporter = new GameDataExporter(gameData);
       xmlFile = exporter.getXML();
     } finally {
       gameData.releaseReadLock();
     }
     try {
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile());) {
+      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(xmlFile);
       }
     } catch (final IOException e1) {
@@ -146,7 +148,6 @@ public class ExportMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
     int currentRound = 0;
     try {
       gameData.acquireReadLock();
@@ -154,8 +155,9 @@ public class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + gameData.getGameName() + "_round_"
-        + currentRound + (showPhaseStats ? "_full" : "_short");
+    String defaultFileName =
+        "stats_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_"
+            + currentRound + (showPhaseStats ? "_full" : "_short");
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -163,7 +165,7 @@ public class ExportMenu {
       return;
     }
     final StringBuilder text = new StringBuilder(1000);
-    GameData clone;
+    final GameData clone;
     try {
       gameData.acquireReadLock();
       clone = GameDataUtils.cloneGameData(gameData);
@@ -182,7 +184,7 @@ public class ExportMenu {
       text.append(defaultFileName + ",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
-      text.append(games.strategy.engine.ClientContext.engineVersion() + ",");
+      text.append(ClientContext.engineVersion() + ",");
       text.append("\n");
       text.append("Game Name: ,");
       text.append(gameData.getGameName() + ",");
@@ -209,10 +211,10 @@ public class ExportMenu {
       final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
       while (playerOrderIterator.hasNext()) {
-        final PlayerID currentPlayerID = playerOrderIterator.next();
-        text.append(currentPlayerID.getName()).append(",");
+        final PlayerID currentPlayerId = playerOrderIterator.next();
+        text.append(currentPlayerId.getName()).append(",");
         final Iterator<String> allianceName =
-            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
+            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId).iterator();
         while (allianceName.hasNext()) {
           text.append(allianceName.next()).append(",");
         }
@@ -307,13 +309,12 @@ public class ExportMenu {
       text.append("\n");
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       @SuppressWarnings("unchecked")
-      final Enumeration<HistoryNode> nodes =
-          ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+      final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       PlayerID currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
-        final HistoryNode element = nodes.nextElement();
+        final HistoryNode element = (HistoryNode) nodes.nextElement();
         if (element instanceof Round) {
           round++;
         }

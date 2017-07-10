@@ -85,13 +85,13 @@ import games.strategy.util.UrlStreams;
  */
 public class ObjectivePanel extends AbstractStatPanel {
   private static final long serialVersionUID = 3759819236905645520L;
-  private Map<String, Map<ICondition, String>> m_statsObjective;
-  private ObjectiveTableModel m_objectiveModel;
-  private IDelegateBridge m_dummyDelegate;
+  private Map<String, Map<ICondition, String>> statsObjective;
+  private ObjectiveTableModel objectiveModel;
+  private IDelegateBridge dummyDelegate;
 
-  public ObjectivePanel(final GameData data) {
+  ObjectivePanel(final GameData data) {
     super(data);
-    m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
+    dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
     initLayout();
   }
 
@@ -101,18 +101,18 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 
   public boolean isEmpty() {
-    return m_statsObjective.isEmpty();
+    return statsObjective.isEmpty();
   }
 
   public void removeDataChangeListener() {
-    m_objectiveModel.removeDataChangeListener();
+    objectiveModel.removeDataChangeListener();
   }
 
   @Override
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    m_objectiveModel = new ObjectiveTableModel();
-    final JTable table = new JTable(m_objectiveModel);
+    objectiveModel = new ObjectiveTableModel();
+    final JTable table = new JTable(objectiveModel);
     table.getTableHeader().setReorderingAllowed(false);
     final TableColumn column0 = table.getColumnModel().getColumn(0);
     column0.setPreferredWidth(34);
@@ -126,7 +126,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
-      m_objectiveModel.loadData();
+      objectiveModel.loadData();
       SwingUtilities.invokeLater(() -> table.repaint());
     }));
     add(Box.createVerticalStrut(6));
@@ -145,20 +145,20 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public ObjectiveTableModel() {
       setObjectiveStats();
-      m_data.addDataChangeListener(this);
+      gameData.addDataChangeListener(this);
       m_isDirty = true;
     }
 
     public void removeDataChangeListener() {
-      m_data.removeDataChangeListener(this);
+      gameData.removeDataChangeListener(this);
     }
 
     private void setObjectiveStats() {
-      m_statsObjective = new LinkedHashMap<>();
+      statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
-      final Collection<PlayerID> allPlayers = m_data.getPlayerList().getPlayers();
+      final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
-          IllegalCharacterRemover.replaceIllegalCharacter(m_data.getGameName(), '_').replaceAll(" ", "_").concat(".");
+          IllegalCharacterRemover.replaceIllegalCharacter(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
@@ -191,7 +191,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
         m_sections.put(key, sectionsUnsorted.get(key));
-        m_statsObjective.put(key, new LinkedHashMap<>());
+        statsObjective.put(key, new LinkedHashMap<>());
         statsObjectiveUnsorted.put(key, new HashMap<>());
       }
       // now do the stuff in the sections
@@ -210,7 +210,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final PlayerID player = m_data.getPlayerList().getPlayerID(key[0]);
+        final PlayerID player = gameData.getPlayerList().getPlayerID(key[0]);
         if (player == null) {
           // could be an old map, or an old save, so we don't want to stop the game from running.
           System.err.println("objective.properties player does not exist: " + key[0]);
@@ -269,7 +269,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           }
         }
       }
-      for (final Entry<String, Map<ICondition, String>> entry : m_statsObjective.entrySet()) {
+      for (final Entry<String, Map<ICondition, String>> entry : statsObjective.entrySet()) {
         final Map<ICondition, String> mapUnsorted = statsObjectiveUnsorted.get(entry.getKey());
         final Map<ICondition, String> mapSorted = entry.getValue();
         for (final String conditionString : m_sections.get(entry.getKey())) {
@@ -298,12 +298,12 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
         m_collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
         int row = 0;
-        for (final Entry<String, Map<ICondition, String>> mapEntry : m_statsObjective.entrySet()) {
+        for (final Entry<String, Map<ICondition, String>> mapEntry : statsObjective.entrySet()) {
           m_collectedData[row][1] =
               "<html><span style=\"font-size:140%\"><b><em>" + mapEntry.getKey() + "</em></b></span></html>";
           for (final Entry<ICondition, String> attachmentEntry : mapEntry.getValue().entrySet()) {
@@ -316,7 +316,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           row++;
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
     }
 
@@ -361,16 +361,16 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public HashMap<ICondition, Boolean> getTestedConditions() {
       final HashSet<ICondition> myConditions = new HashSet<>();
-      for (final Map<ICondition, String> map : m_statsObjective.values()) {
+      for (final Map<ICondition, String> map : statsObjective.values()) {
         myConditions.addAll(map.keySet());
       }
       final HashSet<ICondition> allConditionsNeeded =
           AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
-      return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
+      return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, dummyDelegate);
     }
 
     @Override
-    public void gameDataChanged(final Change aChange) {
+    public void gameDataChanged(final Change change) {
       synchronized (this) {
         m_isDirty = true;
       }
@@ -396,18 +396,18 @@ public class ObjectivePanel extends AbstractStatPanel {
       if (!m_isDirty) {
         return m_collectedData.length;
       } else {
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
           return getRowTotal();
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
       }
     }
 
     private int getRowTotal() {
       int rowsTotal = m_sections.size() * 2; // we include a space between sections as well
-      for (final Map<ICondition, String> map : m_statsObjective.values()) {
+      for (final Map<ICondition, String> map : statsObjective.values()) {
         rowsTotal += map.size();
       }
       return rowsTotal;
@@ -415,10 +415,10 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public synchronized void setGameData(final GameData data) {
       synchronized (this) {
-        m_data.removeDataChangeListener(this);
-        m_data = data;
+        gameData.removeDataChangeListener(this);
+        gameData = data;
         setObjectiveStats();
-        m_data.addDataChangeListener(this);
+        gameData.addDataChangeListener(this);
         m_isDirty = true;
       }
       repaint();
@@ -427,13 +427,152 @@ public class ObjectivePanel extends AbstractStatPanel {
 
   @Override
   public void setGameData(final GameData data) {
-    m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
-    m_data = data;
-    m_objectiveModel.setGameData(data);
-    m_objectiveModel.gameDataChanged(null);
+    dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
+    gameData = data;
+    objectiveModel.setGameData(data);
+    objectiveModel.gameDataChanged(null);
+  }
+
+  private static final class ColorTableCellRenderer extends DefaultTableCellRenderer {
+    private static final long serialVersionUID = 4197520597103598219L;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
+      adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      final JLabel renderer =
+          (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      renderer.setHorizontalAlignment(SwingConstants.CENTER);
+      if (value == null) {
+        renderer.setBorder(BorderFactory.createEmptyBorder());
+      } else if (value.toString().contains("T")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+      } else if (value.toString().contains("U")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
+      } else if (value.toString().contains("u")) {
+        renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
+      } else {
+        renderer.setBorder(BorderFactory.createEmptyBorder());
+      }
+      return renderer;
+    }
+  }
+
+  // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
+  private static final class EditorPaneCellEditor extends DefaultCellEditor {
+    private static final long serialVersionUID = 509377442956621991L;
+
+    EditorPaneCellEditor() {
+      super(new JTextField());
+      final JEditorPane textArea = new JEditorPane();
+      // textArea.setWrapStyleWord(true);
+      // textArea.setLineWrap(true);
+      textArea.setEditable(false);
+      textArea.setContentType("text/html");
+      final JScrollPane scrollPane = new JScrollPane(textArea);
+      scrollPane.setBorder(null);
+      editorComponent = scrollPane;
+      delegate = new DefaultCellEditor.EditorDelegate() {
+        private static final long serialVersionUID = 5746645959173385516L;
+
+        @Override
+        public void setValue(final Object value) {
+          textArea.setText((value != null) ? value.toString() : "");
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+          return textArea.getText();
+        }
+      };
+    }
+  }
+
+  // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
+  private static final class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
+    private static final long serialVersionUID = -2835145877164663862L;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+    private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
+
+    EditorPaneTableCellRenderer() {
+      // setLineWrap(true);
+      // setWrapStyleWord(true);
+      setEditable(false);
+      setContentType("text/html");
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
+      // set the colors, etc. using the standard for that platform
+      adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+      setForeground(adaptee.getForeground());
+      setBackground(adaptee.getBackground());
+      setBorder(adaptee.getBorder());
+      setFont(adaptee.getFont());
+      setText(adaptee.getText());
+      // This line was very important to get it working with JDK1.4
+      final TableColumnModel columnModel = table.getColumnModel();
+      setSize(columnModel.getColumn(column).getWidth(), 100000);
+      int heightWanted = (int) getPreferredSize().getHeight();
+      addSize(table, row, column, heightWanted);
+      heightWanted = findTotalMaximumRowSize(table, row);
+      if (heightWanted != table.getRowHeight(row)) {
+        table.setRowHeight(row, heightWanted);
+      }
+      return this;
+    }
+
+    private void addSize(final JTable table, final int row, final int column, final int height) {
+      Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
+      if (rows == null) {
+        cellSizes.put(table, rows = new HashMap<>());
+      }
+      Map<Integer, Integer> rowheights = rows.get(row);
+      if (rowheights == null) {
+        rows.put(row, rowheights = new HashMap<>());
+      }
+      rowheights.put(column, height);
+    }
+
+    /**
+     * Look through all columns and get the renderer. If it is
+     * also a TextAreaRenderer, we look at the maximum height in
+     * its hash table for this row.
+     */
+    private static int findTotalMaximumRowSize(final JTable table, final int row) {
+      int maximumHeight = 0;
+      final Enumeration<?> columns = table.getColumnModel().getColumns();
+      while (columns.hasMoreElements()) {
+        final TableColumn tc = (TableColumn) columns.nextElement();
+        final TableCellRenderer cellRenderer = tc.getCellRenderer();
+        if (cellRenderer instanceof EditorPaneTableCellRenderer) {
+          final EditorPaneTableCellRenderer tar = (EditorPaneTableCellRenderer) cellRenderer;
+          maximumHeight = Math.max(maximumHeight, tar.findMaximumRowSize(table, row));
+        }
+      }
+      return maximumHeight;
+    }
+
+    private int findMaximumRowSize(final JTable table, final int row) {
+      final Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
+      if (rows == null) {
+        return 0;
+      }
+      final Map<Integer, Integer> rowheights = rows.get(row);
+      if (rowheights == null) {
+        return 0;
+      }
+      int maximumHeight = 0;
+      for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
+        final int cellHeight = entry.getValue();
+        maximumHeight = Math.max(maximumHeight, cellHeight);
+      }
+      return maximumHeight;
+    }
   }
 }
-
 
 /** TODO: copy paste overlap with NotifcationMessages.java */
 class ObjectiveProperties {
@@ -461,8 +600,8 @@ class ObjectiveProperties {
   }
 
   public static ObjectiveProperties getInstance() {
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) { // cache properties for 1
-                                                                                         // second
+    // cache properties for 1 second
+    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) {
       s_op = new ObjectiveProperties();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }
@@ -565,7 +704,7 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
   public void enterDelegateExecution() {}
 
   @Override
-  public void addChange(final Change aChange) {}
+  public void addChange(final Change change) {}
 
   @Override
   public void stopGameSequence() {}
@@ -577,7 +716,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void addChildToEvent(final String text, final Object renderingData) {}
 
   @Override
-  public void gameDataChanged(final Change aChange) {}
+  public void gameDataChanged(final Change change) {}
 
   @Override
   public void shutDown() {}
@@ -586,11 +725,11 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void startHistoryEvent(final String event) {}
 
   @Override
-  public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-      final String displayName, final boolean loadedFromSavedGame) {}
+  public void startHistoryEvent(final String event, final Object renderingData) {}
 
   @Override
-  public void startHistoryEvent(final String event, final Object renderingData) {}
+  public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+      final String displayName, final boolean loadedFromSavedGame) {}
 }
 
 
@@ -612,7 +751,7 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purcahseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     throw new UnsupportedOperationException();
   }
@@ -634,7 +773,7 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
       final Collection<Territory> possibleTerritories, final String message) {
     throw new UnsupportedOperationException();
   }
@@ -656,7 +795,7 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     throw new UnsupportedOperationException();
   }
@@ -678,147 +817,4 @@ class ObjectivePanelDummyPlayer extends AbstractAI {
     throw new UnsupportedOperationException();
   }
 
-}
-
-
-class ColorTableCellRenderer extends DefaultTableCellRenderer {
-  private static final long serialVersionUID = 4197520597103598219L;
-  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-
-  @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-      final boolean hasFocus, final int row, final int column) {
-    adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    final JLabel renderer =
-        (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    renderer.setHorizontalAlignment(SwingConstants.CENTER);
-    if (value == null) {
-      renderer.setBorder(BorderFactory.createEmptyBorder());
-    } else if (value.toString().contains("T")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
-    } else if (value.toString().contains("U")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
-    } else if (value.toString().contains("u")) {
-      renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
-    } else {
-      renderer.setBorder(BorderFactory.createEmptyBorder());
-    }
-    return renderer;
-  }
-}
-
-
-// author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-class EditorPaneCellEditor extends DefaultCellEditor {
-  private static final long serialVersionUID = 509377442956621991L;
-
-  public EditorPaneCellEditor() {
-    super(new JTextField());
-    final JEditorPane textArea = new JEditorPane();
-    // textArea.setWrapStyleWord(true);
-    // textArea.setLineWrap(true);
-    textArea.setEditable(false);
-    textArea.setContentType("text/html");
-    final JScrollPane scrollPane = new JScrollPane(textArea);
-    scrollPane.setBorder(null);
-    editorComponent = scrollPane;
-    delegate = new DefaultCellEditor.EditorDelegate() {
-      private static final long serialVersionUID = 5746645959173385516L;
-
-      @Override
-      public void setValue(final Object value) {
-        textArea.setText((value != null) ? value.toString() : "");
-      }
-
-      @Override
-      public Object getCellEditorValue() {
-        return textArea.getText();
-      }
-    };
-  }
-}
-
-
-// author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
-  private static final long serialVersionUID = -2835145877164663862L;
-  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-  private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
-
-  public EditorPaneTableCellRenderer() {
-    // setLineWrap(true);
-    // setWrapStyleWord(true);
-    setEditable(false);
-    setContentType("text/html");
-  }
-
-  @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected,
-      final boolean hasFocus, final int row, final int column) {
-    // set the colors, etc. using the standard for that platform
-    adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
-    setForeground(adaptee.getForeground());
-    setBackground(adaptee.getBackground());
-    setBorder(adaptee.getBorder());
-    setFont(adaptee.getFont());
-    setText(adaptee.getText());
-    // This line was very important to get it working with JDK1.4
-    final TableColumnModel columnModel = table.getColumnModel();
-    setSize(columnModel.getColumn(column).getWidth(), 100000);
-    int height_wanted = (int) getPreferredSize().getHeight();
-    addSize(table, row, column, height_wanted);
-    height_wanted = findTotalMaximumRowSize(table, row);
-    if (height_wanted != table.getRowHeight(row)) {
-      table.setRowHeight(row, height_wanted);
-    }
-    return this;
-  }
-
-  private void addSize(final JTable table, final int row, final int column, final int height) {
-    Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
-    if (rows == null) {
-      cellSizes.put(table, rows = new HashMap<>());
-    }
-    Map<Integer, Integer> rowheights = rows.get(row);
-    if (rowheights == null) {
-      rows.put(row, rowheights = new HashMap<>());
-    }
-    rowheights.put(column, height);
-  }
-
-  /**
-   * Look through all columns and get the renderer. If it is
-   * also a TextAreaRenderer, we look at the maximum height in
-   * its hash table for this row.
-   */
-  private static int findTotalMaximumRowSize(final JTable table, final int row) {
-    int maximum_height = 0;
-    final Enumeration<?> columns = table.getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn tc = (TableColumn) columns.nextElement();
-      final TableCellRenderer cellRenderer = tc.getCellRenderer();
-      if (cellRenderer instanceof EditorPaneTableCellRenderer) {
-        final EditorPaneTableCellRenderer tar = (EditorPaneTableCellRenderer) cellRenderer;
-        maximum_height = Math.max(maximum_height, tar.findMaximumRowSize(table, row));
-      }
-    }
-    return maximum_height;
-  }
-
-  private int findMaximumRowSize(final JTable table, final int row) {
-    final Map<Integer, Map<Integer, Integer>> rows = cellSizes.get(table);
-    if (rows == null) {
-      return 0;
-    }
-    final Map<Integer, Integer> rowheights = rows.get(row);
-    if (rowheights == null) {
-      return 0;
-    }
-    int maximum_height = 0;
-    for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
-      final int cellHeight = entry.getValue();
-      maximum_height = Math.max(maximum_height, cellHeight);
-    }
-    return maximum_height;
-  }
 }

@@ -21,21 +21,20 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
  * Pro politics AI.
  */
-public class ProPoliticsAI {
+class ProPoliticsAI {
 
   private final ProOddsCalculator calc;
 
-  public ProPoliticsAI(final ProAI ai) {
+  ProPoliticsAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public List<PoliticalActionAttachment> politicalActions() {
+  List<PoliticalActionAttachment> politicalActions() {
 
     final GameData data = ProData.getData();
     final PlayerID player = ProData.getPlayer();
@@ -51,8 +50,8 @@ public class ProPoliticsAI {
         AIPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<>(
-            Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
+        Match.getMatches(actionChoicesTowardsWar, Match.allOf(
+            Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
@@ -144,12 +143,12 @@ public class ProPoliticsAI {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         final double random = Math.random();
-        final int MAX_OTHER_ACTIONS_PER_TURN =
+        final int maxOtherActionsPerTurn =
             (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
+        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .match(action)) {
             continue;
           }
@@ -157,7 +156,7 @@ public class ProPoliticsAI {
             continue;
           }
           i++;
-          if (i > MAX_OTHER_ACTIONS_PER_TURN) {
+          if (i > maxOtherActionsPerTurn) {
             break;
           }
           results.add(action);
@@ -168,7 +167,7 @@ public class ProPoliticsAI {
     return results;
   }
 
-  public void doActions(final List<PoliticalActionAttachment> actions) {
+  void doActions(final List<PoliticalActionAttachment> actions) {
     final GameData data = ProData.getData();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     for (final PoliticalActionAttachment action : actions) {

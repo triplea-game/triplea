@@ -11,7 +11,7 @@ public interface IPlayerActionFactory {
   IPlayerActionFactory NULL_FACTORY = clickedOn -> Collections.emptyList();
 
   /**
-   * The mouse has been clicked on a player, create a list of actions to be displayed
+   * The mouse has been clicked on a player, create a list of actions to be displayed.
    */
   List<Action> mouseOnPlayer(INode clickedOn);
 }

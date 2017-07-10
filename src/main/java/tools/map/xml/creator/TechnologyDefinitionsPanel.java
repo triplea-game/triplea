@@ -28,7 +28,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof TechnologyDefinitionsPanel)) {
       me = Optional.of(new TechnologyDefinitionsPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -78,28 +78,28 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelAlreadyEnabled, gridBadConstLabelAlreadyEnabled);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
 
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
     for (final Entry<String, List<String>> technologyDefinition : MapXmlHelper.getTechnologyDefinitionsMap()
         .entrySet()) {
       final GridBagConstraints gbc_tTechnologyName = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
       gbc_tTechnologyName.gridx = 0;
-      gridBadConstLabelTechnologyName.gridy = yValue;
+      gridBadConstLabelTechnologyName.gridy = rowIndex;
       final List<String> definition = technologyDefinition.getValue();
       final String techKey = technologyDefinition.getKey();
       final TechnologyDefinitionsRow newRow = new TechnologyDefinitionsRow(this, getOwnPanel(),
           techKey.substring(0, techKey.lastIndexOf(definition.get(0)) - 1), definition.get(0), playerNamesArray,
           definition.get(1));
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tTechnologyName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tTechnologyName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
     final JButton buttonAddTechnology = new JButton("Add Technology");
 
-    buttonAddTechnology.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddTechnology.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddTechnology.addActionListener(SwingAction.of("Add Technology", e -> {
       String newTechnologyName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new technology name:",
           "Technology" + (MapXmlHelper.getTechnologyDefinitionsMap().size() + 1));
@@ -138,7 +138,7 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelTechnologyName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
@@ -157,8 +157,8 @@ public class TechnologyDefinitionsPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }
 }

@@ -15,7 +15,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
 
   /**
-   * Creates new PlayerCollection
+   * Creates new PlayerList.
    *
    * @param data
    *        game data
@@ -46,14 +46,14 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   }
 
   /**
-   * @return a new arraylist copy of the players
+   * @return a new arraylist copy of the players.
    */
   public List<PlayerID> getPlayers() {
     return new ArrayList<>(m_players.values());
   }
 
   /**
-   * an iterator of a new arraylist copy of the players
+   * an iterator of a new arraylist copy of the players.
    */
   @Override
   public Iterator<PlayerID> iterator() {

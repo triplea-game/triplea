@@ -1,12 +1,14 @@
 package games.strategy.util;
 
+import static games.strategy.util.PredicateUtils.not;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Some utility methods for dealing with collections.
@@ -20,37 +22,16 @@ public class Util {
     if (c1 == null || c2 == null) {
       return new ArrayList<>();
     }
-    if (c1.size() == 0 || c2.size() == 0) {
-      return new ArrayList<>();
-    }
-    final List<T> intersection = new ArrayList<>();
-    for (final T current : c1) {
-      if (c2.contains(current)) {
-        intersection.add(current);
-      }
-    }
-    return intersection;
+    return c1.stream().filter(c2::contains).collect(Collectors.toList());
   }
 
   /**
-   * Equivalent to !intersection(c1,c2).isEmpty(), but more effecient.
+   * Equivalent to !intersection(c1,c2).isEmpty(), but more efficient.
    *
    * @return true if some element in c1 is in c2
    */
   public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2) {
-    if (c1.isEmpty()) {
-      return false;
-    }
-    if (c2.isEmpty()) {
-      return false;
-    }
-    final Iterator<T> iter = c1.iterator();
-    while (iter.hasNext()) {
-      if (c2.contains(iter.next())) {
-        return true;
-      }
-    }
-    return false;
+    return c1.stream().anyMatch(c2::contains);
   }
 
   /**
@@ -64,13 +45,7 @@ public class Util {
     if (c2 == null || c2.size() == 0) {
       return new ArrayList<>(c1);
     }
-    final List<T> difference = new ArrayList<>();
-    for (final T current : c1) {
-      if (!c2.contains(current)) {
-        difference.add(current);
-      }
-    }
-    return difference;
+    return c1.stream().filter(not(c2::contains)).collect(Collectors.toList());
   }
 
   /**
@@ -89,45 +64,25 @@ public class Util {
     if (c1 == c2) {
       return true;
     }
-    if (!c1.containsAll(c2)) {
-      return false;
-    }
-    return c2.containsAll(c1);
+    return c2.containsAll(c1) && c1.containsAll(c2);
   }
 
-  /**
-   * returns a list of everything in source, with the first count units moved to the end
-   */
-  public static <T> List<T> shiftElementsToEnd(final List<T> source, final int count) {
-    final ArrayList<T> rVal = new ArrayList<>(source.size());
-    for (int i = count; i < source.size(); i++) {
-      rVal.add(source.get(i));
-    }
-    for (int i = 0; i < count; i++) {
-      rVal.add(source.get(i));
-    }
-    if (source.size() != rVal.size()) {
-      throw new IllegalStateException("Didnt work for: " + count + " " + source + " : " + rVal);
-    }
-    return rVal;
-  }
-
-  /** Creates new Util */
+  /** Creates new Util. */
   private Util() {}
 
   /**
-   * allow multiple fully qualified email adresses seperated by spaces, or a blank string
+   * allow multiple fully qualified email addresses separated by spaces, or a blank string.
    */
   public static boolean isMailValid(final String emailAddress) {
-    final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
-    final String ATOM = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
-    final String WORD = "(?:" + ATOM + "|" + QUOTEDSTRING + ")";
-    final String SUBDOMAIN = "(?:" + ATOM + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
-    final String DOMAIN = SUBDOMAIN + "(?:\\." + SUBDOMAIN + ")*";
-    final String LOCALPART = WORD + "(?:\\." + WORD + ")*";
-    final String EMAIL = LOCALPART + "@" + DOMAIN;
+    final String quotedString = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
+    final String atom = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
+    final String word = "(?:" + atom + "|" + quotedString + ")";
+    final String subdomain = "(?:" + atom + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
+    final String domain = subdomain + "(?:\\." + subdomain + ")*";
+    final String localPart = word + "(?:\\." + word + ")*";
+    final String email = localPart + "@" + domain;
     // String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
-    final String regex = "(\\s*" + EMAIL + "\\s*)*";
+    final String regex = "(\\s*" + email + "\\s*)*";
     return emailAddress.matches(regex);
   }
 
@@ -157,15 +112,14 @@ public class Util {
       }
     });
   }
-  
-  public static String getStringFromInputStream(InputStream in){
+
+  public static String getStringFromInputStream(InputStream in) {
     StringBuilder builder = new StringBuilder();
-    try(Scanner scanner = new Scanner(in)){
-      while(scanner.hasNextLine()){
+    try (Scanner scanner = new Scanner(in)) {
+      while (scanner.hasNextLine()) {
         builder.append(scanner.nextLine()).append("\n");
       }
     }
     return builder.toString();
   }
-
 }

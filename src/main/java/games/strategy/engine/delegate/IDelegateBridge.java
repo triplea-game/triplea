@@ -35,7 +35,7 @@ public interface IDelegateBridge {
   PlayerID getPlayerID();
 
   /**
-   * Returns the current step name
+   * Returns the current step name.
    */
   String getStepName();
 
@@ -43,13 +43,11 @@ public interface IDelegateBridge {
    * Add a change to game data. Use this rather than changing gameData
    * directly since this method allows us to send the changes to other
    * machines.
-   *
-   * @param aChange
    */
-  void addChange(Change aChange);
+  void addChange(Change change);
 
   /**
-   * equivalent to getRandom(max,1,annotation)[0]
+   * equivalent to getRandom(max,1,annotation)[0].
    */
   int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
 
@@ -69,42 +67,45 @@ public interface IDelegateBridge {
 
   /**
    * return the delegate history writer for this game.
+   *
    * <p>
    * The delegate history writer allows writing to the game history.
-   * <p>
+   * </p>
    */
   IDelegateHistoryWriter getHistoryWriter();
 
   /**
    * Return an object that implements the IDisplay interface for the game.
+   *
    * <p>
    * Methods called on this returned object will be invoked on all displays in the game, including those on remote
    * machines
-   * <p>
+   * </p>
    */
   IDisplay getDisplayChannelBroadcaster();
 
   /**
    * Return an object that implements the ISound interface for the game.
+   *
    * <p>
    * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote
    * machines
-   * <p>
+   * </p>
    */
   ISound getSoundChannelBroadcaster();
 
   /**
-   * @return the propertie for this step.
-   *         <p>
+   * @return The properties for this step.
    */
   Properties getStepProperties();
 
   /**
    * After this step finishes executing, the next delegate will not be called.
+   *
    * <p>
    * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to
    * shutdown.
-   * <p>
+   * </p>
    */
   void stopGameSequence();
 

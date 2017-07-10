@@ -7,10 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
-public class WaitPanel extends JPanel {
+class WaitPanel extends JPanel {
   private static final long serialVersionUID = -8625021554802312498L;
 
-  public WaitPanel(final String waitMessage) {
+  WaitPanel(final String waitMessage) {
     setLayout(new BorderLayout());
     final JLabel label = new JLabel(waitMessage);
     label.setBorder(new EmptyBorder(10, 10, 10, 10));

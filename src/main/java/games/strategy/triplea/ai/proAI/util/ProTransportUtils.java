@@ -20,7 +20,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -37,17 +36,6 @@ public class ProTransportUtils {
       }
     }
     return maxMovement;
-  }
-
-  public static int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t) {
-    final GameData data = ProData.getData();
-    int numUnitsToLoad = 0;
-    final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
-    for (final Territory neighbor : neighbors) {
-      numUnitsToLoad +=
-          Match.getMatches(neighbor.getUnits().getUnits(), ProMatches.unitIsOwnedTransportableUnit(player)).size();
-    }
-    return numUnitsToLoad;
   }
 
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
@@ -242,9 +230,9 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public static List<Unit> InterleaveUnits_CarriersAndPlanes(final List<Unit> units,
+  public static List<Unit> interleaveUnitsCarriersAndPlanes(final List<Unit> units,
       final int planesThatDontNeedToLand) {
-    if (!(Match.someMatch(units, Matches.UnitIsCarrier) && Match.someMatch(units, Matches.UnitCanLandOnCarrier))) {
+    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.UnitCanLandOnCarrier))) {
       return units;
     }
 
@@ -260,9 +248,7 @@ public class ProTransportUtils {
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
       final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-      if (ua.getCarrierCost() > 0 || i == 0) // If this is a plane or last unit
-      {
-
+      if (ua.getCarrierCost() > 0 || i == 0) { // If this is a plane or last unit
         // If we haven't ignored enough trailing planes and not last unit
         if (processedPlaneCount < planesThatDontNeedToLand && i > 0) {
           processedPlaneCount++; // Increase number of trailing planes ignored
@@ -272,7 +258,7 @@ public class ProTransportUtils {
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
           final int seekedCarrierIndex = AIUtils.getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+              Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
           }
@@ -302,7 +288,7 @@ public class ProTransportUtils {
 
             // Find the next carrier
             seekedCarrier = AIUtils.getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }
@@ -345,7 +331,7 @@ public class ProTransportUtils {
 
             // Find the next carrier
             seekedCarrier = AIUtils.getLastUnitMatching(result,
-                new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }

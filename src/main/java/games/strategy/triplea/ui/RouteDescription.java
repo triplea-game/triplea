@@ -13,7 +13,7 @@ public class RouteDescription {
   private final Point m_end;
   private final Image m_cursorImage;
 
-  public RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
+  RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
     m_route = route;
     m_start = start;
     m_end = end;
@@ -53,11 +53,11 @@ public class RouteDescription {
     if (other.m_end == null && this.m_end == null) {
       return true;
     }
-    int xDiff = m_end.x - other.m_end.x;
-    xDiff *= xDiff;
-    int yDiff = m_end.y - other.m_end.y;
-    yDiff *= yDiff;
-    final int endDiff = (int) Math.sqrt(xDiff + yDiff);
+    int diffX = m_end.x - other.m_end.x;
+    diffX *= diffX;
+    int diffY = m_end.y - other.m_end.y;
+    diffY *= diffY;
+    final int endDiff = (int) Math.sqrt(diffX + diffY);
     return endDiff < 6;
   }
 

@@ -13,14 +13,14 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 
 /**
- * TripleA implementation of DelegateBridge
+ * TripleA implementation of DelegateBridge.
  */
 public class GameDelegateBridge implements IDelegateBridge {
   private final IDelegateBridge m_bridge;
   private final GameDelegateHistoryWriter m_historyWriter;
 
   /**
-   * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
+   * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge.
    *
    * @param bridge
    *        delegate bridge
@@ -36,7 +36,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * Return our custom historyWriter instead of the default one
+   * Return our custom historyWriter instead of the default one.
    */
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
@@ -67,13 +67,10 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void addChange(final Change aChange) {
-    m_bridge.addChange(aChange);
+  public void addChange(final Change change) {
+    m_bridge.addChange(change);
   }
 
-  /**
-   * Returns the current step name
-   */
   @Override
   public String getStepName() {
     return m_bridge.getStepName();

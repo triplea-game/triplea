@@ -26,98 +26,98 @@ public class RepairPanel extends ActionPanel {
   private static final String CHANGE = "Change...";
   private static final String BUY = "Repair...";
   private final JLabel actionLabel = new JLabel();
-  private HashMap<Unit, IntegerMap<RepairRule>> m_repair;
-  private boolean m_bid;
-  private Collection<PlayerID> m_allowedPlayersToRepair;
-  private final SimpleUnitPanel m_unitsPanel;
-  private final JLabel m_repairdSoFar = new JLabel();
-  private final JButton m_buyButton;
+  private HashMap<Unit, IntegerMap<RepairRule>> repair;
+  private boolean bid;
+  private Collection<PlayerID> allowedPlayersToRepair;
+  private final SimpleUnitPanel unitsPanel;
+  private final JLabel repairdSoFar = new JLabel();
+  private final JButton buyButton;
 
-  /** Creates new RepairPanel */
+  /** Creates new RepairPanel. */
   public RepairPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    m_unitsPanel = new SimpleUnitPanel(map.getUIContext());
-    m_buyButton = new JButton(BUY);
-    m_buyButton.addActionListener(PURCHASE_ACTION);
+    unitsPanel = new SimpleUnitPanel(map.getUIContext());
+    buyButton = new JButton(BUY);
+    buyButton.addActionListener(purchaseAction);
   }
 
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_repair = new HashMap<>();
+    repair = new HashMap<>();
     SwingUtilities.invokeLater(() -> {
       removeAll();
       actionLabel.setText(id.getName() + " repair");
-      m_buyButton.setText(BUY);
+      buyButton.setText(BUY);
       add(actionLabel);
-      add(m_buyButton);
-      add(new JButton(DoneAction));
-      m_repairdSoFar.setText("");
+      add(buyButton);
+      add(new JButton(doneAction));
+      repairdSoFar.setText("");
       add(Box.createVerticalStrut(9));
-      add(m_repairdSoFar);
+      add(repairdSoFar);
       add(Box.createVerticalStrut(4));
-      m_unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
-      add(m_unitsPanel);
+      unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
+      add(unitsPanel);
       add(Box.createVerticalGlue());
-      SwingUtilities.invokeLater(REFRESH);
+      SwingUtilities.invokeLater(refresh);
     });
   }
 
   private void refreshActionLabelText() {
     SwingUtilities.invokeLater(
-        () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : "")));
+        () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
   }
 
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+  HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
-    m_bid = bid;
-    m_allowedPlayersToRepair = allowedPlayersToRepair;
+    this.bid = bid;
+    this.allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(() -> PURCHASE_ACTION.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> purchaseAction.actionPerformed(null));
     waitForRelease();
-    return m_repair;
+    return repair;
   }
 
-  private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy") {
+  private final AbstractAction purchaseAction = new AbstractAction("Buy") {
     private static final long serialVersionUID = 5572043262815077402L;
 
     @Override
     public void actionPerformed(final ActionEvent e) {
       final PlayerID player = getCurrentPlayer();
       final GameData data = getData();
-      m_repair = ProductionRepairPanel.getProduction(player, m_allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
-          data, m_bid, m_repair, getMap().getUIContext());
-      m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
-      final int totalValues = getTotalValues(m_repair);
+      repair = ProductionRepairPanel.getProduction(player, allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
+          data, bid, repair, getMap().getUIContext());
+      unitsPanel.setUnitsFromRepairRuleMap(repair, player, data);
+      final int totalValues = getTotalValues(repair);
       if (totalValues == 0) {
-        m_repairdSoFar.setText("");
-        m_buyButton.setText(BUY);
+        repairdSoFar.setText("");
+        buyButton.setText(BUY);
       } else {
-        m_buyButton.setText(CHANGE);
-        m_repairdSoFar.setText(totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
+        buyButton.setText(CHANGE);
+        repairdSoFar.setText(totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
       }
     }
   };
 
   // Spin through the territories to get this.
-  private int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> m_repair) {
-    final Collection<Unit> units = m_repair.keySet();
+  private static int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> repair) {
+    final Collection<Unit> units = repair.keySet();
     final Iterator<Unit> iter = units.iterator();
     int totalValues = 0;
     while (iter.hasNext()) {
       final Unit unit = iter.next();
-      totalValues += m_repair.get(unit).totalValues();
+      totalValues += repair.get(unit).totalValues();
     }
     return totalValues;
   }
 
-  private final Action DoneAction = new AbstractAction("Done") {
+  private final Action doneAction = new AbstractAction("Done") {
     private static final long serialVersionUID = -2002286381161651398L;
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      final boolean hasPurchased = getTotalValues(m_repair) != 0;
+      final boolean hasPurchased = getTotalValues(repair) != 0;
       if (!hasPurchased) {
         final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
             "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);

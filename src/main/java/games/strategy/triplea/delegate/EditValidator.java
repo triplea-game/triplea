@@ -15,7 +15,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
@@ -23,7 +22,7 @@ import games.strategy.util.Triple;
 /**
  * Provides some static methods for validating game edits.
  */
-public class EditValidator {
+class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
     final String result = null;
     /*
@@ -49,8 +48,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory,
-      final PlayerID player) {
+  static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
     String result = null;
     if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
@@ -62,7 +60,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
     String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -70,16 +68,16 @@ public class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (!Match.allMatch(units, Matches.UnitIsSea)) {
-        if (Match.someMatch(units, Matches.UnitIsLand)) {
-          if (!Match.allMatch(units, Matches.alliedUnit(player, data))) {
+      if (!Match.allMatchNotEmpty(units, Matches.UnitIsSea)) {
+        if (Match.anyMatch(units, Matches.UnitIsLand)) {
+          if (!Match.allMatchNotEmpty(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              new CompositeMatchAnd<>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (!Match.allMatchNotEmpty(landUnitsToAdd, Matches.UnitCanBeTransported)) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -91,16 +89,13 @@ public class EditValidator {
             return "Can't add land units to water without enough transports";
           }
         }
-        if (Match.someMatch(units, Matches.UnitIsAir)) {
-          if (Match.someMatch(units,
-              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+        if (Match.anyMatch(units, Matches.UnitIsAir)) {
+          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers =
-              new CompositeMatchAnd<>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits =
-              new CompositeMatchAnd<>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyCarriers = Match.allOf(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
@@ -118,7 +113,7 @@ public class EditValidator {
        * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.TerritoryIsWater.match(territory))
        * return "Can't add units to enemy territory";
        */
-      if (Match.someMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.UnitIsSea)) {
         return "Can't add sea units to land";
       }
     }
@@ -128,8 +123,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveUnits(final GameData data, final Territory territory,
-      final Collection<Unit> units) {
+  static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
     String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -160,8 +154,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs,
-      final PlayerID player) {
+  static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -186,8 +179,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs,
-      final PlayerID player) {
+  static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -215,7 +207,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+  static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
@@ -230,22 +222,23 @@ public class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatch(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
+    if (!Match.allMatchNotEmpty(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
       return "Not all units have more than one total hitpoints";
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
-        return "Damage cannot be less than zero or equal to or greater than unit hitpoints (if you want to kill the unit, use remove unit)";
+        return "Damage cannot be less than zero or equal to or greater than unit hitpoints (if you want to kill the "
+            + "unit, use remove unit)";
       }
     }
     return result;
   }
 
-  public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+  static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
@@ -263,10 +256,10 @@ public class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatch(units, Matches.UnitCanBeDamaged)) {
+    if (!Match.allMatchNotEmpty(units, Matches.UnitCanBeDamaged)) {
       return "Not all units can take bombing damage";
     }
     for (final Unit u : units) {
@@ -278,7 +271,7 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangePoliticalRelationships(final GameData data,
+  static String validateChangePoliticalRelationships(final GameData data,
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {

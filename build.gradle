@@ -1,25 +1,24 @@
-buildscript {
-	repositories {
-		maven { url 'http://maven.ej-technologies.com/repository' }
-	}
-	dependencies {
-		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
-	}
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.ben-manes.versions' version '0.12.0'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.install4j.gradle' version '6.1.6'
+    id "de.qaware.seu.as.code.git" version "2.2.0"
 }
 
-plugins {
-	id 'java'
-	id 'application'
-	id 'checkstyle'
-	id 'com.github.ben-manes.versions' version '0.12.0'
-	id 'com.github.johnrengelman.shadow' version '1.2.3'
-	id "de.qaware.seu.as.code.git" version "2.2.0"
-}
+apply from: 'gradle/scripts/yaml.gradle'
 
 version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
+
+ext {
+    schemasDir = file('config/triplea/schemas')
+}
 
 compileJava {
     options.encoding = 'UTF-8'
@@ -33,11 +32,211 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
-	options.incremental = true
+    options.incremental = true
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName, 'TripleA-Version': version
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+sourceSets {
+    integTest {
+        java.srcDir 'src/integ_test/java'
+        resources.srcDir 'src/integ_test/resources'
+
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
+dependencies {
+    compile 'commons-io:commons-io:2.5'
+    compile 'postgresql:postgresql:9.1-901-1.jdbc4'
+    compile 'com.github.insubstantial:substance:7.3'
+    compile 'com.google.guava:guava:19.0'
+    compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
+    compile 'com.sun.mail:mailapi:1.5.5'
+    compile 'com.sun.mail:smtp:1.5.5'
+    compile 'org.apache.httpcomponents:httpclient:4.5.3'
+    compile 'org.apache.httpcomponents:httpmime:4.5.3'
+    compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'org.mindrot:jbcrypt:0.3m'
+    compile 'org.yaml:snakeyaml:1.17'
+    compile 'org.json:json:20160810'
+    compile 'com.yuvimasory:orange-extensions:1.3.0'
+
+    testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
+    testCompile 'org.apache.derby:derby:10.10.1.1'
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+    testCompile 'org.mockito:mockito-core:2.8.47'
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+    exclude '**/*Tests.class'
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+task integTest(type: Test) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Runs the integration tests.'
+
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+
+    binResultsDir = file("$buildDir/integration_test_results/binary/integTest")
+
+    reports {
+        reports.html.destination = file("${reports.html.destination}/$name")
+        reports.junitXml.destination = file("${reports.junitXml.destination}/$name")
+    }
+
+    mustRunAfter tasks.test
+}
+
+task jacocoRootReport(type: JacocoReport) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Generates code coverage report for all Test tasks.'
+
+    sourceSets sourceSets.main
+    executionData fileTree(buildDir).include('**/jacoco/*.exec')
+
+    reports {
+        html {
+            destination = file("${project.jacoco.reportsDir}/root/html")
+            enabled = true
+        }
+        xml {
+            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
+            enabled = true
+        }
+    }
+}
+
+def assetsDirectory = file("${buildDir}/assets")
+git {
+    assets {
+        url 'https://github.com/triplea-game/assets.git'
+        directory assetsDirectory
+        branch 'master'
+        singleBranch true
+    }
+}
+
+task validateYamls(group: 'verification', description: 'Validates YAML files.') {
+    doLast {
+        def lobbyServerYamlFile = file('lobby_server.yaml')
+        validateYaml(lobbyServerYamlFile, file("$schemasDir/lobby_server.json"))
+
+        def mapsYamlFile = file('triplea_maps.yaml')
+        validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
+        validateMapsYamlUris(mapsYamlFile)
+    }
+}
+
+task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
+    ext.output = file("$project.buildDir/libs/all/triplea.jar")
+    from shadowJar.archivePath
+    into ext.output.parent
+    rename shadowJar.archivePath.name, output.name
+}
+
+task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
+}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
+    classifier 'all_platforms'
+    ['assets', 'dice_servers', 'old'].each { folder ->
+        from(folder) {
+            into(folder)
+        }
+    }
+    from("${assetsDirectory}/icons") {
+        into('icons')
+        exclude("icon.icns")
+    }
+    from('game_engine.properties')
+    from(renameShadowJar.output) {
+        into('bin')
+    }
+}
+
+task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
+    classifier 'server'
+    ['config/lobby/lobby.properties'].each { fileName ->
+        from(fileName) {
+            into('config/lobby')
+        }
+    }
+    from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
+        into('lib')
+    }
+    from(renameShadowJar.output) {
+        into('bin')
+    }
+}
+
+task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
+
+task copyJRE(type: Copy, dependsOn: [updateAssets]) {
+    from "${assetsDirectory}/install4j/windows-x86-1.8.0_66.tar.gz"
+    from "${assetsDirectory}/install4j/macosx-amd64-1.8.0_66.tar.gz"
+    from "${assetsDirectory}/install4j/windows-amd64-1.8.0_66.tar.gz"
+    into "${System.properties['user.home']}/.install4j6/jres"
+}
+
+import com.install4j.gradle.Install4jTask
+task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
+    projectFile = file('build.install4j')
+    release project.version
+    doFirst {
+        logger.lifecycle("building installer release of version '${project.version}'")
+    }
+}
+
+task setRunnableLinux(dependsOn: [generateInstallers]) {
+    doLast {
+        def linuxFile = "TripleA_${version}_unix.sh"
+        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
+    }
+}
+
+task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
+
+gradle.taskGraph.whenReady { graph ->
+    graph.getAllTasks().any({
+        if (it.name == "generateInstallers") {
+            if (!project.hasProperty('install4jHomeDir')) {
+                File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
+                throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
+            }
+            def p = file(project.install4jHomeDir)
+            logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
+            it.project.install4j.installDir = file(project.install4jHomeDir)
+        }
+    })
+}
+
+check {
+    dependsOn 'integTest', 'validateYamls'
 }
 
 checkstyle {
     toolVersion = "7.6.1"
+}
+
+checkstyleIntegTest {
+    maxWarnings = checkstyleIntegTestMaxWarnings.toInteger()
+    source sourceSets.integTest.output.resourcesDir
 }
 
 checkstyleMain {
@@ -50,137 +249,9 @@ checkstyleTest {
     source sourceSets.test.output.resourcesDir
 }
 
-jar {
-	manifest {
-		attributes 'Main-Class': mainClassName, 'TripleA-Version': version
-	}
-}
-
-repositories {
-	jcenter()
-}
-dependencies {
-	compile 'com.github.insubstantial:substance:7.3'
-	compile 'com.google.guava:guava:19.0'
-	compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
-	compile 'com.sun.mail:mailapi:1.5.5'
-	compile 'com.sun.mail:smtp:1.5.5'
-	compile 'org.apache.httpcomponents:httpclient:4.5.3'
-	compile 'org.apache.httpcomponents:httpmime:4.5.3'
-	compile 'org.apache.commons:commons-math3:3.6.1'
-	compile 'org.mindrot:jbcrypt:0.3m'
-	compile 'org.yaml:snakeyaml:1.17'
-	compile 'org.json:json:20160810'
-
-	compile files('lib/AppleJavaExtensions-1.6.jar')
-	compile files('lib/upnp.jar')
-
-	testCompile 'org.apache.derby:derby:10.10.1.1'
-	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-	testCompile 'org.mockito:mockito-core:2.0.82-beta'
-	testCompile 'junit:junit:4.12'
-}
-
-test {
-	testLogging {
-		exceptionFormat = 'full'
-	}
-}
-
-
-def assetsDirectory = file("${buildDir}/assets")
-git {
-	assets {
-		url 'https://github.com/triplea-game/assets.git'
-		directory assetsDirectory
-		branch 'master'
-		singleBranch true
-	}
-}
-
-task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
-	ext.output = file("$project.buildDir/libs/all/triplea.jar")
-	from shadowJar.archivePath
-	into ext.output.parent
-	rename shadowJar.archivePath.name, output.name
-}
-
-task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
-}
-
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
-	classifier 'all_platforms'
-	['assets', 'dice_servers', 'maps', 'old'].each { folder ->
-		from(folder) {
-			into(folder)
-		}
-	}
-	from("${assetsDirectory}/icons") {
-		into('icons')
-		exclude("icon.icns")
-	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
-	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
-	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
-		from(fileName)
-	}
-	from(renameShadowJar.output) {
-		into('bin')
-	}
-}
-
-task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
-	classifier 'server'
-	['run-headless-game-host.sh', 'run-server.sh'].each { fileName ->
-		from(fileName)
-	}
-	from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
-		into('lib')
-	}
-	from(renameShadowJar.output) {
-		into('bin')
-	}
-}
-
-task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
-
-apply plugin: 'install4j'
-
-task copyJRE(type: Copy, dependsOn: [updateAssets]) {
-	from "${assetsDirectory}/install4j/windows-x86-1.8.0_66.tar.gz"
-	from "${assetsDirectory}/install4j/macosx-amd64-1.8.0_66.tar.gz"
-	from "${assetsDirectory}/install4j/windows-amd64-1.8.0_66.tar.gz"
-	into "${System.properties['user.home']}/.install4j6/jres"
-}
-
-import com.install4j.gradle.Install4jTask
-task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
-	projectFile = file('build.install4j')
-	release project.version
-	doFirst {
-		logger.lifecycle("building installer release of version '${project.version}'")
-	}
-}
-
-task setRunnableLinux(dependsOn: [generateInstallers]) {
-	doLast {
-		def linuxFile = "TripleA_${version}_unix.sh"
-		ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
-	}
-}
-
-task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
-
-gradle.taskGraph.whenReady { graph ->
-	graph.getAllTasks().any({
-		if (it.name == "generateInstallers") {
-			if (!project.hasProperty('install4jHomeDir')) {
-				File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
-				throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
-			}
-			def p = file(project.install4jHomeDir)
-			logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
-			it.project.install4j.installDir = file(project.install4jHomeDir)
-		}
-	})
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }

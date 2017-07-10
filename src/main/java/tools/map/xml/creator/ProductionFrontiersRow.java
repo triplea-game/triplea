@@ -67,10 +67,10 @@ class ProductionFrontiersRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(comboBoxUnitName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(comboBoxUnitName, gbcTemplate);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 1;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

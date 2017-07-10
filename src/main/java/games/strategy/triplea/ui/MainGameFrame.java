@@ -11,7 +11,7 @@ public abstract class MainGameFrame extends JFrame {
   private static final long serialVersionUID = 7433347393639606647L;
   protected LocalPlayers localPlayers;
 
-  public MainGameFrame(final String name, final LocalPlayers players) {
+  protected MainGameFrame(final String name, final LocalPlayers players) {
     super(name);
     localPlayers = players;
     setIconImage(GameRunner.getGameIcon(this));

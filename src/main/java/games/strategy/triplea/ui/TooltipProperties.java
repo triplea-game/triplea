@@ -38,8 +38,8 @@ public class TooltipProperties {
   }
 
   public static TooltipProperties getInstance() {
-    if (s_ttp == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 5000) { // cache properties for 5
-                                                                                          // seconds
+    // cache properties for 5 seconds
+    if (s_ttp == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 5000) {
       s_ttp = new TooltipProperties();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

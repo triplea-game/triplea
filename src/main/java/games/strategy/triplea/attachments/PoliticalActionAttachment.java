@@ -17,7 +17,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 /**
@@ -52,8 +51,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
 
   public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch) {
-    PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    PoliticalActionAttachment paa = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+    if (paa == null) {
       if (playersToSearch == null) {
         throw new IllegalStateException(
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
@@ -62,16 +61,16 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
           if (otherPlayer == player) {
             continue;
           }
-          rVal = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (rVal != null) {
-            return rVal;
+          paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
+          if (paa != null) {
+            return paa;
           }
         }
         throw new IllegalStateException(
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
     }
-    return rVal;
+    return paa;
   }
 
   // list of relationship changes to be performed if this action is performed sucessfully
@@ -79,9 +78,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param relChange
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationshipChange(final String relChange) throws GameParseException {
@@ -123,7 +119,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @return a set of all other players involved in this PoliticalAction
+   * @return a set of all other players involved in this PoliticalAction.
    */
   public Set<PlayerID> getOtherPlayers() {
     final HashSet<PlayerID> otherPlayers = new HashSet<>();
@@ -137,7 +133,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @param player
    * @return gets the valid actions for this player.
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
@@ -146,8 +141,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       return new ArrayList<>();
     }
     return Match.getMatches(getPoliticalActionAttachments(player),
-        new CompositeMatchAnd<>(
-            Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions),
+        Match.allOf(
+            Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }
 

@@ -25,13 +25,13 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   private final String playerName;
   private final TreeSet<String> allUnitNames;
 
-  public ProductionFrontiersPanel(final JPanel stepActionPanel, final String playerName) {
+  private ProductionFrontiersPanel(final JPanel stepActionPanel, final String playerName) {
     super(stepActionPanel);
     this.playerName = playerName;
     allUnitNames = new TreeSet<>(MapXmlHelper.getUnitDefinitionsMap().keySet());
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
+  static void layout(final MapXmlCreator mapXmlCreator, final JPanel stepActionPanel, final String playerName) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof ProductionFrontiersPanel)
         || !((ProductionFrontiersPanel) me.get()).playerName.equals(playerName)) {
       me = Optional.of(new ProductionFrontiersPanel(stepActionPanel, playerName));
@@ -44,7 +44,8 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     return e -> {
 
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Are you sure you want to use the  Auto-Fill feature?\r"
+              + "It will remove any information you have entered in this step and propose commonly used choices.",
           "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
         MapXmlHelper.clearProductionFrontiers();
         for (final String playerName1 : MapXmlHelper.getPlayerNames()) {
@@ -83,23 +84,23 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelUnitName, gridBadConstLabelUnitName);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
     final String[] allUnitNamesArray = allUnitNames.toArray(new String[allUnitNames.size()]);
     for (final String unitName : playersUnitNames) {
       final GridBagConstraints gbc_tUnitName = (GridBagConstraints) gridBadConstLabelUnitName.clone();
       gbc_tUnitName.gridx = 0;
-      gridBadConstLabelUnitName.gridy = yValue;
+      gridBadConstLabelUnitName.gridy = rowIndex;
       final ProductionFrontiersRow newRow =
           new ProductionFrontiersRow(this, getOwnPanel(), playerName, unitName, allUnitNamesArray);
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tUnitName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tUnitName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
     final JButton buttonAddUnit = new JButton("Add Unit");
 
-    buttonAddUnit.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddUnit.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddUnit.addActionListener(SwingAction.of("Add Unit", e -> {
       final List<String> curr_playersUnitNames = MapXmlHelper.getProductionFrontiersMap().get(playerName);
 
@@ -125,7 +126,7 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelUnitName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
@@ -141,8 +142,8 @@ public class ProductionFrontiersPanel extends DynamicRowsPanel {
   protected void initializeSpecifics() {}
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0};
   }
 }

@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
-import tools.map.making.JTextAreaOptionPane;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -32,7 +31,7 @@ import tools.map.making.JTextAreaOptionPane;
 public class TileImageBreaker {
   private static String location = null;
   private static JFrame observer = new JFrame();
-  private boolean m_baseMap;
+  private boolean baseMap;
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
@@ -43,9 +42,7 @@ public class TileImageBreaker {
    * Main program begins here. Creates a new instance of ReliefImageBreaker
    * and calls createMaps() method to start the computations.
    *
-   * @param java
-   *        .lang.String[]
-   *        args the command line parameters
+   * @param args The command line parameters.
    * @exception java.lang.Exception
    *            throws
    */
@@ -55,7 +52,8 @@ public class TileImageBreaker {
         new JLabel("<html>" + "This is the TileImageBreaker, it will create the map image tiles file for you. "
             + "<br>It will take any image, and break it up into 256x256 pixel squares, and put them all in a folder. "
             + "<br>You can use this to create the base tiles (background) as well as the relief tiles (art relief)."
-            + "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called baseTiles"
+            + "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called "
+            + "baseTiles"
             + "<br>For the relief image, please save it to a folder called reliefTiles" + "</html>"));
     final FileSave locationSelection = new FileSave("Where to save Tile Images?", null, s_mapFolderLocation);
     location = locationSelection.getPathString();
@@ -98,7 +96,7 @@ public class TileImageBreaker {
         final GraphicsConfiguration m_localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE,
-            TileManager.TILE_SIZE, m_baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
+            TileManager.TILE_SIZE, baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
         relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y,
             bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);
 

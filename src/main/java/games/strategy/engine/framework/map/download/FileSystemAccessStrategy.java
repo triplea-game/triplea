@@ -12,13 +12,14 @@ import javax.swing.DefaultListModel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
-public class FileSystemAccessStrategy {
+class FileSystemAccessStrategy {
 
-  public FileSystemAccessStrategy() {}
+  FileSystemAccessStrategy() {}
 
-  public Optional<Version> getMapVersion(final String mapName) {
+  Optional<Version> getMapVersion(final String mapName) {
     final File potentialFile = new File(mapName);
 
     if (!potentialFile.exists()) {
@@ -33,7 +34,7 @@ public class FileSystemAccessStrategy {
     }
   }
 
-  public static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
+  static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
             + formatMapList(toRemove, map -> map.getMapName()) + "</html>",
@@ -57,10 +58,7 @@ public class FileSystemAccessStrategy {
       }
 
       // now sleep a short while before we check our work
-      try {
-        Thread.sleep(10);
-      } catch (final InterruptedException e) {
-      }
+      ThreadUtil.sleep(10);
 
       // check our work, see if we actuall deleted stuff
       for (final DownloadFileDescription map : maps) {
@@ -113,10 +111,10 @@ public class FileSystemAccessStrategy {
 
   private static String formatMapList(final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
-    final int MAX_MAPS_TO_LIST = 6;
+    final int maxMapsToList = 6;
     final StringBuilder sb = new StringBuilder("<ul>");
     for (int i = 0; i < mapList.size(); i++) {
-      if (i > MAX_MAPS_TO_LIST) {
+      if (i > maxMapsToList) {
         sb.append("<li>...</li>");
         break;
       } else {

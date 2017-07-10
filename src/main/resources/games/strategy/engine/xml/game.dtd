@@ -81,6 +81,8 @@
 		name ID #REQUIRED
 		optional (true | false) 'false'
 		canBeDisabled (true | false) 'false'
+		defaultType (Human | AI | DoesNothing) 'Human'
+		isHidden (true | false) 'false' 
 	>
 	<!ELEMENT alliance EMPTY>
 

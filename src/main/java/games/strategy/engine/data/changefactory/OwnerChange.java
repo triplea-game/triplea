@@ -18,7 +18,7 @@ class OwnerChange extends Change {
   private final String m_territory;
 
   /**
-   * newOwner can be null
+   * newOwner can be null.
    */
   OwnerChange(final Territory territory, final PlayerID newOwner) {
     m_territory = territory.getName();
@@ -32,14 +32,14 @@ class OwnerChange extends Change {
     m_old = oldOwner;
   }
 
-  private String getName(final PlayerID player) {
+  private static String getName(final PlayerID player) {
     if (player == null) {
       return null;
     }
     return player.getName();
   }
 
-  private PlayerID getPlayerID(final String name, final GameData data) {
+  private static PlayerID getPlayerID(final String name, final GameData data) {
     if (name == null) {
       return null;
     }

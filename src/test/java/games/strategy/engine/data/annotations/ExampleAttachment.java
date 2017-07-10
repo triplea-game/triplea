@@ -8,7 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
 /**
- * Test attachment that demonstrates how @GameProperty is used
+ * Test attachment that demonstrates how @GameProperty is used.
  */
 public class ExampleAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -5820318094331518742L;
@@ -83,8 +83,6 @@ public class ExampleAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {

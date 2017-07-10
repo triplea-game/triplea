@@ -77,7 +77,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         IObserverWaitingToJoin.class);
   }
 
-  private static Logger logger = Logger.getLogger(ServerModel.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerModel.class.getName());
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final SetupPanelModel typePanelModel;
   private final boolean headless;
@@ -329,7 +329,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     /**
      * This should not be called from within game, only from the game setup screen, while everyone is waiting for game
-     * to start
+     * to start.
      */
     @Override
     public byte[] getSaveGame() {
@@ -392,8 +392,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       final File save;
       if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
         save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
         save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
@@ -419,7 +417,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       System.out.println("Changing to user savegame: " + fileName);
       try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-          InputStream oinput = new BufferedInputStream(input);) {
+          InputStream oinput = new BufferedInputStream(input)) {
         headless.loadGameSave(oinput, fileName);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
@@ -578,7 +576,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (removeConnectionsLatch != null) {
       try {
         removeConnectionsLatch.await(6, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {// no worries
+      } catch (final InterruptedException e) { // no worries
       }
     }
     // will be handled elsewhere
@@ -605,7 +603,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return chatPanel;
   }
 
-  public void disallowRemoveConnections() {
+  private void disallowRemoveConnections() {
     while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
       removeConnectionsLatch.countDown();
     }
@@ -619,7 +617,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     removeConnectionsLatch = null;
   }
 
-  public Map<String, String> getLocalPlayerTypes() {
+  private Map<String, String> getLocalPlayerTypes() {
     final Map<String, String> localPlayerMappings = new HashMap<>();
     if (data == null) {
       return localPlayerMappings;

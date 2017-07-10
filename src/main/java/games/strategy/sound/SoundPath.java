@@ -82,7 +82,7 @@ public class SoundPath {
     return getAllSoundOptionsWithDescription().keySet();
   }
 
-  public static Map<String, String> getAllSoundOptionsWithDescription() {
+  private static Map<String, String> getAllSoundOptionsWithDescription() {
     final Map<String, String> soundOptions = new HashMap<>();
 
     soundOptions.put(SoundPath.CLIP_CHAT_MESSAGE, "Chat Messaging");
@@ -140,7 +140,7 @@ public class SoundPath {
     return soundOptions;
   }
 
-  public static List<IEditableProperty> getSoundOptions() {
+  static List<IEditableProperty> getSoundOptions() {
     final List<IEditableProperty> soundBoxes = new ArrayList<>();
     getAllSoundOptionsWithDescription().forEach(
         (path, description) -> soundBoxes.add(new SoundOptionCheckBox(path, description)));

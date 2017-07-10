@@ -22,5 +22,5 @@ public interface IAttachment extends Serializable {
 
   String getName();
 
-  void setName(String aString);
+  void setName(String name);
 }

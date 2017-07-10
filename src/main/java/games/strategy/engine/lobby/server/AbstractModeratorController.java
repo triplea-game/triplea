@@ -32,8 +32,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
 
   protected String getRealName(final INode node) {
     // Remove any (n) that is added to distinguish duplicate names
-    final String name = node.getName().split(" ")[0];
-    return name;
+    return node.getName().split(" ")[0];
   }
 
   protected String getAliasesFor(final INode node) {

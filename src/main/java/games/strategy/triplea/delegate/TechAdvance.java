@@ -127,8 +127,6 @@ public abstract class TechAdvance extends NamedAttachable {
 
   /**
    * For the game parser only.
-   *
-   * @param data
    */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
@@ -184,7 +182,7 @@ public abstract class TechAdvance extends NamedAttachable {
     return ta;
   }
 
-  public static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player) {
+  static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
@@ -194,8 +192,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /**
-   * @param data
-   * @return first is air&naval, second is land&production
+   * @return first is air&naval, second is land&production.
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
     List<TechAdvance> allAdvances;

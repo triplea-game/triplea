@@ -23,8 +23,7 @@ public class ScrollSettings implements HasDefaults {
     setWheelScrollAmount(String.valueOf(DEFAULT_WHEEL_SCROLL_AMOUNT));
   }
 
-
-  private int getProp(final SystemPreferenceKey key, final int defaultValue) {
+  private static int getProp(final SystemPreferenceKey key, final int defaultValue) {
     return SystemPreferences.get(key, defaultValue);
   }
 

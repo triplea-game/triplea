@@ -22,13 +22,13 @@ import games.strategy.engine.ClientContext;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.util.Version;
 
-public class EngineVersionProperties {
+class EngineVersionProperties {
+  private static final String TRIPLEA_VERSION_LINK =
+      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
   private final Version latestVersionOut;
   private final String link;
   private final String linkAlt;
   private final String changelogLink;
-  private static final String TRIPLEA_VERSION_LINK =
-      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
 
   private EngineVersionProperties() {
     this(getProperties());
@@ -36,13 +36,13 @@ public class EngineVersionProperties {
 
   private EngineVersionProperties(final Properties props) {
     latestVersionOut =
-        new Version(props.getProperty("LATEST", ClientContext.engineVersion().getVersion().toStringFull(".")));
+        new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull(".")));
     link = props.getProperty("LINK", "http://triplea-game.github.io/");
     linkAlt = props.getProperty("LINK_ALT", "http://triplea-game.github.io/download/");
     changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
   }
 
-  public static EngineVersionProperties contactServerForEngineVersionProperties() {
+  static EngineVersionProperties contactServerForEngineVersionProperties() {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
     final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
@@ -55,6 +55,7 @@ public class EngineVersionProperties {
       try {
         latch.await(2, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
       if (ref.get() != null) {
         break;
@@ -64,6 +65,7 @@ public class EngineVersionProperties {
     try {
       latch.await(15, TimeUnit.SECONDS);
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     return ref.get();
   }
@@ -78,34 +80,35 @@ public class EngineVersionProperties {
     return props;
   }
 
-  public Version getLatestVersionOut() {
+  Version getLatestVersionOut() {
     return latestVersionOut;
   }
 
-  public String getLinkToDownloadLatestVersion() {
+  String getLinkToDownloadLatestVersion() {
     return link;
   }
 
-  public String getLinkAltToDownloadLatestVersion() {
+  String getLinkAltToDownloadLatestVersion() {
     return linkAlt;
   }
 
-  public String getChangeLogLink() {
+  String getChangeLogLink() {
     return changelogLink;
   }
 
   private String getOutOfDateMessage() {
     final StringBuilder text = new StringBuilder("<html>");
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getFullVersion());
+    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getExactVersion());
     text.append("<br />Latest version available for download: ").append(getLatestVersionOut());
     text.append("<br /><br />Click to download: <a class=\"external\" href=\"").append(getLinkToDownloadLatestVersion())
         .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");
     text.append("<br />Backup Mirror: <a class=\"external\" href=\"").append(getLinkAltToDownloadLatestVersion())
         .append("\">").append(getLinkAltToDownloadLatestVersion()).append("</a>");
-    text.append(
-        "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
-            + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
+    text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of ")
+        .append("TripleA.");
+    text.append("<br />So be sure to either manually uninstall all older versions of TripleA, or change your ")
+        .append("shortcuts to the new TripleA.");
     text.append("<br /><br />What is new:<br />");
     text.append("</html>");
     return text.toString();
@@ -119,7 +122,7 @@ public class EngineVersionProperties {
     return text.toString();
   }
 
-  public Component getOutOfDateComponent() {
+  Component getOutOfDateComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
     final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
     intro.setEditable(false);

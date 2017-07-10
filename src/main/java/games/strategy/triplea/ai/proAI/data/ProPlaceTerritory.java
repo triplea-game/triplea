@@ -15,7 +15,7 @@ public class ProPlaceTerritory {
   private List<Unit> placeUnits;
   private boolean canHold;
 
-  public ProPlaceTerritory(final Territory territory) {
+  ProPlaceTerritory(final Territory territory) {
     this.territory = territory;
     defendingUnits = new ArrayList<>();
     minBattleResult = new ProBattleResult();

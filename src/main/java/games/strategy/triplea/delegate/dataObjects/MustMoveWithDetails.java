@@ -19,7 +19,7 @@ public class MustMoveWithDetails implements java.io.Serializable {
   private final Map<Unit, Collection<Unit>> m_mapping;
 
   /**
-   * Creates new MustMoveWithReplay
+   * Creates new MustMoveWithDetails.
    *
    * @param mapping
    *        a mapping of unit (that must move) -> collection of units

@@ -4,7 +4,7 @@ public class Resource extends NamedAttachable {
   private static final long serialVersionUID = 7471431759007499935L;
 
   /**
-   * Creates new Resource
+   * Creates new Resource.
    *
    * @param name
    *        name of the resource

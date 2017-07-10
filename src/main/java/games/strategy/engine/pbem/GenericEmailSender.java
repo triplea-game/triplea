@@ -3,6 +3,9 @@ package games.strategy.engine.pbem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -22,24 +25,33 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
- * A PBEM (play by email) sender that will email turn summary and save game
- * This class is saved as a property as part of a save game
- * This class has two password fields, one is transitive and used while the game is running, the other is 'cleared' when
- * the game starts. This is done for security reasons so save games will not include passwords.
- * The non-transitive password is used when the object is stored in the local cache
+ * A PBEM (play by email) sender that will email turn summary and save game.
+ *
+ * <p>
+ * Instances of this class are saved as a property as part of a save game.
+ * </p>
+ *
+ * <p>
+ * This class has two fields per credential. One is transient and used while the game is running. The other is
+ * persistent and "cleared" when the game starts. This is done for security reasons so save games will not include
+ * credentials. The persistent password is used when the object is stored in the local cache.
+ * </p>
  */
 public class GenericEmailSender implements IEmailSender {
   private static final long serialVersionUID = 4644748856027574157L;
+
   /**
-   * a value to assign to the non-transitive password, as we can see that is was cleared
+   * The value assigned to a persistent credential that indicates it was cleared and the associated transient credential
+   * should be used instead.
    */
-  private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
+  private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
   /**
    * Currently only message encryption is allowed. Later connect based encryption through SSL may be implementes
@@ -51,13 +63,62 @@ public class GenericEmailSender implements IEmailSender {
   private long m_timeout = TimeUnit.SECONDS.toMillis(60);
   private String m_subjectPrefix;
   private String m_userName;
+  private transient String transientUserName;
   private String m_password;
-  private transient String m_transPassword;
+  private transient String transientPassword;
   private String m_toAddress;
   private String m_host = "smptserver.example.com";
   private int m_port = 25;
   private Encryption m_encryption;
   private boolean m_alsoPostAfterCombatMove = false;
+  private boolean credentialsSaved = false;
+  private boolean credentialsProtected = false;
+
+  private void writeObject(final ObjectOutputStream out) throws IOException {
+    final String userName = m_userName;
+    final String password = m_password;
+    try {
+      protectCredentials();
+      out.defaultWriteObject();
+    } finally {
+      m_userName = userName;
+      m_password = password;
+    }
+  }
+
+  private void protectCredentials() {
+    if (credentialsSaved) {
+      credentialsProtected = true;
+      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+        m_userName = credentialManager.protect(m_userName);
+        m_password = credentialManager.protect(m_password);
+      } catch (final CredentialManagerException e) {
+        ClientLogger.logQuietly("failed to protect PBEM credentials", e);
+        m_userName = "";
+        m_password = "";
+      }
+    } else {
+      credentialsProtected = false;
+    }
+  }
+
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    unprotectCredentials();
+  }
+
+  private void unprotectCredentials() {
+    if (credentialsProtected) {
+      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+        m_userName = credentialManager.unprotectToString(m_userName);
+        m_password = credentialManager.unprotectToString(m_password);
+      } catch (final CredentialManagerException e) {
+        ClientLogger.logQuietly("failed to unprotect PBEM credentials", e);
+        m_userName = "";
+        m_password = "";
+      }
+    }
+  }
 
   @Override
   public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
@@ -113,7 +174,7 @@ public class GenericEmailSender implements IEmailSender {
       }
       // date
       try {
-        mimeMessage.setSentDate(new Date());
+        mimeMessage.setSentDate(Date.from(Instant.now()));
       } catch (final Exception e) {
         // NoOp - the Date field is simply ignored in this case
       }
@@ -132,53 +193,63 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the user name used to login to the smtp server to send the email
+   * Get the user name used to login to the smtp server to send the email.
    *
    * @return the userName or null if no authentication is required
    */
   @Override
   public String getUserName() {
-    return m_userName;
+    return USE_TRANSIENT_CREDENTIAL.equals(m_userName) ? transientUserName : m_userName;
   }
 
   /**
-   * Set the userName used for authentication with the smtp server
+   * Set the userName used for authentication with the smtp server.
    *
    * @param userName
    *        the userName or null if no authentication is required
    */
   @Override
   public void setUserName(final String userName) {
-    m_userName = userName;
+    m_userName = credentialsSaved ? userName : USE_TRANSIENT_CREDENTIAL;
+    transientUserName = userName;
   }
 
   /**
-   * Get the password used to authenticate
+   * Get the password used to authenticate.
    *
    * @return the password or null
    */
   @Override
   public String getPassword() {
-    if (USE_TRANSITIVE_PASSWORD.equals(m_password)) {
-      return m_transPassword;
-    }
-    return m_password;
+    return USE_TRANSIENT_CREDENTIAL.equals(m_password) ? transientPassword : m_password;
   }
 
   /**
-   * Set the password to authenticate with
+   * Set the password to authenticate with.
    *
    * @param password
    *        the password or null
    */
   @Override
   public void setPassword(final String password) {
-    m_password = password;
-    m_transPassword = password;
+    m_password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
+    transientPassword = password;
+  }
+
+  @Override
+  public boolean areCredentialsSaved() {
+    return credentialsSaved;
+  }
+
+  @Override
+  public void setCredentialsSaved(final boolean credentialsSaved) {
+    this.credentialsSaved = credentialsSaved;
+    setUserName(transientUserName);
+    setPassword(transientPassword);
   }
 
   /**
-   * Get the timeout (in milli seconds) before the send operation should be aborted
+   * Get the timeout (in milliseconds) before the send operation should be aborted.
    *
    * @return the timeout
    */
@@ -198,7 +269,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the SMTP host
+   * Get the SMTP host.
    *
    * @return the host to send to
    */
@@ -207,7 +278,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the smtp server host or IP address
+   * Set the smtp server host or IP address.
    *
    * @param host
    *        the host
@@ -217,7 +288,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the smtp server post
+   * Get the smtp server post.
    *
    * @return the port
    */
@@ -226,7 +297,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the SMTP servers port
+   * Set the SMTP server port.
    *
    * @param port
    *        the port
@@ -236,7 +307,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the message encryption
+   * Get the message encryption.
    *
    * @return the selected encryption
    */
@@ -245,7 +316,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Sets the message encryption
+   * Sets the message encryption.
    *
    * @param encryption
    *        the encryption
@@ -255,7 +326,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Sets the to address field, if multiple email addresses are given they must be separated by space
+   * Sets the to address field, if multiple email addresses are given they must be separated by space.
    *
    * @param to
    *        the to addresses
@@ -265,7 +336,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Get the To address configured
+   * Get the To address configured.
    *
    * @return the to address, or multiple separated by space
    */
@@ -276,7 +347,8 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public void clearSensitiveInfo() {
-    m_password = USE_TRANSITIVE_PASSWORD;
+    credentialsSaved = false;
+    m_userName = m_password = USE_TRANSIENT_CREDENTIAL;
   }
 
   @Override
@@ -291,6 +363,7 @@ public class GenericEmailSender implements IEmailSender {
     sender.setToAddress(getToAddress());
     sender.setUserName(getUserName());
     sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
+    sender.setCredentialsSaved(areCredentialsSaved());
     return sender;
   }
 

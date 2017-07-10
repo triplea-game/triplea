@@ -50,14 +50,20 @@ import games.strategy.twoIfBySea.delegate.InitDelegate;
 /**
  * This class creates objects referred to by game XMLs via the 'javaClass' property, eg:
  *
- * <attachment name="territoryAttachment" attachTo="Rason"
+ * <pre>
+ * &lt;attachment name="territoryAttachment" attachTo="Rason"
  * javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+ * </pre>
  *
+ * <p>
  * In the above example, we are going to map the String value "games.strategy.triplea.attachments.TerritoryAttachment"
  * to a class constructor.
+ * </p>
  *
+ * <p>
  * Note: attachments and delegates are initialized slightly differently, one is is no-arg the other has initialization
  * parameters.
+ * </p>
  */
 public class XmlGameElementMapper {
 
@@ -142,7 +148,7 @@ public class XmlGameElementMapper {
               attachmentData.attachable, attachmentData.gameData))
           .build();
 
-  /** Small data holder class */
+  /** Small data holder class. */
   private static class AttachmentData {
     private final String name;
     private final Attachable attachable;
@@ -160,7 +166,7 @@ public class XmlGameElementMapper {
    * Assumes a zero argument constructor.
    */
   public Optional<IDelegate> getDelegate(final String className) {
-    if(!delegateMap.containsKey(className)) {
+    if (!delegateMap.containsKey(className)) {
       handleMissingObjectError("delegate", className);
       return Optional.empty();
     }
@@ -177,7 +183,7 @@ public class XmlGameElementMapper {
   }
 
   public Optional<IAttachment> getAttachment(String javaClass, String name, Attachable attachable, GameData data) {
-    if(!attachmentMap.containsKey(javaClass)) {
+    if (!attachmentMap.containsKey(javaClass)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();
     }

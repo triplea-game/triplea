@@ -5,21 +5,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Arrays;
-
+import java.util.Optional;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * User editable property representing a file.
+ *
  * <p>
  * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to
  * change the file.
+ * </p>
  */
 public class FileProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
@@ -114,15 +115,13 @@ public class FileProperty extends AEditableProperty {
 
   /**
    * Prompts the user to select a file.
-   *
-   * @param acceptableSuffixes
    */
-  private File getFileUsingDialog(final String... acceptableSuffixes) {
+  private static File getFileUsingDialog(final String... acceptableSuffixes) {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
+      final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setFilenameFilter((dir, name) -> {
         if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
@@ -143,8 +142,7 @@ public class FileProperty extends AEditableProperty {
       }
       return new File(dirName, fileName);
     }
-    final JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileFilter(new FileFilter() {
+    final Optional<File> selectedFile = GameRunner.showFileChooser(new FileFilter() {
       @Override
       public boolean accept(final File file) {
         if (file == null) {
@@ -167,11 +165,7 @@ public class FileProperty extends AEditableProperty {
         return Arrays.toString(acceptableSuffixes);
       }
     });
-    final int rVal = fileChooser.showOpenDialog(MainFrame.getInstance());
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile();
-    }
-    return null;
+    return selectedFile.orElse(null);
   }
 
   @Override

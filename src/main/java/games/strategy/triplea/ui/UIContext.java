@@ -50,7 +50,7 @@ public class UIContext extends AbstractUIContext {
   // protected final MainGameFrame m_frame;
   protected Cursor m_cursor = Cursor.getDefaultCursor();
 
-  public UIContext() {
+  UIContext() {
     super();
     m_mapImage = new MapImage();
     // m_frame = frame;
@@ -106,10 +106,10 @@ public class UIContext extends AbstractUIContext {
     m_cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
     // URL's use "/" not "\"
-    final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
-    if (cursorURL != null) {
+    final URL cursorUrl = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
+    if (cursorUrl != null) {
       try {
-        final Image image = ImageIO.read(cursorURL);
+        final Image image = ImageIO.read(cursorUrl);
         if (image != null) {
           final Point hotSpot = new Point(m_mapData.getMapCursorHotspotX(), m_mapData.getMapCursorHotspotY());
           m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
@@ -185,8 +185,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowUnits(final boolean aBool) {
-    m_drawUnits = aBool;
+  public void setShowUnits(final boolean showUnits) {
+    m_drawUnits = showUnits;
   }
 
   @Override
@@ -210,8 +210,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowTerritoryEffects(final boolean aBool) {
-    m_drawTerritoryEffects = aBool;
+  public void setShowTerritoryEffects(final boolean showTerritoryEffects) {
+    m_drawTerritoryEffects = showTerritoryEffects;
   }
 
   @Override
@@ -225,8 +225,8 @@ public class UIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowMapOnly(final boolean aBool) {
-    m_drawMapOnly = aBool;
+  public void setShowMapOnly(final boolean showMapOnly) {
+    m_drawMapOnly = showMapOnly;
   }
 
   @Override

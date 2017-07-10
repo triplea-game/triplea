@@ -56,7 +56,7 @@ public class ProPurchaseOption {
   private boolean isAttackSupport;
   private boolean isDefenseSupport;
 
-  public ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
+  ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
       final GameData data) {
     this.productionRule = productionRule;
     this.unitType = unitType;
@@ -171,6 +171,10 @@ public class ProPurchaseOption {
 
   public double getTransportEfficiency() {
     return transportEfficiency;
+  }
+
+  public double getTransportEfficiency(final GameData data) {
+    return Math.pow(transportEfficiency, 30) / quantity;
   }
 
   public double getCarrierEfficiency() {
@@ -291,14 +295,10 @@ public class ProPurchaseOption {
         30) / quantity;
   }
 
-  public double getTransportEfficiency(final GameData data) {
-    return Math.pow(transportEfficiency, 30) / quantity;
-  }
-
   private double calculateLandDistanceFactor(final int enemyDistance) {
     final double distance = Math.max(0, enemyDistance - 1.5);
-    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1); // 1, 2, 2.5, 2.75,
-                                                                                                   // etc
+    // 1, 2, 2.5, 2.75, etc
+    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1);
     final double distanceFactor = Math.pow(moveFactor, distance / 5);
     return distanceFactor;
   }

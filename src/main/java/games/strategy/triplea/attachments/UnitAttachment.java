@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -28,7 +27,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -56,7 +54,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
+  static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
     final UnitAttachment rVal = (UnitAttachment) type.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
@@ -227,7 +225,7 @@ public class UnitAttachment extends DefaultAttachment {
   // currently used for: placement in original territories only
   private HashSet<String> m_special = new HashSet<>();
 
-  /** Creates new UnitAttachment */
+  /** Creates new UnitAttachment. */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -362,9 +360,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCanBeGivenByTerritoryTo(final String value) throws GameParseException {
@@ -400,9 +395,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
@@ -436,17 +428,14 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhenCapturedChangesInto(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 5 || (s.length - 1) % 2 != 0) {
       throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
-          + "playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc"
-          + thisErrorMsg());
+          + "playerFrom:playerTo:keepAttributes:unitType:howMany "
+          + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
     }
     final PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
     if (pfrom == null && !s[0].equals("any")) {
@@ -489,9 +478,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDestroyedWhenCapturedBy(String value) throws GameParseException {
@@ -848,9 +834,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setSpecial(final String value) throws GameParseException {
@@ -926,8 +909,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRequiresUnits(final String value) {
@@ -953,9 +934,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhenCombatDamaged(final String value) throws GameParseException {
@@ -968,9 +946,8 @@ public class UnitAttachment extends DefaultAttachment {
     final int from = getInt(s[0]);
     final int to = getInt(s[1]);
     if (from < 0 || to < 0 || to < from) {
-      throw new GameParseException(
-          "whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first"
-              + thisErrorMsg());
+      throw new GameParseException("whenCombatDamaged damaged integers must be positive, and the second integer must "
+          + "be equal to or greater than the first" + thisErrorMsg());
     }
     final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
     Tuple<String, String> effectNum;
@@ -1001,8 +978,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setReceivesAbilityWhenWith(final String value) {
@@ -1030,7 +1005,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Match.getMatches(units, Matches.UnitCanReceivesAbilityWhenWith()));
+        getUnitTypesFromUnitList(Match.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1047,7 +1022,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
-    if (Match.noneMatch(units, Matches.UnitCanReceivesAbilityWhenWith())) {
+    if (Match.noneMatch(units, Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
     final Collection<Unit> unitsCopy = new ArrayList<>(units);
@@ -1056,7 +1031,7 @@ public class UnitAttachment extends DefaultAttachment {
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
       final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
-          Matches.UnitCanReceivesAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
+          Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
     }
@@ -1213,7 +1188,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
-   * DO NOT REMOVE
+   * DO NOT REMOVE.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsTwoHit(final String s) {
@@ -1429,11 +1404,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttack(final PlayerID player) {
-    int attackValue =
+    final int attackValue =
         m_attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
-    if (attackValue > 0 && player.isAI()) {
-      attackValue += games.strategy.triplea.Properties.getAIBonusAttack(getData());
-    }
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
   }
 
@@ -1480,9 +1452,6 @@ public class UnitAttachment extends DefaultAttachment {
     if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player)) {
       final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(getData());
       defenseValue += bonus;
-    }
-    if (defenseValue > 0 && player.isAI()) {
-      defenseValue += games.strategy.triplea.Properties.getAIBonusDefense(getData());
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
   }
@@ -1750,9 +1719,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) throws GameParseException {
@@ -1791,9 +1757,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setConsumesUnits(final String value) throws GameParseException {
@@ -1834,9 +1797,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCreatesUnitsList(final String value) throws GameParseException {
@@ -1877,9 +1837,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCreatesResourcesList(final String value) throws GameParseException {
@@ -1918,9 +1875,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setFuelCost(final String value) throws GameParseException {
@@ -1997,9 +1951,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBombingTargets(final String value) throws GameParseException {
@@ -2324,16 +2275,6 @@ public class UnitAttachment extends DefaultAttachment {
     m_typeAA = "AA";
   }
 
-  public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets,
-      final Match<Unit> typeOfAA, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
-    final Set<String> rVal = new HashSet<>();
-    for (final Unit u : Match.getMatches(aaUnits,
-        Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA, airborneTechTargetsAllowed))) {
-      rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
-    }
-    return rVal;
-  }
-
   public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified) {
     final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
@@ -2346,9 +2287,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTargetsAA(final String value) throws GameParseException {
@@ -2399,9 +2337,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWillNotFireIfPresent(final String value) throws GameParseException {
@@ -2605,15 +2540,16 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<>(Matches.unitIsOfType(ut));
+    final Match.CompositeBuilder<Unit> stackingMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOfType(ut));
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
-      stackingMatch.add(Matches.unitIsOwnedBy(owner));
+      stackingMatchBuilder.add(Matches.unitIsOwnedBy(owner));
     } else if (stackingType.equals("allied")) {
-      stackingMatch.add(Matches.isUnitAllied(owner, data));
+      stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatch);
+    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
     return Math.max(0, max - totalInTerritory);
   }
 
@@ -2631,9 +2567,7 @@ public class UnitAttachment extends DefaultAttachment {
           || m_isAirTransport || m_isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
-    } else
-    // if land
-    {
+    } else { // if land
       if (m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1
           || m_transportCapacity != -1 || m_isAirTransport || m_isCombatTransport || m_isKamikaze) {
         throw new GameParseException("land units cannot have certain properties, " + thisErrorMsg());
@@ -2674,9 +2608,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_isConstruction
         && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("")
             || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0)) {
-      throw new GameParseException(
-          "Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType, "
-              + thisErrorMsg());
+      throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType "
+          + "and maxConstructionsPerType, " + thisErrorMsg());
     }
     if (!m_isConstruction
         && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals(""))
@@ -2762,7 +2695,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
+  private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
     final List<Territory> rVal = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist
@@ -2775,7 +2708,7 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  private boolean playerHasRockets(final PlayerID player) {
+  private static boolean playerHasRockets(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -2783,7 +2716,7 @@ public class UnitAttachment extends DefaultAttachment {
     return ta.getRocket();
   }
 
-  private boolean playerHasMechInf(final PlayerID player) {
+  private static boolean playerHasMechInf(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -2791,7 +2724,7 @@ public class UnitAttachment extends DefaultAttachment {
     return ta.getMechanizedInfantry();
   }
 
-  private boolean playerHasParatroopers(final PlayerID player) {
+  private static boolean playerHasParatroopers(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {
       return false;
@@ -2895,7 +2828,7 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_placementLimit != null ? m_placementLimit.toString() : "null");
   }
 
-  public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML,
+  public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
       final boolean includeAttachedToName) {
     // displays everything in a very short form, in English rather than as xml stuff
     // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
@@ -3009,7 +2942,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     // line break
-    if (useHTML) {
+    if (useHtml) {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getIsInfrastructure()) {
@@ -3047,7 +2980,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.UnitSupportAttachmentCanBeUsedByPlayer(player));
+          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {
           stats.append("can Modify Power Of Other Units, ");
@@ -3167,7 +3100,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("when hit this unit loses certain abilities, ");
     }
     // line break
-    if (useHTML) {
+    if (useHtml) {
       stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
     }
     if (getMaxBuiltPerPlayer() > -1) {
@@ -3283,12 +3216,16 @@ public class UnitAttachment extends DefaultAttachment {
     return stats.toString();
   }
 
-  /** @deprecated does nothing, kept to avoid breaking maps, do not remove */
+  /**
+   * @deprecated does nothing, kept to avoid breaking maps, do not remove.
+   */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsParatroop(final String s) {}
 
-  /** @deprecated does nothing, used to keep compatibility with older xml files, do not remove */
+  /**
+   * @deprecated does nothing, used to keep compatibility with older xml files, do not remove.
+   */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsMechanized(final String s) {}

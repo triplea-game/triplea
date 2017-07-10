@@ -17,8 +17,10 @@ import games.strategy.sound.ISound;
 
 /**
  * Represents a running game.
+ *
  * <p>
  * Allows access to the games communication interfaces, and to listen to the current game step.
+ * </p>
  */
 public interface IGame {
   RemoteName GAME_MODIFICATION_CHANNEL =
@@ -41,7 +43,7 @@ public interface IGame {
   /**
    * Should not be called outside of engine code.
    */
-  void addChange(Change aChange);
+  void addChange(Change change);
 
   boolean canSave();
 
@@ -53,7 +55,7 @@ public interface IGame {
   void addDisplay(IDisplay display);
 
   /**
-   * remove a display
+   * remove a display.
    */
   void removeDisplay(IDisplay display);
 
@@ -64,7 +66,6 @@ public interface IGame {
   /**
    * Is the game over. Game over does not relate to the state of the game (eg check-mate in chess)
    * but to the game being shut down and all players have left.
-   * <p>
    */
   boolean isGameOver();
 

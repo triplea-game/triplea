@@ -91,7 +91,7 @@ public class GameDataExporter {
     }
   }
 
-  private String playertechs(final GameData data) {
+  private static String playertechs(final GameData data) {
     final StringBuffer returnValue = new StringBuffer();
     for (final PlayerID player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
@@ -116,7 +116,7 @@ public class GameDataExporter {
     return returnValue.toString();
   }
 
-  private String technologies(final GameData data) {
+  private static String technologies(final GameData data) {
     final StringBuffer returnValue = new StringBuffer();
     if (data.getTechnologyFrontier().getTechs().size() > 0) {
       returnValue.append("        <technologies>\n");
@@ -142,7 +142,7 @@ public class GameDataExporter {
   }
 
   @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) {// TODO: Unchecked Reflection
+  private void propertyList(final GameData data) { // TODO: Unchecked Reflection
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
     try {
@@ -185,7 +185,8 @@ public class GameDataExporter {
     if (prop.getClass().equals(ComboProperty.class)) {
       Field listField;
       try {
-        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME); // TODO: unchecked reflection
+        // TODO: unchecked reflection
+        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME);
         listField.setAccessible(true);
         typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
@@ -194,7 +195,8 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       try {
-        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME); // TODO: unchecked reflection
+        // TODO: unchecked reflection
+        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME);
         final Field minField = NumberProperty.class.getDeclaredField(NumberProperty.MIN_PROPERTY_NAME);
         maxField.setAccessible(true);
         minField.setAccessible(true);
@@ -342,8 +344,8 @@ public class GameDataExporter {
     xmlfile.append("    </attachmentList>\n");
   }
 
-  private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues,
-      final IAttachment attachment) {
+  private static String printAttachmentOptionsBasedOnOriginalXML(
+      final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
     if (attachmentPlusValues.isEmpty()) {
       return "";
     }

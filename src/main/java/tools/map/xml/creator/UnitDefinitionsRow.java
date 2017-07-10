@@ -29,7 +29,7 @@ class UnitDefinitionsRow extends DynamicRow {
     Dimension dimension = textFieldUnitName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldUnitName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldUnitName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldUnitName, () -> {
       final String inputText = textFieldUnitName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;
@@ -66,7 +66,7 @@ class UnitDefinitionsRow extends DynamicRow {
     dimension = textFieldBuyCost.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldBuyCost.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldBuyCost, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldBuyCost, () -> {
       final String inputText = textFieldBuyCost.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -82,7 +82,7 @@ class UnitDefinitionsRow extends DynamicRow {
     dimension = textFieldBuyQuantity.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldBuyQuantity.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldBuyQuantity, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldBuyQuantity, () -> {
       final String inputText = textFieldBuyQuantity.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -107,18 +107,18 @@ class UnitDefinitionsRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldUnitName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldUnitName, gbcTemplate);
 
-    final GridBagConstraints gbc_tBuyCost = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tBuyCost = (GridBagConstraints) gbcTemplate.clone();
     gbc_tBuyCost.gridx = 1;
     parent.add(textFieldBuyCost, gbc_tBuyCost);
 
-    final GridBagConstraints gbc_tBuyQuantity = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tBuyQuantity = (GridBagConstraints) gbcTemplate.clone();
     gbc_tBuyQuantity.gridx = 2;
     parent.add(textFieldBuyQuantity, gbc_tBuyQuantity);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 3;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * A class for loading help files from the data folder (merged with src at runtime)
+ * A class for loading help files from the data folder (merged with src at runtime).
  */
 public class HelpSupport {
   public static String loadHelp(final String fileName) {

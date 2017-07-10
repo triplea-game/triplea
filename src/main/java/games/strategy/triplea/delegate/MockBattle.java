@@ -47,8 +47,8 @@ public class MockBattle extends AbstractBattle {
     return false;
   }
 
-  public void setIsAmphibious(final boolean aBool) {
-    m_isAmphibious = aBool;
+  public void setIsAmphibious(final boolean isAmphibious) {
+    m_isAmphibious = isAmphibious;
   }
 
   public void setAmphibiousLandAttackers(final Collection<Unit> units) {

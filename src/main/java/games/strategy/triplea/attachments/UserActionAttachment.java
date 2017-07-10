@@ -19,7 +19,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -47,7 +46,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return returnList;
   }
 
-  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
+  static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
     final UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
@@ -62,9 +61,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    * (same as one in TriggerAttachment)
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setActivateTrigger(final String value) throws GameParseException {
@@ -122,8 +118,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
       TriggerAttachment toFire = null;
@@ -149,7 +145,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       if (testConditionsToFire) {
         if (!testedConditionsSoFar.containsKey(toFire)) {
           // this should directly add the new tests to testConditionsToFire...
-          TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge,
+          TriggerAttachment.collectTestsForAllTriggers(toFireSet, bridge,
               new HashSet<>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
         }
         if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
@@ -157,9 +153,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         }
       }
       for (int i = 0; i < numberOfTimesToFire; ++i) {
-        aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
+        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
             + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
-        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, aBridge, null, null, useUsesToFire,
+        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, bridge, null, null, useUsesToFire,
             testUsesToFire, testChanceToFire, false);
       }
     }
@@ -177,8 +173,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
-    return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<>(
-        Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
+    return Match.getMatches(getUserActionAttachments(player), Match.allOf(
+        Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 
   @Override

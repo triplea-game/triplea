@@ -22,30 +22,30 @@ import games.strategy.ui.Util;
 
 public class SmallMapImageManager {
   private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
-  private final ImageScrollerSmallView m_view;
+  private final ImageScrollerSmallView view;
   private static final int UNIT_BOX_SIZE = 4;
-  private Image m_offscreen;
-  private final TileManager m_tileManager;
+  private Image offscreen;
+  private final TileManager tileManager;
 
   public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
       final TileManager tileManager) {
-    m_view = view;
-    m_offscreen = Util.copyImage(offscreen);
-    m_tileManager = tileManager;
+    this.view = view;
+    this.offscreen = Util.copyImage(offscreen);
+    this.tileManager = tileManager;
   }
 
   public void updateOffscreenImage(final BufferedImage offscreen) {
-    m_offscreen.flush();
-    m_offscreen = Util.copyImage(offscreen);
+    this.offscreen.flush();
+    this.offscreen = Util.copyImage(offscreen);
   }
 
   public void update(final GameData data, final MapData mapData) {
     final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
-    final Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
-    onScreenGraphics.drawImage(m_offscreen, 0, 0, null);
-    for (final UnitsDrawer drawer : new ArrayList<>(m_tileManager.getUnitDrawables())) {
-      final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
-      final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
+    final Graphics onScreenGraphics = view.getOffScreenImage().getGraphics();
+    onScreenGraphics.drawImage(offscreen, 0, 0, null);
+    for (final UnitsDrawer drawer : new ArrayList<>(tileManager.getUnitDrawables())) {
+      final int x = (int) (drawer.getPlacementPoint().x * view.getRatioX());
+      final int y = (int) (drawer.getPlacementPoint().y * view.getRatioY());
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());
       onScreenGraphics.fillRect(x, y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
     }
@@ -80,14 +80,14 @@ public class SmallMapImageManager {
       g.dispose();
     }
     // scale it down
-    int thumbWidth = (int) (bounds.width * m_view.getRatioX());
-    int thumbHeight = (int) (bounds.height * m_view.getRatioY());
+    int thumbWidth = (int) (bounds.width * view.getRatioX());
+    int thumbHeight = (int) (bounds.height * view.getRatioY());
     // make the image a little bigger
     // the images wont overlap perfectly after being scaled, make them a little bigger to rebalance that
     thumbWidth += 3;
     thumbHeight += 3;
-    final int thumbsX = (int) (bounds.x * m_view.getRatioX()) - 1;
-    final int thumbsY = (int) (bounds.y * m_view.getRatioY()) - 1;
+    final int thumbsX = (int) (bounds.x * view.getRatioX()) - 1;
+    final int thumbsY = (int) (bounds.y * view.getRatioY()) - 1;
     // create the thumb image
     final Image thumbImage = Util.createImage(thumbWidth, thumbHeight, true);
     {
@@ -96,7 +96,7 @@ public class SmallMapImageManager {
       g.dispose();
     }
     {
-      final Graphics g = m_offscreen.getGraphics();
+      final Graphics g = offscreen.getGraphics();
       // draw it on our offscreen
       g.drawImage(thumbImage, thumbsX, thumbsY, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
       g.dispose();

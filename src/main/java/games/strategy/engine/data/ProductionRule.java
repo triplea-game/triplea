@@ -10,12 +10,12 @@ public class ProductionRule extends DefaultNamed {
   private IntegerMap<Resource> m_cost = new IntegerMap<>();
   private IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
 
-  /** Creates new ProductionRule */
+  /** Creates new ProductionRule. */
   public ProductionRule(final String name, final GameData data) {
     super(name, data);
   }
 
-  /** Creates new ProductionRule */
+  /** Creates new ProductionRule. */
   public ProductionRule(final String name, final GameData data, final IntegerMap<NamedAttachable> results,
       final IntegerMap<Resource> costs) {
     super(name, data);

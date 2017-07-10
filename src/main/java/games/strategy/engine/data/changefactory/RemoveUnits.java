@@ -37,7 +37,7 @@ class RemoveUnits extends Change {
       throw new IllegalStateException("Not all units present in:" + m_name + ".  Trying to remove:" + m_units
           + " present:" + holder.getUnits().getUnits());
     }
-    holder.getUnits().removeAllUnits(m_units);
+    holder.getUnits().removeAll(m_units);
   }
 
   @Override

@@ -90,7 +90,7 @@ public class ProTerritory {
     maxScrambleUnits = new ArrayList<>();
   }
 
-  public ProTerritory(final ProTerritory patd) {
+  ProTerritory(final ProTerritory patd) {
     this.territory = patd.getTerritory();
     maxUnits = new ArrayList<>(patd.getMaxUnits());
     units = new ArrayList<>(patd.getUnits());
@@ -133,7 +133,7 @@ public class ProTerritory {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
     } else {
-      final List<Unit> defenders = Match.getMatches(cantMoveUnits, ProMatches.UnitIsOwnedCarrier(player).invert());
+      final List<Unit> defenders = Match.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).invert());
       defenders.addAll(units);
       defenders.addAll(tempUnits);
       return defenders;
@@ -402,7 +402,7 @@ public class ProTerritory {
     return bombardOptionsMap;
   }
 
-  public void addBombardOptionsMap(final Unit unit, final Territory t) {
+  void addBombardOptionsMap(final Unit unit, final Territory t) {
     if (bombardOptionsMap.containsKey(unit)) {
       bombardOptionsMap.get(unit).add(t);
     } else {

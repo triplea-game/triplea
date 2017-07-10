@@ -28,13 +28,20 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.util.IntegerMap;
 
 /**
- * All changes made to GameData should be made through changes produced here. <br>
- * The way to change game data is to <br>
- * 1) Create a change with a ChangeFactory.change** or ChangeFactory.set**
- * method <br>
- * 2) Execute that change through DelegateBridge.addChange()).
+ * All changes made to GameData should be made through changes produced here.
+ *
+ * <p>
+ * The way to change game data is to
+ * </p>
+ *
+ * <ol>
+ * <li>Create a change with a ChangeFactory.change** or ChangeFactory.set** method</li>
+ * <li>Execute that change through DelegateBridge.addChange()</li>
+ * </ol>
+ *
  * <p>
  * In this way changes to the game data can be co-ordinated across the network.
+ * </p>
  */
 public class ChangeFactory {
   public static final Change EMPTY_CHANGE = new Change() {
@@ -77,12 +84,12 @@ public class ChangeFactory {
     return new AddUnits(territory.getUnits(), units);
   }
 
-  public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
-    return new RemoveUnits(territory.getUnits(), units);
-  }
-
   public static Change addUnits(final PlayerID player, final Collection<Unit> units) {
     return new AddUnits(player.getUnits(), units);
+  }
+
+  public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
+    return new RemoveUnits(territory.getUnits(), units);
   }
 
   public static Change removeUnits(final PlayerID player, final Collection<Unit> units) {
@@ -101,18 +108,18 @@ public class ChangeFactory {
     return new ProductionFrontierChange(frontier, player);
   }
 
-  public static Change changePlayerWhoAmIChange(final PlayerID player, final String humanOrAI_colon_playerName) {
-    return new PlayerWhoAmIChange(humanOrAI_colon_playerName, player);
+  public static Change changePlayerWhoAmIChange(final PlayerID player, final String encodedPlayerTypeAndName) {
+    return new PlayerWhoAmIChange(encodedPlayerTypeAndName, player);
   }
 
   public static Change changeResourcesChange(final PlayerID player, final Resource resource, final int quantity) {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  public static Change removeResourceCollection(final PlayerID id, final ResourceCollection rCollection) {
+  public static Change removeResourceCollection(final PlayerID id, final ResourceCollection resourceCollection) {
     final CompositeChange cChange = new CompositeChange();
-    for (final Resource r : rCollection.getResourcesCopy().keySet()) {
-      cChange.add(new ChangeResourceChange(id, r, -rCollection.getQuantity(r)));
+    for (final Resource r : resourceCollection.getResourcesCopy().keySet()) {
+      cChange.add(new ChangeResourceChange(id, r, -resourceCollection.getQuantity(r)));
     }
     return cChange;
   }

@@ -1,6 +1,7 @@
 package tools.map.making;
 
 import java.awt.Color;
+import java.beans.Introspector;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +21,6 @@ import games.strategy.engine.data.properties.AEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.CollectionProperty;
 import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.ComboProperty;
 import games.strategy.engine.data.properties.DoubleProperty;
 import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -43,36 +43,37 @@ import games.strategy.util.Tuple;
 @SuppressWarnings("unchecked")
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
-  private IEditableProperty m_property;
+  private IEditableProperty property;
   // private final Class m_clazz;
   // private final T m_defaultValue;
-  private final Method m_setter;
-  private final Method m_getter;
+  private final Method setter;
+  @SuppressWarnings("unused")
+  private final Method getter;
 
-  public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,
+  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,
       final Method getter) {
     super(name, description);
     // m_clazz = clazz;
-    m_setter = setter;
-    m_getter = getter;
+    this.setter = setter;
+    this.getter = getter;
     // m_defaultValue = defaultValue;
     if (defaultValue instanceof Boolean) {
-      m_property = new BooleanProperty(name, description, ((Boolean) defaultValue));
+      property = new BooleanProperty(name, description, ((Boolean) defaultValue));
     } else if (defaultValue instanceof Color) {
-      m_property = new ColorProperty(name, description, ((Color) defaultValue));
+      property = new ColorProperty(name, description, ((Color) defaultValue));
     } else if (defaultValue instanceof File) {
-      m_property = new FileProperty(name, description, ((File) defaultValue));
+      property = new FileProperty(name, description, ((File) defaultValue));
     } else if (defaultValue instanceof String) {
-      m_property = new StringProperty(name, description, ((String) defaultValue));
+      property = new StringProperty(name, description, ((String) defaultValue));
     } else if (defaultValue instanceof Collection || defaultValue instanceof List || defaultValue instanceof Set) {
-      m_property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
+      property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map || defaultValue instanceof HashMap) {
-      m_property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
+      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      m_property =
+      property =
           new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      m_property =
+      property =
           new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
@@ -80,94 +81,40 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  public MapPropertyWrapper(final String name, final String description, final T defaultValue,
-      final Collection<T> possibleValues, final Method setter, final Method getter) {
-    super(name, description);
-    // m_clazz = clazz;
-    m_setter = setter;
-    m_getter = getter;
-    // m_defaultValue = defaultValue;
-    if (defaultValue instanceof Collection) {
-      m_property = new ComboProperty<>(name, description, defaultValue, possibleValues);
-    } else {
-      throw new IllegalArgumentException(
-          "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
-    }
-  }
-
-  public MapPropertyWrapper(final String name, final String description, final int max, final int min,
-      final int defaultValue, final Method setter, final Method getter) {
-    super(name, description);
-    // m_clazz = clazz;
-    m_setter = setter;
-    m_getter = getter;
-    // m_defaultValue = defaultValue;
-    m_property = new NumberProperty(name, description, max, min, defaultValue);
-  }
-
-  public MapPropertyWrapper(final String name, final String description, final double max, final double min,
-      final double defaultValue, final int places, final Method setter, final Method getter) {
-    super(name, description);
-    // m_clazz = clazz;
-    m_setter = setter;
-    m_getter = getter;
-    // m_defaultValue = defaultValue;
-    m_property = new DoubleProperty(name, description, max, min, defaultValue, places);
-  }
-
-  public MapPropertyWrapper(final String name, final String description, final File defaultValue,
-      final String[] acceptableSuffixes, final Method setter, final Method getter) {
-    super(name, description);
-    // m_clazz = clazz;
-    m_setter = setter;
-    m_getter = getter;
-    // m_defaultValue = defaultValue;
-    m_property = new FileProperty(name, description, defaultValue, acceptableSuffixes);
-  }
-
   @Override
   public int getRowsNeeded() {
-    return m_property.getRowsNeeded();
+    return property.getRowsNeeded();
   }
 
   @Override
   public Object getValue() {
-    return m_property.getValue();
+    return property.getValue();
   }
 
   public T getValueT() {
-    return (T) m_property.getValue();
+    return (T) property.getValue();
   }
 
   @Override
   public void setValue(final Object value) throws ClassCastException {
-    m_property.setValue(value);
+    property.setValue(value);
   }
 
   public void setValueT(final T value) {
-    m_property.setValue(value);
+    property.setValue(value);
   }
 
   @Override
   public JComponent getEditorComponent() {
-    return m_property.getEditorComponent();
+    return property.getEditorComponent();
   }
 
-  public T getFromObject(final Object object) {
-    try {
-      return (T) m_getter.invoke(object);
-    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      ClientLogger.logQuietly(e);
-    }
-    return null;
-  }
-
-  public void setToObject(final Object object) {
+  private void setToObject(final Object object) {
     final Object value = getValue();
     final Object[] args = {value};
     try {
-      System.out.println(m_setter + "   to   " + value);
-      m_setter.invoke(object, args);
+      System.out.println(setter + "   to   " + value);
+      setter.invoke(object, args);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
       ClientLogger.logQuietly(e);
     }
@@ -192,11 +139,10 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         ClientLogger.logQuietly(e);
         continue;
       }
-      final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), propertyName, false);
+      final String fieldName = Introspector.decapitalize(propertyName);
+      final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), fieldName, false);
       final Object currentValue;
-      // final Type type;
       try {
-        // type = field.getGenericType();
         currentValue = field.get(object);
       } catch (final IllegalArgumentException e) {
         ClientLogger.logQuietly(e);
@@ -213,21 +159,22 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         ClientLogger.logQuietly(e);
       }
     }
+    properties.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
     return properties;
   }
 
-  public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<?>> properties) {
+  static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<?>> properties) {
     for (final MapPropertyWrapper<?> p : properties) {
       p.setToObject(object);
     }
   }
 
-  public static PropertiesUI createPropertiesUI(final List<? extends IEditableProperty> properties,
+  public static PropertiesUI createPropertiesUi(final List<? extends IEditableProperty> properties,
       final boolean editable) {
     return new PropertiesUI(properties, editable);
   }
 
-  public static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUI(final Object object,
+  static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
       final boolean editable) {
     final List<MapPropertyWrapper<?>> properties = createProperties(object);
     final PropertiesUI ui = new PropertiesUI(properties, editable);
@@ -236,13 +183,13 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    return m_property.validate(value);
+    return property.validate(value);
   }
 
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
     final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
-    final PropertiesUI ui = createPropertiesUI(properties, true);
+    final PropertiesUI ui = createPropertiesUi(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().add(ui);

@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -22,11 +21,11 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
   public static final String EDITOR_CHANGE = "EditorChange";
-  protected final Color m_labelColor;
+  protected final Color labelColor;
 
   public EditorPanel() {
     super(new GridBagLayout());
-    m_labelColor = new JLabel().getForeground();
+    labelColor = new JLabel().getForeground();
   }
 
   /**
@@ -62,12 +61,12 @@ public abstract class EditorPanel extends JPanel {
    *        the field to validate
    * @param label
    *        the associated label (or null)
-   * @param IValidator
+   * @param validator
    *        the validator
    * @return true if text field content is valid
    */
-  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator IValidator) {
-    return validateText(field.getText(), label, IValidator);
+  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator validator) {
+    return validateText(field.getText(), label, validator);
   }
 
   /**
@@ -78,14 +77,14 @@ public abstract class EditorPanel extends JPanel {
    *        the text to validate
    * @param label
    *        the associated label (or null)
-   * @param IValidator
+   * @param validator
    *        the validator
    * @return true if text field content is valid
    */
-  protected boolean validateText(final String text, final JLabel label, final IValidator IValidator) {
+  protected boolean validateText(final String text, final JLabel label, final IValidator validator) {
     boolean valid = true;
-    Color color = m_labelColor;
-    if (!IValidator.isValid(text)) {
+    Color color = labelColor;
+    if (!validator.isValid(text)) {
       valid = false;
       color = Color.RED;
       label.setForeground(color);
@@ -112,7 +111,7 @@ public abstract class EditorPanel extends JPanel {
   public abstract IBean getBean();
 
   /**
-   * Returns the Label width, this can be used by wrapping editors to try to align label sizes
+   * Returns the Label width, this can be used by wrapping editors to try to align label sizes.
    *
    * @return the size of the largest label in the first column
    */
@@ -122,10 +121,10 @@ public abstract class EditorPanel extends JPanel {
     final Component[] components = getComponents();
     for (final Component component : components) {
       // label in first column
-      if (component instanceof JLabel && layout.getConstraints(component).gridx == 0) {
-        if (component.getPreferredSize().width > width) {
-          width = component.getPreferredSize().width;
-        }
+      if (component instanceof JLabel
+          && layout.getConstraints(component).gridx == 0
+          && component.getPreferredSize().width > width) {
+        width = component.getPreferredSize().width;
       }
     }
     return width;
@@ -135,8 +134,7 @@ public abstract class EditorPanel extends JPanel {
    * Sets the label with for labels in the first column of the gridBagLayout.
    * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
    *
-   * @param width
-   *        the new width of the labels
+   * @param width the new width of the labels
    */
   public void setLabelWidth(final int width) {
     final GridBagLayout layout = (GridBagLayout) getLayout();
@@ -154,14 +152,14 @@ public abstract class EditorPanel extends JPanel {
 
   /**
    * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
-   * notified when the editor modifies the bean
+   * notified when the editor modifies the bean.
    */
   protected void fireEditorChanged() {
     firePropertyChange(EDITOR_CHANGE, null, null);
   }
 
   /**
-   * Document listener which calls fireEditorChanged in response to any document change
+   * Document listener which calls fireEditorChanged in response to any document change.
    */
   protected class EditorChangedFiringDocumentListener implements DocumentListener {
     @Override

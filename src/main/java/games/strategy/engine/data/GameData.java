@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -24,18 +26,23 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 /**
  * Central place to find all the information for a running game.
+ *
+ * <p>
  * Using this object you can find the territories, connections, production rules,
  * unit types...
+ * </p>
+ *
  * <p>
  * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a
  * read/write lock. If
  * you are reading the game data, you should read while you have the read lock as below.
+ * </p>
+ *
  * <p>
  * <code>
  * data.acquireReadLock();
@@ -51,13 +58,15 @@ import games.strategy.util.Version;
  * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates
  * remote interface. The
  * delegate will have a read lock for the duration of those methods.
+ * </p>
+ *
  * <p>
  * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a
  * DelegateBridge or through a
  * History object.
- * <p>
+ * </p>
  */
-public class GameData implements java.io.Serializable {
+public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -66,10 +75,9 @@ public class GameData implements java.io.Serializable {
   private String gameName;
   private Version gameVersion;
   private int diceSides;
-  private transient ListenerList<TerritoryListener> territoryListeners = new ListenerList<>();
-  private transient ListenerList<GameDataChangeListener> dataChangeListeners =
-      new ListenerList<>();
-  private transient ListenerList<GameMapListener> gameMapListeners = new ListenerList<>();
+  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -98,7 +106,7 @@ public class GameData implements java.io.Serializable {
   private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
-  /** Creates new GameData */
+  /** Creates new GameData. */
   public GameData() {
     super();
     delegateList = new DelegateList(this);
@@ -122,7 +130,7 @@ public class GameData implements java.io.Serializable {
 
   /**
    * Print an exception report if we are testing the lock is held, and
-   * do not currently hold the read or write lock
+   * do not currently hold the read or write lock.
    */
   private void ensureLockHeld() {
     if (!testLockIsHeld) {
@@ -137,7 +145,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return a collection of all units in the game
+   * @return a collection of all units in the game.
    */
   public UnitsList getUnits() {
     // ensureLockHeld();
@@ -145,7 +153,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return list of Players in the game
+   * @return list of Players in the game.
    */
   public PlayerList getPlayerList() {
     return playerList;
@@ -176,14 +184,14 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the Technology Frontier for this game.
+   * @return The Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
   /**
-   * @return the list of production Frontiers for this game.
+   * @return The list of production Frontiers for this game.
    */
   public RepairFrontierList getRepairFrontierList() {
     ensureLockHeld();
@@ -191,7 +199,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the list of Production Rules for the game.
+   * @return The list of Production Rules for the game.
    */
   public RepairRuleList getRepairRuleList() {
     ensureLockHeld();
@@ -199,7 +207,7 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * @return the Alliance Tracker for the game.
+   * @return The Alliance Tracker for the game.
    */
   public AllianceTracker getAllianceTracker() {
     ensureLockHeld();
@@ -288,8 +296,8 @@ public class GameData implements java.io.Serializable {
     territoryListeners.forEach(territoryListener -> territoryListener.ownerChanged(t));
   }
 
-  void notifyGameDataChanged(final Change aChange) {
-    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(aChange));
+  void notifyGameDataChanged(final Change change) {
+    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
   }
 
   void notifyMapDataChanged() {
@@ -343,9 +351,9 @@ public class GameData implements java.io.Serializable {
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    territoryListeners = new ListenerList<>();
-    dataChangeListeners = new ListenerList<>();
-    gameMapListeners = new ListenerList<>();
+    territoryListeners = new ArrayList<>();
+    dataChangeListeners = new ArrayList<>();
+    gameMapListeners = new ArrayList<>();
   }
 
   /**

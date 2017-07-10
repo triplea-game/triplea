@@ -1,12 +1,7 @@
 package games.strategy.util;
 
-/** Utility class for java Thread related operations */
+/** Utility class for java Thread related operations. */
 public class ThreadUtil {
-
-
-  public static boolean sleep(final double millis) {
-    return sleep((int) millis);
-  }
 
   /**
    * Sleeps the current thread, useful to handle interrupted exceptions.

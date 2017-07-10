@@ -66,7 +66,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   /**
-   * subclasses can over ride this method to use different restrictions as to what a player can buy
+   * subclasses can over ride this method to use different restrictions as to what a player can buy.
    */
   @Override
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {

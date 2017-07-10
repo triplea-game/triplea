@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -44,8 +45,7 @@ public class HelpMenu {
   private final IUIContext iuiContext;
   private final GameData gameData;
 
-  public HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData,
-      final Color backgroundColor) {
+  HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData, final Color backgroundColor) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 
@@ -72,7 +72,8 @@ public class HelpMenu {
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
           + "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
           + "Shift-Left click on a unit to select all units in the territory.<br>"
-          + "Left click on a territory but not on a unit to bring up a selection window for inputing the desired selection.<br>"
+          + "Left click on a territory but not on a unit to bring up a selection window for inputing the desired "
+          + "selection.<br>"
           + "<br><b> Deselecting Units</b><br>"
           + "Right click somewhere not on a unit stack to unselect the last selected unit.<br>"
           + "Right click on a unit stack to unselect one unit in the stack.<br>"
@@ -80,25 +81,31 @@ public class HelpMenu {
           + "CTRL-Right click on a unit stack to unselect all units of that type in the stack.<br>"
           + "CTRL-Right click somewhere not on a unit stack to unselect all units selected.<br>"
           + "<br><b> Moving Units</b><br>"
-          + "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
-          + "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
+          + "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead "
+          + "select units, then move the mouse, then select the territory).<br>"
+          + "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move "
+          + "through this territory on their way to the destination).<br>"
           + "<br><b> Moving the Map Screen</b><br>"
           + "Right click and Drag the mouse to move your screen over the map.<br>"
-          + "Left click the map (anywhere), use the arrow keys (or WASD keys) to move your map around. Holding down control will move the map faster.<br />"
+          + "Left click the map (anywhere), use the arrow keys (or WASD keys) to move your map around. Holding down "
+          + "control will move the map faster.<br />"
           + "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
-          + "Move the mouse to the edge of the map to scroll in that direction. Moving the mouse even closer to the edge will scroll faster.<br>"
+          + "Move the mouse to the edge of the map to scroll in that direction. Moving the mouse even closer to the "
+          + "edge will scroll faster.<br>"
           + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
           + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
           + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
           + "<br><b> Turn off Map Artwork</b><br>"
           + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
-          + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
+          + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have "
+          + "skins).<br>"
           + "<br><b> Other Things</b><br>"
           + "Press 'n' to cycle through units with movement left (move phases only).<br>"
           + "Press 'f' to highlight all units you own that have movement left (move phases only).<br>"
           + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
           + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
-          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the map to the territory panel.<br>";
+          + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the "
+          + "map to the territory panel.<br>";
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
@@ -184,7 +191,7 @@ public class HelpMenu {
                   : (scroll.getPreferredSize().width > availWidth
                       ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
                       : scroll.getPreferredSize().height))));
-      final JDialog dialog = SwingComponents.newJDialog(unitHelpTitle);
+      final JDialog dialog = new JDialog((JFrame) null, unitHelpTitle);
       dialog.add(scroll, BorderLayout.CENTER);
       final JPanel buttons = new JPanel();
       final JButton button = new JButton(SwingAction.of("OK", event -> {
@@ -226,7 +233,7 @@ public class HelpMenu {
       parentMenu.add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        final JDialog dialog = SwingComponents.newJDialog(gameNotesTitle);
+        final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
         dialog.add(scroll, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
         final JButton button = new JButton(SwingAction.of("OK", event -> {
@@ -265,10 +272,13 @@ public class HelpMenu {
   }
 
   private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
-    final String text = "<h2>" + gameData.getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion() + "<br><b>Game:</b> " + gameData.getGameName() + "<br><b>Game Version:</b> "
-        + gameData.getGameVersion() + "</p>" + "<p>For more information please visit,<br><br>" + "<b><a hlink='"
-        + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
+    final String text = "<h2>" + gameData.getGameName() + "</h2>"
+        + "<p><b>Engine Version:</b> "
+        + ClientContext.engineVersion()
+        + "<br><b>Game:</b> " + gameData.getGameName()
+        + "<br><b>Game Version:</b> " + gameData.getGameVersion() + "</p>"
+        + "<p>For more information please visit,<br><br>"
+        + "<b><a hlink='" + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setBorder(null);
     editorPane.setBackground(backgroundColor);
@@ -281,9 +291,7 @@ public class HelpMenu {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
-    } else
-    // On Mac OS X, put the About menu where Mac users expect it to be
-    {
+    } else { // On Mac OS X, put the About menu where Mac users expect it to be
       Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));
     }

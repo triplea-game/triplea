@@ -15,9 +15,9 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
-public class DebugMenu {
+class DebugMenu {
 
-  public DebugMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  DebugMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     final JMenu debugMenu = SwingComponents.newJMenu("Debug", SwingComponents.KeyboardCode.D);
     menuBar.add(debugMenu);
 

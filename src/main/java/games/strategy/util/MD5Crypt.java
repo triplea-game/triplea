@@ -31,11 +31,11 @@ public class MD5Crypt {
   /**
    * Function to return a string from the set: A-Za-z0-9./
    *
-   * @return A string of size (size) from the set A-Za-z0-9./
    * @param size
    *        Length of the string
    * @param v
    *        value to be converted
+   * @return A string of size (size) from the set A-Za-z0-9./
    */
   private static String to64(long v, int size) {
     final StringBuffer result = new StringBuffer();
@@ -46,7 +46,7 @@ public class MD5Crypt {
     return result.toString();
   }
 
-  private static void clearbits(final byte bits[]) {
+  private static void clearbits(final byte[] bits) {
     for (int i = 0; i < bits.length; i++) {
       bits[i] = 0;
     }
@@ -61,11 +61,11 @@ public class MD5Crypt {
   }
 
   /**
-   * LINUX/BSD MD5Crypt function
+   * LINUX/BSD MD5Crypt function.
    *
-   * @return The encrypted password as an MD5 hash
    * @param password
    *        Password to be encrypted
+   * @return The encrypted password as an MD5 hash
    */
   public static String crypt(final String password) {
     final StringBuffer salt = new StringBuffer();
@@ -80,29 +80,28 @@ public class MD5Crypt {
   }
 
   /**
-   * LINUX/BSD MD5Crypt function
+   * LINUX/BSD MD5Crypt function.
    *
-   * @return The encrypted password as an MD5 hash
    * @param salt
    *        Random string used to initialize the MD5 engine
    * @param password
    *        Password to be encrypted
+   * @return The encrypted password as an MD5 hash
    */
   public static String crypt(final String password, final String salt) {
     return crypt(password, salt, MAGIC);
   }
 
   /**
-   * Linux/BSD MD5Crypt function
+   * Linux/BSD MD5Crypt function.
    *
-   * @throws java.lang.Exception
-   * @return The encrypted password as an MD5 hash
    * @param magic
    *        $1$ for Linux/BSB, $apr1$ for Apache crypt
    * @param salt
    *        8 byte permutation string
    * @param password
    *        user password
+   * @return The encrypted password as an MD5 hash
    */
   public static String crypt(final String password, String salt, final String magic) {
     if (password == null) {
@@ -114,12 +113,11 @@ public class MD5Crypt {
     if (magic == null) {
       throw new IllegalArgumentException("Null salt!");
     }
-    byte finalState[];
-    long l;
-    /**
+    /*
      * Two MD5 hashes are used
      */
-    MessageDigest ctx, ctx1;
+    MessageDigest ctx;
+    MessageDigest ctx1;
     try {
       ctx = MessageDigest.getInstance("md5");
       ctx1 = MessageDigest.getInstance("md5");
@@ -153,7 +151,7 @@ public class MD5Crypt {
     ctx1.update(salt.getBytes());
     ctx1.update(password.getBytes());
     // ctx1.Final();
-    finalState = ctx1.digest();
+    byte[] finalState = ctx1.digest();
     for (int pl = password.length(); pl > 0; pl -= 16) {
       ctx.update(finalState, 0, pl > 16 ? 16 : pl);
     }
@@ -211,7 +209,7 @@ public class MD5Crypt {
     /**
      * Build a 22 byte output string from the set: A-Za-z0-9./
      */
-    l = (bytes2u(finalState[0]) << 16) | (bytes2u(finalState[6]) << 8) | bytes2u(finalState[12]);
+    long l = (bytes2u(finalState[0]) << 16) | (bytes2u(finalState[6]) << 8) | bytes2u(finalState[12]);
     result.append(to64(l, 4));
     l = (bytes2u(finalState[1]) << 16) | (bytes2u(finalState[7]) << 8) | bytes2u(finalState[13]);
     result.append(to64(l, 4));

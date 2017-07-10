@@ -17,7 +17,6 @@ public enum TestMapGameData {
   PACT_OF_STEEL_2("pact_of_steel_2_test.xml"),
   REVISED("revised_test.xml"),
   VICTORY_TEST("victory_test.xml"),
-  WW2PAC40("ww2pac40_test.xml"),
   WW2V3_1941("ww2v3_1941_test.xml"),
   WW2V3_1942("ww2v3_1942_test.xml"),
   GLOBAL1940("ww2_g40_balanced.xml"),

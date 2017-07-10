@@ -11,7 +11,7 @@ public class FlagIconImageFactory extends ImageFactory {
   public static final int SMALL_FLAG_ICON_HEIGHT = 7;
   private final String PREFIX = "flags/";
 
-  /** Creates new IconImageFactory */
+  /** Creates new FlagIconImageFactory. */
   public FlagIconImageFactory() {}
 
   public Image getFlag(final PlayerID id) {

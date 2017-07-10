@@ -11,7 +11,7 @@ class SoundOptionCheckBox extends BooleanProperty {
 
   /**
    * @param clipName
-   *        sound file name
+   *        sound file name.
    * @param title
    *        title to display
    */

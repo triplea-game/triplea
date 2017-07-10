@@ -11,20 +11,18 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class BlockadeZoneDrawable implements IDrawable {
-  private final String m_location;
+  private final String location;
 
-  // private final UIContext m_uiContext;
   public BlockadeZoneDrawable(final Territory location, final IUIContext uiContext) {
     super();
-    m_location = location.getName();
-    // m_uiContext = uiContext;
+    this.location = location.getName();
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     // Find blockade.png from misc folder
-    final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(m_location));
+    final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);
   }
 

@@ -32,55 +32,55 @@ public class Tile {
   public static final LockUtil S_TILE_LOCKUTIL = LockUtil.INSTANCE;
   private static final boolean DRAW_DEBUG = false;
   private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
-  // allow the gc to implement memory management
-  private SoftReference<Image> m_imageRef;
-  private boolean m_isDirty = true;
-  private final Rectangle m_bounds;
-  private final int m_x;
-  private final int m_y;
-  private final double m_scale;
-  private final Lock m_lock = new ReentrantLock();
-  private final List<IDrawable> m_contents = new ArrayList<>();
 
-  public Tile(final Rectangle bounds, final int x, final int y, final double scale) {
-    // s_logger.log(Level.FINER, "Tile created for:" + bounds);
-    m_bounds = bounds;
-    m_x = x;
-    m_y = y;
-    m_scale = scale;
+  // allow the gc to implement memory management
+  private SoftReference<Image> imageRef;
+  private boolean isDirty = true;
+  private final Rectangle bounds;
+  private final int x;
+  private final int y;
+  private final double scale;
+  private final Lock lock = new ReentrantLock();
+  private final List<IDrawable> contents = new ArrayList<>();
+
+  Tile(final Rectangle bounds, final int x, final int y, final double scale) {
+    this.bounds = bounds;
+    this.x = x;
+    this.y = y;
+    this.scale = scale;
   }
 
   public boolean isDirty() {
     acquireLock();
     try {
-      return m_isDirty || m_imageRef == null || m_imageRef.get() == null;
+      return isDirty || imageRef == null || imageRef.get() == null;
     } finally {
       releaseLock();
     }
   }
 
   public void acquireLock() {
-    S_TILE_LOCKUTIL.acquireLock(m_lock);
+    S_TILE_LOCKUTIL.acquireLock(lock);
   }
 
   public void releaseLock() {
-    S_TILE_LOCKUTIL.releaseLock(m_lock);
+    S_TILE_LOCKUTIL.releaseLock(lock);
   }
 
   public Image getImage(final GameData data, final MapData mapData) {
     acquireLock();
     try {
-      if (m_imageRef == null) {
-        m_imageRef = new SoftReference<>(createBlankImage());
-        m_isDirty = true;
+      if (imageRef == null) {
+        imageRef = new SoftReference<>(createBlankImage());
+        isDirty = true;
       }
-      Image image = m_imageRef.get();
+      Image image = imageRef.get();
       if (image == null) {
         image = createBlankImage();
-        m_imageRef = new SoftReference<>(image);
-        m_isDirty = true;
+        imageRef = new SoftReference<>(image);
+        isDirty = true;
       }
-      if (m_isDirty) {
+      if (isDirty) {
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -95,7 +95,7 @@ public class Tile {
   }
 
   private BufferedImage createBlankImage() {
-    return Util.createImage((int) (m_bounds.getWidth() * m_scale), (int) (m_bounds.getHeight() * m_scale), false);
+    return Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), false);
   }
 
   /**
@@ -105,33 +105,33 @@ public class Tile {
    * @return the image we currently have.
    */
   public Image getRawImage() {
-    if (m_imageRef == null) {
+    if (imageRef == null) {
       return null;
     }
-    return m_imageRef.get();
+    return imageRef.get();
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
     final AffineTransform unscaled = g.getTransform();
     AffineTransform scaled;
-    if (m_scale != 1) {
+    if (scale != 1) {
       scaled = new AffineTransform();
-      scaled.scale(m_scale, m_scale);
+      scaled.scale(scale, scale);
       g.setTransform(scaled);
     } else {
       scaled = unscaled;
     }
-    final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
+    final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + bounds);
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
-    Collections.sort(m_contents, new DrawableComparator());
-    final Iterator<IDrawable> iter = m_contents.iterator();
+    Collections.sort(contents, new DrawableComparator());
+    final Iterator<IDrawable> iter = contents.iterator();
     while (iter.hasNext()) {
       final IDrawable drawable = iter.next();
-      drawable.draw(m_bounds, data, g, mapData, unscaled, scaled);
+      drawable.draw(bounds, data, g, mapData, unscaled, scaled);
     }
-    m_isDirty = false;
+    isDirty = false;
     // draw debug graphics
     if (DRAW_DEBUG) {
       g.setColor(Color.PINK);
@@ -139,79 +139,69 @@ public class Tile {
       g.setStroke(new BasicStroke(1));
       g.draw(r);
       g.setFont(new Font("Ariel", Font.BOLD, 25));
-      g.drawString(m_x + " " + m_y, 40, 40);
+      g.drawString(x + " " + y, 40, 40);
     }
     stopWatch.done();
   }
 
-  public void addDrawables(final Collection<IDrawable> drawables) {
+  void addDrawables(final Collection<IDrawable> drawables) {
     acquireLock();
     try {
-      m_contents.addAll(drawables);
-      m_isDirty = true;
+      contents.addAll(drawables);
+      isDirty = true;
     } finally {
       releaseLock();
     }
   }
 
-  public void addDrawable(final IDrawable d) {
+  void addDrawable(final IDrawable d) {
     acquireLock();
     try {
-      m_contents.add(d);
-      m_isDirty = true;
+      contents.add(d);
+      isDirty = true;
     } finally {
       releaseLock();
     }
   }
 
-  public void removeDrawable(final IDrawable d) {
+  void removeDrawables(final Collection<IDrawable> c) {
     acquireLock();
     try {
-      m_contents.remove(d);
-      m_isDirty = true;
+      contents.removeAll(c);
+      isDirty = true;
     } finally {
       releaseLock();
     }
   }
 
-  public void removeDrawables(final Collection<IDrawable> c) {
+  void clear() {
     acquireLock();
     try {
-      m_contents.removeAll(c);
-      m_isDirty = true;
+      contents.clear();
+      isDirty = true;
     } finally {
       releaseLock();
     }
   }
 
-  public void clear() {
+  List<IDrawable> getDrawables() {
     acquireLock();
     try {
-      m_contents.clear();
-      m_isDirty = true;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  public List<IDrawable> getDrawables() {
-    acquireLock();
-    try {
-      return new ArrayList<>(m_contents);
+      return new ArrayList<>(contents);
     } finally {
       releaseLock();
     }
   }
 
   public Rectangle getBounds() {
-    return m_bounds;
+    return bounds;
   }
 
   public int getX() {
-    return m_x;
+    return x;
   }
 
   public int getY() {
-    return m_y;
+    return y;
   }
 }

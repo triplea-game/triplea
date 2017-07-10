@@ -21,10 +21,10 @@ import games.strategy.debug.ClientLogger;
 
 /**
  * Utiltity to read and write files in the form of
- * String -> a list of points, or string-> list of polygons
+ * String -> a list of points, or string-> list of polygons.
  */
 public class PointFileReaderWriter {
-  /** Creates a new instance of PointFileReader */
+  /** Creates a new instance of PointFileReader. */
   public PointFileReaderWriter() {}
 
   /**
@@ -72,8 +72,8 @@ public class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readSingle(final String aLine, final Map<String, Point> mapping) throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(aLine, "", false);
+  private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
+    final StringTokenizer tokens = new StringTokenizer(line, "", false);
     final String name = tokens.nextToken("(").trim();
     if (mapping.containsKey(name)) {
       throw new IOException("name found twice:" + name);
@@ -204,7 +204,7 @@ public class PointFileReaderWriter {
       System.exit(0);
     } finally {
       try {
-        if(stream != null) {
+        if (stream != null) {
           stream.close();
         }
       } catch (final IOException e) {

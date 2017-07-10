@@ -21,7 +21,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * 4) server send null then client name and node info on success, or an error message if there is an error
    * 5) if the client reads an error message, the client sends an acknowledgment (we need to make sur the client gets
    * the message before
-   * closing the socket)
+   * closing the socket).
    */
   private static final Logger s_logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
 
@@ -112,7 +112,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           send(new InetSocketAddress[] {(InetSocketAddress) m_channel.socket().getRemoteSocketAddress(),
               m_serverMessenger.getLocalNode().getSocketAddress()});
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          m_serverMessenger.NotifyPlayerLogin(m_remoteName, m_channel.socket().getInetAddress().getHostAddress(),
+          m_serverMessenger.notifyPlayerLogin(m_remoteName, m_channel.socket().getInetAddress().getHostAddress(),
               m_remoteMac);
           // We are good
           return ACTION.UNQUARANTINE;

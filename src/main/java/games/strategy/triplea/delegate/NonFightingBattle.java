@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -19,23 +20,30 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
- * Battle in which no fighting occurs. <b>
+ * Battle in which no fighting occurs.
  * Example is a naval invasion into an empty country,
  * but the battle cannot be fought until a naval battle
  * occurs.
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
+  private Set<Territory> m_attackingFrom;
+  private Collection<Territory> m_amphibiousAttackFrom;
+  private Map<Territory, Collection<Unit>> m_attackingFromMap;
 
+  /**
+   *  Constructor. Suppress checkstyle warning.
+   */
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
-    super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    super(battleSite, attacker, battleTracker, data);
+    m_attackingFromMap = new HashMap<>();
+    m_attackingFrom = new HashSet<>();
+    m_amphibiousAttackFrom = new ArrayList<>();
   }
 
   @Override
@@ -57,8 +65,8 @@ public class NonFightingBattle extends DependentBattle {
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
-        && Match.someMatch(units, Matches.UnitIsLand)) {
-      m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
+        && Match.anyMatch(units, Matches.UnitIsLand)) {
+      getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
       m_isAmphibious = true;
     }
@@ -94,11 +102,8 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   boolean hasAttackingUnits() {
-    final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<>();
-    attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
-    attackingLand.add(Matches.UnitIsLand);
-    final boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
-    return someAttacking;
+    final Match<Unit> attackingLand = Match.allOf(Matches.alliedUnit(m_attacker, m_data), Matches.UnitIsLand);
+    return m_battleSite.getUnits().anyMatch(attackingLand);
   }
 
   @Override
@@ -120,15 +125,15 @@ public class NonFightingBattle extends DependentBattle {
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand)) {
+      if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.UnitIsLand)) {
         m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.UnitIsLand));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
       if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand)) {
-        m_amphibiousAttackFrom.remove(attackingFrom);
+        getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?
-        m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+        m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
     final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
@@ -161,6 +166,9 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
+  /**
+   *  Add dependent Units. Uninformative comment to suppress checkstyle warning.
+   */
   public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {
       final Collection<Unit> transporting = dependencies.get(holder);
@@ -170,5 +178,29 @@ public class NonFightingBattle extends DependentBattle {
         m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
       }
     }
+  }
+
+  /**
+   *  Return attacking from Collection.
+   */
+  @Override
+  public Collection<Territory> getAttackingFrom() {
+    return m_attackingFrom;
+  }
+
+  /**
+   *  Return attacking from Map.
+   */
+  @Override
+  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+    return m_attackingFromMap;
+  }
+
+  /**
+   * @return territories where there are amphibious attacks.
+   */
+  @Override
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return m_amphibiousAttackFrom;
   }
 }

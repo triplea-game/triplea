@@ -7,7 +7,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * A dummy Email sender, to use when Email sending is disabled
+ * A dummy Email sender, to use when Email sending is disabled.
  */
 public class NullEmailSender implements IEmailSender {
   private static final long serialVersionUID = 9138507282128548506L;
@@ -55,10 +55,18 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
+  public boolean areCredentialsSaved() {
+    return false;
+  }
+
+  @Override
   public void setUserName(final String userName) {}
 
   @Override
   public void setPassword(final String password) {}
+
+  @Override
+  public void setCredentialsSaved(final boolean credentialsSaved) {}
 
   @Override
   public String getHelpText() {

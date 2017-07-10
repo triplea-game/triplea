@@ -6,11 +6,14 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
- * A pre configured Email sender that uses Hotmail's SMTP server
+ * A pre configured Email sender that uses Hotmail's SMTP server.
  */
 public class HotmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
 
+  /**
+   * Initializes a new instance of the {@code HotmailEmailSender} class.
+   */
   public HotmailEmailSender() {
     setHost("smtp.live.com");
     setPort(587);
@@ -40,6 +43,7 @@ public class HotmailEmailSender extends GenericEmailSender {
     sender.setToAddress(getToAddress());
     sender.setUserName(getUserName());
     sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
+    sender.setCredentialsSaved(areCredentialsSaved());
     return sender;
   }
 

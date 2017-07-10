@@ -10,7 +10,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
   private final String m_name;
 
-  /** Creates new DefaultNamed */
+  /** Creates new DefaultNamed. */
   public DefaultNamed(final String name, final GameData data) {
     super(data);
     if (name == null || name.length() == 0) {

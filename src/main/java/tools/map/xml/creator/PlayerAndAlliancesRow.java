@@ -40,7 +40,7 @@ class PlayerAndAlliancesRow extends DynamicRow {
     Dimension dimension = textFieldPlayerName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldPlayerName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldPlayerName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldPlayerName, () -> {
       final String inputText = textFieldPlayerName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;
@@ -111,8 +111,8 @@ class PlayerAndAlliancesRow extends DynamicRow {
     comboBoxPlayerAlliance.setPreferredSize(dimension);
     comboBoxPlayerAlliance.setSelectedIndex(Arrays.binarySearch(alliances, allianceName));
     comboBoxPlayerAlliance.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new technology name, lets rename everything
-    MapXmlHelper.getPlayerAllianceMap().put(playerName, (String) comboBoxPlayerAlliance.getSelectedItem())));
+        // everything is okay with the new technology name, lets rename everything
+        MapXmlHelper.getPlayerAllianceMap().put(playerName, (String) comboBoxPlayerAlliance.getSelectedItem())));
 
     dimension = textFieldInitialResource.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
@@ -172,18 +172,18 @@ class PlayerAndAlliancesRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldPlayerName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldPlayerName, gbcTemplate);
 
-    final GridBagConstraints gbc_tPlayerAlliance = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tPlayerAlliance = (GridBagConstraints) gbcTemplate.clone();
     gbc_tPlayerAlliance.gridx = 1;
     parent.add(comboBoxPlayerAlliance, gbc_tPlayerAlliance);
 
-    final GridBagConstraints gbc_tInitialResource = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tInitialResource = (GridBagConstraints) gbcTemplate.clone();
     gbc_tInitialResource.gridx = 2;
     parent.add(textFieldInitialResource, gbc_tInitialResource);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 3;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

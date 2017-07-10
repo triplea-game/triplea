@@ -30,17 +30,17 @@ import games.strategy.util.IntegerMap;
  */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
-  private final IUIContext m_uiContext;
+  private final IUIContext uiContext;
 
   public SimpleUnitPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
+    this.uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
   /**
    * @param units
    *        a HashMap in the form ProductionRule -> number of units
-   *        assumes that each production rule has 1 result, which is simple the number of units
+   *        assumes that each production rule has 1 result, which is simple the number of units.
    */
   public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player,
       final GameData data) {
@@ -59,7 +59,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * @param units
    *        a HashMap in the form RepairRule -> number of units
-   *        assumes that each repair rule has 1 result, which is simply the number of units
+   *        assumes that each repair rule has 1 result, which is simply the number of units.
    */
   public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
       final GameData data) {
@@ -84,7 +84,7 @@ public class SimpleUnitPanel extends JPanel {
 
   /**
    * @param categories
-   *        a collection of UnitCategories
+   *        a collection of UnitCategories.
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data) {
     removeAll();
@@ -100,12 +100,12 @@ public class SimpleUnitPanel extends JPanel {
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
       final Optional<ImageIcon> icon =
-          m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
+          uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
       if (icon.isPresent()) {
         label.setIcon(icon.get());
       }
     } else if (unit instanceof Resource) {
-      label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
+      label.setIcon(uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
     }
     add(label);
   }

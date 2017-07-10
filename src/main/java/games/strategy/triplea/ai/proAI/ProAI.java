@@ -70,7 +70,6 @@ public class ProAI extends AbstractAI {
   private final ProRetreatAI retreatAI;
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
-  private final ProBidAI bidAI;
 
   // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
@@ -88,7 +87,6 @@ public class ProAI extends AbstractAI {
     retreatAI = new ProRetreatAI(this);
     scrambleAI = new ProScrambleAI(this);
     politicsAI = new ProPoliticsAI(this);
-    bidAI = new ProBidAI();
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
@@ -162,21 +160,22 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purchaseForBid, int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    if (PUsToSpend <= 0) {
+    if (pusToSpend <= 0) {
       return;
     }
     if (purchaseForBid) {
-      bidAI.bid(PUsToSpend, purchaseDelegate, data, player);
+      calc.setData(data);
+      storedPurchaseTerritories = purchaseAI.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
       // Repair factories
-      PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
+      pusToSpend = purchaseAI.repair(pusToSpend, purchaseDelegate, data, player);
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
@@ -262,12 +261,8 @@ public class ProAI extends AbstractAI {
     BattleCalculator.clearOOLCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    if (bid) {
-      bidAI.bidPlace(placeDelegate, data, player);
-    } else {
-      purchaseAI.place(storedPurchaseTerritories, placeDelegate);
-      storedPurchaseTerritories = null;
-    }
+    purchaseAI.place(storedPurchaseTerritories, placeDelegate);
+    storedPurchaseTerritories = null;
     ProLogger.info(player.getName() + " time for place=" + (System.currentTimeMillis() - start));
   }
 
@@ -277,7 +272,7 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
     initializeData();
 
@@ -285,7 +280,7 @@ public class ProAI extends AbstractAI {
     final GameData data = getGameData();
     final PlayerID player = getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
-    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // If battle is null or amphibious then don't retreat
     if (battle == null || battleTerritory == null || battle.isAmphibious()) {
@@ -302,11 +297,11 @@ public class ProAI extends AbstractAI {
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);
     if ((isStrafing || (isAttacker && strengthDifference > 50))
-        && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
+        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.UnitIsLand))) {
       return null;
     }
     calc.setData(getGameData());
-    return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
+    return retreatAI.retreatQuery(battleId, battleTerritory, possibleTerritories);
   }
 
   @Override
@@ -326,13 +321,13 @@ public class ProAI extends AbstractAI {
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     initializeData();
 
     if (defaultCasualties.size() != count) {
-      throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+      throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
+          + "size of default casualty selections");
     }
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
@@ -350,7 +345,7 @@ public class ProAI extends AbstractAI {
       final GameData data = getGameData();
       final PlayerID player = getPlayerID();
       final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
-      final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+      final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
       // If defender and could lose battle then don't consider unit cost as just trying to survive
       boolean needToCheck = true;
@@ -388,7 +383,7 @@ public class ProAI extends AbstractAI {
 
     // Interleave carriers and planes
     final List<Unit> interleavedTargetList =
-        new ArrayList<>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+        new ArrayList<>(ProTransportUtils.interleaveUnitsCarriersAndPlanes(selectFromSorted, 0));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
@@ -451,8 +446,7 @@ public class ProAI extends AbstractAI {
     calc.setData(getGameData());
 
     // Calculate battle results
-    final ProBattleResult result =
-        calc.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<>(), true);
+    final ProBattleResult result = calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
     return result.getTUVSwing() > 0;
   }

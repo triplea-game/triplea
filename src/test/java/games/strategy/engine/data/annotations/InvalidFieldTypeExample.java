@@ -8,7 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
 /**
- * Class with an invalid return for an adder (the return type must be an integerMap)
+ * Class with an invalid return for an adder (the return type must be an integerMap).
  */
 public class InvalidFieldTypeExample extends DefaultAttachment {
   private static final long serialVersionUID = 6465866180845982327L;

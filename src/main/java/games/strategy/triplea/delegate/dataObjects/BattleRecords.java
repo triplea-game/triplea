@@ -87,21 +87,21 @@ public class BattleRecords implements Serializable {
     return playerRecords;
   }
 
-  public static int getLostTUVforBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTUV,
+  public static int getLostTUVforBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTuv,
       final boolean includeNullPlayer) {
-    int totalLostTUV = 0;
+    int lostTuv = 0;
     for (final BattleRecord br : brs) {
       if (!includeNullPlayer && (br.getDefender() == null || br.getAttacker() == null || br.getDefender().isNull()
           || br.getAttacker().isNull())) {
         continue;
       }
-      if (attackerLostTUV) {
-        totalLostTUV += br.getAttackerLostTUV();
+      if (attackerLostTuv) {
+        lostTuv += br.getAttackerLostTUV();
       } else {
-        totalLostTUV += br.getDefenderLostTUV();
+        lostTuv += br.getDefenderLostTUV();
       }
     }
-    return totalLostTUV;
+    return lostTuv;
   }
 
   public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs,
@@ -128,21 +128,21 @@ public class BattleRecords implements Serializable {
     return false;
   }
 
-  public void removeBattle(final PlayerID currentPlayer, final GUID battleID) {
+  public void removeBattle(final PlayerID currentPlayer, final GUID battleId) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
     // under a different
     // player.
-    if (current == null || !current.containsKey(battleID)) {
+    if (current == null || !current.containsKey(battleId)) {
       for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
-        if (entry.getValue() != null && entry.getValue().containsKey(battleID)) {
-          entry.getValue().remove(battleID);
+        if (entry.getValue() != null && entry.getValue().containsKey(battleId)) {
+          entry.getValue().remove(battleId);
           return;
         }
       }
       throw new IllegalStateException("Trying to remove info from battle records that do not exist");
     }
-    current.remove(battleID);
+    current.remove(battleId);
   }
 
   public void addRecord(final BattleRecords other) {
@@ -188,29 +188,29 @@ public class BattleRecords implements Serializable {
     }
   }
 
-  public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite,
+  public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleId, final Territory battleSite,
       final BattleType battleType) {
     HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
     if (current == null) {
       current = new HashMap<>();
     }
     final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType);
-    current.put(battleID, initial);
+    current.put(battleId, initial);
     m_records.put(currentPlayerAndAttacker, current);
   }
 
-  public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender,
-      final int attackerLostTUV, final int defenderLostTUV, final BattleResultDescription battleResultDescription,
+  public void addResultToBattle(final PlayerID currentPlayer, final GUID battleId, final PlayerID defender,
+      final int attackerLostTuv, final int defenderLostTuv, final BattleResultDescription battleResultDescription,
       final BattleResults battleResults) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");
     }
-    if (!current.containsKey(battleID)) {
+    if (!current.containsKey(battleId)) {
       throw new IllegalStateException("Trying to add info to a battle that does not exist");
     }
-    final BattleRecord record = current.get(battleID);
-    record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults);
+    final BattleRecord record = current.get(battleId);
+    record.setResult(defender, attackerLostTuv, defenderLostTuv, battleResultDescription, battleResults);
   }
 
   public void clear() {

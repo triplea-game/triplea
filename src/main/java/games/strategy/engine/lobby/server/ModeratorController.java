@@ -1,13 +1,13 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.Date;
+import java.time.Instant;
 
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
-import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.MutedMacController;
+import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
@@ -21,7 +21,7 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Date banExpires) {
+  public void zzBanUsername(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -31,18 +31,33 @@ public class ModeratorController extends AbstractModeratorController {
     new BannedUsernameController().addBannedUsername(getRealName(node), banExpires);
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(String.format(
-        "User was banned from the lobby(Username ban). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
+        "User was banned from the lobby(Username ban). "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
-  @Override
-  public void banIp(final INode node, final Date banExpires) {
-    // TODO: remove once we confirm no backwards compat issues
+  private void assertUserIsAdmin() {
+    if (!isAdmin()) {
+      throw new IllegalStateException("Not an admin");
+    }
   }
 
   @Override
-  public void banMac(final INode node, final Date banExpires) {
+  public boolean isAdmin() {
+    final INode node = MessageContext.getSender();
+    return isPlayerAdmin(node);
+  }
+
+  @Override
+  public boolean isPlayerAdmin(final INode node) {
+    final String name = getRealName(node);
+    final DBUser user = new DbUserController().getUserByName(name);
+    return user != null && user.isAdmin();
+  }
+
+  @Override
+  public void zzBanMac(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -52,13 +67,14 @@ public class ModeratorController extends AbstractModeratorController {
     new BannedMacController().addBannedMac(mac, banExpires);
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(String.format(
-        "User was banned from the lobby(Mac ban). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
+        "User was banned from the lobby(Mac ban). "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
+  public void zzBanMac(final INode node, final String hashedMac, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -67,13 +83,14 @@ public class ModeratorController extends AbstractModeratorController {
     new BannedMacController().addBannedMac(hashedMac, banExpires);
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(String.format(
-        "User was banned from the lobby(Mac ban). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
+        "User was banned from the lobby(Mac ban). "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), hashedMac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
-  public void muteUsername(final INode node, final Date muteExpires) {
+  public void zzMuteUsername(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -82,21 +99,17 @@ public class ModeratorController extends AbstractModeratorController {
     final String mac = getNodeMacAddress(node);
     final String realName = getRealName(node);
     new MutedUsernameController().addMutedUsername(realName, muteExpires);
-    m_serverMessenger.NotifyUsernameMutingOfPlayer(realName, muteExpires);
+    m_serverMessenger.notifyUsernameMutingOfPlayer(realName, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(String.format(
-        "User was muted on the lobby(Username mute). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
+        "User was muted on the lobby(Username mute). "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
   }
 
   @Override
-  public void muteIp(final INode node, final Date muteExpires) {
-    // TODO: remove once we confirm no backwards compat issues
-  }
-
-  @Override
-  public void muteMac(final INode node, final Date muteExpires) {
+  public void zzMuteMac(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -104,10 +117,11 @@ public class ModeratorController extends AbstractModeratorController {
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     new MutedMacController().addMutedMac(mac, muteExpires);
-    m_serverMessenger.NotifyMacMutingOfPlayer(mac, muteExpires);
+    m_serverMessenger.notifyMacMutingOfPlayer(mac, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(String.format(
-        "User was muted on the lobby(Mac mute). Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
+        "User was muted on the lobby(Mac mute). "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
   }
@@ -160,7 +174,8 @@ public class ModeratorController extends AbstractModeratorController {
     final String response = remoteHostUtils.getChatLogHeadlessHostBot(hashedPassword, salt);
     s_logger.info(String.format(
         ((response == null || response.equals("Invalid password!")) ? "Failed" : "Successful")
-            + " Remote get Chat Log of Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+            + " Remote get Chat Log of Headless HostBot. "
+            + "Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
@@ -270,33 +285,11 @@ public class ModeratorController extends AbstractModeratorController {
     final String response = remoteHostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
     s_logger.info(String.format(
         (response == null ? "Successful" : "Failed (" + response + ")")
-            + " Remote Shutdown of Headless HostBot. Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+            + " Remote Shutdown of Headless HostBot. "
+            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
-  }
-
-  private void assertUserIsAdmin() {
-    if (!isAdmin()) {
-      throw new IllegalStateException("Not an admin");
-    }
-  }
-
-  @Override
-  public boolean isAdmin() {
-    final INode node = MessageContext.getSender();
-    return isPlayerAdmin(node);
-  }
-
-  @Override
-  public boolean isPlayerAdmin(final INode node) {
-    final String name = getRealName(node);
-    final DBUserController controller = new DBUserController();
-    final DBUser user = controller.getUser(name);
-    if (user == null) {
-      return false;
-    }
-    return user.isAdmin();
   }
 
   @Override
@@ -323,8 +316,7 @@ public class ModeratorController extends AbstractModeratorController {
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
-    final String response = remoteHostUtils.getConnections();
-    return response;
+    return remoteHostUtils.getConnections();
   }
 
   @Override

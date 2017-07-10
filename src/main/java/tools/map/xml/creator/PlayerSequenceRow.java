@@ -34,7 +34,7 @@ class PlayerSequenceRow extends DynamicRow {
     Dimension dimension = textFieldSequenceName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldSequenceName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
       final String inputText = textFieldSequenceName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;
@@ -79,7 +79,7 @@ class PlayerSequenceRow extends DynamicRow {
     dimension = textFieldMaxCount.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMaxCount.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxCount, () -> {
       final String inputText = textFieldMaxCount.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -116,22 +116,22 @@ class PlayerSequenceRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldSequenceName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldSequenceName, gbcTemplate);
 
-    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tClassName.gridx = 1;
     parent.add(comboBoxGameSequenceName, gbc_tClassName);
 
-    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tDisplayName.gridx = 2;
     parent.add(comboBoxPlayerName, gbc_tDisplayName);
 
-    final GridBagConstraints gbc_tMaxCount = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tMaxCount = (GridBagConstraints) gbcTemplate.clone();
     gbc_tMaxCount.gridx = 3;
     parent.add(textFieldMaxCount, gbc_tMaxCount);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 4;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

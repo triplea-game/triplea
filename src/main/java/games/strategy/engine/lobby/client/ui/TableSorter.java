@@ -266,8 +266,8 @@ class TableSorter extends AbstractTableModel {
   }
 
   @Override
-  public void setValueAt(final Object aValue, final int row, final int column) {
-    tableModel.setValueAt(aValue, modelIndex(row), column);
+  public void setValueAt(final Object value, final int row, final int column) {
+    tableModel.setValueAt(value, modelIndex(row), column);
   }
 
   // Helper classes
@@ -304,6 +304,7 @@ class TableSorter extends AbstractTableModel {
       return 0;
     }
   }
+
   private class TableModelHandler implements TableModelListener {
     @Override
     public void tableChanged(final TableModelEvent e) {
@@ -348,6 +349,7 @@ class TableSorter extends AbstractTableModel {
       fireTableDataChanged();
     }
   }
+
   private class MouseHandler extends MouseAdapter {
     @Override
     public void mouseClicked(final MouseEvent e) {
@@ -369,6 +371,7 @@ class TableSorter extends AbstractTableModel {
       }
     }
   }
+
   private static class Arrow implements Icon {
     private final boolean descending;
     private final int size;
@@ -420,6 +423,7 @@ class TableSorter extends AbstractTableModel {
       return size;
     }
   }
+
   private class SortableHeaderRenderer implements TableCellRenderer {
     private final TableCellRenderer tableCellRenderer;
 
@@ -441,6 +445,7 @@ class TableSorter extends AbstractTableModel {
       return c;
     }
   }
+
   private static class Directive {
     private final int column;
     private final int direction;

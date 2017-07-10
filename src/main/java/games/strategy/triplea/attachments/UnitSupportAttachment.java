@@ -67,7 +67,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return supports;
   }
 
-  public static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment) {
+  static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment) {
     final UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException("No unit type attachment for:" + u.getName() + " with name:" + nameOfAttachment);
@@ -246,9 +246,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param names
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setPlayers(final String names) throws GameParseException {
@@ -344,7 +341,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
    * in the case that supportable units are declared before any artillery
    */
   @InternalDoNotExport
-  public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException {
+  static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException {
     final String attachmentName =
         (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
@@ -399,7 +396,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @InternalDoNotExport
-  public static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
+  static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
       if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
         rule.setNumber(count);
@@ -408,7 +405,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @InternalDoNotExport
-  public static void addTarget(final UnitType type, final GameData data) throws GameParseException {
+  static void addTarget(final UnitType type, final GameData data) throws GameParseException {
     final Iterator<UnitSupportAttachment> iter = get(data).iterator();
     boolean first = true;
     while (iter.hasNext()) {

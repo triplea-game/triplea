@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -19,7 +18,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import games.strategy.debug.ClientLogger;
@@ -32,78 +30,71 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   private static final long serialVersionUID = -3380344469767981030L;
 
-  public static final String tripleAForumURL = "https://forums.triplea-game.org";
-
-  private NameValuePair username;
-  private NameValuePair password;
-
+  private static final String tripleAForumURL = "https://forums.triplea-game.org";
 
   @Override
-  public boolean postTurnSummary(String summary, String title) {
-    username = new BasicNameValuePair("username", getUsername());
-    password = new BasicNameValuePair("password", getPassword());
+  public boolean postTurnSummary(final String summary, final String title) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      int userID = getUserId(client);
-      String token = getToken(client, userID);
+      final int userId = getUserId(client);
+      final String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
         m_turnSummaryRef = "Sucessfully posted!";
         return true;
       } finally {
-        deleteToken(client, userID, token);
+        deleteToken(client, userId, token);
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       ClientLogger.logQuietly(e);
       m_turnSummaryRef = e.getMessage();
     }
     return false;
   }
 
-  private void post(CloseableHttpClient client, String token, String text) throws Exception {
-    HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
+  private void post(final CloseableHttpClient client, final String token, String text) throws Exception {
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
     addTokenHeader(post, token);
     if (m_includeSaveGame && m_saveGameFile != null) {
-      text += uploadSavegame(client, token);
+      text += uploadSaveGame(client, token);
     }
     post.setEntity(new UrlEncodedFormEntity(
-        Arrays.asList(new BasicNameValuePair("content", text)),
+        Collections.singletonList(new BasicNameValuePair("content", text)),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     client.execute(post);
   }
 
-  private String uploadSavegame(CloseableHttpClient client, String token) throws Exception {
-    HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
+  private String uploadSaveGame(final CloseableHttpClient client, final String token) throws Exception {
+    final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", m_saveGameFile, ContentType.create("application/triplea-savegame"),
-            m_saveGameFileName)
+        .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
         .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
-      int status = response.getStatusLine().getStatusCode();
+      final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        String json = Util.getStringFromInputStream(response.getEntity().getContent());
+        final String json = Util.getStringFromInputStream(response.getEntity().getContent());
         return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
       }
       throw new Exception("Failed to upload savegame, server returned Error Code " + status);
     }
   }
 
-  private void deleteToken(CloseableHttpClient client, int userID, String token)
-      throws ClientProtocolException, IOException {
-    HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userID + "/tokens/" + token);
+  private static void deleteToken(final CloseableHttpClient client, final int userId, final String token)
+      throws IOException {
+    final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
     client.execute(httpDelete);
   }
 
-  private int getUserId(CloseableHttpClient client) throws JSONException, Exception {
-    JSONObject jsonObject = login(client, Arrays.asList(username, password));
-    checkUser(client, jsonObject);
+  private int getUserId(final CloseableHttpClient client) throws Exception {
+    final JSONObject jsonObject = login(client);
+    checkUser(jsonObject);
     return jsonObject.getInt("uid");
   }
 
-  private void checkUser(CloseableHttpClient client, JSONObject jsonObject) throws JSONException, Exception {
+  private static void checkUser(final JSONObject jsonObject) throws Exception {
     if (jsonObject.has("message")) {
       throw new Exception(jsonObject.getString("message"));
     }
@@ -115,32 +106,43 @@ public class TripleAForumPoster extends AbstractForumPoster {
     }
   }
 
-  private JSONObject login(CloseableHttpClient client, List<NameValuePair> entity)
-      throws ClientProtocolException, IOException {
-    HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
-    post.setEntity(new UrlEncodedFormEntity(entity, StandardCharsets.UTF_8));
+  private JSONObject login(final CloseableHttpClient client) throws IOException {
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
+    post.setEntity(new UrlEncodedFormEntity(
+        Arrays.asList(newUsernameParameter(), newPasswordParameter()),
+        StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
-      return new JSONObject(rawJSON);
+      final String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
+      return new JSONObject(rawJson);
     }
   }
 
-  private String getToken(CloseableHttpClient client, int userId) throws Exception {
-    HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
-    post.setEntity(new UrlEncodedFormEntity(Arrays.asList(password), StandardCharsets.UTF_8));
+  private NameValuePair newUsernameParameter() {
+    return new BasicNameValuePair("username", getUsername());
+  }
+
+  private NameValuePair newPasswordParameter() {
+    return new BasicNameValuePair("password", getPassword());
+  }
+
+  private String getToken(final CloseableHttpClient client, final int userId) throws Exception {
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
+    post.setEntity(new UrlEncodedFormEntity(
+        Collections.singletonList(newPasswordParameter()),
+        StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      String rawJSON = Util.getStringFromInputStream(response.getEntity().getContent());
-      JSONObject jsonObject = new JSONObject(rawJSON);
+      final String rawJson = Util.getStringFromInputStream(response.getEntity().getContent());
+      final JSONObject jsonObject = new JSONObject(rawJson);
       if (jsonObject.has("code")) {
-        String code = jsonObject.getString("code");
+        final String code = jsonObject.getString("code");
         if (code.equalsIgnoreCase("ok")) {
           return jsonObject.getJSONObject("payload").getString("token");
         }
         throw new Exception("Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
       }
-      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJSON);
+      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJson);
     }
   }
 
@@ -174,6 +176,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
     clone.setPassword(getPassword());
     clone.setUsername(getUsername());
+    clone.setCredentialsSaved(areCredentialsSaved());
     return clone;
   }
 
@@ -182,7 +185,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     return HelpSupport.loadHelp("tripleaForum.html");
   }
 
-  private void addTokenHeader(HttpRequestBase request, String token) {
+  private static void addTokenHeader(final HttpRequestBase request, final String token) {
     request.addHeader("Authorization", "Bearer " + token);
   }
 }

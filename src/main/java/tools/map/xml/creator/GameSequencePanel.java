@@ -25,7 +25,7 @@ public class GameSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSequencePanel)) {
       me = Optional.of(new GameSequencePanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -36,7 +36,8 @@ public class GameSequencePanel extends DynamicRowsPanel {
   protected ActionListener getAutoFillAction() {
     return e -> {
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(getOwnPanel(),
-          "Are you sure you want to use the  Auto-Fill feature?\rIt will remove any information you have entered in this step and propose commonly used choices.",
+          "Are you sure you want to use the  Auto-Fill feature?\r"
+              + "It will remove any information you have entered in this step and propose commonly used choices.",
           "Auto-Fill Overwrite Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)) {
         setGamePlaySequenceMapToDefault();
         // Update UI
@@ -50,25 +51,25 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
     setOwnPanelLayout();
 
-    final GridBagConstraints gbcDefault = MapXmlUIHelper.getGbcDefaultTemplateWith(0, 0);
+    final GridBagConstraints gbcDefault = MapXmlUiHelper.getGbcDefaultTemplateWith(0, 0);
 
     addLabelsRow(gbcDefault);
 
     // Add main input rows
-    int yValue = 1;
+    int rowIndex = 1;
     for (final Entry<String, List<String>> entry : MapXmlHelper.getGamePlaySequenceMap().entrySet()) {
-      addMainInputRow(gbcDefault, yValue, entry);
-      ++yValue;
+      addMainInputRow(gbcDefault, rowIndex, entry);
+      ++rowIndex;
     }
 
     addAddSequenceButton();
 
-    addFinalButtonRow(MapXmlUIHelper.getGBCCloneWith(gbcDefault, 0, yValue));
+    addFinalButtonRow(MapXmlUiHelper.getGbcCloneWith(gbcDefault, 0, rowIndex));
   }
 
   /**
    * @param gridBadConstLabelSequenceName GridBagConstraints object for "Sequence Name" label and default for other
-   *        labels
+   *        labels.
    */
   private void addLabelsRow(final GridBagConstraints gridBadConstLabelSequenceName) {
     final JLabel labelSequenceName = new JLabel("Sequence Name");
@@ -79,31 +80,26 @@ public class GameSequencePanel extends DynamicRowsPanel {
 
     final JLabel labelClassName = new JLabel("Class Name");
     labelClassName.setPreferredSize(dimension);
-    getOwnPanel().add(labelClassName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelSequenceName, 1, 0));
+    getOwnPanel().add(labelClassName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelSequenceName, 1, 0));
 
     final JLabel labelDisplayName = new JLabel("Display Name");
     labelDisplayName.setPreferredSize(dimension);
-    getOwnPanel().add(labelDisplayName, MapXmlUIHelper.getGBCCloneWith(gridBadConstLabelSequenceName, 2, 0));
+    getOwnPanel().add(labelDisplayName, MapXmlUiHelper.getGbcCloneWith(gridBadConstLabelSequenceName, 2, 0));
   }
 
-  /**
-   * @param gbcBase
-   * @param rowIndex
-   * @param rowEntry
-   */
   private void addMainInputRow(final GridBagConstraints gbcBase, final int rowIndex,
       final Entry<String, List<String>> rowEntry) {
     final List<String> defintionValues = rowEntry.getValue();
     final GameSequenceRow newRow =
         new GameSequenceRow(this, getOwnPanel(), rowEntry.getKey(), defintionValues.get(0),
             defintionValues.get(1));
-    newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, MapXmlUIHelper.getGBCCloneWith(gbcBase, 0, rowIndex));
+    newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, MapXmlUiHelper.getGbcCloneWith(gbcBase, 0, rowIndex));
     rows.add(newRow);
   }
 
   private void addAddSequenceButton() {
     final JButton buttonAddSequence = new JButton("Add Sequence");
-    buttonAddSequence.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       final Optional<String> newSequenceNameOptional =
           Optional.of(JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",
@@ -153,12 +149,12 @@ public class GameSequencePanel extends DynamicRowsPanel {
   protected void initializeSpecifics() {}
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0};
   }
 
-  private void setGamePlaySequenceMapToDefault() {
+  private static void setGamePlaySequenceMapToDefault() {
     MapXmlHelper.clearGamePlaySequence();
     MapXmlHelper.getGamePlaySequenceMap().put("bid",
         Arrays.asList("BidPurchaseDelegate", "Bid Purchase"));

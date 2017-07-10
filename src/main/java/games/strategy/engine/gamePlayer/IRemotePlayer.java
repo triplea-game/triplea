@@ -10,7 +10,7 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IRemotePlayer extends IRemote {
   /**
-   * @return the id of this player. This id is initialized by the initialize method in IGamePlayer.
+   * @return The id of this player. This id is initialized by the initialize method in IGamePlayer.
    */
   PlayerID getPlayerID();
 }

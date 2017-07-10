@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 
 /**
- * @param <T>
+ * @param <T> The type of elements in the collection.
  */
 public class CollectionProperty<T> extends AEditableProperty {
   private static final long serialVersionUID = 5338055034530377261L;
@@ -18,11 +18,11 @@ public class CollectionProperty<T> extends AEditableProperty {
 
   /**
    * @param name
-   *        name of the property
-   * @param defaultValue
-   *        default string value
-   * @param possibleValues
-   *        collection of Strings
+   *        name of the property.
+   * @param description
+   *        description of the property.
+   * @param values
+   *        collection of values.
    */
   public CollectionProperty(final String name, final String description, final Collection<T> values) {
     super(name, description);

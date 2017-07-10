@@ -27,7 +27,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import tools.map.making.JTextAreaOptionPane;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
@@ -47,8 +46,10 @@ public class TileImageReconstructor {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"
-            + "This is the TileImageReconstructor, it will reconstruct a single map image from a folder full of basetiles. "
-            + "<br>You must know the size of the map image before you begin, this is normally found in the map.properties file. "
+            + "This is the TileImageReconstructor, it will reconstruct a single map image from a folder full of "
+            + "basetiles. "
+            + "<br>You must know the size of the map image before you begin, this is normally found in the "
+            + "map.properties file. "
             + "</html>"));
     final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, s_mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getPathString();
@@ -88,6 +89,7 @@ public class TileImageReconstructor {
       try {
         sizeX = Integer.parseInt(width);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     final String height = JOptionPane.showInputDialog(null, "Enter the map image's full height in pixels:");
@@ -95,6 +97,7 @@ public class TileImageReconstructor {
       try {
         sizeY = Integer.parseInt(height);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     if (sizeX <= 0 || sizeY <= 0) {

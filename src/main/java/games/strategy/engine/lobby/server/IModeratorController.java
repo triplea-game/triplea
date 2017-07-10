@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server;
 
+import java.time.Instant;
 import java.util.Date;
 
 import games.strategy.engine.message.IRemote;
@@ -8,49 +9,98 @@ import games.strategy.net.INode;
 public interface IModeratorController extends IRemote {
   /**
    * Boot the given INode from the network.
+   *
    * <p>
    * This method can only be called by admin users.
+   * </p>
    */
   void boot(INode node);
+
+  // Remove the z Prefix of all methods in the next incompatible release
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banUsername(INode node, Date banExpires) {
+    zzBanUsername(node, banExpires != null ? banExpires.toInstant() : null);
+  }
 
   /**
    * Ban the username of the given INode.
    */
-  void banUsername(INode node, Date banExpires);
+  void zzBanUsername(INode node, Instant banExpires);
 
   /**
-   * Ban the ip of the given INode.
-   * @deprecated Remove usages of this, banUserName and banMac are sufficient
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
    */
   @Deprecated
-  void banIp(INode node, Date banExpires);
+  default void banIp(INode node, Date banExpires) {}
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banMac(INode node, Date banExpires) {
+    zzBanMac(node, banExpires != null ? banExpires.toInstant() : null);
+  }
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void banMac(final INode node, final String hashedMac, final Date banExpires) {
+    zzBanMac(node, banExpires != null ? banExpires.toInstant() : null);
+  }
 
   /**
    * Ban the mac of the given INode.
    */
-  void banMac(INode node, Date banExpires);
+  void zzBanMac(INode node, Instant banExpires);
 
   /**
    * Ban the mac.
    */
-  void banMac(final INode node, final String hashedMac, final Date banExpires);
+  void zzBanMac(final INode node, final String hashedMac, final Instant banExpires);
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void muteUsername(INode node, Date muteExpires) {
+    zzMuteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+  }
 
   /**
    * Mute the username of the given INode.
    */
-  void muteUsername(INode node, Date muteExpires);
+  void zzMuteUsername(INode node, Instant muteExpires);
 
   /**
-   * Mute the ip of the given INode.
-   * @deprecated Remove usages of this, muteUserName and muteMac are sufficient
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
    */
   @Deprecated
-  void muteIp(INode node, Date muteExpires);
+  default void muteIp(INode node, Date muteExpires) {}
+
+  /**
+   * @deprecated Kept to maintain backwards compatibility.
+   *             Remove with next incompatible release.
+   */
+  @Deprecated
+  default void muteMac(INode node, Date muteExpires) {
+    zzMuteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+  }
 
   /**
    * Mute the mac of the given INode.
    */
-  void muteMac(INode node, Date muteExpires);
+  void zzMuteMac(INode node, Instant muteExpires);
 
   /**
    * Get list of people in the game.
@@ -96,11 +146,13 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Reset the password of the given user. Returns null if the password was updated without error.
+   *
    * <p>
    * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.
-   * <p>
-   *   @deprecated Remove usages of this. Does not make sense for moderators to be able to reset passwords of logged
-   *   in users.
+   * </p>
+   *
+   * @deprecated Remove usages of this. Does not make sense for moderators to be able to reset passwords of logged
+   *             in users.
    */
   @Deprecated
   String setPassword(INode node, String hashedPassword);
@@ -114,8 +166,6 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Is this node an admin.
-   *
-   * @param node
    */
   boolean isPlayerAdmin(final INode node);
 }

@@ -213,7 +213,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testPUOnlyResourcesToPurchase() {
+  public void testPuOnlyResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
@@ -228,7 +228,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testNoPUResourcesToPurchase() {
+  public void testNoPuResourcesToPurchase() {
     testBridge.setStepName("italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();

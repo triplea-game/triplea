@@ -55,7 +55,6 @@ import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -74,7 +73,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   private boolean m_soundPlayedAlreadyEndTurn = false;
   private boolean m_soundPlayedAlreadyPlacement = false;
 
-  /** Creates new TripleAPlayer */
+  /** Creates new TripleAPlayer. */
   public TripleAPlayer(final String name, final String type) {
     super(name, type);
   }
@@ -117,8 +116,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (name.endsWith("Tech")) {
       tech();
     } else if (name.endsWith("TechActivation")) {
-    } // the delegate handles everything
-    else if (name.endsWith("Bid") || name.endsWith("Purchase")) {
+      // do nothing
+    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
     } else if (name.endsWith("Move")) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
@@ -388,8 +387,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Match<Unit> myDamaged =
-            new CompositeMatchAnd<>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
+        final Match<Unit> myDamaged = Match.allOf(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
@@ -490,7 +488,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   private void place() {
-    boolean bid = GameStepPropertiesHelper.isBid(getGameData());
+    final boolean bid = GameStepPropertiesHelper.isBid(getGameData());
     if (getPlayerBridge().isGameOver()) {
       return;
     }
@@ -561,10 +559,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     return ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
-        battleID, allowMultipleHitsPerUnit);
+        battleId, allowMultipleHitsPerUnit);
   }
 
   @Override
@@ -628,6 +626,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
+  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
+      final Territory unitTerritory) {
+    return ui.selectProducerTerritoryForUnits(candidates, unitTerritory);
+  }
+
+  @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
     return ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
@@ -659,9 +663,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
+  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
-    return ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
+    return ui.getBattlePanel().getRetreat(battleId, message, possibleTerritories, submerge);
   }
 
   @Override

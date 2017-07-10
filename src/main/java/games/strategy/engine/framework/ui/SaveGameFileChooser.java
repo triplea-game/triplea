@@ -6,16 +6,16 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 
 public class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
-  private static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
-  private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
-  private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
-  private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
-  private static SaveGameFileChooser s_instance;
+  private static final String AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave");
+  private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
+  private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
+  private static SaveGameFileChooser instance;
 
   public enum AUTOSAVE_TYPE {
     AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
@@ -30,17 +30,6 @@ public class SaveGameFileChooser extends JFileChooser {
       }
     }
     return AUTOSAVE_FILE_NAME;
-  }
-
-  public static String getAutoSave2FileName() {
-    if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY,
-          System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, ""));
-      if (saveSuffix.length() > 0) {
-        return saveSuffix + "_" + AUTOSAVE_2_FILE_NAME;
-      }
-    }
-    return AUTOSAVE_2_FILE_NAME;
   }
 
   public static String getAutoSaveOddFileName() {
@@ -66,15 +55,15 @@ public class SaveGameFileChooser extends JFileChooser {
   }
 
   public static SaveGameFileChooser getInstance() {
-    if (s_instance == null) {
-      s_instance = new SaveGameFileChooser();
+    if (instance == null) {
+      instance = new SaveGameFileChooser();
     }
-    return s_instance;
+    return instance;
   }
 
-  public SaveGameFileChooser() {
+  private SaveGameFileChooser() {
     super();
-    setFileFilter(m_gameDataFileFilter);
+    setFileFilter(createGameDataFileFilter());
     ensureMapsFolderExists();
     setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
   }
@@ -92,20 +81,17 @@ public class SaveGameFileChooser extends JFileChooser {
     }
   }
 
-  FileFilter m_gameDataFileFilter = new FileFilter() {
-    @Override
-    public boolean accept(final File f) {
-      if (f.isDirectory()) {
-        return true;
+  private static FileFilter createGameDataFileFilter() {
+    return new FileFilter() {
+      @Override
+      public boolean accept(final File file) {
+        return file.isDirectory() || GameDataFileUtils.isCandidateFileName(file.getName());
       }
-      // the extension should be .tsvg, but find svg extensions as well
-      // also, macs download the file as tsvg.gz, so accept that as well
-      return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg") || f.getName().endsWith("tsvg.gz");
-    }
 
-    @Override
-    public String getDescription() {
-      return "Saved Games, *.tsvg";
-    }
-  };
+      @Override
+      public String getDescription() {
+        return "Saved Games, *" + GameDataFileUtils.getExtension();
+      }
+    };
+  }
 }

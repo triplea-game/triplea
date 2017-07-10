@@ -94,7 +94,7 @@ public class HeadlessUIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowUnits(final boolean aBool) {}
+  public void setShowUnits(final boolean showUnits) {}
 
   @Override
   public OptionalExtraBorderLevel getDrawTerritoryBordersAgain() {
@@ -111,7 +111,7 @@ public class HeadlessUIContext extends AbstractUIContext {
   public void setDrawTerritoryBordersAgainToMedium() {}
 
   @Override
-  public void setShowTerritoryEffects(final boolean aBool) {}
+  public void setShowTerritoryEffects(final boolean showTerritoryEffects) {}
 
   @Override
   public boolean getShowTerritoryEffects() {
@@ -124,7 +124,7 @@ public class HeadlessUIContext extends AbstractUIContext {
   }
 
   @Override
-  public void setShowMapOnly(final boolean aBool) {}
+  public void setShowMapOnly(final boolean showMapOnly) {}
 
   @Override
   public void setUnitScaleFactor(final double scaleFactor) {}

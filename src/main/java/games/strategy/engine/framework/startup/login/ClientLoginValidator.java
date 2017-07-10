@@ -67,17 +67,16 @@ public class ClientLoginValidator implements ILoginValidator {
     }
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!ClientContext.engineVersion().getVersion().equals(clientVersion, false)) {
-      final String error = "Client is using " + clientVersion + " but server requires version "
-          + ClientContext.engineVersion().getVersion();
-      return error;
+    if (!ClientContext.engineVersion().equals(clientVersion, false)) {
+      return "Client is using " + clientVersion + " but server requires version "
+          + ClientContext.engineVersion();
     }
     final String realName = clientName.split(" ")[0];
-    if (m_serverMessenger.IsUsernameMiniBanned(realName)) {
+    if (m_serverMessenger.isUsernameMiniBanned(realName)) {
       return YOU_HAVE_BEEN_BANNED;
     }
     final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-    if (m_serverMessenger.IsIpMiniBanned(remoteIp)) {
+    if (m_serverMessenger.isIpMiniBanned(remoteIp)) {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (hashedMac == null) {
@@ -88,7 +87,7 @@ public class ClientLoginValidator implements ILoginValidator {
       // Must have been tampered with
       return INVALID_MAC;
     }
-    if (m_serverMessenger.IsMacMiniBanned(hashedMac)) {
+    if (m_serverMessenger.isMacMiniBanned(hashedMac)) {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
@@ -100,7 +99,7 @@ public class ClientLoginValidator implements ILoginValidator {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
         // TODO: verify this prevention, does this protect against parallel connections?
-        ThreadUtil.sleep(4000 * Math.random()); // usage of sleep is okay.
+        ThreadUtil.sleep((int) (4000 * Math.random())); // usage of sleep is okay.
         return "Invalid password";
       }
     }

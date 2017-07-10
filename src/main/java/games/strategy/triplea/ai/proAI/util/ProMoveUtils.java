@@ -75,17 +75,17 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.someMatch(unitList, Matches.UnitIsSea)) {
+        if (Match.anyMatch(unitList, Matches.UnitIsSea)) {
 
           // Sea unit (including carriers with planes)
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
-        } else if (Match.allMatch(unitList, Matches.UnitIsLand)) {
+        } else if (Match.allMatchNotEmpty(unitList, Matches.UnitIsLand)) {
 
           // Land unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
               .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
-        } else if (Match.allMatch(unitList, Matches.UnitIsAir)) {
+        } else if (Match.allMatchNotEmpty(unitList, Matches.UnitIsAir)) {
 
           // Air unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
@@ -249,7 +249,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
+        if (Match.allMatchNotEmpty(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
 
           // Naval unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, bombardFromTerritory,
@@ -284,7 +284,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.allMatch(unitList, Matches.UnitIsAir)) {
+        if (Match.allMatchNotEmpty(unitList, Matches.UnitIsAir)) {
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
         }

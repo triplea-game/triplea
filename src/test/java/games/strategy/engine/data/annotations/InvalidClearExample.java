@@ -8,7 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
 /**
- * Class with an invalidly named clear method
+ * Class with an invalidly named clear method.
  */
 public class InvalidClearExample extends DefaultAttachment {
   private static final long serialVersionUID = 113427104352979892L;
@@ -24,8 +24,7 @@ public class InvalidClearExample extends DefaultAttachment {
 
   public void resetGivesMovement() {}
 
-  public void clearMovement() // badly named, should cause test to fail
-  {
+  public void clearMovement() { // badly named, should cause test to fail
     m_givesMovement.clear();
   }
 

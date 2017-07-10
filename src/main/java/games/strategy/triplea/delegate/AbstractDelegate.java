@@ -22,7 +22,7 @@ public abstract class AbstractDelegate implements IDelegate {
   protected IDelegateBridge m_bridge;
 
   /**
-   * Creates a new instance of the Delegate
+   * Creates a new instance of the Delegate.
    */
   public AbstractDelegate() {}
 
@@ -36,9 +36,9 @@ public abstract class AbstractDelegate implements IDelegate {
    * Called before the delegate will run, AND before "start" is called.
    */
   @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge) {
-    m_bridge = iDelegateBridge;
-    m_player = iDelegateBridge.getPlayerID();
+  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
+    m_bridge = delegateBridge;
+    m_player = delegateBridge.getPlayerID();
   }
 
   /**
@@ -79,7 +79,7 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Loads the delegates state
+   * Loads the delegate state.
    */
   @Override
   public void loadState(final Serializable state) {

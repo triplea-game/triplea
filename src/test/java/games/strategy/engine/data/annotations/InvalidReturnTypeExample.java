@@ -6,7 +6,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 
 /**
- * Example that used @GameProperty and has a getter with an invalid return type
+ * Example that used @GameProperty and has a getter with an invalid return type.
  */
 public class InvalidReturnTypeExample extends DefaultAttachment {
   private static final long serialVersionUID = -4598237822854346073L;
@@ -18,8 +18,7 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
   @SuppressWarnings("unused")
   private String m_attribute;
 
-  public int getAttribute() // is not returning our variable, so should cause test to fail
-  {
+  public int getAttribute() { // is not returning our variable, so should cause test to fail
     return 1;
   }
 

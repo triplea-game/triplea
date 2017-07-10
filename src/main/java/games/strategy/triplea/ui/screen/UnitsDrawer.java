@@ -24,8 +24,7 @@ import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 public class UnitsDrawer implements IDrawable {
@@ -188,7 +187,7 @@ public class UnitsDrawer implements IDrawable {
   }
 
   /**
-   * This draws the given image onto the given graphics object
+   * This draws the given image onto the given graphics object.
    */
   private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
@@ -205,26 +204,26 @@ public class UnitsDrawer implements IDrawable {
     }
   }
 
-  public Tuple<Territory, List<Unit>> getUnits(final GameData data) {
+  Tuple<Territory, List<Unit>> getUnits(final GameData data) {
     // note - it may be the case where the territory is being changed as a result
     // to a mouse click, and the map units haven't updated yet, so the unit count
     // from the territory wont match the units in count
     final Territory t = data.getMap().getTerritory(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
-    final CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<>();
-    selectedUnits.add(Matches.unitIsOfType(type));
-    selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
+    final Match.CompositeBuilder<Unit> selectedUnitsBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOfType(type),
+        Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
     if (damaged > 0) {
-      selectedUnits.add(Matches.UnitHasTakenSomeDamage);
+      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeDamage);
     } else {
-      selectedUnits.add(Matches.UnitHasNotTakenAnyDamage);
+      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyDamage);
     }
     if (bombingUnitDamage > 0) {
-      selectedUnits.add(Matches.UnitHasTakenSomeBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeBombingUnitDamage);
     } else {
-      selectedUnits.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
     }
-    final List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
+    final List<Unit> rVal = t.getUnits().getMatches(selectedUnitsBuilder.all());
     return Tuple.of(t, rVal);
   }
 
@@ -238,7 +237,7 @@ public class UnitsDrawer implements IDrawable {
     return "UnitsDrawer for " + count + " " + MyFormatter.pluralize(unitType) + " in  " + territoryName;
   }
 
-  private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
+  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 

@@ -18,18 +18,18 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
  * Extended unit for triplea games.
+ *
  * <p>
  * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
  * on this directly will
  * not serialize the changes across the network.
- * <p>
+ * </p>
  */
 public class TripleAUnit extends Unit {
   // compatable with 0.9.2
@@ -115,12 +115,7 @@ public class TripleAUnit extends Unit {
     for (final Territory t : getData().getMap()) {
       // find the territory this transport is in
       if (t.getUnits().getUnits().contains(this)) {
-        return t.getUnits().getMatches(new Match<Unit>() {
-          @Override
-          public boolean match(final Unit o) {
-            return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
-          }
-        });
+        return t.getUnits().getMatches(Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
       }
     }
     return Collections.emptyList();
@@ -129,12 +124,8 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return Match.getMatches(transportedUnitsPossible, new Match<Unit>() {
-      @Override
-      public boolean match(final Unit o) {
-        return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
-      }
-    });
+    return Match.getMatches(transportedUnitsPossible,
+        Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
   }
 
   public List<Unit> getUnloaded() {
@@ -327,14 +318,6 @@ public class TripleAUnit extends Unit {
     return getTransporting();
   }
 
-  public Unit getDependentOf() {
-    if (m_transportedBy != null) {
-      return m_transportedBy;
-    }
-    // TODO: add support for carriers as well
-    return null;
-  }
-
   public boolean getWasAmphibious() {
     return m_wasAmphibious;
   }
@@ -355,7 +338,7 @@ public class TripleAUnit extends Unit {
 
   /**
    * How much more damage can this unit take?
-   * Will return 0 if the unit cannot be damaged, or is at max damage
+   * Will return 0 if the unit cannot be damaged, or is at max damage.
    */
   public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t) {
     if (!Matches.UnitCanBeDamaged.match(u)) {
@@ -407,17 +390,6 @@ public class TripleAUnit extends Unit {
         (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
   }
 
-  public int getHowMuchShouldUnitBeRepairedToNotBeDisabled(final Unit u, final Territory t) {
-    final UnitAttachment ua = UnitAttachment.get(u.getType());
-    final int maxOperationalDamage = ua.getMaxOperationalDamage();
-    if (maxOperationalDamage < 0) {
-      return 0;
-    }
-    final TripleAUnit taUnit = (TripleAUnit) u;
-    final int currentDamage = taUnit.getUnitDamage();
-    return Math.max(0, currentDamage - maxOperationalDamage);
-  }
-
   public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory,
       final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage,
       final boolean mathMaxZero) {
@@ -428,14 +400,15 @@ public class TripleAUnit extends Unit {
 
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<>(
-        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+        Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatch.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatch.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
     }
-    final Collection<Unit> factories = Match.getMatches(units, factoryMatch);
+    final Collection<Unit> factories = Match.getMatches(units, factoryMatchBuilder.all());
     if (factories.isEmpty()) {
       return null;
     }
@@ -521,9 +494,6 @@ public class TripleAUnit extends Unit {
    * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
    * damage for the new units.
    *
-   * @param unitGivingAttributes
-   * @param unitsThatWillGetAttributes
-   * @param t
    * @return change for unit's properties
    */
   public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes,

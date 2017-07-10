@@ -149,9 +149,9 @@ public final class Util {
    * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
    * -> polygons map.
    *
-   * @param java.awt.point p - a point on the map
-   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
-   * @return Optional<String>
+   * @param p A point on the map.
+   * @param terrPolygons a map territory name -> polygons
+   * @return Optional&lt;String>
    */
   public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
     return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
@@ -162,9 +162,9 @@ public final class Util {
    * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
    * -> polygons map. If no land or sea territory has been found a default name is returned.
    *
-   * @param java.awt.point p - a point on the map
-   * @param Map<String, List<Polygon>> terrPolygons - a map territory name -> polygons
-   * @param String defaultTerrName - default territory name that gets returns if nothing was found
+   * @param p A point on the map.
+   * @param terrPolygons a map territory name -> polygons
+   * @param defaultTerrName Default territory name that gets returns if nothing was found.
    * @return found territory name of defaultTerrName
    */
   public static String findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons,

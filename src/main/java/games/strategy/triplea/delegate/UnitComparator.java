@@ -14,7 +14,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 public class UnitComparator {
-  public static Comparator<Unit> getLowestToHighestMovementComparator() {
+  static Comparator<Unit> getLowestToHighestMovementComparator() {
     return (u1, u2) -> {
       final int left1 = TripleAUnit.get(u1).getMovementLeft();
       final int left2 = TripleAUnit.get(u2).getMovementLeft();
@@ -247,7 +247,7 @@ public class UnitComparator {
     };
   }
 
-  public static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) {
+  static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) {
     return (u1, u2) -> {
       final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
       final UnitAttachment ua2 = UnitAttachment.get(u2.getType());

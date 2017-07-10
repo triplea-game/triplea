@@ -18,7 +18,7 @@ public class ProMyMoveOptions {
   private final List<ProTransport> transportList;
   private final Map<Unit, Set<Territory>> bomberMoveMap;
 
-  public ProMyMoveOptions() {
+  ProMyMoveOptions() {
     territoryMap = new HashMap<>();
     unitMoveMap = new HashMap<>();
     transportMoveMap = new HashMap<>();
@@ -27,7 +27,7 @@ public class ProMyMoveOptions {
     bomberMoveMap = new HashMap<>();
   }
 
-  public ProMyMoveOptions(final ProMyMoveOptions myMoveOptions) {
+  ProMyMoveOptions(final ProMyMoveOptions myMoveOptions) {
     this();
     for (final Territory t : myMoveOptions.territoryMap.keySet()) {
       territoryMap.put(t, new ProTerritory(myMoveOptions.territoryMap.get(t)));

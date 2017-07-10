@@ -78,7 +78,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     hiddenPlayers.add(name);
   }
 
-  public void shutDown() {
+  void shutDown() {
     if (chat != null) {
       chat.removeChatListener(this);
       chat.getStatusManager().removeStatusListener(statusListener);
@@ -105,7 +105,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   /**
-   * set minimum size based on players (number and max name length) and distribution to playerIDs
+   * set minimum size based on players (number and max name length) and distribution to playerIDs.
    */
   private void setDynamicPreferredSize() {
     final List<INode> onlinePlayers = chat.getOnlinePlayers();
@@ -191,7 +191,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   private void setWidgetActivation() {}
 
   /**
-   * The renderer will be passed in a string
+   * The renderer will be passed in a string.
    */
   public void setPlayerRenderer(final ListCellRenderer<Object> renderer) {
     setCellRenderer = renderer;
@@ -265,20 +265,19 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       extra = extra + notes;
     }
     String status = chat.getStatusManager().getStatus(node);
-    final StringBuilder statusSB = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder("");
     if (status != null && status.length() > 0) {
       if (status.length() > 25) {
         status = status.substring(0, 25);
       }
       for (int i = 0; i < status.length(); i++) {
         final char c = status.charAt(i);
-        // skip combining characters
-        if (c >= '\u0300' && c <= '\u036F') {
+        if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
           continue;
         }
-        statusSB.append(c);
+        sb.append(c);
       }
-      extra = extra + " (" + statusSB.toString() + ")";
+      extra = extra + " (" + sb.toString() + ")";
     }
     if (extra.length() == 0) {
       return node.getName();

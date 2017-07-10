@@ -8,7 +8,7 @@ import games.strategy.engine.message.IChannelSubscribor;
  * All changes to game data (Changes and History events) can be tracked through this channel.
  */
 public interface IGameModifiedChannel extends IChannelSubscribor {
-  void gameDataChanged(final Change aChange);
+  void gameDataChanged(final Change change);
 
   void startHistoryEvent(final String event, final Object renderingData);
 
@@ -18,13 +18,8 @@ public interface IGameModifiedChannel extends IChannelSubscribor {
   void addChildToEvent(final String text, final Object renderingData);
 
   /**
-   * @param stepName
-   * @param delegateName
-   * @param player
-   * @param round
-   * @param displayName
    * @param loadedFromSavedGame
-   *        - true if the game step has changed because we were loaded from a saved game
+   *        - true if the game step has changed because we were loaded from a saved game.
    */
   void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
       final String displayName, final boolean loadedFromSavedGame);

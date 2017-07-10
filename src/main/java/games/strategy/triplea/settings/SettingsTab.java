@@ -5,14 +5,17 @@ import java.util.List;
 
 import games.strategy.ui.SwingComponents;
 
-public interface SettingsTab<SettingsModelType extends HasDefaults> {
+/**
+ * @param <T> The type of the object that contains the settings data.
+ */
+public interface SettingsTab<T extends HasDefaults> {
   String getTabTitle();
 
-  List<SettingInputComponent<SettingsModelType>> getInputs();
+  List<SettingInputComponent<T>> getInputs();
 
-  SettingsModelType getSettingsObject();
+  T getSettingsObject();
 
-  default void updateSettings(final List<SettingInputComponent<SettingsModelType>> inputs) {
+  default void updateSettings(final List<SettingInputComponent<T>> inputs) {
     final StringBuilder msg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
 
@@ -21,8 +24,8 @@ public interface SettingsTab<SettingsModelType extends HasDefaults> {
     boolean somethingInvalid = false;
 
     final List<String> invalidValues = new ArrayList<>();
-    for (final SettingInputComponent<SettingsModelType> input : inputs) {
-      final SettingsModelType settingsObject = getSettingsObject();
+    for (final SettingInputComponent<T> input : inputs) {
+      final T settingsObject = getSettingsObject();
 
       final String oldValue = input.getValue(settingsObject);
 

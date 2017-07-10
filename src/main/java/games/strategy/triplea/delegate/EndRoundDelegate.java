@@ -27,8 +27,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.LocalizeHTML;
@@ -42,7 +40,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean m_gameOver = false;
   private Collection<PlayerID> m_winners = new ArrayList<>();
 
-  /** Creates a new instance of EndRoundDelegate */
+  /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
 
   /**
@@ -68,8 +66,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // Check for Winning conditions
-    if (isTotalVictory()) // Check for Win by Victory Cities
-    {
+    if (isTotalVictory()) { // Check for Win by Victory Cities
       victoryMessage = " achieve TOTAL VICTORY with ";
       checkVictoryCities(m_bridge, victoryMessage, " Total Victory VCs");
     }
@@ -81,8 +78,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
       checkVictoryCities(m_bridge, victoryMessage, " Projection of Power VCs");
     }
-    if (isEconomicVictory()) // Check for regular economic victory
-    {
+    if (isEconomicVictory()) { // Check for regular economic victory
       final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
       String allianceName = null;
       while (allianceIter.hasNext()) {
@@ -110,8 +106,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Match<TriggerAttachment> endRoundDelegateTriggerMatch =
-          new CompositeMatchAnd<>(AbstractTriggerAttachment.availableUses,
-              AbstractTriggerAttachment.whenOrDefaultMatch(null, null), new CompositeMatchOr<TriggerAttachment>(
+          Match.allOf(AbstractTriggerAttachment.availableUses,
+              AbstractTriggerAttachment.whenOrDefaultMatch(null, null), Match.anyOf(
                   TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -217,9 +213,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return false;
   }
 
-  private void checkVictoryCities(final IDelegateBridge aBridge, final String victoryMessage,
+  private void checkVictoryCities(final IDelegateBridge bridge, final String victoryMessage,
       final String victoryType) {
-    final GameData data = aBridge.getData();
+    final GameData data = bridge.getData();
     final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
     String allianceName = null;
     final Collection<Territory> territories = data.getMap().getTerritories();
@@ -237,28 +233,28 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         }
       }
       if (teamVCs >= vcAmount) {
-        aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
+        bridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
         final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         // Added this to end the game on victory conditions
-        signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, aBridge);
+        signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, bridge);
       }
     }
   }
 
-  private int getEconomicVictoryAmount(final GameData data, final String alliance) {
+  private static int getEconomicVictoryAmount(final GameData data, final String alliance) {
     return data.getProperties().get(alliance + " Economic Victory", 200);
   }
 
-  private int getVCAmount(final GameData data, final String alliance, final String type) {
-    int defaultVC = 20;
+  private static int getVCAmount(final GameData data, final String alliance, final String type) {
+    int defaultVc = 20;
     if (type.equals(" Total Victory VCs")) {
-      defaultVC = 18;
+      defaultVc = 18;
     } else if (type.equals(" Honorable Victory VCs")) {
-      defaultVC = 15;
+      defaultVc = 15;
     } else if (type.equals(" Projection of Power VCs")) {
-      defaultVC = 13;
+      defaultVc = 13;
     }
-    return data.getProperties().get((alliance + type), defaultVC);
+    return data.getProperties().get((alliance + type), defaultVc);
   }
 
   /**
@@ -267,22 +263,22 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    * @param status
    *        the "game over" text to be displayed to each user.
    */
-  public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge) {
-    // TO NOT USE m_bridge, because it might be null here! use aBridge instead.
+  public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge bridge) {
+    // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
     if (!m_gameOver) {
       m_gameOver = true;
       m_winners = winners;
-      aBridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
           ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next()
               : PlayerID.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
-      // means our local copy of m_bridge could be null.
-      getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+      // means our local copy of playerBridge could be null.
+      getDisplay(bridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the
@@ -304,13 +300,13 @@ public class EndRoundDelegate extends BaseTripleADelegate {
             new CountDownLatchHandler(true)));
       }
       if (stopGame) {
-        aBridge.stopGameSequence();
+        bridge.stopGameSequence();
       }
     }
   }
 
   /**
-   * if null, the game is not over yet
+   * if null, the game is not over yet.
    */
   public Collection<PlayerID> getWinners() {
     if (!m_gameOver) {
@@ -351,7 +347,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return games.strategy.triplea.Properties.getTriggeredVictory(getData());
   }
 
-  public int getProduction(final PlayerID id) {
+  private int getProduction(final PlayerID id) {
     int sum = 0;
     final Iterator<Territory> territories = getData().getMap().iterator();
     while (territories.hasNext()) {

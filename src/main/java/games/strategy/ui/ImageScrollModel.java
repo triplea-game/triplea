@@ -6,9 +6,10 @@ import java.util.Observable;
 /**
  * Model for an ImageScroller. Generally one large view and one small view will be
  * connected to the same model.
+ *
  * <p>
  * notifies its observers when changes occur.
- * <p>
+ * </p>
  */
 public class ImageScrollModel extends Observable {
   private int m_x;
@@ -31,7 +32,7 @@ public class ImageScrollModel extends Observable {
     setMaxBounds(mapDimensions.width, mapDimensions.height);
   }
 
-  public void setBoxDimensions(final int maxX, final int maxy) {
+  void setBoxDimensions(final int maxX, final int maxy) {
     m_boxWidth = maxX;
     m_boxHeight = maxy;
     enforceBounds();
@@ -43,14 +44,14 @@ public class ImageScrollModel extends Observable {
     super.notifyObservers();
   }
 
-  public void setScrollX(final boolean aBool) {
-    m_scrollX = aBool;
+  public void setScrollX(final boolean scrollX) {
+    m_scrollX = scrollX;
     enforceBounds();
     updateListeners();
   }
 
-  public void setScrollY(final boolean aBool) {
-    m_scrollY = aBool;
+  public void setScrollY(final boolean scrollY) {
+    m_scrollY = scrollY;
     enforceBounds();
     updateListeners();
   }
@@ -130,7 +131,7 @@ public class ImageScrollModel extends Observable {
     return m_maxHeight;
   }
 
-  public void set(final int x, final int y) {
+  void set(final int x, final int y) {
     m_x = x;
     m_y = y;
     enforceBounds();

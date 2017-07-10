@@ -39,9 +39,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge aBridge) {
+  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge bridge) {
     final CompositeChange change = new CompositeChange();
-    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, aBridge.getData(), null)) {
+    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, bridge.getData(), null)) {
       if (ta.getUsedThisRound()) {
         final int currentUses = ta.getUses();
         if (currentUses > 0) {
@@ -58,8 +58,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
    *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   * @param triggers
-   * @throws GameParseException
    */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = true)
@@ -139,9 +137,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param when
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhen(final String when) throws GameParseException {
@@ -173,12 +168,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNotification(final String sNotification) {
-    if (sNotification == null) {
+  public void setNotification(final String notification) {
+    if (notification == null) {
       m_notification = null;
       return;
     }
-    m_notification = sNotification;
+    m_notification = notification;
   }
 
   public String getNotification() {
@@ -189,26 +184,26 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_notification = null;
   }
 
-  protected void use(final IDelegateBridge aBridge) {
+  protected void use(final IDelegateBridge bridge) {
     // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this
     // round
     // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
     // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified
     // elsewhere.
     if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
   }
 
-  protected boolean testChance(final IDelegateBridge aBridge) {
+  protected boolean testChance(final IDelegateBridge bridge) {
     // "chance" should ALWAYS be checked last! (always check all other conditions first)
     final int hitTarget = getChanceToHit();
     final int diceSides = getChanceDiceSides();
     if (diceSides <= 0 || hitTarget >= diceSides) {
-      changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, true, false);
+      changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, true, false);
       return true;
     } else if (hitTarget <= 0) {
-      changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, false, false);
+      changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, false, false);
       return false;
     }
     // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie:
@@ -216,26 +211,21 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
     // together, then getting a ton of random numbers at once instead of one at a time)
     ThreadUtil.sleep(100);
-    final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
+    final int rollResult = bridge.getRandom(diceSides, null, DiceType.ENGINE,
         "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
     final boolean testChance = rollResult <= hitTarget;
     final String notificationMessage =
         (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of "
             + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
-    aBridge.getHistoryWriter().startEvent(notificationMessage);
-    changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
-    ((ITripleAPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+    bridge.getHistoryWriter().startEvent(notificationMessage);
+    changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
+    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).reportMessage(notificationMessage,
         notificationMessage);
     return testChance;
   }
 
   public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.isSatisfied(testedConditions);
-      }
-    };
+    return Match.of(t -> t.isSatisfied(testedConditions));
   }
 
   /**
@@ -250,37 +240,24 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    *         false
    */
   public static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
-          return true;
-        } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
-          for (final Tuple<String, String> w : t.getWhen()) {
-            if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond())) {
-              return true;
-            }
+    return Match.of(t -> {
+      if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
+        return true;
+      } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
+        for (final Tuple<String, String> w : t.getWhen()) {
+          if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond())) {
+            return true;
           }
         }
-        return false;
       }
-    };
+      return false;
+    });
   }
 
-  public static Match<TriggerAttachment> availableUses = new Match<TriggerAttachment>() {
-    @Override
-    public boolean match(final TriggerAttachment t) {
-      return t.getUses() != 0;
-    }
-  };
+  public static final Match<TriggerAttachment> availableUses = Match.of(t -> t.getUses() != 0);
 
   public static Match<TriggerAttachment> notificationMatch() {
-    return new Match<TriggerAttachment>() {
-      @Override
-      public boolean match(final TriggerAttachment t) {
-        return t.getNotification() != null;
-      }
-    };
+    return Match.of(t -> t.getNotification() != null);
   }
 
   protected static String getValueFromStringArrayForAllSubStrings(final String[] s) {

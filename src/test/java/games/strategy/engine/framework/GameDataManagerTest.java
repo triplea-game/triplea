@@ -13,7 +13,7 @@ import games.strategy.engine.data.GameData;
 public class GameDataManagerTest {
 
   @Test
-  public void testLoadStoreKeepsGamUUID() throws IOException {
+  public void testLoadStoreKeepsGameUuid() throws IOException {
     final GameData data = new GameData();
     final GameDataManager m = new GameDataManager();
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();

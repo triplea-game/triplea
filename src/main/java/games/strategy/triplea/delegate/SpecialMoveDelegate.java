@@ -24,7 +24,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -48,8 +47,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
    * Called before the delegate will run, AND before "start" is called.
    */
   @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
+  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
+    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
   @Override
@@ -163,7 +162,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return null;
   }
 
-  public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
+  static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
       final PlayerID player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();
@@ -216,7 +215,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
       final Collection<Unit> overMax = new ArrayList<>(units);
-      overMax.removeAll(Match.getNMatches(units, airborneCapacity, Match.getAlwaysMatch()));
+      overMax.removeAll(Match.getNMatches(units, airborneCapacity, Match.always()));
       for (final Unit u : overMax) {
         result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
       }
@@ -245,14 +244,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories =
         games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
-    if (!Match.allMatch(route.getSteps(), Matches.TerritoryIsPassableAndNotRestricted(player, data))) {
+    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
-    if (!Match.allMatch(route.getSteps(), Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
-    final boolean someLand = Match.someMatch(airborne, Matches.UnitIsLand);
-    final boolean someSea = Match.someMatch(airborne, Matches.UnitIsSea);
+    final boolean someLand = Match.anyMatch(airborne, Matches.UnitIsLand);
+    final boolean someSea = Match.anyMatch(airborne, Matches.UnitIsSea);
     final boolean land = Matches.TerritoryIsLand.match(end);
     final boolean sea = Matches.TerritoryIsWater.match(end);
     if (someLand && someSea) {
@@ -271,9 +270,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-        } else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
+        } else if (land && someLand && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
           return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-        } else if (sea && someSea && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsSea)) {
+        } else if (sea && someSea && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsSea)) {
           return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
         }
       }
@@ -292,7 +291,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+    return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }
@@ -343,15 +342,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public int PUsAlreadyLost(final Territory t) {
-    // Auto-generated method stub
+  public int pusAlreadyLost(final Territory t) {
     return 0;
   }
 
   @Override
-  public void PUsLost(final Territory t, final int amt) {
-    // Auto-generated method stub
-  }
+  public void pusLost(final Territory t, final int amt) {}
 }
 
 

@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.ILobbyGameController;
@@ -25,7 +25,7 @@ import games.strategy.net.INode;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Tuple;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LobbyGameTableModelTest {
 
   private LobbyGameTableModel testObj;
@@ -74,7 +74,7 @@ public class LobbyGameTableModelTest {
   @Test
   public void updateGame() {
     final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex), nullValue());
+    assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
 
     final String newComment = "comment";
     final GameDescription newDescription = new GameDescription();
@@ -83,7 +83,7 @@ public class LobbyGameTableModelTest {
     testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
     TestUtil.waitForSwingThreads();
     assertThat(testObj.getRowCount(), is(1));
-    assertThat((String) testObj.getValueAt(0, commentColumnIndex), is(newComment));
+    assertThat(testObj.getValueAt(0, commentColumnIndex), is(newComment));
   }
 
   @Test

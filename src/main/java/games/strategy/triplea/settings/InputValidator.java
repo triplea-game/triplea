@@ -18,7 +18,7 @@ public class InputValidator implements Function<String, Boolean> {
   }), "not a number");
 
   /**
-   * Verifies a value is an integer and falls inside of a given range (inclusive)
+   * Verifies a value is an integer and falls inside of a given range (inclusive).
    */
   static InputValidator inRange(final int min, final int max) {
     return new InputValidator((value) -> {

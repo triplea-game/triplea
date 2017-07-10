@@ -40,14 +40,14 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
-public class GameMenu {
+class GameMenu {
 
   private final TripleAFrame frame;
   private final IUIContext iuiContext;
   private final GameData gameData;
   private final IGame game;
 
-  public GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
@@ -109,8 +109,6 @@ public class GameMenu {
   /**
    * Add a Politics Panel button to the game menu, this panel will show the
    * current political landscape as a reference, no actions on this panel.
-   *
-   * @param menuGame
    */
   private void addPoliticsMenu(final JMenu menuGame) {
     final AbstractAction politicsAction = SwingAction.of("Show Politics Panel", e -> {
@@ -228,6 +226,7 @@ public class GameMenu {
           JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
         }
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     });
     parentMenu.add(RollDiceBox);

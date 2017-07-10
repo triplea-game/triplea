@@ -80,7 +80,8 @@ public class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
-  // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request 1074
+  // Some units hard coded here rather than placed in Constants at the request of community members Ref: Pull Request
+  // 1074
   public static UnitType tacBomber(final GameData data) {
     return unitType("tactical_bomber", data);
   }
@@ -203,24 +204,24 @@ public class GameDataTestUtil {
   }
 
   public static int getIndex(final List<IExecutable> steps, final Class<?> type) {
-    int rVal = -1;
+    int indexOfType = -1;
     int index = 0;
     for (final IExecutable e : steps) {
       if (type.isInstance(e)) {
-        if (rVal != -1) {
+        if (indexOfType != -1) {
           throw new AssertionFailedError("More than one instance:" + steps);
         }
-        rVal = index;
+        indexOfType = index;
       }
       index++;
     }
-    if (rVal == -1) {
+    if (indexOfType == -1) {
       throw new AssertionFailedError("No instance:" + steps);
     }
-    return rVal;
+    return indexOfType;
   }
 
-  public static void setSelectAACasualties(final GameData data, final boolean val) {
+  public static void setSelectAaCasualties(final GameData data, final boolean val) {
     for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);

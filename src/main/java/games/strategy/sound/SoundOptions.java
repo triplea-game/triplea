@@ -22,7 +22,7 @@ public final class SoundOptions {
 
   /**
    * @param parentMenu
-   *        menu where to add the menu item "Sound Options"
+   *        menu where to add the menu item "Sound Options".
    */
   public static void addToMenu(final JMenu parentMenu) {
     final JMenuItem soundOptions = new JMenuItem("Sound Options");
@@ -37,7 +37,7 @@ public final class SoundOptions {
     parentPanel.add(soundOptions);
   }
 
-  public SoundOptions(final JComponent parent) {
+  private SoundOptions(final JComponent parent) {
     clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";
@@ -48,6 +48,7 @@ public final class SoundOptions {
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
+      // do nothing
     } else if (pressedButton.equals(ok)) {
       for (final IEditableProperty property : properties) {
         clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());

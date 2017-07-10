@@ -20,18 +20,18 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TerritoryNameDrawable implements IDrawable {
-  private final String m_territoryName;
-  private final IUIContext m_uiContext;
+  private final String territoryName;
+  private final IUIContext uiContext;
 
-  public TerritoryNameDrawable(final String territoryName, final IUIContext context) {
-    this.m_territoryName = territoryName;
-    this.m_uiContext = context;
+  public TerritoryNameDrawable(final String territoryName, final IUIContext uiContext) {
+    this.territoryName = territoryName;
+    this.uiContext = uiContext;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
     final boolean showSeaNames = mapData.drawSeaZoneNames();
@@ -97,7 +97,7 @@ public class TerritoryNameDrawable implements IDrawable {
       }
     }
     // draw territory names
-    if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName)) {
+    if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(territoryName)) {
       if (!territory.isWater() || showSeaNames) {
         final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
         draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
@@ -105,7 +105,7 @@ public class TerritoryNameDrawable implements IDrawable {
     }
     // draw the PUs.
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
-      final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
+      final Image img = uiContext.getPUImageFactory().getPUImage(ta.getProduction());
       final String prod = Integer.valueOf(ta.getProduction()).toString();
       final Optional<Point> place = mapData.getPUPlacementPoint(territory);
       // if pu_place.txt is specified draw there
@@ -113,9 +113,32 @@ public class TerritoryNameDrawable implements IDrawable {
         draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
       } else {
         // otherwise, draw under the territory name
-        draw(bounds, graphics, x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
+        draw(bounds, graphics, x + ((fm.stringWidth(territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
             y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
       }
+    }
+  }
+
+  private static void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
+      final String prod, final boolean drawFromTopLeft) {
+    int normalizedY = y;
+    if (img == null) {
+      if (graphics.getFont().getSize() <= 0) {
+        return;
+      }
+      if (drawFromTopLeft) {
+        final FontMetrics fm = graphics.getFontMetrics();
+        normalizedY += fm.getHeight();
+      }
+      graphics.drawString(prod, x - bounds.x, normalizedY - bounds.y);
+    } else {
+      // we want to be consistent
+      // drawString takes y as the base line position
+      // drawImage takes x as the top right corner
+      if (!drawFromTopLeft) {
+        normalizedY -= img.getHeight(null);
+      }
+      graphics.drawImage(img, x - bounds.x, normalizedY - bounds.y, null);
     }
   }
 
@@ -125,7 +148,7 @@ public class TerritoryNameDrawable implements IDrawable {
    * that location. If there isn't any rectangles that can fit the name then default back to the
    * bounding rectangle.
    */
-  private Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
+  private static Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {
 
     // Find bounding rectangle and parameters for creating a grid (20 x 20) across the territory
@@ -166,7 +189,7 @@ public class TerritoryNameDrawable implements IDrawable {
     return result;
   }
 
-  private boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
+  private static boolean isRectangleContainedInTerritory(final Rectangle rectangle, final Territory territory,
       final MapData mapData) {
     final List<Polygon> polygons = mapData.getPolygons(territory.getName());
     for (final Polygon polygon : polygons) {
@@ -175,29 +198,6 @@ public class TerritoryNameDrawable implements IDrawable {
       }
     }
     return false;
-  }
-
-  private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
-      final String prod, final boolean drawFromTopLeft) {
-    int yNormal = y;
-    if (img == null) {
-      if (graphics.getFont().getSize() <= 0) {
-        return;
-      }
-      if (drawFromTopLeft) {
-        final FontMetrics fm = graphics.getFontMetrics();
-        yNormal += fm.getHeight();
-      }
-      graphics.drawString(prod, x - bounds.x, yNormal - bounds.y);
-    } else {
-      // we want to be consistent
-      // drawString takes y as the base line position
-      // drawImage takes x as the top right corner
-      if (!drawFromTopLeft) {
-        yNormal -= img.getHeight(null);
-      }
-      graphics.drawImage(img, x - bounds.x, yNormal - bounds.y, null);
-    }
   }
 
   @Override

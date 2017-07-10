@@ -1,14 +1,15 @@
 package games.strategy.triplea.ui.logic;
 
 import java.awt.geom.Point2D;
+
 /**
- * Framework independent point class
+ * Framework independent point class.
  */
 public class Point {
   private double x;
   private double y;
-  
-  public Point(){
+
+  public Point() {
     this(0, 0);
   }
 

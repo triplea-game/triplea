@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Data is written in packets that are enqued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
-public class NIOWriter {
+class NIOWriter {
   private static final Logger s_logger = Logger.getLogger(NIOWriter.class.getName());
   private final Selector m_selector;
   private final IErrorReporter m_errorReporter;
@@ -35,7 +35,7 @@ public class NIOWriter {
   private long m_totalBytes = 0;
   private volatile boolean m_running = true;
 
-  public NIOWriter(final IErrorReporter reporter, final String threadSuffix) {
+  NIOWriter(final IErrorReporter reporter, final String threadSuffix) {
     m_errorReporter = reporter;
     try {
       m_selector = Selector.open();
@@ -47,7 +47,7 @@ public class NIOWriter {
     t.start();
   }
 
-  public void shutDown() {
+  void shutDown() {
     m_running = false;
     try {
       m_selector.close();
@@ -81,11 +81,10 @@ public class NIOWriter {
           s_logger.finest("selecting...");
         }
         try {
+          // exceptions can be thrown here, nothing we can do
+          // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
           m_selector.select();
-        }
-        // exceptions can be thrown here, nothing we can do
-        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
-        catch (final Exception e) {
+        } catch (final Exception e) {
           s_logger.log(Level.INFO, "error reading selection", e);
         }
         if (!m_running) {
@@ -149,9 +148,9 @@ public class NIOWriter {
   }
 
   /**
-   * Remove the data for this channel
+   * Remove the data for this channel.
    */
-  public void closed(final SocketChannel channel) {
+  void closed(final SocketChannel channel) {
     removeAll(channel);
   }
 
@@ -189,7 +188,7 @@ public class NIOWriter {
     }
   }
 
-  public void enque(final SocketWriteData data, final SocketChannel channel) {
+  void enque(final SocketWriteData data, final SocketChannel channel) {
     synchronized (m_mutex) {
       if (!m_running) {
         return;

@@ -10,7 +10,7 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
 
 /**
- * Add units
+ * Add units.
  */
 class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;
@@ -38,7 +38,7 @@ class AddUnits extends Change {
   @Override
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(m_name, m_type);
-    holder.getUnits().addAllUnits(m_units);
+    holder.getUnits().addAll(m_units);
   }
 
   @Override

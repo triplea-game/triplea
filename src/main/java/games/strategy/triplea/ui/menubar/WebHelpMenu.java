@@ -8,8 +8,8 @@ import javax.swing.JMenuItem;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingComponents;
 
-public class WebHelpMenu {
-  public WebHelpMenu(final TripleAMenuBar menuBar) {
+class WebHelpMenu {
+  WebHelpMenu(final TripleAMenuBar menuBar) {
     final JMenu web = new JMenu("Web");
     web.setMnemonic(KeyEvent.VK_W);
     menuBar.add(web);
@@ -25,12 +25,12 @@ public class WebHelpMenu {
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
     lobbyRules.setMnemonic(KeyEvent.VK_L);
     lobbyRules.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB_LOBBY_RULES));
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
-    final JMenuItem warClub = new JMenuItem("War Club & Ladder");
+    final JMenuItem warClub = new JMenuItem("TripleA Forum");
     warClub.setMnemonic(KeyEvent.VK_W);
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_WAR_CLUB));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
 
     final JMenuItem donateLink = new JMenuItem("Donate");

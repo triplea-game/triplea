@@ -11,7 +11,7 @@ public class PlaceableUnits implements java.io.Serializable {
   private int m_maxUnits;
 
   /**
-   * Creates new ProductionResponseMessage
+   * Creates new PlaceableUnits.
    *
    * @param errorMessage
    *        error message
@@ -30,7 +30,7 @@ public class PlaceableUnits implements java.io.Serializable {
   }
 
   /**
-   * @return -1 if no limit
+   * @return -1 if no limit.
    */
   public int getMaxUnits() {
     return m_maxUnits;

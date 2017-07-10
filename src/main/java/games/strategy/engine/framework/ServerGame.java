@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -72,7 +73,6 @@ public class ServerGame extends AbstractGame {
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
    * returning.
-   * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
   /**
@@ -82,7 +82,7 @@ public class ServerGame extends AbstractGame {
 
   /**
    * @param data
-   *        game data
+   *        game data.
    * @param localPlayers
    *        Set - A set of GamePlayers
    * @param remotePlayerMapping
@@ -95,10 +95,10 @@ public class ServerGame extends AbstractGame {
     super(data, localPlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
-      public void gameDataChanged(final Change aChange) {
+      public void gameDataChanged(final Change change) {
         assertCorrectCaller();
-        m_data.performChange(aChange);
-        m_data.getHistory().getHistoryWriter().addChange(aChange);
+        m_data.performChange(change);
+        m_data.getHistory().getHistoryWriter().addChange(change);
       }
 
       private void assertCorrectCaller() {
@@ -238,7 +238,6 @@ public class ServerGame extends AbstractGame {
 
   private GameStep getCurrentStep() {
     return m_data.getSequence().getStep();
-    // m_data.getSequence().getStep(m_currentStepIndex);
   }
 
 
@@ -347,42 +346,23 @@ public class ServerGame extends AbstractGame {
     }
   }
 
-  private void autoSave() {
+  private void autoSave(final String fileName) {
     SaveGameFileChooser.ensureMapsFolderExists();
-    final File f1 =
-        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-    final File f2 =
-        new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
-    final File f;
-    if (f1.lastModified() > f2.lastModified()) {
-      f = f2;
-    } else {
-      f = f1;
+    final File autoSaveDir = new File(ClientContext.folderSettings().getSaveGamePath()
+        + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
+    if (!autoSaveDir.exists()) {
+      autoSaveDir.mkdirs();
     }
-
-    try (FileOutputStream out = new FileOutputStream(f)) {
-      saveGame(out);
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    saveGame(new File(autoSaveDir, fileName));
   }
 
-  private void autoSaveRound() {
-    SaveGameFileChooser.ensureMapsFolderExists();
-    final File autosaveFile;
-    if (m_data.getSequence().getRound() % 2 == 0) {
-      autosaveFile =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
-    } else {
-      autosaveFile =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
-    }
+  private void autoSaveBefore(final IDelegate currentDelegate) {
+    autoSave(getAutoSaveBeforeFileName(currentDelegate.getName()));
+  }
 
-    try (FileOutputStream out = new FileOutputStream(autosaveFile)) {
-      saveGame(out);
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+  private static String getAutoSaveBeforeFileName(final String stepName) {
+    final String baseFileName = "autosaveBefore" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
+    return GameDataFileUtils.addExtension(baseFileName);
   }
 
   @Override
@@ -394,7 +374,7 @@ public class ServerGame extends AbstractGame {
     }
   }
 
-  public void saveGame(final OutputStream out) throws IOException {
+  private void saveGame(final OutputStream out) throws IOException {
     try {
       if (!m_delegateExecutionManager.blockDelegateExecution(6000)) {
         throw new IOException("Could not lock delegate execution");
@@ -417,7 +397,19 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
+    final GameStep currentStep = m_data.getSequence().getStep();
+    final IDelegate currentDelegate = currentStep.getDelegate();
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     startStep(stepIsRestoredFromSavedGame);
+    if (!stepIsRestoredFromSavedGame
+        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
+      autoSaveBefore(currentDelegate);
+    }
     if (m_isGameOver) {
       return;
     }
@@ -425,25 +417,46 @@ public class ServerGame extends AbstractGame {
     if (m_isGameOver) {
       return;
     }
-    final boolean autoSaveAfterDelegateDone = endStep();
+    // save after the step has advanced
+    // otherwise, the delegate will execute again.
+    final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
+        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
+    if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
+      autoSave(getAutoSaveAfterFileNameForGameStep(currentStep));
+    }
+    endStep();
     if (m_isGameOver) {
       return;
     }
     if (m_data.getSequence().next()) {
       m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
-      autoSaveRound();
+      autoSave(m_data.getSequence().getRound() % 2 == 0
+          ? SaveGameFileChooser.getAutoSaveEvenFileName() : SaveGameFileChooser.getAutoSaveOddFileName());
     }
-    // save after the step has advanced
-    // otherwise, the delegate will execute again.
-    if (autoSaveAfterDelegateDone) {
-      autoSave();
+    if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
+      autoSave(getAutoSaveAfterFileNameForDelegate(currentDelegate));
     }
   }
 
+  private static String getAutoSaveAfterFileNameForGameStep(final GameStep gameStep) {
+    return getAutoSaveAfterFileName(gameStep.getName());
+  }
+
+  private static String getAutoSaveAfterFileNameForDelegate(final IDelegate delegate) {
+    final String typeName = delegate.getClass().getTypeName();
+    final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
+    return getAutoSaveAfterFileName(stepName);
+  }
+
+  private static String getAutoSaveAfterFileName(final String stepName) {
+    final String baseFileName = "autosaveAfter" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
+    return GameDataFileUtils.addExtension(baseFileName);
+  }
+
   /**
-   * @return true if the step should autosave
+   * @return true if the step should autosave.
    */
-  private boolean endStep() {
+  private void endStep() {
     m_delegateExecutionManager.enterDelegateExecution();
     try {
       getCurrentStep().getDelegate().end();
@@ -451,18 +464,10 @@ public class ServerGame extends AbstractGame {
       m_delegateExecutionManager.leaveDelegateExecution();
     }
     getCurrentStep().incrementRunCount();
-    if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class)) {
-      if (m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private void startPersistentDelegates() {
-    final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
-    while (delegateIter.hasNext()) {
-      final IDelegate delegate = delegateIter.next();
+    for (final IDelegate delegate : m_data.getDelegateList()) {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
@@ -485,13 +490,6 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
-    if (!stepIsRestoredFromSavedGame) {
-      if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class)) {
-        if (m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
-          autoSave();
-        }
-      }
-    }
     final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
         new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     if (m_delegateRandomSource == null) {
@@ -517,24 +515,24 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerID = getCurrentStep().getPlayerID();
+    final PlayerID playerId = getCurrentStep().getPlayerID();
     // no player specified for the given step
-    if (playerID == null) {
+    if (playerId == null) {
       return;
     }
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final IGamePlayer player = m_gamePlayers.get(playerID);
+    final IGamePlayer player = m_gamePlayers.get(playerId);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
-      final INode destination = m_playerManager.getNode(playerID.getName());
+      final INode destination = m_playerManager.getNode(playerId.getName());
       final IGameStepAdvancer advancer =
           (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      advancer.startPlayerStep(getCurrentStep().getName(), playerID);
+      advancer.startPlayerStep(getCurrentStep().getName(), playerId);
     }
   }
 
@@ -550,8 +548,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void addPlayerTypesToGameData(final Collection<IGamePlayer> localPlayers, final PlayerManager allPlayers,
-      final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
@@ -566,11 +564,11 @@ public class ServerGame extends AbstractGame {
     }
     final CompositeChange change = new CompositeChange();
     final Set<String> allPlayersString = allPlayers.getPlayers();
-    aBridge.getHistoryWriter().startEvent("Game Loaded");
+    bridge.getHistoryWriter().startEvent("Game Loaded");
     for (final IGamePlayer player : localPlayers) {
       allPlayersString.remove(player.getName());
       final boolean isHuman = player instanceof TripleAPlayer;
-      aBridge.getHistoryWriter()
+      bridge.getHistoryWriter()
           .addChildToEvent(
               player.getName()
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
@@ -586,7 +584,7 @@ public class ServerGame extends AbstractGame {
     while (playerIter.hasNext()) {
       final String player = playerIter.next();
       playerIter.remove();
-      aBridge.getHistoryWriter().addChildToEvent(
+      bridge.getHistoryWriter().addChildToEvent(
           player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
       final PlayerID p = data.getPlayerList().getPlayerID(player);
@@ -596,7 +594,7 @@ public class ServerGame extends AbstractGame {
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
     m_needToInitialize = false;
     if (!allPlayersString.isEmpty()) {
@@ -609,10 +607,10 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public void addChange(final Change aChange) {
-    getGameModifiedBroadcaster().gameDataChanged(aChange);
+  public void addChange(final Change change) {
     // let our channel subscribor do the change,
     // that way all changes will happen in the same thread
+    getGameModifiedBroadcaster().gameDataChanged(change);
   }
 
   @Override

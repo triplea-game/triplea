@@ -9,12 +9,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.userDB.BadWordController;
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
-import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.db.BadWordController;
+import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.DbUserController;
+import games.strategy.engine.lobby.server.db.HashedPassword;
+import games.strategy.engine.lobby.server.db.UserDao;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
@@ -22,16 +27,15 @@ import games.strategy.util.Version;
 
 public class LobbyLoginValidator implements ILoginValidator {
   static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
-  static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
-  static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
-  static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
-  static final String INVALID_MAC = "Invalid mac address.";
+  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
+  private static final String INVALID_MAC = "Invalid mac address.";
   private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
-  public static final String LOGIN_KEY = "LOGIN";
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
@@ -41,10 +45,10 @@ public class LobbyLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
-    final String password = new DBUserController().getPassword(userName);
     final Map<String, String> rVal = new HashMap<>();
-    if (password != null) {
-      rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password));
+    final HashedPassword password = new DbUserController().getPassword(userName);
+    if (password != null && Strings.emptyToNull(password.value) != null) {
+      rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
     return rVal;
   }
@@ -55,7 +59,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       final SocketAddress remoteAddress) {
     final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
-      s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
+      s_logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
     } else {
       s_logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
@@ -64,8 +68,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient, final String clientName,
-      final String hashedMac) {
+  private static String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient,
+      final String clientName, final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }
@@ -112,7 +116,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
   }
 
-  static String getBanDurationBreakdown(final Timestamp stamp) {
+  private static String getBanDurationBreakdown(final Timestamp stamp) {
     if (stamp == null) {
       return "Banned Forever";
     }
@@ -147,63 +151,67 @@ public class LobbyLoginValidator implements ILoginValidator {
     return (sb.toString());
   }
 
-  private List<String> getBadWords() {
+  private static List<String> getBadWords() {
     return new BadWordController().list();
   }
 
   private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
-    final DBUserController userController = new DBUserController();
-    if (!userController.login(clientName, propertiesReadFromClient.get(HASHED_PASSWORD_KEY))) {
-      if (userController.doesUserExist(clientName)) {
-        return "Incorrect password";
-      } else {
-        return "Username does not exist";
-      }
+    final UserDao userDao = new DbUserController();
+    if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+      return "Incorrect username or password";
     } else {
       return null;
     }
   }
 
   private static String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
-    if (new DBUserController().doesUserExist(userName)) {
+    if (new DbUserController().doesUserExist(userName)) {
       return "Can't login anonymously, username already exists";
     }
+    // If this is a lobby watcher, use a different set of validation
     if (propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN) != null
-        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) // If this is a lobby
-                                                                                              // watcher, use a
-                                                                                              // different
-                                                                                              // set of validation
-    {
+        && propertiesReadFromClient.get(LOBBY_WATCHER_LOGIN).equals(Boolean.TRUE.toString())) {
       if (!userName.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
         return "Lobby watcher usernames must end with 'lobby_watcher'";
       }
       final String hostName = userName.substring(0, userName.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
-      final String issue = DBUserController.validateUserName(hostName);
-      if (issue != null) {
-        return issue;
+
+      if (!DBUser.isValidUserName(hostName)) {
+        return DBUser.getUserNameValidationErrorMessage(hostName);
       }
     } else {
-      final String issue = DBUserController.validateUserName(userName);
-      if (issue != null) {
-        return issue;
+      if (DBUser.isValidUserName(userName)) {
+        return null;
+      } else {
+        return DBUser.getUserNameValidationErrorMessage(userName);
       }
     }
     return null;
   }
 
   private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
-    final String email = propertiesReadFromClient.get(EMAIL_KEY);
-    final String hashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
-    final DBUserController controller = new DBUserController();
-    final String error = controller.validate(userName, email, hashedPassword);
-    if (error != null) {
-      return error;
+    final DBUser user = new DBUser(
+        new DBUser.UserName(userName),
+        new DBUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
+
+    if (!user.isValid()) {
+      return user.getValidationErrorMessage();
     }
+
+    final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
+    if (!password.isValidSyntax()) {
+      return "Password is not hashed correctly";
+    }
+
+    if (new DbUserController().doesUserExist(user.getName())) {
+      return "That user name has already been taken";
+    }
+
     try {
-      controller.createUser(userName, email, hashedPassword, false);
+      new DbUserController().createUser(user, password);
       return null;
-    } catch (final IllegalStateException ise) {
-      return ise.getMessage();
+    } catch (final Exception e) {
+      return e.getMessage();
     }
   }
 }

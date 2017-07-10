@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -31,15 +31,12 @@ public class RouteTest {
   private final MapData dummyMapData = mock(MapData.class);
   private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
   private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
-  private final Route dummyRoute = spy(new Route());
+  private final Route dummyRoute = spy(new Route(mock(Territory.class), mock(Territory.class)));
   private final RouteDescription dummyRouteDescription =
       spy(new RouteDescription(dummyRoute, dummyPoints[0].toPoint(), dummyPoints[2].toPoint(), null));
 
   @Before
   public void setUp() {
-    dummyRoute.add(mock(Territory.class));// This will be overridden with the startPoint, since it's the origin
-                                          // territory
-    dummyRoute.add(mock(Territory.class));
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1].toPoint());
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
@@ -78,7 +75,7 @@ public class RouteTest {
   @Test
   public void testCorrectParameterHandling() {
     final MapPanel mockedMapPanel = mock(MapPanel.class);
-    MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
+    final MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
     when(mockedMapPanel.getXOffset()).thenReturn(0);
     when(mockedMapPanel.getYOffset()).thenReturn(0);
     when(mockedMapPanel.getScale()).thenReturn(0.0);

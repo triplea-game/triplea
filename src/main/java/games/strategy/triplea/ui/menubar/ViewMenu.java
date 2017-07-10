@@ -15,7 +15,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -43,8 +42,8 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.AbstractUIContext;
@@ -58,7 +57,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
 
-public class ViewMenu {
+class ViewMenu {
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
@@ -66,7 +65,7 @@ public class ViewMenu {
   private final TripleAFrame frame;
   private final IUIContext uiContext;
 
-  public ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     this.uiContext = frame.getUIContext();
     gameData = frame.getGame().getData();
@@ -221,6 +220,7 @@ public class ViewMenu {
         frame.getMapPanel().resetMap();
       }
     }
+
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_S);
     unitSizeMenu.setText("Unit Size");
@@ -456,8 +456,7 @@ public class ViewMenu {
       final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
       final int result = JOptionPane.showOptionDialog(frame, ui, "Edit Map Font and Color",
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
-      if (result == 2) {
-      } else if (result == 1) {
+      if (result == 1) {
         MapImage.resetPropertyMapFont();
         MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
         MapImage.resetPropertyUnitCountColor();
@@ -535,8 +534,8 @@ public class ViewMenu {
     }), setting.equals(drawMode));
   }
 
-  private JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group, final Action action,
-      final boolean selected) {
+  private static JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group,
+      final Action action, final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);
@@ -550,6 +549,6 @@ public class ViewMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
+    chatTimeBox.setEnabled(GameRunner.hasChat());
   }
 }

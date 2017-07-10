@@ -8,7 +8,7 @@ public class DiceStatistic implements java.io.Serializable {
   private final double m_stdDeviation;
   private final double m_variance;
 
-  public DiceStatistic(final double average, final int total, final double median, final double stdDeviation,
+  DiceStatistic(final double average, final int total, final double median, final double stdDeviation,
       final double variance) {
     m_average = average;
     m_total = total;

@@ -4,11 +4,10 @@ import java.awt.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +22,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
@@ -235,8 +235,8 @@ public class ServerLauncher extends AbstractLauncher {
             e.printStackTrace(System.err);
             if (m_headless) {
               System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
-              HeadlessGameServer.sendChat(
-                  "If this is a repeatable issue or error, please make a copy of this savegame and contact a Mod and/or file a bug report.");
+              HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame "
+                  + "and contact a Mod and/or file a bug report.");
             }
             stopGame();
           }
@@ -254,22 +254,13 @@ public class ServerLauncher extends AbstractLauncher {
               }
               final File f1 =
                   new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-              final File f2 =
-                  new File(ClientContext.folderSettings().getSaveGamePath(),
-                      SaveGameFileChooser.getAutoSave2FileName());
-              final File f;
-              if (!f1.exists() && !f2.exists()) {
-                m_gameSelectorModel.resetGameDataToNull();
+              if (f1.exists()) {
+                m_gameSelectorModel.load(f1, null);
               } else {
-                if (!f1.exists() || f1.lastModified() < f2.lastModified()) {
-                  f = f2;
-                } else {
-                  f = f1;
-                }
-                m_gameSelectorModel.load(f, null);
+                m_gameSelectorModel.resetGameDataToNull();
               }
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
+            } catch (final Exception e1) {
+              ClientLogger.logQuietly(e1);
               m_gameSelectorModel.resetGameDataToNull();
             }
           } else {
@@ -379,24 +370,11 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private void saveAndEndGame(final INode node) {
-    final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
     SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
-    final File f;
-    if (m_headless) {
-      final File f1 =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      final File f2 =
-          new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSave2FileName());
-      if (f1.lastModified() > f2.lastModified()) {
-        f = f2;
-      } else {
-        f = f1;
-      }
-    } else {
-      f = new File(ClientContext.folderSettings().getSaveGamePath(),
-          "connection_lost_on_" + format.format(new Date()) + ".tsvg");
-    }
+    final File f = m_headless
+        ? new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
+        : new File(ClientContext.folderSettings().getSaveGamePath(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {
@@ -418,6 +396,11 @@ public class ServerLauncher extends AbstractLauncher {
     } else {
       System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
     }
+  }
+
+  private static String getConnectionLostFileName() {
+    return GameDataFileUtils.addExtension(
+        "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
   }
 }
 

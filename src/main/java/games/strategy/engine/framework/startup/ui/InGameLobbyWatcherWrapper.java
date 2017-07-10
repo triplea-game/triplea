@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 
 public class InGameLobbyWatcherWrapper {
@@ -30,12 +29,6 @@ public class InGameLobbyWatcherWrapper {
     return lobbyWatcher == null ? "" : lobbyWatcher.getComments();
   }
 
-  public void setGame(final IGame game) {
-    if (lobbyWatcher != null) {
-      lobbyWatcher.setGame(game);
-    }
-  }
-
   public void setGameComments(final String comments) {
     if (lobbyWatcher != null) {
       lobbyWatcher.setGameComments(comments);
@@ -58,12 +51,5 @@ public class InGameLobbyWatcherWrapper {
     if (lobbyWatcher != null) {
       lobbyWatcher.setPassworded(passworded);
     }
-  }
-
-  public GameDescription getGameDescription() {
-    if (lobbyWatcher != null) {
-      return lobbyWatcher.getGameDescription();
-    }
-    return null;
   }
 }

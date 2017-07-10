@@ -25,25 +25,27 @@ import games.strategy.util.Triple;
 
 /**
  * For when you do not want things condensed into categories.
+ *
  * <p>
  * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
  * individually.
  * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
  * with the points per
  * unit.
+ * </p>
  */
 public class IndividualUnitPanel extends JPanel {
   private static final long serialVersionUID = -4222938655315991715L;
-  private final List<SingleUnitPanel> m_entries = new ArrayList<>();
-  private final JTextArea m_title;
-  private int m_max = -1;
-  private final JLabel m_leftToSelect = new JLabel();
-  private final GameData m_data;
-  private final IUIContext m_uiContext;
-  private ScrollableTextField m_textFieldPurelyForListening;
-  private final ScrollableTextFieldListener m_countOptionalTextFieldListener;
-  private final boolean m_showSelectAll;
-  private final ScrollableTextFieldListener m_textFieldListener = field -> updateLeft();
+  private final List<SingleUnitPanel> entries = new ArrayList<>();
+  private final JTextArea title;
+  private int max = -1;
+  private final JLabel leftToSelect = new JLabel();
+  private final GameData gameData;
+  private final IUIContext uiContext;
+  private ScrollableTextField textFieldPurelyForListening;
+  private final ScrollableTextFieldListener countOptionalTextFieldListener;
+  private final boolean showSelectAll;
+  private final ScrollableTextFieldListener textFieldListener = field -> updateLeft();
 
   /**
    * For when you do not want things condensed into categories.
@@ -52,31 +54,21 @@ public class IndividualUnitPanel extends JPanel {
    * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
    * with the points per
    * unit.
-   *
-   * @param units
-   * @param title
-   * @param data
-   * @param uiContext
-   * @param max
-   * @param showMinAndMax
-   * @param showSelectAll
-   * @param optionalListener
    */
   public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
       final IUIContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
       final ScrollableTextFieldListener optionalListener) {
-    m_data = data;
-    m_uiContext = uiContext;
-    m_title = new JTextArea(title);
-    m_title.setBackground(this.getBackground());
-    m_title.setEditable(false);
-    // m_title.setColumns(15);
-    m_title.setWrapStyleWord(true);
-    m_countOptionalTextFieldListener = optionalListener;
+    gameData = data;
+    this.uiContext = uiContext;
+    this.title = new JTextArea(title);
+    this.title.setBackground(this.getBackground());
+    this.title.setEditable(false);
+    this.title.setWrapStyleWord(true);
+    countOptionalTextFieldListener = optionalListener;
     setMaxAndShowMaxButton(max);
-    m_showSelectAll = showSelectAll;
+    this.showSelectAll = showSelectAll;
     for (final Unit u : units) {
-      m_entries.add(new SingleUnitPanel(u, m_data, m_uiContext, m_textFieldListener, m_max, 0, showMinAndMax));
+      entries.add(new SingleUnitPanel(u, gameData, this.uiContext, textFieldListener, this.max, 0, showMinAndMax));
     }
     layoutEntries();
   }
@@ -87,90 +79,82 @@ public class IndividualUnitPanel extends JPanel {
    * individually.
    * It lets you set a max number of points total AND per unit. It can return an IntegerMap with the points per unit.
    *
-   * @param units
+   * @param unitsAndTheirMaxMinAndCurrent
    *        mapped to their individual max, then min, then current values
-   * @param title
-   * @param data
-   * @param context
-   * @param max
-   * @param showMinAndMax
-   * @param showSelectAll
-   * @param optionalListener
    */
   public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
       final String title, final GameData data, final IUIContext context, final int max, final boolean showMinAndMax,
       final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
-    m_data = data;
-    m_uiContext = context;
-    m_title = new JTextArea(title);
-    m_title.setBackground(this.getBackground());
-    m_title.setEditable(false);
-    // m_title.setColumns(15);
-    m_title.setWrapStyleWord(true);
-    m_countOptionalTextFieldListener = optionalListener;
+    gameData = data;
+    uiContext = context;
+    this.title = new JTextArea(title);
+    this.title.setBackground(this.getBackground());
+    this.title.setEditable(false);
+    this.title.setWrapStyleWord(true);
+    countOptionalTextFieldListener = optionalListener;
     setMaxAndShowMaxButton(max);
-    m_showSelectAll = showSelectAll;
+    this.showSelectAll = showSelectAll;
     for (final Entry<Unit, Triple<Integer, Integer, Integer>> entry : unitsAndTheirMaxMinAndCurrent.entrySet()) {
       final int unitMax = entry.getValue().getFirst();
-      int thisMax;
-      if (m_max < 0 && unitMax < 0) {
+      final int thisMax;
+      if (this.max < 0 && unitMax < 0) {
         thisMax = -1;
       } else if (unitMax < 0) {
-        thisMax = m_max;
-      } else if (m_max < 0) {
+        thisMax = this.max;
+      } else if (this.max < 0) {
         thisMax = unitMax;
       } else {
-        thisMax = Math.min(m_max, unitMax);
+        thisMax = Math.min(this.max, unitMax);
       }
       final int thisMin = Math.max(0, entry.getValue().getSecond());
       final int thisCurrent = Math.max(thisMin, Math.min(thisMax, entry.getValue().getThird()));
-      m_entries.add(new SingleUnitPanel(entry.getKey(), m_data, m_uiContext, m_textFieldListener, thisMax, thisMin,
+      entries.add(new SingleUnitPanel(entry.getKey(), gameData, uiContext, textFieldListener, thisMax, thisMin,
           thisCurrent, showMinAndMax));
     }
     layoutEntries();
   }
 
   private void setMaxAndShowMaxButton(final int max) {
-    m_max = max;
-    m_textFieldPurelyForListening = new ScrollableTextField(0, 0);
-    m_textFieldListener.changedValue(null);
-    if (m_countOptionalTextFieldListener != null) {
-      m_textFieldPurelyForListening.addChangeListener(m_countOptionalTextFieldListener);
+    this.max = max;
+    textFieldPurelyForListening = new ScrollableTextField(0, 0);
+    textFieldListener.changedValue(null);
+    if (countOptionalTextFieldListener != null) {
+      textFieldPurelyForListening.addChangeListener(countOptionalTextFieldListener);
     }
   }
 
   public void setTitle(final String title) {
-    m_title.setText(title);
+    this.title.setText(title);
   }
 
   public int getMax() {
-    return m_max;
+    return max;
   }
 
-  public void setMaxAndUpdate(final int newMax) {
-    m_max = newMax;
+  void setMaxAndUpdate(final int newMax) {
+    max = newMax;
     updateLeft();
-    m_textFieldPurelyForListening.setValue(0);
+    textFieldPurelyForListening.setValue(0);
   }
 
   private void updateLeft() {
-    if (m_max == -1) {
+    if (max == -1) {
       return;
     }
     final int selected = getSelectedCount();
-    final int newMax = m_max - selected;
-    for (final SingleUnitPanel entry : m_entries) {
+    final int newMax = max - selected;
+    for (final SingleUnitPanel entry : entries) {
       final int current = entry.getCount();
       final int maxForThis = current + newMax;
       entry.setMax(maxForThis);
     }
-    m_leftToSelect.setText("Left to select:" + newMax);
-    m_textFieldPurelyForListening.setValue(0);
+    leftToSelect.setText("Left to select:" + newMax);
+    textFieldPurelyForListening.setValue(0);
   }
 
   protected int getSelectedCount() {
     int selected = 0;
-    for (final SingleUnitPanel entry : m_entries) {
+    for (final SingleUnitPanel entry : entries) {
       selected += entry.getCount();
     }
     return selected;
@@ -184,46 +168,46 @@ public class IndividualUnitPanel extends JPanel {
     m_selectNoneButton.setPreferredSize(buttonSize);
     final JButton m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
     m_selectNoneButton.addActionListener(e -> selectNone());
     m_autoSelectButton.addActionListener(e -> autoSelect());
-    int yIndex = 1;
-    for (final SingleUnitPanel entry : m_entries) {
-      entry.createComponents(this, yIndex);
-      yIndex++;
+    int rowIndex = 1;
+    for (final SingleUnitPanel entry : entries) {
+      entry.createComponents(this, rowIndex);
+      rowIndex++;
     }
-    if (m_showSelectAll) {
-      add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+    if (showSelectAll) {
+      add(m_autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
-      yIndex++;
+      rowIndex++;
     }
-    add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+    add(leftToSelect, new GridBagConstraints(0, rowIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
-  public IntegerMap<Unit> getSelected() {
+  IntegerMap<Unit> getSelected() {
     final IntegerMap<Unit> selectedUnits = new IntegerMap<>();
-    for (final SingleUnitPanel entry : m_entries) {
+    for (final SingleUnitPanel entry : entries) {
       selectedUnits.put(entry.getUnit(), entry.getCount());
     }
     return selectedUnits;
   }
 
   protected void selectNone() {
-    for (final SingleUnitPanel entry : m_entries) {
+    for (final SingleUnitPanel entry : entries) {
       entry.selectNone();
     }
   }
 
   protected void autoSelect() {
-    if (m_max == -1) {
-      for (final SingleUnitPanel entry : m_entries) {
+    if (max == -1) {
+      for (final SingleUnitPanel entry : entries) {
         entry.selectAll();
       }
     } else {
-      int leftToSelect = m_max - getSelectedCount();
-      for (final SingleUnitPanel entry : m_entries) {
+      int leftToSelect = max - getSelectedCount();
+      for (final SingleUnitPanel entry : entries) {
         final int leftToSelectForCurrent = leftToSelect + entry.getCount();
         final int canSelect = entry.getMax();
         if (leftToSelectForCurrent >= canSelect) {
@@ -237,86 +221,86 @@ public class IndividualUnitPanel extends JPanel {
       }
     }
   }
-}
 
+  private static final class SingleUnitPanel extends JPanel {
+    private static final long serialVersionUID = 5034287842323633030L;
+    private final Unit unit;
+    private final ScrollableTextField textField;
+    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
+    private final ScrollableTextFieldListener countTextFieldListener;
 
-class SingleUnitPanel extends JPanel {
-  private static final long serialVersionUID = 5034287842323633030L;
-  private final Unit m_unit;
-  private final ScrollableTextField m_textField;
-  private static Insets nullInsets = new Insets(0, 0, 0, 0);
-  private final ScrollableTextFieldListener m_countTextFieldListener;
-
-  public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext,
-      final ScrollableTextFieldListener textFieldListener, final int max, final int min, final boolean showMaxAndMin) {
-    this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
-  }
-
-  public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context,
-      final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
-      final boolean showMaxAndMin) {
-    m_unit = unit;
-    final GameData m_data = data;
-    final IUIContext m_context = context;
-    m_countTextFieldListener = textFieldListener;
-    m_textField = new ScrollableTextField(0, 512);
-    if (max >= 0) {
-      setMax(max);
+    SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext,
+        final ScrollableTextFieldListener textFieldListener, final int max, final int min,
+        final boolean showMaxAndMin) {
+      this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
     }
-    setMin(min);
-    m_textField.setShowMaxAndMin(showMaxAndMin);
-    final TripleAUnit taUnit = TripleAUnit.get(unit);
+
+    SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context,
+        final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
+        final boolean showMaxAndMin) {
+      this.unit = unit;
+      final GameData m_data = data;
+      final IUIContext m_context = context;
+      countTextFieldListener = textFieldListener;
+      textField = new ScrollableTextField(0, 512);
+      if (max >= 0) {
+        setMax(max);
+      }
+      setMin(min);
+      textField.setShowMaxAndMin(showMaxAndMin);
+      final TripleAUnit taUnit = TripleAUnit.get(unit);
 
 
-    setCount(currentValue);
-    setLayout(new GridBagLayout());
+      setCount(currentValue);
+      setLayout(new GridBagLayout());
 
-    final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
-    final JLabel label = m_context.createUnitImageJLabel(m_unit.getType(), m_unit.getOwner(), m_data,
-        isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
-        taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
+      final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
+      final JLabel label = m_context.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(), m_data,
+          isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
+          taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
 
-    add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-        new Insets(0, 0, 0, 10), 0, 0));
-    add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-        new Insets(0, 0, 0, 0), 0, 0));
-  }
+      add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+          new Insets(0, 0, 0, 10), 0, 0));
+      add(textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+          new Insets(0, 0, 0, 0), 0, 0));
+    }
 
-  public int getCount() {
-    return m_textField.getValue();
-  }
+    int getCount() {
+      return textField.getValue();
+    }
 
-  public void setCount(final int value) {
-    m_textField.setValue(value);
-  }
+    void setCount(final int value) {
+      textField.setValue(value);
+    }
 
-  public void selectAll() {
-    m_textField.setValue(m_textField.getMax());
-  }
+    void selectAll() {
+      textField.setValue(textField.getMax());
+    }
 
-  public void selectNone() {
-    m_textField.setValue(0);
-  }
+    void selectNone() {
+      textField.setValue(0);
+    }
 
-  public void setMax(final int value) {
-    m_textField.setMax(value);
-  }
+    void setMax(final int value) {
+      textField.setMax(value);
+    }
 
-  public int getMax() {
-    return m_textField.getMax();
-  }
+    int getMax() {
+      return textField.getMax();
+    }
 
-  public void setMin(final int value) {
-    m_textField.setMin(value);
-  }
+    void setMin(final int value) {
+      textField.setMin(value);
+    }
 
-  public Unit getUnit() {
-    return m_unit;
-  }
+    Unit getUnit() {
+      return unit;
+    }
 
-  public void createComponents(final JPanel panel, final int yIndex) {
-    panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-    m_textField.addChangeListener(m_countTextFieldListener);
+    void createComponents(final JPanel panel, final int rowIndex) {
+      panel.add(this, new GridBagConstraints(0, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+      textField.addChangeListener(countTextFieldListener);
+    }
   }
 }

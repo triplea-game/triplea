@@ -25,8 +25,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal =
-        new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
+    final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
     final List<Territory> capitalsListOwned =
         new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
@@ -47,9 +46,6 @@ public class TerritoryAttachment extends DefaultAttachment {
    * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't
    * own.
    * If a capital has no neighbor connections, it will be sent last.
-   *
-   * @param player
-   * @param data
    */
   public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -88,7 +84,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * will return empty list if none controlled, never returns null
+   * will return empty list if none controlled, never returns null.
    */
   public static List<Territory> getAllCapitals(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -115,7 +111,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * will return empty list if none controlled, never returns null
+   * will return empty list if none controlled, never returns null.
    */
   public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
@@ -141,7 +137,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
-  public static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
+  static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
     final TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
     if (rVal == null && !t.isWater()) {
       throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
@@ -160,6 +156,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     return ta.getProduction();
   }
 
+  public int getProduction() {
+    return m_production;
+  }
+
   /**
    * Convenience method since TerritoryAttachment.get could return null.
    */
@@ -169,6 +169,10 @@ public class TerritoryAttachment extends DefaultAttachment {
       return 0;
     }
     return ta.getUnitProduction();
+  }
+
+  public int getUnitProduction() {
+    return m_unitProduction;
   }
 
   private String m_capital = null;
@@ -192,15 +196,13 @@ public class TerritoryAttachment extends DefaultAttachment {
   private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection m_resources = null;
 
-  /** Creates new TerritoryAttachment */
+  /** Creates new TerritoryAttachment. */
   public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setResources(final String value) throws GameParseException {
@@ -298,11 +300,9 @@ public class TerritoryAttachment extends DefaultAttachment {
 
 
   /**
-   * setProduction (or just "production" in a map xml) sets both the m_production AND the m_unitProduction of a
-   * territory to be equal to the
-   * String value passed.
-   *
-   * @param value
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the string value passed. This method is
+   * used when parsing game XML since it passes string values.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProduction(final String value) {
@@ -312,17 +312,23 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets only m_production
-   *
-   * @param value
+   * Sets production and unitProduction (or just "production" in a map xml)
+   * of a territory to be equal to the Integer value passed. This method is
+   * used when working with game history since it passes Integer values.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setProduction(final Integer value) {
+    m_production = value;
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
+  }
+
+  /**
+   * Sets only m_production.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setProductionOnly(final String value) {
     m_production = getInt(value);
-  }
-
-  public int getProduction() {
-    return m_production;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -330,15 +336,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_unitProduction = Integer.parseInt(value);
   }
 
-  public int getUnitProduction() {
-    return m_unitProduction;
-  }
-
   /**
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property
    * Utils.
-   *
-   * @param player
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setOriginalOwner(final PlayerID player) {
@@ -385,9 +385,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setChangeUnitOwners(final String value) throws GameParseException {
@@ -423,9 +420,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -459,9 +453,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhenCapturedByGoesTo(final String value) throws GameParseException {
@@ -498,8 +489,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setTerritoryEffect(final String value) throws GameParseException {
@@ -533,9 +522,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setConvoyAttached(final String value) throws GameParseException {
@@ -658,9 +644,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public String toStringForInfo(final boolean useHTML, final boolean includeAttachedToName) {
+  public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {
     final StringBuilder sb = new StringBuilder("");
-    final String br = (useHTML ? "<br>" : ", ");
+    final String br = (useHtml ? "<br>" : ", ");
     final Territory t = (Territory) this.getAttachedTo();
     if (t == null) {
       return sb.toString();
@@ -746,7 +732,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
       if (m_resources != null) {
-        if (useHTML) {
+        if (useHtml) {
           sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
               .append((m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {

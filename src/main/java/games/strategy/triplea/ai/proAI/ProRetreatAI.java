@@ -42,22 +42,22 @@ import games.strategy.util.Match;
  * 2. attacker submerges sub at start or end of battle
  * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
  */
-public class ProRetreatAI {
+class ProRetreatAI {
 
   private final ProOddsCalculator calc;
 
-  public ProRetreatAI(final ProAI ai) {
+  ProRetreatAI(final ProAI ai) {
     calc = ai.getCalc();
   }
 
-  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
-      final Collection<Territory> possibleTerritories, final String message) {
+  Territory retreatQuery(final GUID battleId, final Territory battleTerritory,
+      final Collection<Territory> possibleTerritories) {
 
     // Get battle data
     final GameData data = ProData.getData();
     final PlayerID player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
-    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+    final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // Get units and determine if attacker
     final boolean isAttacker = player.equals(battle.getAttacker());
@@ -65,12 +65,11 @@ public class ProRetreatAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResult result =
-        calc.calculateBattleResults(player, battleTerritory, attackers, defenders, new HashSet<>(), isAttacker);
+    final ProBattleResult result = calc.calculateBattleResults(battleTerritory, attackers, defenders, new HashSet<>());
 
     // Determine if it has a factory
     int isFactory = 0;
-    if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(battleTerritory)) {
+    if (ProMatches.territoryHasInfraFactoryAndIsLand().match(battleTerritory)) {
       isFactory = 1;
     }
 

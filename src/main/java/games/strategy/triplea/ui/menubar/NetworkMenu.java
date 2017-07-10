@@ -19,12 +19,12 @@ import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 
-public class NetworkMenu {
+class NetworkMenu {
 
   private final IGame game;
   private final TripleAFrame frame;
 
-  public NetworkMenu(final TripleAMenuBar menuBar, final Optional<InGameLobbyWatcherWrapper> watcher,
+  NetworkMenu(final TripleAMenuBar menuBar, final Optional<InGameLobbyWatcherWrapper> watcher,
       final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();

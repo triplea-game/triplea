@@ -58,9 +58,11 @@ public class ConnectionFinder {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ConnectionFinder. "
-            + "<br>It will create a file containing the connections between territories, and optionally the territory definitions as well. "
+            + "<br>It will create a file containing the connections between territories, and optionally the territory "
+            + "definitions as well. "
             + "<br>Copy and paste everything from this file into your game xml file (the 'map' section). "
-            + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read by the engine. "
+            + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
+            + "by the engine. "
             + "</html>"));
     System.out.println("Select polygons.txt");
     File polyFile = null;
@@ -105,23 +107,29 @@ public class ConnectionFinder {
         minOverlap = scalePixels * 4;
         dimensionsSet = true;
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     if (JOptionPane.showConfirmDialog(null,
         "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n"
-            + "Do you wish to continue with this? \r\nSelect Yes to continue, Select No to override and change the size.",
+            + "Do you wish to continue with this? \r\n"
+            + "Select Yes to continue, Select No to override and change the size.",
         "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1) {
       final String scale = JOptionPane.showInputDialog(null,
-          "Enter the number of pixels larger each territory should become? \r\n(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
+          "Enter the number of pixels larger each territory should become? \r\n"
+              + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
       try {
         scalePixels = Integer.parseInt(scale);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
       final String overlap = JOptionPane.showInputDialog(null,
-          "Enter the minimum number of overlapping pixels for a connection? \r\n(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
+          "Enter the minimum number of overlapping pixels for a connection? \r\n"
+              + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
       try {
         minOverlap = Integer.parseInt(overlap);
       } catch (final NumberFormatException ex) {
+        // ignore malformed input
       }
     }
     final Map<String, Collection<String>> connections = new HashMap<>();
@@ -152,7 +160,6 @@ public class ConnectionFinder {
             testArea.intersect(otherArea);
             if (!testArea.isEmpty() && sizeOfArea(testArea) > minOverlap) {
               thisTerritoryConnections.add(otherTerritory);
-            } else if (!testArea.isEmpty()) {
             }
           }
         }
@@ -170,7 +177,7 @@ public class ConnectionFinder {
     try {
       final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
           "connections.txt", s_mapFolderLocation).getPathString();
-      final StringBuffer connectionsString = convertToXML(connections);
+      final StringBuffer connectionsString = convertToXml(connections);
       if (fileName == null) {
         System.out.println();
         if (territoryDefinitions != null) {
@@ -190,12 +197,11 @@ public class ConnectionFinder {
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
-  }// end main
+  } // end main
 
   /**
    * Creates the xml territory definitions.
    *
-   * @param allTerritoryNames
    * @param waterString
    *        a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
    *        territory is water
@@ -222,13 +228,13 @@ public class ConnectionFinder {
   }
 
   /**
-   * Converts a map of connections to XML formatted text with the connections
+   * Converts a map of connections to XML formatted text with the connections.
    *
    * @param connections
    *        a map of connections between Territories
    * @return a StringBuffer containing XML representing these connections
    */
-  private static StringBuffer convertToXML(final Map<String, Collection<String>> connections) {
+  private static StringBuffer convertToXml(final Map<String, Collection<String>> connections) {
     final StringBuffer output = new StringBuffer();
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
@@ -243,7 +249,7 @@ public class ConnectionFinder {
   }
 
   /**
-   * Returns the size of the area of the boundingbox of the polygon
+   * Returns the size of the area of the bounding box of the polygon.
    *
    * @param area
    *        the area of which the boundingbox size is measured
@@ -258,8 +264,6 @@ public class ConnectionFinder {
    * from: eu.hansolo.steelseries.tools.Scaler.java
    * Returns a double that represents the area of the given point array of a polygon
    *
-   * @param pointArray
-   * @param N
    * @return a double that represents the area of the given point array of a polygon
    */
   private static double calcSignedPolygonArea(final Point2D[] pointArray) {
@@ -281,7 +285,6 @@ public class ConnectionFinder {
    * Returns a Point2D object that represents the center of mass of the given point array which represents a
    * polygon.
    *
-   * @param pointArray
    * @return a Point2D object that represents the center of mass of the given point array
    */
   private static Point2D calcCenterOfMass(final Point2D[] pointArray) {
@@ -311,7 +314,6 @@ public class ConnectionFinder {
    * from: eu.hansolo.steelseries.tools.Scaler.java
    * Returns a Point2D object that represents the center of mass of the given shape.
    *
-   * @param currentShape
    * @return a Point2D object that represents the center of mass of the given shape
    */
   private static Point2D getCentroid(final Shape currentShape) {
@@ -362,18 +364,17 @@ public class ConnectionFinder {
    * Returns a scaled version of the given shape, calculated by the given scale factor.
    * The scaling will be calculated around the centroid of the shape.
    *
-   * @param currentPolygon
-   * @param xScaleFactor
+   * @param sx
    *        how much to scale on the x-axis
-   * @param yScaleFactor
+   * @param sy
    *        how much to scale on the y-axis
-   *        * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
+   * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
    */
-  private static Shape scale(final Shape currentPolygon, final double xScaleFactor, final double yScaleFactor) {
+  private static Shape scale(final Shape currentPolygon, final double sx, final double sy) {
     final Point2D centroid = getCentroid(currentPolygon);
-    final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - xScaleFactor) * centroid.getX(),
-        (1.0 - yScaleFactor) * centroid.getY());
-    transform.scale(xScaleFactor, yScaleFactor);
+    final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - sx) * centroid.getX(),
+        (1.0 - sy) * centroid.getY());
+    transform.scale(sx, sy);
     final Shape shape = transform.createTransformedShape(currentPolygon);
     return shape;
   }

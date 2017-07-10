@@ -14,15 +14,18 @@ import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Utility class for ensuring that locks are acquired in a consistent order.
+ *
  * <p>
  * Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(), lock.release(). If locks
  * are acquired in an
  * inconsistent order, an error message will be printed.
+ * </p>
+ *
  * <p>
  * This class is not terribly good for multithreading as it locks globally on all calls, but that is ok, as this code is
  * meant more for when
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
- * <p>
+ * </p>
  */
 public enum LockUtil {
   INSTANCE;
@@ -38,21 +41,19 @@ public enum LockUtil {
 
   private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
 
-  public void acquireLock(final Lock aLock) {
+  public void acquireLock(final Lock lock) {
     // we already have the lock, increase the count
-    if (isLockHeld(aLock)) {
-      final int current = locksHeld.get().get(aLock);
-      locksHeld.get().put(aLock, current + 1);
-    }
-    // we don't have it
-    else {
+    if (isLockHeld(lock)) {
+      final int current = locksHeld.get().get(lock);
+      locksHeld.get().put(lock, current + 1);
+    } else { // we don't have it
       synchronized (mutex) {
         // all the locks currently held must be acquired before a lock
-        if (!locksHeldWhenAcquired.containsKey(aLock)) {
-          locksHeldWhenAcquired.put(aLock, new HashSet<>());
+        if (!locksHeldWhenAcquired.containsKey(lock)) {
+          locksHeldWhenAcquired.put(lock, new HashSet<>());
         }
         for (final Lock l : locksHeld.get().keySet()) {
-          locksHeldWhenAcquired.get(aLock).add(new WeakLockRef(l));
+          locksHeldWhenAcquired.get(lock).add(new WeakLockRef(l));
         }
         // we are lock a, check to
         // see if any lock we hold (b)
@@ -66,31 +67,31 @@ public enum LockUtil {
               iter.remove();
             }
           }
-          if (held.contains(new WeakLockRef(aLock))) {
-            errorReporterRef.get().reportError(aLock, l);
+          if (held.contains(new WeakLockRef(lock))) {
+            errorReporterRef.get().reportError(lock, l);
           }
         }
       }
-      locksHeld.get().put(aLock, 1);
+      locksHeld.get().put(lock, 1);
     }
 
-    aLock.lock();
+    lock.lock();
   }
 
-  public void releaseLock(final Lock aLock) {
-    int count = locksHeld.get().get(aLock);
+  public void releaseLock(final Lock lock) {
+    int count = locksHeld.get().get(lock);
     count--;
     if (count == 0) {
-      locksHeld.get().remove(aLock);
+      locksHeld.get().remove(lock);
     } else {
-      locksHeld.get().put(aLock, count);
+      locksHeld.get().put(lock, count);
     }
 
-    aLock.unlock();
+    lock.unlock();
   }
 
-  public boolean isLockHeld(final Lock aLock) {
-    return locksHeld.get().containsKey(aLock);
+  public boolean isLockHeld(final Lock lock) {
+    return locksHeld.get().containsKey(lock);
   }
 
   @VisibleForTesting

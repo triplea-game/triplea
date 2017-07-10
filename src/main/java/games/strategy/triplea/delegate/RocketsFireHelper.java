@@ -29,8 +29,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -38,46 +36,45 @@ import games.strategy.util.Match;
  * Logic to fire rockets.
  */
 public class RocketsFireHelper {
-  private boolean isWW2V2(final GameData data) {
+  private static boolean isWW2V2(final GameData data) {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  private boolean isAllRocketsAttack(final GameData data) {
+  private static boolean isAllRocketsAttack(final GameData data) {
     return games.strategy.triplea.Properties.getAllRocketsAttack(data);
   }
 
-  private boolean isRocketsCanFlyOverImpassables(final GameData data) {
+  private static boolean isRocketsCanFlyOverImpassables(final GameData data) {
     return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
   }
 
-  private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
+  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
-  private boolean isRocketAttacksPerFactoryInfinite(final GameData data) {
+  private static boolean isRocketAttacksPerFactoryInfinite(final GameData data) {
     return games.strategy.triplea.Properties.getRocketAttacksPerFactoryInfinite(data);
   }
 
-  private boolean isPUCap(final GameData data) {
+  private static boolean isPUCap(final GameData data) {
     return games.strategy.triplea.Properties.getPUCap(data);
   }
 
-  private boolean isLimitRocketDamagePerTurn(final GameData data) {
+  private static boolean isLimitRocketDamagePerTurn(final GameData data) {
     return games.strategy.triplea.Properties.getLimitRocketDamagePerTurn(data);
   }
 
-  private boolean isLimitRocketDamageToProduction(final GameData data) {
+  private static boolean isLimitRocketDamageToProduction(final GameData data) {
     return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(data);
   }
 
   public RocketsFireHelper() {}
 
-  public void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
+  void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
     final GameData data = bridge.getData();
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
     if (rocketTerritories.isEmpty()) {
       bridge.getHistoryWriter().startEvent(player.getName() + " has no rockets to fire");
-      // getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
       return;
     }
     if (isWW2V2(data) || isAllRocketsAttack(data)) {
@@ -107,7 +104,7 @@ public class RocketsFireHelper {
         attackingFromTerritories.put(target,territory);
       }
     }
-    for( final Territory target : attackedTerritories ) {
+    for (final Territory target : attackedTerritories) {
       // Roll dice for the rocket attack damage and apply it
       fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }
@@ -133,40 +130,41 @@ public class RocketsFireHelper {
 
   Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
-    final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
+    final Match<Unit> ownedRockets = rocketMatch(player, data);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
       if (tracker.wasConquered(current)) {
         continue;
       }
-      if (current.getUnits().someMatch(ownedRockets)) {
+      if (current.getUnits().anyMatch(ownedRockets)) {
         territories.add(current);
       }
     }
     return territories;
   }
 
-  CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return new CompositeMatchAnd<>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
-        Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged(data).invert(), Matches.unitHasNotMoved);
+  Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
+    return Match.allOf(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
+        Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved);
   }
 
-  private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player) {
+  private static Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data,
+      final PlayerID player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
-    final CompositeMatchAnd<Territory> allowed =
-        new CompositeMatchAnd<>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+    final Match.CompositeBuilder<Territory> allowedBuilder = Match.newCompositeBuilder(
+        Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
-      allowed.add(Matches.TerritoryIsNotImpassable);
+      allowedBuilder.add(Matches.TerritoryIsNotImpassable);
     }
-    final CompositeMatchAnd<Unit> attackableUnits =
-        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
+    final Match<Unit> attackableUnits =
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
-      final Route route = data.getMap().getRoute(territory, current, allowed);
+      final Route route = data.getMap().getRoute(territory, current, allowedBuilder.all());
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().someMatch(new CompositeMatchAnd<>(attackableUnits,
-            Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
+        if (current.getUnits().anyMatch(Match.allOf(attackableUnits,
+            Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
       }
@@ -174,7 +172,7 @@ public class RocketsFireHelper {
     return hasFactory;
   }
 
-  private Territory getTarget(final Collection<Territory> targets, final IDelegateBridge bridge,
+  private static Territory getTarget(final Collection<Territory> targets, final IDelegateBridge bridge,
       final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
@@ -188,9 +186,9 @@ public class RocketsFireHelper {
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        new CompositeMatchAnd<>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
-        Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+        Match.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
@@ -262,8 +260,7 @@ public class RocketsFireHelper {
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
-          // map, and zero for the
-          // bonus.
+          // map, and zero for the bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
           }
@@ -318,8 +315,7 @@ public class RocketsFireHelper {
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
-          // map, and zero for the
-          // bonus.
+          // map, and zero for the bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
@@ -374,12 +370,11 @@ public class RocketsFireHelper {
       damageMap.put(target, totalDamage);
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
-    }
     // in WW2V2, limit rocket attack cost to production value of factory.
-    else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
+    } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
       if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
+        final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);
       }
@@ -388,7 +383,7 @@ public class RocketsFireHelper {
       }
     }
     // Record the PUs lost
-    DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
+    DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
     if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
       getRemote(bridge).reportMessage(
           "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "
@@ -424,12 +419,11 @@ public class RocketsFireHelper {
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    if (Match.someMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
+    if (Match.anyMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
       final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
       unitsCanDie
-          .retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+          .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
-        // targets.removeAll(unitsCanDie);
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);
         final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + attackedTerritory.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
@@ -442,7 +436,7 @@ public class RocketsFireHelper {
     }
   }
 
-  private ITripleAPlayer getRemote(final IDelegateBridge bridge) {
+  private static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
     return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 }

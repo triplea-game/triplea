@@ -14,124 +14,128 @@ import games.strategy.engine.data.PlayerID;
  */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
-  private final GameData m_data;
-  private PlayerID m_currentPlayer;
-  protected final MapPanel m_map;
-  private boolean m_active;
-  private CountDownLatch m_latch;
-  private final Object m_latchLock = new Object();
+  private final GameData data;
+  private PlayerID currentPlayer;
+  protected final MapPanel map;
+  private boolean active;
+  private CountDownLatch latch;
+  private final Object latchLock = new Object();
 
-  /** Creates new ActionPanel */
+  /** Creates new ActionPanel. */
   public ActionPanel(final GameData data, final MapPanel map) {
-    m_data = data;
-    m_map = map;
+    this.data = data;
+    this.map = map;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
   }
 
   protected final boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(m_data);
+    return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
   protected final boolean isWW2V3TechModel() {
-    return games.strategy.triplea.Properties.getWW2V3TechModel(m_data);
+    return games.strategy.triplea.Properties.getWW2V3TechModel(data);
   }
 
   protected final boolean isRestrictedPurchase() {
-    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
+    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(data);
   }
 
 
   protected final boolean isSelectableTechRoll() {
-    return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
+    return games.strategy.triplea.Properties.getSelectableTechRoll(data);
   }
 
   /**
    * Waitfor another thread to call release.
    * If the thread is interupted, we will return silently.
+   *
    * <p>
    * A memory barrier will be crossed both on entering and before exiting this method.
+   * </p>
+   *
    * <p>
    * This method will return in the event of the game shutting down.
-   * <p>
+   * </p>
    */
   protected void waitForRelease() {
     if (Thread.currentThread().isInterrupted()) {
       release();
       return;
     }
-    synchronized (m_latchLock) {
-      if (m_latch != null) {
+    synchronized (latchLock) {
+      if (latch != null) {
         throw new IllegalStateException("Latch not null");
       }
-      m_latch = new CountDownLatch(1);
-      m_map.getUIContext().addShutdownLatch(m_latch);
+      latch = new CountDownLatch(1);
+      map.getUIContext().addShutdownLatch(latch);
     }
     try {
-      m_latch.await();
+      latch.await();
     } catch (final InterruptedException e) {
       release();
     }
     // cross a memory barrier
-    synchronized (m_latchLock) {
+    synchronized (latchLock) {
     }
   }
 
   /**
    * Release the latch acquired by waitOnNewLatch()
+   *
    * <p>
    * This method will crossed on entering this method.
-   * <p>
+   * </p>
    */
   protected void release() {
-    synchronized (m_latchLock) {
+    synchronized (latchLock) {
       // not set up yet
       // this is ok as we set up in one thread
       // and wait in another
       // if the release happens too early
       // the user will be able to press done again
-      if (m_latch == null) {
+      if (latch == null) {
         return;
       }
-      m_map.getUIContext().removeShutdownLatch(m_latch);
-      m_latch.countDown();
-      m_latch = null;
+      map.getUIContext().removeShutdownLatch(latch);
+      latch.countDown();
+      latch = null;
     }
   }
 
   protected GameData getData() {
-    return m_data;
+    return data;
   }
 
   public void display(final PlayerID player) {
-    m_currentPlayer = player;
+    currentPlayer = player;
     setActive(true);
   }
 
   protected PlayerID getCurrentPlayer() {
-    return m_currentPlayer;
+    return currentPlayer;
   }
 
   protected MapPanel getMap() {
-    return m_map;
+    return map;
   }
 
   /**
    * Called when the history panel shows used to disable the panel
    * temporarily.
    */
-  public void setActive(final boolean aBool) {
-    m_active = aBool;
+  public void setActive(final boolean active) {
+    this.active = active;
   }
 
   public boolean getActive() {
-    return m_active;
+    return active;
   }
 
   /**
    * Refreshes the action panel. Should be run within the swing event queue.
    */
-  protected final Runnable REFRESH = () -> {
+  protected final Runnable refresh = () -> {
     revalidate();
     repaint();
   };

@@ -31,11 +31,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
   /**
    * Method for setting a relationship between two players, this should only be called during the Game Parser.
-   *
-   * @param p1
-   * @param p2
-   * @param r
-   * @param roundValue
    */
   protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue) {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
@@ -76,7 +71,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
   /**
    * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
-   * players
+   * players.
    *
    * @param p1
    *        Player 1 in the relationship
@@ -111,12 +106,12 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
   }
 
-  /** convenience method to get the SelfRelationshipType added for readability */
+  /** convenience method to get the SelfRelationshipType added for readability. */
   private RelationshipType getSelfRelationshipType() {
     return getData().getRelationshipTypeList().getSelfRelation();
   }
 
-  /** convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for readability */
+  /** convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for readability. */
   private RelationshipType getNullRelationshipType() {
     return getData().getRelationshipTypeList().getNullRelation();
   }
@@ -129,8 +124,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
     /**
      * override hashCode to make sure that each new instance of this class can be matched in the Hashtable
-     * even if it was put in as (p1,p2) and you want to get it out as (p2,p1)
-     * and
+     * even if it was put in as (p1,p2) and you want to get it out as (p2,p1).
      */
     @Override
     public int hashCode() {
@@ -179,13 +173,12 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return m_p1.getName() + "-" + m_p2.getName();
     }
   }
+
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 
     /**
      * This should never be called outside of the change factory.
-     *
-     * @param relationshipType
      */
     public Relationship(final RelationshipType relationshipType) {
       this.relationshipType = relationshipType;
@@ -194,9 +187,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
     /**
      * This should never be called outside of the game parser.
-     *
-     * @param relationshipType
-     * @param roundValue
      */
     public Relationship(final RelationshipType relationshipType, final int roundValue) {
       this.relationshipType = relationshipType;

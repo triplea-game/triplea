@@ -34,7 +34,7 @@ class GameSequenceRow extends DynamicRow {
     Dimension dimension = textFieldSequenceName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_MEDIUM;
     textFieldSequenceName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldSequenceName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldSequenceName, () -> {
       final String inputText = textFieldSequenceName.getText().trim();
       if (currentRowName.equals(inputText)) {
         return;
@@ -73,7 +73,7 @@ class GameSequenceRow extends DynamicRow {
     dimension = textFieldClassName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
     textFieldClassName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldClassName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldClassName, () -> {
       final String inputText = textFieldClassName.getText().trim();
       MapXmlHelper.getGamePlaySequenceMap().get(sequenceName).set(0, inputText);
     });
@@ -81,7 +81,7 @@ class GameSequenceRow extends DynamicRow {
     dimension = textFieldDisplayName.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_LARGE;
     textFieldDisplayName.setPreferredSize(dimension);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldDisplayName, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldDisplayName, () -> {
       final String inputText = textFieldDisplayName.getText().trim();
       MapXmlHelper.getGamePlaySequenceMap().get(sequenceName).set(1, inputText);
     });
@@ -98,18 +98,18 @@ class GameSequenceRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(textFieldSequenceName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(textFieldSequenceName, gbcTemplate);
 
-    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tClassName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tClassName.gridx = 1;
     parent.add(textFieldClassName, gbc_tClassName);
 
-    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tDisplayName = (GridBagConstraints) gbcTemplate.clone();
     gbc_tDisplayName.gridx = 2;
     parent.add(textFieldDisplayName, gbc_tDisplayName);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 3;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

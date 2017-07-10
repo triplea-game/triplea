@@ -28,7 +28,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer m_tempMovePerformer;
 
-  public static enum MoveType {
+  public enum MoveType {
     DEFAULT, SPECIAL
   }
 
@@ -135,7 +135,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public abstract String move(final Collection<Unit> units, final Route route,
-      final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
+      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
       final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
@@ -166,7 +166,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   /**
    * @param unit
-   *        referring unit
+   *        referring unit.
    * @param end
    *        target territory
    * @return the route that a unit used to move into the given territory
@@ -224,14 +224,12 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
-  public abstract int PUsAlreadyLost(final Territory t);
+  public abstract int pusAlreadyLost(final Territory t);
 
-  public abstract void PUsLost(final Territory t, final int amt);
+  public abstract void pusLost(final Territory t, final int amt);
 
   @Override
   public Class<IMoveDelegate> getRemoteType() {
     return IMoveDelegate.class;
   }
 }
-
-

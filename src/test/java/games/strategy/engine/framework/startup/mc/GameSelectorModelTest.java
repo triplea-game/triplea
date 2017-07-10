@@ -3,34 +3,35 @@ package games.strategy.engine.framework.startup.mc;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+
 import static org.junit.Assert.assertThat;
+
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.awt.Component;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Observable;
 import java.util.Observer;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class GameSelectorModelTest {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
@@ -75,10 +76,6 @@ public class GameSelectorModelTest {
   @Mock
   private ClientModel mockClientModel;
 
-  @Mock
-  private Component mockUiComponent;
-
-
   @Before
   public void setup() {
     testObj = new GameSelectorModel();
@@ -97,7 +94,7 @@ public class GameSelectorModelTest {
     this.testObjectSetMockGameData();
   }
 
-  private final void testObjectSetMockGameData() {
+  private void testObjectSetMockGameData() {
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
@@ -106,11 +103,11 @@ public class GameSelectorModelTest {
   }
 
   private void verifyTestObjectObserverUpdateSent() {
-    verify(mockObserver, times(1)).update((Observable) Mockito.any(), Mockito.any());
+    verify(mockObserver, times(1)).update(Mockito.any(), Mockito.any());
     reset(mockObserver);
   }
 
-  private final void prepareMockGameDataExpectations() {
+  private void prepareMockGameDataExpectations() {
     when(mockGameData.getGameVersion()).thenReturn(mockVersion);
     when(mockVersion.toString()).thenReturn(fakeGameVersion);
     when(mockGameData.getSequence()).thenReturn(mockSequence);
@@ -129,13 +126,13 @@ public class GameSelectorModelTest {
 
   @Test
   public void testIsSaveGame() {
-    testObj.load((GameData) null, "");
+    testObj.load(null, "");
     assertThat(testObj.isSavedGame(), is(true));
 
-    testObj.load((GameData) null, ".xml");
+    testObj.load(null, ".xml");
     assertThat(testObj.isSavedGame(), is(false));
 
-    testObj.load((GameData) null, "file.tsvg");
+    testObj.load(null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
   }
 
@@ -249,27 +246,5 @@ public class GameSelectorModelTest {
   public void testGetGameVersion() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameVersion(), is(fakeGameVersion));
-  }
-
-  @Ignore
-  @Test
-  public void testLoadFromInputStream() {
-    // testObj.load(InputStream, string fileName);
-    // TODO
-  }
-
-
-  @Ignore
-  @Test
-  public void testLoadFromFile() {
-    // testObj.load(File, Component);
-    // TODO
-  }
-
-  @Ignore
-  @Test
-  public void testLoadDefaultGame() {
-    // testObj.loadDefaultGame(Component);
-    // TODO
   }
 }

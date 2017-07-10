@@ -14,9 +14,8 @@ public interface IClientChannel extends IChannelSubscribor {
   void playerListingChanged(PlayerListing listing);
 
   /**
-   * @param gameData
    * @param players
-   *        who is playing who
+   *        who is playing who.
    */
   void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
 

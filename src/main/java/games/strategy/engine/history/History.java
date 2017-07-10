@@ -1,6 +1,5 @@
 package games.strategy.engine.history;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -75,22 +74,22 @@ public class History extends DefaultTreeModel {
   }
 
   private int getLastChange(final HistoryNode node) {
-    int rVal;
+    int lastChangeIndex;
     if (node == getRoot()) {
-      rVal = 0;
+      lastChangeIndex = 0;
     } else if (node instanceof Event) {
-      rVal = ((Event) node).getChangeEndIndex();
+      lastChangeIndex = ((Event) node).getChangeEndIndex();
     } else if (node instanceof EventChild) {
-      rVal = ((Event) node.getParent()).getChangeEndIndex();
+      lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
     } else if (node instanceof IndexedHistoryNode) {
-      rVal = ((IndexedHistoryNode) node).getChangeStartIndex();
+      lastChangeIndex = ((IndexedHistoryNode) node).getChangeStartIndex();
     } else {
-      rVal = 0;
+      lastChangeIndex = 0;
     }
-    if (rVal == -1) {
+    if (lastChangeIndex == -1) {
       return m_changes.size();
     }
-    return rVal;
+    return lastChangeIndex;
   }
 
   public Change getDelta(final HistoryNode start, final HistoryNode end) {
@@ -132,7 +131,7 @@ public class History extends DefaultTreeModel {
     assertCorrectThread();
     getGameData().acquireWriteLock();
     try {
-      final int lastChange = getLastChange(removeAfterNode);
+      final int lastChange = getLastChange(removeAfterNode) + 1;
       while (m_changes.size() > lastChange) {
         m_changes.remove(lastChange);
       }
@@ -160,17 +159,17 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  synchronized void changeAdded(final Change aChange) {
-    m_changes.add(aChange);
+  synchronized void changeAdded(final Change change) {
+    m_changes.add(change);
     if (m_currentNode == null) {
       return;
     }
     if (m_currentNode == getLastNode()) {
-      m_data.performChange(aChange);
+      m_data.performChange(change);
     }
   }
 
-  private Object writeReplace() throws ObjectStreamException {
+  private Object writeReplace() {
     return new SerializedHistory(this, m_data, m_changes);
   }
 
@@ -186,7 +185,7 @@ public class History extends DefaultTreeModel {
 
 /**
  * DefaultTreeModel is not serializable across jdk versions
- * Instead we use an instance of this class to store our data
+ * Instead we use an instance of this class to store our data.
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;
@@ -217,7 +216,7 @@ class SerializedHistory implements Serializable {
     }
   }
 
-  public Object readResolve() throws ObjectStreamException {
+  public Object readResolve() {
     final History rVal = new History(m_data);
     final HistoryWriter historyWriter = rVal.getHistoryWriter();
     for (final SerializationWriter element : m_Writers) {

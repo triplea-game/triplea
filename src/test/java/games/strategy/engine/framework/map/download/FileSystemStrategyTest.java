@@ -7,11 +7,12 @@ import java.io.File;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.common.io.Files;
 
-import games.strategy.test.TestUtil;
 import games.strategy.util.Version;
 
 /**
@@ -20,6 +21,8 @@ import games.strategy.util.Version;
  * fast, so one day we should just read the versions directly from the map zip files.
  */
 public class FileSystemStrategyTest {
+  @Rule
+  public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private FileSystemAccessStrategy testObj;
 
@@ -29,8 +32,8 @@ public class FileSystemStrategyTest {
   public void setUp() throws Exception {
     testObj = new FileSystemAccessStrategy();
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
-    mapFile = TestUtil.createTempFile("");
-    final File propFile = new File(mapFile.getAbsolutePath() + ".properties");
+    mapFile = temporaryFolder.newFile();
+    final File propFile = temporaryFolder.newFile(mapFile.getName() + ".properties");
     Files.write(text.getBytes(), propFile);
   }
 

@@ -30,7 +30,7 @@ public class TechAttachment extends DefaultAttachment {
     return attachment;
   }
 
-  public static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
+  static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
@@ -381,9 +381,6 @@ public class TechAttachment extends DefaultAttachment {
   /**
    * Internal use only, is not set by xml or property utils.
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param name
-   * @param value
    */
   @InternalDoNotExport
   public void setGenericTech(final String name, final boolean value) {

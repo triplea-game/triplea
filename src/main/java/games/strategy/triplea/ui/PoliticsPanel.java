@@ -39,17 +39,17 @@ import games.strategy.ui.SwingAction;
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
-  private final JLabel m_actionLabel = new JLabel();
-  private JButton m_selectPoliticalActionButton = null;
-  private JButton m_doneButton = null;
-  private PoliticalActionAttachment m_choice = null;
-  private TripleAFrame m_parent = null;
-  private boolean m_firstRun = true;
-  protected List<PoliticalActionAttachment> m_validPoliticalActions = null;
+  private final JLabel actionLabel = new JLabel();
+  private JButton selectPoliticalActionButton = null;
+  private JButton doneButton = null;
+  private PoliticalActionAttachment choice = null;
+  private TripleAFrame parent = null;
+  private boolean firstRun = true;
+  protected List<PoliticalActionAttachment> validPoliticalActions = null;
 
   public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
-    m_parent = parent;
+    this.parent = parent;
   }
 
   @Override
@@ -60,66 +60,65 @@ public class PoliticsPanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    m_choice = null;
+    choice = null;
     SwingUtilities.invokeLater(() -> {
       removeAll();
-      m_actionLabel.setText(id.getName() + " Politics");
-      add(m_actionLabel);
-      m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
-      m_selectPoliticalActionButton.setEnabled(false);
-      add(m_selectPoliticalActionButton);
-      m_doneButton = new JButton(DontBotherAction);
-      m_doneButton.setEnabled(false);
-      SwingUtilities.invokeLater(() -> m_doneButton.requestFocusInWindow());
-      add(m_doneButton);
+      actionLabel.setText(id.getName() + " Politics");
+      add(actionLabel);
+      selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
+      selectPoliticalActionButton.setEnabled(false);
+      add(selectPoliticalActionButton);
+      doneButton = new JButton(dontBotherAction);
+      doneButton.setEnabled(false);
+      SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
+      add(doneButton);
     });
   }
 
   /**
    * waits till someone calls release() and then returns the political action
-   * chosen
+   * chosen.
    *
    * @return the choice of political action
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
-      final IPoliticsDelegate iPoliticsDelegate) {
-    m_firstRun = firstRun;
+      final IPoliticsDelegate politicsDelegate) {
+    this.firstRun = firstRun;
 
     // Never use a delegate or bridge from a UI. Multiplayer games will not work.
-    m_validPoliticalActions = new ArrayList<>(iPoliticsDelegate.getValidActions());
-    Collections.sort(m_validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
-    if (m_firstRun && m_validPoliticalActions.isEmpty()) {
+    validPoliticalActions = new ArrayList<>(politicsDelegate.getValidActions());
+    Collections.sort(validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
+    if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing
       return null;
     } else {
-      if (m_firstRun) {
+      if (this.firstRun) {
         ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
       }
       SwingUtilities.invokeLater(() -> {
-        m_selectPoliticalActionButton.setEnabled(true);
-        m_doneButton.setEnabled(true);
+        selectPoliticalActionButton.setEnabled(true);
+        doneButton.setEnabled(true);
         // press the politics button for us.
-        SelectPoliticalActionAction.actionPerformed(null);
+        selectPoliticalActionAction.actionPerformed(null);
       });
     }
     waitForRelease();
-    return m_choice;
+    return choice;
   }
 
   /**
    * Fires up a JDialog showing the political landscape and valid actions,
-   * choosing an action will release this model and trigger waitForRelease()
+   * choosing an action will release this model and trigger waitForRelease().
    */
-  private final Action SelectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
+  private final Action selectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 96;
     final int availWidth = screenResolution.width - 30;
     final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
     final int availHeightChoice = (int) ((float) availHeight / 3);
 
-    final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
+    final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
     final Insets insets = new Insets(1, 1, 1, 1);
-    int row = 0;
     final JPanel politicalChoicePanel = new JPanel();
     politicalChoicePanel.setLayout(new GridBagLayout());
     final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext(), false);
@@ -133,10 +132,10 @@ public class PoliticsPanel extends ActionPanel {
             : (overviewScroll.getPreferredSize().width
                 + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
         (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
-            : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
+            : (overviewScroll.getPreferredSize().height + (validPoliticalActions.isEmpty() ? 26 : 0)
                 + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 
-    final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
+    final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
     choiceScroll.setBorder(BorderFactory.createEmptyBorder());
     choiceScroll.setPreferredSize(new Dimension(
         (choiceScroll.getPreferredSize().width > availWidth ? availWidth
@@ -149,35 +148,35 @@ public class PoliticsPanel extends ActionPanel {
     final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
     splitPane.setOneTouchExpandable(true);
     splitPane.setDividerSize(8);
-    politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0,
+    politicalChoicePanel.add(splitPane, new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0,
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
     final JButton noActionButton =
         new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
     SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
-    politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
+    politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, insets, 0, 0));
     politicalChoiceDialog.add(politicalChoicePanel);
     politicalChoiceDialog.pack();
-    politicalChoiceDialog.setLocationRelativeTo(m_parent);
+    politicalChoiceDialog.setLocationRelativeTo(parent);
     politicalChoiceDialog.setVisible(true);
     politicalChoiceDialog.dispose();
 
   });
 
-  private JPanel PoliticalActionButtonPanel(final JDialog parent) {
+  private JPanel politicalActionButtonPanel(final JDialog parent) {
     final JPanel politicalActionButtonPanel = new JPanel();
     politicalActionButtonPanel.setLayout(new GridBagLayout());
     int row = 0;
     final Insets insets = new Insets(1, 1, 1, 1);
-    for (final PoliticalActionAttachment paa : m_validPoliticalActions) {
+    for (final PoliticalActionAttachment paa : validPoliticalActions) {
       politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(paa));
       button.addActionListener(ae -> {
-        m_selectPoliticalActionButton.setEnabled(false);
-        m_doneButton.setEnabled(false);
-        m_validPoliticalActions = null;
-        m_choice = paa;
+        selectPoliticalActionButton.setEnabled(false);
+        doneButton.setEnabled(false);
+        validPoliticalActions = null;
+        choice = paa;
         parent.setVisible(false);
         release();
       });
@@ -191,11 +190,11 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   /**
-   * This will stop the politicsPhase
+   * This will stop the politicsPhase.
    */
-  private final Action DontBotherAction = SwingAction.of("Done", e -> {
-    if (!m_firstRun || youSureDoNothing()) {
-      m_choice = null;
+  private final Action dontBotherAction = SwingAction.of("Done", e -> {
+    if (!firstRun || youSureDoNothing()) {
+      choice = null;
       release();
     }
   });
@@ -232,68 +231,69 @@ public class PoliticsPanel extends ActionPanel {
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
   }
-}
 
+  private static final class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
+    private final GameData gameData;
+    private final PlayerID player;
 
-class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
-  private final GameData m_data;
-  private final PlayerID m_player;
+    PoliticalActionComparator(final PlayerID currentPlayer, final GameData data) {
+      gameData = data;
+      player = currentPlayer;
+    }
 
-  public PoliticalActionComparator(final PlayerID currentPlayer, final GameData data) {
-    m_data = data;
-    m_player = currentPlayer;
-  }
-
-  @Override
-  public int compare(final PoliticalActionAttachment paa1, final PoliticalActionAttachment paa2) {
-    if (paa1.equals(paa2)) {
+    @Override
+    public int compare(final PoliticalActionAttachment paa1, final PoliticalActionAttachment paa2) {
+      if (paa1.equals(paa2)) {
+        return 0;
+      }
+      final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
+      final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
+      final RelationshipTypeList relationshipTypeList;
+      gameData.acquireReadLock();
+      try {
+        relationshipTypeList = gameData.getRelationshipTypeList();
+      } finally {
+        gameData.releaseReadLock();
+      }
+      final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
+      final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
+      // sort by player
+      final PlayerID paa1p1 = gameData.getPlayerList().getPlayerID(paa1RelationChange[0]);
+      final PlayerID paa1p2 = gameData.getPlayerList().getPlayerID(paa1RelationChange[1]);
+      final PlayerID paa2p1 = gameData.getPlayerList().getPlayerID(paa2RelationChange[0]);
+      final PlayerID paa2p2 = gameData.getPlayerList().getPlayerID(paa2RelationChange[1]);
+      final PlayerID paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
+      final PlayerID paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
+      if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
+        final int order = new PlayerOrderComparator(gameData).compare(paa1OtherPlayer, paa2OtherPlayer);
+        if (order != 0) {
+          return order;
+        }
+      }
+      // sort by achetype
+      if (!paa1NewType.equals(paa2NewType)) {
+        if (paa1NewType.getRelationshipTypeAttachment().isWar()
+            && !paa2NewType.getRelationshipTypeAttachment().isWar()) {
+          return -1;
+        }
+        if (!paa1NewType.getRelationshipTypeAttachment().isWar()
+            && paa2NewType.getRelationshipTypeAttachment().isWar()) {
+          return 1;
+        }
+        if (paa1NewType.getRelationshipTypeAttachment().isNeutral()
+            && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
+          return -1;
+        }
+        if (paa1NewType.getRelationshipTypeAttachment().isAllied()
+            && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
+          return 1;
+        }
+      }
+      // sort by name of new relationship type
+      if (!paa1NewType.getName().equals(paa2NewType.getName())) {
+        return paa1NewType.getName().compareTo(paa2NewType.getName());
+      }
       return 0;
     }
-    final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
-    final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
-    final RelationshipTypeList relationshipTypeList;
-    m_data.acquireReadLock();
-    try {
-      relationshipTypeList = m_data.getRelationshipTypeList();
-    } finally {
-      m_data.releaseReadLock();
-    }
-    final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
-    final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
-    // sort by player
-    final PlayerID paa1p1 = m_data.getPlayerList().getPlayerID(paa1RelationChange[0]);
-    final PlayerID paa1p2 = m_data.getPlayerList().getPlayerID(paa1RelationChange[1]);
-    final PlayerID paa2p1 = m_data.getPlayerList().getPlayerID(paa2RelationChange[0]);
-    final PlayerID paa2p2 = m_data.getPlayerList().getPlayerID(paa2RelationChange[1]);
-    final PlayerID paa1OtherPlayer = (m_player.equals(paa1p1) ? paa1p2 : paa1p1);
-    final PlayerID paa2OtherPlayer = (m_player.equals(paa2p1) ? paa2p2 : paa2p1);
-    if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
-      final int order = new PlayerOrderComparator(m_data).compare(paa1OtherPlayer, paa2OtherPlayer);
-      if (order != 0) {
-        return order;
-      }
-    }
-    // sort by achetype
-    if (!paa1NewType.equals(paa2NewType)) {
-      if (paa1NewType.getRelationshipTypeAttachment().isWar() && !paa2NewType.getRelationshipTypeAttachment().isWar()) {
-        return -1;
-      }
-      if (!paa1NewType.getRelationshipTypeAttachment().isWar() && paa2NewType.getRelationshipTypeAttachment().isWar()) {
-        return 1;
-      }
-      if (paa1NewType.getRelationshipTypeAttachment().isNeutral()
-          && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
-        return -1;
-      }
-      if (paa1NewType.getRelationshipTypeAttachment().isAllied()
-          && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
-        return 1;
-      }
-    }
-    // sort by name of new relationship type
-    if (!paa1NewType.getName().equals(paa2NewType.getName())) {
-      return paa1NewType.getName().compareTo(paa2NewType.getName());
-    }
-    return 0;
   }
 }

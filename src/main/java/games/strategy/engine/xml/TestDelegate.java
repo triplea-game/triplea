@@ -64,7 +64,7 @@ public final class TestDelegate extends AbstractDelegate {
   }
 
   /**
-   * Loads the delegates state
+   * Loads the delegates state.
    */
   @Override
   public void loadState(final Serializable state) {}

@@ -9,9 +9,10 @@ import java.util.logging.Logger;
 
 /**
  * A packet of data being read over the network.
+ *
  * <p>
  * A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java object.
- * <p>
+ * </p>
  */
 class SocketReadData {
   public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
@@ -38,8 +39,10 @@ class SocketReadData {
 
   /**
    * Read data from the channel, returning true if this packet is done.
+   *
    * <p>
    * If we detect the socket is closed, we will throw an IOExcpetion
+   * </p>
    */
   public boolean read(final SocketChannel channel) throws IOException {
     readCalls++;

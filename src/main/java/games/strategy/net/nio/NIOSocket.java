@@ -86,7 +86,7 @@ public class NIOSocket implements IErrorReporter {
   }
 
   /**
-   * Close the channel, and clean up any data associated with it
+   * Close the channel, and clean up any data associated with it.
    */
   public void close(final SocketChannel channel) {
     try {

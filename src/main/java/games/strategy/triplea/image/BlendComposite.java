@@ -8,7 +8,7 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
 /**
- * This class handles the various types of blends for base/relief tiles
+ * This class handles the various types of blends for base/relief tiles.
  */
 class BlendComposite implements java.awt.Composite {
   public enum BlendingMode {
@@ -122,6 +122,7 @@ class BlendComposite implements java.awt.Composite {
       }
     }
   }
+
   abstract static class Blender {
     public abstract int[] blend(int[] src, int[] dst);
 

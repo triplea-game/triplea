@@ -35,7 +35,7 @@ public class NoPUEndTurnDelegate extends EndTurnDelegate {
   }
 
   @Override
-  protected String addOtherResources(final IDelegateBridge aBridge) {
+  protected String addOtherResources(final IDelegateBridge bridge) {
     return "";
   }
 }

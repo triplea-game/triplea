@@ -38,7 +38,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   private TerritoryConnectionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final TerritoryConnectionsPanel panel = new TerritoryConnectionsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());
@@ -50,18 +50,18 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
     if (centerName.equals(selectedTerritory.orElse(""))) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
       final int xRectPadding = 2;
       final int yDiffCenterToRectTop = -6;
       final int yDiffCenterToStringBottom = 5;
-      g.fillRect(Math.max(0, x_text_start - xRectPadding), Math.max(0, item.y + yDiffCenterToRectTop),
+      g.fillRect(Math.max(0, textStartX - xRectPadding), Math.max(0, item.y + yDiffCenterToRectTop),
           (int) stringBounds.getWidth() + 2 * xRectPadding,
           (int) stringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(centerName, Math.max(0, x_text_start), item.y + yDiffCenterToStringBottom);
+      g.drawString(centerName, Math.max(0, textStartX), item.y + yDiffCenterToStringBottom);
     }
     g.setColor(Color.red);
   }
@@ -86,13 +86,15 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
             + "Do you wish to continue with this? \rSelect Yes to continue, Select No to override and change the size.",
         "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1) {
       scalePixels = showInputDialogForPositiveIntegerInput(
-          "Enter the number of pixels larger each territory should become? \r(Normally 4x bigger than the border line width. eg: 4, or 8, etc)",
+          "Enter the number of pixels larger each territory should become? \r"
+              + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)",
           "4");
       if (scalePixels == 0) {
         return;
       }
       minOverlap = showInputDialogForPositiveIntegerInput(
-          "Enter the minimum number of overlapping pixels for a connection? \r(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)",
+          "Enter the minimum number of overlapping pixels for a connection? \r"
+              + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)",
           "16");
       if (minOverlap == 0) {
         return;
@@ -103,7 +105,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
 
   }
 
-  private void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, final int scalePixels,
+  private static void setTerritoryConnections(final Map<String, List<Area>> territoryAreas, final int scalePixels,
       final double minOverlap) {
     MapXmlHelper.clearTerritoryConnections();
     Logger.getLogger(MapXmlCreator.MAP_XML_CREATOR_LOGGER_NAME).log(Level.FINE,
@@ -147,7 +149,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
         "finished scanning");
   }
 
-  private Map<String, List<Area>> getTerritoryAreasFromPolygons() {
+  private static Map<String, List<Area>> getTerritoryAreasFromPolygons() {
     final Map<String, List<Area>> territoryAreas = Maps.newHashMap();
     for (final String territoryName : polygons.keySet()) {
       final List<Polygon> listOfPolygons = polygons.get(territoryName);
@@ -162,7 +164,7 @@ public class TerritoryConnectionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * Forces the user to either enter nothing or a positive integer
+   * Forces the user to either enter nothing or a positive integer.
    *
    * @return input value or 0 if nothing has been entered
    */

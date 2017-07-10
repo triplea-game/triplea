@@ -17,6 +17,7 @@ import games.strategy.util.Util;
 
 /**
  * A route between two territories.
+ *
  * <p>
  * A route consists of a start territory, and a sequence of steps. To create a route do,
  * <code>
@@ -25,6 +26,7 @@ import games.strategy.util.Util;
  * route.add(anotherTerritory);
  * route.add(yetAnotherTerritory);
  * </code>
+ * </p>
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
@@ -128,7 +130,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return start territory for this route
+   * @return start territory for this route.
    */
   public Territory getStart() {
     return m_start;
@@ -179,7 +181,7 @@ public class Route implements Serializable, Iterable<Territory> {
   /**
    * @param u
    *        unit that is moving on this route
-   * @return the total cost of the route including modifications due to territoryEffects and territoryConnections
+   * @return the total cost of the route including modifications due to territoryEffects and territoryConnections.
    */
   public int getMovementCost(final Unit u) {
     // TODO implement me
@@ -187,14 +189,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return the number of steps in this route. Does not include start.
+   * @return The number of steps in this route. Does not include start.
    */
   public int numberOfSteps() {
     return m_steps.size();
   }
 
   /**
-   * @return the number of steps in this route. DOES include start.
+   * @return The number of steps in this route. DOES include start.
    */
   public int numberOfStepsIncludingStart() {
     return this.getAllTerritories().size();
@@ -204,20 +206,20 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param i
    *        step number
    * @return territory we will be in after the i'th step for this route has
-   *         been made
+   *         been made.
    */
   public Territory getTerritoryAtStep(final int i) {
     return m_steps.get(i);
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
-   * @return whether all territories in this route match the given match (start territory is not tested)
+   * @return whether all territories in this route match the given match (start territory is not tested).
    */
-  public boolean allMatch(final Match<Territory> aMatch) {
+  public boolean allMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (!aMatch.match(t)) {
+      if (!match.match(t)) {
         return false;
       }
     }
@@ -225,13 +227,13 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
-   * @return whether some territories in this route match the given match (start territory is not tested)
+   * @return whether any territories in this route match the given match (start territory is not tested).
    */
-  public boolean someMatch(final Match<Territory> aMatch) {
+  public boolean anyMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (aMatch.match(t)) {
+      if (match.match(t)) {
         return true;
       }
     }
@@ -239,17 +241,17 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
-   * @return whether all territories in this route match the given match (start and end territories are not tested)
+   * @return whether all territories in this route match the given match (start and end territories are not tested).
    */
-  public boolean allMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps) {
+  public boolean allMatchMiddleSteps(final Match<Territory> match, final boolean defaultWhenNoMiddleSteps) {
     final List<Territory> middle = getMiddleSteps();
     if (middle.isEmpty()) {
       return defaultWhenNoMiddleSteps;
     }
     for (final Territory t : middle) {
-      if (!aMatch.match(t)) {
+      if (!match.match(t)) {
         return false;
       }
     }
@@ -257,12 +259,12 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param aMatch
+   * @param match
    *        referring match
-   * @return all territories in this route match the given match (start territory is not tested)
+   * @return all territories in this route match the given match (start territory is not tested).
    */
-  public Collection<Territory> getMatches(final Match<Territory> aMatch) {
-    return Match.getMatches(m_steps, aMatch);
+  public Collection<Territory> getMatches(final Match<Territory> match) {
+    return Match.getMatches(m_steps, match);
   }
 
   @Override
@@ -282,7 +284,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return collection of all territories in this route, without the start
+   * @return collection of all territories in this route, without the start.
    */
   public List<Territory> getSteps() {
     if (numberOfSteps() > 0) {
@@ -293,7 +295,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * @return collection of all territories in this route without the start or
-   *         the end
+   *         the end.
    */
   public List<Territory> getMiddleSteps() {
     if (numberOfSteps() > 1) {
@@ -303,7 +305,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return last territory in the route
+   * @return last territory in the route.
    */
   public Territory getEnd() {
     if (m_steps.isEmpty()) {
@@ -318,14 +320,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether this route has any steps
+   * @return whether this route has any steps.
    */
   public boolean hasSteps() {
     return !m_steps.isEmpty();
   }
 
   /**
-   * @return whether this route has no steps
+   * @return whether this route has no steps.
    */
   public boolean hasNoSteps() {
     return !hasSteps();
@@ -342,7 +344,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * the territory before the end territory (this could be the start territory
-   * in the case of 1 step)
+   * in the case of 1 step).
    *
    * @return the territory before the end territory
    */
@@ -382,14 +384,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether this route has more then one step
+   * @return whether this route has more then one step.
    */
   public boolean hasMoreThenOneStep() {
     return m_steps.size() > 1;
   }
 
   /**
-   * @return whether there are territories before the end where the territory is owned by null and is not sea
+   * @return whether there are territories before the end where the territory is owned by null and is not sea.
    */
   public boolean hasNeutralBeforeEnd() {
     for (final Territory current : getMiddleSteps()) {
@@ -402,23 +404,23 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether there is some water in the route including start and end
+   * @return whether there is some water in the route including start and end.
    */
   public boolean hasWater() {
     if (getStart().isWater()) {
       return true;
     }
-    return Match.someMatch(getSteps(), Matches.TerritoryIsWater);
+    return Match.anyMatch(getSteps(), Matches.TerritoryIsWater);
   }
 
   /**
-   * @return whether there is some land in the route including start and end
+   * @return whether there is some land in the route including start and end.
    */
   public boolean hasLand() {
     if (!getStart().isWater()) {
       return true;
     }
-    return !Match.allMatch(getAllTerritories(), Matches.TerritoryIsWater);
+    return !Match.allMatchNotEmpty(getAllTerritories(), Matches.TerritoryIsWater);
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {
@@ -434,7 +436,7 @@ public class Route implements Serializable, Iterable<Territory> {
     return movementLeft;
   }
 
-  public ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
+  private ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
     final ResourceCollection col = new ResourceCollection(data);
     if (Matches.unitIsBeingTransported().match(unit)) {
       return col;

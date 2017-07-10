@@ -34,7 +34,7 @@ public abstract class DynamicRow {
     this.parentRowPanel = parentRowPanel;
 
     buttonRemovePerRow = new JButton("X");
-    buttonRemovePerRow.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonRemovePerRow.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     final Dimension dimension = new Dimension(25, 20);
     buttonRemovePerRow.setPreferredSize(dimension);
     buttonRemovePerRow.addActionListener(SwingAction.of("Remove Row", e -> {
@@ -50,9 +50,11 @@ public abstract class DynamicRow {
   }
 
   public void addToParentComponent(final JComponent parent, final int rowIndex) {
-    addToParentComponentWithGbc(parent, rowIndex, MapXmlUIHelper.getGbcDefaultTemplateWith(0, rowIndex));
+    addToParentComponentWithGbc(parent, rowIndex, MapXmlUiHelper.getGbcDefaultTemplateWith(0, rowIndex));
   }
 
+  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate);
+  
   public void addToParentComponentWithGbc(final JComponent parent, final int rowIndex,
       final GridBagConstraints gbcTemplate) {
     gbcTemplate.gridy = rowIndex;
@@ -69,7 +71,7 @@ public abstract class DynamicRow {
 
     parentRowPanel.removeFinalButtonRow();
 
-    parentRowPanel.addFinalButtonRow(MapXmlUIHelper.getGbcDefaultTemplateWith(0, parentRowPanel.countRows()));
+    parentRowPanel.addFinalButtonRow(MapXmlUiHelper.getGbcDefaultTemplateWith(0, parentRowPanel.countRows()));
   }
 
   private void removeRowByNameAndPushUpFollowingRows(final String currentRowName) {
@@ -108,7 +110,6 @@ public abstract class DynamicRow {
 
   protected abstract ArrayList<JComponent> getComponentList();
 
-  public abstract void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template);
 
   protected abstract void adaptRowSpecifics(final DynamicRow newRow);
 

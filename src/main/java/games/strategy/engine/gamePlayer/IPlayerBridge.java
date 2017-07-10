@@ -11,19 +11,19 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IPlayerBridge {
   /**
-   * Return the game data
+   * Return the game data.
    */
   GameData getGameData();
 
   /**
    * Get a remote reference to the current delegate, the type of the reference
-   * is declared by the delegates getRemoteType() method
+   * is declared by the delegates getRemoteType() method.
    */
   IRemote getRemoteDelegate();
 
   /**
    * Get a remote reference to the named delegate, the type of the reference
-   * is declared by the delegates getRemoteType() method
+   * is declared by the delegates getRemoteType() method.
    */
   IRemote getRemotePersistentDelegate(String name);
 
@@ -42,7 +42,7 @@ public interface IPlayerBridge {
   Properties getStepProperties();
 
   /**
-   * is the game over?
+   * Indicates the game is over.
    */
   boolean isGameOver();
 }

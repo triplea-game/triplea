@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 /**
- * A holder for BattleRecords
+ * A holder for BattleRecords.
  */
 public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
@@ -44,7 +44,7 @@ public class BattleRecordsList extends GameDataComponent {
     return battleRecords.get(getData().getSequence().getRound());
   }
 
-  public BattleRecords getCurrentRoundCopy() {
+  private BattleRecords getCurrentRoundCopy() {
     final BattleRecords current = battleRecords.get(getData().getSequence().getRound());
     if (current == null) {
       return new BattleRecords();
@@ -115,18 +115,12 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   /**
-   * Determines if there were any battles that match the following criteria:
+   * Determines if there were any battles that match the specified criteria.
    *
    * @param attacker
    *        if null then any player
    * @param defender
    *        if null then any player
-   * @param battleType
-   * @param anyOfTheseTerritories
-   * @param brl
-   * @param beginningRound
-   * @param endRound
-   * @param currentRoundOnly
    */
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,

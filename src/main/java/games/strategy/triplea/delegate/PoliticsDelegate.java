@@ -29,18 +29,16 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.PoliticsText;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 /**
- * Responsible allowing players to perform politicalActions
+ * Responsible allowing players to perform politicalActions.
  */
 @MapSupport
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
   // protected HashMap<ICondition, Boolean> m_testedConditions = null;
   // private final boolean m_needToInitialize = true;
-  /** Creates new PoliticsDelegate */
+  /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
 
   /**
@@ -59,9 +57,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<>(
+      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.relationshipChangeMatch()));
+          Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
@@ -175,8 +173,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
-    final CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
-        new CompositeMatchOr<>(
+    final Match<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
+        Match.anyOf(
             Matches.politicalActionIsRelationshipChangeOf(null,
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert(),
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether, data),
@@ -233,8 +231,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * Let the player know this action isn't valid anymore, this shouldn't
    * happen as the player shouldn't get an option to push the button on
    * non-valid actions.
-   *
-   * @param paa
    */
   private void notifyNoValidAction(final PoliticalActionAttachment paa) {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
@@ -288,7 +284,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   /**
    * @param paa
-   *        The Political Action the player should be charged for
+   *        The Political Action the player should be charged for.
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
@@ -326,7 +322,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   /**
    * Send a notification to the other players involved in this action (all
-   * players except the player starting the action)
+   * players except the player starting the action).
    */
   private void notifyOtherPlayers(final String notification) {
     if (!"NONE".equals(notification)) {
@@ -340,7 +336,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Send a notification to the current player
+   * Send a notification to the current player.
    *
    * @param text
    *        if NONE don't send a notification
@@ -352,7 +348,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Changes all relationships
+   * Changes all relationships.
    *
    * @param paa
    *        the political action to change the relationships for
@@ -377,12 +373,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
               + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
       MoveDelegate.getBattleTracker(getData()).addRelationshipChangesThisTurn(player1, player2, oldRelation,
           newRelation);
-      /*
-       * creation of new battles is handled at the beginning of the battle delegate, in
-       * "setupUnitsInSameTerritoryBattles", not here.
-       * if (Matches.RelationshipTypeIsAtWar.match(newRelation))
-       * TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);
-       */
     }
     if (!change.isEmpty()) {
       m_bridge.addChange(change);
@@ -428,8 +418,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   private static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player,
-      final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
@@ -457,7 +447,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, player);
           if (!currentOther.equals(newType)) {
             change.add(ChangeFactory.relationshipChange(p3, player, currentOther, newType));
-            aBridge.getHistoryWriter().addChildToEvent(
+            bridge.getHistoryWriter().addChildToEvent(
                 player.getName() + " and " + p3.getName() + " sign a " + newType.getName() + " treaty");
             MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p3, player, currentOther, newType);
           }
@@ -465,13 +455,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
   private static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player,
-      final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+      final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
@@ -505,7 +495,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
             final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
             if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther)) {
               change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
-              aBridge.getHistoryWriter()
+              bridge.getHistoryWriter()
                   .addChildToEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");
               MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p3, p4, currentOther, newType);
             }
@@ -514,12 +504,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change);
+      bridge.addChange(change);
     }
   }
 
-  public static void chainAlliancesTogether(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  static void chainAlliancesTogether(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
@@ -550,8 +540,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       for (final PlayerID p3 : p1NewAllies) {
         if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(alliedType)) {
           final RelationshipType current = data.getRelationshipTracker().getRelationshipType(p1, p3);
-          aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, alliedType));
-          aBridge.getHistoryWriter().addChildToEvent(
+          bridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, alliedType));
+          bridge.getHistoryWriter().addChildToEvent(
               p1.getName() + " and " + p3.getName() + " are joined together in an " + alliedType.getName() + " treaty");
           MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p1, p3, current, alliedType);
         }
@@ -574,8 +564,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       for (final PlayerID p3 : p1NewWar) {
         if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(warType)) {
           final RelationshipType current = data.getRelationshipTracker().getRelationshipType(p1, p3);
-          aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, warType));
-          aBridge.getHistoryWriter().addChildToEvent(
+          bridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, warType));
+          bridge.getHistoryWriter().addChildToEvent(
               p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
           MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p1, p3, current, warType);
         }
@@ -583,8 +573,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  public static void givesBackOriginalTerritories(final IDelegateBridge aBridge) {
-    final GameData data = aBridge.getData();
+  private static void givesBackOriginalTerritories(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     for (final PlayerID p1 : players) {
@@ -604,8 +594,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
     }
     if (!change.isEmpty()) {
-      aBridge.getHistoryWriter().startEvent("Giving back territories to original owners");
-      aBridge.addChange(change);
+      bridge.getHistoryWriter().startEvent("Giving back territories to original owners");
+      bridge.addChange(change);
     }
   }
 }

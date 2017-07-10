@@ -13,9 +13,8 @@ public class CasualtyList implements Serializable {
   protected List<Unit> m_damaged;
 
   /**
-   * Creates a new CasualtyList
+   * Creates a new CasualtyList.
    *
-   * @param killed
    * @param damaged
    *        (can have multiple of the same unit, to show multiple hits to that unit)
    */
@@ -31,7 +30,7 @@ public class CasualtyList implements Serializable {
   }
 
   /**
-   * Creates a new blank CasualtyList with empty lists
+   * Creates a new blank CasualtyList with empty lists.
    */
   public CasualtyList() {
     m_killed = new ArrayList<>();
@@ -39,7 +38,7 @@ public class CasualtyList implements Serializable {
   }
 
   /**
-   * @return list of killed units
+   * @return list of killed units.
    */
   public List<Unit> getKilled() {
     return m_killed;

@@ -63,7 +63,7 @@ public class CanalAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static CanalAttachment get(final Territory t, final String nameOfAttachment) {
+  static CanalAttachment get(final Territory t, final String nameOfAttachment) {
     final CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException(
@@ -121,8 +121,6 @@ public class CanalAttachment extends DefaultAttachment {
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param landTerritories
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setExcludedUnits(final String value) {

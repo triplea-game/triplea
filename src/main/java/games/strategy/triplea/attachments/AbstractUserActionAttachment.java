@@ -11,10 +11,9 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.util.Match;
 
 /**
- * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment
+ * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
@@ -42,18 +41,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // set "actionAccept" to "UK" so UK can accept this action to go through.
   protected ArrayList<PlayerID> m_actionAccept = new ArrayList<>();
 
-  public static Match<AbstractUserActionAttachment> isSatisfiedMatch(
-      final HashMap<ICondition, Boolean> testedConditions) {
-    return new Match<AbstractUserActionAttachment>() {
-      @Override
-      public boolean match(final AbstractUserActionAttachment value) {
-        return value.isSatisfied(testedConditions);
-      }
-    };
-  }
-
   /**
-   * @return true if there is no condition to this action or if the condition is satisfied
+   * @return true if there is no condition to this action or if the condition is satisfied.
    */
   public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions) {
     return m_conditions == null || isSatisfied(testedConditions);
@@ -69,7 +58,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the Key that is used in politicstext.properties or other .properties for all the texts
+   * @return The Key that is used in politicstext.properties or other .properties for all the texts.
    */
   public String getText() {
     return m_text;
@@ -81,7 +70,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   /**
    * @param s
-   *        the amount you need to pay to perform the action
+   *        the amount you need to pay to perform the action.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCostPU(final String s) {
@@ -94,7 +83,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the amount you need to pay to perform the action
+   * @return The amount you need to pay to perform the action.
    */
   public int getCostPU() {
     return m_costPU;
@@ -106,9 +95,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setActionAccept(final String value) throws GameParseException {
@@ -145,7 +131,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   /**
    * @param s
-   *        the amount of times you can try this Action per Round
+   *        the amount of times you can try this Action per Round.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttemptsPerTurn(final String s) {
@@ -160,7 +146,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return the amount of times you can try this Action per Round
+   * @return The amount of times you can try this Action per Round.
    */
   public int getAttemptsPerTurn() {
     return m_attemptsPerTurn;
@@ -172,7 +158,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   /**
    * @param attempts
-   *        left this turn
+   *        left this turn.
    */
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setAttemptsLeftThisTurn(final int attempts) {
@@ -185,7 +171,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return attempts that are left this turn
+   * @return attempts that are left this turn.
    */
   public int getAttemptsLeftThisTurn() {
     return m_attemptsLeftThisTurn;
@@ -195,14 +181,14 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_attemptsLeftThisTurn = 1;
   }
 
-  public void resetAttempts(final IDelegateBridge aBridge) {
+  public void resetAttempts(final IDelegateBridge bridge) {
     if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
-      aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
     }
   }
 
-  public void useAttempt(final IDelegateBridge aBridge) {
-    aBridge
+  public void useAttempt(final IDelegateBridge bridge) {
+    bridge
         .addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
   }
 

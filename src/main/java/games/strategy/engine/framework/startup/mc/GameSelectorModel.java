@@ -12,7 +12,9 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
@@ -84,19 +86,6 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  public GameData getGameData(final InputStream input) {
-    final GameDataManager manager = new GameDataManager();
-    GameData newData;
-    try {
-      newData = manager.loadGame(input, null);
-      if (newData != null) {
-        return newData;
-      }
-    } catch (final IOException e) {
-    }
-    return null;
-  }
-
   public void load(final File file, final Component ui) {
     if (!file.exists()) {
       if (ui == null) {
@@ -121,12 +110,10 @@ public class GameSelectorModel extends Observable {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
         try (FileInputStream fis = new FileInputStream(file)) {
-          newData = (new GameParser(file.getAbsolutePath())).parse(fis, gameName, false);
+          newData = new GameParser(file.getAbsolutePath()).parse(fis, gameName, false);
         }
-      }
-      // the extension should be tsvg, but
-      // try to load it as a saved game whatever the extension
-      else {
+      } else {
+        // try to load it as a saved game whatever the extension
         newData = manager.loadGame(file);
       }
       if (newData != null) {
@@ -149,22 +136,37 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  public boolean isSavedGame() {
-    return !m_fileName.endsWith(".xml");
-  }
-
-  private static void error(final String message, final Component ui) {
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
-        JOptionPane.ERROR_MESSAGE);
+  public GameData getGameData(final InputStream input) {
+    final GameDataManager manager = new GameDataManager();
+    GameData newData;
+    try {
+      newData = manager.loadGame(input, null);
+      if (newData != null) {
+        return newData;
+      }
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
+    }
+    return null;
   }
 
   public synchronized GameData getGameData() {
     return m_data;
   }
 
-  public void setCanSelect(final boolean aBool) {
+  public boolean isSavedGame() {
+    return !m_fileName.endsWith(".xml");
+  }
+
+  private static void error(final String message, final Component ui) {
+    SwingUtilities.invokeLater(
+        () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+            JOptionPane.ERROR_MESSAGE));
+  }
+
+  void setCanSelect(final boolean canSelect) {
     synchronized (this) {
-      m_canSelect = aBool;
+      m_canSelect = canSelect;
     }
     notifyObs();
   }
@@ -173,9 +175,9 @@ public class GameSelectorModel extends Observable {
     return m_canSelect;
   }
 
-  public void setIsHostHeadlessBot(final boolean aBool) {
+  void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
     synchronized (this) {
-      m_isHostHeadlessBot = aBool;
+      m_isHostHeadlessBot = isHostHeadlessBot;
     }
     notifyObs();
   }
@@ -184,7 +186,7 @@ public class GameSelectorModel extends Observable {
     return m_isHostHeadlessBot;
   }
 
-  public void setClientModelForHostBots(final ClientModel clientModel) {
+  void setClientModelForHostBots(final ClientModel clientModel) {
     synchronized (this) {
       m_clientModelForHostBots = clientModel;
     }
@@ -196,7 +198,7 @@ public class GameSelectorModel extends Observable {
 
   /**
    * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
-   * we still want to display game info
+   * we still want to display game info.
    */
   public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {
@@ -228,7 +230,7 @@ public class GameSelectorModel extends Observable {
     return m_gameVersion;
   }
 
-  public void setGameData(final GameData data) {
+  void setGameData(final GameData data) {
     synchronized (this) {
       if (data == null) {
         m_gameName = m_gameRound = m_gameVersion = "-";
@@ -266,14 +268,13 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * @param ui
    * @param forceFactoryDefault
    *        - False is default behavior and causes the new game chooser model to be cleared (and refreshed if needed).
    *        True causes the default game preference to be reset, but the model does not get cleared/refreshed (because
    *        we only call with
    *        'true' if loading the user preferred map failed).
    */
-  private void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
+  public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
     // load the previously saved value
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     if (forceFactoryDefault) {
@@ -282,19 +283,19 @@ public class GameSelectorModel extends Observable {
     }
     NewGameChooserEntry selectedGame = null;
     // just in case flush doesn't work, we still force it again here
-    final String userPreferredDefaultGameURI =
+    final String userPreferredDefaultGameUri =
         (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
-    if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
-        && userPreferredDefaultGameURI.contains(user)) {
+    if (!forceFactoryDefault && userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
+        && userPreferredDefaultGameUri.contains(user)) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
       try {
-        final URI defaultURI = new URI(userPreferredDefaultGameURI);
-        selectedGame = new NewGameChooserEntry(defaultURI);
+        final URI defaultUri = new URI(userPreferredDefaultGameUri);
+        selectedGame = new NewGameChooserEntry(defaultUri);
       } catch (final Exception e) {
         selectedGame = selectByName(ui, forceFactoryDefault);
         if (selectedGame == null) {

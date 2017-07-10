@@ -21,7 +21,7 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.Match;
 
 /**
- * The Purpose of this class is to hold shared and simple methods used by RulesAttachment
+ * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
@@ -205,7 +205,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return m_gameProperty;
   }
 
-  public boolean getGamePropertyState(final GameData data) {
+  boolean getGamePropertyState(final GameData data) {
     if (m_gameProperty == null) {
       return false;
     }
@@ -228,7 +228,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       throw new GameParseException("Empty turn list" + thisErrorMsg());
     }
     for (final String subString : s) {
-      int start, end;
+      int start;
+      int end;
       try {
         start = getInt(subString);
         end = start;
@@ -280,21 +281,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players,
       final GameData data) {
     final GameMap gameMap = data.getMap();
-    if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
-    {
+    if (name.equals("original") || name.equals("enemy")) { // get all originally owned territories
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
-    } else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassables
-    {
+    } else if (name.equals("originalNoWater")) { // get all originally owned territories, but no water or impassables
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
         originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
             // TODO: does this account for occupiedTerrOf???
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+            Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(originalTerrs.size()));
       return originalTerrs;
@@ -309,7 +308,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       final Set<Territory> ownedTerrsNoWater = new HashSet<>();
       for (final PlayerID player : players) {
         ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
-            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+            Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
       return ownedTerrsNoWater;
@@ -340,8 +339,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * Takes the raw data from the xml, and turns it into an actual territory list.
    * Will also set territoryCount.
-   *
-   * @throws GameParseException
    */
   protected Set<Territory> getTerritoryListBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players,
       final GameData data) {
@@ -367,7 +364,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  protected void validateNames(final String[] terrList) throws GameParseException {
+  protected void validateNames(final String[] terrList) {
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.
@@ -400,6 +397,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           }
           continue;
         } catch (final Exception e) {
+          // territory name is not an integer; fall through
         }
       }
       if (name.equals("each")) {

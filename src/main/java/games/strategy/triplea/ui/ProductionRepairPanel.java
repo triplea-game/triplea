@@ -38,23 +38,22 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 public class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
-  private final JFrame m_owner = null;
-  private JDialog m_dialog;
-  private final IUIContext m_uiContext;
-  private final List<Rule> m_rules = new ArrayList<>();
-  private final JLabel m_left = new JLabel();
-  private JButton m_done;
-  private PlayerID m_id;
-  private boolean m_bid;
-  private Collection<PlayerID> m_allowedPlayersToRepair;
-  private GameData m_data;
-  private static HashMap<Unit, Integer> m_repairCount = new HashMap<>();
+  private final JFrame owner = null;
+  private JDialog dialog;
+  private final IUIContext uiContext;
+  private final List<Rule> rules = new ArrayList<>();
+  private final JLabel left = new JLabel();
+  private JButton done;
+  private PlayerID id;
+  private boolean bid;
+  private Collection<PlayerID> allowedPlayersToRepair;
+  private GameData data;
+  private static final HashMap<Unit, Integer> repairCount = new HashMap<>();
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -62,128 +61,10 @@ public class ProductionRepairPanel extends JPanel {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
-  /**
-   * Shows the production panel, and returns a map of selected rules.
-   */
-  public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
-      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!(parent == m_owner)) {
-      m_dialog = null;
-    }
-    if (m_dialog == null) {
-      initDialog(parent);
-    }
-    this.m_bid = bid;
-    this.m_allowedPlayersToRepair = allowedPlayersToRepair;
-    this.m_data = data;
-    this.initRules(id, allowedPlayersToRepair, data, initialPurchase);
-    this.initLayout();
-    this.calculateLimits();
-    m_dialog.pack();
-    m_dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(() -> m_done.requestFocusInWindow());
-    m_dialog.setVisible(true);
-    m_dialog.dispose();
-    return getProduction();
-  }
-
-  // this method can be accessed by subclasses
-  public List<Rule> getRules() {
-    return this.m_rules;
-  }
-
-  public static HashMap<Unit, Integer> getUnitRepairs() {
-    return m_repairCount;
-  }
-
-  private void initDialog(final JFrame root) {
-    m_dialog = new JDialog(root, "Repair", true);
-    m_dialog.getContentPane().add(this);
-    final Action closeAction = SwingAction.of("", e -> m_dialog.setVisible(false));
-    // close the window on escape
-    // this is mostly for developers, makes it much easier to quickly cycle through steps
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "production.panel.close.prod.popup";
-    m_dialog.getRootPane().getActionMap().put(key, closeAction);
-    m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
-  }
-
-  /** Creates new ProductionRepairPanel */
-  // the constructor can be accessed by subclasses
-  public ProductionRepairPanel(final IUIContext uiContext) {
-    m_uiContext = uiContext;
-  }
-
-  private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-      return;
-    }
-    m_data.acquireReadLock();
-    try {
-      this.m_id = player;
-      this.m_allowedPlayersToRepair = allowedPlayersToRepair;
-      final CompositeMatchAnd<Unit> myDamagedUnits =
-          new CompositeMatchAnd<>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
-              Matches.UnitHasTakenSomeBombingUnitDamage);
-      final Collection<Territory> terrsWithPotentiallyDamagedUnits =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
-      for (final RepairRule repairRule : player.getRepairFrontier()) {
-        for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
-            if (!repairRule.getResults().keySet().iterator().next().equals(u.getType())) {
-              continue;
-            }
-            final TripleAUnit taUnit = (TripleAUnit) u;
-            final Rule rule = new Rule(repairRule, player, m_uiContext, u, terr);
-            // int initialQuantity = initialPurchase.getInt(repairRule);
-            int initialQuantity = 0;
-            if (initialPurchase.get(u) != null) {
-              initialQuantity = initialPurchase.get(u).getInt(repairRule);
-            }
-            rule.setQuantity(initialQuantity);
-            rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
-            rule.setName(u.toString());
-            m_rules.add(rule);
-          }
-        }
-      }
-    } finally {
-      m_data.releaseReadLock();
-    }
-  }
-
-  private void initLayout() {
-    final Insets nullInsets = new Insets(0, 0, 0, 0);
-    this.removeAll();
-    this.setLayout(new GridBagLayout());
-    final JLabel legendLabel = new JLabel("Repair Units");
-    add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(8, 8, 8, 0), 0, 0));
-    for (int x = 0; x < m_rules.size(); x++) {
-      final boolean even = (x / 2) * 2 == x;
-      add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-    }
-    add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(8, 8, 0, 12), 0, 0));
-    m_done = new JButton(m_done_action);
-    add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(0, 0, 8, 0), 0, 0));
-  }
-
-  protected void setLeft(final ResourceCollection left) {
-    final ResourceCollection total = getResources();
-    m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
-  }
-
-  Action m_done_action = SwingAction.of("Done", e -> m_dialog.setVisible(false));
-
   private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
     final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
     // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-    for (final Rule rule : m_rules) {
+    for (final Rule rule : rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
         final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
@@ -195,20 +76,137 @@ public class ProductionRepairPanel extends JPanel {
     return prod;
   }
 
+  /**
+   * Shows the production panel, and returns a map of selected rules.
+   */
+  public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
+      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
+      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+    if (!(parent == owner)) {
+      dialog = null;
+    }
+    if (dialog == null) {
+      initDialog(parent);
+    }
+    this.bid = bid;
+    this.allowedPlayersToRepair = allowedPlayersToRepair;
+    this.data = data;
+    this.initRules(id, allowedPlayersToRepair, data, initialPurchase);
+    this.initLayout();
+    this.calculateLimits();
+    dialog.pack();
+    dialog.setLocationRelativeTo(parent);
+    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
+    dialog.setVisible(true);
+    dialog.dispose();
+    return getProduction();
+  }
+
+  // this method can be accessed by subclasses
+  public List<Rule> getRules() {
+    return this.rules;
+  }
+
+  public static HashMap<Unit, Integer> getUnitRepairs() {
+    return repairCount;
+  }
+
+  private void initDialog(final JFrame root) {
+    dialog = new JDialog(root, "Repair", true);
+    dialog.getContentPane().add(this);
+    final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
+    // close the window on escape
+    // this is mostly for developers, makes it much easier to quickly cycle through steps
+    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+    final String key = "production.panel.close.prod.popup";
+    dialog.getRootPane().getActionMap().put(key, closeAction);
+    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
+  }
+
+  /** Creates new ProductionRepairPanel. */
+  // the constructor can be accessed by subclasses
+  public ProductionRepairPanel(final IUIContext uiContext) {
+    this.uiContext = uiContext;
+  }
+
+  private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
+      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      return;
+    }
+    this.data.acquireReadLock();
+    try {
+      this.id = player;
+      this.allowedPlayersToRepair = allowedPlayersToRepair;
+      final Match<Unit> myDamagedUnits =
+          Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
+              Matches.UnitHasTakenSomeBombingUnitDamage);
+      final Collection<Territory> terrsWithPotentiallyDamagedUnits =
+          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
+      for (final RepairRule repairRule : player.getRepairFrontier()) {
+        for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
+          for (final Unit unit : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+            if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
+              continue;
+            }
+            final TripleAUnit taUnit = (TripleAUnit) unit;
+            final Rule rule = new Rule(repairRule, player, unit, terr);
+            int initialQuantity = 0;
+            if (initialPurchase.get(unit) != null) {
+              initialQuantity = initialPurchase.get(unit).getInt(repairRule);
+            }
+            rule.setQuantity(initialQuantity);
+            rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(unit, terr));
+            rule.setName(unit.toString());
+            rules.add(rule);
+          }
+        }
+      }
+    } finally {
+      this.data.releaseReadLock();
+    }
+  }
+
+  private void initLayout() {
+    final Insets nullInsets = new Insets(0, 0, 0, 0);
+    this.removeAll();
+    this.setLayout(new GridBagLayout());
+    final JLabel legendLabel = new JLabel("Repair Units");
+    add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        new Insets(8, 8, 8, 0), 0, 0));
+    for (int x = 0; x < rules.size(); x++) {
+      final boolean even = (x / 2) * 2 == x;
+      add(rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST,
+          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    }
+    add(left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(8, 8, 0, 12), 0, 0));
+    done = new JButton(doneAction);
+    add(done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(0, 0, 8, 0), 0, 0));
+  }
+
+  protected void setLeft(final ResourceCollection left) {
+    final ResourceCollection total = getResources();
+    this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
+  }
+
+  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;
     final ResourceCollection resources = getResources();
-    final ResourceCollection spent = new ResourceCollection(m_data);
-    for (final Rule current : m_rules) {
+    final ResourceCollection spent = new ResourceCollection(data);
+    for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
     }
-    final double discount = TechAbilityAttachment.getRepairDiscount(m_id, m_data);
+    final double discount = TechAbilityAttachment.getRepairDiscount(id, data);
     if (discount != 1.0D) {
       spent.discount(discount);
     }
     final ResourceCollection leftToSpend = resources.difference(spent);
     setLeft(leftToSpend);
-    for (final Rule current : m_rules) {
+    for (final Rule current : rules) {
       int max = leftToSpend.fitsHowOften(current.getCost());
       if (discount != 1.0F) {
         max = (int) (max / discount);
@@ -219,56 +217,55 @@ public class ProductionRepairPanel extends JPanel {
   }
 
   private ResourceCollection getResources() {
-    if (m_bid) {
+    if (bid) {
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
       // (actually, bids should
       // not cover repairing at all...)
-      final String propertyName = m_id.getName() + " bid";
-      final int bid = m_data.getProperties().get(propertyName, 0);
-      final ResourceCollection bidCollection = new ResourceCollection(m_data);
-      m_data.acquireReadLock();
+      final String propertyName = id.getName() + " bid";
+      final int bid = data.getProperties().get(propertyName, 0);
+      final ResourceCollection bidCollection = new ResourceCollection(data);
+      data.acquireReadLock();
       try {
-        bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+        bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
       } finally {
-        m_data.releaseReadLock();
+        data.releaseReadLock();
       }
       return bidCollection;
     } else {
-      return m_id.getResources();
+      return id.getResources();
     }
   }
 
   public class Rule extends JPanel {
     private static final long serialVersionUID = -6781214135310064908L;
-    private final ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-    private final IntegerMap<Resource> m_cost;
-    private final RepairRule m_rule;
-    private final Unit m_unit;
-    private final int m_maxRepairAmount;
-    private final int m_repairResults;
+    private final ScrollableTextField text = new ScrollableTextField(0, Integer.MAX_VALUE);
+    private final IntegerMap<Resource> cost;
+    private final RepairRule rule;
+    private final Unit unit;
+    private final int maxRepairAmount;
+    private final int repairResults;
 
-    Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit,
-        final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final PlayerID id, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
-      m_unit = repairUnit;
-      m_rule = rule;
-      m_cost = rule.getCosts();
+      this.unit = repairUnit;
+      this.rule = rule;
+      cost = rule.getCosts();
       final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
       if (!type.equals(repairUnit.getType())) {
         throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString()
             + ".  Please make sure your maps are up to date!");
       }
-      m_repairResults = rule.getResults().getInt(type);
+      repairResults = rule.getResults().getInt(type);
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-      final Optional<ImageIcon> icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data,
+      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(type, id, data,
           Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
-      final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
+      final String text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
 
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
-      m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
-      final JLabel remaining = new JLabel("Damage left to repair: " + m_maxRepairAmount);
+      maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
+      final JLabel remaining = new JLabel("Damage left to repair: " + maxRepairAmount);
       final int space = 8;
       this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
@@ -278,40 +275,40 @@ public class ProductionRepairPanel extends JPanel {
           new Insets(5, space, space, space), 0, 0));
       this.add(remaining, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(5, space, space, space), 0, 0));
-      this.add(m_text, new GridBagConstraints(0, 4, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+      this.add(this.text, new GridBagConstraints(0, 4, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, space, space, space), 0, 0));
-      m_text.addChangeListener(m_listener);
+      this.text.addChangeListener(listener);
       setBorder(new EtchedBorder());
     }
 
     public int getRepairResults() {
-      return m_repairResults;
+      return repairResults;
     }
 
     IntegerMap<Resource> getCost() {
-      return m_cost;
+      return cost;
     }
 
     public int getQuantity() {
-      return m_text.getValue();
+      return text.getValue();
     }
 
     void setQuantity(final int quantity) {
-      m_text.setValue(quantity);
+      text.setValue(quantity);
     }
 
     RepairRule getProductionRule() {
-      return m_rule;
+      return rule;
     }
 
     void setMax(final int max) {
-      m_text.setMax((int) (Math.ceil(((double) Math.min(max, m_maxRepairAmount) / (double) m_repairResults))));
+      text.setMax((int) (Math.ceil(((double) Math.min(max, maxRepairAmount) / (double) repairResults))));
     }
 
     public Unit getUnit() {
-      return m_unit;
+      return unit;
     }
   }
 
-  private final ScrollableTextFieldListener m_listener = stf -> calculateLimits();
+  private final ScrollableTextFieldListener listener = stf -> calculateLimits();
 }

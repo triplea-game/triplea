@@ -150,7 +150,7 @@ public class MapImage {
     PROPERTY_UNIT_HIT_DAMAGE_COLOR = Color.black;
   }
 
-  /** Creates a new instance of CountryImage */
+  /** Creates a new instance of MapImage. */
   public MapImage() {}
 
   public BufferedImage getSmallMapImage() {

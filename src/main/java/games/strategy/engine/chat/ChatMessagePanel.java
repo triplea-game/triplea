@@ -5,10 +5,8 @@ import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -32,12 +30,18 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.TimeManager;
 
 /**
  * A Chat window.
+ *
+ * <p>
  * Mutiple chat panels can be connected to the same Chat.
+ * </p>
+ *
  * <p>
  * We can change the chat we are connected to using the setChat(...) method.
+ * </p>
  */
 public class ChatMessagePanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;
@@ -50,7 +54,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private JButton setStatus;
   private Chat chat;
   private boolean showTime = false;
-  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -77,7 +80,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     return text.getText();
   }
 
-  public void shutDown() {
+  void shutDown() {
     if (chat != null) {
       chat.removeChatListener(this);
       cleanupKeyMap();
@@ -87,7 +90,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     this.removeAll();
   }
 
-  public void setChat(final Chat chat) {
+  void setChat(final Chat chat) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingAction.invokeAndWait(() -> setChat(chat));
       return;
@@ -199,13 +202,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false));
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {
     addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
-  /** thread safe */
+  /** thread safe. */
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
@@ -246,7 +249,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
-    final String time = simpleDateFormat.format(new Date());
+    final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
       if (thirdperson) {
@@ -287,7 +290,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   /**
-   * Show only the first n lines
+   * Show only the first n lines.
    */
   public static void trimLines(final Document doc, final int lineCount) {
     if (doc.getLength() < lineCount) {

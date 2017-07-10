@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -10,8 +12,8 @@ public class VersionTest {
   public void testCompare() {
     final Version v1 = new Version(0, 0, 0);
     final Version v2 = new Version(1, 0, 0);
-    assertTrue(!v1.equals(v2));
-    assertTrue(!v2.equals(v1));
+    assertFalse(v1.equals(v2));
+    assertFalse(v2.equals(v1));
   }
 
   @Test
@@ -60,5 +62,11 @@ public class VersionTest {
   @Test
   public void testRead3() {
     assertTrue("1.2".equals(new Version("1.2.0").toString()));
+  }
+
+  @Test
+  public void getExactVersion() {
+    assertEquals("1.2.3.4", new Version(1, 2, 3, 4).getExactVersion());
+    assertEquals("1.2.3.4.5", new Version("1.2.3.4.5").getExactVersion());
   }
 }

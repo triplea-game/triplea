@@ -25,7 +25,7 @@ public class HistoryWriter implements java.io.Serializable {
   }
 
   /**
-   * Can only be called if we are currently in a round or a step
+   * Can only be called if we are currently in a round or a step.
    */
   public void startNextStep(final String stepName, final String delegateName, final PlayerID player,
       final String stepDisplayName) {

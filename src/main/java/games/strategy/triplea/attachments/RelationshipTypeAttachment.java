@@ -35,7 +35,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   private String m_rocketsCanFlyOver = PROPERTY_DEFAULT;
 
   /**
-   * Creates new RelationshipTypeAttachment
+   * Creates new RelationshipTypeAttachment.
    */
   public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -55,7 +55,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  public static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment) {
+  static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment) {
     final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
     if (rVal == null) {
       throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
@@ -95,9 +95,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
+   * @return The ArcheType of this relationshipType, this really shouldn't be called, typically you should call
    *         isNeutral, isAllied or
-   *         isWar();
+   *         isWar().
    */
   public String getArcheType() {
     return m_archeType;
@@ -200,6 +200,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       final int cost = getInt(s[0]);
       if (s.length == 2) {
         if (s[1].equals(UPKEEP_FLAT)) {
+          // do nothing
         } else if (s[1].equals(UPKEEP_PERCENTAGE)) {
           if (cost > 100) {
             throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
@@ -348,21 +349,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return whether this relationship is based on the WAR_ARCHETYPE
+   * @return whether this relationship is based on the WAR_ARCHETYPE.
    */
   public boolean isWar() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
   }
 
   /**
-   * @return whether this relationship is based on the ALLIED_ARCHETYPE
+   * @return whether this relationship is based on the ALLIED_ARCHETYPE.
    */
   public boolean isAllied() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
   }
 
   /**
-   * @return whether this relationship is based on the NEUTRAL_ARCHETYPE
+   * @return whether this relationship is based on the NEUTRAL_ARCHETYPE.
    */
   public boolean isNeutral() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);

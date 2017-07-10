@@ -17,7 +17,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final LinkedHashMap<T, Integer> m_values;
 
-  /** Creates new IntegerMap */
+  /** Creates new LinkedIntegerMap. */
   public LinkedIntegerMap() {
     m_values = new LinkedHashMap<>();
   }
@@ -43,8 +43,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   /**
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
-   *
-   * @param integerMap
    */
   public LinkedIntegerMap(final LinkedIntegerMap<T> integerMap) {
     /*
@@ -60,8 +58,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   /**
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
-   *
-   * @param integerMap
    */
   public LinkedIntegerMap(final LinkedIntegerMap<T>[] integerMaps) {
     m_values = new LinkedHashMap<>();
@@ -81,14 +77,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   public void put(final T key, final int value) {
     final Integer obj = Integer.valueOf(value);
     m_values.put(key, obj);
-  }
-
-  public void putAll(final Collection<T> keys, final int value) {
-    final Integer obj = Integer.valueOf(value);
-    final Iterator<T> iter = keys.iterator();
-    while (iter.hasNext()) {
-      put(iter.next(), obj);
-    }
   }
 
   public void addAll(final Collection<T> keys, final int value) {
@@ -123,19 +111,24 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
+  private void add(final LinkedIntegerMap<T> map) {
+    for (final T key : map.keySet()) {
+      add(key, map.getInt(key));
+    }
+  }
+
   /**
    * Will multiply all values by a given double.
    * Can be used to divide all numbers, if given a fractional double
    * (ie: to divide by 2, use 0.5 as the double)
    *
-   * @param multiplyBy
-   * @param RoundType
+   * @param roundType
    *        (1 = floor, 2 = round, 3 = ceil)
    */
-  public void multiplyAllValuesBy(final double multiplyBy, final int RoundType) {
+  public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
     for (final T t : keySet()) {
       double val = m_values.get(t);
-      switch (RoundType) {
+      switch (roundType) {
         case 1:
           val = Math.floor(val * multiplyBy);
           break;
@@ -239,15 +232,15 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int max = Integer.MIN_VALUE;
-    T rVal = null;
+    int maxValue = Integer.MIN_VALUE;
+    T maxKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() > max) {
-        max = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() > maxValue) {
+        maxValue = entry.getValue();
+        maxKey = entry.getKey();
       }
     }
-    return rVal;
+    return maxKey;
   }
 
   /**
@@ -257,19 +250,19 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     if (m_values.isEmpty()) {
       return null;
     }
-    int min = Integer.MAX_VALUE;
-    T rVal = null;
+    int minValue = Integer.MAX_VALUE;
+    T minKey = null;
     for (final Entry<T, Integer> entry : m_values.entrySet()) {
-      if (entry.getValue() < min) {
-        min = entry.getValue();
-        rVal = entry.getKey();
+      if (entry.getValue() < minValue) {
+        minValue = entry.getValue();
+        minKey = entry.getKey();
       }
     }
-    return rVal;
+    return minKey;
   }
 
   /**
-   * @return the sum of all keys.
+   * @return The sum of all keys.
    */
   public int totalValues() {
     int sum = 0;
@@ -277,18 +270,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
       sum += value;
     }
     return sum;
-  }
-
-  public void add(final LinkedIntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      add(key, map.getInt(key));
-    }
-  }
-
-  public void subtract(final LinkedIntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      add(key, -map.getInt(key));
-    }
   }
 
   /**
@@ -320,7 +301,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     return true;
   }
 
-  public LinkedIntegerMap<T> copy() {
+  private LinkedIntegerMap<T> copy() {
     final LinkedIntegerMap<T> copy = new LinkedIntegerMap<>();
     copy.add(this);
     return copy;
@@ -332,7 +313,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   /**
-   * Add map * multiple
+   * Add map * multiple.
    */
   public void addMultiple(final LinkedIntegerMap<T> map, final int multiple) {
     for (final T key : map.keySet()) {
@@ -340,25 +321,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
-  public boolean someKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
-      if (matcher.match(obj)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public boolean allKeysMatch(final Match<T> matcher) {
-    for (final T obj : m_values.keySet()) {
-      if (!matcher.match(obj)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public Collection<T> getKeyMatches(final Match<T> matcher) {
+  private Collection<T> getKeyMatches(final Match<T> matcher) {
     final Collection<T> values = new ArrayList<>();
     for (final T obj : m_values.keySet()) {
       if (matcher.match(obj)) {
@@ -368,23 +331,12 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
     return values;
   }
 
-  public int sumMatches(final Match<T> matcher) {
-    int sum = 0;
-    for (final T obj : m_values.keySet()) {
-      if (matcher.match(obj)) {
-        sum += getInt(obj);
-      }
-    }
-    return sum;
+  public void removeNonMatchingKeys(final Match<T> match) {
+    removeMatchingKeys(match.invert());
   }
 
-  public void removeNonMatchingKeys(final Match<T> aMatch) {
-    final Match<T> match = new InverseMatch<>(aMatch);
-    removeMatchingKeys(match);
-  }
-
-  public void removeMatchingKeys(final Match<T> aMatch) {
-    final Collection<T> badKeys = getKeyMatches(aMatch);
+  public void removeMatchingKeys(final Match<T> match) {
+    final Collection<T> badKeys = getKeyMatches(match);
     removeKeys(badKeys);
   }
 

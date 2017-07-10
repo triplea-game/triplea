@@ -7,7 +7,7 @@ public class RepairRule extends DefaultNamed {
   private final IntegerMap<Resource> m_cost = new IntegerMap<>();
   private final IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
 
-  /** Creates new RepairRule */
+  /** Creates new RepairRule. */
   public RepairRule(final String name, final GameData data) {
     super(name, data);
   }

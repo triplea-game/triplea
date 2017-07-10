@@ -45,7 +45,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
   private UnitPlacementsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final UnitPlacementsPanel panel = new UnitPlacementsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());
@@ -57,7 +57,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int x_text_start) {
+      final Point item, final int textStartX) {
     final Map<String, Map<String, Integer>> placements = MapXmlHelper.getUnitPlacementsMap().get(centerName);
     String placementString = "";
     for (final Entry<String, Map<String, Integer>> placementEntry : placements.entrySet()) {
@@ -79,10 +79,10 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       final Rectangle2D centerStringBounds = fontMetrics.getStringBounds(centerName, g);
       final double wDiff = (centerStringBounds.getWidth() - placementStringBounds.getWidth()) / 2;
       g.setColor(Color.yellow);
-      g.fillRect(Math.max(0, x_text_start - 2 + (int) wDiff), item.y + 6, (int) placementStringBounds.getWidth() + 4,
+      g.fillRect(Math.max(0, textStartX - 2 + (int) wDiff), item.y + 6, (int) placementStringBounds.getWidth() + 4,
           (int) placementStringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(placementString, Math.max(0, x_text_start + (int) wDiff), item.y + 17);
+      g.drawString(placementString, Math.max(0, textStartX + (int) wDiff), item.y + 17);
     }
     g.setColor(Color.red);
   }
@@ -108,7 +108,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     final String territoryName = terrNameOptional.get();
 
     final Map<String, Map<String, Integer>> placements = MapXmlHelper.getUnitPlacementsMap().get(territoryName);
-    String suggestedPlayer;
+    final String suggestedPlayer;
     if (placements.isEmpty()) {
       suggestedPlayer = MapXmlHelper.getTerritoryOwnershipsMap().get(territoryName);
     } else {
@@ -133,7 +133,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     final int availHeight = screenResolution.height - 120;
     final int availWidth = screenResolution.width - 40;
     final TerritoryPlacementPanel territoryPlacementPanel = new TerritoryPlacementPanel(playerPlacements,
-        MapXmlHelper.getProductionFrontiersMap().get(inputText), territoryName, inputText);
+        MapXmlHelper.getProductionFrontiersMap().get(inputText));
     final JScrollPane scroll = new JScrollPane(territoryPlacementPanel);
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth
@@ -170,7 +170,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
     }
 
     public TerritoryPlacementPanel(final Map<String, Integer> playerPlacements,
-        final List<String> playerUnitTypes, final String territory, final String player) {
+        final List<String> playerUnitTypes) {
       super();
       final TerritoryPlacementPanel me = this;
       if (playerPlacements == null) {
@@ -179,7 +179,7 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       final JTextField[] countFields = new JTextField[playerUnitTypes.size()];
       // copy playPlacements map
       this.playerPlacements = playerPlacements.entrySet().stream()
-      .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), new Integer(e.getValue())))
+      .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()))
       .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
       this.setLayout(new GridBagLayout());
       final JTextArea title = new JTextArea("Choose units");
@@ -227,15 +227,15 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
       });
 
       // Input lines
-      int yIndex = 1;
+      int rowIndex = 1;
       final Dimension textFieldDim = new Dimension(25, 20);
       for (final Entry<String, Integer> placement : allPlayerPlacements.entrySet()) {
         final String unitType = placement.getKey();
-        this.add(new JLabel(unitType), new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        this.add(new JLabel(unitType), new GridBagConstraints(1, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
         final JTextField textFieldCount = new JTextField(placement.getValue().toString());
         textFieldCount.setPreferredSize(textFieldDim);
-        countFields[yIndex - 1] = textFieldCount;
+        countFields[rowIndex - 1] = textFieldCount;
         textFieldCount.addFocusListener(new FocusListener() {
           final String unitTypeString = unitType;
           String prevValue = textFieldCount.getText();
@@ -273,14 +273,14 @@ public class UnitPlacementsPanel extends ImageScrollPanePanel {
             textFieldCount.selectAll();
           }
         });
-        this.add(textFieldCount, new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        this.add(textFieldCount, new GridBagConstraints(2, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-        yIndex++;
+        rowIndex++;
       }
-      this.add(buttonPlaceNone, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+      this.add(buttonPlaceNone, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
       this.add(buttonReset,
-          new GridBagConstraints(3, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
+          new GridBagConstraints(3, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE,
               nullInsets, 0, 0));
       // return territoryPlacementPanel;
     }

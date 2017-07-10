@@ -43,7 +43,7 @@ public class TupleTest {
 
   @Test
   public void checkStoringNullCase() {
-    final Tuple<String, String> nullTuple = Tuple.of((String) null, (String) null);
+    final Tuple<String, String> nullTuple = Tuple.of(null, null);
 
     assertThat(nullTuple.getFirst(), nullValue());
     assertThat(nullTuple.getSecond(), nullValue());

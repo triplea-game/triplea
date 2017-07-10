@@ -7,7 +7,7 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.INode;
 
 /**
- * Implementation of IChannelMessenger built on top of an IMessenger
+ * Implementation of IChannelMessenger built on top of an IMessenger.
  */
 public class ChannelMessenger implements IChannelMessenger {
   private final UnifiedMessenger m_unifiedMessenger;

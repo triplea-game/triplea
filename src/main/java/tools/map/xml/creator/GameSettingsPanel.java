@@ -23,26 +23,48 @@ import games.strategy.ui.SwingAction;
 
 public class GameSettingsPanel extends DynamicRowsPanel {
 
-  static final String allSettings =
-      "mapName, notes, Neutral Flyover Allowed, More Constructions with Factory, Unlimited Constructions, Move existing fighters to new carriers, More Constructions without Factory, Produce new fighters on old carriers, MaxFactoriesPerTerritory, Multiple AA Per Territory, Land existing fighters on new carriers, Kamikaze Airplanes, Multiply PUs, Submersible Subs, Units Repair Hits Start Turn, Battleships repair at end of round, Choose AA Casualties, WW2V2, Low Luck, Low Luck for AntiAircraft, Low Luck for Technology, Low Luck for Bombing and Territory Damage, Use Triggers, neutralCharge, maxFactoriesPerTerritory, Always on AA, Produce fighters on carriers, LHTR Carrier production rules, Two hit battleship, 4th Edition, Partial Amphibious Retreat, Total Victory, Honorable Surrender, Projection of Power, All Rockets Attack, Neutrals Are Impassable, Neutrals Are Blitzable, Rockets Can Violate Neutrality, Rockets Can Fly Over Impassables, Pacific Edition, Anniversary Edition, No Economic Victory, Anniversary Edition Land Production, Anniversary Edition Air Naval, Placement Restricted By Factory, Selectable Tech Roll, AA50 Tech Model, Tech Development, Transport Restricted Unload, Random AA Casualties, Roll AA Individually, Limit SBR Damage To Factory Production, Limit SBR Damage To Factory Production, Limit SBR Damage Per Turn, Limit Rocket Damage Per Turn, Territory Turn Limit, SBR Victory Points, Rocket Attack Per Factory Restricted, Allied Air Dependents, Defending Subs Sneak Attack, Attacker Retreat Planes, Surviving Air Move To Land, Naval Bombard Casualties Return Fire, Blitz Through Factories And AA Restricted, Unit Placement In Enemy Seas, Sub Control Sea Zone Restricted, Transport Control Sea Zone, Production Per X Territories Restricted, Production Per Valued Territory Restricted, Place in Any Territory, Unit Placement Per Territory Restricted, Movement By Territory Restricted, Transport Casualties Restricted, Ignore Transport In Movement, Ignore Sub In Movement, Hari-Kari Units, Occupied Territories, Unplaced units live when not placed, Air Attack Sub Restricted, Sub Retreat Before Battle, Sub Retreat DD Restricted, Shore Bombard Per Ground Unit Restricted, Damage From Bombing Done To Units Instead Of Territories, AA Territory Restricted, National Objectives, Continuous Research";
+  static final String allSettings = "mapName, notes, Neutral Flyover Allowed, More Constructions with Factory, "
+      + "Unlimited Constructions, Move existing fighters to new carriers, More Constructions without Factory, "
+      + "Produce new fighters on old carriers, MaxFactoriesPerTerritory, Multiple AA Per Territory, "
+      + "Land existing fighters on new carriers, Kamikaze Airplanes, Multiply PUs, Submersible Subs, "
+      + "Units Repair Hits Start Turn, Battleships repair at end of round, Choose AA Casualties, WW2V2, Low Luck, "
+      + "Low Luck for AntiAircraft, Low Luck for Technology, Low Luck for Bombing and Territory Damage, Use Triggers, "
+      + "neutralCharge, maxFactoriesPerTerritory, Always on AA, Produce fighters on carriers, "
+      + "LHTR Carrier production rules, Two hit battleship, 4th Edition, Partial Amphibious Retreat, Total Victory, "
+      + "Honorable Surrender, Projection of Power, All Rockets Attack, Neutrals Are Impassable, "
+      + "Neutrals Are Blitzable, Rockets Can Violate Neutrality, Rockets Can Fly Over Impassables, Pacific Edition, "
+      + "Anniversary Edition, No Economic Victory, Anniversary Edition Land Production, Anniversary Edition Air Naval, "
+      + "Placement Restricted By Factory, Selectable Tech Roll, AA50 Tech Model, Tech Development, "
+      + "Transport Restricted Unload, Random AA Casualties, Roll AA Individually, "
+      + "Limit SBR Damage To Factory Production, Limit SBR Damage To Factory Production, Limit SBR Damage Per Turn, "
+      + "Limit Rocket Damage Per Turn, Territory Turn Limit, SBR Victory Points, Rocket Attack Per Factory Restricted, "
+      + "Allied Air Dependents, Defending Subs Sneak Attack, Attacker Retreat Planes, Surviving Air Move To Land, "
+      + "Naval Bombard Casualties Return Fire, Blitz Through Factories And AA Restricted, "
+      + "Unit Placement In Enemy Seas, Sub Control Sea Zone Restricted, Transport Control Sea Zone, "
+      + "Production Per X Territories Restricted, Production Per Valued Territory Restricted, Place in Any Territory, "
+      + "Unit Placement Per Territory Restricted, Movement By Territory Restricted, Transport Casualties Restricted, "
+      + "Ignore Transport In Movement, Ignore Sub In Movement, Hari-Kari Units, Occupied Territories, "
+      + "Unplaced units live when not placed, Air Attack Sub Restricted, Sub Retreat Before Battle, "
+      + "Sub Retreat DD Restricted, Shore Bombard Per Ground Unit Restricted, "
+      + "Damage From Bombing Done To Units Instead Of Territories, AA Territory Restricted, National Objectives, "
+      + "Continuous Research";
 
-
-  public static enum SETTING_TYPE {
+  public enum SettingType {
     NORMAL, PER_PLAYER, PER_ALLY
   }
 
-  public static SETTING_TYPE getSettingType(final String setting) {
+  private static SettingType getSettingType(final String setting) {
     if (setting.endsWith(" bid")) {
-      return SETTING_TYPE.PER_PLAYER;
+      return SettingType.PER_PLAYER;
     } else if (setting.endsWith(" Honorable Victory VCs")) {
-      return SETTING_TYPE.PER_ALLY;
+      return SettingType.PER_ALLY;
     } else {
-      return SETTING_TYPE.NORMAL;
+      return SettingType.NORMAL;
     }
   }
 
   public static boolean isBoolean(final String setting) {
-    return (getSettingType(setting).equals(SETTING_TYPE.NORMAL) || setting.equals("MaxFactoriesPerTerritory"));
+    return (getSettingType(setting).equals(SettingType.NORMAL) || setting.equals("MaxFactoriesPerTerritory"));
     // TODO: maybe list is incomplete!
   }
 
@@ -52,7 +74,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof GameSettingsPanel)) {
       me = Optional.of(new GameSettingsPanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -116,15 +138,16 @@ public class GameSettingsPanel extends DynamicRowsPanel {
     getOwnPanel().add(labelMaxNumber, gridBadConstLabelMaxNumber);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
 
     final String[] settingNamesArray = settingNames.toArray(new String[settingNames.size()]);
     for (final Entry<String, List<String>> settingEntry : MapXmlHelper.getGameSettingsMap().entrySet()) {
       final GridBagConstraints gbc_tValue = (GridBagConstraints) gridBadConstLabelSettingName.clone();
       gbc_tValue.gridx = 0;
-      gridBadConstLabelValue.gridy = yValue;
+      gridBadConstLabelValue.gridy = rowIndex;
       final List<String> settingValue = settingEntry.getValue();
-      int minValueInteger, maxValueInteger;
+      int minValueInteger;
+      int maxValueInteger;
       try {
         minValueInteger = Integer.parseInt(settingValue.get(2));
         maxValueInteger = Integer.parseInt(settingValue.get(3));
@@ -134,15 +157,15 @@ public class GameSettingsPanel extends DynamicRowsPanel {
       }
       final GameSettingsRow newRow = new GameSettingsRow(this, getOwnPanel(), settingEntry.getKey(), settingNamesArray,
           settingValue.get(0), settingValue.get(1), minValueInteger, maxValueInteger);
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tValue);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tValue);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
     final JButton buttonAddValue = new JButton("Add Game Setting");
 
-    buttonAddValue.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddValue.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddValue.addActionListener(SwingAction.of("Add Game Setting", e -> {
       final String suggestedSettingName = (String) JOptionPane.showInputDialog(getOwnPanel(),
           "Which game setting should be added?", "Choose Game Setting", JOptionPane.QUESTION_MESSAGE, null,
@@ -173,7 +196,7 @@ public class GameSettingsPanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSettingName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
@@ -199,9 +222,9 @@ public class GameSettingsPanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {60, 30, 30, 30, 30, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {60, 30, 30, 30, 30, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   }
 
 }

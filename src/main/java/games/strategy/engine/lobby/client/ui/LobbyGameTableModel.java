@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.util.Tuple;
 
-public class LobbyGameTableModel extends AbstractTableModel {
+class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
@@ -31,7 +31,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final List<Tuple<GUID, GameDescription>> gameList;
   private final ILobbyGameBroadcaster lobbyGameBroadcaster;
 
-  public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+  LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
 
     gameList = new ArrayList<>();
@@ -90,14 +90,14 @@ public class LobbyGameTableModel extends AbstractTableModel {
     return lobbyGameBroadcaster;
   }
 
-  public GameDescription get(final int i) {
+  GameDescription get(final int i) {
     return gameList.get(i).getSecond();
   }
 
   @Override
   public Class<?> getColumnClass(final int columnIndex) {
     if (columnIndex == getColumnIndex(Column.Started)) {
-      return Date.class;
+      return Instant.class;
     }
     return Object.class;
   }
@@ -130,7 +130,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     return Column.values()[column].toString();
   }
 
-  public int getColumnIndex(final Column column) {
+  int getColumnIndex(final Column column) {
     return column.ordinal();
   }
 

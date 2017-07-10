@@ -60,7 +60,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     return !getValidActions().isEmpty();
   }
 
-  public HashMap<ICondition, Boolean> getTestedConditions() {
+  private HashMap<ICondition, Boolean> getTestedConditions() {
     final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
         new HashSet<>(UserActionAttachment.getUserActionAttachments(m_player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
@@ -107,13 +107,13 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       }
     } else {
       // notify the player the action isn't valid anymore (shouldn't happen)
-      notifyNoValidAction(actionChoice);
+      notifyNoValidAction();
     }
   }
 
   /**
    * @param uaa
-   *        The UserActionAttachment the player should be charged for
+   *        The UserActionAttachment the player should be charged for.
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final UserActionAttachment uaa) {
@@ -193,7 +193,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Fire triggers
+   * Fire triggers.
    *
    * @param uaa
    *        the UserActionAttachment to activate triggers for
@@ -212,11 +212,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     // play a sound
     getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, m_player);
     sendNotification(UserActionText.getInstance().getNotificationSucccess(uaa.getText()));
-    notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
+    notifyOtherPlayers(UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
   }
 
   /**
-   * Send a notification to the current player
+   * Send a notification to the current player.
    *
    * @param text
    *        if NONE don't send a notification
@@ -230,12 +230,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 
   /**
    * Send a notification to the other players involved in this action (all
-   * players except the player starting the action)
-   *
-   * @param uaa
-   * @param notification
+   * players except the player starting the action).
    */
-  private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification) {
+  private void notifyOtherPlayers(final String notification) {
     if (!"NONE".equals(notification)) {
       // we can send it to just uaa.getOtherPlayers(), or we can send it to all players. both are good options.
       final Collection<PlayerID> currentPlayer = new ArrayList<>();
@@ -259,12 +256,12 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
     sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));
-    notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
+    notifyOtherPlayers(UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
   }
 
   /**
    * Let the player know he is being charged for money or that he hasn't got
-   * enough money
+   * enough money.
    * 
    * @param uaa
    *        the UserActionAttachment the player is notified about
@@ -278,10 +275,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Let the player know this action isn't valid anymore, this shouldn't
    * happen as the player shouldn't get an option to push the button on
    * non-valid actions.
-   *
-   * @param uaa
    */
-  private void notifyNoValidAction(final UserActionAttachment uaa) {
+  private void notifyNoValidAction() {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
   }
 
@@ -305,6 +300,4 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 class UserActionExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = -7521031770074984272L;
   Serializable superState;
-  // add other variables here:
-  // public HashMap<ICondition, Boolean> m_testedConditions = null;
 }

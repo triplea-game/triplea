@@ -26,7 +26,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -38,9 +37,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -67,9 +63,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<>(
+        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = Match.allOf(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-            new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.prodMatch(),
+            Match.anyOf(TriggerAttachment.prodMatch(),
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -89,7 +85,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
         }
       }
-      giveBonusIncomeToAI();
       m_needToInitialize = false;
     }
   }
@@ -147,7 +142,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   /**
-   * subclasses can over ride this method to use different restrictions as to what a player can buy
+   * subclasses can over ride this method to use different restrictions as to what a player can buy.
    */
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
     return player.getResources().has(costs);
@@ -178,8 +173,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           // count how many units are yet to be placed or are in the field
           int currentlyBuilt = m_player.getUnits().countMatches(Matches.unitIsOfType(type));
 
-          final CompositeMatch<Unit> unitTypeOwnedBy =
-              new CompositeMatchAnd<>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+          final Match<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -323,7 +317,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
   };
 
-  private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
+  private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {
@@ -353,7 +347,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return costs;
   }
 
-  private IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
+  private static IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
     final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while (rules.hasNext()) {
@@ -385,35 +379,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return returnString.toString();
   }
 
-  private void giveBonusIncomeToAI() {
-    // TODO and other resources?
-    if (!m_player.isAI()) {
-      return;
-    }
-    final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
-    if (currentPUs <= 0) {
-      return;
-    }
-    int toGive = 0;
-    final int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
-    if (bonusPercent != 0) {
-      toGive += (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
-      if (toGive == 0 && bonusPercent > 0 && currentPUs > 0) {
-        toGive += 1;
-      }
-    }
-    toGive += games.strategy.triplea.Properties.getAIBonusIncomeFlatRate(getData());
-    if (toGive + currentPUs < 0) {
-      toGive = currentPUs * -1;
-    }
-    if (toGive == 0) {
-      return;
-    }
-    m_bridge.getHistoryWriter()
-        .startEvent("Giving AI player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
-    m_bridge.addChange(
-        ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
-  }
 }
 
 

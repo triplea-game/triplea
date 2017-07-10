@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class JButtonDialog {
   /**
-   * Show a new modal dialog and block until the user press a button of closes the dialog
+   * Show a new modal dialog and block until the user press a button of closes the dialog.
    *
    * @param frame
    *        the frame owner
@@ -30,7 +30,7 @@ public class JButtonDialog {
   }
 
   /**
-   * Show a new modal dialog and block until the user press a button of closes the dialog
+   * Show a new modal dialog and block until the user press a button of closes the dialog.
    *
    * @param component
    *        the component owner

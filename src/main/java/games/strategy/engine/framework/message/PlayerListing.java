@@ -37,7 +37,7 @@ public class PlayerListing implements Serializable {
   private final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder;
 
   /**
-   * Creates a new instance of PlayerListingMessage
+   * Creates a new instance of PlayerListing.
    */
   public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing,
       final Map<String, String> localPlayerTypes, final Version gameVersion, final String gameName,

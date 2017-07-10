@@ -20,13 +20,13 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.SwingAction;
 
-public class FileMenu {
+class FileMenu {
 
   private final GameData gameData;
   private final TripleAFrame frame;
   private final IGame game;
 
-  public FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
@@ -35,7 +35,7 @@ public class FileMenu {
     fileMenu.setMnemonic(KeyEvent.VK_F);
     fileMenu.add(createSaveMenu());
 
-    if (PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
+    if (PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
       fileMenu.add(addPostPBEM());
     }
 
@@ -46,7 +46,7 @@ public class FileMenu {
 
   private JMenuItem createSaveMenu() {
     final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save", e -> {
-      final File f = TripleAMenuBar.getSaveGameLocationDialog(frame);
+      final File f = TripleAMenuBar.getSaveGameLocation(frame);
       if (f != null) {
         game.saveGame(f);
         JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
@@ -58,9 +58,9 @@ public class FileMenu {
     return menuFileSave;
   }
 
-  protected JMenuItem addPostPBEM() {
-    final JMenuItem menuPBEM = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
-      if (gameData == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(gameData)) {
+  JMenuItem addPostPBEM() {
+    final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
+      if (gameData == null || !PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
       final String title = "Manual Gamesave Post";
@@ -78,13 +78,13 @@ public class FileMenu {
         gameData.releaseReadLock();
       }
     }));
-    menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(
+    menuPbem.setMnemonic(KeyEvent.VK_P);
+    menuPbem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    return menuPBEM;
+    return menuPbem;
   }
 
-  protected void addExitMenu(final JMenu parentMenu) {
+  void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = SystemProperties.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);

@@ -25,30 +25,30 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 
-public class LoginPanel extends JPanel {
+class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
-  private static final Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
+  private static final Logger logger = Logger.getLogger(LoginPanel.class.getName());
 
-  public static enum ReturnValue {
+  enum ReturnValue {
     CANCEL, LOGON, CREATE_ACCOUNT
   }
 
-  public static final String LAST_LOGIN_NAME_PREF = "LAST_LOGIN_NAME_PREF";
-  public static final String ANONYMOUS_LOGIN_PREF = "ANONYMOUS_LOGIN_PREF";
-  private JDialog m_dialog;
-  private JPasswordField m_password;
-  private JTextField m_userName;
-  private JCheckBox m_anonymous;
-  private JButton m_createAccount;
-  private ReturnValue m_returnValue;
-  private JButton m_logon;
-  private JButton m_cancel;
+  static final String LAST_LOGIN_NAME_PREF = "LAST_LOGIN_NAME_PREF";
+  static final String ANONYMOUS_LOGIN_PREF = "ANONYMOUS_LOGIN_PREF";
+  private JDialog dialog;
+  private JPasswordField password;
+  private JTextField userName;
+  private JCheckBox anonymous;
+  private JButton createAccount;
+  private ReturnValue returnValue;
+  private JButton logon;
+  private JButton cancel;
 
-  public LoginPanel() {
+  LoginPanel() {
     createComponents();
     layoutComponents();
     setupListeners();
@@ -60,24 +60,24 @@ public class LoginPanel extends JPanel {
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final String name = prefs.get(LAST_LOGIN_NAME_PREF, System.getProperty("user.name"));
     final boolean anonymous = prefs.getBoolean(ANONYMOUS_LOGIN_PREF, true);
-    m_anonymous.setSelected(anonymous);
-    m_userName.setText(name);
+    this.anonymous.setSelected(anonymous);
+    userName.setText(name);
     SwingUtilities.invokeLater(() -> {
-      if (!m_anonymous.isSelected()) {
-        m_password.requestFocusInWindow();
+      if (!this.anonymous.isSelected()) {
+        password.requestFocusInWindow();
       } else {
-        m_userName.requestFocusInWindow();
+        userName.requestFocusInWindow();
       }
     });
   }
 
   private void createComponents() {
-    m_password = new JPasswordField();
-    m_userName = new JTextField();
-    m_anonymous = new JCheckBox("Login Anonymously?");
-    m_createAccount = new JButton("Create Account...");
-    m_logon = new JButton("Login");
-    m_cancel = new JButton("Cancel");
+    password = new JPasswordField();
+    userName = new JTextField();
+    anonymous = new JCheckBox("Login Anonymously?");
+    createAccount = new JButton("Create Account...");
+    logon = new JButton("Login");
+    cancel = new JButton("Cancel");
   }
 
   private void layoutComponents() {
@@ -89,31 +89,31 @@ public class LoginPanel extends JPanel {
     main.setLayout(new GridBagLayout());
     main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
-    main.add(m_userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    main.add(userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(10, 5, 0, 40), 0, 0));
     main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+    main.add(password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(5, 5, 0, 40), 0, 0));
-    main.add(m_anonymous, new GridBagConstraints(0, 2, 2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    main.add(anonymous, new GridBagConstraints(0, 2, 2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_createAccount, new GridBagConstraints(0, 3, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    main.add(createAccount, new GridBagConstraints(0, 3, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(5, 20, 0, 0), 0, 0));
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-    buttons.add(m_logon);
-    buttons.add(m_cancel);
+    buttons.add(logon);
+    buttons.add(cancel);
     add(buttons, BorderLayout.SOUTH);
   }
 
   private void setupListeners() {
-    m_logon.addActionListener(e -> logonPressed());
-    m_createAccount.addActionListener(e -> {
-      m_returnValue = ReturnValue.CREATE_ACCOUNT;
-      m_dialog.setVisible(false);
+    logon.addActionListener(e -> logonPressed());
+    createAccount.addActionListener(e -> {
+      returnValue = ReturnValue.CREATE_ACCOUNT;
+      dialog.setVisible(false);
     });
-    m_cancel.addActionListener(e -> m_dialog.setVisible(false));
-    m_anonymous.addActionListener(e -> setWidgetActivation());
+    cancel.addActionListener(e -> dialog.setVisible(false));
+    anonymous.addActionListener(e -> setWidgetActivation());
     // close when hitting the escape key
     final Action enterAction = SwingAction.of(e -> logonPressed());
     final String key = "logon.through.enter.key";
@@ -123,26 +123,26 @@ public class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    final String userName = m_userName.getText();
-    final boolean anonymous = m_anonymous.isSelected();
-    if (DBUserController.validateUserName(userName) != null) {
-      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(userName), "Invalid Username",
+    final String userName = this.userName.getText();
+    final boolean anonymous = this.anonymous.isSelected();
+    if (!DBUser.isValidUserName(userName)) {
+      JOptionPane.showMessageDialog(this, DBUser.getUserNameValidationErrorMessage(userName), "Invalid Username",
           JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (m_password.getPassword().length == 0 && !anonymous) {
+    } else if (password.getPassword().length == 0 && !anonymous) {
       JOptionPane.showMessageDialog(LoginPanel.this, "You must enter a password", "No Password",
           JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (m_password.getPassword().length < 3 && !anonymous) {
+    } else if (password.getPassword().length < 3 && !anonymous) {
       JOptionPane.showMessageDialog(LoginPanel.this, "Passwords must be at least three characters long",
           "Invalid password", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    m_returnValue = ReturnValue.LOGON;
-    m_dialog.setVisible(false);
+    returnValue = ReturnValue.LOGON;
+    dialog.setVisible(false);
   }
 
-  public static void storePrefs(final String userName, final boolean anonymous) {
+  static void storePrefs(final String userName, final boolean anonymous) {
     final Preferences prefs = Preferences.userNodeForPackage(LoginPanel.class);
     prefs.put(LAST_LOGIN_NAME_PREF, userName);
     prefs.putBoolean(ANONYMOUS_LOGIN_PREF, anonymous);
@@ -150,43 +150,43 @@ public class LoginPanel extends JPanel {
       prefs.flush();
     } catch (final BackingStoreException e) {
       // not a big deal
-      s_logger.warning(e.getMessage());
+      logger.warning(e.getMessage());
     }
   }
 
   private void setWidgetActivation() {
-    if (!m_anonymous.isSelected()) {
-      m_password.setEnabled(true);
-      m_password.setBackground(m_userName.getBackground());
+    if (!anonymous.isSelected()) {
+      password.setEnabled(true);
+      password.setBackground(userName.getBackground());
     } else {
-      m_password.setEnabled(false);
-      m_password.setBackground(this.getBackground());
+      password.setEnabled(false);
+      password.setBackground(this.getBackground());
     }
   }
 
-  public boolean isAnonymous() {
-    return m_anonymous.isSelected();
+  boolean isAnonymous() {
+    return anonymous.isSelected();
   }
 
-  public String getUserName() {
-    return m_userName.getText();
+  String getUserName() {
+    return userName.getText();
   }
 
-  public String getPassword() {
-    return new String(m_password.getPassword());
+  String getPassword() {
+    return new String(password.getPassword());
   }
 
-  public ReturnValue show(final Window parent) {
-    m_dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
-    m_dialog.getContentPane().add(this);
-    m_dialog.pack();
-    m_dialog.setLocationRelativeTo(parent);
-    m_dialog.setVisible(true);
-    m_dialog.dispose();
-    m_dialog = null;
-    if (m_returnValue == null) {
+  ReturnValue show(final Window parent) {
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
+    dialog.getContentPane().add(this);
+    dialog.pack();
+    dialog.setLocationRelativeTo(parent);
+    dialog.setVisible(true);
+    dialog.dispose();
+    dialog = null;
+    if (returnValue == null) {
       return ReturnValue.CANCEL;
     }
-    return m_returnValue;
+    return returnValue;
   }
 }

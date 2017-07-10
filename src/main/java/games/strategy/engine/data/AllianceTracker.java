@@ -62,7 +62,7 @@ public class AllianceTracker implements Serializable {
   }
 
   /**
-   * @return a set of all the games alliances, this will return an empty set if you aren't using alliances
+   * @return a set of all the games alliances, this will return an empty set if you aren't using alliances.
    */
   public Set<String> getAlliances() {
     final Iterator<PlayerID> keys = alliances.keySet().iterator();
@@ -75,7 +75,7 @@ public class AllianceTracker implements Serializable {
 
   /**
    * Returns the PlayerID's that are members of the alliance
-   * specified by the String allianceName
+   * specified by the String allianceName.
    *
    * @param allianceName Alliance name
    * @return all the players in the given alliance
@@ -101,8 +101,7 @@ public class AllianceTracker implements Serializable {
     }
   }
 
-
-  public Set<PlayerID> getAllies(final PlayerID currentPlayer) {
+  Set<PlayerID> getAllies(final PlayerID currentPlayer) {
     final Set<PlayerID> allies = new HashSet<>();
     // for each of the player alliances, add each player from that alliance to the total alliance list
     alliances.get(currentPlayer).forEach(alliance -> allies.addAll(getPlayersInAlliance(alliance)));

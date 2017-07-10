@@ -7,9 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
 
 /**
  * Utility for detecting and removing units that can't land at the end of a phase.
@@ -22,28 +20,26 @@ public class UnitsThatCantFightUtil {
   }
 
   // TODO Used to notify of kamikazi attacks
-  public Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
-    final CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<>();
-    enemyAttackUnits.add(Matches.enemyUnit(player, m_data));
-    enemyAttackUnits.add(Matches.unitCanAttack(player));
+  Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
+    final Match<Unit> enemyAttackUnits = Match.allOf(Matches.enemyUnit(player, m_data), Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
-      final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<>();
-      ownedUnitsMatch.add(new InverseMatch<>(Matches.UnitIsInfrastructure));
+      final Match.CompositeBuilder<Unit> ownedUnitsMatchBuilder = Match.newCompositeBuilder(
+          Matches.UnitIsInfrastructure.invert());
       if (current.isWater()) {
-        ownedUnitsMatch.add(Matches.UnitIsLand.invert());
+        ownedUnitsMatchBuilder.add(Matches.UnitIsLand.invert());
       }
-      ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
+      ownedUnitsMatchBuilder.add(Matches.unitIsOwnedBy(player));
       // All owned units
-      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatchBuilder.all());
       // only noncombat units
-      ownedUnitsMatch.add(new InverseMatch<>(Matches.unitCanAttack(player)));
-      final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
+      ownedUnitsMatchBuilder.add(Matches.unitCanAttack(player).invert());
+      final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatchBuilder.all());
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }
-      if (current.getUnits().someMatch(enemyAttackUnits)) {
+      if (current.getUnits().anyMatch(enemyAttackUnits)) {
         cantFight.add(current);
       }
     }

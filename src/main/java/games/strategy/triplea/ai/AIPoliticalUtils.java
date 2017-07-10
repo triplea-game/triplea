@@ -52,7 +52,7 @@ public class AIPoliticalUtils {
       }
       if (isFree(nextAction)) {
         acceptableActions.add(nextAction);
-      } else if (Match.countMatches(validActions, Matches.PoliticalActionHasCostBetween(0, 0)) > 1) {
+      } else if (Match.countMatches(validActions, Matches.politicalActionHasCostBetween(0, 0)) > 1) {
         if (Math.random() < .9 && isAcceptableCost(nextAction, id, data)) {
           acceptableActions.add(nextAction);
         }

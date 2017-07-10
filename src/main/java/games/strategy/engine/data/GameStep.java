@@ -6,9 +6,11 @@ import games.strategy.engine.delegate.IDelegate;
 
 /**
  * A single step in a game.
+ *
  * <p>
  * Typically turn based strategy games are composed of a set of distinct phases (in chess this would be two, white move,
  * black move).
+ * </p>
  */
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
@@ -36,7 +38,7 @@ public class GameStep extends GameDataComponent {
   public static final String PROPERTY_repairPlayers = "repairPlayers";
 
   /**
-   * Creates new GameStep
+   * Creates new GameStep.
    *
    * @param name
    *        name of the game step
@@ -123,6 +125,7 @@ public class GameStep extends GameDataComponent {
   }
 
   /**
+   * Returns the properties of the game step.
    * Allowed Properties so far:<br>
    * EndTurn delegates -> skipPosting = true/false<br>
    * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary<br>

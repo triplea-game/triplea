@@ -17,17 +17,17 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IDelegate {
   /**
-   * Uses name as the internal unique name and displayName for display to users
+   * Uses name as the internal unique name and displayName for display to users.
    */
   void initialize(final String name, final String displayName);
 
   /**
    * Called before the delegate will run and before "start" is called.
    *
-   * @param iDelegateBridge
+   * @param delegateBridge
    *        the IDelegateBridge
    */
-  void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge);
+  void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge);
 
   /**
    * Called before the delegate will run.
@@ -46,18 +46,18 @@ public interface IDelegate {
   IDelegateBridge getBridge();
 
   /**
-   * @return state of the Delegate
+   * @return state of the Delegate.
    */
   Serializable saveState();
 
   /**
    * @param state
-   *        the delegates state
+   *        the delegates state.
    */
   void loadState(final Serializable state);
 
   /**
-   * @return the remote type of this delegate for use
+   * @return The remote type of this delegate for use
    *         by a RemoteMessenger (Class must be an interface that extends IRemote.
    *         If the return value is null, then it indicates that this
    *         delegate should not be used as in IRemote.)

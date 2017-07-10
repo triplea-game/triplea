@@ -16,16 +16,14 @@ public class LocalSystemCheckerTest {
       new SystemCheck("throws exception", () -> Throwables.propagate(new Exception("test")));
 
   @Test
-  public void testHappyCase() {
+  public void testPassingCase() {
     final LocalSystemChecker checker = new LocalSystemChecker(ImmutableSet.of(PASSING_CHECK));
     assertThat(checker.getExceptions().size(), is(0));
   }
 
   @Test
-  public void testCheckingNetwork() {
-    final SystemCheck network = new SystemCheck("throws exception", () -> Throwables.propagate(new Exception("test")));
-
-    final LocalSystemChecker checker = new LocalSystemChecker(ImmutableSet.of(network));
+  public void testFailingCase() {
+    final LocalSystemChecker checker = new LocalSystemChecker(ImmutableSet.of(FAILING_CHECK));
     assertThat(checker.getExceptions().size(), is(1));
   }
 

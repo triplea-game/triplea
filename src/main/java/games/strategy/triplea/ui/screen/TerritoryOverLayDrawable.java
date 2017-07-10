@@ -13,33 +13,33 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 
-public class TerritoryOverLayDrawable implements IDrawable {
-  public static enum OP {
+class TerritoryOverLayDrawable implements IDrawable {
+  enum Operation {
     FILL, DRAW
   }
 
-  private final String m_territoryName;
-  private final Color m_color;
-  private final OP m_op;
+  private final String territoryName;
+  private final Color color;
+  private final Operation operation;
 
-  public TerritoryOverLayDrawable(final Color color, final String name, final OP op) {
-    m_color = color;
-    m_territoryName = name;
-    m_op = op;
+  TerritoryOverLayDrawable(final Color color, final String name, final Operation operation) {
+    this.color = color;
+    territoryName = name;
+    this.operation = operation;
   }
 
-  public TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final OP op) {
-    m_color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-    m_territoryName = name;
-    m_op = op;
+  TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final Operation operation) {
+    this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    territoryName = name;
+    this.operation = operation;
   }
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Territory territory = data.getMap().getTerritory(m_territoryName);
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
-    graphics.setColor(m_color);
+    graphics.setColor(color);
     final Iterator<Polygon> polyIter = polys.iterator();
     while (polyIter.hasNext()) {
       Polygon polygon = polyIter.next();
@@ -50,7 +50,7 @@ public class TerritoryOverLayDrawable implements IDrawable {
       // use a copy since we will move the polygon
       polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
       polygon.translate(-bounds.x, -bounds.y);
-      if (m_op == OP.FILL) {
+      if (operation == Operation.FILL) {
         graphics.fillPolygon(polygon);
       } else {
         graphics.drawPolygon(polygon);

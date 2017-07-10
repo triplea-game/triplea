@@ -9,11 +9,15 @@ import games.strategy.util.IntegerMap;
 public class ProResourceTracker {
 
   private final IntegerMap<Resource> resources;
-  private IntegerMap<Resource> tempPurchases;
+  private IntegerMap<Resource> tempPurchases = new IntegerMap<>();
 
   public ProResourceTracker(final PlayerID player) {
     resources = player.getResources().getResourcesCopy();
-    tempPurchases = new IntegerMap<>();
+  }
+
+  public ProResourceTracker(final int pus, final GameData data) {
+    resources = new IntegerMap<>();
+    resources.add(data.getResourceList().getResource(Constants.PUS), pus);
   }
 
   public boolean hasEnough(final ProPurchaseOption ppo) {

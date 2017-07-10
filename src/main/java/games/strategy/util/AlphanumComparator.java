@@ -6,7 +6,7 @@ import java.util.Comparator;
  * This is an updated version with enhancements made by Daniel Migowski,
  * Andre Bogus, and David Koelle
  * To convert to use Templates (Java 1.5+):
- * - Change "implements Comparator" to "implements Comparator<String>"
+ * - Change "implements Comparator" to "implements Comparator&lt;String>"
  * - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"
  * - Remove the type checking and casting in compare().
  * To use this class:
@@ -14,12 +14,12 @@ import java.util.Comparator;
  * Collections.sort(your list, new AlphanumComparator());
  */
 public class AlphanumComparator implements Comparator<String> {
-  private boolean isDigit(final char ch) {
+  private static boolean isDigit(final char ch) {
     return ch >= 48 && ch <= 57;
   }
 
-  /** Length of string is passed in for improved efficiency (only need to calculate it once) **/
-  private String getChunk(final String s, final int slength, int marker) {
+  /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
+  private static String getChunk(final String s, final int slength, int marker) {
     final StringBuilder chunk = new StringBuilder();
     char c = s.charAt(marker);
     chunk.append(c);

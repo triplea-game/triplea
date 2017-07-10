@@ -35,7 +35,7 @@ public interface IEmailSender extends IBean {
   String getToAddress();
 
   /**
-   * Remove any sensitive information, like passwords before this object is saved in as a game properties
+   * Remove any sensitive information, like passwords before this object is saved in as a game properties.
    */
   void clearSensitiveInfo();
 
@@ -50,21 +50,37 @@ public interface IEmailSender extends IBean {
 
   String getPassword();
 
+  /**
+   * Indicates the credentials will be saved with the sender.
+   *
+   * @return {@code true} if the credentials will be saved with the sender or {@code false} if the credentials are not
+   *         saved.
+   */
+  boolean areCredentialsSaved();
+
   void setUserName(String userName);
 
   void setPassword(String password);
 
   /**
-   * Should we also post at the end of combat move
+   * Indicate the credentials should be saved with the sender.
+   *
+   * @param credentialsSaved {@code true} if the credentials should be saved with the sender or {@code false} if the
+   *        credentials should not be saved.
+   */
+  void setCredentialsSaved(boolean credentialsSaved);
+
+  /**
+   * Should we also post at the end of combat move.
    *
    * @return true if the save game should be included in the summary
    */
   boolean getAlsoPostAfterCombatMove();
 
   /**
-   * Configure if we should also post at the end of combat move
+   * Configure if we should also post at the end of combat move.
    *
-   * @param include
+   * @param postAlso
    *        true if the save game should be included
    */
   void setAlsoPostAfterCombatMove(boolean postAlso);

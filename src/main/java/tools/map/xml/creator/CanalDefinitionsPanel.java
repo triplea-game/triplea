@@ -25,7 +25,7 @@ import com.google.common.collect.Sets;
 
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
-import tools.map.xml.creator.TerritoryDefinitionDialog.DEFINITION;
+import tools.map.xml.creator.TerritoryDefinitionDialog.Definition;
 
 
 public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
@@ -42,14 +42,14 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   private CanalDefinitionsPanel() {}
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  static void layout(final MapXmlCreator mapXmlCreator) {
     setMapXmlCreator(mapXmlCreator);
     final CanalDefinitionsPanel panel = new CanalDefinitionsPanel();
     panel.layout(mapXmlCreator.getStepActionPanel());
     mapXmlCreator.setAutoFillAction(SwingAction.of(e -> {
       final int prevCanalCount = MapXmlHelper.getCanalDefinitionsMap().size();
       if (prevCanalCount > 0) {
-        if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Auto-Fill Warning",
+        if (JOptionPane.YES_OPTION != MapXmlUiHelper.showYesNoOptionDialog("Auto-Fill Warning",
             "All current canal definitions will be deleted.\rDo you want to continue with Auto-Fill?",
             JOptionPane.WARNING_MESSAGE)) {
           return;
@@ -81,14 +81,14 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   @Override
   protected void paintCenterSpecifics(final Graphics g, final String centerName, final FontMetrics fontMetrics,
-      final Point item, final int xTextStart) {
+      final Point item, final int textStartX) {
     if (selectedLandTerritories.contains(centerName) || selectedWaterTerritories.contains(centerName)) {
       final Rectangle2D stringBounds = fontMetrics.getStringBounds(centerName, g);
       g.setColor(Color.yellow);
-      g.fillRect(Math.max(0, xTextStart - 2), Math.max(0, item.y - 6), (int) stringBounds.getWidth() + 4,
+      g.fillRect(Math.max(0, textStartX - 2), Math.max(0, item.y - 6), (int) stringBounds.getWidth() + 4,
           (int) stringBounds.getHeight());
       g.setColor(Color.red);
-      g.drawString(centerName, Math.max(0, xTextStart), item.y + 5);
+      g.drawString(centerName, Math.max(0, textStartX), item.y + 5);
     }
     g.setColor(Color.red);
   }
@@ -110,7 +110,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   }
 
-  public void paintOwnSpecificsToLandTerritories(final Graphics g, final Map<String, Point> centers,
+  private void paintOwnSpecificsToLandTerritories(final Graphics g, final Map<String, Point> centers,
       final Entry<String, CanalTerritoriesTuple> canalDef) {
     g.setColor(Color.GREEN);
     final Set<String> terrLandSet = canalDef.getValue().getLandTerritories();
@@ -125,7 +125,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
   }
 
-  public void paintOwnSpecificsToWaterTerritories(final Map<String, Point> centers, final Graphics2D g2d,
+  private void paintOwnSpecificsToWaterTerritories(final Map<String, Point> centers, final Graphics2D g2d,
       final FontMetrics fontMetrics, final Set<String> terrSet1, final Set<String> remainingTerrs,
       final String canalName) {
     g2d.setColor(Color.BLUE);
@@ -150,8 +150,8 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
   }
 
-  public static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
-      final String text, final int xOffset) {
+  private static void drawRotate(final Graphics2D g2d, final double x, final double y, double radianAngle,
+      final String text, final int textX) {
     g2d.translate((float) x, (float) y);
     if (radianAngle > PI_HALF) {
       radianAngle -= Math.PI;
@@ -159,7 +159,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
       radianAngle += Math.PI;
     }
     g2d.rotate(radianAngle);
-    g2d.drawString(text, xOffset, -2);
+    g2d.drawString(text, textX, -2);
     g2d.rotate(-radianAngle);
     g2d.translate(-(float) x, -(float) y);
   }
@@ -177,7 +177,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     }
     final String newTerrName = newTerrNameOptional.get();
 
-    Boolean newTerrIsWater = MapXmlHelper.getTerritoryDefintionsMap().get(newTerrName).get(DEFINITION.IS_WATER);
+    Boolean newTerrIsWater = MapXmlHelper.getTerritoryDefintionsMap().get(newTerrName).get(Definition.IS_WATER);
     if (newTerrIsWater == null) {
       newTerrIsWater = false;
     }
@@ -198,7 +198,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param newTerrName - territory name
+   * @param newTerrName - territory name.
    * @param newTerrIsWater - IS_WATER property of newTerrName territory
    * @param newTerrNeighborsDiffType - list of neighbor territories with/without (defined by newTerrIsWater) property
    *        IS_WATER
@@ -309,9 +309,9 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   private void mouseRightClickedOnImage() {
     if (currentCanalName.isPresent()
         && (selectedLandTerritories.size() < 2 || selectedWaterTerritories.size() < 2)) {
-      if (JOptionPane.YES_OPTION != MapXmlUIHelper.showYesNoOptionDialog("Canal incomplete",
-          "Canal '" + currentCanalName
-              + "' is incomplete. A canal needs at least 2 land and 2 water territories.\rDo you want to continue to deselect the canal?",
+      if (JOptionPane.YES_OPTION != MapXmlUiHelper.showYesNoOptionDialog("Canal incomplete",
+          "Canal '" + currentCanalName + "' is incomplete. A canal needs at least 2 land and 2 water territories.\r"
+              + "Do you want to continue to deselect the canal?",
           JOptionPane.WARNING_MESSAGE)) {
         return;
       }
@@ -325,11 +325,11 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param newTerrName - base territory
+   * @param newTerrName - base territory.
    * @param newTerrIsWater - IS_WATER property of base territory
    * @param terrCanals - list of canals the base territory is linked to
    */
-  private List<String> getCanalsLinkedToTerritory(final String newTerrName, final boolean newTerrIsWater) {
+  private static List<String> getCanalsLinkedToTerritory(final String newTerrName, final boolean newTerrIsWater) {
     final List<String> terrCanals = new ArrayList<>();
     if (newTerrIsWater) {
       for (final Entry<String, CanalTerritoriesTuple> canalDef : MapXmlHelper.getCanalDefinitionsMap()
@@ -359,9 +359,9 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @return suggested canal name
+   * @return suggested canal name.
    */
-  private String getSuggestedCanalName() {
+  private static String getSuggestedCanalName() {
     String suggestedCanalName;
     int counter = MapXmlHelper.getCanalDefinitionsMap().size();
     do {
@@ -379,7 +379,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
 
   /**
    *
-   * @param newTerrName - territory name
+   * @param newTerrName - territory name.
    * @param waterNeighbors - whether IS_WATER property is supposed to be present or not
    * @return list of neighbor territories with/without (defined by waterNeighbors) property IS_WATER
    */
@@ -388,14 +388,14 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     final Set<String> neighbors = MapXmlHelper.getTerritoryConnectionsMap().get(newTerrName);
     for (final Entry<String, Set<String>> terrConnEntry : MapXmlHelper.getTerritoryConnectionsMap().entrySet()) {
       if (MapXmlHelper.getTerritoryDefintionsMap().get(terrConnEntry.getKey())
-          .get(DEFINITION.IS_WATER) == waterNeighbors
+          .get(Definition.IS_WATER) == waterNeighbors
           && terrConnEntry.getValue().contains(newTerrName)) {
         neighborsByType.add(terrConnEntry.getKey());
       }
     }
     if (neighbors != null) {
       for (final String neighbor : neighbors) {
-        if (MapXmlHelper.getTerritoryDefintionsMap().get(neighbor).get(DEFINITION.IS_WATER) == waterNeighbors) {
+        if (MapXmlHelper.getTerritoryDefintionsMap().get(neighbor).get(Definition.IS_WATER) == waterNeighbors) {
           neighborsByType.add(neighbor);
         }
       }
@@ -403,7 +403,7 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
     return neighborsByType;
   }
 
-  private Set<String> getCommonNeighborsOfType(final Set<String> terrList, final boolean typeIsWater) {
+  private static Set<String> getCommonNeighborsOfType(final Set<String> terrList, final boolean typeIsWater) {
     final Set<String> commonNeighborsOfType = new TreeSet<>();
     final Map<String, Collection<String>> neighborsMap = getNeighborsMapWaterDefinitionBeing(terrList, typeIsWater);
     commonNeighborsOfType.addAll(neighborsMap.values().iterator().next());
@@ -419,12 +419,12 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
   }
 
   /**
-   * @param terrList - list of territories for which neighbors should be evaluated
+   * @param terrList - list of territories for which neighbors should be evaluated.
    * @param typeIsWater - filter criteria of neighbors by their property IS_WATER
    * @return map of terrList list territory entry -> neighbor territories with/without (defined by typeIsWater) IS_WATER
    *         property
    */
-  private Map<String, Collection<String>> getNeighborsMapWaterDefinitionBeing(final Set<String> terrList,
+  private static Map<String, Collection<String>> getNeighborsMapWaterDefinitionBeing(final Set<String> terrList,
       final boolean typeIsWater) {
     final Map<String, Collection<String>> neighborsMap = Maps.newHashMap();
     for (final String terr : terrList) {
@@ -434,12 +434,12 @@ public final class CanalDefinitionsPanel extends ImageScrollPanePanel {
       final String terr1 = terrConnEntry.getKey();
       if (terrList.contains(terr1)) {
         for (final String terr2 : terrConnEntry.getValue()) {
-          if (MapXmlHelper.getTerritoryDefintionsMap().get(terr2).get(DEFINITION.IS_WATER) == typeIsWater) {
+          if (MapXmlHelper.getTerritoryDefintionsMap().get(terr2).get(Definition.IS_WATER) == typeIsWater) {
             neighborsMap.get(terr1).add(terr2);
           }
         }
       } else {
-        if (MapXmlHelper.getTerritoryDefintionsMap().get(terr1).get(DEFINITION.IS_WATER) == typeIsWater) {
+        if (MapXmlHelper.getTerritoryDefintionsMap().get(terr1).get(Definition.IS_WATER) == typeIsWater) {
           final SortedSet<String> selectedTerritoriesCopy = new TreeSet<>(terrList);
           selectedTerritoriesCopy.retainAll(terrConnEntry.getValue());
           for (final String terr2 : selectedTerritoriesCopy) {

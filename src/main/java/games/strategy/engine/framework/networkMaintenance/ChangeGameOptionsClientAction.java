@@ -47,8 +47,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
-      if (buttonPressed == null || buttonPressed.equals(cancel)) {
-      } else {
+      if (buttonPressed != null && !buttonPressed.equals(cancel)) {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
         byte[] newBytes = null;

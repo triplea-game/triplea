@@ -24,11 +24,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
-import tools.map.making.JTextAreaOptionPane;
 
 public class AutoPlacementFinder {
   private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -61,9 +61,11 @@ public class AutoPlacementFinder {
             + "<br><br>The program will ask for the folder name (just the name, not the full path)."
             + "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
             + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
-            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size."
+            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit "
+            + "size."
             + "<br><br>When done, the program will attempt to make placements for all territories on your map."
-            + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good idea"
+            + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good "
+            + "idea"
             + "<br>to use the PlacementPicker to check all placements and redo some of them by hand." + "</html>"));
     calculate();
   }
@@ -110,6 +112,7 @@ public class AutoPlacementFinder {
                 scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(widthProperty)) {
@@ -117,6 +120,7 @@ public class AutoPlacementFinder {
                 width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
             if (line.contains(heightProperty)) {
@@ -125,6 +129,7 @@ public class AutoPlacementFinder {
                     Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
+                // ignore malformed input
               }
             }
           }
@@ -147,17 +152,20 @@ public class AutoPlacementFinder {
           }
         }
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
         "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
-            + "do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.",
+            + "do you wish to continue with this?\r\n"
+            + "Select Yes to continue, Select No to override and change the size.",
         "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
       try {
         final String result = getUnitsScale();
         try {
           unit_zoom_percent = Double.parseDouble(result.toLowerCase());
         } catch (final NumberFormatException ex) {
+          // ignore malformed input
         }
         final String width = JOptionPane.showInputDialog(null,
             "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
@@ -165,6 +173,7 @@ public class AutoPlacementFinder {
           try {
             PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         final String height = JOptionPane.showInputDialog(null,
@@ -173,10 +182,12 @@ public class AutoPlacementFinder {
           try {
             PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
           } catch (final NumberFormatException ex) {
+            // ignore malformed input
           }
         }
         placeDimensionsSet = true;
       } catch (final Exception ex) {
+        ClientLogger.logQuietly(ex);
       }
     }
     try {
@@ -392,9 +403,9 @@ public class AutoPlacementFinder {
       final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, PLACEWIDTH, PLACEHEIGHT);
-    if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects) &&
-    // make sure it is not in or intersects the contained country
-        (!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons))) {
+    if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects)
+        // make sure it is not in or intersects the contained country
+        && (!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons))) {
       placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
       final Rectangle2D newRect = new Rectangle2D.Double();
       newRect.setFrame(place);
@@ -466,6 +477,7 @@ public class AutoPlacementFinder {
         Double.parseDouble(value);
         System.setProperty(TRIPLEA_UNIT_ZOOM, value);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     } else if (args.length == 2) {
       String value0;
@@ -478,6 +490,7 @@ public class AutoPlacementFinder {
         Integer.parseInt(value0);
         System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
       String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
@@ -489,6 +502,7 @@ public class AutoPlacementFinder {
         Integer.parseInt(value1);
         System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
       } catch (final Exception ex) {
+        // ignore malformed input
       }
     }
     boolean usagePrinted = false;

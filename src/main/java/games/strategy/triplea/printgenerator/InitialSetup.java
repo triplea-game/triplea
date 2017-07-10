@@ -19,7 +19,7 @@ public class InitialSetup {
 
   /**
    * @param GameData
-   *        data
+   *        data.
    * @param boolean useOriginalState
    */
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {

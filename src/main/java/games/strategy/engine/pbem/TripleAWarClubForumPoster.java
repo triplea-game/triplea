@@ -43,13 +43,13 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   /**
-   * Logs into the website
+   * Logs into the website.
    *
    * @throws Exception
    *         if login fails
    */
   private HttpContext login(CloseableHttpClient client) throws Exception {
-    HttpPost httpPost = new HttpPost("http://www.tripleawarclub.org/user.php");
+    final HttpPost httpPost = new HttpPost("http://www.tripleawarclub.org/user.php");
     CookieStore cookieStore = new BasicCookieStore();
     HttpContext httpContext = new BasicHttpContext();
     httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
@@ -83,7 +83,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   /**
    * Post the turn summary and save game to the forum
    * After login we must load the post page to get the XOOPS_TOKEN_REQUEST (which I think is CSRF nounce)
-   * then we can post the reply
+   * then we can post the reply.
    *
    * @param summary
    *        the forum summary
@@ -93,13 +93,14 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
    */
   @Override
   public boolean postTurnSummary(final String summary, final String subject) {
-    try (CloseableHttpClient client = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
+    try (CloseableHttpClient client =
+        HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
       HttpContext httpContext = login(client);
       // load the reply page
       final String s_forumId = "20";
-      final String url =
-          WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id=" + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
-      String XOOPS_TOKEN_REQUEST;
+      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id="
+          + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
+      String xoopsTokenRequest;
       HttpGet httpGet = new HttpGet(url);
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
@@ -112,7 +113,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (!m.matches()) {
           throw new Exception("Unable to find 'XOOPS_TOKEN_REQUEST' form field on reply page");
         }
-        XOOPS_TOKEN_REQUEST = m.group(1);
+        xoopsTokenRequest = m.group(1);
       }
 
       MultipartEntityBuilder builder = MultipartEntityBuilder.create()
@@ -120,7 +121,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
           .addTextBody("message", summary)
           .addTextBody("forum", s_forumId)
           .addTextBody("topic_id", m_topicId)
-          .addTextBody("XOOPS_TOKEN_REQUEST", XOOPS_TOKEN_REQUEST)
+          .addTextBody("XOOPS_TOKEN_REQUEST", xoopsTokenRequest)
           .addTextBody("xoops_upload_file[]", "userfile")
           .addTextBody("contents_submit", "Submit")
           .addTextBody("doxcode", "1")
@@ -182,6 +183,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
     clone.setPassword(getPassword());
     clone.setUsername(getUsername());
+    clone.setCredentialsSaved(areCredentialsSaved());
     return clone;
   }
 

@@ -13,7 +13,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
 /**
- * Remote interface for EditDelegate
+ * Remote interface for EditDelegate.
  */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   boolean getEditMode();
@@ -26,7 +26,7 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
 
   String changeTerritoryOwner(Territory t, PlayerID player);
 
-  String changePUs(PlayerID player, int PUs);
+  String changePUs(PlayerID player, int pus);
 
   String changeTechTokens(PlayerID player, int tokens);
 

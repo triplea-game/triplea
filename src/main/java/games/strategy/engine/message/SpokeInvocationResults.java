@@ -10,7 +10,7 @@ public class SpokeInvocationResults extends InvocationResults {
     super();
   }
 
-  public SpokeInvocationResults(final RemoteMethodCallResults results, final GUID methodCallID) {
-    super(results, methodCallID);
+  public SpokeInvocationResults(final RemoteMethodCallResults results, final GUID methodCallId) {
+    super(results, methodCallId);
   }
 }

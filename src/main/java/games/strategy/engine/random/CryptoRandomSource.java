@@ -15,7 +15,7 @@ public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource m_plainRandom = new PlainRandomSource();
 
   /**
-   * converts an int[] to a bytep[
+   * converts an int[] to a byte[].
    */
   public static byte[] intsToBytes(final int[] ints) {
     final byte[] rVal = new byte[ints.length * 4];
@@ -32,7 +32,7 @@ public class CryptoRandomSource implements IRandomSource {
     return val & 0xff;
   }
 
-  public static int[] bytesToInts(final byte[] bytes) {
+  static int[] bytesToInts(final byte[] bytes) {
     final int[] rVal = new int[bytes.length / 4];
     for (int i = 0; i < rVal.length; i++) {
       rVal[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
@@ -41,7 +41,7 @@ public class CryptoRandomSource implements IRandomSource {
     return rVal;
   }
 
-  public static int[] xor(final int[] val1, final int[] val2, final int max) {
+  static int[] xor(final int[] val1, final int[] val2, final int max) {
     if (val1.length != val2.length) {
       throw new IllegalArgumentException("Arrays not of same length");
     }
@@ -84,11 +84,11 @@ public class CryptoRandomSource implements IRandomSource {
     // generate numbers locally, and put them in the vault
     final int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
     // lock it so the client knows that its there, but cant read it
-    final VaultID localID = vault.lock(intsToBytes(localRandom));
+    final VaultID localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
         (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
-    final Object clientRandom = remote.generate(max, count, annotation, localID);
+    final Object clientRandom = remote.generate(max, count, annotation, localId);
     if (!(clientRandom instanceof int[])) {
       // Let the error be thrown
       System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max
@@ -96,7 +96,7 @@ public class CryptoRandomSource implements IRandomSource {
     }
     final int[] remoteNumbers = (int[]) clientRandom;
     // unlock ours, tell the client he can verify
-    vault.unlock(localID);
+    vault.unlock(localId);
     remote.verifyNumbers();
     // finally, we join the two together to get the real value
     return xor(localRandom, remoteNumbers, max);

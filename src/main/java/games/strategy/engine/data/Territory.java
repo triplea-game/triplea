@@ -6,13 +6,14 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   private PlayerID m_owner = PlayerID.NULL_PLAYERID;
   private final UnitCollection m_units;
   // In a grid-based game, stores the coordinate of the Territory
+  @SuppressWarnings("unused")
   private final int[] m_coordinate;
 
   public Territory(final String name, final GameData data) {
     this(name, false, data);
   }
 
-  /** Creates new Territory */
+  /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
     m_water = water;
@@ -20,7 +21,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     m_coordinate = null;
   }
 
-  /** Creates new Territory */
+  /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data, final int... coordinate) {
     super(name, data);
     m_water = water;
@@ -52,7 +53,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * Get the units in this territory
+   * Get the units in this territory.
    */
   @Override
   public UnitCollection getUnits() {
@@ -60,7 +61,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * refers to unit holder being changed
+   * refers to unit holder being changed.
    */
   @Override
   public void notifyChanged() {
@@ -69,7 +70,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
 
   /**
    * refers to attachment changing, and therefore needing a redraw on the map in case something like the production
-   * number is now different
+   * number is now different.
    */
   public void notifyAttachmentChanged() {
     getData().notifyTerritoryAttachmentChanged(this);
@@ -88,34 +89,5 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   @Override
   public String getType() {
     return UnitHolder.TERRITORY;
-  }
-
-  public boolean matchesCoordinates(final int... coordinate) {
-    if (coordinate.length != m_coordinate.length) {
-      return false;
-    } else {
-      for (int i = 0; i < coordinate.length; i++) {
-        if (coordinate[i] != m_coordinate[i]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  public int getX() {
-    try {
-      return m_coordinate[0];
-    } catch (final ArrayIndexOutOfBoundsException e) {
-      throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined x coordinate");
-    }
-  }
-
-  public int getY() {
-    try {
-      return m_coordinate[1];
-    } catch (final ArrayIndexOutOfBoundsException e) {
-      throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined y coordinate");
-    }
   }
 }

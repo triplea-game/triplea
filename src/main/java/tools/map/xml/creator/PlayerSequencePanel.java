@@ -28,7 +28,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     super(stepActionPanel);
   }
 
-  public static void layout(final MapXmlCreator mapXmlCreator) {
+  protected static void layout(final MapXmlCreator mapXmlCreator) {
     if (!DynamicRowsPanel.me.isPresent() || !(me.get() instanceof PlayerSequencePanel)) {
       me = Optional.of(new PlayerSequencePanel(mapXmlCreator.getStepActionPanel()));
     }
@@ -84,7 +84,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
     getOwnPanel().add(labelMaxRunCount, gridBadConstLabelMaxRunCount);
 
     // <3> Add Main Input Rows
-    int yValue = 1;
+    int rowIndex = 1;
 
     final String[] gameSequenceNamesArray = gameSequenceNames.toArray(new String[gameSequenceNames.size()]);
     final String[] playerNamesArray = playerNames.toArray(new String[playerNames.size()]);
@@ -92,20 +92,20 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
         .entrySet()) {
       final GridBagConstraints gbc_tSequenceName = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
       gbc_tSequenceName.gridx = 0;
-      gridBadConstLabelSequenceName.gridy = yValue;
+      gridBadConstLabelSequenceName.gridy = rowIndex;
       final Triple<String, String, Integer> defintionValues = playerSequence.getValue();
       final PlayerSequenceRow newRow =
           new PlayerSequenceRow(this, getOwnPanel(), playerSequence.getKey(), defintionValues.getFirst(),
               gameSequenceNamesArray, defintionValues.getSecond(), playerNamesArray, defintionValues.getThird());
-      newRow.addToParentComponentWithGbc(getOwnPanel(), yValue, gbc_tSequenceName);
+      newRow.addToParentComponentWithGbc(getOwnPanel(), rowIndex, gbc_tSequenceName);
       rows.add(newRow);
-      ++yValue;
+      ++rowIndex;
     }
 
     // <4> Add Final Button Row
     final JButton buttonAddSequence = new JButton("Add Sequence");
 
-    buttonAddSequence.setFont(MapXmlUIHelper.defaultMapXMLCreatorFont);
+    buttonAddSequence.setFont(MapXmlUiHelper.defaultMapXMLCreatorFont);
     buttonAddSequence.addActionListener(SwingAction.of("Add Sequence", e -> {
       String newSequenceName = JOptionPane.showInputDialog(getOwnPanel(), "Enter a new sequence name:",
           "Sequence" + (MapXmlHelper.getPlayerSequenceMap().size() + 1));
@@ -136,7 +136,7 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
 
     final GridBagConstraints gridBadConstButtonAddUnit = (GridBagConstraints) gridBadConstLabelSequenceName.clone();
     gridBadConstButtonAddUnit.gridx = 0;
-    gridBadConstButtonAddUnit.gridy = yValue;
+    gridBadConstButtonAddUnit.gridy = rowIndex;
     addFinalButtonRow(gridBadConstButtonAddUnit);
   }
 
@@ -160,8 +160,8 @@ public class PlayerSequencePanel extends DynamicRowsPanel {
   }
 
   @Override
-  protected void setColumns(final GridBagLayout gbl_panel) {
-    gbl_panel.columnWidths = new int[] {50, 60, 50, 30, 30};
-    gbl_panel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
+  protected void setColumns(final GridBagLayout gblPanel) {
+    gblPanel.columnWidths = new int[] {50, 60, 50, 30, 30};
+    gblPanel.columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
   }
 }

@@ -35,6 +35,7 @@ public class ParserTest {
     assertNotNull(gameData);
   }
 
+  @Test
   public void testTerritoriesCreated() {
     final GameMap map = gameData.getMap();
     final Collection<Territory> territories = map.getTerritories();

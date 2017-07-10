@@ -6,19 +6,24 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.SwingWorker;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SwingWorkerCompletionWaiterTest {
-  @InjectMocks
+
   private SwingWorkerCompletionWaiter waiter;
 
   @Mock
   private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+
+  @Before
+  public void setUp() {
+    waiter = new SwingWorkerCompletionWaiter(progressWindow);
+  }
 
   @Test
   public void testShouldOpenProgressWindowWhenWorkerStarted() {
@@ -34,11 +39,9 @@ public final class SwingWorkerCompletionWaiterTest {
     verify(progressWindow).close();
   }
 
-  private static PropertyChangeEvent newSwingWorkerStateEvent(final SwingWorker.StateValue stateValue) {
-    return new PropertyChangeEvent(
-        new Object(),
-        SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME,
-        null,
+  private static PropertyChangeEvent newSwingWorkerStateEvent(
+      final SwingWorker.StateValue stateValue) {
+    return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null,
         stateValue);
   }
 }

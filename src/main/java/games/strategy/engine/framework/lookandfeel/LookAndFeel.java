@@ -31,6 +31,7 @@ public class LookAndFeel {
           try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           } catch (final Exception e) {
+            ClientLogger.logQuietly(e);
           }
         }
       }
@@ -66,7 +67,8 @@ public class LookAndFeel {
       ClientLogger.logError("Unable to load look and feel: " + lookAndFeelClassName
           + ", retaining the old look and feel. Please do not select this look and feel, it does not work."
           + " Please do report this to the developers so the look and feel can be addressed. When doing so, please"
-          + " include this list of installed look and feel debug data: " + Arrays.asList(UIManager.getInstalledLookAndFeels()) , e);
+          + " include this list of installed look and feel debug data: "
+          + Arrays.asList(UIManager.getInstalledLookAndFeels()) , e);
       return;
     }
     SystemPreferences.put(SystemPreferenceKey.LOOK_AND_FEEL_PREF, lookAndFeelClassName);

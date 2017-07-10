@@ -34,7 +34,7 @@ public class ProBattleUtils {
   public static final int SHORT_RANGE = 2;
   public static final int MEDIUM_RANGE = 3;
 
-  public static boolean checkForOverwhelmingWin(final PlayerID player, final Territory t,
+  public static boolean checkForOverwhelmingWin(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
     final GameData data = ProData.getData();
 
@@ -80,13 +80,13 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     List<Unit> unitsThatCanFight =
-        Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
+        Match.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.UnitIsTransportButNotCombatTransport.invert());
     }
-    final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
+    final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
-    return (2 * myHP) + myPower;
+    return (2 * myHitPoints) + myPower;
   }
 
   private static double estimatePower(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,
@@ -94,7 +94,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     final List<Unit> unitsThatCanFight =
-        Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
+        Match.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     Collections.sort(sortedUnitsList, new UnitBattleComparator(!attacking, ProData.unitValueMap,
         TerritoryEffectHelper.getEffects(t), data, false, false));
@@ -230,8 +230,7 @@ public class ProBattleUtils {
       }
     }
     for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
-      myUnitsInSeaTerritories
-          .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
+      myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player)));
       myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
       alliedUnitsInSeaTerritories
           .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));

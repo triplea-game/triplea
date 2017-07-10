@@ -169,14 +169,14 @@ class GameSettingsRow extends DynamicRow {
     comboBoxEditable.setPreferredSize(dimension);
     comboBoxEditable.setSelectedIndex(Arrays.binarySearch(selectionTrueFalse, editable));
     comboBoxEditable.addFocusListener(FocusListenerFocusLost.withAction(() ->
-    // everything is okay with the new value name, lets rename everything
-    MapXmlHelper.getGameSettingsMap().get(currentRowName).set(1, (String) comboBoxEditable.getSelectedItem())));
+        // everything is okay with the new value name, lets rename everything
+        MapXmlHelper.getGameSettingsMap().get(currentRowName).set(1, (String) comboBoxEditable.getSelectedItem())));
 
     dimension = textFieldMinNumber.getPreferredSize();
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMinNumber.setPreferredSize(dimension);
     textFieldMinNumber.setEnabled(!isBoolean);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMinNumber, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMinNumber, () -> {
       final String inputText = textFieldMinNumber.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -205,7 +205,7 @@ class GameSettingsRow extends DynamicRow {
     dimension.width = INPUT_FIELD_SIZE_SMALL;
     textFieldMaxNumber.setPreferredSize(dimension);
     textFieldMaxNumber.setEnabled(!isBoolean);
-    MapXmlUIHelper.addNewFocusListenerForTextField(textFieldMaxNumber, () -> {
+    MapXmlUiHelper.addNewFocusListenerForTextField(textFieldMaxNumber, () -> {
       final String inputText = textFieldMaxNumber.getText().trim();
       try {
         final int newValue = Integer.parseInt(inputText);
@@ -243,26 +243,26 @@ class GameSettingsRow extends DynamicRow {
   }
 
   @Override
-  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbc_template) {
-    parent.add(comboBoxSettingName, gbc_template);
+  public void addToParentComponent(final JComponent parent, final GridBagConstraints gbcTemplate) {
+    parent.add(comboBoxSettingName, gbcTemplate);
 
-    final GridBagConstraints gbc_tValue = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tValue = (GridBagConstraints) gbcTemplate.clone();
     gbc_tValue.gridx = 1;
     parent.add(textFieldValue, gbc_tValue);
 
-    final GridBagConstraints gbc_tEditable = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tEditable = (GridBagConstraints) gbcTemplate.clone();
     gbc_tEditable.gridx = 2;
     parent.add(comboBoxEditable, gbc_tEditable);
 
-    final GridBagConstraints gbc_tMinNumber = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tMinNumber = (GridBagConstraints) gbcTemplate.clone();
     gbc_tMinNumber.gridx = 3;
     parent.add(textFieldMinNumber, gbc_tMinNumber);
 
-    final GridBagConstraints gbc_tMaxNumber = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gbc_tMaxNumber = (GridBagConstraints) gbcTemplate.clone();
     gbc_tMaxNumber.gridx = 4;
     parent.add(textFieldMaxNumber, gbc_tMaxNumber);
 
-    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbc_template.clone();
+    final GridBagConstraints gridBadConstButtonRemove = (GridBagConstraints) gbcTemplate.clone();
     gridBadConstButtonRemove.gridx = 5;
     parent.add(buttonRemovePerRow, gridBadConstButtonRemove);
   }

@@ -17,12 +17,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
 
 /**
- * A game options cache that uses files to store the game options
+ * A game options cache that uses files to store the game options.
  */
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
-  static final char[] s_illegalChars = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-      22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124};
+  private static final char[] ILLEGAL_CHARS =
+      {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+          22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124};
 
   /**
    * Caches the gameOptions stored in the game data, and associates with this game. only values that are serializable
@@ -54,7 +55,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Loads cached game options into the gameData
+   * Loads cached game options into the gameData.
    *
    * @param gameData
    *        the game to load the cached game options into
@@ -82,7 +83,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Calculates the cache filename and location based on the game data
+   * Calculates the cache filename and location based on the game data.
    *
    * @param gameData
    *        the game data
@@ -94,7 +95,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   }
 
   /**
-   * Removes any special characters from the file name
+   * Removes any special characters from the file name.
    *
    * @param gameName
    *        the name of the game
@@ -104,7 +105,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     final StringBuilder sb = new StringBuilder();
     for (int i = 0, charArrayLength = gameName.length(); i < charArrayLength; i++) {
       final char c = gameName.charAt(i);
-      if (Arrays.binarySearch(s_illegalChars, c) < 0) {
+      if (Arrays.binarySearch(ILLEGAL_CHARS, c) < 0) {
         sb.append(c);
       }
     }

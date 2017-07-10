@@ -31,14 +31,6 @@ public class MoveDescription extends AbstractMoveDescription {
     }
   }
 
-  public MoveDescription(final Collection<Unit> units, final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded) {
-    super(units);
-    m_route = route;
-    m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
-    m_dependentUnits = null;
-  }
-
   public MoveDescription(final Collection<Unit> units, final Route route) {
     super(units);
     m_route = route;

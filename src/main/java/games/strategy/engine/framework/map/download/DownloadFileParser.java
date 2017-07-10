@@ -11,7 +11,7 @@ import games.strategy.util.Version;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are available for
- * download
+ * download.
  */
 final class DownloadFileParser {
 
@@ -49,13 +49,13 @@ final class DownloadFileParser {
       }
 
       DownloadFileDescription.MapCategory mapCategory = DownloadFileDescription.MapCategory.EXPERIMENTAL;
-        String mapCategoryString = yaml.get(Tags.mapCategory.toString());
+      String mapCategoryString = yaml.get(Tags.mapCategory.toString());
       if (mapCategoryString != null) {
         mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
       }
 
       String img = yaml.get(Tags.img.toString());
-      if(img == null ) {
+      if (img == null) {
         img = "";
       }
       final DownloadFileDescription dl =

@@ -6,7 +6,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * A dummy forum poster, for when Forum posting is disabled
+ * A dummy forum poster, for when Forum posting is disabled.
  */
 public class NullForumPoster implements IForumPoster {
   private static final long serialVersionUID = 6465230505089142268L;
@@ -33,6 +33,9 @@ public class NullForumPoster implements IForumPoster {
   public void setPassword(final String s) {}
 
   @Override
+  public void setCredentialsSaved(final boolean credentialsSaved) {}
+
+  @Override
   public String getTopicId() {
     return null;
   }
@@ -45,6 +48,11 @@ public class NullForumPoster implements IForumPoster {
   @Override
   public String getPassword() {
     return null;
+  }
+
+  @Override
+  public boolean areCredentialsSaved() {
+    return false;
   }
 
   @Override

@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import games.strategy.engine.data.Unit;
 
@@ -23,21 +21,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     m_disallowedUnitsList = new ArrayList<>();
     m_unresolvedUnitWarnings = new ArrayList<>();
     m_unresolvedUnitsList = new ArrayList<>();
-  }
-
-  public MoveValidationResult(final MoveValidationResult toCopy) {
-    this();
-    for (final String warning : toCopy.getDisallowedUnitWarnings()) {
-      for (final Unit unit : toCopy.getDisallowedUnits(warning)) {
-        addDisallowedUnit(warning, unit);
-      }
-    }
-    for (final String warning : toCopy.getUnresolvedUnitWarnings()) {
-      for (final Unit unit : toCopy.getUnresolvedUnits(warning)) {
-        addUnresolvedUnit(warning, unit);
-      }
-    }
-    setError(toCopy.getError());
   }
 
   public void addDisallowedUnit(final String warning, final Unit unit) {
@@ -89,34 +72,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 
   public String getError() {
     return m_error;
-  }
-
-  public Collection<Unit> getDisallowedUnits() {
-    final Set<Unit> allDisallowedUnits = new LinkedHashSet<>();
-    for (final Collection<Unit> unitList : m_disallowedUnitsList) {
-      for (final Unit unit : unitList) {
-        allDisallowedUnits.add(unit);
-      }
-    }
-    return allDisallowedUnits;
-  }
-
-  public Collection<Unit> getUnresolvedUnits() {
-    final Set<Unit> allUnresolvedUnits = new LinkedHashSet<>();
-    for (final Collection<Unit> unitList : m_unresolvedUnitsList) {
-      for (final Unit unit : unitList) {
-        allUnresolvedUnits.add(unit);
-      }
-    }
-    return allUnresolvedUnits;
-  }
-
-  public Collection<Unit> getDisallowedUnits(final String warning) {
-    final int index = m_disallowedUnitWarnings.indexOf(warning);
-    if (index == -1) {
-      return Collections.emptyList();
-    }
-    return new ArrayList<>(m_disallowedUnitsList.get(index));
   }
 
   public Collection<Unit> getUnresolvedUnits(final String warning) {

@@ -9,12 +9,12 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
-public class StatusController implements IStatusController {
+class StatusController implements IStatusController {
   private final Object mutex = new Object();
   private final Map<INode, String> status = new HashMap<>();
   private final Messengers messengers;
 
-  public StatusController(final Messengers messengers) {
+  StatusController(final Messengers messengers) {
     this.messengers = messengers;
     ((IServerMessenger) this.messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
@@ -27,7 +27,7 @@ public class StatusController implements IStatusController {
     });
   }
 
-  protected void connectionRemoved(final INode to) {
+  private void connectionRemoved(final INode to) {
     synchronized (mutex) {
       status.remove(to);
     }

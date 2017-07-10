@@ -8,7 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-public class WaitDialog extends JDialog {
+/**
+ * A dialog that can be displayed during a long-running operation that optionally provides the user with the ability to
+ * cancel the operation.
+ */
+public final class WaitDialog extends JDialog {
   private static final long serialVersionUID = 7433959812027467868L;
 
   public WaitDialog(final Component parent, final String waitMessage) {
@@ -25,5 +29,8 @@ public class WaitDialog extends JDialog {
       cancelButton.addActionListener(cancelAction);
       getContentPane().add(cancelButton, BorderLayout.SOUTH);
     }
+
+    pack();
+    setLocationRelativeTo(parent);
   }
 }

@@ -10,7 +10,7 @@ public class HubInvoke extends Invoke {
     super();
   }
 
-  public HubInvoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call) {
-    super(methodCallID, needReturnValues, call);
+  public HubInvoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
+    super(methodCallId, needReturnValues, call);
   }
 }
