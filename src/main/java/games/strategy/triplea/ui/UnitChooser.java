@@ -100,14 +100,14 @@ public class UnitChooser extends JPanel {
    */
   public void setMax(final int max) {
     total = max;
-    m_textFieldListener.changedValue(null);
+    textFieldListener.changedValue(null);
     autoSelectButton.setVisible(false);
     selectNoneButton.setVisible(false);
   }
 
   void setMaxAndShowMaxButton(final int max) {
     total = max;
-    m_textFieldListener.changedValue(null);
+    textFieldListener.changedValue(null);
     autoSelectButton.setText("Max");
   }
 
@@ -190,7 +190,7 @@ public class UnitChooser extends JPanel {
   }
 
   private void addCategory(final UnitCategory category, final int defaultValue) {
-    final ChooserEntry entry = new ChooserEntry(category, total, m_textFieldListener, data, allowMultipleHits,
+    final ChooserEntry entry = new ChooserEntry(category, total, textFieldListener, data, allowMultipleHits,
         defaultValue, uiContext);
     entries.add(entry);
   }
@@ -313,7 +313,7 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener() {
+  private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
     @Override
     public void changedValue(final ScrollableTextField field) {
       if (match != null) {
@@ -325,57 +325,57 @@ public class UnitChooser extends JPanel {
   };
 
   private static final class ChooserEntry {
-    private final UnitCategory m_category;
-    private final ScrollableTextFieldListener m_hitTextFieldListener;
-    private final GameData m_data;
-    private final boolean m_hasMultipleHits;
-    private final List<Integer> m_defaultHits;
-    private final List<ScrollableTextField> m_hitTexts;
-    private final List<JLabel> m_hitLabel = new ArrayList<>();
-    private int m_leftToSelect = 0;
+    private final UnitCategory category;
+    private final ScrollableTextFieldListener hitTextFieldListener;
+    private final GameData gameData;
+    private final boolean hasMultipleHits;
+    private final List<Integer> defaultHits;
+    private final List<ScrollableTextField> hitTexts;
+    private final List<JLabel> hitLabel = new ArrayList<>();
+    private int leftToSelect = 0;
     private static Insets nullInsets = new Insets(0, 0, 0, 0);
-    private final IUIContext m_uiContext;
+    private final IUIContext uiContext;
 
     ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
         final GameData data, final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext) {
-      m_hitTextFieldListener = listener;
-      m_data = data;
-      m_category = category;
-      m_leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
-      m_hasMultipleHits =
+      hitTextFieldListener = listener;
+      gameData = data;
+      this.category = category;
+      this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
+      hasMultipleHits =
           allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
-      m_hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
-      m_defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+      hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+      defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       final int numUnits = category.getUnits().size();
       int hitsUsedSoFar = 0;
       for (int i = 0; i < Math.max(1, category.getHitPoints() - category.getDamaged()); i++) {
         // TODO: check if default value includes damaged points or not
         final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar));
         hitsUsedSoFar += hitsToUse;
-        m_defaultHits.add(hitsToUse);
+        defaultHits.add(hitsToUse);
       }
-      m_uiContext = uiContext;
+      this.uiContext = uiContext;
     }
 
     void createComponents(final JPanel panel, final int rowIndex) {
       int gridx = 0;
       for (int i =
-          0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++) {
-        final ScrollableTextField scroll = new ScrollableTextField(0, m_category.getUnits().size());
-        m_hitTexts.add(scroll);
-        scroll.setValue(m_defaultHits.get(i));
-        scroll.addChangeListener(m_hitTextFieldListener);
-        final JLabel label = new JLabel("x" + m_category.getUnits().size());
-        m_hitLabel.add(label);
-        panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0,
+          0; i < (hasMultipleHits ? Math.max(1, category.getHitPoints() - category.getDamaged()) : 1); i++) {
+        final ScrollableTextField scroll = new ScrollableTextField(0, category.getUnits().size());
+        hitTexts.add(scroll);
+        scroll.setValue(defaultHits.get(i));
+        scroll.addChangeListener(hitTextFieldListener);
+        final JLabel label = new JLabel("x" + category.getUnits().size());
+        hitLabel.add(label);
+        panel.add(new UnitChooserEntryIcon(i > 0, uiContext), new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0,
             GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
         if (i == 0) {
-          if (m_category.getMovement() != -1) {
-            panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0, 0,
+          if (category.getMovement() != -1) {
+            panel.add(new JLabel("mvt " + category.getMovement()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
           }
-          if (m_category.getTransportCost() != -1) {
-            panel.add(new JLabel("cst " + m_category.getTransportCost()),
+          if (category.getTransportCost() != -1) {
+            panel.add(new JLabel("cst " + category.getTransportCost()),
                 new GridBagConstraints(gridx, rowIndex, 1, 1, 0,
                     0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
           }
@@ -391,36 +391,36 @@ public class UnitChooser extends JPanel {
     }
 
     int getMax() {
-      return m_hitTexts.get(0).getMax();
+      return hitTexts.get(0).getMax();
     }
 
     void set(final int value) {
-      m_hitTexts.get(0).setValue(value);
+      hitTexts.get(0).setValue(value);
     }
 
     UnitCategory getCategory() {
-      return m_category;
+      return category;
     }
 
     void selectAll() {
-      m_hitTexts.get(0).setValue(m_hitTexts.get(0).getMax());
+      hitTexts.get(0).setValue(hitTexts.get(0).getMax());
     }
 
     void selectNone() {
-      m_hitTexts.get(0).setValue(0);
+      hitTexts.get(0).setValue(0);
     }
 
     void setLeftToSelect(final int leftToSelect) {
-      m_leftToSelect = leftToSelect < 0 ? m_category.getUnits().size() : leftToSelect;
+      this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
       updateLeftToSelect();
     }
 
     private void updateLeftToSelect() {
-      int previousMax = m_category.getUnits().size();
-      for (int i = 0; i < m_hitTexts.size(); i++) {
-        final int newMax = m_leftToSelect + getHits(i);
-        final ScrollableTextField text = m_hitTexts.get(i);
-        if (i > 0 && !m_hasMultipleHits) {
+      int previousMax = category.getUnits().size();
+      for (int i = 0; i < hitTexts.size(); i++) {
+        final int newMax = leftToSelect + getHits(i);
+        final ScrollableTextField text = hitTexts.get(i);
+        if (i > 0 && !hasMultipleHits) {
           text.setMax(0);
         } else {
           text.setMax(Math.min(newMax, previousMax));
@@ -428,39 +428,39 @@ public class UnitChooser extends JPanel {
         if (text.getValue() < 0 || text.getValue() > text.getMax()) {
           text.setValue(Math.max(0, Math.min(text.getMax(), text.getValue())));
         }
-        m_hitLabel.get(i).setText("x" + (i == 0 ? m_category.getUnits().size() : text.getMax()));
+        hitLabel.get(i).setText("x" + (i == 0 ? category.getUnits().size() : text.getMax()));
         previousMax = text.getValue();
       }
     }
 
     int getTotalHits() {
       int hits = 0;
-      for (int i = 0; i < m_hitTexts.size(); i++) {
+      for (int i = 0; i < hitTexts.size(); i++) {
         hits += getHits(i);
       }
       return hits;
     }
 
     int getHits(final int zeroBasedHitsPosition) {
-      if (zeroBasedHitsPosition < 0 || zeroBasedHitsPosition > m_hitTexts.size() - 1) {
+      if (zeroBasedHitsPosition < 0 || zeroBasedHitsPosition > hitTexts.size() - 1) {
         throw new IllegalArgumentException("Index out of range");
       }
-      if (!m_hasMultipleHits && zeroBasedHitsPosition > 0) {
+      if (!hasMultipleHits && zeroBasedHitsPosition > 0) {
         return 0;
       }
-      return m_hitTexts.get(zeroBasedHitsPosition).getValue();
+      return hitTexts.get(zeroBasedHitsPosition).getValue();
     }
 
     int getFinalHit() {
-      return getHits(m_hitTexts.size() - 1);
+      return getHits(hitTexts.size() - 1);
     }
 
     int size() {
-      return m_hitTexts.size();
+      return hitTexts.size();
     }
 
     boolean hasMultipleHitPoints() {
-      return m_hasMultipleHits;
+      return hasMultipleHits;
     }
 
     private class UnitChooserEntryIcon extends JComponent {
@@ -477,19 +477,19 @@ public class UnitChooser extends JPanel {
       public void paint(final Graphics g) {
         super.paint(g);
         final Optional<Image> image =
-            uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-                forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled());
+            uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(), gameData,
+                forceDamaged || category.hasDamageOrBombingUnitDamage(), category.getDisabled());
         if (image.isPresent()) {
           g.drawImage(image.get(), 0, 0, this);
         }
 
-        final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
+        final Iterator<UnitOwner> iter = category.getDependents().iterator();
         int index = 1;
         while (iter.hasNext()) {
           final UnitOwner holder = iter.next();
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
           final Optional<Image> unitImg =
-              uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
+              uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), gameData, false, false);
           if (unitImg.isPresent()) {
             g.drawImage(unitImg.get(), x, 0, this);
           }
@@ -500,7 +500,7 @@ public class UnitChooser extends JPanel {
       @Override
       public int getWidth() {
         // we draw a unit symbol for each dependent
-        return uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
+        return uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + category.getDependents().size());
       }
 
       @Override
