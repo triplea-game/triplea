@@ -12,13 +12,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.persistence.serializable.DefaultPersistenceDelegateRegistry;
-import games.strategy.persistence.serializable.PersistenceDelegateRegistry;
+import games.strategy.persistence.serializable.ProxyFactoryRegistry;
 import games.strategy.util.memento.Memento;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SerializableMementoImporterTest {
-  private final PersistenceDelegateRegistry persistenceDelegateRegistry = new DefaultPersistenceDelegateRegistry();
+  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
 
   private final Memento memento = newMemento();
 
@@ -28,8 +27,8 @@ public final class SerializableMementoImporterTest {
     return new FakeMemento("field");
   }
 
-  private SerializableMementoImporter newMementoImporter() {
-    return new SerializableMementoImporter(persistenceDelegateRegistry);
+  private static SerializableMementoImporter newMementoImporter() {
+    return new SerializableMementoImporter();
   }
 
   @Test
@@ -49,6 +48,6 @@ public final class SerializableMementoImporterTest {
   }
 
   private SerializableMementoExporter newMementoExporter() {
-    return new SerializableMementoExporter(persistenceDelegateRegistry);
+    return new SerializableMementoExporter(proxyFactoryRegistry);
   }
 }

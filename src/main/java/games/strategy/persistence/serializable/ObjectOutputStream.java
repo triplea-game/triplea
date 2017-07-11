@@ -10,13 +10,14 @@ import java.util.Optional;
  * A stream used for serializing objects.
  *
  * <p>
- * Before serializing an object, the stream will query its persistence delegate registry for an associated persistence
- * delegate and give it an opportunity to substitute the object with a compatible serializable object.
+ * Before serializing an object, the stream will query its proxy factory registry for an associated proxy factory. If a
+ * proxy factory exists, a serializable proxy will be created from the principal, and the proxy will be written to the
+ * stream instead of the principal.
  * </p>
  *
  * <p>
- * To contribute a persistence delegate for a specific class, register it with the {@code PersistenceDelegateRegistry}
- * passed to the output stream.
+ * To contribute a proxy factory for a specific class, register it with the {@link ProxyFactoryRegistry} passed to the
+ * output stream.
  * </p>
  *
  * <p>
@@ -24,60 +25,32 @@ import java.util.Optional;
  * </p>
  */
 public final class ObjectOutputStream extends java.io.ObjectOutputStream {
-  private final PersistenceDelegateRegistry persistenceDelegateRegistry;
+  private final ProxyFactoryRegistry proxyFactoryRegistry;
 
   /**
-   * Initializes a new instance of the {@code ObjectOutputStream} class.
-   *
    * @param out The output stream on which to write; must not be {@code null}.
-   * @param persistenceDelegateRegistry The persistence delegate registry; must not be {@code null}.
+   * @param proxyFactoryRegistry The proxy factory registry; must not be {@code null}.
    *
    * @throws IOException If an I/O error occurs while writing the stream header.
    */
-  public ObjectOutputStream(final OutputStream out, final PersistenceDelegateRegistry persistenceDelegateRegistry)
+  public ObjectOutputStream(final OutputStream out, final ProxyFactoryRegistry proxyFactoryRegistry)
       throws IOException {
     super(out);
 
-    checkNotNull(persistenceDelegateRegistry);
+    checkNotNull(proxyFactoryRegistry);
 
-    this.persistenceDelegateRegistry = persistenceDelegateRegistry;
+    this.proxyFactoryRegistry = proxyFactoryRegistry;
 
     enableReplaceObject(true);
   }
 
   @Override
-  protected void annotateClass(final Class<?> cl) throws IOException {
-    if (cl != null) {
-      final Optional<PersistenceDelegate> persistenceDelegate = getPersistenceDelegate(cl);
-      if (persistenceDelegate.isPresent()) {
-        persistenceDelegate.get().annotateClass(this, cl);
-      } else {
-        super.annotateClass(cl);
-      }
-    } else {
-      super.annotateClass(cl);
-    }
-  }
-
-  private Optional<PersistenceDelegate> getPersistenceDelegate(final Class<?> type) {
-    return persistenceDelegateRegistry.getPersistenceDelegate(type.getName());
-  }
-
-  @Override
-  protected Object replaceObject(final Object obj) throws IOException {
-    Object object = obj;
-    while (object != null) {
-      final Optional<PersistenceDelegate> persistenceDelegate = getPersistenceDelegate(object.getClass());
-      final Object replacedObject = persistenceDelegate.isPresent()
-          ? persistenceDelegate.get().replaceObject(object)
-          : super.replaceObject(object);
-      if (object != replacedObject) {
-        object = replacedObject;
-      } else {
-        break;
-      }
+  protected Object replaceObject(final Object obj) {
+    if (obj == null) {
+      return null;
     }
 
-    return object;
+    final Optional<ProxyFactory> proxyFactory = proxyFactoryRegistry.getProxyFactory(obj.getClass());
+    return proxyFactory.map(it -> it.newProxyFor(obj)).orElse(obj);
   }
 }

@@ -29,7 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.engine.persistence.serializable.PersistenceDelegateRegistryFactory;
+import games.strategy.engine.persistence.serializable.ProxyFactoryRegistryFactory;
 import games.strategy.persistence.memento.serializable.SerializableMementoExportException;
 import games.strategy.persistence.memento.serializable.SerializableMementoExporter;
 import games.strategy.persistence.memento.serializable.SerializableMementoImportException;
@@ -289,8 +289,7 @@ public class GameDataManager {
 
   private static Memento loadMemento(final InputStream is) throws IOException {
     try (final GZIPInputStream gzipis = new GZIPInputStream(is)) {
-      final SerializableMementoImporter mementoImporter =
-          new SerializableMementoImporter(PersistenceDelegateRegistryFactory.newPlatformPersistenceDelegateRegistry());
+      final SerializableMementoImporter mementoImporter = new SerializableMementoImporter();
       return mementoImporter.importMemento(gzipis);
     } catch (final SerializableMementoImportException e) {
       throw new IOException(e);
@@ -334,7 +333,7 @@ public class GameDataManager {
   private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
     try (final GZIPOutputStream gzipos = new GZIPOutputStream(os)) {
       final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(
-          PersistenceDelegateRegistryFactory.newPlatformPersistenceDelegateRegistry());
+          ProxyFactoryRegistryFactory.newPlatformProxyFactoryRegistry());
       mementoExporter.exportMemento(memento, gzipos);
     } catch (final SerializableMementoExportException e) {
       throw new IOException(e);

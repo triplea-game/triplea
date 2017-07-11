@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.persistence.serializable.DefaultPersistenceDelegateRegistry;
+import games.strategy.persistence.serializable.ProxyFactoryRegistry;
 import games.strategy.util.memento.Memento;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -27,7 +27,7 @@ public final class SerializableMementoExporterTest {
   }
 
   private static SerializableMementoExporter newMementoExporter() {
-    return new SerializableMementoExporter(new DefaultPersistenceDelegateRegistry());
+    return new SerializableMementoExporter(ProxyFactoryRegistry.newInstance());
   }
 
   @Test
