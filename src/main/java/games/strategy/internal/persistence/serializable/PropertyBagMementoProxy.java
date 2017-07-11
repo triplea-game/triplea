@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.Serializable;
 import java.util.Map;
 
+import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.memento.PropertyBagMemento;
 
 /**
@@ -16,6 +17,9 @@ import games.strategy.util.memento.PropertyBagMemento;
  */
 public final class PropertyBagMementoProxy implements Serializable {
   private static final long serialVersionUID = 7813364982800353383L;
+
+  public static final ProxyFactory FACTORY =
+      ProxyFactory.newInstance(PropertyBagMemento.class, PropertyBagMementoProxy::new);
 
   /**
    * @serial The collection of originator properties; never {@code null}. The key is the property name. The value is the

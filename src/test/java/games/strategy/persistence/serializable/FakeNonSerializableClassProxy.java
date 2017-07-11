@@ -14,6 +14,9 @@ import java.io.Serializable;
 public final class FakeNonSerializableClassProxy implements Serializable {
   private static final long serialVersionUID = 996961268400195642L;
 
+  public static final ProxyFactory FACTORY =
+      ProxyFactory.newInstance(FakeNonSerializableClass.class, FakeNonSerializableClassProxy::new);
+
   /**
    * @serial The integer field.
    */

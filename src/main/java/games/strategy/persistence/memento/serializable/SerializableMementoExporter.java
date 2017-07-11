@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
 import games.strategy.persistence.serializable.ObjectOutputStream;
-import games.strategy.persistence.serializable.PersistenceDelegateRegistry;
+import games.strategy.persistence.serializable.ProxyFactoryRegistry;
 import games.strategy.util.memento.Memento;
 
 /**
@@ -19,18 +19,15 @@ import games.strategy.util.memento.Memento;
  * </p>
  */
 public final class SerializableMementoExporter {
-  private final PersistenceDelegateRegistry persistenceDelegateRegistry;
+  private final ProxyFactoryRegistry proxyFactoryRegistry;
 
   /**
-   * Initializes a new instance of the {@code SerializableMementoExporter} class.
-   *
-   * @param persistenceDelegateRegistry The persistence delegate registry to use during exports; must not be
-   *        {@code null}.
+   * @param proxyFactoryRegistry The proxy factory registry to use during exports; must not be {@code null}.
    */
-  public SerializableMementoExporter(final PersistenceDelegateRegistry persistenceDelegateRegistry) {
-    checkNotNull(persistenceDelegateRegistry);
+  public SerializableMementoExporter(final ProxyFactoryRegistry proxyFactoryRegistry) {
+    checkNotNull(proxyFactoryRegistry);
 
-    this.persistenceDelegateRegistry = persistenceDelegateRegistry;
+    this.proxyFactoryRegistry = proxyFactoryRegistry;
   }
 
   /**
@@ -47,17 +44,13 @@ public final class SerializableMementoExporter {
     checkNotNull(os);
 
     try (final ObjectOutputStream oos = newObjectOutputStream(os)) {
-      writeMemento(oos, memento);
+      oos.writeObject(memento);
     } catch (final IOException e) {
       throw new SerializableMementoExportException(e);
     }
   }
 
   private ObjectOutputStream newObjectOutputStream(final OutputStream os) throws IOException {
-    return new ObjectOutputStream(new CloseShieldOutputStream(os), persistenceDelegateRegistry);
-  }
-
-  private static void writeMemento(final ObjectOutputStream oos, final Memento memento) throws IOException {
-    oos.writeObject(memento);
+    return new ObjectOutputStream(new CloseShieldOutputStream(os), proxyFactoryRegistry);
   }
 }

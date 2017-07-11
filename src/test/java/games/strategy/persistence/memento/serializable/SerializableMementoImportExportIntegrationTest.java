@@ -8,8 +8,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.Test;
 
-import games.strategy.persistence.serializable.DefaultPersistenceDelegateRegistry;
-import games.strategy.persistence.serializable.PersistenceDelegateRegistry;
+import games.strategy.persistence.serializable.ProxyFactoryRegistry;
 import games.strategy.util.memento.Memento;
 
 /**
@@ -17,7 +16,7 @@ import games.strategy.util.memento.Memento;
  * {@link SerializableMementoExporter} classes.
  */
 public final class SerializableMementoImportExportIntegrationTest {
-  private final PersistenceDelegateRegistry persistenceDelegateRegistry = new DefaultPersistenceDelegateRegistry();
+  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
 
   @Test
   public void shouldBeAbleToRoundTripMemento() throws Exception {
@@ -35,15 +34,15 @@ public final class SerializableMementoImportExportIntegrationTest {
 
   private byte[] exportMemento(final Memento memento) throws Exception {
     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(persistenceDelegateRegistry);
+      final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(proxyFactoryRegistry);
       mementoExporter.exportMemento(memento, baos);
       return baos.toByteArray();
     }
   }
 
-  private Memento importMemento(final byte[] bytes) throws Exception {
+  private static Memento importMemento(final byte[] bytes) throws Exception {
     try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-      final SerializableMementoImporter mementoImporter = new SerializableMementoImporter(persistenceDelegateRegistry);
+      final SerializableMementoImporter mementoImporter = new SerializableMementoImporter();
       return mementoImporter.importMemento(bais);
     }
   }

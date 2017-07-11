@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 
+import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.Version;
 
 /**
@@ -15,6 +16,8 @@ import games.strategy.util.Version;
  */
 public final class VersionProxy implements Serializable {
   private static final long serialVersionUID = 6092507250760560736L;
+
+  public static final ProxyFactory FACTORY = ProxyFactory.newInstance(Version.class, VersionProxy::new);
 
   /**
    * @serial The major (first) component of the version.

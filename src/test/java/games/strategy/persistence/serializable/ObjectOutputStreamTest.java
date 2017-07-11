@@ -2,35 +2,29 @@ package games.strategy.persistence.serializable;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class ObjectOutputStreamTest {
   private ObjectOutputStream oos;
 
-  @Mock
-  private PersistenceDelegate persistenceDelegate;
-
-  private final PersistenceDelegateRegistry persistenceDelegateRegistry = new DefaultPersistenceDelegateRegistry();
+  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
 
   @Before
   public void setUp() throws Exception {
-    oos = new ObjectOutputStream(newEmptyOutputStream(), persistenceDelegateRegistry);
-  }
-
-  private static OutputStream newEmptyOutputStream() {
-    return new ByteArrayOutputStream();
+    oos = new ObjectOutputStream(new ByteArrayOutputStream(), proxyFactoryRegistry);
   }
 
   @After
@@ -39,38 +33,29 @@ public final class ObjectOutputStreamTest {
   }
 
   @Test
-  public void annotateClass_ShouldDelegateToPersistenceDelegateWhenPersistenceDelegateAvailable() throws Exception {
-    final Class<?> cl = Integer.class;
-    persistenceDelegateRegistry.registerPersistenceDelegate(cl, persistenceDelegate);
-
-    oos.annotateClass(cl);
-
-    verify(persistenceDelegate).annotateClass(oos, cl);
-  }
-
-  @Test
-  public void annotateClass_ShouldNotThrowExceptionWhenPersistenceDelegateUnavailable() throws Exception {
-    oos.annotateClass(Integer.class);
-  }
-
-  @Test
-  public void annotateClass_ShouldNotThrowExceptionWhenClassIsNull() throws Exception {
-    oos.annotateClass(null);
-  }
-
-  @Test
-  public void replaceObject_ShouldDelegateToPersistenceDelegateWhenPersistenceDelegateAvailable() throws Exception {
+  public void replaceObject_ShouldDelegateToProxyFactoryWhenProxyFactoryAvailable() throws Exception {
     final Object obj = Integer.valueOf(42);
-    persistenceDelegateRegistry.registerPersistenceDelegate(Integer.class, persistenceDelegate);
+    final ProxyFactory proxyFactory = newProxyFactoryFor(Integer.class);
+    proxyFactoryRegistry.registerProxyFactory(proxyFactory);
 
     oos.replaceObject(obj);
 
-    verify(persistenceDelegate).replaceObject(obj);
+    verify(proxyFactory).newProxyFor(obj);
+  }
+
+  private static ProxyFactory newProxyFactoryFor(final Class<?> principalType) {
+    final ProxyFactory proxyFactory = mock(ProxyFactory.class);
+    doReturn(principalType).when(proxyFactory).getPrincipalType();
+    return proxyFactory;
   }
 
   @Test
-  public void replaceObject_ShouldNotThrowExceptionWhenPersistenceDelegateUnavailable() throws Exception {
-    oos.replaceObject(Integer.valueOf(42));
+  public void replaceObject_ShouldReturnInputWhenProxyFactoryUnavailable() throws Exception {
+    final Object obj = Integer.valueOf(42);
+
+    final Object replacedObj = oos.replaceObject(obj);
+
+    assertThat(replacedObj, is(sameInstance(obj)));
   }
 
   @Test
