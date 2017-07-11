@@ -179,9 +179,6 @@ task prepareGameEngineProperties() {
     group = 'release'
     description = 'Updates the game engine properties with final values for distribution.'
 
-    inputs.file gameEnginePropertiesFile
-    outputs.file gameEnginePropertiesArtifactFile
-
     doLast {
         copy {
             from gameEnginePropertiesFile
