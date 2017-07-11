@@ -727,17 +727,17 @@ public class BattleDisplay extends JPanel {
 
   private static final class BattleModel extends DefaultTableModel {
     private static final long serialVersionUID = 6913324191512043963L;
-    private final IUIContext m_uiContext;
-    private final GameData m_data;
+    private final IUIContext uiContext;
+    private final GameData gameData;
     // is the player the aggressor?
-    private final boolean m_attack;
-    private final Collection<Unit> m_units;
-    private final Territory m_location;
-    private final BattleType m_battleType;
-    private final Collection<TerritoryEffect> m_territoryEffects;
-    private final boolean m_isAmphibious;
-    private final Collection<Unit> m_amphibiousLandAttackers;
-    private BattleModel m_enemyBattleModel = null;
+    private final boolean attack;
+    private final Collection<Unit> units;
+    private final Territory location;
+    private final BattleType battleType;
+    private final Collection<TerritoryEffect> territoryEffects;
+    private final boolean isAmphibious;
+    private final Collection<Unit> amphibiousLandAttackers;
+    private BattleModel enemyBattleModel = null;
 
     private static String[] varDiceArray(final GameData data) {
       // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
@@ -758,76 +758,76 @@ public class BattleDisplay extends JPanel {
         final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
         final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext) {
       super(new Object[0][0], varDiceArray(data));
-      m_uiContext = uiContext;
-      m_data = data;
-      m_attack = attack;
+      this.uiContext = uiContext;
+      gameData = data;
+      this.attack = attack;
       // were going to modify the units
-      m_units = new ArrayList<>(units);
-      m_location = battleLocation;
-      m_battleType = battleType;
-      m_territoryEffects = territoryEffects;
-      m_isAmphibious = isAmphibious;
-      m_amphibiousLandAttackers = amphibiousLandAttackers;
+      this.units = new ArrayList<>(units);
+      location = battleLocation;
+      this.battleType = battleType;
+      this.territoryEffects = territoryEffects;
+      this.isAmphibious = isAmphibious;
+      this.amphibiousLandAttackers = amphibiousLandAttackers;
     }
 
     void setEnemyBattleModel(final BattleModel enemyBattleModel) {
-      m_enemyBattleModel = enemyBattleModel;
+      this.enemyBattleModel = enemyBattleModel;
     }
 
     void notifyRetreat(final Collection<Unit> retreating) {
-      m_units.removeAll(retreating);
+      units.removeAll(retreating);
       refresh();
     }
 
     void removeCasualties(final Collection<Unit> killed) {
-      m_units.removeAll(killed);
+      units.removeAll(killed);
       refresh();
     }
 
     void addUnits(final Collection<Unit> units) {
-      m_units.addAll(units);
+      this.units.addAll(units);
       refresh();
     }
 
     Collection<Unit> getUnits() {
-      return m_units;
+      return units;
     }
 
     /**
-     * refresh the model from m_units.
+     * refresh the model from units.
      */
     void refresh() {
       // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
       // Soft code the # of columns
 
-      final List<List<TableData>> columns = new ArrayList<>(m_data.getDiceSides() + 1);
-      for (int i = 0; i <= m_data.getDiceSides(); i++) {
+      final List<List<TableData>> columns = new ArrayList<>(gameData.getDiceSides() + 1);
+      for (int i = 0; i <= gameData.getDiceSides(); i++) {
         columns.add(i, new ArrayList<>());
       }
-      final List<Unit> units = new ArrayList<>(m_units);
-      DiceRoll.sortByStrength(units, !m_attack);
+      final List<Unit> units = new ArrayList<>(this.units);
+      DiceRoll.sortByStrength(units, !attack);
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
-        if (m_battleType.isAirPreBattleOrPreRaid()) {
+        if (battleType.isAirPreBattleOrPreRaid()) {
           unitPowerAndRollsMap = null;
         } else {
           unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
-              new ArrayList<>(m_enemyBattleModel.getUnits()), !m_attack, false, m_data, m_location,
-              m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
+              new ArrayList<>(enemyBattleModel.getUnits()), !attack, false, gameData, location,
+              territoryEffects, isAmphibious, amphibiousLandAttackers);
         }
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
-      final int diceSides = m_data.getDiceSides();
+      final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
       for (final UnitCategory category : unitCategories) {
         int strength;
         final UnitAttachment attachment = UnitAttachment.get(category.getType());
-        final int[] shift = new int[m_data.getDiceSides() + 1];
+        final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
-          if (m_battleType.isAirPreBattleOrPreRaid()) {
-            if (m_attack) {
+          if (battleType.isAirPreBattleOrPreRaid()) {
+            if (attack) {
               strength = attachment.getAirAttack(category.getOwner());
             } else {
               strength = attachment.getAirDefense(category.getOwner());
@@ -839,10 +839,10 @@ public class BattleDisplay extends JPanel {
           strength = Math.min(Math.max(strength, 0), diceSides);
           shift[strength]++;
         }
-        for (int i = 0; i <= m_data.getDiceSides(); i++) {
+        for (int i = 0; i <= gameData.getDiceSides(); i++) {
           if (shift[i] > 0) {
-            columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(), m_data,
-                category.hasDamageOrBombingUnitDamage(), category.getDisabled(), m_uiContext));
+            columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(), gameData,
+                category.hasDamageOrBombingUnitDamage(), category.getDisabled(), uiContext));
           }
         }
         // TODO Kev determine if we need to identify if the unit is hit/disabled
@@ -873,37 +873,37 @@ public class BattleDisplay extends JPanel {
   }
 
   private static final class Renderer implements TableCellRenderer {
-    JLabel m_stamp = new JLabel();
+    JLabel stamp = new JLabel();
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
         final boolean hasFocus, final int row, final int column) {
-      ((TableData) value).updateStamp(m_stamp);
-      return m_stamp;
+      ((TableData) value).updateStamp(stamp);
+      return stamp;
     }
   }
 
   private static final class TableData {
     static final TableData NULL = new TableData();
-    private int m_count;
-    private Optional<ImageIcon> m_icon;
+    private int count;
+    private Optional<ImageIcon> icon;
 
     private TableData() {}
 
     TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged,
         final boolean disabled, final IUIContext uiContext) {
-      m_count = count;
-      m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
+      this.count = count;
+      icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
     }
 
     void updateStamp(final JLabel stamp) {
-      if (m_count == 0) {
+      if (count == 0) {
         stamp.setText("");
         stamp.setIcon(null);
       } else {
-        stamp.setText("x" + m_count);
-        if (m_icon.isPresent()) {
-          stamp.setIcon(m_icon.get());
+        stamp.setText("x" + count);
+        if (icon.isPresent()) {
+          stamp.setIcon(icon.get());
         }
       }
     }

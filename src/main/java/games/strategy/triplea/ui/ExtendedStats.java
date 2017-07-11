@@ -154,38 +154,38 @@ public class ExtendedStats extends StatPanel {
   }
 
   class GenericResourceStat extends AbstractStat {
-    private String m_name = null;
+    private String name = null;
 
     public void init(final String name) {
-      m_name = name;
+      this.name = name;
     }
 
     @Override
     public String getName() {
-      return "Resource: " + m_name;
+      return "Resource: " + name;
     }
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      return player.getResources().getQuantity(m_name);
+      return player.getResources().getQuantity(name);
     }
   }
 
   class GenericTechNameStat extends AbstractStat {
-    private TechAdvance m_ta = null;
+    private TechAdvance ta = null;
 
     public void init(final TechAdvance ta) {
-      m_ta = ta;
+      this.ta = ta;
     }
 
     @Override
     public String getName() {
-      return "TechAdvance: " + m_ta.getName();
+      return "TechAdvance: " + ta.getName();
     }
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      if (m_ta.hasTech(TechAttachment.get(player))) {
+      if (ta.hasTech(TechAttachment.get(player))) {
         return 1;
       }
       return 0;
@@ -193,21 +193,21 @@ public class ExtendedStats extends StatPanel {
   }
 
   class GenericUnitNameStat extends AbstractStat {
-    private UnitType m_ut = null;
+    private UnitType ut = null;
 
     public void init(final UnitType ut) {
-      m_ut = ut;
+      this.ut = ut;
     }
 
     @Override
     public String getName() {
-      return "UnitType: " + m_ut.getName();
+      return "UnitType: " + ut.getName();
     }
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int matchCount = 0;
-      final Match<Unit> ownedBy = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+      final Match<Unit> ownedBy = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {
         matchCount += place.getUnits().countMatches(ownedBy);
       }

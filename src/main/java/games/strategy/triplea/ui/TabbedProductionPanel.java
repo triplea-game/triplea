@@ -66,7 +66,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     }
     add(left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    done = new JButton(done_action);
+    done = new JButton(doneAction);
     add(done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     tabs.validate();
