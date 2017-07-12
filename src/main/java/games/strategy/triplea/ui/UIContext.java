@@ -35,84 +35,82 @@ import games.strategy.triplea.util.Stopwatch;
  * A place to find images and map data for a ui.
  */
 public class UIContext extends AbstractUIContext {
-  protected MapData m_mapData;
-  protected final TileImageFactory m_tileImageFactory = new TileImageFactory();
-  protected final UnitImageFactory m_unitImageFactory = new UnitImageFactory();
-  protected final ResourceImageFactory m_resourceImageFactory = new ResourceImageFactory();
-  protected final MapImage m_mapImage;
-  protected final FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
-  protected DiceImageFactory m_diceImageFactory;
-  protected final PUImageFactory m_PUImageFactory = new PUImageFactory();
-  protected boolean m_drawUnits = true;
-  protected boolean m_drawTerritoryEffects = false;
-  protected boolean m_drawMapOnly = false;
-  protected OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
-  // protected final MainGameFrame m_frame;
-  protected Cursor m_cursor = Cursor.getDefaultCursor();
+  protected MapData mapData;
+  protected final TileImageFactory tileImageFactory = new TileImageFactory();
+  protected final UnitImageFactory unitImageFactory = new UnitImageFactory();
+  protected final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  protected final MapImage mapImage;
+  protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
+  protected DiceImageFactory diceImageFactory;
+  protected final PUImageFactory puImageFactory = new PUImageFactory();
+  protected boolean drawUnits = true;
+  protected boolean drawTerritoryEffects = false;
+  protected boolean drawMapOnly = false;
+  protected OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
+  protected Cursor cursor = Cursor.getDefaultCursor();
 
   UIContext() {
     super();
-    m_mapImage = new MapImage();
-    // m_frame = frame;
+    mapImage = new MapImage();
   }
 
   @Override
   public Cursor getCursor() {
-    return m_cursor;
+    return cursor;
   }
 
   @Override
   public void setScale(final double scale) {
     super.setScale(scale);
-    m_tileImageFactory.setScale(scale);
+    tileImageFactory.setScale(scale);
   }
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-    m_resourceLoader = ResourceLoader.getMapResourceLoader(dir);
-    if (m_mapData != null) {
-      m_mapData.close();
+    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
+    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    if (mapData != null) {
+      mapData.close();
     }
-    m_mapData = new MapData(m_resourceLoader);
+    mapData = new MapData(resourceLoader);
     // DiceImageFactory needs loader and game data
-    m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides());
-    final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
-    m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    if (m_scale < 1) {
+    diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
+    final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+    if (scale < 1) {
       setDrawTerritoryBordersAgainToMedium();
     }
-    m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(),
-        m_mapData.getDefaultUnitHeight(), m_mapData.getDefaultUnitCounterOffsetWidth(),
-        m_mapData.getDefaultUnitCounterOffsetHeight());
+    unitImageFactory.setResourceLoader(resourceLoader, unitScale, mapData.getDefaultUnitWidth(),
+        mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
+        mapData.getDefaultUnitCounterOffsetHeight());
     // TODO: separate scale for resources
-    m_resourceImageFactory.setResourceLoader(m_resourceLoader, 1);
-    m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
-    m_PUImageFactory.setResourceLoader(m_resourceLoader);
-    m_tileImageFactory.setMapDir(m_resourceLoader);
-    m_tileImageFactory.setScale(m_scale);
+    resourceImageFactory.setResourceLoader(resourceLoader, 1);
+    flagIconImageFactory.setResourceLoader(resourceLoader);
+    puImageFactory.setResourceLoader(resourceLoader);
+    tileImageFactory.setMapDir(resourceLoader);
+    tileImageFactory.setScale(scale);
     // load map data
-    m_mapImage.loadMaps(m_resourceLoader);
-    m_mapDir = dir;
-    m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
+    mapImage.loadMaps(resourceLoader);
+    mapDir = dir;
+    drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
     final Runnable loadSounds = () -> {
       // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-      ClipPlayer.getInstance(m_resourceLoader);
+      ClipPlayer.getInstance(resourceLoader);
     };
     (new Thread(loadSounds, "Triplea sound loader")).start();
     // load a new cursor
-    m_cursor = Cursor.getDefaultCursor();
+    cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
     // URL's use "/" not "\"
-    final URL cursorUrl = m_resourceLoader.getResource("misc" + "/" + "cursor.gif");
+    final URL cursorUrl = resourceLoader.getResource("misc" + "/" + "cursor.gif");
     if (cursorUrl != null) {
       try {
         final Image image = ImageIO.read(cursorUrl);
         if (image != null) {
-          final Point hotSpot = new Point(m_mapData.getMapCursorHotspotX(), m_mapData.getMapCursorHotspotY());
-          m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
+          final Point hotSpot = new Point(mapData.getMapCursorHotspotX(), mapData.getMapCursorHotspotY());
+          cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
@@ -123,17 +121,17 @@ public class UIContext extends AbstractUIContext {
 
   @Override
   public MapData getMapData() {
-    return m_mapData;
+    return mapData;
   }
 
   @Override
   public TileImageFactory getTileImageFactory() {
-    return m_tileImageFactory;
+    return tileImageFactory;
   }
 
   @Override
   public UnitImageFactory getUnitImageFactory() {
-    return m_unitImageFactory;
+    return unitImageFactory;
   }
 
   @Override
@@ -150,88 +148,88 @@ public class UIContext extends AbstractUIContext {
 
   @Override
   public ResourceImageFactory getResourceImageFactory() {
-    return m_resourceImageFactory;
+    return resourceImageFactory;
   }
 
   @Override
   public MapImage getMapImage() {
-    return m_mapImage;
+    return mapImage;
   }
 
   @Override
   public FlagIconImageFactory getFlagImageFactory() {
-    return m_flagIconImageFactory;
+    return flagIconImageFactory;
   }
 
   @Override
-  public PUImageFactory getPUImageFactory() {
-    return m_PUImageFactory;
+  public PUImageFactory getPuImageFactory() {
+    return puImageFactory;
   }
 
   @Override
   public DiceImageFactory getDiceImageFactory() {
-    return m_diceImageFactory;
+    return diceImageFactory;
   }
 
   @Override
   public void shutDown() {
     super.shutDown();
-    m_mapData.close();
+    mapData.close();
   }
 
   @Override
   public boolean getShowUnits() {
-    return m_drawUnits;
+    return drawUnits;
   }
 
   @Override
   public void setShowUnits(final boolean showUnits) {
-    m_drawUnits = showUnits;
+    drawUnits = showUnits;
   }
 
   @Override
   public OptionalExtraBorderLevel getDrawTerritoryBordersAgain() {
-    return m_extraTerritoryBorderLevel;
+    return extraTerritoryBorderLevel;
   }
 
   @Override
   public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {
-    m_extraTerritoryBorderLevel = level;
+    extraTerritoryBorderLevel = level;
   }
 
   @Override
   public void resetDrawTerritoryBordersAgain() {
-    m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
+    extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   }
 
   @Override
   public void setDrawTerritoryBordersAgainToMedium() {
-    m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
+    extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
   }
 
   @Override
   public void setShowTerritoryEffects(final boolean showTerritoryEffects) {
-    m_drawTerritoryEffects = showTerritoryEffects;
+    drawTerritoryEffects = showTerritoryEffects;
   }
 
   @Override
   public boolean getShowTerritoryEffects() {
-    return m_drawTerritoryEffects;
+    return drawTerritoryEffects;
   }
 
   @Override
   public boolean getShowMapOnly() {
-    return m_drawMapOnly;
+    return drawMapOnly;
   }
 
   @Override
   public void setShowMapOnly(final boolean showMapOnly) {
-    m_drawMapOnly = showMapOnly;
+    drawMapOnly = showMapOnly;
   }
 
   @Override
   public void setUnitScaleFactor(final double scaleFactor) {
-    m_unitImageFactory.setScaleFactor(scaleFactor);
+    unitImageFactory.setScaleFactor(scaleFactor);
     final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
