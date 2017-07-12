@@ -257,8 +257,10 @@ public class MovePerformer implements Serializable {
               if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
                 continue;
               }
-              if ((t.equals(route.getEnd()) && !arrivedCopyForBattles.isEmpty() && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
-                  || (!t.equals(route.getEnd()) && !presentFromStartTilEnd.isEmpty() && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir))) {
+              if ((t.equals(route.getEnd()) && !arrivedCopyForBattles.isEmpty()
+                  && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
+                  || (!t.equals(route.getEnd()) && !presentFromStartTilEnd.isEmpty()
+                      && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir))) {
                 continue;
               }
               // createdBattle = true;

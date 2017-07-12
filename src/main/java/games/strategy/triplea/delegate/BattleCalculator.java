@@ -1016,7 +1016,8 @@ public class BattleCalculator {
     final LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>> rVal =
         new LinkedHashMap<>();
     final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
-        ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data) : new HashMap<>();
+        ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data)
+        : new HashMap<>();
     final List<PlayerID> players = data.getPlayerList().getPlayers();
     players.add(PlayerID.NULL_PLAYERID);
     for (final PlayerID p : players) {

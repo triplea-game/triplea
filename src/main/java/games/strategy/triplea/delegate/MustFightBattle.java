@@ -876,8 +876,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           endBattle(bridge);
           attackerWins(bridge);
         } else if (shouldEndBattleDueToMaxRounds()
-            || (!m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
-                && !m_defendingUnits.isEmpty() && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+            || (!m_attackingUnits.isEmpty()
+                && Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
+                && !m_defendingUnits.isEmpty()
+                && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
           endBattle(bridge);
           nobodyWins(bridge);
         }
@@ -1266,7 +1268,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!isTransportCasualtiesRestricted()) {
       return false;
     }
-    return !m_defendingUnits.isEmpty() && Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
+    return !m_defendingUnits.isEmpty()
+        && Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
   }
 
   private boolean canAttackerRetreatSubs() {
