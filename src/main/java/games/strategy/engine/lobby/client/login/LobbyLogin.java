@@ -96,8 +96,11 @@ public class LobbyLogin {
                   internalError.set("No account with that name exists");
                   salt = "none";
                 }
-                final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
-                props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
+                if (!salt.isEmpty()) {
+                  final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
+                  props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
+                }
+                props.put(LobbyLoginValidator.PLAIN_PASSWORD_KEY, panel.getPassword());
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
@@ -158,7 +161,9 @@ public class LobbyLogin {
               final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
+              // TODO: Don't send the hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
+              props.put(LobbyLoginValidator.PLAIN_PASSWORD_KEY, createAccount.getPassword());
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
             }

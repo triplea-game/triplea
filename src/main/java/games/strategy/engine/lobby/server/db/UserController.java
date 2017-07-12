@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -96,6 +98,26 @@ public class UserController implements UserDao {
   }
 
   @Override
+  public void updateUser(final DBUser user, final String password) {
+    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+
+    try (final Connection con = connectionSupplier.get()) {
+      try (final PreparedStatement ps =
+          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
+        ps.setString(1, BCrypt.hashpw(password, BCrypt.gensalt()));
+        ps.setString(2, user.getEmail());
+        ps.setInt(3, user.isAdmin() ? 1 : 0);
+        ps.setString(4, user.getName());
+        ps.execute();
+      }
+    } catch (final SQLException e) {
+      s_logger.log(Level.SEVERE,
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: <hidden>", e);
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
     Preconditions.checkState(hashedPassword.isValidSyntax());
@@ -122,6 +144,28 @@ public class UserController implements UserDao {
       throw new RuntimeException(sqle);
     } finally {
       DbUtil.closeConnection(con);
+    }
+  }
+
+  @Override
+  public void createUser(final DBUser user, final String password) {
+    Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
+
+    try (final Connection con = connectionSupplier.get()) {
+      try (final PreparedStatement ps = con.prepareStatement(
+          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
+        ps.setString(1, user.getName());
+        ps.setString(2, BCrypt.hashpw(password, BCrypt.gensalt()));
+        ps.setString(3, user.getEmail());
+        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+        ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+        ps.setInt(6, user.isAdmin() ? 1 : 0);
+        ps.execute();
+      }
+    } catch (final SQLException e) {
+      s_logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
+          user.getEmail(), "<rejected>"), e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -154,6 +198,27 @@ public class UserController implements UserDao {
     } finally {
       DbUtil.closeConnection(con);
     }
+  }
+
+  @Override
+  public boolean login(String userName, String password) {
+    HashedPassword hashedPassword = getPassword(userName);
+    Preconditions.checkState(hashedPassword.isBcrypted());
+    final boolean correctCredentials = BCrypt.checkpw(password, hashedPassword.value);
+    if (correctCredentials) {
+      try (final Connection connection = connectionSupplier.get()) {
+        try (final PreparedStatement statement =
+            connection.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+          statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+          statement.setString(2, BCrypt.hashpw(userName, BCrypt.gensalt()));
+          statement.execute();
+        }
+      } catch (SQLException e) {
+        s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword);
+        throw new IllegalStateException(e);
+      }
+    }
+    return correctCredentials;
   }
 
   @Override

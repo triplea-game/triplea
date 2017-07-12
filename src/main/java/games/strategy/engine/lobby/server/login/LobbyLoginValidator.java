@@ -37,6 +37,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
+  public static final String PLAIN_PASSWORD_KEY = "PLAINPWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
 
@@ -48,7 +49,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     final Map<String, String> rVal = new HashMap<>();
     final HashedPassword password = new DbUserController().getPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
-      rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+      rVal.put(SALT_KEY, password.isBcrypted() ? "" : MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
     return rVal;
   }
@@ -156,9 +157,23 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
+    final String errorMessage = "Incorrect username or password";
     final UserDao userDao = new DbUserController();
+    if (propertiesReadFromClient.containsKey(PLAIN_PASSWORD_KEY)) {
+      if (userDao.getPassword(clientName).isBcrypted()) {
+        return userDao.login(clientName, propertiesReadFromClient.get(PLAIN_PASSWORD_KEY)) ? null : errorMessage;
+      } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+        userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(PLAIN_PASSWORD_KEY));
+        return null;
+      } else {
+        return errorMessage;
+      }
+    }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-      return "Incorrect username or password";
+      if (userDao.getPassword(clientName).isBcrypted()) {
+        return "You need to login with a newer version of TripleA";
+      }
+      return errorMessage;
     } else {
       return null;
     }
