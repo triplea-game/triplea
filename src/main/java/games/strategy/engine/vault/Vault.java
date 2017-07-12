@@ -346,7 +346,7 @@ public class Vault {
     }
   }
 
-  static interface IRemoteVault extends IChannelSubscribor {
+  interface IRemoteVault extends IChannelSubscribor {
     void addLockedValue(VaultID id, byte[] data);
 
     void unlock(VaultID id, byte[] secretKeyBytes);
