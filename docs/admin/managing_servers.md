@@ -81,7 +81,7 @@ To view the latest 50 log lines (because there are A LOT) run `sudo journalctl |
 This should hopefully help you figuring out the issue.
 
 ## TripleAWarClub Forum (Legacy)
-The old tripleawarclub forum runs on the same server as teh lobby, it is powered by XOOPS, written in PHP and uses MySQL as Database scheme. Because of more and more issues with XOOPS we decided to move to the NodeBB forum, which is much easier to maintain. To restart the WarClub forum, just restart nginx:
+The old tripleawarclub forum runs on the same server as the lobby, it is powered by XOOPS, written in PHP and uses MySQL as Database scheme. Because of more and more issues with XOOPS we decided to move to the NodeBB forum, which is much easier to maintain. To restart the WarClub forum, just restart nginx:
 ```
 sudo service nginx restart
 ```
