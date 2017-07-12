@@ -69,15 +69,7 @@ public class MD5Crypt {
    * @return The encrypted password as an MD5 hash
    */
   public static String crypt(final String password) {
-    final StringBuffer salt = new StringBuffer();
-    final Random rnd = new Random();
-    // build a random 8 chars salt
-    while (salt.length() < 8) {
-      final int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-      salt.append(SALTCHARS.substring(index, index + 1));
-    }
-    // crypt
-    return crypt(password, salt.toString(), MAGIC);
+    return crypt(password, newSalt(), MAGIC);
   }
 
   /**
@@ -225,6 +217,22 @@ public class MD5Crypt {
     /* Don't leave anything around in vm they could use. */
     clearbits(finalState);
     return result.toString();
+  }
+
+  /**
+   * Creates a new random salt that can be passed to {@link #crypt(String, String)}.
+   *
+   * @return A new random salt; never {@code null}.
+   */
+  public static String newSalt() {
+    final StringBuffer salt = new StringBuffer();
+    final Random rnd = new Random();
+    // build a random 8 chars salt
+    while (salt.length() < 8) {
+      final int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+      salt.append(SALTCHARS.substring(index, index + 1));
+    }
+    return salt.toString();
   }
 
   public static String getSalt(final String magic, final String encrypted) {

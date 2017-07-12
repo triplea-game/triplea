@@ -1,0 +1,242 @@
+package games.strategy.engine.framework.startup.login;
+
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
+import games.strategy.engine.framework.startup.login.V2Authenticator.ChallengePropertyNames;
+import games.strategy.engine.framework.startup.login.V2Authenticator.ResponsePropertyNames;
+
+public final class V2AuthenticatorTest {
+  private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
+
+  @Test
+  public void canProcessChallenge_ShouldReturnTrueWhenAllPropertiesPresent() {
+    final Map<String, String> challenge = newChallengeWithAllProperties();
+
+    assertThat(V2Authenticator.canProcessChallenge(challenge), is(true));
+  }
+
+  private static Map<String, String> newChallengeWithAllProperties() {
+    return Maps.newHashMap(ImmutableMap.of(
+        ChallengePropertyNames.NONCE, newBase64String(),
+        ChallengePropertyNames.SALT, newBase64String()));
+  }
+
+  private static String newBase64String() {
+    final byte[] bytes = new byte[8];
+    Arrays.fill(bytes, (byte) 1);
+    return Base64.getEncoder().encodeToString(bytes);
+  }
+
+  @Test
+  public void canProcessChallenge_ShouldReturnFalseWhenNonceAbsent() {
+    final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.NONCE);
+
+    assertThat(V2Authenticator.canProcessChallenge(challenge), is(false));
+  }
+
+  private static Map<String, String> newChallengeWithAllPropertiesExcept(final String name) {
+    final Map<String, String> challenge = newChallengeWithAllProperties();
+    challenge.remove(name);
+    return challenge;
+  }
+
+  @Test
+  public void canProcessChallenge_ShouldReturnFalseWhenSaltAbsent() {
+    final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.SALT);
+
+    assertThat(V2Authenticator.canProcessChallenge(challenge), is(false));
+  }
+
+  @Test
+  public void newChallenge_ShouldIncludeNonceAndSalt() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+
+    assertThat(challenge, hasEntry(is(ChallengePropertyNames.NONCE), is(not(emptyString()))));
+    assertThat(challenge, hasEntry(is(ChallengePropertyNames.SALT), is(not(emptyString()))));
+  }
+
+  @Test
+  public void canProcessResponse_ShouldReturnTrueWhenAllPropertiesPresent() {
+    final Map<String, String> response = newResponseWithAllProperties();
+
+    assertThat(V2Authenticator.canProcessResponse(response), is(true));
+  }
+
+  private static Map<String, String> newResponseWithAllProperties() {
+    return Maps.newHashMap(ImmutableMap.of(
+        ResponsePropertyNames.DIGEST, newBase64String()));
+  }
+
+  @Test
+  public void canProcessResponse_ShouldReturnFalseWhenDigestAbsent() {
+    final Map<String, String> response = newResponseWithAllPropertiesExcept(ResponsePropertyNames.DIGEST);
+
+    assertThat(V2Authenticator.canProcessResponse(response), is(false));
+  }
+
+  private static Map<String, String> newResponseWithAllPropertiesExcept(final String name) {
+    final Map<String, String> response = newResponseWithAllProperties();
+    response.remove(name);
+    return response;
+  }
+
+  @Test
+  public void newResponse_ShouldIncludeResponseWhenChallengeContainsNonceAndSalt() throws Exception {
+    final Map<String, String> challenge = ImmutableMap.of(
+        ChallengePropertyNames.NONCE, newBase64String(),
+        ChallengePropertyNames.SALT, newBase64String());
+
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    assertThat(response, hasEntry(is(ResponsePropertyNames.DIGEST), is(not(emptyString()))));
+  }
+
+  @Test
+  public void newResponse_ShouldNotIncludeResponseWhenChallengeDoesNotContainNonce() throws Exception {
+    final Map<String, String> challenge = ImmutableMap.of(ChallengePropertyNames.SALT, newBase64String());
+
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    assertThat(response, not(hasKey(ResponsePropertyNames.DIGEST)));
+  }
+
+  @Test
+  public void newResponse_ShouldNotIncludeResponseWhenChallengeDoesNotContainSalt() throws Exception {
+    final Map<String, String> challenge = ImmutableMap.of(ChallengePropertyNames.NONCE, newBase64String());
+
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    assertThat(response, not(hasKey(ResponsePropertyNames.DIGEST)));
+  }
+
+  @Test
+  public void decodeOptionalProperty_ShouldReturnDecodedValueWhenNamePresent() throws Exception {
+    final String name = "name";
+    final String encodedValue = newBase64String();
+    final Map<String, String> properties = ImmutableMap.of(name, encodedValue);
+
+    final byte[] actualValue = V2Authenticator.decodeOptionalProperty(properties, name);
+
+    assertThat(actualValue, is(Base64.getDecoder().decode(encodedValue)));
+  }
+
+  @Test
+  public void decodeOptionalProperty_ShouldReturnNullWhenNameAbsent() throws Exception {
+    final Map<String, String> properties = ImmutableMap.of("other name", newBase64String());
+
+    final byte[] value = V2Authenticator.decodeOptionalProperty(properties, "name");
+
+    assertThat(value, is(nullValue()));
+  }
+
+  @Test
+  public void decodeOptionalProperty_ShouldThrowExceptionWhenValueMalformed() {
+    final String name = "name";
+    final Map<String, String> properties = ImmutableMap.of(name, "NOT_A_BASE64_VALUE");
+
+    catchException(() -> V2Authenticator.decodeOptionalProperty(properties, name));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("malformed")),
+        hasMessageThat(containsString(name))));
+  }
+
+  @Test
+  public void authenticate_ShouldNotThrowExceptionWhenAuthenticationSucceeds() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    catchException(() -> V2Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(caughtException(), is(nullValue()));
+  }
+
+  @Test
+  public void authenticate_ShouldThrowExceptionWhenAuthenticationFails() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+    final Map<String, String> response = V2Authenticator.newResponse("otherPassword", challenge);
+
+    catchException(() -> V2Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("authentication failed"))));
+  }
+
+  @Test
+  public void authenticate_ShouldThrowExceptionWhenChallengeDoesNotContainNonce() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    challenge.remove(ChallengePropertyNames.NONCE);
+    catchException(() -> V2Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("missing")),
+        hasMessageThat(containsString(ChallengePropertyNames.NONCE))));
+  }
+
+  @Test
+  public void authenticate_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    challenge.remove(ChallengePropertyNames.SALT);
+    catchException(() -> V2Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("missing")),
+        hasMessageThat(containsString(ChallengePropertyNames.SALT))));
+  }
+
+  @Test
+  public void authenticate_ShouldThrowExceptionWhenResponseDoesNotContainDigest() throws Exception {
+    final Map<String, String> challenge = V2Authenticator.newChallenge();
+    final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+
+    response.remove(ResponsePropertyNames.DIGEST);
+    catchException(() -> V2Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("missing")),
+        hasMessageThat(containsString(ResponsePropertyNames.DIGEST))));
+  }
+
+  @Test
+  public void decodeRequiredProperty_ShouldThrowExceptionWhenNameAbsent() {
+    final String name = "name";
+    final Map<String, String> properties = ImmutableMap.of("other name", newBase64String());
+
+    catchException(() -> V2Authenticator.decodeRequiredProperty(properties, name));
+
+    assertThat(caughtException(), allOf(
+        is(instanceOf(AuthenticationException.class)),
+        hasMessageThat(containsString("missing")),
+        hasMessageThat(containsString(name))));
+  }
+}
