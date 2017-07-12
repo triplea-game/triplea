@@ -1,43 +1,42 @@
-TripleA can be played over the internet and has a big online community.
-For tasks like this we have a couple servers running, which power the lobby, the forum and a dozen bots.
+Admin doc for managing the TripleA Lobby and Bots.
 
-## The Lobby
-The Lobby is hosted on the same server as the legacy [tripleawarclub.org](https://tripleawarclub.org) forum, as well as our [dice server](https://dice.tripleawarclub.org).
+## Lobby
+
 We use `systemd` to start and stop those services.
 ```
 sudo service triplea-lobby start|stop|status|restart
 ```
+
 All TripleA related processes are started as the `triplea` user, so if you ever get an error because of insufficient permissions, make sure all the files are owned by the `triplea` user.
 
-The command is pretty much self-explanatory, but be advised, that restarting the lobby quits all connections to all bots.
+Be advised, restarting the lobby quits all connections to all bots.
 Even if the lobby restarts, the bots won't reconnect automatically, they will have to be restarted on their own.
 
-_Of course not everyone is permitted to perform such an critical operation. This command is restricted to users with full sudo rights._
+_This command is currently restricted to users with full sudo rights._
 
-## The Dice server
-Dice servers are used to ensure integrity of dice rolls for Play-by-E-Mail games in order to prevent cheating.
-The code can be found at [our Repository](https://github.com/triplea-game/dice-server), the dice server is written in PHP.
+## [The Dice server](https://github.com/triplea-game/dice-server)
+
 To restart the dice server just run
 ```
 sudo service nginx restart
 ```
 on the tripleawarclub.org/dice.tripleawarclub.org server.
 
-## The Forums
-The new forum runs on the NJ server (forums.triplea-game.org), it's powered by NodeBB and written in Node-JavaScript.
-It uses a mongo database.
-NodeBB is deployed via git and dependencies are installed using npm.
+## [NodeBB Forums](https://forums.triplea-game.org)
+- Runs on the "NJ" linode server (as of 2017-07-12) 
+- Powered by NodeBB and written in Node-JavaScript with a mongo database.
+- NodeBB is deployed via git and dependencies are installed using npm. (TODO: add exact commands to deploy NodeBB)
 
 ### Restarting
-Restarting NodeBB is quite easy. When we have an admin account on the forum, we can restart it using the webinterface.
-If this webinterface is not available because of a crash or a bad configuration file, we of course need to do it by hand.
+- When we have an admin account on the forum, we can restart it using the webinterface.
+- If this webinterface is not available because of a crash or a bad configuration file, it can be done by hand:
 
 ```
 sudo service nodebb restart
 sudo service nginx restart
 ```
 
-_Note: Restarting fails sometimes if not enough resources e.g. memory are available. Make sure there is always enough memory available._
+_Note: Restarting fails sometimes if not enough resources e.g. memory are available. Always check for a successful restart and reasons for failures._
 
 ### Updating
 Updating is not always the same, depending on the branch policy of NodeBB.
@@ -72,7 +71,7 @@ Before running any of those commands, we need to be in the correct working direc
 We can do that by executing `cd /opt/nodebb/` in the beginning.
 Run `./nodebb upgrade`, this should fix problems most of the time.
 If it doesn't, make sure enough memory is available and the database is up and running. (`sudo service mongod status`)
-If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB) or create a topic in the [NodeBB community forum](https://community.nodebb.org).
+If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB)
 
 #### Reading log files
 NodeBB uses stdout to log everything.
@@ -81,10 +80,8 @@ jornalctl deletes log files after a couple weeks in order to save space, so don'
 To view the latest 50 log lines (because there are A LOT) run `sudo journalctl | grep "nodebb" | tail -n 50`.
 This should hopefully help you figuring out the issue.
 
-### Legacy
-The old tripleawarclub forum is powered by XOOPS, written in PHP and uses MySQL as Database scheme.
-Because of more and more issues with XOOPS we decided to move to the new forum, which is much easier to maintain.
-If we ever wanted to restart the forum anyway, we'd just need to restart nginx.
+## TripleAWarClub Forum (Legacy)
+The old tripleawarclub forum runs on the same server as teh lobby, it is powered by XOOPS, written in PHP and uses MySQL as Database scheme. Because of more and more issues with XOOPS we decided to move to the NodeBB forum, which is much easier to maintain. To restart the WarClub forum, just restart nginx:
 ```
 sudo service nginx restart
 ```
