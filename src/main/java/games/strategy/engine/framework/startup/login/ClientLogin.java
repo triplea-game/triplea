@@ -17,6 +17,7 @@ public class ClientLogin implements IConnectionLogin {
   public static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
   public static final String JDK_VERSION_PROPERTY = "JDK.Version";
   public static final String PASSWORD_PROPERTY = "Password";
+  public static final String PLAIN_PASSWORD_PROPERTY = "Plain Password";
   private final Component parentComponent;
 
   public ClientLogin(final Component parent) {
@@ -33,6 +34,7 @@ public class ClientLogin implements IConnectionLogin {
           "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
+      rVal.put(PLAIN_PASSWORD_PROPERTY, password);
     }
     rVal.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
     rVal.put(JDK_VERSION_PROPERTY, System.getProperty("java.runtime.version"));

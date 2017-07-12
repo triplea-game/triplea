@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,6 +92,14 @@ public class ClientLoginValidator implements ILoginValidator {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
+      final String plainPassword = propertiesReadFromClient.get(ClientLogin.PLAIN_PASSWORD_PROPERTY);
+      if (plainPassword != null) {
+        if (MessageDigest.isEqual(plainPassword.getBytes(), m_password.getBytes())) {
+          return null;
+        } else {
+          return "Invalid Password";
+        }
+      }
       final String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
       if (readPassword == null) {
         return "No password";
