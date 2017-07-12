@@ -210,7 +210,7 @@ public class UserController implements UserDao {
         try (final PreparedStatement statement =
             connection.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
           statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-          statement.setString(2, BCrypt.hashpw(userName, BCrypt.gensalt()));
+          statement.setString(2, userName);
           statement.execute();
         }
       } catch (SQLException e) {
