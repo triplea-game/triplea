@@ -240,6 +240,24 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public Class<? extends IRemote> getRemoteType() {
     return null;
   }
+
+
+  static class UnitCostComparator implements Comparator<Unit> {
+    private final IntegerMap<UnitType> m_costs;
+
+    public UnitCostComparator(final IntegerMap<UnitType> costs) {
+      m_costs = costs;
+    }
+
+    public UnitCostComparator(final PlayerID player, final GameData data) {
+      m_costs = BattleCalculator.getCostsForTUV(player, data);
+    }
+
+    @Override
+    public int compare(final Unit u1, final Unit u2) {
+      return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
+    }
+  }
 }
 
 
@@ -248,22 +266,4 @@ class RandomStartExtendedDelegateState implements Serializable {
   Serializable superState;
   // add other variables here:
   public PlayerID m_currentPickingPlayer;
-}
-
-
-class UnitCostComparator implements Comparator<Unit> {
-  private final IntegerMap<UnitType> m_costs;
-
-  public UnitCostComparator(final IntegerMap<UnitType> costs) {
-    m_costs = costs;
-  }
-
-  public UnitCostComparator(final PlayerID player, final GameData data) {
-    m_costs = BattleCalculator.getCostsForTUV(player, data);
-  }
-
-  @Override
-  public int compare(final Unit u1, final Unit u2) {
-    return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
-  }
 }

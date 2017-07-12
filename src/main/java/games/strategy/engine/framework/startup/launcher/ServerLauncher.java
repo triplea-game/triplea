@@ -402,44 +402,44 @@ public class ServerLauncher extends AbstractLauncher {
     return GameDataFileUtils.addExtension(
         "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
   }
-}
 
+  static class ServerReady implements IServerReady {
+    private final CountDownLatch m_latch;
+    private final int m_clients;
 
-class ServerReady implements IServerReady {
-  private final CountDownLatch m_latch;
-  private final int m_clients;
+    ServerReady(final int waitCount) {
+      m_clients = waitCount;
+      m_latch = new CountDownLatch(m_clients);
+    }
 
-  ServerReady(final int waitCount) {
-    m_clients = waitCount;
-    m_latch = new CountDownLatch(m_clients);
-  }
-
-  @Override
-  public void clientReady() {
-    m_latch.countDown();
-  }
-
-  public void countDownAll() {
-    for (int i = 0; i < m_clients; i++) {
+    @Override
+    public void clientReady() {
       m_latch.countDown();
     }
-  }
 
-  public void await() {
-    try {
-      m_latch.await();
-    } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+    public void countDownAll() {
+      for (int i = 0; i < m_clients; i++) {
+        m_latch.countDown();
+      }
     }
-  }
 
-  public boolean await(final long timeout, final TimeUnit timeUnit) {
-    boolean didNotTimeOut = false;
-    try {
-      didNotTimeOut = m_latch.await(timeout, timeUnit);
-    } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+    public void await() {
+      try {
+        m_latch.await();
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
     }
-    return didNotTimeOut;
+
+    public boolean await(final long timeout, final TimeUnit timeUnit) {
+      boolean didNotTimeOut = false;
+      try {
+        didNotTimeOut = m_latch.await(timeout, timeUnit);
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
+      return didNotTimeOut;
+    }
   }
 }
+
