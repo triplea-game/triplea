@@ -22,12 +22,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import javax.swing.filechooser.FileFilter;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
