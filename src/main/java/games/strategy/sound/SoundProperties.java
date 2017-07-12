@@ -3,7 +3,7 @@ package games.strategy.sound;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -21,7 +21,7 @@ class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
   static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   private static SoundProperties s_op = null;
-  private static long timestamp = 0;
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties m_properties = new Properties();
 
   SoundProperties(final ResourceLoader loader) {
@@ -40,9 +40,9 @@ class SoundProperties {
 
   static SoundProperties getInstance(final ResourceLoader loader) {
     // cache properties for 1 second
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > timestamp + 1000) {
+    if (s_op == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
       s_op = new SoundProperties(loader);
-      timestamp = Calendar.getInstance().getTimeInMillis();
+      timestamp = Instant.now();
     }
     return s_op;
   }

@@ -1,7 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,9 +33,9 @@ public class MapDownloadController {
   public boolean checkDownloadedMapsAreLatest() {
     try {
       // check at most once per month
-      final Calendar calendar = Calendar.getInstance();
-      final int year = calendar.get(Calendar.YEAR);
-      final int month = calendar.get(Calendar.MONTH);
+      final LocalDateTime locaDateTime = LocalDateTime.now();
+      final int year = locaDateTime.get(ChronoField.YEAR);
+      final int month = locaDateTime.get(ChronoField.MONTH_OF_YEAR);
       // format year:month
       final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
       if (lastCheckTime != null && lastCheckTime.trim().length() > 0) {
