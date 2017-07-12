@@ -455,7 +455,7 @@ class ProPurchaseAI {
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
-            !t.isWater() && Match.allMatchNotEmpty(enemyAttackingUnits, Matches.UnitIsAir);
+            !t.isWater() && !enemyAttackingUnits.isEmpty() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
         if ((!t.isWater() && result.isHasLandUnitRemaining()) || result.getTUVSwing() > holdValue
             || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir
                 && result.getWinPercentage() > (100 - ProData.winPercentage))) {
@@ -1159,7 +1159,7 @@ class ProPurchaseAI {
             initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data)
-                && Match.allMatchNotEmpty(initialDefendingUnits, Matches.UnitIsSub)
+                && !initialDefendingUnits.isEmpty() && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
                 && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
 
@@ -1224,7 +1224,7 @@ class ProPurchaseAI {
             result = calc.estimateDefendBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
                 defendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
-                Properties.getSubRetreatBeforeBattle(data) && Match.allMatchNotEmpty(defendingUnits, Matches.UnitIsSub)
+                Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty() && Match.allMatch(defendingUnits, Matches.UnitIsSub)
                     && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
           }
         }
