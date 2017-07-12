@@ -16,9 +16,9 @@ import games.strategy.util.UrlStreams;
 public class UserActionText {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
-  private static UserActionText s_text = null;
-  private static long s_timestamp = 0;
-  private final Properties m_properties = new Properties();
+  private static UserActionText text = null;
+  private static long timestamp = 0;
+  private final Properties properties = new Properties();
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
@@ -34,7 +34,7 @@ public class UserActionText {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try {
-          m_properties.load(inputStream.get());
+          properties.load(inputStream.get());
         } catch (final IOException e) {
           System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
@@ -44,15 +44,15 @@ public class UserActionText {
 
   public static UserActionText getInstance() {
     // cache properties for 10 seconds
-    if (s_text == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) {
-      s_text = new UserActionText();
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+    if (text == null || Calendar.getInstance().getTimeInMillis() > timestamp + 10000) {
+      text = new UserActionText();
+      timestamp = Calendar.getInstance().getTimeInMillis();
     }
-    return s_text;
+    return text;
   }
 
   private String getString(final String value) {
-    return m_properties.getProperty(value, "NO: " + value + " set.");
+    return properties.getProperty(value, "NO: " + value + " set.");
   }
 
   private String getMessage(final String actionKey, final String messageKey) {

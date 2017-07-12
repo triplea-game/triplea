@@ -42,20 +42,20 @@ import games.strategy.util.IntegerMap;
 
 public class HistoryLog extends JFrame {
   private static final long serialVersionUID = 4880602702815333376L;
-  private final JTextArea m_textArea;
-  private final StringWriter m_stringWriter;
-  private final PrintWriter m_printWriter;
+  private final JTextArea textArea;
+  private final StringWriter stringWriter;
+  private final PrintWriter printWriter;
 
   public HistoryLog() {
-    m_textArea = new JTextArea(40, 80);
-    m_textArea.setEditable(false);
-    final JScrollPane scrollingArea = new JScrollPane(m_textArea);
+    textArea = new JTextArea(40, 80);
+    textArea.setEditable(false);
+    final JScrollPane scrollingArea = new JScrollPane(textArea);
     // ... Get the content pane, set layout, add to center
     final JPanel content = new JPanel();
     content.setLayout(new BorderLayout());
     content.add(scrollingArea, BorderLayout.CENTER);
-    m_stringWriter = new StringWriter();
-    m_printWriter = new PrintWriter(m_stringWriter);
+    stringWriter = new StringWriter();
+    printWriter = new PrintWriter(stringWriter);
     // ... Set window characteristics.
     this.setContentPane(content);
     this.setTitle("History Log");
@@ -64,17 +64,17 @@ public class HistoryLog extends JFrame {
   }
 
   public PrintWriter getWriter() {
-    return m_printWriter;
+    return printWriter;
   }
 
   @Override
   public String toString() {
-    return m_stringWriter.toString();
+    return stringWriter.toString();
   }
 
   public void clear() {
-    m_stringWriter.getBuffer().delete(0, m_stringWriter.getBuffer().length());
-    m_textArea.setText("");
+    stringWriter.getBuffer().delete(0, stringWriter.getBuffer().length());
+    textArea.setText("");
   }
 
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
@@ -155,7 +155,7 @@ public class HistoryLog extends JFrame {
   @SuppressWarnings("unchecked")
   public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides,
       final Collection<PlayerID> playersAllowed) {
-    final PrintWriter logWriter = m_printWriter;
+    final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
     // print out the parent nodes
     DefaultMutableTreeNode curNode = printNode;
@@ -385,7 +385,7 @@ public class HistoryLog extends JFrame {
     }
     logWriter.println();
     logWriter.println();
-    m_textArea.setText(m_stringWriter.toString());
+    textArea.setText(stringWriter.toString());
   }
 
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
@@ -437,7 +437,7 @@ public class HistoryLog extends JFrame {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
     }
-    final PrintWriter logWriter = m_printWriter;
+    final PrintWriter logWriter = printWriter;
     // print all units in all territories, including "flags"
     logWriter.println("Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
     for (final Territory t : territories) {
@@ -467,11 +467,11 @@ public class HistoryLog extends JFrame {
     }
     logWriter.println();
     logWriter.println();
-    m_textArea.setText(m_stringWriter.toString());
+    textArea.setText(stringWriter.toString());
   }
 
   public void printDiceStatistics(final GameData data, final IRandomStats randomStats) {
-    final PrintWriter logWriter = m_printWriter;
+    final PrintWriter logWriter = printWriter;
     final RandomStatsDetails stats = randomStats.getRandomStats(data.getDiceSides());
     final String diceStats = stats.getAllStatsString("    ");
     if (diceStats.length() > 0) {
@@ -479,11 +479,11 @@ public class HistoryLog extends JFrame {
       logWriter.println();
       logWriter.println();
     }
-    m_textArea.setText(m_stringWriter.toString());
+    textArea.setText(stringWriter.toString());
   }
 
   public void printProductionSummary(final GameData data) {
-    final PrintWriter logWriter = m_printWriter;
+    final PrintWriter logWriter = printWriter;
     Collection<PlayerID> players;
     Resource pus;
     data.acquireReadLock();
@@ -504,7 +504,7 @@ public class HistoryLog extends JFrame {
     }
     logWriter.println();
     logWriter.println();
-    m_textArea.setText(m_stringWriter.toString());
+    textArea.setText(stringWriter.toString());
   }
 
   // copied from StatPanel

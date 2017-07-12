@@ -285,7 +285,7 @@ public class TripleAFrame extends MainGameFrame {
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model);
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
-    mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
+    mapPanel.addMapSelectionListener(mapSelectionListener);
     final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     // link the small and large images
@@ -445,9 +445,9 @@ public class TripleAFrame extends MainGameFrame {
       }
     });
     // force a data change event to update the UI for edit mode
-    m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-    data.addDataChangeListener(m_dataChangeListener);
-    game.addGameStepListener(m_stepListener);
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+    data.addDataChangeListener(dataChangeListener);
+    game.addGameStepListener(stepListener);
     updateStep();
     uiContext.addShutdownWindow(this);
   }
@@ -613,7 +613,7 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-  public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+  public MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void mouseEntered(final Territory territory) {
       territoryLastEntered = territory;
@@ -1374,7 +1374,7 @@ public class TripleAFrame extends MainGameFrame {
     return selected.get();
   }
 
-  GameStepListener m_stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
+  GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
     final IUIContext context = uiContext;
@@ -1464,7 +1464,7 @@ public class TripleAFrame extends MainGameFrame {
     });
   }
 
-  GameDataChangeListener m_dataChangeListener = new GameDataChangeListener() {
+  GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
       try {
@@ -1638,13 +1638,13 @@ public class TripleAFrame extends MainGameFrame {
       if (clonedGameData == null) {
         return;
       }
-      data.removeDataChangeListener(m_dataChangeListener);
+      data.removeDataChangeListener(dataChangeListener);
       clonedGameData.testLocksOnRead();
       if (historySyncher != null) {
         throw new IllegalStateException("Two history synchers?");
       }
       historySyncher = new HistorySynchronizer(clonedGameData, game);
-      clonedGameData.addDataChangeListener(m_dataChangeListener);
+      clonedGameData.addDataChangeListener(dataChangeListener);
     } finally {
       data.releaseReadLock();
     }
@@ -1802,7 +1802,7 @@ public class TripleAFrame extends MainGameFrame {
       }
       historyPanel.goToEnd();
       historyPanel = null;
-      mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+      mapPanel.getData().removeDataChangeListener(dataChangeListener);
       statsPanel.setGameData(data);
       economyPanel.setGameData(data);
       if (objectivePanel != null && !objectivePanel.isEmpty()) {
@@ -1810,7 +1810,7 @@ public class TripleAFrame extends MainGameFrame {
       }
       details.setGameData(data);
       mapPanel.setGameData(data);
-      data.addDataChangeListener(m_dataChangeListener);
+      data.addDataChangeListener(dataChangeListener);
       tabsPanel.removeAll();
     }
     setWidgetActivation();
@@ -1848,9 +1848,9 @@ public class TripleAFrame extends MainGameFrame {
       }
       historyPanel.goToEnd();
       historyPanel = null;
-      mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
+      mapPanel.getData().removeDataChangeListener(dataChangeListener);
       mapPanel.setGameData(data);
-      data.addDataChangeListener(m_dataChangeListener);
+      data.addDataChangeListener(dataChangeListener);
       gameMainPanel.removeAll();
       gameMainPanel.setLayout(new BorderLayout());
       gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
@@ -1874,13 +1874,13 @@ public class TripleAFrame extends MainGameFrame {
       SwingUtilities.invokeLater(() -> setWidgetActivation());
       return;
     }
-    if (m_showHistoryAction != null) {
-      m_showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
+    if (showHistoryAction != null) {
+      showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
     }
-    if (m_showGameAction != null) {
-      m_showGameAction.setEnabled(!inGame);
+    if (showGameAction != null) {
+      showGameAction.setEnabled(!inGame);
     }
-    if (m_showMapOnlyAction != null) {
+    if (showMapOnlyAction != null) {
       // We need to check and make sure there are no local human players
       boolean foundHuman = false;
       for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
@@ -1889,9 +1889,9 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
       if (!foundHuman) {
-        m_showMapOnlyAction.setEnabled(inGame || inHistory);
+        showMapOnlyAction.setEnabled(inGame || inHistory);
       } else {
-        m_showMapOnlyAction.setEnabled(false);
+        showMapOnlyAction.setEnabled(false);
       }
     }
     if (editModeButtonModel != null) {
@@ -1907,7 +1907,7 @@ public class TripleAFrame extends MainGameFrame {
   public void setEditDelegate(final IEditDelegate editDelegate) {
     this.editDelegate = editDelegate;
     // force a data change event to update the UI for edit mode
-    m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
   }
 
@@ -1935,16 +1935,17 @@ public class TripleAFrame extends MainGameFrame {
     return isEditMode;
   }
 
-  private final AbstractAction m_showHistoryAction = new AbstractAction("Show history") {
+  private final AbstractAction showHistoryAction = new AbstractAction("Show history") {
     private static final long serialVersionUID = -3960551522512897374L;
 
     @Override
     public void actionPerformed(final ActionEvent e) {
       showHistory();
-      m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private final AbstractAction m_showGameAction = new AbstractAction("Show current game") {
+
+  private final AbstractAction showGameAction = new AbstractAction("Show current game") {
     private static final long serialVersionUID = -7551760679570164254L;
 
     {
@@ -1954,16 +1955,17 @@ public class TripleAFrame extends MainGameFrame {
     @Override
     public void actionPerformed(final ActionEvent e) {
       showGame();
-      m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
-  private final AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only") {
+
+  private final AbstractAction showMapOnlyAction = new AbstractAction("Show map only") {
     private static final long serialVersionUID = -6621157075878333141L;
 
     @Override
     public void actionPerformed(final ActionEvent e) {
       showMapOnly();
-      m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
   };
 
@@ -2042,15 +2044,15 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public Action getShowGameAction() {
-    return m_showGameAction;
+    return showGameAction;
   }
 
   public Action getShowHistoryAction() {
-    return m_showHistoryAction;
+    return showHistoryAction;
   }
 
   public Action getShowMapOnlyAction() {
-    return m_showMapOnlyAction;
+    return showMapOnlyAction;
   }
 
   public IUIContext getUIContext() {
