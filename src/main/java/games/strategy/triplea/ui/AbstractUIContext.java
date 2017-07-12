@@ -34,43 +34,39 @@ public abstract class AbstractUIContext implements IUIContext {
   protected static final String UNIT_SCALE_PREF = "UnitScale";
   protected static final String MAP_SKIN_PREF = "MapSkin";
   protected static final String MAP_SCALE_PREF = "MapScale";
-  protected static final Logger s_logger = Logger.getLogger(AbstractUIContext.class.getName());
-  protected static String m_mapDir;
+  protected static final Logger logger = Logger.getLogger(AbstractUIContext.class.getName());
+  protected static String mapDir;
   protected static final String LOCK_MAP = "LockMap";
   protected static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
   protected static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
   protected static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
   protected static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
   protected static final String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
-  protected static ResourceLoader m_resourceLoader;
-  // instance
-  protected boolean m_isShutDown = false;
-  protected final List<Window> m_windowsToCloseOnShutdown = new ArrayList<>();
-  protected final List<Active> m_activeToDeactivate = new ArrayList<>();
-  protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false);
-  protected LocalPlayers m_localPlayers;
-  protected double m_scale = 1;
+  protected static ResourceLoader resourceLoader;
+
+  protected boolean isShutDown = false;
+  protected final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
+  protected final List<Active> activeToDeactivate = new ArrayList<>();
+  protected final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
+  protected LocalPlayers localPlayers;
+  protected double scale = 1;
 
   public static ResourceLoader getResourceLoader() {
-    return m_resourceLoader;
+    return resourceLoader;
   }
 
-  public static int getAIPauseDuration() {
+  public static int getAiPauseDuration() {
     return ClientContext.aiSettings().getAiPauseDuration();
-  }
-
-  public static void setAIPauseDuration(final int value) {
-    ClientContext.aiSettings().setAiPauseDuration(String.valueOf(value));
   }
 
   @Override
   public double getScale() {
-    return m_scale;
+    return scale;
   }
 
   @Override
   public void setScale(final double scale) {
-    m_scale = scale;
+    this.scale = scale;
     final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
     prefs.putDouble(MAP_SCALE_PREF, scale);
     try {
@@ -137,16 +133,16 @@ public abstract class AbstractUIContext implements IUIContext {
   protected abstract void internalSetMapDir(final String dir, final GameData data);
 
   public static String getMapDir() {
-    return m_mapDir;
+    return mapDir;
   }
 
   @Override
   public void removeActive(final Active actor) {
-    if (m_isShutDown) {
+    if (isShutDown) {
       return;
     }
     synchronized (this) {
-      m_activeToDeactivate.remove(actor);
+      activeToDeactivate.remove(actor);
     }
   }
 
@@ -155,16 +151,16 @@ public abstract class AbstractUIContext implements IUIContext {
    */
   @Override
   public void addActive(final Active actor) {
-    if (m_isShutDown) {
+    if (isShutDown) {
       closeActor(actor);
       return;
     }
     synchronized (this) {
-      if (m_isShutDown) {
+      if (isShutDown) {
         closeActor(actor);
         return;
       }
-      m_activeToDeactivate.add(actor);
+      activeToDeactivate.add(actor);
     }
   }
 
@@ -173,17 +169,17 @@ public abstract class AbstractUIContext implements IUIContext {
    */
   @Override
   public void addShutdownLatch(final CountDownLatch latch) {
-    m_latchesToCloseOnShutdown.addShutdownLatch(latch);
+    latchesToCloseOnShutdown.addShutdownLatch(latch);
   }
 
   @Override
   public void removeShutdownLatch(final CountDownLatch latch) {
-    m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
+    latchesToCloseOnShutdown.removeShutdownLatch(latch);
   }
 
   @Override
   public CountDownLatchHandler getCountDownLatchHandler() {
-    return m_latchesToCloseOnShutdown;
+    return latchesToCloseOnShutdown;
   }
 
   /**
@@ -191,16 +187,16 @@ public abstract class AbstractUIContext implements IUIContext {
    */
   @Override
   public void addShutdownWindow(final Window window) {
-    if (m_isShutDown) {
+    if (isShutDown) {
       closeWindow(window);
       return;
     }
     synchronized (this) {
-      if (m_isShutDown) {
+      if (isShutDown) {
         closeWindow(window);
         return;
       }
-      m_windowsToCloseOnShutdown.add(window);
+      windowsToCloseOnShutdown.add(window);
     }
   }
 
@@ -253,35 +249,35 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public void removeShutdownWindow(final Window window) {
-    if (m_isShutDown) {
+    if (isShutDown) {
       return;
     }
     synchronized (this) {
-      m_windowsToCloseOnShutdown.remove(window);
+      windowsToCloseOnShutdown.remove(window);
     }
   }
 
   @Override
   public boolean isShutDown() {
-    return m_isShutDown;
+    return isShutDown;
   }
 
   @Override
   public void shutDown() {
     synchronized (this) {
-      if (m_isShutDown) {
+      if (isShutDown) {
         return;
       }
-      m_isShutDown = true;
-      m_latchesToCloseOnShutdown.shutDown();
-      for (final Window window : m_windowsToCloseOnShutdown) {
+      isShutDown = true;
+      latchesToCloseOnShutdown.shutDown();
+      for (final Window window : windowsToCloseOnShutdown) {
         closeWindow(window);
       }
-      for (final Active actor : m_activeToDeactivate) {
+      for (final Active actor : activeToDeactivate) {
         closeActor(actor);
       }
-      m_activeToDeactivate.clear();
-      m_windowsToCloseOnShutdown.clear();
+      activeToDeactivate.clear();
+      windowsToCloseOnShutdown.clear();
     }
   }
 
@@ -422,11 +418,11 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public LocalPlayers getLocalPlayers() {
-    return m_localPlayers;
+    return localPlayers;
   }
 
   @Override
   public void setLocalPlayers(final LocalPlayers players) {
-    m_localPlayers = players;
+    localPlayers = players;
   }
 }

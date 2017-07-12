@@ -60,7 +60,7 @@ public interface IUIContext {
 
   FlagIconImageFactory getFlagImageFactory();
 
-  PUImageFactory getPUImageFactory();
+  PUImageFactory getPuImageFactory();
 
   DiceImageFactory getDiceImageFactory();
 

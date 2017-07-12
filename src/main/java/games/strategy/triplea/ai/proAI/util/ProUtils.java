@@ -263,7 +263,7 @@ public class ProUtils {
    */
   public static void pause() {
     try {
-      ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
+      ThreadUtil.sleep(AbstractUIContext.getAiPauseDuration());
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }

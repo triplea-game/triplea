@@ -30,10 +30,10 @@ public class HeadlessUIContext extends AbstractUIContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-    m_resourceLoader = ResourceLoader.getMapResourceLoader(dir);
-    m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    m_mapDir = dir;
+    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
+    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+    mapDir = dir;
     stopWatch.done();
   }
 
@@ -79,7 +79,7 @@ public class HeadlessUIContext extends AbstractUIContext {
   }
 
   @Override
-  public PUImageFactory getPUImageFactory() {
+  public PUImageFactory getPuImageFactory() {
     return null;
   }
 
