@@ -12,6 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
@@ -27,11 +28,11 @@ public class AirThatCantLandUtil {
   }
 
   public static boolean isLHTRCarrierProduction(final GameData data) {
-    return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(data);
+    return Properties.getLHTRCarrierProductionRules(data);
   }
 
   public static boolean isLandExistingFightersOnNewCarriers(final GameData data) {
-    return games.strategy.triplea.Properties.getLandExistingFightersOnNewCarriers(data);
+    return Properties.getLandExistingFightersOnNewCarriers(data);
   }
 
   Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {

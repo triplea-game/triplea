@@ -19,6 +19,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -59,7 +60,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
@@ -241,9 +242,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+        Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
     if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }

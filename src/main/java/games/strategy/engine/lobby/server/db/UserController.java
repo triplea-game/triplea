@@ -108,7 +108,7 @@ public class UserController implements UserDao {
       ps.setString(2, hashedPassword.value);
       ps.setString(3, user.getEmail());
       ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-      ps.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
+      ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
       ps.setInt(6, user.isAdmin() ? 1 : 0);
       ps.execute();
       ps.close();

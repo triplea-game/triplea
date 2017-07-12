@@ -14,6 +14,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.util.Match;
 
@@ -246,6 +247,6 @@ public class Fire implements IExecutable {
   }
 
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    return Properties.getTransportCasualtiesRestricted(data);
   }
 }

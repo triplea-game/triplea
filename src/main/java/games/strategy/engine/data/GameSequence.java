@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -146,7 +147,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /** make sure transient lock object is initialized on deserialization. */
-  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
     if (m_currentStepMutex == null) {
       m_currentStepMutex = new Object();

@@ -27,6 +27,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
@@ -63,7 +64,7 @@ public class TileImageReconstructor {
       return;
     }
     final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, s_mapFolderLocation,
-        JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"), new javax.swing.filechooser.FileFilter() {
+        JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"), new FileFilter() {
           @Override
           public boolean accept(final File f) {
             if (f.isDirectory()) {

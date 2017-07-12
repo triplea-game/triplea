@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.system;
 
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
@@ -118,14 +119,14 @@ public class HttpProxy {
   private static void setToUseSystemProxies() {
     final String javaNetUseSystemProxies = "java.net.useSystemProxies";
     System.setProperty(javaNetUseSystemProxies, "true");
-    List<java.net.Proxy> proxyList = null;
+    List<Proxy> proxyList = null;
     try {
       final ProxySelector def = ProxySelector.getDefault();
       if (def != null) {
         proxyList = def.select(new URI("http://sourceforge.net/"));
         ProxySelector.setDefault(null);
         if (proxyList != null && !proxyList.isEmpty()) {
-          final java.net.Proxy proxy = proxyList.get(0);
+          final Proxy proxy = proxyList.get(0);
           final InetSocketAddress address = (InetSocketAddress) proxy.address();
           if (address != null) {
             final String host = address.getHostName();

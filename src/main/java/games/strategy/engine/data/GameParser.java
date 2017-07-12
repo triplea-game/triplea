@@ -43,6 +43,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -161,7 +162,7 @@ public class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
+    if (data.getGameLoader() instanceof TripleA) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }

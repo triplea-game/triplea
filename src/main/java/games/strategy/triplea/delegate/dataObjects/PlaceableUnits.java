@@ -1,10 +1,11 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import games.strategy.engine.data.Unit;
 
-public class PlaceableUnits implements java.io.Serializable {
+public class PlaceableUnits implements Serializable {
   private static final long serialVersionUID = 6572719978603199091L;
   private String m_errorMessage;
   private Collection<Unit> m_units;

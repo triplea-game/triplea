@@ -1,5 +1,7 @@
 package games.strategy.engine.history;
 
+import java.io.Serializable;
+
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
@@ -9,7 +11,7 @@ import games.strategy.engine.data.PlayerID;
  * Used to write to a history object. Delegates should use a
  * DelegateHistoryWriter
  */
-public class HistoryWriter implements java.io.Serializable {
+public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
   private final History m_history;
   private HistoryNode m_current;

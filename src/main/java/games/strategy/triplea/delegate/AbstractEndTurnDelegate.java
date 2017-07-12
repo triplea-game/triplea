@@ -49,7 +49,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private boolean m_hasPostedTurnSummary = false;
 
   private boolean isGiveUnitsByTerritory() {
-    return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
+    return Properties.getGiveUnitsByTerritory(getData());
   }
 
   private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
@@ -369,7 +369,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final Match<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
     int totalLoss = 0;
-    final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
+    final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();
     final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone =
         new HashMap<>();

@@ -1,5 +1,6 @@
 package games.strategy.engine.data.export;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -240,13 +242,13 @@ public class GameDataExporter {
   private void printConstantProperty(final String propName, final Object property) {
     xmlfile.append("        <property name=\"").append(propName).append("\" value=\"").append(property.toString())
         .append("\" editable=\"false\">\n");
-    if (property.getClass().equals(java.lang.String.class)) {
+    if (property.getClass().equals(String.class)) {
       xmlfile.append("            <string/>\n");
     }
-    if (property.getClass().equals(java.io.File.class)) {
+    if (property.getClass().equals(File.class)) {
       xmlfile.append("            <file/>\n");
     }
-    if (property.getClass().equals(java.lang.Boolean.class)) {
+    if (property.getClass().equals(Boolean.class)) {
       xmlfile.append("            <boolean/>\n");
     }
     xmlfile.append("        </property>\n");
@@ -359,9 +361,8 @@ public class GameDataExporter {
       }
     }
     // add occupiedTerrOf until we fix engine to only use originalOwner
-    if (!alreadyHasOccupiedTerrOf && attachment instanceof games.strategy.triplea.attachments.TerritoryAttachment) {
-      final games.strategy.triplea.attachments.TerritoryAttachment ta =
-          (games.strategy.triplea.attachments.TerritoryAttachment) attachment;
+    if (!alreadyHasOccupiedTerrOf && attachment instanceof TerritoryAttachment) {
+      final TerritoryAttachment ta = (TerritoryAttachment) attachment;
       if (ta.getOriginalOwner() != null) {
         sb.append("            <option name=\"occupiedTerrOf\" value=\"").append(ta.getOriginalOwner().getName())
             .append("\"/>\n");
