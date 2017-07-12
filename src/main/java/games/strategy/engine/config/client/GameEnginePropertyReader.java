@@ -81,11 +81,15 @@ public class GameEnginePropertyReader {
     return propertyFileReader.readProperty(PropertyKeys.MAP_LISTING_SOURCE_FILE);
   }
 
+  public boolean useJavaFxUi() {
+    return propertyFileReader.readProperty(PropertyKeys.JAVAFX_UI).equalsIgnoreCase(String.valueOf(true));
+  }
   @VisibleForTesting
   interface PropertyKeys {
     String MAP_LISTING_SOURCE_FILE = "map_list_file";
     String ENGINE_VERSION = "engine_version";
     String LOBBY_PROP_FILE_URL = "lobby_properties_file_url";
     String LOBBY_BACKUP_HOST_ADDRESS = "lobby_backup_url";
+    String JAVAFX_UI = "javafx_ui";
   }
 }
