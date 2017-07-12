@@ -21,7 +21,7 @@ import games.strategy.ui.Util;
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<PlayerID> list;
-  private final PlayerList m_players;
+  private final PlayerList players;
   private final PlayerID defaultPlayer;
   private final IUIContext uiContext;
   private final boolean allowNeutral;
@@ -38,7 +38,7 @@ public class PlayerChooser extends JOptionPane {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    this.m_players = players;
+    this.players = players;
     this.defaultPlayer = defaultPlayer;
     this.uiContext = uiContext;
     this.allowNeutral = allowNeutral;
@@ -46,7 +46,7 @@ public class PlayerChooser extends JOptionPane {
   }
 
   private void createComponents() {
-    final Collection<PlayerID> players = new ArrayList<>(this.m_players.getPlayers());
+    final Collection<PlayerID> players = new ArrayList<>(this.players.getPlayers());
     if (allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }
@@ -67,7 +67,7 @@ public class PlayerChooser extends JOptionPane {
     setMessage(SwingComponents.newJScrollPane(list));
 
     final int maxSize = 700;
-    final int suggestedSize = this.m_players.size() * 40;
+    final int suggestedSize = this.players.size() * 40;
     final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
     setPreferredSize(new Dimension(300, actualSize));
   }

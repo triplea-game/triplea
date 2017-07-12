@@ -18,9 +18,9 @@ public class TooltipProperties {
   // Properties
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
-  private static TooltipProperties s_ttp = null;
-  private static long s_timestamp = 0;
-  private final Properties m_properties = new Properties();
+  private static TooltipProperties ttp = null;
+  private static long timestamp = 0;
+  private final Properties properties = new Properties();
 
   protected TooltipProperties() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -29,7 +29,7 @@ public class TooltipProperties {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try {
-          m_properties.load(inputStream.get());
+          properties.load(inputStream.get());
         } catch (final IOException e) {
           System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
@@ -39,18 +39,18 @@ public class TooltipProperties {
 
   public static TooltipProperties getInstance() {
     // cache properties for 5 seconds
-    if (s_ttp == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 5000) {
-      s_ttp = new TooltipProperties();
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+    if (ttp == null || Calendar.getInstance().getTimeInMillis() > timestamp + 5000) {
+      ttp = new TooltipProperties();
+      timestamp = Calendar.getInstance().getTimeInMillis();
     }
-    return s_ttp;
+    return ttp;
   }
 
   public String getToolTip(final UnitType ut, final PlayerID playerId) {
-    final String tooltip = m_properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
+    final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
         + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()), "");
     if (tooltip == null || tooltip.equals("")) {
-      return m_properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName(), "");
+      return properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName(), "");
     } else {
       return tooltip;
     }
