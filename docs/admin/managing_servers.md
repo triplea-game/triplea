@@ -71,7 +71,7 @@ Before running any of those commands, we need to be in the correct working direc
 We can do that by executing `cd /opt/nodebb/` in the beginning.
 Run `./nodebb upgrade`, this should fix problems most of the time.
 If it doesn't, make sure enough memory is available and the database is up and running. (`sudo service mongod status`)
-If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB)
+If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB) or create a topic in the [NodeBB community forum](https://community.nodebb.org).
 
 #### Reading log files
 NodeBB uses stdout to log everything.
