@@ -22,6 +22,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -73,13 +74,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!m_needToInitialize) {
       return;
     }
-    if (games.strategy.triplea.Properties.getTriggers(getData())) {
+    if (Properties.getTriggers(getData())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> technologyDelegateTriggerMatch = Match.all(
+      final Match<TriggerAttachment> technologyDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.any(TriggerAttachment.techAvailableMatch()));
+          Match.anyOf(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
@@ -123,13 +124,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!games.strategy.triplea.Properties.getTechDevelopment(getData())) {
+    if (!Properties.getTechDevelopment(getData())) {
       return false;
     }
     if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
       return false;
     }
-    if (games.strategy.triplea.Properties.getWW2V3TechModel(getData())) {
+    if (Properties.getWW2V3TechModel(getData())) {
       final Resource techtokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       if (techtokens != null) {
         final int techTokens = m_player.getResources().getQuantity(techtokens);
@@ -164,19 +165,19 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(getData());
+    return Properties.getWW2V2(getData());
   }
 
   private boolean isWW2V3TechModel() {
-    return games.strategy.triplea.Properties.getWW2V3TechModel(getData());
+    return Properties.getWW2V3TechModel(getData());
   }
 
   private boolean isSelectableTechRoll() {
-    return games.strategy.triplea.Properties.getSelectableTechRoll(getData());
+    return Properties.getSelectableTechRoll(getData());
   }
 
   private boolean isLL_TECH_ONLY() {
-    return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
+    return Properties.getLL_TECH_ONLY(getData());
   }
 
   @Override
@@ -242,7 +243,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
                 + directedTechInfo + " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits),
             renderDice);
     if (isWW2V3TechModel()
-        && (techHits > 0 || games.strategy.triplea.Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
+        && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
       m_techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);

@@ -109,7 +109,7 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
-        Match.allMatch(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        Match.allMatchNotEmpty(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
     if (isChooseAA(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
@@ -593,7 +593,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = Match.all(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    final Match<Unit> aMatch = Match.allOf(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
     killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
@@ -1016,7 +1016,8 @@ public class BattleCalculator {
     final LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>> rVal =
         new LinkedHashMap<>();
     final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
-        ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data) : new HashMap<>();
+        ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data)
+        : new HashMap<>();
     final List<PlayerID> players = data.getPlayerList().getPlayers();
     players.add(PlayerID.NULL_PLAYERID);
     for (final PlayerID p : players) {
@@ -1293,35 +1294,35 @@ public class BattleCalculator {
    * @return Can transports be used as cannon fodder.
    */
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    return Properties.getTransportCasualtiesRestricted(data);
   }
 
   /**
    * @return Random AA Casualties - casualties randomly assigned.
    */
   private static boolean isRandomAACasualties(final GameData data) {
-    return games.strategy.triplea.Properties.getRandomAACasualties(data);
+    return Properties.getRandomAACasualties(data);
   }
 
   /**
    * @return Roll AA Individually - roll against each aircraft.
    */
   private static boolean isRollAAIndividually(final GameData data) {
-    return games.strategy.triplea.Properties.getRollAAIndividually(data);
+    return Properties.getRollAAIndividually(data);
   }
 
   /**
    * @return Choose AA - attacker selects casualties.
    */
   private static boolean isChooseAA(final GameData data) {
-    return games.strategy.triplea.Properties.getChoose_AA_Casualties(data);
+    return Properties.getChoose_AA_Casualties(data);
   }
 
   /**
    * @return Can the attacker retreat non-amphibious units.
    */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
-    return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);
+    return Properties.getPartialAmphibiousRetreat(data);
   }
 
   // nothing but static
@@ -1336,24 +1337,21 @@ public class BattleCalculator {
    */
   public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data,
       final Collection<TerritoryEffect> territoryEffects) {
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
-    final int rolls = (defending) ?  ua.getDefenseRolls(current.getOwner()) :
-        ua.getAttackRolls(current.getOwner());
+    final int rolls = (defending) ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;
     // Find the strength the unit has without support
     // lhtr heavy bombers take best of n dice for both attack and defense
     if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-      strengthWithoutSupport = (defending) ? ua.getDefense(current.getOwner()) :
-        ua.getAttack(current.getOwner());
+      strengthWithoutSupport = (defending) ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
       strengthWithoutSupport +=
           TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
       // just add one like LL if we are LHTR bombers
       strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
     } else {
       for (int i = 0; i < rolls; i++) {
-        final int tempStrength = (defending) ? ua.getDefense(current.getOwner()) :
-            ua.getAttack(current.getOwner());
+        final int tempStrength = (defending) ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
         strengthWithoutSupport +=
             TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
         strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());

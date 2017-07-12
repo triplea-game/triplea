@@ -24,6 +24,8 @@ import games.strategy.ui.SwingAction;
 
 public abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
+  private static final String SET_ALL_DEFAULT_LABEL = "Default";
+
   private final List<Observer> listeners = new ArrayList<>();
 
   @Override
@@ -111,6 +113,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     panel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes);
+    setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
     panel.add(setAllTypes, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
@@ -155,7 +158,12 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     resourceModifiers.setAction(resourceModifiersAction);
 
     final Action setAllTypesAction = SwingAction.of(e -> {
-      playerRows.forEach(row -> row.setPlayerType(setAllTypes.getSelectedItem().toString()));
+      final String selectedType = setAllTypes.getSelectedItem().toString();
+      if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
+        playerRows.forEach(row -> row.setDefaultPlayerType());
+      } else {
+        playerRows.forEach(row -> row.setPlayerType(selectedType));
+      }
     });
     setAllTypes.setAction(setAllTypesAction);
 

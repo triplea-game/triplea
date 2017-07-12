@@ -63,11 +63,11 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       removeAll();
       actionLabel.setText(id.getName() + " Pick Territory and Units");
       add(actionLabel);
-      selectTerritoryButton = new JButton(SelectTerritoryAction);
+      selectTerritoryButton = new JButton(selectTerritoryAction);
       add(selectTerritoryButton);
-      selectUnitsButton = new JButton(SelectUnitsAction);
+      selectUnitsButton = new JButton(selectUnitsAction);
       add(selectUnitsButton);
-      doneButton = new JButton(DoneAction);
+      doneButton = new JButton(doneAction);
       add(doneButton);
       SwingUtilities.invokeLater(() -> selectTerritoryButton.requestFocusInWindow());
     });
@@ -89,9 +89,9 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     }
     SwingUtilities.invokeLater(() -> {
       if (territoryChoices.size() > 1) {
-        SelectTerritoryAction.actionPerformed(null);
+        selectTerritoryAction.actionPerformed(null);
       } else if (unitChoices.size() > 1) {
-        SelectUnitsAction.actionPerformed(null);
+        selectUnitsAction.actionPerformed(null);
       }
     });
     waitForRelease();
@@ -102,23 +102,23 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     SwingUtilities.invokeLater(() -> {
       if (!getActive()) {
         // current turn belongs to remote player or AI player
-        DoneAction.setEnabled(false);
-        SelectUnitsAction.setEnabled(false);
-        SelectTerritoryAction.setEnabled(false);
+        doneAction.setEnabled(false);
+        selectUnitsAction.setEnabled(false);
+        selectTerritoryAction.setEnabled(false);
       } else {
-        DoneAction.setEnabled(currentAction == null);
-        SelectUnitsAction.setEnabled(currentAction == null);
-        SelectTerritoryAction.setEnabled(currentAction == null);
+        doneAction.setEnabled(currentAction == null);
+        selectUnitsAction.setEnabled(currentAction == null);
+        selectTerritoryAction.setEnabled(currentAction == null);
       }
     });
   }
 
-  private final Action DoneAction = new AbstractAction("Done") {
+  private final Action doneAction = new AbstractAction("Done") {
     private static final long serialVersionUID = -2376988913511268803L;
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      currentAction = DoneAction;
+      currentAction = doneAction;
       setWidgetActivation();
       if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {
         EventThreadJOptionPane.showMessageDialog(parent, "Must Pick An Unowned Territory",
@@ -152,7 +152,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         if (unitChoices.size() < unitsPerPick) {
           // if we have fewer units than the number we are supposed to pick, set it to all
           pickedUnits.addAll(unitChoices);
-        } else if (Match.allMatch(unitChoices, Matches.unitIsOfType(unitChoices.get(0).getType()))) {
+        } else if (Match.allMatchNotEmpty(unitChoices, Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
           pickedUnits.addAll(Match.getNMatches(unitChoices, unitsPerPick, Match.always()));
@@ -173,12 +173,12 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       release();
     }
   };
-  private final Action SelectUnitsAction = new AbstractAction("Select Units") {
+  private final Action selectUnitsAction = new AbstractAction("Select Units") {
     private static final long serialVersionUID = 4745335350716395600L;
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      currentAction = SelectUnitsAction;
+      currentAction = selectUnitsAction;
       setWidgetActivation();
       final UnitChooser unitChooser = new UnitChooser(unitChoices, Collections.emptyMap(),
           getData(), false, getMap().getUIContext());
@@ -192,23 +192,24 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       setWidgetActivation();
     }
   };
-  private final Action SelectTerritoryAction = new AbstractAction("Select Territory") {
+  private final Action selectTerritoryAction = new AbstractAction("Select Territory") {
     private static final long serialVersionUID = -8003634505955439651L;
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-      currentAction = SelectTerritoryAction;
+      currentAction = selectTerritoryAction;
       setWidgetActivation();
-      getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
+      getMap().addMapSelectionListener(mapSelectionListener);
     }
   };
-  private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+
+  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails md) {
       if (territory == null) {
         return;
       }
-      if (currentAction == SelectTerritoryAction) {
+      if (currentAction == selectTerritoryAction) {
         if (territory == null || !territoryChoices.contains(territory)) {
           EventThreadJOptionPane.showMessageDialog(parent,
               "Must Pick An Unowned Territory (will have a white highlight)", "Must Pick An Unowned Territory",
@@ -217,12 +218,12 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         }
         pickedTerritory = territory;
         SwingUtilities.invokeLater(() -> {
-          getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
+          getMap().removeMapSelectionListener(mapSelectionListener);
           currentAction = null;
           setWidgetActivation();
         });
       } else {
-        System.err.println("Should not be able to select a territory outside of the SelectTerritoryAction.");
+        System.err.println("Should not be able to select a territory outside of the selectTerritoryAction.");
       }
     }
 
@@ -234,7 +235,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       }
       if (territory != null) {
         // highlight territory
-        if (currentAction == SelectTerritoryAction) {
+        if (currentAction == selectTerritoryAction) {
           if (currentHighlightedTerritory != territory) {
             if (currentHighlightedTerritory != null) {
               getMap().clearTerritoryOverlay(currentHighlightedTerritory);

@@ -6,6 +6,7 @@ import java.util.Set;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.Properties;
 
 /**
  * A helper class for determining Game Step Properties.
@@ -139,7 +140,7 @@ public class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_fireRockets);
       if (prop != null) {
         isFireRockets = Boolean.parseBoolean(prop);
-      } else if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) {
+      } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
         isFireRockets = isCombatDelegate(data);
       } else {
         isFireRockets = isNonCombatDelegate(data);
@@ -157,9 +158,8 @@ public class GameStepPropertiesHelper {
     final boolean isRepairUnits;
     data.acquireReadLock();
     try {
-      final boolean repairAtStartAndOnlyOwn =
-          games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data);
-      final boolean repairAtEndAndAll = games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(data);
+      final boolean repairAtStartAndOnlyOwn = Properties.getBattleshipsRepairAtBeginningOfRound(data);
+      final boolean repairAtEndAndAll = Properties.getBattleshipsRepairAtEndOfRound(data);
       // if both are off, we do no repairing, no matter what
       if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll) {
         isRepairUnits = false;
@@ -169,7 +169,7 @@ public class GameStepPropertiesHelper {
           isRepairUnits = Boolean.parseBoolean(prop);
         } else {
           isRepairUnits = (isCombatDelegate(data) && repairAtStartAndOnlyOwn)
-            || (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll);
+              || (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll);
         }
       }
     } finally {

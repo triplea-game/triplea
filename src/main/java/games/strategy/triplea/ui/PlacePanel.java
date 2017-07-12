@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -61,18 +62,18 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   private boolean canProduceFightersOnCarriers() {
-    return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
+    return Properties.getProduceFightersOnCarriers(getData());
   }
 
   private boolean canProduceNewFightersOnOldCarriers() {
-    return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
+    return Properties.getProduceNewFightersOnOldCarriers(getData());
   }
 
   private boolean isLHTR_Carrier_Production_Rules() {
-    return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(getData());
+    return Properties.getLHTRCarrierProductionRules(getData());
   }
 
-  private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
+  private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails e) {
       if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
@@ -121,7 +122,7 @@ public class PlacePanel extends AbstractMovePanel {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.getUnits().someMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
         } else {
@@ -135,7 +136,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
-          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.any(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
@@ -182,12 +183,12 @@ public class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final void cleanUpSpecific() {
-    getMap().removeMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().removeMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override
   protected final void setUpSpecific() {
-    getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+    getMap().addMapSelectionListener(placeMapSelectionListener);
   }
 
   @Override

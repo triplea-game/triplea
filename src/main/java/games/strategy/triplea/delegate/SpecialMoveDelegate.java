@@ -19,6 +19,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -59,7 +60,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
@@ -241,17 +242,17 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
-    if (!Match.allMatch(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
+        Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
-    if (!Match.allMatch(route.getSteps(), Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
-    final boolean someLand = Match.someMatch(airborne, Matches.UnitIsLand);
-    final boolean someSea = Match.someMatch(airborne, Matches.UnitIsSea);
+    final boolean someLand = Match.anyMatch(airborne, Matches.UnitIsLand);
+    final boolean someSea = Match.anyMatch(airborne, Matches.UnitIsSea);
     final boolean land = Matches.TerritoryIsLand.match(end);
     final boolean sea = Matches.TerritoryIsWater.match(end);
     if (someLand && someSea) {
@@ -270,9 +271,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-        } else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
+        } else if (land && someLand && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
           return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-        } else if (sea && someSea && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsSea)) {
+        } else if (sea && someSea && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsSea)) {
           return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
         }
       }
@@ -291,7 +292,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+    return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }

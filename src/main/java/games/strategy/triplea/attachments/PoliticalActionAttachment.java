@@ -16,6 +16,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
@@ -137,11 +138,11 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
-    if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
+    if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
     return Match.getMatches(getPoliticalActionAttachments(player),
-        Match.all(
+        Match.allOf(
             Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }

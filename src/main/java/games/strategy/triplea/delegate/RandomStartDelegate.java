@@ -19,6 +19,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -74,7 +75,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   protected void setupBoard() {
     final GameData data = getData();
-    final boolean randomTerritories = games.strategy.triplea.Properties.getTerritoriesAreAssignedRandomly(data);
+    final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
     final Match<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
@@ -220,7 +221,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return Match.all(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
+    return Match.allOf(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
   }
 

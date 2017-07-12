@@ -12,6 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
@@ -27,11 +28,11 @@ public class AirThatCantLandUtil {
   }
 
   public static boolean isLHTRCarrierProduction(final GameData data) {
-    return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(data);
+    return Properties.getLHTRCarrierProductionRules(data);
   }
 
   public static boolean isLandExistingFightersOnNewCarriers(final GameData data) {
-    return games.strategy.triplea.Properties.getLandExistingFightersOnNewCarriers(data);
+    return Properties.getLandExistingFightersOnNewCarriers(data);
   }
 
   Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
@@ -40,7 +41,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final Match<Unit> ownedAir = Match.all(Matches.UnitIsAir, Matches.unitIsOwnedBy(player));
+      final Match<Unit> ownedAir = Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
@@ -55,7 +56,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final Match<Unit> ownedAir = Match.all(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+      final Match<Unit> ownedAir = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;

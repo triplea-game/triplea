@@ -4,7 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Date;
+import java.time.Instant;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
@@ -41,7 +41,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   private INode m_hostedBy;
   private int m_port;
-  private Date m_startDateTime;
+  private Instant m_startDateTime;
   private String m_gameName;
   private int m_playerCount;
   private String m_round;
@@ -58,7 +58,7 @@ public class GameDescription implements Externalizable, Cloneable {
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}
 
-  public GameDescription(final INode hostedBy, final int port, final Date startDateTime, final String gameName,
+  public GameDescription(final INode hostedBy, final int port, final Instant startDateTime, final String gameName,
       final int playerCount, final GameStatus status, final String round, final String hostName, final String comment,
       final boolean passworded, final String engineVersion, final String gameVersion) {
     m_hostName = hostName;
@@ -117,7 +117,7 @@ public class GameDescription implements Externalizable, Cloneable {
     m_round = round;
   }
 
-  public void setStartDateTime(final Date startDateTime) {
+  public void setStartDateTime(final Instant startDateTime) {
     m_version++;
     m_startDateTime = startDateTime;
   }
@@ -178,7 +178,7 @@ public class GameDescription implements Externalizable, Cloneable {
     return m_port;
   }
 
-  public Date getStartDateTime() {
+  public Instant getStartDateTime() {
     return m_startDateTime;
   }
 
@@ -209,8 +209,7 @@ public class GameDescription implements Externalizable, Cloneable {
     m_hostedBy = new Node();
     ((Node) m_hostedBy).readExternal(in);
     m_port = in.readInt();
-    m_startDateTime = new Date();
-    m_startDateTime.setTime(in.readLong());
+    m_startDateTime = Instant.ofEpochMilli(in.readLong());
     m_playerCount = in.readByte();
     m_round = in.readUTF();
     m_status = GameStatus.values()[in.readByte()];
@@ -228,7 +227,7 @@ public class GameDescription implements Externalizable, Cloneable {
   public void writeExternal(final ObjectOutput out) throws IOException {
     ((Node) m_hostedBy).writeExternal(out);
     out.writeInt(m_port);
-    out.writeLong(m_startDateTime.getTime());
+    out.writeLong(m_startDateTime.toEpochMilli());
     out.writeByte(m_playerCount);
     out.writeUTF(m_round);
     out.writeByte(m_status.ordinal());

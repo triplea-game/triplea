@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,13 +29,13 @@ public class MutedMacController {
    * If this mac is already muted, this call will update the mute_end.
    * </p>
    */
-  public void addMutedMac(final String mac, final Date muteTill) {
+  public void addMutedMac(final String mac, final Instant muteTill) {
     if (isMacMuted(mac)) {
       removeMutedMac(mac);
     }
     Timestamp muteTillTs = null;
     if (muteTill != null) {
-      muteTillTs = new Timestamp(muteTill.getTime());
+      muteTillTs = new Timestamp(muteTill.toEpochMilli());
     }
     s_logger.fine("Muting mac:" + mac);
     final Connection con = Database.getDerbyConnection();

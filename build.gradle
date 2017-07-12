@@ -11,14 +11,36 @@ plugins {
 
 apply from: 'gradle/scripts/yaml.gradle'
 
-version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 ext {
+    rootFilesDir = file("$buildDir/rootFiles")
+    releasesDir = file("$buildDir/releases")
     schemasDir = file('config/triplea/schemas')
+
+    gameEnginePropertiesFile = file('game_engine.properties')
+    gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
+
+def getEngineVersion() {
+    if (project.hasProperty('engineVersion')) {
+        return project.engineVersion
+    }
+
+    def props = new Properties()
+    gameEnginePropertiesFile.withInputStream { props.load(it) }
+    def devEngineVersion = props.getProperty('engine_version')
+    if (devEngineVersion) {
+        return "${devEngineVersion}.dev"
+    }
+
+    throw new GradleException("unable to determine engine version: "
+        + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
+}
+
+version = getEngineVersion()
 
 compileJava {
     options.encoding = 'UTF-8'
@@ -74,7 +96,7 @@ dependencies {
     testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
     testCompile 'org.apache.derby:derby:10.10.1.1'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.7.22'
+    testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'junit:junit:4.12'
 }
 
@@ -90,7 +112,7 @@ task integTest(type: Test) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the integration tests.'
 
-    testClassesDir = sourceSets.integTest.output.classesDir
+    testClassesDirs = sourceSets.integTest.output.classesDirs
     classpath = sourceSets.integTest.runtimeClasspath
 
     binResultsDir = file("$buildDir/integration_test_results/binary/integTest")
@@ -153,22 +175,29 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
+task prepareGameEngineProperties() {
+    group = 'release'
+    description = 'Updates the game engine properties with final values for distribution.'
+
+    doLast {
+        copy {
+            from gameEnginePropertiesFile
+            into gameEnginePropertiesArtifactFile.parent
+        }
+        ant.propertyfile(file: gameEnginePropertiesArtifactFile) {
+            entry key: 'engine_version', value: version
+        }
+    }
+}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets, prepareGameEngineProperties]) {
     classifier 'all_platforms'
-    ['assets', 'dice_servers', 'maps', 'old'].each { folder ->
+    ['assets', 'dice_servers', 'old'].each { folder ->
         from(folder) {
             into(folder)
         }
     }
-    from("${assetsDirectory}/icons") {
-        into('icons')
-        exclude("icon.icns")
-    }
-    ['readme.html', 'changelog.txt', 'game_engine.properties',
-     'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
-     'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
-        from(fileName)
-    }
+    from(gameEnginePropertiesArtifactFile)
     from(renameShadowJar.output) {
         into('bin')
     }
@@ -207,14 +236,13 @@ task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJR
     }
 }
 
-task setRunnableLinux(dependsOn: [generateInstallers]) {
+task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
-        def linuxFile = "TripleA_${version}_unix.sh"
-        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
+        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
     }
 }
 
-task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
+task release(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({

@@ -19,11 +19,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+
+import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
@@ -42,8 +45,10 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.ProgressWindow;
@@ -120,31 +125,22 @@ public class GameRunner {
           HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
 
 
-
   /**
    * Launches the "main" TripleA gui enabled game client.
    * No args will launch a client, additional args can be supplied to specify additional behavior.
    * Warning: game engine code invokes this method to spawn new game clients.
    */
   public static void main(final String[] args) {
-    ErrorConsole.getConsole();
+    if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+      ErrorConsole.getConsole();
+    }
     if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
       usage();
       return;
     }
     SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
 
-    SwingUtilities.invokeLater(() -> {
-      setupPanelModel.showSelectType();
-      final MainPanel mainPanel = new MainPanel(setupPanelModel);
-      mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
-    });
-
-    showMainFrame();
-    new Thread(GameRunner::setupLogging).start();
     HttpProxy.setupProxies();
-    new Thread(GameRunner::checkLocalSystem).start();
-    new Thread(GameRunner::checkForUpdates).start();
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
     final Version engineVersion = ClientContext.engineVersion();
@@ -164,6 +160,21 @@ public class GameRunner {
     } else {
       System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, engineVersion.toString());
       System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + engineVersion);
+    }
+
+    if (ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+      TripleA.launch(args);
+    } else {
+      SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
+      SwingUtilities.invokeLater(() -> {
+        setupPanelModel.showSelectType();
+        final MainPanel mainPanel = new MainPanel(setupPanelModel);
+        mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+      });
+      showMainFrame();
+      new Thread(GameRunner::setupLogging).start();
+      new Thread(GameRunner::checkLocalSystem).start();
+      new Thread(GameRunner::checkForUpdates).start();
     }
   }
 
@@ -197,6 +208,10 @@ public class GameRunner {
     return new ProgressWindow(mainFrame, title);
   }
 
+  public static WaitDialog newWaitDialog(final String message) {
+    return new WaitDialog(mainFrame, message);
+  }
+
   /**
    * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids parameter swapping
    * problem and makes refactoring easier.
@@ -213,8 +228,8 @@ public class GameRunner {
     }
   }
 
-  public static int showConfirmDialog(
-      final String message, final Title title, final int optionType, final int messageType) {
+  public static int showConfirmDialog(final String message, final Title title, final int optionType,
+      final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
@@ -235,20 +250,21 @@ public class GameRunner {
    */
   public static void showMainFrame() {
     SwingUtilities.invokeLater(() -> {
-      gameSelectorModel.loadDefaultGame(mainFrame);
-
       mainFrame.requestFocus();
       mainFrame.toFront();
       mainFrame.setVisible(true);
 
-      SwingComponents.addWindowCloseListener(mainFrame, GameRunner::exitGameIfFinished);
+      SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
+      
+      ProAI.gameOverClearCache();
+      new Thread(() -> {
+        gameSelectorModel.loadDefaultGame(mainFrame, false);
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+      }).start();
 
-      final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-      if (fileName.length() > 0) {
-        final File f = new File(fileName);
-        gameSelectorModel.load(f, mainFrame);
-      }
-      mainFrame.setVisible(true);
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
       } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {

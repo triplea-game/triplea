@@ -22,6 +22,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -53,13 +54,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public void end() {
     super.end();
     resetAttempts();
-    if (games.strategy.triplea.Properties.getTriggers(getData())) {
+    if (Properties.getTriggers(getData())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.all(
+      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.any(TriggerAttachment.relationshipChangeMatch()));
+          Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
@@ -98,7 +99,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!m_player.amNotDeadYet(getData())) {
       return false;
     }
-    if (!games.strategy.triplea.Properties.getUsePolitics(getData())) {
+    if (!Properties.getUsePolitics(getData())) {
       return false;
     }
     return !getValidActions().isEmpty();
@@ -130,7 +131,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   @Override
   public void attemptAction(final PoliticalActionAttachment paa) {
-    if (!games.strategy.triplea.Properties.getUsePolitics(getData())) {
+    if (!Properties.getUsePolitics(getData())) {
       notifyPoliticsTurnedOff();
       return;
     }
@@ -174,7 +175,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
     final Match<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
-        Match.any(
+        Match.anyOf(
             Matches.politicalActionIsRelationshipChangeOf(null,
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert(),
                 Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether, data),
@@ -182,7 +183,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                 Matches.RelationshipTypeIsAtWar, data),
             Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar,
                 Matches.RelationshipTypeIsAtWar.invert(), data));
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)
+    if (!Properties.getAlliancesCanChainTogether(data)
         || !intoAlliedChainOrIntoOrOutOfWar.match(paa)) {
       for (final PlayerID player : paa.getActionAccept()) {
         if (!(getRemotePlayer(player)).acceptAction(m_player,
@@ -420,7 +421,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
@@ -462,7 +463,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
 
@@ -510,7 +511,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   static void chainAlliancesTogether(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
     final Collection<RelationshipType> allTypes = data.getRelationshipTypeList().getAllRelationshipTypes();

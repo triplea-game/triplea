@@ -7,12 +7,12 @@ public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
 
-  public static void logQuietly(final Throwable e) {
-    log(developerOutputStream, e);
-  }
-
   private static void log(final PrintStream stream, final Throwable e) {
     e.printStackTrace(stream);
+  }
+
+  public static void logQuietly(final Throwable e) {
+    log(developerOutputStream, e);
   }
 
   public static void logQuietly(final String msg) {

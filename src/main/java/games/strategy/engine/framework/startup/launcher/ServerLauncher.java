@@ -4,11 +4,10 @@ import java.awt.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -235,7 +235,7 @@ public class ServerLauncher extends AbstractLauncher {
           } catch (final Exception e) {
             e.printStackTrace(System.err);
             if (m_headless) {
-              System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+              System.out.println(DebugUtils.getThreadDumps());
               HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame "
                   + "and contact a Mod and/or file a bug report.");
             }
@@ -400,9 +400,8 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private static String getConnectionLostFileName() {
-    final DateFormat dateFormat = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
-    final String baseFileName = "connection_lost_on_" + dateFormat.format(new Date());
-    return GameDataFileUtils.addExtension(baseFileName);
+    return GameDataFileUtils.addExtension(
+        "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
   }
 }
 

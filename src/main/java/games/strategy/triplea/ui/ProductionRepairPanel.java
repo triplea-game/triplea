@@ -32,6 +32,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -59,6 +60,21 @@ public class ProductionRepairPanel extends JPanel {
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
+  }
+
+  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
+    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
+    // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
+    for (final Rule rule : rules) {
+      final int quantity = rule.getQuantity();
+      if (quantity != 0) {
+        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
+        final Unit unit = rule.getUnit();
+        repairRule.put(rule.getProductionRule(), quantity);
+        prod.put(unit, repairRule);
+      }
+    }
+    return prod;
   }
 
   /**
@@ -116,7 +132,7 @@ public class ProductionRepairPanel extends JPanel {
 
   private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return;
     }
     this.data.acquireReadLock();
@@ -124,7 +140,7 @@ public class ProductionRepairPanel extends JPanel {
       this.id = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       final Match<Unit> myDamagedUnits =
-          Match.all(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
+          Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
               Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
@@ -166,7 +182,7 @@ public class ProductionRepairPanel extends JPanel {
     }
     add(left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    done = new JButton(done_action);
+    done = new JButton(doneAction);
     add(done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
   }
@@ -176,22 +192,7 @@ public class ProductionRepairPanel extends JPanel {
     this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
 
-  Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
-
-  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
-    // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-    for (final Rule rule : rules) {
-      final int quantity = rule.getQuantity();
-      if (quantity != 0) {
-        final IntegerMap<RepairRule> repairRule = new IntegerMap<>();
-        final Unit unit = rule.getUnit();
-        repairRule.put(rule.getProductionRule(), quantity);
-        prod.put(unit, repairRule);
-      }
-    }
-    return prod;
-  }
+  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;

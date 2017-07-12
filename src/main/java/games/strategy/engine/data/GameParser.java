@@ -764,9 +764,9 @@ public class GameParser {
       // boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
       final boolean isOptional = current.getAttribute("optional").equals("true");
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
-      final boolean isAiDefault = current.getAttribute("isAIDefault").equals("true");
+      final String defaultType = current.getAttribute("defaultType");
       final boolean isHidden = current.getAttribute("isHidden").equals("true");
-      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, isAiDefault, isHidden, data);
+      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, defaultType, isHidden, data);
       playerList.addPlayerID(newPlayer);
     }
   }
@@ -1380,7 +1380,7 @@ public class GameParser {
         unitDamage = 0;
       }
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
-      territory.getUnits().addAllUnits(type.create(quantity, owner, false, hits, unitDamage));
+      territory.getUnits().addAll(type.create(quantity, owner, false, hits, unitDamage));
     }
   }
 
@@ -1389,7 +1389,7 @@ public class GameParser {
       final PlayerID player = getPlayerId(current, "player", true);
       final UnitType type = getUnitType(current, "unitType", true);
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
-      player.getUnits().addAllUnits(type.create(quantity, player));
+      player.getUnits().addAll(type.create(quantity, player));
     }
   }
 

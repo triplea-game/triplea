@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,13 +31,13 @@ public class BannedMacController {
    * If this mac is already banned, this call will update the ban_end.
    * </p>
    */
-  public void addBannedMac(final String mac, final Date banTill) {
+  public void addBannedMac(final String mac, final Instant banTill) {
     if (isMacBanned(mac).getFirst()) {
       removeBannedMac(mac);
     }
     Timestamp banTillTs = null;
     if (banTill != null) {
-      banTillTs = new Timestamp(banTill.getTime());
+      banTillTs = new Timestamp(banTill.toEpochMilli());
     }
     s_logger.fine("Banning mac:" + mac);
     final Connection con = Database.getDerbyConnection();

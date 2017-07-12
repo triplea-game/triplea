@@ -56,21 +56,21 @@ public abstract class AbstractStatPanel extends JPanel {
   }
 
   class ResourceStat extends AbstractStat {
-    final Resource m_resource;
+    final Resource resource;
 
     public ResourceStat(final Resource resource) {
       super();
-      m_resource = resource;
+      this.resource = resource;
     }
 
     @Override
     public String getName() {
-      return m_resource.getName();
+      return resource.getName();
     }
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      return player.getResources().getQuantity(m_resource);
+      return player.getResources().getQuantity(resource);
     }
   }
 }

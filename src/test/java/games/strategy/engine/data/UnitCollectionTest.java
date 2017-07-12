@@ -3,6 +3,8 @@ package games.strategy.engine.data;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,14 +15,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UnitCollectionTest {
 
   @Mock
@@ -28,7 +28,7 @@ public class UnitCollectionTest {
   private UnitType unitTypeOne;
   private UnitType unitTypeTwo;
   @Mock
-  private final PlayerID defaultPlayerId = Mockito.spy(new PlayerID("Default Player", true, false, false, false, null));
+  private final PlayerID defaultPlayerId = Mockito.spy(new PlayerID("Default Player", true, false, null, false, null));
   @Mock
   private PlayerID otherPlayerId;
   private UnitCollection unitCollection;
@@ -54,12 +54,6 @@ public class UnitCollectionTest {
   private int unitCountUnitTypeOne;
   private int unitCountUnitTypeTwo;
 
-  int defaultPlayerNotifyChangedCounter = 0;
-
-  public final int getDefaultPlayerNotifyChangedCounter() {
-    return defaultPlayerNotifyChangedCounter;
-  }
-
   @Before
   public void setup() {
     unitTypeOne = new UnitType("Unit Type 1", mockGameData);
@@ -68,14 +62,6 @@ public class UnitCollectionTest {
     unitTypeList.addUnitType(unitTypeOne);
     unitTypeList.addUnitType(unitTypeTwo);
     Mockito.when(mockGameData.getUnitTypeList()).thenReturn(unitTypeList);
-
-    Mockito.doAnswer(new Answer<Void>() {
-      @Override
-      public Void answer(final InvocationOnMock invocation) throws Throwable {
-        ++defaultPlayerNotifyChangedCounter;
-        return null;
-      }
-    }).when(defaultPlayerId).notifyChanged();
 
     unitCollection = new UnitCollection(defaultPlayerId, mockGameData);
 
@@ -139,52 +125,44 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void addUnit() {
-    final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
+  public void add() {
     final Unit unitDefaultPlayer = new Unit(unitTypeOne, defaultPlayerId, mockGameData);
-    unitCollection.addUnit(unitDefaultPlayer);
+    unitCollection.add(unitDefaultPlayer);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(1)));
     assertThat(unitCollection.getUnits().iterator().next(), is(equalTo(unitDefaultPlayer)));
-    final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
-    assertThat(getDefaultPlayerNotifyChangedCounter(), is(equalTo(expNotifyChangedCountAfter)));
+    verify(defaultPlayerId).notifyChanged();
   }
 
   @Test
-  public void addAllUnitsFromCollection() {
-    final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
+  public void addAllFromCollection() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(unitsOfOtherPlayerOfUnitTypeOne.size())));
-    final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
-    assertThat(getDefaultPlayerNotifyChangedCounter(), is(equalTo(expNotifyChangedCountAfter)));
+    verify(defaultPlayerId).notifyChanged();
   }
 
   @Test
-  public void addAllUnitsFromUnitCollection() {
-    final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
+  public void addAllFromUnitCollection() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     final UnitCollection unitCollectionTwo = new UnitCollection(otherPlayerId, mockGameData);
-    unitCollectionTwo.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
-    unitCollection.addAllUnits(unitCollectionTwo);
+    unitCollectionTwo.addAll(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitCollectionTwo);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(unitsOfOtherPlayerOfUnitTypeOne.size())));
-    final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
-    assertThat(getDefaultPlayerNotifyChangedCounter(), is(equalTo(expNotifyChangedCountAfter)));
+    verify(defaultPlayerId).notifyChanged();
   }
 
   @Test
-  public void removeAllUnits() {
+  public void removeAll() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
-
-    final int notifyChangedCountBefore = getDefaultPlayerNotifyChangedCounter();
-    unitCollection.removeAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
+    reset(defaultPlayerId);
+    unitCollection.removeAll(unitsOfOtherPlayerOfUnitTypeOne);
 
     assertThat(unitCollection.getUnitCount(), is(equalTo(0)));
-    final int expNotifyChangedCountAfter = notifyChangedCountBefore + 1;
-    assertThat(getDefaultPlayerNotifyChangedCounter(), is(equalTo(expNotifyChangedCountAfter)));
+    verify(defaultPlayerId).notifyChanged();
   }
 
   @Test
@@ -200,13 +178,15 @@ public class UnitCollectionTest {
     assertThat(allDefaultPlayerUnitCollection.getUnitCount(), is(equalTo(expUnitCount)));
   }
 
-  private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeTwoToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getDefaultPlayerUnitsOfUnitTypeTwo());
+  private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeTwoToUnitCollection(
+      final UnitCollection unitCollection) {
+    unitCollection.addAll(getDefaultPlayerUnitsOfUnitTypeTwo());
     return unitCollection;
   }
 
-  private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getDefaultPlayerUnitsOfUnitTypeOne());
+  private UnitCollection addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(
+      final UnitCollection unitCollection) {
+    unitCollection.addAll(getDefaultPlayerUnitsOfUnitTypeOne());
     return unitCollection;
   }
 
@@ -226,20 +206,23 @@ public class UnitCollectionTest {
     assertThat(allUnitsUnitCollection.getUnitCount(unitTypeTwo), is(equalTo(unitCountUnitTypeTwo)));
   }
 
-  private UnitCollection addAllOtherPlayerUnitsToUnitCollection(final UnitCollection unitCollection) {
-    unitCollection.addAllUnits(getOtherPlayerUnitsOfUnitTypeOne());
-    unitCollection.addAllUnits(getOtherPlayerUnitsOfUnitTypeTwo());
+  private UnitCollection addAllOtherPlayerUnitsToUnitCollection(
+      final UnitCollection unitCollection) {
+    unitCollection.addAll(getOtherPlayerUnitsOfUnitTypeOne());
+    unitCollection.addAll(getOtherPlayerUnitsOfUnitTypeTwo());
     return unitCollection;
   }
 
-  private UnitCollection addAllPlayerUnitsToUnitCollection(final UnitCollection unitCollection) {
+  private UnitCollection addAllPlayerUnitsToUnitCollection(
+      final UnitCollection unitCollection) {
     final UnitCollection allDefaultPlayerUnitCollection = addAllDefaultPlayerUnitsToUnitCollection(unitCollection);
     final UnitCollection allPlayerUnitCollection =
         addAllOtherPlayerUnitsToUnitCollection(allDefaultPlayerUnitCollection);
     return allPlayerUnitCollection;
   }
 
-  private UnitCollection addAllDefaultPlayerUnitsToUnitCollection(final UnitCollection unitCollection) {
+  private UnitCollection addAllDefaultPlayerUnitsToUnitCollection(
+      final UnitCollection unitCollection) {
     final UnitCollection defaultPlayerUnitsOfUnitTypeOneUnitCollection =
         addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(unitCollection);
     final UnitCollection allUnitsOfDefaultPlayerUnitCollection =
@@ -360,7 +343,7 @@ public class UnitCollectionTest {
   public void getUnits() {
     final Collection<Unit> unitsOfOtherPlayerOfUnitTypeOne = getOtherPlayerUnitsOfUnitTypeOne();
     assertThat(unitCollection.getUnits().containsAll(unitsOfOtherPlayerOfUnitTypeOne), is(equalTo(false)));
-    unitCollection.addAllUnits(unitsOfOtherPlayerOfUnitTypeOne);
+    unitCollection.addAll(unitsOfOtherPlayerOfUnitTypeOne);
     assertThat(unitCollection.getUnits().containsAll(unitsOfOtherPlayerOfUnitTypeOne), is(equalTo(true)));
   }
 
@@ -408,23 +391,22 @@ public class UnitCollectionTest {
   }
 
   @Test
-  public void someMatch() {
+  public void anyMatch() {
     final UnitCollection defaultPlayerUnitsOfUnitTypeOneUnitCollection =
         addAllDefaultPlayerUnitsOfUnitTypeOneToUnitCollection(unitCollection);
-    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.someMatch(Matches.unitIsOfType(unitTypeOne)),
+    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeOne)),
         is(equalTo(true)));
-    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.someMatch(Matches.unitIsOfType(unitTypeTwo)),
+    assertThat(defaultPlayerUnitsOfUnitTypeOneUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeTwo)),
         is(equalTo(false)));
     final UnitCollection allDefaultPlayerUnitCollection =
         addAllDefaultPlayerUnitsOfUnitTypeTwoToUnitCollection(defaultPlayerUnitsOfUnitTypeOneUnitCollection);
-    assertThat(allDefaultPlayerUnitCollection.someMatch(Matches.unitIsOfType(unitTypeOne)), is(equalTo(true)));
-    assertThat(allDefaultPlayerUnitCollection.someMatch(Matches.unitIsOfType(unitTypeTwo)), is(equalTo(true)));
+    assertThat(allDefaultPlayerUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeOne)), is(equalTo(true)));
+    assertThat(allDefaultPlayerUnitCollection.anyMatch(Matches.unitIsOfType(unitTypeTwo)), is(equalTo(true)));
   }
 
   @Test
   public void countMatches() {
-    assertThat(unitCollection.countMatches(Matches.unitIsOfType(unitTypeOne)),
-        is(equalTo(0)));
+    assertThat(unitCollection.countMatches(Matches.unitIsOfType(unitTypeOne)), is(equalTo(0)));
     final UnitCollection allDefaultPlayerUnitCollection = addAllDefaultPlayerUnitsToUnitCollection(unitCollection);
     assertThat(allDefaultPlayerUnitCollection.countMatches(Matches.unitIsOfType(unitTypeOne)),
         is(equalTo(unitCountDefaultPlayerUnitTypeOne)));
@@ -434,8 +416,7 @@ public class UnitCollectionTest {
 
   @Test
   public void getMatches() {
-    assertThat(unitCollection.getMatches(Matches.unitIsOfType(unitTypeOne)).size(),
-        is(equalTo(0)));
+    assertThat(unitCollection.getMatches(Matches.unitIsOfType(unitTypeOne)).size(), is(equalTo(0)));
     final UnitCollection allDefaultPlayerUnitCollection = addAllDefaultPlayerUnitsToUnitCollection(unitCollection);
     assertThat(allDefaultPlayerUnitCollection.getMatches(Matches.unitIsOfType(unitTypeOne)).size(),
         is(equalTo(unitCountDefaultPlayerUnitTypeOne)));
@@ -452,7 +433,7 @@ public class UnitCollectionTest {
   @Test
   public void iterator() {
     final Collection<Unit> unitsOfDefaultPlayerOfUnitTypeTwo = getDefaultPlayerUnitsOfUnitTypeTwo();
-    unitCollection.addAllUnits(unitsOfDefaultPlayerOfUnitTypeTwo);
+    unitCollection.addAll(unitsOfDefaultPlayerOfUnitTypeTwo);
     final Iterator<Unit> collectionIterator = unitsOfDefaultPlayerOfUnitTypeTwo.iterator();
     final Iterator<Unit> unitCollectionIterator = unitCollection.iterator();
     unitCollectionIterator.forEachRemaining(u -> assertThat(u, is(collectionIterator.next())));

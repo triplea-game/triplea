@@ -6,57 +6,57 @@ import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 public class MouseDetails {
-  private final MouseEvent m_mouseEvent;
+  private final MouseEvent mouseEvent;
   // the x position of the event on the map
   // this is in absolute pixels of the unscaled map
-  private final double m_x;
+  private final double x;
   // the x position of the event on the map
   // this is in absolute pixels of the unscaled map
-  private final double m_y;
+  private final double y;
 
   MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
     super();
-    m_mouseEvent = mouseEvent;
-    m_x = x;
-    m_y = y;
+    this.mouseEvent = mouseEvent;
+    this.x = x;
+    this.y = y;
   }
 
   public MouseEvent getMouseEvent() {
-    return m_mouseEvent;
+    return mouseEvent;
   }
 
   public double getX() {
-    return m_x;
+    return x;
   }
 
   public double getY() {
-    return m_y;
+    return y;
   }
 
   public boolean isRightButton() {
-    return SwingUtilities.isRightMouseButton(m_mouseEvent);
+    return SwingUtilities.isRightMouseButton(mouseEvent);
   }
 
   public boolean isControlDown() {
-    return m_mouseEvent.isControlDown();
+    return mouseEvent.isControlDown();
   }
 
   public boolean isShiftDown() {
-    return m_mouseEvent.isShiftDown();
+    return mouseEvent.isShiftDown();
   }
 
   public boolean isAltDown() {
-    return m_mouseEvent.isAltDown();
+    return mouseEvent.isAltDown();
   }
 
   /**
    * @return this point is in the map co-ordinates, unscaled.
    */
   public Point getMapPoint() {
-    return new Point((int) m_x, (int) m_y);
+    return new Point((int) x, (int) y);
   }
 
   public int getButton() {
-    return m_mouseEvent.getButton();
+    return mouseEvent.getButton();
   }
 }

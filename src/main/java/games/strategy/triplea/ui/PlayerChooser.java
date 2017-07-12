@@ -21,7 +21,7 @@ import games.strategy.ui.Util;
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<PlayerID> list;
-  private final PlayerList m_players;
+  private final PlayerList players;
   private final PlayerID defaultPlayer;
   private final IUIContext uiContext;
   private final boolean allowNeutral;
@@ -38,7 +38,7 @@ public class PlayerChooser extends JOptionPane {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    this.m_players = players;
+    this.players = players;
     this.defaultPlayer = defaultPlayer;
     this.uiContext = uiContext;
     this.allowNeutral = allowNeutral;
@@ -46,7 +46,7 @@ public class PlayerChooser extends JOptionPane {
   }
 
   private void createComponents() {
-    final Collection<PlayerID> players = new ArrayList<>(this.m_players.getPlayers());
+    final Collection<PlayerID> players = new ArrayList<>(this.players.getPlayers());
     if (allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }
@@ -67,7 +67,7 @@ public class PlayerChooser extends JOptionPane {
     setMessage(SwingComponents.newJScrollPane(list));
 
     final int maxSize = 700;
-    final int suggestedSize = this.m_players.size() * 40;
+    final int suggestedSize = this.players.size() * 40;
     final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
     setPreferredSize(new Dimension(300, actualSize));
   }
@@ -84,26 +84,25 @@ public class PlayerChooser extends JOptionPane {
     }
     return null;
   }
-}
 
+  private static final class PlayerChooserRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = -2185921124436293304L;
+    private final IUIContext uiContext;
 
-class PlayerChooserRenderer extends DefaultListCellRenderer {
-  private static final long serialVersionUID = -2185921124436293304L;
-  private final IUIContext uiContext;
-
-  PlayerChooserRenderer(final IUIContext uiContext) {
-    this.uiContext = uiContext;
-  }
-
-  @Override
-  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
-      final boolean isSelected, final boolean cellHasFocus) {
-    super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-    if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
-      setIcon(new ImageIcon(Util.createImage(32, 32, true)));
-    } else {
-      setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
+    PlayerChooserRenderer(final IUIContext uiContext) {
+      this.uiContext = uiContext;
     }
-    return this;
+
+    @Override
+    public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
+        final boolean isSelected, final boolean cellHasFocus) {
+      super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
+      if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
+        setIcon(new ImageIcon(Util.createImage(32, 32, true)));
+      } else {
+        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
+      }
+      return this;
+    }
   }
 }

@@ -18,7 +18,7 @@ public class FileSave {
   }
 
   public FileSave(final String title, final String name, final File currentDirectory) {
-    this(title, name, currentDirectory, JFileChooser.DIRECTORIES_ONLY, null, new javax.swing.filechooser.FileFilter() {
+    this(title, name, currentDirectory, JFileChooser.DIRECTORIES_ONLY, null, new FileFilter() {
       @Override
       public boolean accept(final File f) {
         return f.isDirectory();

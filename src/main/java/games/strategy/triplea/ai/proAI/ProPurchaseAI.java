@@ -73,12 +73,12 @@ class ProPurchaseAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    final Match<Unit> ourFactories = Match.all(Matches.unitIsOwnedBy(player),
+    final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player),
         Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
     final List<Territory> rfactories = Match.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       ProLogger.debug("Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       for (final Territory fixTerr : rfactories) {
@@ -455,7 +455,7 @@ class ProPurchaseAI {
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
-            !t.isWater() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
+            !t.isWater() && Match.allMatchNotEmpty(enemyAttackingUnits, Matches.UnitIsAir);
         if ((!t.isWater() && result.isHasLandUnitRemaining()) || result.getTUVSwing() > holdValue
             || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir
                 && result.getWinPercentage() > (100 - ProData.winPercentage))) {
@@ -547,7 +547,7 @@ class ProPurchaseAI {
 
       // Determine if need destroyer
       boolean needDestroyer = false;
-      if (Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
+      if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
           && Match.noneMatch(ownedLocalUnits, Matches.UnitIsDestroyer)) {
         needDestroyer = true;
       }
@@ -712,9 +712,9 @@ class ProPurchaseAI {
 
       // Check if territory needs AA
       final boolean enemyCanBomb =
-          Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
-      final boolean territoryCanBeBombed = t.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
-      final boolean hasAaBombingDefense = t.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly);
+          Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
+      final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
+      final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.UnitIsAAforBombingThisUnitOnly);
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed
           + ", hasAABombingDefense=" + hasAaBombingDefense);
       if (!enemyCanBomb || !territoryCanBeBombed || hasAaBombingDefense) {
@@ -1146,7 +1146,7 @@ class ProPurchaseAI {
       if (enemyAttackOptions.getMax(t) != null) {
 
         // Determine if need destroyer
-        if (Match.someMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
+        if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
             && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.UnitIsDestroyer)) {
           needDestroyer = true;
         }
@@ -1158,7 +1158,8 @@ class ProPurchaseAI {
         ProBattleResult result = calc.calculateBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
             initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
-            Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
+            Properties.getSubRetreatBeforeBattle(data)
+                && Match.allMatchNotEmpty(initialDefendingUnits, Matches.UnitIsSub)
                 && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
 
@@ -1223,7 +1224,7 @@ class ProPurchaseAI {
             result = calc.estimateDefendBattleResults(t, enemyAttackOptions.getMax(t).getMaxUnits(),
                 defendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
-                Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
+                Properties.getSubRetreatBeforeBattle(data) && Match.allMatchNotEmpty(defendingUnits, Matches.UnitIsSub)
                     && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
           }
         }

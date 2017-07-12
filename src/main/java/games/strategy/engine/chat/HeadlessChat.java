@@ -1,10 +1,8 @@
 package games.strategy.engine.chat;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +17,7 @@ import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.util.TimeManager;
 
 /**
  * Headless version of ChatPanel.
@@ -29,7 +28,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private Chat m_chat;
   private boolean m_showTime = true;
   private StringBuffer m_allText = new StringBuffer();
-  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final ChatFloodControl floodControl = new ChatFloodControl();
   private final Set<String> m_hiddenPlayers = new HashSet<>();
   private final Set<INode> m_players = new HashSet<>();
@@ -165,7 +163,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
-    final String time = simpleDateFormat.format(new Date());
+    final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final String prefix = thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from)
         : (m_showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";

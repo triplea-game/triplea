@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.Properties;
 
 /**
  * Abstract superclass for all action panels. <br>
@@ -30,20 +31,20 @@ public abstract class ActionPanel extends JPanel {
   }
 
   protected final boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   protected final boolean isWW2V3TechModel() {
-    return games.strategy.triplea.Properties.getWW2V3TechModel(data);
+    return Properties.getWW2V3TechModel(data);
   }
 
   protected final boolean isRestrictedPurchase() {
-    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(data);
+    return Properties.getPlacementRestrictedByFactory(data);
   }
 
 
   protected final boolean isSelectableTechRoll() {
-    return games.strategy.triplea.Properties.getSelectableTechRoll(data);
+    return Properties.getSelectableTechRoll(data);
   }
 
   /**
@@ -135,7 +136,7 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Refreshes the action panel. Should be run within the swing event queue.
    */
-  protected final Runnable REFRESH = () -> {
+  protected final Runnable refresh = () -> {
     revalidate();
     repaint();
   };

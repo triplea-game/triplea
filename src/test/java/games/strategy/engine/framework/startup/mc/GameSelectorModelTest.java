@@ -31,7 +31,7 @@ import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class GameSelectorModelTest {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {

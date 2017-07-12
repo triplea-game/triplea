@@ -100,7 +100,7 @@ public class ProPurchaseUtils {
 
         // Find number of unit type that are already built and about to be placed
         int currentlyBuilt = 0;
-        final Match<Unit> unitTypeOwnedBy = Match.all(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+        final Match<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

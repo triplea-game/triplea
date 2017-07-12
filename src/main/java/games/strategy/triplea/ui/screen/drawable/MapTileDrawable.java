@@ -12,17 +12,17 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TileManager;
 
 public abstract class MapTileDrawable implements IDrawable {
-  protected boolean m_noImage = false;
-  protected final int m_x;
-  protected final int m_y;
-  protected final IUIContext m_uiContext;
-  protected boolean m_unscaled;
+  protected boolean noImage = false;
+  protected final int x;
+  protected final int y;
+  protected final IUIContext uiContext;
+  protected boolean unscaled;
 
   protected MapTileDrawable(final int x, final int y, final IUIContext uiContext) {
-    m_x = x;
-    m_y = y;
-    m_uiContext = uiContext;
-    m_unscaled = false;
+    this.x = x;
+    this.y = y;
+    this.uiContext = uiContext;
+    unscaled = false;
   }
 
   public abstract MapTileDrawable getUnscaledCopy();
@@ -46,7 +46,7 @@ public abstract class MapTileDrawable implements IDrawable {
     if (unscaled != null) {
       graphics.setTransform(unscaled);
     }
-    graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
+    graphics.drawImage(img, x * TileManager.TILE_SIZE - bounds.x, y * TileManager.TILE_SIZE - bounds.y, null);
     if (unscaled != null) {
       graphics.setTransform(scaled);
     }

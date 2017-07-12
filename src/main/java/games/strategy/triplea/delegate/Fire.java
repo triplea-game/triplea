@@ -14,6 +14,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.util.Match;
 
@@ -98,13 +99,13 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Match.countMatches(m_attackableUnits, Match.all(Matches.UnitIsTransport, Matches.UnitIsSea));
+        Match.countMatches(m_attackableUnits, Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,
-          Match.any(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
+          Match.anyOf(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
       final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits,
-          Match.all(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
+          Match.allOf(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
@@ -120,7 +121,7 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overlfows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final Match<Unit> match = Match.all(
+          final Match<Unit> match = Match.allOf(
               Matches.UnitIsTransportButNotCombatTransport,
               Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
@@ -246,6 +247,6 @@ public class Fire implements IExecutable {
   }
 
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    return Properties.getTransportCasualtiesRestricted(data);
   }
 }

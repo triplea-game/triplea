@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +97,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   @Override
   public Class<?> getColumnClass(final int columnIndex) {
     if (columnIndex == getColumnIndex(Column.Started)) {
-      return Date.class;
+      return Instant.class;
     }
     return Object.class;
   }

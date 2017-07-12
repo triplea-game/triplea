@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -151,10 +155,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.banUsername(clickedOn, null);
+          controller.zzBanUsername(clickedOn, (Instant) null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.banMac(clickedOn, null);
+          controller.zzBanMac(clickedOn, (Instant) null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
@@ -169,26 +173,26 @@ public class LobbyFrame extends JFrame {
       if (result2 < 0) {
         return;
       }
-      long ticks = 0;
+      TemporalUnit unit = null;
       if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
+        unit = ChronoUnit.MINUTES;
       } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
+        unit = ChronoUnit.HOURS;
       } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
+        unit = ChronoUnit.DAYS;
       } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+        unit = ChronoUnit.WEEKS;
       } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+        unit = ChronoUnit.MONTHS;
       } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+        unit = ChronoUnit.YEARS;
       }
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedBanType.toLowerCase().contains("name")) {
-        controller.banUsername(clickedOn, new Date(expire));
+        controller.zzBanUsername(clickedOn, expire);
       }
       if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.banMac(clickedOn, new Date(expire));
+        controller.zzBanMac(clickedOn, expire);
       }
       // Should we keep this auto?
       controller.boot(clickedOn);
@@ -228,10 +232,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.muteUsername(clickedOn, null);
+          controller.zzMuteUsername(clickedOn, (Instant) null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.muteMac(clickedOn, null);
+          controller.zzMuteMac(clickedOn, (Instant) null);
         }
         return;
       }
@@ -244,26 +248,26 @@ public class LobbyFrame extends JFrame {
       if (result2 < 0) {
         return;
       }
-      long ticks = 0;
+      TemporalUnit unit = null;
       if (selectedTimeUnit.equals("Minute")) {
-        ticks = result2 * 1000 * 60;
+        unit = ChronoUnit.MINUTES;
       } else if (selectedTimeUnit.equals("Hour")) {
-        ticks = result2 * 1000 * 60 * 60;
+        unit = ChronoUnit.HOURS;
       } else if (selectedTimeUnit.equals("Day")) {
-        ticks = result2 * 1000 * 60 * 60 * 24;
+        unit = ChronoUnit.DAYS;
       } else if (selectedTimeUnit.equals("Week")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 7;
+        unit = ChronoUnit.WEEKS;
       } else if (selectedTimeUnit.equals("Month")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 30;
+        unit = ChronoUnit.MONTHS;
       } else if (selectedTimeUnit.equals("Year")) {
-        ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+        unit = ChronoUnit.YEARS;
       }
-      final long expire = System.currentTimeMillis() + ticks;
+      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.muteUsername(clickedOn, new Date(expire));
+        controller.zzMuteUsername(clickedOn, expire);
       }
       if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.muteMac(clickedOn, new Date(expire));
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Quick Mute", e -> {
@@ -283,10 +287,9 @@ public class LobbyFrame extends JFrame {
         if (resultMuteLengthInMinutes < 0) {
           return;
         }
-        final long ticks = resultMuteLengthInMinutes * 1000 * 60;
-        final long expire = System.currentTimeMillis() + ticks;
-        controller.muteUsername(clickedOn, new Date(expire));
-        controller.muteMac(clickedOn, new Date(expire));
+        final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
+        controller.zzMuteUsername(clickedOn, expire);
+        controller.zzMuteMac(clickedOn, expire);
       }
     }));
     rVal.add(SwingAction.of("Show player information", e -> {

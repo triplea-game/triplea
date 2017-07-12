@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class EventThreadJOptionPaneTest {
   @Rule
   public final Timeout globalTimeout = new Timeout(5, TimeUnit.SECONDS);

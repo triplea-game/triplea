@@ -3,12 +3,11 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -32,6 +31,7 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.TimeManager;
 
 /**
  * A Chat window.
@@ -55,7 +55,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private JButton setStatus;
   private Chat chat;
   private boolean showTime = false;
-  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -193,15 +192,15 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private void setupKeyMap() {
     final InputMap nextMessageKeymap = nextMessage.getInputMap();
     nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), sendAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false), upAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false), downAction);
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), upAction);
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), downAction);
   }
 
   private void cleanupKeyMap() {
     final InputMap nextMessageKeymap = nextMessage.getInputMap();
     nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false));
+    nextMessageKeymap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false));
+    nextMessageKeymap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false));
   }
 
   /** thread safe. */
@@ -251,7 +250,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
-    final String time = simpleDateFormat.format(new Date());
+    final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
       if (thirdperson) {

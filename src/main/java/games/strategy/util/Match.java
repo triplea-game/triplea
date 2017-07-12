@@ -7,15 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
- * A utilty for seeing which elements in a collection satisfy a given condition.
+ * A utility for seeing which elements in a collection satisfy a given condition.
  *
  * <p>
  * An instance of match allows you to test that an object matches some condition.
@@ -26,9 +25,18 @@ import java.util.function.Predicate;
  * count the number of matches, see if any elements match etc.
  * </p>
  *
+ * <p>
+ * Instances of this class are immutable.
+ * </p>
+ *
  * @param <T> The type of object that is tested by the match condition.
  */
-public abstract class Match<T> {
+public final class Match<T> {
+  private final Predicate<T> condition;
+
+  private Match(final Predicate<T> condition) {
+    this.condition = condition;
+  }
 
   /**
    * Returns a match whose condition is always satisfied.
@@ -52,13 +60,7 @@ public abstract class Match<T> {
    * Returns the elements of the collection that match.
    */
   public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> match) {
-    final List<T> matches = new ArrayList<>();
-    for (final T current : collection) {
-      if (match.match(current)) {
-        matches.add(current);
-      }
-    }
-    return matches;
+    return collection.stream().filter(match::match).collect(Collectors.toList());
   }
 
   /**
@@ -87,78 +89,60 @@ public abstract class Match<T> {
 
   /**
    * returns true if all elements in the collection match.
+   * returns false if the collection is empty.
+   * 
+   * @deprecated Check if the collection you provided is empty on your own.
+   */
+  @Deprecated
+  public static <T> boolean allMatchNotEmpty(final Collection<T> collection, final Match<T> match) {
+    return !collection.isEmpty() && allMatch(collection, match);
+  }
+
+  /**
+   * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
-    if (collection.isEmpty()) {
-      return false;
-    }
-    for (final T current : collection) {
-      if (!match.match(current)) {
-        return false;
-      }
-    }
-    return true;
+    return collection.stream().allMatch(match::match);
   }
 
   /**
    * Returns true if any matches could be found.
    */
-  public static <T> boolean someMatch(final Collection<T> collection, final Match<T> match) {
-    if (collection.isEmpty()) {
-      return false;
-    }
-    for (final T current : collection) {
-      if (match.match(current)) {
-        return true;
-      }
-    }
-    return false;
+  public static <T> boolean anyMatch(final Collection<T> collection, final Match<T> match) {
+    return collection.stream().anyMatch(match::match);
   }
 
   /**
    * Returns true if no matches could be found.
    */
   public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> match) {
-    return !someMatch(collection, match);
+    return collection.stream().noneMatch(match::match);
   }
 
   /**
    * Returns the number of matches found.
    */
   public static <T> int countMatches(final Collection<T> collection, final Match<T> match) {
-    int count = 0;
-    for (final T current : collection) {
-      if (match.match(current)) {
-        count++;
-      }
-    }
-    return count;
+    return (int) collection.stream().filter(match::match).count();
   }
 
   /**
    * return the keys where the value keyed by the key matches valueMatch.
    */
   public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> map, final Match<V> valueMatch) {
-    final Set<K> rVal = new HashSet<>();
-    final Iterator<K> keys = map.keySet().iterator();
-    while (keys.hasNext()) {
-      final K key = keys.next();
-      final V value = map.get(key);
-      if (valueMatch.match(value)) {
-        rVal.add(key);
-      }
-    }
-    return rVal;
+    return map.entrySet().stream().filter(entry -> valueMatch.match(entry.getValue())).map(entry -> entry.getKey())
+        .collect(Collectors.toSet());
   }
 
   /**
-   * Subclasses must override this method.
    * Returns true if the object matches some condition.
    */
-  public abstract boolean match(T o);
+  public boolean match(final T value) {
+    return condition.test(value);
+  }
 
-  public final Match<T> invert() {
-    return Match.of(not(this::match));
+  public Match<T> invert() {
+    return Match.of(not(condition));
   }
 
   /**
@@ -171,12 +155,7 @@ public abstract class Match<T> {
   public static <T> Match<T> of(final Predicate<T> condition) {
     checkNotNull(condition);
 
-    return new Match<T>() {
-      @Override
-      public boolean match(final T value) {
-        return condition.test(value);
-      }
-    };
+    return new Match<>(condition);
   }
 
   /**
@@ -187,10 +166,11 @@ public abstract class Match<T> {
    * @return A new match; never {@code null}.
    */
   @SafeVarargs
-  public static <T> Match<T> all(final Match<T>... matches) {
+  @SuppressWarnings("varargs")
+  public static <T> Match<T> allOf(final Match<T>... matches) {
     checkNotNull(matches);
 
-    return all(Arrays.asList(matches));
+    return allOf(Arrays.asList(matches));
   }
 
   /**
@@ -200,7 +180,7 @@ public abstract class Match<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> all(final Collection<Match<T>> matches) {
+  public static <T> Match<T> allOf(final Collection<Match<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().allMatch(match -> match.match(value)));
@@ -214,10 +194,11 @@ public abstract class Match<T> {
    * @return A new match; never {@code null}.
    */
   @SafeVarargs
-  public static <T> Match<T> any(final Match<T>... matches) {
+  @SuppressWarnings("varargs")
+  public static <T> Match<T> anyOf(final Match<T>... matches) {
     checkNotNull(matches);
 
-    return any(Arrays.asList(matches));
+    return anyOf(Arrays.asList(matches));
   }
 
   /**
@@ -227,7 +208,7 @@ public abstract class Match<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> any(final Collection<Match<T>> matches) {
+  public static <T> Match<T> anyOf(final Collection<Match<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().anyMatch(match -> match.match(value)));
@@ -241,6 +222,7 @@ public abstract class Match<T> {
    * @return A new composite match builder; never {@code null}.
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <T> CompositeBuilder<T> newCompositeBuilder(final Match<T>... matches) {
     checkNotNull(matches);
 
@@ -284,7 +266,7 @@ public abstract class Match<T> {
      * @return A new match; never {@code null}.
      */
     public Match<T> all() {
-      return Match.all(matches);
+      return Match.allOf(matches);
     }
 
     /**
@@ -294,7 +276,7 @@ public abstract class Match<T> {
      * @return A new match; never {@code null}.
      */
     public Match<T> any() {
-      return Match.any(matches);
+      return Match.anyOf(matches);
     }
   }
 }

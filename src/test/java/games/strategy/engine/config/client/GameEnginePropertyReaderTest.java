@@ -3,13 +3,14 @@ package games.strategy.engine.config.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -19,31 +20,20 @@ import games.strategy.engine.config.client.remote.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class GameEnginePropertyReaderTest {
-
 
   @Mock
   private PropertyFileReader mockPropertyFileReader;
+
   @Mock
   private LobbyServerPropertiesFetcher mockLobbyServerPropertiesFetcher;
+
   @Mock
   private BackupPropertyFetcher mockBackupPropertyFetcher;
 
+  @InjectMocks
   private GameEnginePropertyReader testObj;
-
-
-
-  /**
-   * Sets up a test object with mocked dependencies.
-   */
-  @Before
-  public void setup() {
-    testObj = new GameEnginePropertyReader(
-        mockPropertyFileReader,
-        mockLobbyServerPropertiesFetcher,
-        mockBackupPropertyFetcher);
-  }
 
   @Test
   public void engineVersion() {
@@ -75,11 +65,10 @@ public class GameEnginePropertyReaderTest {
   }
 
   private void givenSuccessfullyParsedPropertiesUrl() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_PROP_FILE_URL))
-        .thenReturn(TestData.fakePropUrl);
-
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.ENGINE_VERSION))
-        .thenReturn(TestData.fakeVersionString);
+    doReturn(TestData.fakePropUrl)
+        .when(mockPropertyFileReader).readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_PROP_FILE_URL);
+    doReturn(TestData.fakeVersionString)
+        .when(mockPropertyFileReader).readProperty(GameEnginePropertyReader.PropertyKeys.ENGINE_VERSION);
   }
 
   @Test
@@ -91,15 +80,14 @@ public class GameEnginePropertyReaderTest {
 
     givenSuccessfullyParsedBackupValues();
 
-
     final LobbyServerProperties result = testObj.fetchLobbyServerProperties();
 
     assertThat(result, sameInstance(TestData.fakeProps));
   }
 
   private void givenSuccessfullyParsedBackupValues() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_BACKUP_HOST_ADDRESS))
-        .thenReturn(TestData.backupAddress);
+    doReturn(TestData.backupAddress)
+        .when(mockPropertyFileReader).readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_BACKUP_HOST_ADDRESS);
 
     when(mockBackupPropertyFetcher.parseBackupValuesFromEngineConfig(TestData.backupAddress))
         .thenReturn(TestData.fakeProps);
@@ -112,5 +100,4 @@ public class GameEnginePropertyReaderTest {
     String backupAddress = "backup";
     LobbyServerProperties fakeProps = new LobbyServerProperties("host", 123);
   }
-
 }

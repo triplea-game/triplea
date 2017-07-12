@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -238,7 +239,7 @@ public class UnitsDrawer implements IDrawable {
   }
 
   private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   public static void setUnitFlagDrawMode(final UnitFlagDrawMode unitFlag, final Preferences prefs) {

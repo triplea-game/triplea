@@ -82,17 +82,17 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
-      if (!Match.allMatch(units, Matches.UnitIsSea)) {
-        if (Match.someMatch(units, Matches.UnitIsLand)) {
+      if (!Match.allMatchNotEmpty(units, Matches.UnitIsSea)) {
+        if (Match.anyMatch(units, Matches.UnitIsLand)) {
           // this should be exact same as the one in the EditValidator
-          if (!Match.allMatch(units, Matches.alliedUnit(player, data))) {
+          if (!Match.allMatchNotEmpty(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.all(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (!Match.allMatchNotEmpty(landUnitsToAdd, Matches.UnitCanBeTransported)) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -149,7 +149,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final Match<Unit> enemyNonCom = Match.all(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
+      final Match<Unit> enemyNonCom = Match.allOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
       m_bridge.addChange(ChangeFactory.markNoMovementChange(units));

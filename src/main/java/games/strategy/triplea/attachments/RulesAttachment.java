@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -912,7 +913,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private boolean relationShipExistsLongEnnough(final Relationship r, final int relationshipsExistance) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
-    roundCurrentRelationshipWasCreated += games.strategy.triplea.Properties.getRelationshipsLastExtraRounds(getData());
+    roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
     return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated >= relationshipsExistance;
   }
 
@@ -1008,7 +1009,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, Match.all(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Match.getMatches(allUnits, Match.allOf(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;

@@ -19,7 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import games.strategy.util.Version;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class MapDownloadListTest {
 
 

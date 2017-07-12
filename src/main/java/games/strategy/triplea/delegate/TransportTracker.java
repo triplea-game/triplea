@@ -14,6 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
@@ -55,27 +56,6 @@ public class TransportTracker {
     return new ArrayList<>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
   }
 
-  public static boolean isTransporting(final Unit transport) {
-    return !((TripleAUnit) transport).getTransporting().isEmpty();
-  }
-
-  /**
-   * Returns the collection of units that the given transport has unloaded
-   * this turn. Could be empty.
-   */
-  public static Collection<Unit> unloaded(final Unit transport) {
-    return ((TripleAUnit) transport).getUnloaded();
-  }
-
-  public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    Collection<Unit> units = transporting(transport);
-    if (units == null) {
-      units = new ArrayList<>();
-    }
-    units.addAll(unloaded(transport));
-    return units;
-  }
-
   /**
    * Returns a map of transport -> collection of transported units.
    */
@@ -111,6 +91,27 @@ public class TransportTracker {
       }
     }
     return returnVal;
+  }
+
+  public static boolean isTransporting(final Unit transport) {
+    return !((TripleAUnit) transport).getTransporting().isEmpty();
+  }
+
+  /**
+   * Returns the collection of units that the given transport has unloaded
+   * this turn. Could be empty.
+   */
+  public static Collection<Unit> unloaded(final Unit transport) {
+    return ((TripleAUnit) transport).getUnloaded();
+  }
+
+  public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
+    Collection<Unit> units = transporting(transport);
+    if (units == null) {
+      units = new ArrayList<>();
+    }
+    units.addAll(unloaded(transport));
+    return units;
   }
 
   /**
@@ -250,12 +251,12 @@ public class TransportTracker {
   }
 
   private static boolean isWW2V2(final GameData data) {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   // TODO here's a bug COMCO
   private static boolean isTransportUnloadRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportUnloadRestricted(data);
+    return Properties.getTransportUnloadRestricted(data);
   }
 
   // In some versions, a transport can never unload into

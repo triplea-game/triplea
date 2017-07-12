@@ -289,7 +289,7 @@ class ProNonCombatMoveAI {
     final List<Territory> territoriesToDefendWithOneUnit = new ArrayList<>();
     for (final Territory t : moveMap.keySet()) {
       final boolean hasAlliedLandUnits =
-          Match.someMatch(moveMap.get(t).getCantMoveUnits(), ProMatches.unitIsAlliedLandAndNotInfra(player, data));
+          Match.anyMatch(moveMap.get(t).getCantMoveUnits(), ProMatches.unitIsAlliedLandAndNotInfra(player, data));
       if (!t.isWater() && !hasAlliedLandUnits
           && ProMatches
               .territoryHasNeighborOwnedByAndHasLandUnit(data, ProUtils.getPotentialEnemyPlayers(player))
@@ -492,7 +492,7 @@ class ProNonCombatMoveAI {
       final ProBattleResult minResult = patd.getMinBattleResult();
       final int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && Match.allMatch(patd.getMaxEnemyUnits(), Matches.UnitIsAir);
+          !t.isWater() && Match.allMatchNotEmpty(patd.getMaxEnemyUnits(), Matches.UnitIsAir);
       final boolean isNotFactoryAndShouldHold =
           !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
       final boolean canAlreadyBeHeld =
@@ -1217,7 +1217,7 @@ class ProNonCombatMoveAI {
           final Set<Territory> cantHoldTerritories = new HashSet<>();
           while (true) {
             final Match<Territory> match =
-                Match.all(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
+                Match.allOf(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
                     Matches.territoryIsInList(cantHoldTerritories).invert());
             final Route route = data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), match);
             if (route == null
@@ -1344,7 +1344,7 @@ class ProNonCombatMoveAI {
         if (Matches.UnitIsSea.match(u)) {
           for (final Territory t : currentUnitMoveMap.get(u)) {
             if (moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
-                && Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
+                && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
               final List<Unit> defendingUnits =
                   Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
               if (moveMap.get(t).getBattleResult() == null) {
@@ -1384,7 +1384,7 @@ class ProNonCombatMoveAI {
         if (Matches.UnitCanLandOnCarrier.match(u)) {
           for (final Territory t : currentUnitMoveMap.get(u)) {
             if (t.isWater() && moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
-                && Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
+                && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
               if (!ProTransportUtils.validateCarrierCapacity(player, t,
                   moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), u)) {
                 continue;
@@ -1789,7 +1789,7 @@ class ProNonCombatMoveAI {
         // Check if number of attack territories and value are max
         final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 0 : 1;
         final int hasOwnedCarrier =
-            Match.someMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedCarrier(player)) ? 1 : 0;
+            Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedCarrier(player)) ? 1 : 0;
         final double airValue = (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories
             + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories) / (1 + cantHoldWithoutAllies)
             / (1 + cantHoldWithoutAllies * isntFactory) * (1 + hasOwnedCarrier);
@@ -1947,7 +1947,7 @@ class ProNonCombatMoveAI {
           // Find value and try to move to territory that doesn't already have AA
           final List<Unit> units = new ArrayList<>(moveMap.get(t).getCantMoveUnits());
           units.addAll(moveMap.get(t).getUnits());
-          final boolean hasAa = Match.someMatch(units, Matches.UnitIsAAforAnything);
+          final boolean hasAa = Match.anyMatch(units, Matches.UnitIsAAforAnything);
           double value = moveMap.get(t).getValue();
           if (hasAa) {
             value *= 0.01;

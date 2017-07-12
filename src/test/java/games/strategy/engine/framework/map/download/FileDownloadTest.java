@@ -11,7 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class FileDownloadTest {
   @Mock
   private DownloadFileDescription mockDownload;

@@ -60,14 +60,6 @@ public class BattleResults extends GameDataComponent {
     return m_remainingDefendingUnits;
   }
 
-  public List<Unit> getRemainingAttackingCombatUnits() {
-    return Match.getMatches(m_remainingAttackingUnits, Matches.UnitIsNotInfrastructure);
-  }
-
-  public List<Unit> getRemainingDefendingCombatUnits() {
-    return Match.getMatches(m_remainingDefendingUnits, Matches.UnitIsNotInfrastructure);
-  }
-
   public int getAttackingCombatUnitsLeft() {
     return Match.countMatches(m_remainingAttackingUnits, Matches.UnitIsNotInfrastructure);
   }

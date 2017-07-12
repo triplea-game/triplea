@@ -564,7 +564,7 @@ public class MoveDelegateTest extends DelegateTest {
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
     final Collection<Unit> remainingTrns = Match.getMatches(japanSeaZone.getUnits().getUnits(),
-        Match.all(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
+        Match.allOf(Matches.unitHasNotMoved, Matches.UnitWasNotLoadedThisTurn));
     results = delegate.move(remainingTrns, route3);
     assertNull(results);
   }

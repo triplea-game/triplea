@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +29,7 @@ import games.strategy.util.Version;
 
 @RunWith(Enclosed.class)
 public final class MapDownloadControllerTests {
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class GetOutOfDateMapNamesTest {
     private static final String MAP_NAME = "myMap";
 
@@ -75,8 +76,8 @@ public final class MapDownloadControllerTests {
 
     private void givenDownloadedMapVersionIs(final Version version) {
       when(downloadedMaps.getZipFileCandidates(MAP_NAME)).thenReturn(Arrays.asList(MAP_ZIP_FILE_1, MAP_ZIP_FILE_2));
-      when(downloadedMaps.getVersionForZipFile(MAP_ZIP_FILE_1)).thenReturn(Optional.empty());
-      when(downloadedMaps.getVersionForZipFile(MAP_ZIP_FILE_2)).thenReturn(Optional.of(version));
+      doReturn(Optional.empty()).when(downloadedMaps).getVersionForZipFile(MAP_ZIP_FILE_1);
+      doReturn(Optional.of(version)).when(downloadedMaps).getVersionForZipFile(MAP_ZIP_FILE_2);
     }
 
     private Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
@@ -129,7 +130,7 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class PreventPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
@@ -146,7 +147,7 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.class)
+  @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class ShouldPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;

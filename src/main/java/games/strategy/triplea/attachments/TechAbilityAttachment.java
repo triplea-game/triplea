@@ -18,6 +18,7 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
@@ -135,6 +136,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_attackBonus;
   }
 
+  static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int attackBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        attackBonus += taa.getAttackBonus().getInt(ut);
+      }
+    }
+    return attackBonus;
+  }
+
   public void clearAttackBonus() {
     m_attackBonus.clear();
   }
@@ -171,6 +183,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getDefenseBonus() {
     return m_defenseBonus;
+  }
+
+  static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int defenseBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        defenseBonus += taa.getDefenseBonus().getInt(ut);
+      }
+    }
+    return defenseBonus;
   }
 
   public void clearDefenseBonus() {
@@ -211,6 +234,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_movementBonus;
   }
 
+  static int getMovementBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int movementBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        movementBonus += taa.getMovementBonus().getInt(ut);
+      }
+    }
+    return movementBonus;
+  }
+
   public void clearMovementBonus() {
     m_movementBonus.clear();
   }
@@ -247,6 +281,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getRadarBonus() {
     return m_radarBonus;
+  }
+
+  static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int radarBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        radarBonus += taa.getRadarBonus().getInt(ut);
+      }
+    }
+    return radarBonus;
   }
 
   public void clearRadarBonus() {
@@ -287,6 +332,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airAttackBonus;
   }
 
+  static int getAirAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int airAttackBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        airAttackBonus += taa.getAirAttackBonus().getInt(ut);
+      }
+    }
+    return airAttackBonus;
+  }
+
   public void clearAirAttackBonus() {
     m_airAttackBonus.clear();
   }
@@ -323,6 +379,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getAirDefenseBonus() {
     return m_airDefenseBonus;
+  }
+
+  static int getAirDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int airDefenseBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        airDefenseBonus += taa.getAirDefenseBonus().getInt(ut);
+      }
+    }
+    return airDefenseBonus;
   }
 
   public void clearAirDefenseBonus() {
@@ -363,6 +430,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_productionBonus;
   }
 
+  public static int getProductionBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int productionBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        productionBonus += taa.getProductionBonus().getInt(ut);
+      }
+    }
+    return productionBonus;
+  }
+
   public void clearProductionBonus() {
     m_productionBonus.clear();
   }
@@ -390,6 +468,22 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_minimumTerritoryValueForProductionBonus;
   }
 
+  public static int getMinimumTerritoryValueForProductionBonus(final PlayerID player, final GameData data) {
+    int minimumTerritoryValueForProductionBonus = -1;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int min = taa.getMinimumTerritoryValueForProductionBonus();
+        if (min == -1) {
+          continue;
+        } else if (minimumTerritoryValueForProductionBonus == -1 || min < minimumTerritoryValueForProductionBonus) {
+          minimumTerritoryValueForProductionBonus = min;
+        }
+      }
+    }
+    return Math.max(0, minimumTerritoryValueForProductionBonus);
+  }
+
   public void resetMinimumTerritoryValueForProductionBonus() {
     m_minimumTerritoryValueForProductionBonus = -1;
   }
@@ -410,6 +504,24 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public int getRepairDiscount() {
     return m_repairDiscount;
+  }
+
+  public static double getRepairDiscount(final PlayerID player, final GameData data) {
+    double repairDiscount = 1.0D;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int min = taa.getRepairDiscount();
+        if (min == -1) {
+          continue;
+        } else {
+          double fmin = min;
+          fmin = fmin / 100.0F;
+          repairDiscount -= fmin;
+        }
+      }
+    }
+    return Math.max(0.0D, repairDiscount);
   }
 
   public void resetRepairDiscount() {
@@ -434,6 +546,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_warBondDiceSides;
   }
 
+  public static int getWarBondDiceSides(final PlayerID player, final GameData data) {
+    int warBondDiceSides = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int sides = taa.getWarBondDiceSides();
+        if (sides > 0) {
+          warBondDiceSides += sides;
+        }
+      }
+    }
+    return Math.max(0, warBondDiceSides);
+  }
+
   public void resetWarBondDiceSides() {
     m_warBondDiceSides = -1;
   }
@@ -454,6 +580,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public int getWarBondDiceNumber() {
     return m_warBondDiceNumber;
+  }
+
+  public static int getWarBondDiceNumber(final PlayerID player, final GameData data) {
+    int warBondDiceNumber = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int number = taa.getWarBondDiceNumber();
+        if (number > 0) {
+          warBondDiceNumber += number;
+        }
+      }
+    }
+    return Math.max(0, warBondDiceNumber);
   }
 
   public void resetWarBondDiceNumber() {
@@ -490,6 +630,25 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_rocketDiceNumber;
   }
 
+  private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data) {
+    int rocketDiceNumber = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        rocketDiceNumber += taa.getRocketDiceNumber().getInt(ut);
+      }
+    }
+    return rocketDiceNumber;
+  }
+
+  public static int getRocketDiceNumber(final Collection<Unit> rockets, final GameData data) {
+    int rocketDiceNumber = 0;
+    for (final Unit u : rockets) {
+      rocketDiceNumber += getRocketDiceNumber(u.getType(), u.getOwner(), data);
+    }
+    return rocketDiceNumber;
+  }
+
   public void clearRocketDiceNumber() {
     m_rocketDiceNumber.clear();
   }
@@ -516,6 +675,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_rocketDistance;
   }
 
+  public static int getRocketDistance(final PlayerID player, final GameData data) {
+    int rocketDistance = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int distance = taa.getRocketDistance();
+        if (distance > 0) {
+          rocketDistance += distance;
+        }
+      }
+    }
+    return Math.max(0, rocketDistance);
+  }
+
   public void resetRocketDistance() {
     m_rocketDistance = 0;
   }
@@ -536,6 +709,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public int getRocketNumberPerTerritory() {
     return m_rocketNumberPerTerritory;
+  }
+
+  public static int getRocketNumberPerTerritory(final PlayerID player, final GameData data) {
+    int rocketNumberPerTerritory = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final int number = taa.getRocketNumberPerTerritory();
+        if (number > 0) {
+          rocketNumberPerTerritory += number;
+        }
+      }
+    }
+    return Math.max(0, rocketNumberPerTerritory);
   }
 
   public void resetRocketNumberPerTerritory() {
@@ -582,6 +769,26 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public HashMap<UnitType, HashSet<String>> getUnitAbilitiesGained() {
     return m_unitAbilitiesGained;
+  }
+
+  public static boolean getUnitAbilitiesGained(final String filterForAbility, final UnitType ut, final PlayerID player,
+      final GameData data) {
+    final HashSet<String> abilities = getUnitAbilitiesGained(ut, player, data);
+    return abilities.contains(filterForAbility);
+  }
+
+  private static HashSet<String> getUnitAbilitiesGained(final UnitType ut, final PlayerID player, final GameData data) {
+    final HashSet<String> unitAbilities = new HashSet<>();
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final HashSet<String> abilities = taa.getUnitAbilitiesGained().get(ut);
+        if (abilities != null) {
+          unitAbilities.addAll(abilities);
+        }
+      }
+    }
+    return unitAbilities;
   }
 
   public void clearUnitAbilitiesGained() {
@@ -640,6 +847,26 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneCapacity;
   }
 
+  public static IntegerMap<UnitType> getAirborneCapacity(final PlayerID player, final GameData data) {
+    final IntegerMap<UnitType> capacityMap = new IntegerMap<>();
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        capacityMap.add(taa.getAirborneCapacity());
+      }
+    }
+    return capacityMap;
+  }
+
+  public static int getAirborneCapacity(final Collection<Unit> units, final PlayerID player, final GameData data) {
+    final IntegerMap<UnitType> capacityMap = getAirborneCapacity(player, data);
+    int airborneCapacity = 0;
+    for (final Unit u : units) {
+      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - ((TripleAUnit) u).getLaunched()));
+    }
+    return airborneCapacity;
+  }
+
   public void clearAirborneCapacity() {
     m_airborneCapacity.clear();
   }
@@ -672,6 +899,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneTypes;
   }
 
+  public static Set<UnitType> getAirborneTypes(final PlayerID player, final GameData data) {
+    final Set<UnitType> airborneUnits = new HashSet<>();
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        airborneUnits.addAll(taa.getAirborneTypes());
+      }
+    }
+    return airborneUnits;
+  }
+
   public void clearAirborneTypes() {
     m_airborneTypes.clear();
   }
@@ -696,6 +934,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public int getAirborneDistance() {
     return m_airborneDistance;
+  }
+
+  public static int getAirborneDistance(final PlayerID player, final GameData data) {
+    int airborneDistance = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        airborneDistance += taa.getAirborneDistance();
+      }
+    }
+    return Math.max(0, airborneDistance);
   }
 
   public void resetAirborneDistance() {
@@ -724,6 +973,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public HashSet<UnitType> getAirborneBases() {
     return m_airborneBases;
+  }
+
+  public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data) {
+    final Set<UnitType> airborneBases = new HashSet<>();
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        airborneBases.addAll(taa.getAirborneBases());
+      }
+    }
+    return airborneBases;
   }
 
   public void clearAirborneBases() {
@@ -764,6 +1024,28 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_airborneTargettedByAA;
   }
 
+  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
+      final GameData data) {
+    final HashMap<String, HashSet<UnitType>> rVal = new HashMap<>();
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
+        if (mapAa != null && !mapAa.isEmpty()) {
+          for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
+            HashSet<UnitType> current = rVal.get(entry.getKey());
+            if (current == null) {
+              current = new HashSet<>();
+            }
+            current.addAll(entry.getValue());
+            rVal.put(entry.getKey(), current);
+          }
+        }
+      }
+    }
+    return rVal;
+  }
+
   public void clearAirborneTargettedByAA() {
     m_airborneTargettedByAA.clear();
   }
@@ -800,6 +1082,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getAttackRollsBonus() {
     return m_attackRollsBonus;
+  }
+
+  static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int attackRollsBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        attackRollsBonus += taa.getAttackRollsBonus().getInt(ut);
+      }
+    }
+    return attackRollsBonus;
   }
 
   public void clearAttackRollsBonus() {
@@ -840,12 +1133,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_defenseRollsBonus;
   }
 
-  public void clearDefenseRollsBonus() {
-    m_defenseRollsBonus.clear();
-  }
-
-  public void resetDefenseRollsBonus() {
-    m_defenseRollsBonus = new IntegerMap<>();
+  static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int defenseRollsBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        defenseRollsBonus += taa.getDefenseRollsBonus().getInt(ut);
+      }
+    }
+    return defenseRollsBonus;
   }
 
   /**
@@ -878,219 +1174,31 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return m_bombingBonus;
   }
 
+  public static int getBombingBonus(final UnitType ut, final PlayerID player, final GameData data) {
+    int bombingBonus = 0;
+    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
+      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+      if (taa != null) {
+        bombingBonus += taa.getBombingBonus().getInt(ut);
+      }
+    }
+    return bombingBonus;
+  }
+
+  public void clearDefenseRollsBonus() {
+    m_defenseRollsBonus.clear();
+  }
+
+  public void resetDefenseRollsBonus() {
+    m_defenseRollsBonus = new IntegerMap<>();
+  }
+
   public void clearBombingBonus() {
     m_bombingBonus.clear();
   }
 
   public void resetBombingBonus() {
     m_bombingBonus = new IntegerMap<>();
-  }
-
-  // Static Methods for interpreting data in attachments
-  static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int attackBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        attackBonus += taa.getAttackBonus().getInt(ut);
-      }
-    }
-    return attackBonus;
-  }
-
-  static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int defenseBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        defenseBonus += taa.getDefenseBonus().getInt(ut);
-      }
-    }
-    return defenseBonus;
-  }
-
-  static int getMovementBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int movementBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        movementBonus += taa.getMovementBonus().getInt(ut);
-      }
-    }
-    return movementBonus;
-  }
-
-  static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int radarBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        radarBonus += taa.getRadarBonus().getInt(ut);
-      }
-    }
-    return radarBonus;
-  }
-
-  static int getAirAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int airAttackBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airAttackBonus += taa.getAirAttackBonus().getInt(ut);
-      }
-    }
-    return airAttackBonus;
-  }
-
-  static int getAirDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int airDefenseBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airDefenseBonus += taa.getAirDefenseBonus().getInt(ut);
-      }
-    }
-    return airDefenseBonus;
-  }
-
-  public static int getProductionBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int productionBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        productionBonus += taa.getProductionBonus().getInt(ut);
-      }
-    }
-    return productionBonus;
-  }
-
-  public static int getMinimumTerritoryValueForProductionBonus(final PlayerID player, final GameData data) {
-    int minimumTerritoryValueForProductionBonus = -1;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int min = taa.getMinimumTerritoryValueForProductionBonus();
-        if (min == -1) {
-          continue;
-        } else if (minimumTerritoryValueForProductionBonus == -1 || min < minimumTerritoryValueForProductionBonus) {
-          minimumTerritoryValueForProductionBonus = min;
-        }
-      }
-    }
-    return Math.max(0, minimumTerritoryValueForProductionBonus);
-  }
-
-  public static double getRepairDiscount(final PlayerID player, final GameData data) {
-    double repairDiscount = 1.0D;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int min = taa.getRepairDiscount();
-        if (min == -1) {
-          continue;
-        } else {
-          double fmin = min;
-          fmin = fmin / 100.0F;
-          repairDiscount -= fmin;
-        }
-      }
-    }
-    return Math.max(0.0D, repairDiscount);
-  }
-
-  public static int getWarBondDiceSides(final PlayerID player, final GameData data) {
-    int warBondDiceSides = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int sides = taa.getWarBondDiceSides();
-        if (sides > 0) {
-          warBondDiceSides += sides;
-        }
-      }
-    }
-    return Math.max(0, warBondDiceSides);
-  }
-
-  public static int getWarBondDiceNumber(final PlayerID player, final GameData data) {
-    int warBondDiceNumber = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int number = taa.getWarBondDiceNumber();
-        if (number > 0) {
-          warBondDiceNumber += number;
-        }
-      }
-    }
-    return Math.max(0, warBondDiceNumber);
-  }
-
-  private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data) {
-    int rocketDiceNumber = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        rocketDiceNumber += taa.getRocketDiceNumber().getInt(ut);
-      }
-    }
-    return rocketDiceNumber;
-  }
-
-  public static int getRocketDiceNumber(final Collection<Unit> rockets, final GameData data) {
-    int rocketDiceNumber = 0;
-    for (final Unit u : rockets) {
-      rocketDiceNumber += getRocketDiceNumber(u.getType(), u.getOwner(), data);
-    }
-    return rocketDiceNumber;
-  }
-
-  public static int getRocketDistance(final PlayerID player, final GameData data) {
-    int rocketDistance = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int distance = taa.getRocketDistance();
-        if (distance > 0) {
-          rocketDistance += distance;
-        }
-      }
-    }
-    return Math.max(0, rocketDistance);
-  }
-
-  public static int getRocketNumberPerTerritory(final PlayerID player, final GameData data) {
-    int rocketNumberPerTerritory = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int number = taa.getRocketNumberPerTerritory();
-        if (number > 0) {
-          rocketNumberPerTerritory += number;
-        }
-      }
-    }
-    return Math.max(0, rocketNumberPerTerritory);
-  }
-
-  private static HashSet<String> getUnitAbilitiesGained(final UnitType ut, final PlayerID player, final GameData data) {
-    final HashSet<String> unitAbilities = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final HashSet<String> abilities = taa.getUnitAbilitiesGained().get(ut);
-        if (abilities != null) {
-          unitAbilities.addAll(abilities);
-        }
-      }
-    }
-    return unitAbilities;
-  }
-
-  public static boolean getUnitAbilitiesGained(final String filterForAbility, final UnitType ut, final PlayerID player,
-      final GameData data) {
-    final HashSet<String> abilities = getUnitAbilitiesGained(ut, player, data);
-    return abilities.contains(filterForAbility);
   }
 
   public static boolean getAllowAirborneForces(final PlayerID player, final GameData data) {
@@ -1103,114 +1211,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
       }
     }
     return false;
-  }
-
-  public static IntegerMap<UnitType> getAirborneCapacity(final PlayerID player, final GameData data) {
-    final IntegerMap<UnitType> capacityMap = new IntegerMap<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        capacityMap.add(taa.getAirborneCapacity());
-      }
-    }
-    return capacityMap;
-  }
-
-  public static int getAirborneCapacity(final Collection<Unit> units, final PlayerID player, final GameData data) {
-    final IntegerMap<UnitType> capacityMap = getAirborneCapacity(player, data);
-    int airborneCapacity = 0;
-    for (final Unit u : units) {
-      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - ((TripleAUnit) u).getLaunched()));
-    }
-    return airborneCapacity;
-  }
-
-  public static Set<UnitType> getAirborneTypes(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneUnits = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneUnits.addAll(taa.getAirborneTypes());
-      }
-    }
-    return airborneUnits;
-  }
-
-  public static int getAirborneDistance(final PlayerID player, final GameData data) {
-    int airborneDistance = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneDistance += taa.getAirborneDistance();
-      }
-    }
-    return Math.max(0, airborneDistance);
-  }
-
-  public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneBases = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneBases.addAll(taa.getAirborneBases());
-      }
-    }
-    return airborneBases;
-  }
-
-  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
-      final GameData data) {
-    final HashMap<String, HashSet<UnitType>> rVal = new HashMap<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
-        if (mapAa != null && !mapAa.isEmpty()) {
-          for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
-            HashSet<UnitType> current = rVal.get(entry.getKey());
-            if (current == null) {
-              current = new HashSet<>();
-            }
-            current.addAll(entry.getValue());
-            rVal.put(entry.getKey(), current);
-          }
-        }
-      }
-    }
-    return rVal;
-  }
-
-  static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int attackRollsBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        attackRollsBonus += taa.getAttackRollsBonus().getInt(ut);
-      }
-    }
-    return attackRollsBonus;
-  }
-
-  static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int defenseRollsBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        defenseRollsBonus += taa.getDefenseRollsBonus().getInt(ut);
-      }
-    }
-    return defenseRollsBonus;
-  }
-
-  public static int getBombingBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int bombingBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        bombingBonus += taa.getBombingBonus().getInt(ut);
-      }
-    }
-    return bombingBonus;
   }
 
   /**
@@ -1268,8 +1268,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              Match.all(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
-          final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
+              Match.allOf(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
+          final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {
               taa.setAttackBonus("1:" + jet.getName());
@@ -1318,8 +1318,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allBombers =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
-          final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLhtr = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+          final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
+          final boolean heavyBombersLhtr = Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             // we subtract the base rolls to get the bonus

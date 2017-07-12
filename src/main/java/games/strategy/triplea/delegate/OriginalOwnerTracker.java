@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
  * Needed since territories and factories must revert
  * to their original owner when captured from the enemy.
  */
-public class OriginalOwnerTracker implements java.io.Serializable {
+public class OriginalOwnerTracker implements Serializable {
   private static final long serialVersionUID = 8462432412106180906L;
 
   /** Creates new OriginalOwnerTracker. */

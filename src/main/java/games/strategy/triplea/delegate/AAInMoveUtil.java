@@ -18,6 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -48,11 +49,11 @@ class AAInMoveUtil implements Serializable {
   }
 
   private boolean isAlwaysONAAEnabled() {
-    return games.strategy.triplea.Properties.getAlwaysOnAA(getData());
+    return Properties.getAlwaysOnAA(getData());
   }
 
   private boolean isAATerritoryRestricted() {
-    return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
+    return Properties.getAATerritoryRestricted(getData());
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
@@ -73,92 +74,6 @@ class AAInMoveUtil implements Serializable {
     }
     m_executionStack.execute(m_bridge);
     return m_casualties;
-  }
-
-  private void populateExecutionStack(final Route route, final Collection<Unit> units,
-      final Comparator<Unit> decreasingMovement, final UndoableMove currentMove) {
-    final List<Unit> targets = new ArrayList<>(units);
-    // select units with lowest movement first
-    targets.sort(decreasingMovement);
-    final List<IExecutable> executables = new ArrayList<>();
-    for (Territory location : getTerritoriesWhereAAWillFire(route, units)) {
-      executables.add(new IExecutable() {
-        private static final long serialVersionUID = -1545771595683434276L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireAA(location, targets, currentMove);
-        }
-      });
-    }
-    Collections.reverse(executables);
-    m_executionStack.push(executables);
-  }
-
-  Collection<Territory> getTerritoriesWhereAAWillFire(final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = isAlwaysONAAEnabled();
-    // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && isAATerritoryRestricted()) {
-      return Collections.emptyList();
-    }
-    final GameData data = getData();
-    // No AA in nonCombat unless 'Always on AA'
-    if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAa) {
-      return Collections.emptyList();
-    }
-    // can't rely on m_player being the unit owner in Edit Mode
-    // look at the units being moved to determine allies and enemies
-    final PlayerID movingPlayer = movingPlayer(units);
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, data);
-    // don't iterate over the end
-    // that will be a battle
-    // and handled else where in this tangled mess
-    final Match<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
-        Matches.UnitIsAAforFlyOverOnly, 1, true, data);
-    // AA guns in transports shouldn't be able to fire
-    final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
-    for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnits().someMatch(hasAa)) {
-        territoriesWhereAaWillFire.add(current);
-      }
-    }
-    if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
-      if (route.getEnd().getUnits().someMatch(hasAa)) {
-        territoriesWhereAaWillFire.add(route.getEnd());
-      }
-    } else {
-      // Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from
-      // AA sites one at a
-      // time
-      // if there was a battle fought there then don't fire, this covers the case where we fight, and "Always On AA"
-      // wants to fire after the
-      // battle.
-      // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
-      // fire
-      if (route.getStart().getUnits().someMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
-        territoriesWhereAaWillFire.add(route.getStart());
-      }
-    }
-    return territoriesWhereAaWillFire;
-  }
-
-  private BattleTracker getBattleTracker() {
-    return DelegateFinder.battleDelegate(getData()).getBattleTracker();
-  }
-
-  private PlayerID movingPlayer(final Collection<Unit> units) {
-    if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player))) {
-      return m_player;
-    }
-    if (units != null) {
-      for (final Unit u : units) {
-        if (u != null && u.getOwner() != null) {
-          return u.getOwner();
-        }
-      }
-    }
-    return PlayerID.NULL_PLAYERID;
   }
 
   /**
@@ -183,8 +98,8 @@ class AAInMoveUtil implements Serializable {
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, Match.any(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.all(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          Match.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
+              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted
@@ -241,6 +156,92 @@ class AAInMoveUtil implements Serializable {
     }
   }
 
+  private void populateExecutionStack(final Route route, final Collection<Unit> units,
+      final Comparator<Unit> decreasingMovement, final UndoableMove currentMove) {
+    final List<Unit> targets = new ArrayList<>(units);
+    // select units with lowest movement first
+    targets.sort(decreasingMovement);
+    final List<IExecutable> executables = new ArrayList<>();
+    for (Territory location : getTerritoriesWhereAAWillFire(route, units)) {
+      executables.add(new IExecutable() {
+        private static final long serialVersionUID = -1545771595683434276L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          fireAA(location, targets, currentMove);
+        }
+      });
+    }
+    Collections.reverse(executables);
+    m_executionStack.push(executables);
+  }
+
+  Collection<Territory> getTerritoriesWhereAAWillFire(final Route route, final Collection<Unit> units) {
+    final boolean alwaysOnAa = isAlwaysONAAEnabled();
+    // Just the attacked territory will have AA firing
+    if (!alwaysOnAa && isAATerritoryRestricted()) {
+      return Collections.emptyList();
+    }
+    final GameData data = getData();
+    // No AA in nonCombat unless 'Always on AA'
+    if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAa) {
+      return Collections.emptyList();
+    }
+    // can't rely on m_player being the unit owner in Edit Mode
+    // look at the units being moved to determine allies and enemies
+    final PlayerID movingPlayer = movingPlayer(units);
+    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, data);
+    // don't iterate over the end
+    // that will be a battle
+    // and handled else where in this tangled mess
+    final Match<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
+        Matches.UnitIsAAforFlyOverOnly, 1, true, data);
+    // AA guns in transports shouldn't be able to fire
+    final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
+    for (final Territory current : route.getMiddleSteps()) {
+      if (current.getUnits().anyMatch(hasAa)) {
+        territoriesWhereAaWillFire.add(current);
+      }
+    }
+    if (Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
+      if (route.getEnd().getUnits().anyMatch(hasAa)) {
+        territoriesWhereAaWillFire.add(route.getEnd());
+      }
+    } else {
+      // Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from
+      // AA sites one at a
+      // time
+      // if there was a battle fought there then don't fire, this covers the case where we fight, and "Always On AA"
+      // wants to fire after the
+      // battle.
+      // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
+      // fire
+      if (route.getStart().getUnits().anyMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
+        territoriesWhereAaWillFire.add(route.getStart());
+      }
+    }
+    return territoriesWhereAaWillFire;
+  }
+
+  private BattleTracker getBattleTracker() {
+    return DelegateFinder.battleDelegate(getData()).getBattleTracker();
+  }
+
+  private PlayerID movingPlayer(final Collection<Unit> units) {
+    if (Match.anyMatch(units, Matches.unitIsOwnedBy(m_player))) {
+      return m_player;
+    }
+    if (units != null) {
+      for (final Unit u : units) {
+        if (u != null && u.getOwner() != null) {
+          return u.getOwner();
+        }
+      }
+    }
+    return PlayerID.NULL_PLAYERID;
+  }
+
   private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
       if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
@@ -248,7 +249,7 @@ class AAInMoveUtil implements Serializable {
       }
       return PlayerID.NULL_PLAYERID;
     } else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()
-        && Match.someMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner()))) {
+        && Match.anyMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
     }
     for (final Unit u : defendingUnits) {

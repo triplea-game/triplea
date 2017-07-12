@@ -1,9 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
+
 /**
  * A single roll of a die.
  */
-public class Die implements java.io.Serializable {
+public class Die implements Serializable {
   private static final long serialVersionUID = 8766753280669636980L;
 
   public enum DieType {

@@ -44,13 +44,13 @@ public class EconomyPanel extends AbstractStatPanel {
 
   class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 5197895788633898324L;
-    private boolean m_isDirty = true;
-    private String[][] m_collectedData;
+    private boolean isDirty = true;
+    private String[][] collectedData;
 
     public ResourceTableModel() {
       setResourceCollums();
       gameData.addDataChangeListener(this);
-      m_isDirty = true;
+      isDirty = true;
     }
 
     private void setResourceCollums() {
@@ -66,11 +66,11 @@ public class EconomyPanel extends AbstractStatPanel {
 
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
-      if (m_isDirty) {
+      if (isDirty) {
         loadData();
-        m_isDirty = false;
+        isDirty = false;
       }
-      return m_collectedData[row][col];
+      return collectedData[row][col];
     }
 
     private synchronized void loadData() {
@@ -78,12 +78,12 @@ public class EconomyPanel extends AbstractStatPanel {
       try {
         final List<PlayerID> players = getPlayers();
         final Collection<String> alliances = getAlliances();
-        m_collectedData = new String[players.size() + alliances.size()][statsResource.length + 1];
+        collectedData = new String[players.size() + alliances.size()][statsResource.length + 1];
         int row = 0;
         for (final PlayerID player : players) {
-          m_collectedData[row][0] = player.getName();
+          collectedData[row][0] = player.getName();
           for (int i = 0; i < statsResource.length; i++) {
-            m_collectedData[row][i + 1] =
+            collectedData[row][i + 1] =
                 statsResource[i].getFormatter().format(statsResource[i].getValue(player, gameData));
           }
           row++;
@@ -91,9 +91,9 @@ public class EconomyPanel extends AbstractStatPanel {
         final Iterator<String> allianceIterator = alliances.iterator();
         while (allianceIterator.hasNext()) {
           final String alliance = allianceIterator.next();
-          m_collectedData[row][0] = alliance;
+          collectedData[row][0] = alliance;
           for (int i = 0; i < statsResource.length; i++) {
-            m_collectedData[row][i + 1] =
+            collectedData[row][i + 1] =
                 statsResource[i].getFormatter().format(statsResource[i].getValue(alliance, gameData));
           }
           row++;
@@ -106,7 +106,7 @@ public class EconomyPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change change) {
       synchronized (this) {
-        m_isDirty = true;
+        isDirty = true;
       }
       SwingUtilities.invokeLater(() -> repaint());
     }
@@ -126,8 +126,8 @@ public class EconomyPanel extends AbstractStatPanel {
 
     @Override
     public synchronized int getRowCount() {
-      if (!m_isDirty) {
-        return m_collectedData.length;
+      if (!isDirty) {
+        return collectedData.length;
       } else {
         gameData.acquireReadLock();
         try {
@@ -143,7 +143,7 @@ public class EconomyPanel extends AbstractStatPanel {
         gameData.removeDataChangeListener(this);
         gameData = data;
         gameData.addDataChangeListener(this);
-        m_isDirty = true;
+        isDirty = true;
       }
       repaint();
     }

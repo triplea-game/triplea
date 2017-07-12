@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,13 +29,13 @@ public class MutedUsernameController {
    * If this username is already muted, this call will update the mute_end.
    * </p>
    */
-  public void addMutedUsername(final String username, final Date muteTill) {
+  public void addMutedUsername(final String username, final Instant muteTill) {
     if (isUsernameMuted(username)) {
       removeMutedUsername(username);
     }
     Timestamp muteTillTs = null;
     if (muteTill != null) {
-      muteTillTs = new Timestamp(muteTill.getTime());
+      muteTillTs = new Timestamp(muteTill.toEpochMilli());
     }
     s_logger.fine("Muting username:" + username);
     final Connection con = Database.getDerbyConnection();

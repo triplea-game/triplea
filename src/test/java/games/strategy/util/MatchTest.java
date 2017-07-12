@@ -7,31 +7,20 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
 public class MatchTest {
+  private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
+
   private static final Object VALUE = new Object();
 
-  private final Collection<Integer> ints = Arrays.asList(-1, -2, -3, 0, 1, 2, 3);
-  private final Match<Integer> pos = Match.of(it -> it > 0);
-  private final Match<Integer> neg = Match.of(it -> it < 0);
-  private final Match<Integer> zero = Match.of(it -> it == 0);
-
   @Test
-  public void testNever() {
-    assertFalse(Match.someMatch(ints, Match.never()));
-    assertFalse(Match.allMatch(ints, Match.never()));
-  }
-
-  @Test
-  public void testMatches() {
-    assertTrue(pos.match(1));
-    assertTrue(!pos.match(-1));
-    assertTrue(neg.match(-1));
-    assertTrue(!neg.match(1));
-    assertTrue(zero.match(0));
-    assertTrue(!zero.match(1));
+  public void testMatch() {
+    assertFalse(IS_ZERO_MATCH.match(-1));
+    assertTrue(IS_ZERO_MATCH.match(0));
+    assertFalse(IS_ZERO_MATCH.match(1));
   }
 
   @Test
@@ -42,52 +31,137 @@ public class MatchTest {
 
   @Test
   public void testAlways() {
-    assertTrue(Match.someMatch(ints, Match.always()));
-    assertTrue(Match.allMatch(ints, Match.always()));
+    assertTrue(Match.always().match(VALUE));
   }
 
   @Test
-  public void testAll() {
-    assertTrue(Match.all().match(VALUE));
-
-    assertTrue(Match.all(Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.never()).match(VALUE));
-
-    assertTrue(Match.all(Match.always(), Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.always(), Match.never()).match(VALUE));
-    assertFalse(Match.all(Match.never(), Match.always()).match(VALUE));
-    assertFalse(Match.all(Match.never(), Match.never()).match(VALUE));
+  public void testNever() {
+    assertFalse(Match.never().match(VALUE));
   }
 
   @Test
-  public void testAny() {
-    assertFalse(Match.any().match(VALUE));
+  public void testAllOf() {
+    assertTrue(Match.allOf().match(VALUE));
 
-    assertTrue(Match.any(Match.always()).match(VALUE));
-    assertFalse(Match.any(Match.never()).match(VALUE));
+    assertTrue(Match.allOf(Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.never()).match(VALUE));
 
-    assertTrue(Match.any(Match.always(), Match.always()).match(VALUE));
-    assertTrue(Match.any(Match.always(), Match.never()).match(VALUE));
-    assertTrue(Match.any(Match.never(), Match.always()).match(VALUE));
-    assertFalse(Match.any(Match.never(), Match.never()).match(VALUE));
+    assertTrue(Match.allOf(Match.always(), Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.always(), Match.never()).match(VALUE));
+    assertFalse(Match.allOf(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.allOf(Match.never(), Match.never()).match(VALUE));
+  }
+
+  @Test
+  public void testAnyOf() {
+    assertFalse(Match.anyOf().match(VALUE));
+
+    assertTrue(Match.anyOf(Match.always()).match(VALUE));
+    assertFalse(Match.anyOf(Match.never()).match(VALUE));
+
+    assertTrue(Match.anyOf(Match.always(), Match.always()).match(VALUE));
+    assertTrue(Match.anyOf(Match.always(), Match.never()).match(VALUE));
+    assertTrue(Match.anyOf(Match.never(), Match.always()).match(VALUE));
+    assertFalse(Match.anyOf(Match.never(), Match.never()).match(VALUE));
   }
 
   @Test
   public void testGetMatches() {
-    assertEquals(Arrays.asList(), Match.getMatches(Arrays.asList(), Match.always()));
-
     final Collection<Integer> input = Arrays.asList(-1, 0, 1);
-    assertEquals(Arrays.asList(), Match.getMatches(input, Match.never()));
-    assertEquals(Arrays.asList(-1, 0, 1), Match.getMatches(input, Match.always()));
-    assertEquals(Arrays.asList(-1, 1), Match.getMatches(input, Match.of(value -> value != 0)));
+
+    assertEquals("empty collection", Arrays.asList(), Match.getMatches(Arrays.asList(), Match.always()));
+    assertEquals("none match", Arrays.asList(), Match.getMatches(input, Match.never()));
+    assertEquals("some match", Arrays.asList(-1, 1), Match.getMatches(input, IS_ZERO_MATCH.invert()));
+    assertEquals("all match", Arrays.asList(-1, 0, 1), Match.getMatches(input, Match.always()));
   }
 
   @Test
-  public void testMap() {
-    final HashMap<String, String> map = new HashMap<>();
+  public void testGetNMatches() {
+    final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+
+    assertEquals("empty collection", Arrays.asList(), Match.getNMatches(Arrays.asList(), 999, Match.always()));
+    assertEquals("max = 0", Arrays.asList(), Match.getNMatches(input, 0, Match.never()));
+    assertEquals("none match", Arrays.asList(), Match.getNMatches(input, input.size(), Match.never()));
+    assertEquals("some match; max < count",
+        Arrays.asList(0),
+        Match.getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO_MATCH));
+    assertEquals("some match; max = count",
+        Arrays.asList(0, 0),
+        Match.getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO_MATCH));
+    assertEquals("some match; max > count",
+        Arrays.asList(0, 0),
+        Match.getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO_MATCH));
+    assertEquals("all match; max < count",
+        Arrays.asList(-1, 0),
+        Match.getNMatches(input, input.size() - 1, Match.always()));
+    assertEquals("all match; max = count",
+        Arrays.asList(-1, 0, 1),
+        Match.getNMatches(input, input.size(), Match.always()));
+    assertEquals("all match; max > count",
+        Arrays.asList(-1, 0, 1),
+        Match.getNMatches(input, input.size() + 1, Match.always()));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetNMatches_ShouldThrowExceptionWhenMaxIsNegative() {
+    Match.getNMatches(Arrays.asList(-1, 0, 1), -1, Match.always());
+  }
+
+  @Test
+  public void testAllMatchNotEmpty() {
+    assertFalse("empty collection", Match.allMatchNotEmpty(Arrays.asList(), IS_ZERO_MATCH));
+    assertFalse("none match", Match.allMatchNotEmpty(Arrays.asList(-1, 1), IS_ZERO_MATCH));
+    assertFalse("some match", Match.allMatchNotEmpty(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+    assertTrue("all match (one element)", Match.allMatchNotEmpty(Arrays.asList(0), IS_ZERO_MATCH));
+    assertTrue("all match (multiple elements)", Match.allMatchNotEmpty(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+  }
+  
+  @Test
+  public void testAllMatch() {
+    assertTrue("empty collection", Match.allMatch(Arrays.asList(), IS_ZERO_MATCH));
+    assertFalse("none match", Match.allMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
+    assertFalse("some match", Match.allMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+    assertTrue("all match (one element)", Match.allMatch(Arrays.asList(0), IS_ZERO_MATCH));
+    assertTrue("all match (multiple elements)", Match.allMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+  }
+
+  @Test
+  public void testAnyMatch() {
+    assertFalse("empty collection", Match.anyMatch(Arrays.asList(), IS_ZERO_MATCH));
+    assertFalse("none match", Match.anyMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
+    assertTrue("some match (one element)", Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH));
+    assertTrue("some match (multiple elements)", Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+    assertTrue("all match (one element)", Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH));
+    assertTrue("all match (multiple elements)", Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+  }
+
+  @Test
+  public void testNoneMatch() {
+    assertTrue("empty collection", Match.noneMatch(Arrays.asList(), IS_ZERO_MATCH));
+    assertTrue("none match (one element)", Match.noneMatch(Arrays.asList(-1), IS_ZERO_MATCH));
+    assertTrue("none match (multiple elements)", Match.noneMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
+    assertFalse("some match", Match.noneMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+    assertFalse("all match", Match.noneMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+  }
+
+  @Test
+  public void testCountMatches() {
+    assertEquals(0, Match.countMatches(Arrays.asList(), IS_ZERO_MATCH));
+
+    assertEquals(1, Match.countMatches(Arrays.asList(0), IS_ZERO_MATCH));
+    assertEquals(1, Match.countMatches(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+
+    assertEquals(2, Match.countMatches(Arrays.asList(0, 0), IS_ZERO_MATCH));
+    assertEquals(2, Match.countMatches(Arrays.asList(-1, 0, 1, 0), IS_ZERO_MATCH));
+  }
+
+  @Test
+  public void testGetKeysWhereValueMatch() {
+    final Map<String, String> map = new HashMap<>();
     map.put("a", "b");
     map.put("b", "c");
     map.put("c", "d");
+
     assertEquals(3, Match.getKeysWhereValueMatch(map, Match.always()).size());
     assertEquals(0, Match.getKeysWhereValueMatch(map, Match.never()).size());
   }

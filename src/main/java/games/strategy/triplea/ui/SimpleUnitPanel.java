@@ -20,6 +20,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitCategory;
@@ -71,7 +72,7 @@ public class SimpleUnitPanel extends JPanel {
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         final int quantity = rules.getInt(repairRule);
-        if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           // check to see if the repair rule matches the damaged unit
           if (unit.getType().equals((repairRule.getResults().keySet().iterator().next()))) {
             addUnits(player, data, quantity, unit.getType(), Matches.UnitHasTakenSomeBombingUnitDamage.match(unit),
