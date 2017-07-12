@@ -1203,7 +1203,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // non-paratrooper non-amphibious
     // land units.
     // If attacker is all planes, just return collection of current territory
-    if (m_headless || !m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.UnitIsAir)
+    if (m_headless || (!m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
         || games.strategy.triplea.Properties.getRetreatingUnitsRemainInPlace(m_data)) {
       final Collection<Territory> oneTerritory = new ArrayList<>(2);
       oneTerritory.add(m_battleSite);

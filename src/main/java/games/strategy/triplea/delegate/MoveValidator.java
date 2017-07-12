@@ -308,7 +308,7 @@ public class MoveValidator {
     }
     // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
     if (route.hasNeutralBeforeEnd()) {
-      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
+      if ((units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir)) && !isNeutralsBlitzable(data)) {
         return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
       }
     }
@@ -448,7 +448,7 @@ public class MoveValidator {
     }
     // if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
-    if (!units.isEmpty() && Match.allMatch(units, Matches.UnitIsAir)
+    if ((!units.isEmpty() && Match.allMatch(units, Matches.UnitIsAir))
         || (Match.noneMatch(units, Matches.UnitIsSea) && !nonParatroopersPresent(player, units))) {
       // if there are non-paratroopers present, then we cannot fly over stuff
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
@@ -644,7 +644,7 @@ public class MoveValidator {
       }
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
       if (route.hasNeutralBeforeEnd()) {
-        if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data)) {
+        if ((units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir)) && !isNeutralsBlitzable(data)) {
           return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
         }
       }
@@ -1550,8 +1550,7 @@ public class MoveValidator {
       if (waterRoute != null
           && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) || (forceLandOrSeaRoute
-                  && Match
-                      .anyMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
+                  && Match.anyMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))) {
         defaultRoute = waterRoute;
         mustGoSea = true;
       }
