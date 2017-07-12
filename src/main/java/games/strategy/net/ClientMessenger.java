@@ -124,7 +124,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
       } else if (m_connectionRefusedError instanceof CouldNotLogInException) {
         throw (CouldNotLogInException) m_connectionRefusedError;
       } else if (m_connectionRefusedError != null) {
-        throw new IOException(m_connectionRefusedError.getMessage());
+        throw new IOException(m_connectionRefusedError);
       }
     }
   }

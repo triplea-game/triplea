@@ -7,16 +7,26 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.MD5Crypt;
 
+/**
+ * The client side of the peer-to-peer network game authentication protocol.
+ *
+ * <p>
+ * In the peer-to-peer network game authentication protocol, the client receives a challenge from the server. The client
+ * is responsible for obtaining the game password from the user and using it to send a response to the server's
+ * challenge proving that the client knows the game password.
+ * </p>
+ */
 public class ClientLogin implements IConnectionLogin {
   public static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
-  public static final String JDK_VERSION_PROPERTY = "JDK.Version";
-  public static final String PASSWORD_PROPERTY = "Password";
+  private static final String JDK_VERSION_PROPERTY = "JDK.Version";
+
   private final Component parentComponent;
 
   public ClientLogin(final Component parent) {
@@ -24,19 +34,42 @@ public class ClientLogin implements IConnectionLogin {
   }
 
   @Override
-  public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-    final Map<String, String> rVal = new HashMap<>();
-    if (challengProperties.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
-      final JPasswordField passwordField = new JPasswordField();
-      passwordField.setColumns(15);
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), passwordField,
-          "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
-      final String password = new String(passwordField.getPassword());
-      rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
+  public Map<String, String> getProperties(final Map<String, String> challenge) {
+    final Map<String, String> response = new HashMap<>();
+
+    if (Boolean.TRUE.toString().equals(challenge.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY))) {
+      addAuthenticationResponseProperties(promptForPassword(), challenge, response);
     }
-    rVal.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
-    rVal.put(JDK_VERSION_PROPERTY, System.getProperty("java.runtime.version"));
-    return rVal;
+
+    response.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
+    response.put(JDK_VERSION_PROPERTY, System.getProperty("java.runtime.version"));
+
+    return response;
+  }
+
+  @VisibleForTesting
+  static void addAuthenticationResponseProperties(
+      final String password,
+      final Map<String, String> challenge,
+      final Map<String, String> response) {
+    try {
+      response.putAll(V1Authenticator.newResponse(password, challenge));
+      response.putAll(V2Authenticator.newResponse(password, challenge));
+    } catch (final AuthenticationException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @VisibleForTesting
+  protected String promptForPassword() {
+    final JPasswordField passwordField = new JPasswordField();
+    passwordField.setColumns(15);
+    JOptionPane.showMessageDialog(
+        JOptionPane.getFrameForComponent(parentComponent),
+        passwordField,
+        "Enter a password to join the game",
+        JOptionPane.QUESTION_MESSAGE);
+    return new String(passwordField.getPassword());
   }
 
   @Override
