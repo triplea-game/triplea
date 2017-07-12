@@ -1078,7 +1078,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     // we may have special units with requiresUnits restrictions
     final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
-        ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) : new ArrayList<>(units));
+        ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
+        : new ArrayList<>(units));
     if (unitsCanBePlacedByThisProducer.size() <= 0) {
       return 0;
     }
@@ -1266,7 +1267,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final IntegerMap<String> unitMapHeld = new IntegerMap<>();
     final IntegerMap<String> unitMapMaxType = new IntegerMap<>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<>();
-    final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
+    final int maxFactory = Properties.getFactoriesPerCountry(getData());
     final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsConstruction).iterator();
     // Can be null!
     final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
@@ -1305,9 +1306,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
       }
     }
-    final boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
-    final boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
-    final boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(getData());
+    final boolean moreWithoutFactory = Properties.getMoreConstructionsWithoutFactory(getData());
+    final boolean moreWithFactory = Properties.getMoreConstructionsWithFactory(getData());
+    final boolean unlimitedConstructions = Properties.getUnlimitedConstructions(getData());
     final boolean wasFactoryThereAtStart =
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
     // build an integer map of each construction unit in the territory
@@ -1626,23 +1627,23 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected boolean canProduceFightersOnCarriers() {
-    return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
+    return Properties.getProduceFightersOnCarriers(getData());
   }
 
   protected boolean canProduceNewFightersOnOldCarriers() {
-    return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
+    return Properties.getProduceNewFightersOnOldCarriers(getData());
   }
 
   protected boolean canMoveExistingFightersToNewCarriers() {
-    return games.strategy.triplea.Properties.getMoveExistingFightersToNewCarriers(getData());
+    return Properties.getMoveExistingFightersToNewCarriers(getData());
   }
 
   protected boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(getData());
+    return Properties.getWW2V2(getData());
   }
 
   protected boolean isUnitPlacementInEnemySeas() {
-    return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(getData());
+    return Properties.getUnitPlacementInEnemySeas(getData());
   }
 
   protected boolean wasConquered(final Territory t) {
@@ -1651,15 +1652,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected boolean isPlaceInAnyTerritory() {
-    return games.strategy.triplea.Properties.getPlaceInAnyTerritory(getData());
+    return Properties.getPlaceInAnyTerritory(getData());
   }
 
   protected boolean isUnitPlacementPerTerritoryRestricted() {
-    return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(getData());
+    return Properties.getUnitPlacementPerTerritoryRestricted(getData());
   }
 
   protected boolean isUnitPlacementRestrictions() {
-    return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
+    return Properties.getUnitPlacementRestrictions(getData());
   }
 
   protected boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player) {

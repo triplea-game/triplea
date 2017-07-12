@@ -60,7 +60,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move

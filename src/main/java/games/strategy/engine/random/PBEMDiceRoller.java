@@ -20,6 +20,7 @@ import javax.swing.WindowConstants;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.Util;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able
@@ -153,8 +154,7 @@ public class PBEMDiceRoller implements IRandomSource {
       getContentPane().add(new JScrollPane(m_text));
       m_text.setEditable(false);
       setSize(400, 300);
-      // games.strategy.ui.Util
-      games.strategy.ui.Util.center(this);
+      Util.center(this);
     }
 
     /**

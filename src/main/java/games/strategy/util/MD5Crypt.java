@@ -2,6 +2,7 @@ package games.strategy.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 /**
  * A Java Implementation of the MD5Crypt function
@@ -69,7 +70,7 @@ public class MD5Crypt {
    */
   public static String crypt(final String password) {
     final StringBuffer salt = new StringBuffer();
-    final java.util.Random rnd = new java.util.Random();
+    final Random rnd = new Random();
     // build a random 8 chars salt
     while (salt.length() < 8) {
       final int index = (int) (rnd.nextFloat() * SALTCHARS.length());

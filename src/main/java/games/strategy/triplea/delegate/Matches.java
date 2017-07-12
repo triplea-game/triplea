@@ -211,7 +211,7 @@ public class Matches {
   static Match<Unit> unitCanBeCapturedOnEnteringToInThisTerritory(final PlayerID player, final Territory terr,
       final GameData data) {
     return Match.of(unit -> {
-      if (!games.strategy.triplea.Properties.getCaptureUnitsOnEnteringTerritory(data)) {
+      if (!Properties.getCaptureUnitsOnEnteringTerritory(data)) {
         return false;
       }
       final PlayerID unitOwner = unit.getOwner();
@@ -284,7 +284,7 @@ public class Matches {
       if (!ua.getCanBeDamaged()) {
         return true;
       }
-      if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
         final TripleAUnit taUnit = (TripleAUnit) unit;
         return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
       } else {
@@ -310,7 +310,7 @@ public class Matches {
     if (!UnitCanBeDamaged.match(unit)) {
       return false;
     }
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
       return false;
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -691,7 +691,7 @@ public class Matches {
    */
   public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data) {
     final boolean contestedDoNotProduce =
-        games.strategy.triplea.Properties.getContestedTerritoriesProduceNoIncome(data);
+        Properties.getContestedTerritoriesProduceNoIncome(data);
     return Match.of(t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta == null) {
@@ -990,9 +990,9 @@ public class Matches {
       final PlayerID playerWhoOwnsAllTheUnitsMoving, final GameData data, final boolean isCombatMovePhase,
       final boolean hasLandUnitsNotBeingTransportedOrBeingLoaded, final boolean hasSeaUnitsNotBeingTransported,
       final boolean hasAirUnitsNotBeingTransported, final boolean isLandingZoneOnLandForAirUnits) {
-    final boolean neutralsPassable = !games.strategy.triplea.Properties.getNeutralsImpassable(data);
+    final boolean neutralsPassable = !Properties.getNeutralsImpassable(data);
     final boolean areNeutralsPassableByAir =
-        neutralsPassable && games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data);
+        neutralsPassable && Properties.getNeutralFlyoverAllowed(data);
     return Match.of(t -> {
       if (Matches.TerritoryIsImpassable.match(t)) {
         return false;
@@ -1253,7 +1253,7 @@ public class Matches {
       }
       // cant blitz on neutrals
       if (t.getOwner().equals(PlayerID.NULL_PLAYERID)
-          && !games.strategy.triplea.Properties.getNeutralsBlitzable(data)) {
+          && !Properties.getNeutralsBlitzable(data)) {
         return false;
       }
       // was conquered but not blitzed
@@ -1266,8 +1266,8 @@ public class Matches {
           Matches.enemyUnit(player, data).invert());
       // WW2V2, cant blitz through factories and aa guns
       // WW2V1, you can
-      if (!games.strategy.triplea.Properties.getWW2V2(data)
-          && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data)) {
+      if (!Properties.getWW2V2(data)
+          && !Properties.getBlitzThroughFactoriesAndAARestricted(data)) {
         blitzableUnitsBuilder.add(Matches.UnitIsInfrastructure);
       }
       return t.getUnits().allMatch(blitzableUnitsBuilder.any());

@@ -22,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.ai.AbstractAI;
@@ -796,7 +797,7 @@ public class WeakAI extends AbstractAI {
         Match.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       rrules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
       final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();

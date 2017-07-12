@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -112,6 +113,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -905,10 +907,10 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final String message =
-        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb") + " in "
+        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb") + " in "
             + location.getName();
     final String bomb =
-        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb");
+        (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb");
     final String normal = "Attack";
     final String[] choices = {bomb, normal};
     int choice = -1;

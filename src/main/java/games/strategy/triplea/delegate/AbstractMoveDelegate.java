@@ -15,6 +15,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
@@ -206,7 +207,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   protected boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(getData());
+    return Properties.getWW2V2(getData());
   }
 
   @Override

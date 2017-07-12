@@ -21,6 +21,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -179,7 +180,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void end() {
     super.end();
     final GameData data = getData();
-    if (games.strategy.triplea.Properties.getTriggers(data)) {
+    if (Properties.getTriggers(data)) {
       final CompositeChange change = new CompositeChange();
       for (final PlayerID player : data.getPlayerList().getPlayers()) {
         change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
@@ -316,35 +317,35 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   }
 
   private boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(getData());
+    return Properties.getWW2V2(getData());
   }
 
   private boolean isWW2V3() {
-    return games.strategy.triplea.Properties.getWW2V3(getData());
+    return Properties.getWW2V3(getData());
   }
 
   private boolean isPacificTheater() {
-    return games.strategy.triplea.Properties.getPacificTheater(getData());
+    return Properties.getPacificTheater(getData());
   }
 
   private boolean isTotalVictory() {
-    return games.strategy.triplea.Properties.getTotalVictory(getData());
+    return Properties.getTotalVictory(getData());
   }
 
   private boolean isHonorableSurrender() {
-    return games.strategy.triplea.Properties.getHonorableSurrender(getData());
+    return Properties.getHonorableSurrender(getData());
   }
 
   private boolean isProjectionOfPower() {
-    return games.strategy.triplea.Properties.getProjectionOfPower(getData());
+    return Properties.getProjectionOfPower(getData());
   }
 
   private boolean isEconomicVictory() {
-    return games.strategy.triplea.Properties.getEconomicVictory(getData());
+    return Properties.getEconomicVictory(getData());
   }
 
   private boolean isTriggeredVictory() {
-    return games.strategy.triplea.Properties.getTriggeredVictory(getData());
+    return Properties.getTriggeredVictory(getData());
   }
 
   private int getProduction(final PlayerID id) {

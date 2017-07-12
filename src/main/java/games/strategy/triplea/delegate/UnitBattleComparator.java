@@ -8,6 +8,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
@@ -29,8 +30,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     m_bonus = bonus;
     m_ignorePrimaryPower = ignorePrimaryPower;
     m_territoryEffects = territoryEffects;
-    if (games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(data)
-        || games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
+    if (Properties.getBattleshipsRepairAtEndOfRound(data)
+        || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
         if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(ut)) {
           m_multiHitpointCanRepair.add(ut);

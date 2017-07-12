@@ -30,6 +30,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
+import games.strategy.util.Util;
 
 /**
  * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
@@ -1450,7 +1451,7 @@ public class UnitAttachment extends DefaultAttachment {
     int defenseValue =
         m_defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
     if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player)) {
-      final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(getData());
+      final int bonus = Properties.getSuper_Sub_Defense_Bonus(getData());
       defenseValue += bonus;
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
@@ -2001,7 +2002,7 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       final HashSet<UnitType> bombingTargets = ua.getBombingTargets(data);
       if (bombingTargets != null) {
-        allowedTargets = games.strategy.util.Util.intersection(allowedTargets, bombingTargets);
+        allowedTargets = Util.intersection(allowedTargets, bombingTargets);
       }
     }
     return new HashSet<>(allowedTargets);
@@ -2535,8 +2536,8 @@ public class UnitAttachment extends DefaultAttachment {
     int max = stackingLimit.getFirst();
     if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly())) {
       // under certain rules (classic rules) there can only be 1 aa gun in a territory.
-      if (!(games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)
-          || games.strategy.triplea.Properties.getMultipleAAPerTerritory(data))) {
+      if (!(Properties.getWW2V2(data) || Properties.getWW2V3(data)
+          || Properties.getMultipleAAPerTerritory(data))) {
         max = 1;
       }
     }
@@ -2912,10 +2913,10 @@ public class UnitAttachment extends DefaultAttachment {
       if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()) {
         stats.append(getTypeAA()).append(", ");
       } else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly()
-          && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
+          && !Properties.getAATerritoryRestricted(getData())) {
         stats.append(getTypeAA()).append(" for Combat & Move Through, ");
       } else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()
-          && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData())) {
+          && !Properties.getAATerritoryRestricted(getData())) {
         stats.append(getTypeAA()).append(" for Raids & Move Through, ");
       } else if (getIsAAforCombatOnly()) {
         stats.append(getTypeAA()).append(" for Combat, ");
@@ -2932,7 +2933,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Rocket Attack, ");
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
-          && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
+          && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
                 : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
@@ -2952,7 +2953,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can be Placed Without Factory, ");
     }
     if ((getCanBeDamaged())
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       stats.append("can be Damaged By Raids, ");
       if (getMaxOperationalDamage() > -1) {
         stats.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
@@ -2969,10 +2970,10 @@ public class UnitAttachment extends DefaultAttachment {
     } else if (getCanBeDamaged()) {
       stats.append("can be Attacked By Raids, ");
     }
-    if (getIsAirBase() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData())) {
+    if (getIsAirBase() && Properties.getScramble_Rules_In_Effect(getData())) {
       stats.append("can Allow Scrambling, ");
     }
-    if (getCanScramble() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData())) {
+    if (getCanScramble() && Properties.getScramble_Rules_In_Effect(getData())) {
       stats.append("can Scramble ").append(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)
           .append(" Distance, ");
     }
@@ -3028,7 +3029,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Perform Raids, ");
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
-          && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
+          && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
                 : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
@@ -3060,7 +3061,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsSuicide()) {
       stats.append("Suicide/Munition Unit, ");
     }
-    if (getIsAir() && (getIsKamikaze() || games.strategy.triplea.Properties.getKamikaze_Airplanes(getData()))) {
+    if (getIsAir() && (getIsKamikaze() || Properties.getKamikaze_Airplanes(getData()))) {
       stats.append("can use All Movement To Attack Target, ");
     }
     if (getIsInfantry() && playerHasMechInf(player)) {
@@ -3107,9 +3108,9 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append(getMaxBuiltPerPlayer()).append(" Max Built Allowed, ");
     }
     if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
-        && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
-        && (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData())
-            || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
+        && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
+        && (Properties.getBattleshipsRepairAtBeginningOfRound(getData())
+            || Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
         stats.append("can Repair: ")
             .append(MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)).append(", ");
@@ -3118,7 +3119,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
-        && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData())) {
+        && Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
         stats.append("can Modify Unit Movement: ")
             .append(MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)).append(", ");
@@ -3138,7 +3139,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     if (getRequiresUnits() != null && getRequiresUnits().size() > 0
-        && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData())) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
         totalUnitsListed.addAll(Arrays.asList(list));
@@ -3163,11 +3164,11 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
     if (getUnitPlacementRestrictions() != null
-        && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData())) {
       stats.append("has Placement Restrictions, ");
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
-        && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData())) {
+        && Properties.getUnitPlacementRestrictions(getData())) {
       stats.append("must be Placed In Territory Valued >=").append(getCanOnlyBePlacedInTerritoryValuedAtX())
           .append(", ");
     }
@@ -3177,9 +3178,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getMovementLimit() != null) {
       if (getMovementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
-          && !(games.strategy.triplea.Properties.getWW2V2(getData())
-              || games.strategy.triplea.Properties.getWW2V3(getData())
-              || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData())
+              || Properties.getWW2V3(getData())
+              || Properties.getMultipleAAPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getMovementLimit().getSecond()).append(" moving per territory, ");
       } else if (getMovementLimit().getFirst() < 10000) {
         stats.append("max of ").append(getMovementLimit().getFirst()).append(" ").append(getMovementLimit().getSecond())
@@ -3189,9 +3190,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getAttackingLimit() != null) {
       if (getAttackingLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
-          && !(games.strategy.triplea.Properties.getWW2V2(getData())
-              || games.strategy.triplea.Properties.getWW2V3(getData())
-              || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData())
+              || Properties.getWW2V3(getData())
+              || Properties.getMultipleAAPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       } else if (getAttackingLimit().getFirst() < 10000) {
         stats.append("max of ").append(getAttackingLimit().getFirst()).append(" ")
@@ -3201,9 +3202,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (getPlacementLimit() != null) {
       if (getPlacementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
-          && !(games.strategy.triplea.Properties.getWW2V2(getData())
-              || games.strategy.triplea.Properties.getWW2V3(getData())
-              || games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData()))) {
+          && !(Properties.getWW2V2(getData())
+              || Properties.getWW2V3(getData())
+              || Properties.getMultipleAAPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       } else if (getPlacementLimit().getFirst() < 10000) {
         stats.append("max of ").append(getPlacementLimit().getFirst()).append(" ")

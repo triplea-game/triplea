@@ -11,6 +11,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -162,7 +163,7 @@ class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!games.strategy.triplea.Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data)) {
       return "Technology not enabled";
     }
     if (player.getAttachment(Constants.TECH_ATTACHMENT_NAME) == null) {
@@ -187,7 +188,7 @@ class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!games.strategy.triplea.Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data)) {
       return "Technology not enabled";
     }
     for (final TechAdvance tech : techs) {
@@ -247,7 +248,7 @@ class EditValidator {
     if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return "Game does not allow bombing damage";
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());

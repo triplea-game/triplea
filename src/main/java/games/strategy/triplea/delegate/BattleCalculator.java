@@ -1294,35 +1294,35 @@ public class BattleCalculator {
    * @return Can transports be used as cannon fodder.
    */
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    return Properties.getTransportCasualtiesRestricted(data);
   }
 
   /**
    * @return Random AA Casualties - casualties randomly assigned.
    */
   private static boolean isRandomAACasualties(final GameData data) {
-    return games.strategy.triplea.Properties.getRandomAACasualties(data);
+    return Properties.getRandomAACasualties(data);
   }
 
   /**
    * @return Roll AA Individually - roll against each aircraft.
    */
   private static boolean isRollAAIndividually(final GameData data) {
-    return games.strategy.triplea.Properties.getRollAAIndividually(data);
+    return Properties.getRollAAIndividually(data);
   }
 
   /**
    * @return Choose AA - attacker selects casualties.
    */
   private static boolean isChooseAA(final GameData data) {
-    return games.strategy.triplea.Properties.getChoose_AA_Casualties(data);
+    return Properties.getChoose_AA_Casualties(data);
   }
 
   /**
    * @return Can the attacker retreat non-amphibious units.
    */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
-    return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);
+    return Properties.getPartialAmphibiousRetreat(data);
   }
 
   // nothing but static
@@ -1337,7 +1337,7 @@ public class BattleCalculator {
    */
   public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data,
       final Collection<TerritoryEffect> territoryEffects) {
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
     final int rolls = (defending) ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;

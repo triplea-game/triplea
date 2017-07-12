@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 
 import games.strategy.net.GUID;
 
-public class UnitsList implements java.io.Serializable, Iterable<Unit> {
+public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
   // maps GUID -> Unit
   // TODO - fix this, all units are never gcd

@@ -699,7 +699,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   @Override

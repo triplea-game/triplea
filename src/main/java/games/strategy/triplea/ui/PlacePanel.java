@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -61,15 +62,15 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   private boolean canProduceFightersOnCarriers() {
-    return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
+    return Properties.getProduceFightersOnCarriers(getData());
   }
 
   private boolean canProduceNewFightersOnOldCarriers() {
-    return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
+    return Properties.getProduceNewFightersOnOldCarriers(getData());
   }
 
   private boolean isLHTR_Carrier_Production_Rules() {
-    return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(getData());
+    return Properties.getLHTRCarrierProductionRules(getData());
   }
 
   private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {

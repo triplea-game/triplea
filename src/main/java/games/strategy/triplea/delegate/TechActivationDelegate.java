@@ -13,6 +13,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
@@ -53,7 +54,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     }
     // empty
     techMap.put(m_player, null);
-    if (games.strategy.triplea.Properties.getTriggers(data)) {
+    if (Properties.getTriggers(data)) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.

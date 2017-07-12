@@ -237,6 +237,6 @@ class GameMenu {
     final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
     showBattleMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 }

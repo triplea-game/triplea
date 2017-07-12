@@ -11,6 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
@@ -99,14 +100,14 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
   }
 
   private boolean isPacificTheater() {
-    return games.strategy.triplea.Properties.getPacificTheater(getData());
+    return Properties.getPacificTheater(getData());
   }
 
   private boolean isProductionPerValuedTerritoryRestricted() {
-    return games.strategy.triplea.Properties.getProductionPerValuedTerritoryRestricted(getData());
+    return Properties.getProductionPerValuedTerritoryRestricted(getData());
   }
 
   private boolean isProductionPerXTerritoriesRestricted() {
-    return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(getData());
+    return Properties.getProductionPerXTerritoriesRestricted(getData());
   }
 }
