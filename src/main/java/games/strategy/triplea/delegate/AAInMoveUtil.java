@@ -18,6 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -48,11 +49,11 @@ class AAInMoveUtil implements Serializable {
   }
 
   private boolean isAlwaysONAAEnabled() {
-    return games.strategy.triplea.Properties.getAlwaysOnAA(getData());
+    return Properties.getAlwaysOnAA(getData());
   }
 
   private boolean isAATerritoryRestricted() {
-    return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
+    return Properties.getAATerritoryRestricted(getData());
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
@@ -203,7 +204,7 @@ class AAInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
       if (route.getEnd().getUnits().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }

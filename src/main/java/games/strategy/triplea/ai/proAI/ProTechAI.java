@@ -36,7 +36,7 @@ import games.strategy.util.Match;
 final class ProTechAI {
 
   static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
-    if (!games.strategy.triplea.Properties.getWW2V3TechModel(data)) {
+    if (!Properties.getWW2V3TechModel(data)) {
       return;
     }
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);

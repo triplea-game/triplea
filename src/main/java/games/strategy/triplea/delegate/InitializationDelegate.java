@@ -20,6 +20,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -174,7 +175,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getDisabledPlayersAssetsDeleted(data)) {
+    if (!Properties.getDisabledPlayersAssetsDeleted(data)) {
       return;
     }
     for (final PlayerID player : data.getPlayerList().getPlayers()) {
@@ -239,7 +240,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initDestroyerArtillery(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
+    final boolean addArtilleryAndDestroyers = Properties.getUse_Destroyers_And_Artillery(data);
     if (!isWW2V2(data) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
       final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
@@ -274,7 +275,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initShipyards(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
+    final boolean useShipyards = Properties.getUse_Shipyards(data);
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
       final ProductionFrontier frontierShipyards =
@@ -305,12 +306,12 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static boolean isWW2V2(final GameData data) {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   private static void initTwoHitBattleship(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
+    final boolean userEnabled = Properties.getTwoHitBattleships(data);
     final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
     if (battleShipUnit == null) {
       return;

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.TriggerAttachment;
@@ -85,7 +86,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
 
   private void triggerWhenTriggerAttachments(final String beforeOrAfter) {
     final GameData data = getData();
-    if (games.strategy.triplea.Properties.getTriggers(data)) {
+    if (Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
       // we use AND in order to make sure there are uses and when is set correctly.
       final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = Match.allOf(

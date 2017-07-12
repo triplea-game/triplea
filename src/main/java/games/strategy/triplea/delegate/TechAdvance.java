@@ -19,6 +19,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
@@ -130,8 +131,8 @@ public abstract class TechAdvance extends NamedAttachable {
    */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
-    final boolean ww2v2 = games.strategy.triplea.Properties.getWW2V2(data);
-    final boolean ww2v3 = games.strategy.triplea.Properties.getWW2V3(data);
+    final boolean ww2v2 = Properties.getWW2V2(data);
+    final boolean ww2v3 = Properties.getWW2V3(data);
     if (ww2v2) {
       createWW2V2Advances(tf);
     } else if (ww2v3) {
@@ -620,7 +621,7 @@ class ImprovedShipyardsAdvance extends TechAdvance {
   @Override
   public void perform(final PlayerID id, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getUse_Shipyards(data)) {
+    if (!Properties.getUse_Shipyards(data)) {
       return;
     }
     final ProductionFrontier current = id.getProductionFrontier();

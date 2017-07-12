@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -63,7 +64,7 @@ public class TileImageReconstructor {
       return;
     }
     final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, s_mapFolderLocation,
-        JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"), new javax.swing.filechooser.FileFilter() {
+        JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"), new FileFilter() {
           @Override
           public boolean accept(final File f) {
             if (f.isDirectory()) {

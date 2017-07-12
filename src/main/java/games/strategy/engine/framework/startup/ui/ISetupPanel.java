@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Observer;
 
@@ -12,7 +13,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
  * Made so that we can have a headless setup. (this is probably a hack, but used because i do not want to rewrite the
  * entire setup model).
  */
-public interface ISetupPanel extends java.io.Serializable {
+public interface ISetupPanel extends Serializable {
   boolean isMetaSetupPanelInstance();
 
   void addObserver(final Observer observer);

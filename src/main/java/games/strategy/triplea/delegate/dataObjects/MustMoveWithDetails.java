@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import games.strategy.engine.data.Unit;
  * Units that must move are land units in transports,
  * and friendly aircraft that must move with carriers.
  */
-public class MustMoveWithDetails implements java.io.Serializable {
+public class MustMoveWithDetails implements Serializable {
   private static final long serialVersionUID = 936060269327534445L;
   /**
    * Maps Unit -> Collection of units.

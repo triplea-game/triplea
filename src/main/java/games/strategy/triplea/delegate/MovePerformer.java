@@ -21,6 +21,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -158,7 +159,7 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(arrived);
         presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
         final CompositeChange change = new CompositeChange();
-        if (games.strategy.triplea.Properties.getUseFuelCost(data)) {
+        if (Properties.getUseFuelCost(data)) {
           // markFuelCostResourceChange must be done
           // before we load/unload units
           change.add(markFuelCostResourceChange(units, route, id, data));
@@ -176,7 +177,7 @@ public class MovePerformer implements Serializable {
               Matches.UnitIsStrategicBomber);
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
-                  && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
+                  && Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
           if (canCreateAirBattle) {
             allBombingRaidBuilder.add(Matches.unitCanEscort);
@@ -201,7 +202,7 @@ public class MovePerformer implements Serializable {
               // determine which unit to bomb
               Unit target;
               if (enemyTargets.size() > 1
-                  && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+                  && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                   && !canCreateAirBattle) {
                 target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
               } else if (!enemyTargets.isEmpty()) {
@@ -339,7 +340,7 @@ public class MovePerformer implements Serializable {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
-    if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
+    if (routeEnd != null && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
             .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
@@ -472,6 +473,6 @@ public class MovePerformer implements Serializable {
   }
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {
-    return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    return Properties.getIgnoreTransportInMovement(data);
   }
 }

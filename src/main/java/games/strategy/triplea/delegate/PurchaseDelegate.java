@@ -27,6 +27,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -59,7 +60,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     super.start();
     final GameData data = getData();
     if (m_needToInitialize) {
-      if (games.strategy.triplea.Properties.getTriggers(data)) {
+      if (Properties.getTriggers(data)) {
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
@@ -248,7 +249,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     if (!(canAfford(costs, m_player))) {
       return NOT_ENOUGH_RESOURCES;
     }
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       return null;
     }
     // Get the map of the factories that were repaired and how much for each

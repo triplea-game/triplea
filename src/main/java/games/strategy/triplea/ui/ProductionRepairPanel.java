@@ -32,6 +32,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -131,7 +132,7 @@ public class ProductionRepairPanel extends JPanel {
 
   private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return;
     }
     this.data.acquireReadLock();

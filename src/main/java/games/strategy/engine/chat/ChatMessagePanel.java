@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
@@ -191,15 +192,15 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private void setupKeyMap() {
     final InputMap nextMessageKeymap = nextMessage.getInputMap();
     nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), sendAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false), upAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false), downAction);
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), upAction);
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), downAction);
   }
 
   private void cleanupKeyMap() {
     final InputMap nextMessageKeymap = nextMessage.getInputMap();
     nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP, 0, false));
-    nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, 0, false));
+    nextMessageKeymap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false));
+    nextMessageKeymap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false));
   }
 
   /** thread safe. */

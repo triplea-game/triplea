@@ -18,6 +18,7 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
@@ -1268,7 +1269,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
               Match.allOf(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
-          final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
+          final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {
               taa.setAttackBonus("1:" + jet.getName());
@@ -1317,8 +1318,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allBombers =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
-          final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLhtr = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+          final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
+          final boolean heavyBombersLhtr = Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             // we subtract the base rolls to get the bonus

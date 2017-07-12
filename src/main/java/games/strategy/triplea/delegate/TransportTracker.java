@@ -14,6 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
@@ -250,12 +251,12 @@ public class TransportTracker {
   }
 
   private static boolean isWW2V2(final GameData data) {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   // TODO here's a bug COMCO
   private static boolean isTransportUnloadRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportUnloadRestricted(data);
+    return Properties.getTransportUnloadRestricted(data);
   }
 
   // In some versions, a transport can never unload into

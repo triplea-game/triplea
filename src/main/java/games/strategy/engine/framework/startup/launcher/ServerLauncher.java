@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -234,7 +235,7 @@ public class ServerLauncher extends AbstractLauncher {
           } catch (final Exception e) {
             e.printStackTrace(System.err);
             if (m_headless) {
-              System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+              System.out.println(DebugUtils.getThreadDumps());
               HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame "
                   + "and contact a Mod and/or file a bug report.");
             }

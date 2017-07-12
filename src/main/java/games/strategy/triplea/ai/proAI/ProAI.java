@@ -18,6 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
@@ -356,7 +357,7 @@ public class ProAI extends AbstractAI {
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference = ProBattleUtils.estimateStrengthDifference(battlesite, attackers, defenders);
         int minStrengthDifference = 60;
-        if (!games.strategy.triplea.Properties.getLow_Luck(data)) {
+        if (!Properties.getLow_Luck(data)) {
           minStrengthDifference = 55;
         }
         if (strengthDifference > minStrengthDifference) {

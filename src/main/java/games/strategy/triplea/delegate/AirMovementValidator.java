@@ -20,6 +20,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -723,15 +724,15 @@ public class AirMovementValidator {
   }
 
   private static boolean isKamikazeAircraft(final GameData data) {
-    return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+    return Properties.getKamikaze_Airplanes(data);
   }
 
   private static boolean areNeutralsPassableByAir(final GameData data) {
-    return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
+    return Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data);
   }
 
   private static boolean isNeutralsImpassable(final GameData data) {
-    return games.strategy.triplea.Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralsImpassable(data);
   }
 
   private static int getNeutralCharge(final GameData data, final Route route) {
@@ -739,6 +740,6 @@ public class AirMovementValidator {
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
-    return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(data);
+    return numberOfTerritories * Properties.getNeutralCharge(data);
   }
 }

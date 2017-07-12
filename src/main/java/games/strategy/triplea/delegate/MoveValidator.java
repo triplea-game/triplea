@@ -195,7 +195,7 @@ public class MoveValidator {
     if (getEditMode(data)) {
       return result;
     }
-    if (!games.strategy.triplea.Properties.getUseFuelCost(data)) {
+    if (!Properties.getUseFuelCost(data)) {
       return result;
     }
     final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data);
@@ -365,7 +365,7 @@ public class MoveValidator {
     }
     if (Match.anyMatch(units, Matches.UnitIsAir)) { // check aircraft
       if (route.hasSteps()
-          && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
+          && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
         if (Match.anyMatch(route.getMiddleSteps(), Matches.TerritoryIsNeutralButNotWater)) {
           return result.setErrorReturnResult("Air units cannot fly over neutral territories");
         }
@@ -415,7 +415,7 @@ public class MoveValidator {
     // CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer,
     // Matches.UnitIsTransportButNotCombatTransport);
     final boolean navalMayNotNonComIntoControlled =
-        isWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+        isWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
     // TODO need to account for subs AND transports that are ignored, not just OR
     final Territory end = route.getEnd();
     if (neutralOrEnemy.match(end)) {
@@ -439,7 +439,7 @@ public class MoveValidator {
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
             && !(Match.allMatchNotEmpty(units, Matches.UnitIsAir) && end.isWater())) {
           if (!Match.allMatchNotEmpty(units, Matches.UnitIsSub)
-              || !games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
+              || !Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
             return result.setErrorReturnResult("Cannot advance to battle in non combat");
           }
         }
@@ -453,7 +453,7 @@ public class MoveValidator {
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
       // otherwise we can generally fly over anything in noncombat
       if (route.anyMatch(Match.allOf(Matches.TerritoryIsNeutralButNotWater, Matches.TerritoryIsWater.invert()))
-          && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
+          && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
         return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
       }
       // if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules
@@ -972,10 +972,10 @@ public class MoveValidator {
       }
       final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
-          games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
-              || games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data);
+          Properties.getScramble_Rules_In_Effect(data)
+              || Properties.getUseKamikazeSuicideAttacks(data);
       final boolean submarinesPreventUnescortedAmphibAssaults =
-          games.strategy.triplea.Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
+          Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
       final Match<Unit> enemySubmarineMatch = Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSub);
       final Match<Unit> ownedSeaNonTransportMatch =
           Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsSea,
@@ -1252,7 +1252,7 @@ public class MoveValidator {
           result.addDisallowedUnit("Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
       }
-      if (!games.strategy.triplea.Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data)) {
+      if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data)) {
         for (final Territory current : Match.getMatches(route.getMiddleSteps(), Matches.TerritoryIsLand)) {
           if (Matches.isTerritoryEnemy(player, data).match(current)) {
             return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
@@ -1469,7 +1469,7 @@ public class MoveValidator {
     final boolean hasAir = Match.anyMatch(units, Matches.UnitIsAir);
     // final boolean hasSea = Match.anyMatch(units, Matches.UnitIsSea);
     final boolean isNeutralsImpassable =
-        isNeutralsImpassable(data) || (hasAir && !games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data));
+        isNeutralsImpassable(data) || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
     // Ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
     // final Match<Territory> territoryIsEnd = Matches.territoryIs(end);
     // No neutral countries on route predicate
@@ -1589,39 +1589,39 @@ public class MoveValidator {
   }
 
   private static boolean isWW2V2(final GameData data) {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   private static boolean isNeutralsImpassable(final GameData data) {
-    return games.strategy.triplea.Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralsImpassable(data);
   }
 
   private static boolean isNeutralsBlitzable(final GameData data) {
-    return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
+    return Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
   }
 
   private static boolean isMovementByTerritoryRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
+    return Properties.getMovementByTerritoryRestricted(data);
   }
 
   private static boolean isAirTransportableCanMoveDuringNonCombat(final GameData data) {
-    return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
+    return Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
-    return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(data);
+    return numberOfTerritories * Properties.getNeutralCharge(data);
   }
 
   private static boolean isSubmersibleSubsAllowed(final GameData data) {
-    return games.strategy.triplea.Properties.getSubmersible_Subs(data);
+    return Properties.getSubmersible_Subs(data);
   }
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {
-    return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    return Properties.getIgnoreTransportInMovement(data);
   }
 
   private static boolean isIgnoreSubInMovement(final GameData data) {
-    return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
+    return Properties.getIgnoreSubInMovement(data);
   }
 
   /** Creates new MoveValidator. */

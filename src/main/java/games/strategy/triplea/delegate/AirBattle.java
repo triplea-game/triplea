@@ -54,7 +54,7 @@ public class AirBattle extends AbstractBattle {
     super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
     m_isAmphibious = false;
-    m_maxRounds = games.strategy.triplea.Properties.getAirBattleRounds(data);
+    m_maxRounds = Properties.getAirBattleRounds(data);
     updateDefendingUnits();
   }
 
@@ -127,12 +127,12 @@ public class AirBattle extends AbstractBattle {
 
   protected boolean canAttackerRetreat() {
     return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
-        && games.strategy.triplea.Properties.getAirBattleAttackersCanRetreat(m_data);
+        && Properties.getAirBattleAttackersCanRetreat(m_data);
   }
 
   protected boolean canDefenderRetreat() {
     return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
-        && games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data);
+        && Properties.getAirBattleDefendersCanRetreat(m_data);
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -313,7 +313,7 @@ public class AirBattle extends AbstractBattle {
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
-                && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data)) {
+                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data)) {
               while (target == null) {
                 target =
                     getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets, Collections.singletonList(unit));
@@ -501,7 +501,7 @@ public class AirBattle extends AbstractBattle {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the
         // subsequent normal
         // battle) instead of launching
-        if (games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data)) {
+        if (Properties.getAirBattleDefendersCanRetreat(m_data)) {
           interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite,
               new ArrayList<>(m_defendingUnits), "Select Air to Intercept");
           groundedPlanesRetreated = true;
@@ -666,7 +666,7 @@ public class AirBattle extends AbstractBattle {
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
       final GameData data, final boolean bombing) {
-    final boolean canScrambleToAirBattle = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
+    final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
     final Match<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
         : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;
