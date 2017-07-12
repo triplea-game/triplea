@@ -159,8 +159,12 @@ public class LobbyLoginValidator implements ILoginValidator {
   private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
     final String errorMessage = "Incorrect username or password";
     final UserDao userDao = new DbUserController();
+    final HashedPassword hashedPassword = userDao.getPassword(clientName);
+    if (hashedPassword == null) {
+      return errorMessage;
+    }
     if (propertiesReadFromClient.containsKey(PLAIN_PASSWORD_KEY)) {
-      if (userDao.getPassword(clientName).isBcrypted()) {
+      if (hashedPassword.isBcrypted()) {
         return userDao.login(clientName, propertiesReadFromClient.get(PLAIN_PASSWORD_KEY)) ? null : errorMessage;
       } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
         userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(PLAIN_PASSWORD_KEY));
@@ -170,7 +174,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       }
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-      if (userDao.getPassword(clientName).isBcrypted()) {
+      if (hashedPassword.isBcrypted()) {
         return "You need to login with a newer version of TripleA";
       }
       return errorMessage;
