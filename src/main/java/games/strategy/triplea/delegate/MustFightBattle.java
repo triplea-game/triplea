@@ -379,7 +379,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // play a sound
       if (Match.anyMatch(m_attackingUnits, Matches.UnitIsSea)
           || Match.anyMatch(m_defendingUnits, Matches.UnitIsSea)) {
-        if (!m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.UnitIsSub)
+        if ((!m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.UnitIsSub))
             || (Match.anyMatch(m_attackingUnits, Matches.UnitIsSub)
                 && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub))) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker);
