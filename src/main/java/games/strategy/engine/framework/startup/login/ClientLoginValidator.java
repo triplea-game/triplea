@@ -26,7 +26,9 @@ import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
 /**
- * If we require a password, only the hash is stored in memory and compared against hashes a client sends.
+ * If we require a password, we send a public key to the client which the client uses to encrypt the password.
+ * The server then decrypts this encrypted password using the associated private key.
+ * If the decrypted password matches the actual password the user can join.
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";
@@ -124,6 +126,7 @@ public class ClientLoginValidator implements ILoginValidator {
             rsaKeyMap.remove(publicKey);
             return null;
           } else {
+            ThreadUtil.sleep((int) (4000 * Math.random()));
             return "Invalid Password";
           }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException

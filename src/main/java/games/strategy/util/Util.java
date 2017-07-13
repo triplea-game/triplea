@@ -132,6 +132,7 @@ public class Util {
 
   /**
    * Creates a hash of the given String based on the SHA-512 algorithm.
+   * 
    * @param input The input String to hash.
    * @return A hashed hexadecimal String of the input.
    */
@@ -142,6 +143,5 @@ public class Util {
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException(SHA_512 + " is not supported!", e);
     }
-
   }
 }

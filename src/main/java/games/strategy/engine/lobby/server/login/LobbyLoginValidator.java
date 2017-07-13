@@ -2,12 +2,24 @@ package games.strategy.engine.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.google.common.base.Strings;
 
@@ -37,9 +49,12 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
-  public static final String SIMPLE_HASHED_PASSWORD_KEY = "SHA512PWD";
+  public static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
+  public static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
+  public static final String RSA = "RSA";
+  private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
 
   public LobbyLoginValidator() {}
 
@@ -50,6 +65,16 @@ public class LobbyLoginValidator implements ILoginValidator {
     final HashedPassword password = new DbUserController().getPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, password.isBcrypted() ? "" : MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+      try {
+        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
+        keyGen.initialize(4096);
+        final KeyPair keyPair = keyGen.generateKeyPair();
+        final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        rVal.put(RSA_PUBLIC_KEY, publicKey);
+        rsaKeyMap.put(publicKey, keyPair.getPrivate());
+      } catch (NoSuchAlgorithmException e) {
+        throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
+      }
     }
     return rVal;
   }
@@ -58,7 +83,8 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
+    final String error =
+        verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
       s_logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -69,7 +95,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private static String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient,
+  private static String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient,
       final String clientName, final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
@@ -113,7 +140,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
       return anonymousLogin(propertiesReadFromClient, clientName);
     } else {
-      return validatePassword(propertiesReadFromClient, clientName);
+      return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
     }
   }
 
@@ -156,22 +183,34 @@ public class LobbyLoginValidator implements ILoginValidator {
     return new BadWordController().list();
   }
 
-  private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
+  private static String validatePassword(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String clientName) {
     final String errorMessage = "Incorrect username or password";
     final UserDao userDao = new DbUserController();
     final HashedPassword hashedPassword = userDao.getPassword(clientName);
     if (hashedPassword == null) {
       return errorMessage;
     }
-    if (propertiesReadFromClient.containsKey(SIMPLE_HASHED_PASSWORD_KEY)) {
-      if (hashedPassword.isBcrypted()) {
-        return userDao.login(clientName, propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY)) ? null
-            : errorMessage;
-      } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-        userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY));
-        return null;
-      } else {
-        return errorMessage;
+    if (propertiesReadFromClient.containsKey(ENCRYPTED_PASSWORD_KEY)) {
+      try {
+        final Cipher cipher = Cipher.getInstance(RSA);
+        final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
+        cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
+        final String simpleHashedPassword = new String(
+            cipher.doFinal(propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY).getBytes(StandardCharsets.UTF_8)),
+            StandardCharsets.UTF_8);
+        if (hashedPassword.isBcrypted()) {
+          return userDao.login(clientName, simpleHashedPassword) ? null : errorMessage;
+        } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+          userDao.updateUser(userDao.getUserByName(clientName), simpleHashedPassword);
+          rsaKeyMap.remove(publicKey);
+          return null;
+        } else {
+          return errorMessage;
+        }
+      } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
+          | BadPaddingException e) {
+        throw new IllegalStateException(e);
       }
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {

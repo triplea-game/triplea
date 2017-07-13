@@ -105,7 +105,7 @@ public class LobbyLoginValidatorTest {
         new HashedPassword(hashedPassword));
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-    properties.put(LobbyLoginValidator.SIMPLE_HASHED_PASSWORD_KEY, password);
+    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, password);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     assertEquals(challengeProperties.get(LobbyLoginValidator.SALT_KEY),
