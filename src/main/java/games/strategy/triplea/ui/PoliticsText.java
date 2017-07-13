@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -18,7 +18,7 @@ public class PoliticsText {
   // Filename
   private static final String PROPERTY_FILE = "politicstext.properties";
   private static PoliticsText pt = null;
-  private static long timestamp = 0;
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
@@ -46,9 +46,9 @@ public class PoliticsText {
 
   public static PoliticsText getInstance() {
     // cache properties for 10 seconds
-    if (pt == null || Calendar.getInstance().getTimeInMillis() > timestamp + 10000) {
+    if (pt == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
       pt = new PoliticsText();
-      timestamp = Calendar.getInstance().getTimeInMillis();
+      timestamp = Instant.now();
     }
     return pt;
   }

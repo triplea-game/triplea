@@ -5,9 +5,9 @@ import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -141,7 +141,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private boolean isDirty = true;
     private String[][] collectedData;
     final Map<String, List<String>> sections = new LinkedHashMap<>();
-    private long timestamp = 0;
+    private Instant timestamp = Instant.EPOCH;
 
     public ObjectiveTableModel() {
       setObjectiveStats();
@@ -289,10 +289,10 @@ public class ObjectivePanel extends AbstractStatPanel {
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
       // do not refresh too often, or else it will slow the game down seriously
-      if (isDirty && Calendar.getInstance().getTimeInMillis() > timestamp + 10000) {
+      if (isDirty && timestamp.plusSeconds(10).isBefore(Instant.now())) {
         loadData();
         isDirty = false;
-        timestamp = Calendar.getInstance().getTimeInMillis();
+        timestamp = Instant.now();
       }
       return collectedData[row][col];
     }
@@ -580,7 +580,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     static final String GROUP_PROPERTY = "TABLEGROUP";
     static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
     private static ObjectiveProperties s_op = null;
-    private static long s_timestamp = 0;
+    private static Instant timestamp = Instant.EPOCH;
     private final Properties properties = new Properties();
 
     protected ObjectiveProperties() {
@@ -600,9 +600,9 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public static ObjectiveProperties getInstance() {
       // cache properties for 1 second
-      if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) {
+      if (s_op == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
         s_op = new ObjectiveProperties();
-        s_timestamp = Calendar.getInstance().getTimeInMillis();
+        timestamp = Instant.now();
       }
       return s_op;
     }

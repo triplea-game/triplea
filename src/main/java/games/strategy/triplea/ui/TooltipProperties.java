@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -19,7 +19,7 @@ public class TooltipProperties {
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
   private static TooltipProperties ttp = null;
-  private static long timestamp = 0;
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
 
   protected TooltipProperties() {
@@ -39,9 +39,9 @@ public class TooltipProperties {
 
   public static TooltipProperties getInstance() {
     // cache properties for 5 seconds
-    if (ttp == null || Calendar.getInstance().getTimeInMillis() > timestamp + 5000) {
+    if (ttp == null || timestamp.plusSeconds(5).isBefore(Instant.now())) {
       ttp = new TooltipProperties();
-      timestamp = Calendar.getInstance().getTimeInMillis();
+      timestamp = Instant.now();
     }
     return ttp;
   }

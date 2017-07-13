@@ -12,9 +12,10 @@ import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -255,7 +256,7 @@ public class GameRunner {
       mainFrame.setVisible(true);
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
-      
+
       ProAI.gameOverClearCache();
       new Thread(() -> {
         gameSelectorModel.loadDefaultGame(mainFrame, false);
@@ -406,9 +407,9 @@ public class GameRunner {
       final boolean firstTimeThisVersion =
           SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
-      final Calendar calendar = Calendar.getInstance();
-      final int year = calendar.get(Calendar.YEAR);
-      final int day = calendar.get(Calendar.DAY_OF_YEAR);
+      final LocalDateTime localDateTime = LocalDateTime.now();
+      final int year = localDateTime.get(ChronoField.YEAR);
+      final int day = localDateTime.get(ChronoField.DAY_OF_YEAR);
       // format year:day
       final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
