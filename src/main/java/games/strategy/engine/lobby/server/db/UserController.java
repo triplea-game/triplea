@@ -203,6 +203,9 @@ public class UserController implements UserDao {
   @Override
   public boolean login(String userName, String password) {
     HashedPassword hashedPassword = getPassword(userName);
+    if (hashedPassword == null) {
+      return false;
+    }
     Preconditions.checkState(hashedPassword.isBcrypted());
     final boolean correctCredentials = BCrypt.checkpw(password, hashedPassword.value);
     if (correctCredentials) {
