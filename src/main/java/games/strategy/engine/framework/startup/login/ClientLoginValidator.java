@@ -2,16 +2,27 @@ package games.strategy.engine.framework.startup.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
-import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
@@ -19,12 +30,15 @@ import games.strategy.util.Version;
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";
+  public static final String RANDOM_RSA_PUBLIC_KEY_PROPERTY = "RSA PUBLIC KEY";
   public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
   static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
   static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
   static final String INVALID_MAC = "Invalid mac address";
   private final IServerMessenger m_serverMessenger;
   private String m_password;
+  public static final String RSA = "RSA";
+  private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     m_serverMessenger = serverMessenger;
@@ -34,7 +48,8 @@ public class ClientLoginValidator implements ILoginValidator {
    * Set the password required for the game, or to null if no password is required.
    */
   public void setGamePassword(final String password) {
-    m_password = password == null ? null : Util.sha512(password);
+    // TODO do not store the plain password, but the hash instead in the next incompatible release
+    m_password = password;
   }
 
   @Override
@@ -47,6 +62,16 @@ public class ClientLoginValidator implements ILoginValidator {
        */
       final String encryptedPassword = MD5Crypt.crypt(m_password);
       challengeProperties.put(SALT_PROPERTY, MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword));
+      try {
+        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
+        keyGen.initialize(4096);
+        final KeyPair keyPair = keyGen.generateKeyPair();
+        final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        challengeProperties.put(RANDOM_RSA_PUBLIC_KEY_PROPERTY, publicKey);
+        rsaKeyMap.put(publicKey, keyPair.getPrivate());
+      } catch (NoSuchAlgorithmException e) {
+        throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
+      }
       challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
     } else {
       challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
@@ -88,12 +113,22 @@ public class ClientLoginValidator implements ILoginValidator {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
-      final String simpleHashedPassword = propertiesReadFromClient.get(ClientLogin.SIMPLE_HASHED_PASSWORD_PROPERTY);
-      if (simpleHashedPassword != null) {
-        if (MessageDigest.isEqual(simpleHashedPassword.getBytes(), m_password.getBytes())) {
-          return null;
-        } else {
-          return "Invalid Password";
+      final String encryptedPassword = propertiesReadFromClient.get(ClientLogin.ENCRYPTED_PASSWORD_PROPERTY);
+      if (encryptedPassword != null) {
+        try {
+          final Cipher cipher = Cipher.getInstance(RSA);
+          final String publicKey = propertiesSentToClient.get(RANDOM_RSA_PUBLIC_KEY_PROPERTY);
+          cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
+          if (MessageDigest.isEqual(cipher.doFinal(encryptedPassword.getBytes(StandardCharsets.UTF_8)),
+              m_password.getBytes())) {
+            rsaKeyMap.remove(publicKey);
+            return null;
+          } else {
+            return "Invalid Password";
+          }
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
+            | BadPaddingException e) {
+          throw new IllegalStateException(e);
         }
       }
       final String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
