@@ -17,7 +17,7 @@ public class UserActionText {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
   private static UserActionText text = null;
-  private static Instant timestamp = Instant.now();
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";

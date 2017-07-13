@@ -582,7 +582,7 @@ class ObjectiveProperties {
   static final String GROUP_PROPERTY = "TABLEGROUP";
   static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   private static ObjectiveProperties s_op = null;
-  private static Instant timestamp = Instant.now();
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
 
   protected ObjectiveProperties() {

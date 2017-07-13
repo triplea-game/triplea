@@ -19,7 +19,7 @@ public class TooltipProperties {
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
   private static TooltipProperties ttp = null;
-  private static Instant timestamp = Instant.now();
+  private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
 
   protected TooltipProperties() {
