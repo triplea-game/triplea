@@ -11,8 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.util.Collection;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -21,9 +21,9 @@ import org.junit.Test;
  * @param <T> The type of the principal to be proxied.
  */
 public abstract class AbstractProxyTestCase<T> {
-  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
-
   private final Class<T> principalType;
+
+  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance(getProxyFactories());
 
   /**
    * @param principalType The type of the principal to be proxied; must not be {@code null}.
@@ -61,11 +61,11 @@ public abstract class AbstractProxyTestCase<T> {
   protected abstract T createPrincipal();
 
   /**
-   * Registers the proxy factories required for the principal to be persisted.
+   * Gets the collection of proxy factories required for the principal to be persisted.
    *
-   * @param proxyFactoryRegistry The proxy factory registry for use in the fixture; must not be {@code null}.
+   * @return The collection of proxy factories required for the principal to be persisted; never {@code null}.
    */
-  protected abstract void registerProxyFactories(ProxyFactoryRegistry proxyFactoryRegistry);
+  protected abstract Collection<ProxyFactory> getProxyFactories();
 
   private static Object readObject(final ByteArrayOutputStream baos) throws Exception {
     try (final InputStream is = new ByteArrayInputStream(baos.toByteArray());
@@ -78,20 +78,6 @@ public abstract class AbstractProxyTestCase<T> {
     try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyFactoryRegistry)) {
       oos.writeObject(obj);
     }
-  }
-
-  /**
-   * Sets up the test fixture.
-   *
-   * <p>
-   * Subclasses may override and must call the superclass implementation.
-   * </p>
-   *
-   * @throws Exception If an error occurs.
-   */
-  @Before
-  public void setUp() throws Exception {
-    registerProxyFactories(proxyFactoryRegistry);
   }
 
   @Test

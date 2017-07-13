@@ -1,5 +1,8 @@
 package games.strategy.persistence.serializable;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public final class FakeNonSerializableClassProxyAsProxyTest extends AbstractProxyTestCase<FakeNonSerializableClass> {
   public FakeNonSerializableClassProxyAsProxyTest() {
     super(FakeNonSerializableClass.class);
@@ -11,7 +14,7 @@ public final class FakeNonSerializableClassProxyAsProxyTest extends AbstractProx
   }
 
   @Override
-  protected void registerProxyFactories(final ProxyFactoryRegistry proxyFactoryRegistry) {
-    proxyFactoryRegistry.registerProxyFactory(FakeNonSerializableClassProxy.FACTORY);
+  protected Collection<ProxyFactory> getProxyFactories() {
+    return Arrays.asList(FakeNonSerializableClassProxy.FACTORY);
   }
 }

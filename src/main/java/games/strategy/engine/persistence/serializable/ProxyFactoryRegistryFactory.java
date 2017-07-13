@@ -16,9 +16,8 @@ public final class ProxyFactoryRegistryFactory {
    * @return A new proxy factory registry; never {@code null}.
    */
   public static ProxyFactoryRegistry newPlatformProxyFactoryRegistry() {
-    final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
-    proxyFactoryRegistry.registerProxyFactory(PropertyBagMementoProxy.FACTORY);
-    proxyFactoryRegistry.registerProxyFactory(VersionProxy.FACTORY);
-    return proxyFactoryRegistry;
+    return ProxyFactoryRegistry.newInstance(
+        PropertyBagMementoProxy.FACTORY,
+        VersionProxy.FACTORY);
   }
 }

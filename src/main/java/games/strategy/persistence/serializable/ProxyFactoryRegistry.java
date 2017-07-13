@@ -1,5 +1,8 @@
 package games.strategy.persistence.serializable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -18,37 +21,29 @@ public interface ProxyFactoryRegistry {
   Optional<ProxyFactory> getProxyFactory(Class<?> principalType);
 
   /**
-   * Gets a collection of all proxy factories that have been registered with this service.
+   * Creates a new proxy factory registry for the specified array of proxy factories using the default implementation.
    *
-   * @return A collection of all proxy factories that have been registered with this service; never {@code null}. This
-   *         collection is a snapshot of the proxy factories registered at the time of the call.
+   * @param proxyFactories The array of proxy factories to associate with the registry; must not be {@code null}.
+   *
+   * @return A new proxy factory registry; never {@code null}. The returned registry is immutable.
    */
-  Collection<ProxyFactory> getProxyFactories();
+  static ProxyFactoryRegistry newInstance(final ProxyFactory... proxyFactories) {
+    checkNotNull(proxyFactories);
+
+    return newInstance(Arrays.asList(proxyFactories));
+  }
 
   /**
-   * Registers the specified proxy factory.
+   * Creates a new proxy factory registry for the specified collection of proxy factories using the default
+   * implementation.
    *
-   * @param proxyFactory The proxy factory; must not be {@code null}.
+   * @param proxyFactories The collection of proxy factories to associate with the registry; must not be {@code null}.
    *
-   * @throws IllegalArgumentException If a proxy factory is already registered with the same principal type.
+   * @return A new proxy factory registry; never {@code null}. The returned registry is immutable.
    */
-  void registerProxyFactory(ProxyFactory proxyFactory);
+  static ProxyFactoryRegistry newInstance(final Collection<ProxyFactory> proxyFactories) {
+    checkNotNull(proxyFactories);
 
-  /**
-   * Unregisters the specified proxy factory.
-   *
-   * @param proxyFactory The proxy factory; must not be {@code null}.
-   *
-   * @throws IllegalArgumentException If the specified proxy factory was not previously registered.
-   */
-  void unregisterProxyFactory(ProxyFactory proxyFactory);
-
-  /**
-   * Creates a new proxy factory registry using the default implementation.
-   *
-   * @return A new proxy factory registry; never {@code null}. The returned registry is not thread safe.
-   */
-  static ProxyFactoryRegistry newInstance() {
-    return new DefaultProxyFactoryRegistry();
+    return new DefaultProxyFactoryRegistry(proxyFactories);
   }
 }
