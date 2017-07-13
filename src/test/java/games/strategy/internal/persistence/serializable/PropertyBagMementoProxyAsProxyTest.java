@@ -1,9 +1,12 @@
 package games.strategy.internal.persistence.serializable;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.persistence.serializable.AbstractProxyTestCase;
-import games.strategy.persistence.serializable.ProxyFactoryRegistry;
+import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.memento.PropertyBagMemento;
 
 public final class PropertyBagMementoProxyAsProxyTest extends AbstractProxyTestCase<PropertyBagMemento> {
@@ -19,7 +22,7 @@ public final class PropertyBagMementoProxyAsProxyTest extends AbstractProxyTestC
   }
 
   @Override
-  protected void registerProxyFactories(final ProxyFactoryRegistry proxyFactoryRegistry) {
-    proxyFactoryRegistry.registerProxyFactory(PropertyBagMementoProxy.FACTORY);
+  protected Collection<ProxyFactory> getProxyFactories() {
+    return Arrays.asList(PropertyBagMementoProxy.FACTORY);
   }
 }
