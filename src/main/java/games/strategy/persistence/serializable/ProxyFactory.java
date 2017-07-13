@@ -21,6 +21,9 @@ import java.util.function.Function;
  * </p>
  */
 public interface ProxyFactory {
+  /** A proxy factory that always returns the given principal. */
+  ProxyFactory IDENTITY = newInstance(Object.class, Function.identity());
+
   /**
    * Gets the type of the principal to be proxied.
    *

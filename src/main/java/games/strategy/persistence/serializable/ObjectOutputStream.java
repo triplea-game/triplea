@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Optional;
 
 /**
  * A stream used for serializing objects.
@@ -46,11 +45,8 @@ public final class ObjectOutputStream extends java.io.ObjectOutputStream {
 
   @Override
   protected Object replaceObject(final Object obj) {
-    if (obj == null) {
-      return null;
-    }
-
-    final Optional<ProxyFactory> proxyFactory = proxyFactoryRegistry.getProxyFactory(obj.getClass());
-    return proxyFactory.map(it -> it.newProxyFor(obj)).orElse(obj);
+    return (obj != null)
+        ? proxyFactoryRegistry.getProxyFactory(obj.getClass()).newProxyFor(obj)
+        : null;
   }
 }
