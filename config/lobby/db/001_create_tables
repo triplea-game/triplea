@@ -59,7 +59,7 @@ alter table muted_usernames owner to postgres;
 
 create table ta_users (
     username character varying(40) not null,
-    password character varying(40) not null,
+    password character varying(60) not null,
     email character varying(40) not null,
     joined timestamp without time zone not null,
     lastlogin timestamp without time zone not null,
