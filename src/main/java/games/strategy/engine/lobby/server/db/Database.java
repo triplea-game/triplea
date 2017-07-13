@@ -123,7 +123,7 @@ public class Database {
         if (!existing.contains("TA_USERS")) {
           final Statement s = conn.createStatement();
           s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, "
-              + "password varchar(40) NOT NULL, " + "email varchar(40) NOT NULL, " + "joined timestamp NOT NULL, "
+              + "password varchar(60) NOT NULL, " + "email varchar(40) NOT NULL, " + "joined timestamp NOT NULL, "
               + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
           s.close();
         }
