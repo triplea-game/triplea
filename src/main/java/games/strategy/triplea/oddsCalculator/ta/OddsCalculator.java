@@ -503,7 +503,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
 
   @Override
   public void startHistoryEvent(final String event, final Object renderingData) {}
-  
+
   @Override
   public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
       final String displayName, final boolean loadedFromSavedGame) {}
@@ -601,7 +601,8 @@ class DummyPlayer extends AbstractAI {
       if (ourUnits == null || enemyUnits == null) {
         return null;
       }
-      if (Match.allMatchNotEmpty(enemyUnits, planeNotDestroyer) && Match.allMatchNotEmpty(ourUnits, seaSub)) {
+      if (!enemyUnits.isEmpty() && Match.allMatch(enemyUnits, planeNotDestroyer) && !ourUnits.isEmpty()
+          && Match.allMatch(ourUnits, seaSub)) {
         return possibleTerritories.iterator().next();
       }
       return null;

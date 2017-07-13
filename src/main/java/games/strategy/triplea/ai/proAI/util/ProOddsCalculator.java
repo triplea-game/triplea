@@ -67,7 +67,7 @@ public class ProOddsCalculator {
     final double strengthDifference = ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && Match.allMatchNotEmpty(attackingUnits, Matches.UnitIsAir);
+          !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits, new ArrayList<>(), 1);
     }
@@ -90,14 +90,15 @@ public class ProOddsCalculator {
 
     final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
     final boolean isLandAndCanOnlyBeAttackedByAir =
-        !t.isWater() && Match.allMatchNotEmpty(attackingUnits, Matches.UnitIsAir);
+        !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
     if (attackingUnits.size() == 0) {
       return new ProBattleResult();
     } else if (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
-    } else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatchNotEmpty(defendingUnits, Matches.UnitIsSub)
+    } else if (Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
+        && Match.allMatch(defendingUnits, Matches.UnitIsSub)
         && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer)) {
       return new ProBattleResult();
     }
@@ -157,7 +158,7 @@ public class ProOddsCalculator {
     // Create battle result object
     final List<Territory> tList = new ArrayList<>();
     tList.add(t);
-    if (Match.allMatchNotEmpty(tList, Matches.TerritoryIsLand)) {
+    if (!tList.isEmpty() && Match.allMatch(tList, Matches.TerritoryIsLand)) {
       return new ProBattleResult(winPercentage, tuvSwing,
           Match.anyMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());
