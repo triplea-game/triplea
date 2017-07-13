@@ -164,7 +164,7 @@ public class UserController implements UserDao {
       }
     } catch (final SQLException e) {
       s_logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
-          user.getEmail(), "<rejected>"), e);
+          user.getEmail(), password), e);
       throw new RuntimeException(e);
     }
   }

@@ -37,7 +37,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
-  public static final String PLAIN_PASSWORD_KEY = "PLAINPWD";
+  public static final String SIMPLE_HASHED_PASSWORD_KEY = "SHA512PWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
 
@@ -163,11 +163,11 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (hashedPassword == null) {
       return errorMessage;
     }
-    if (propertiesReadFromClient.containsKey(PLAIN_PASSWORD_KEY)) {
+    if (propertiesReadFromClient.containsKey(SIMPLE_HASHED_PASSWORD_KEY)) {
       if (hashedPassword.isBcrypted()) {
-        return userDao.login(clientName, propertiesReadFromClient.get(PLAIN_PASSWORD_KEY)) ? null : errorMessage;
+        return userDao.login(clientName, propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY)) ? null : errorMessage;
       } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-        userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(PLAIN_PASSWORD_KEY));
+        userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY));
         return null;
       } else {
         return errorMessage;

@@ -3,6 +3,10 @@ package games.strategy.util;
 import static games.strategy.util.PredicateUtils.not;
 
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +18,9 @@ import java.util.stream.Collectors;
  * Some utility methods for dealing with collections.
  */
 public class Util {
+
+  private static final String SHA_512 = "SHA-512";
+
   /**
    * return a such that a exists in c1 and a exists in c2.
    * always returns a new collection.
@@ -121,5 +128,15 @@ public class Util {
       }
     }
     return builder.toString();
+  }
+
+  public static String sha512(String input) {
+    try {
+      return String.format("%064x",
+          new BigInteger(1, MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))));
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException(SHA_512 + " is not supported!", e);
+    }
+
   }
 }

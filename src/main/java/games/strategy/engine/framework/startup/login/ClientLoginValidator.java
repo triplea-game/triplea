@@ -11,6 +11,7 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
+import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
@@ -38,7 +39,7 @@ public class ClientLoginValidator implements ILoginValidator {
    * Set the password required for the game, or to null if no password is required.
    */
   public void setGamePassword(final String password) {
-    m_password = password;
+    m_password = password == null ? null : Util.sha512(password);
   }
 
   @Override
@@ -92,9 +93,9 @@ public class ClientLoginValidator implements ILoginValidator {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
-      final String plainPassword = propertiesReadFromClient.get(ClientLogin.PLAIN_PASSWORD_PROPERTY);
-      if (plainPassword != null) {
-        if (MessageDigest.isEqual(plainPassword.getBytes(), m_password.getBytes())) {
+      final String simpleHashedPassword = propertiesReadFromClient.get(ClientLogin.SIMPLE_HASHED_PASSWORD_PROPERTY);
+      if (simpleHashedPassword != null) {
+        if (MessageDigest.isEqual(simpleHashedPassword.getBytes(), m_password.getBytes())) {
           return null;
         } else {
           return "Invalid Password";

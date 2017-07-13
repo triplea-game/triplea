@@ -19,6 +19,7 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MacFinder;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.Util;
 
 public class LobbyLogin {
   private final Window parentWindow;
@@ -100,7 +101,7 @@ public class LobbyLogin {
                   final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                   props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
                 }
-                props.put(LobbyLoginValidator.PLAIN_PASSWORD_KEY, panel.getPassword());
+                props.put(LobbyLoginValidator.SIMPLE_HASHED_PASSWORD_KEY, Util.sha512(panel.getPassword()));
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
@@ -163,7 +164,7 @@ public class LobbyLogin {
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
               // TODO: Don't send the hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
-              props.put(LobbyLoginValidator.PLAIN_PASSWORD_KEY, createAccount.getPassword());
+              props.put(LobbyLoginValidator.SIMPLE_HASHED_PASSWORD_KEY, Util.sha512(createAccount.getPassword()));
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
             }
