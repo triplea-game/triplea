@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -14,7 +12,7 @@ import org.junit.Test;
  * A fixture for testing the basic aspects of classes that implement the {@link ProxyFactoryRegistry} interface.
  */
 public abstract class AbstractProxyFactoryRegistryTestCase {
-  private final ProxyFactory proxyFactory = ProxyFactory.newInstance(Object.class, Function.identity());
+  private final ProxyFactory proxyFactory = ProxyFactory.newInstance(Number.class, Object::toString);
 
   protected AbstractProxyFactoryRegistryTestCase() {}
 
@@ -35,13 +33,13 @@ public abstract class AbstractProxyFactoryRegistryTestCase {
   public void getProxyFactory_ShouldReturnProxyFactoryWhenPrincipalTypePresent() {
     final ProxyFactoryRegistry proxyFactoryRegistry = newProxyFactoryRegistry(proxyFactory);
 
-    assertThat(proxyFactoryRegistry.getProxyFactory(proxyFactory.getPrincipalType()), is(Optional.of(proxyFactory)));
+    assertThat(proxyFactoryRegistry.getProxyFactory(proxyFactory.getPrincipalType()), is(proxyFactory));
   }
 
   @Test
-  public void getProxyFactory_ShouldReturnEmptyWhenPrincipalTypeAbsent() {
+  public void getProxyFactory_ShouldReturnIdentityProxyFactoryWhenPrincipalTypeAbsent() {
     final ProxyFactoryRegistry proxyFactoryRegistry = newProxyFactoryRegistry();
 
-    assertThat(proxyFactoryRegistry.getProxyFactory(proxyFactory.getPrincipalType()), is(Optional.empty()));
+    assertThat(proxyFactoryRegistry.getProxyFactory(proxyFactory.getPrincipalType()), is(ProxyFactory.IDENTITY));
   }
 }

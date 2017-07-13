@@ -3,9 +3,7 @@ package games.strategy.persistence.serializable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,7 +42,6 @@ public final class ObjectOutputStreamTest {
 
   @Test
   public void replaceObject_ShouldDelegateToProxyFactoryWhenProxyFactoryAvailable() throws Exception {
-    assertTrue(proxyFactoryRegistry.getProxyFactory(Integer.class).isPresent());
     final Object obj = Integer.valueOf(42);
 
     oos.replaceObject(obj);
@@ -54,7 +51,6 @@ public final class ObjectOutputStreamTest {
 
   @Test
   public void replaceObject_ShouldReturnInputWhenProxyFactoryUnavailable() throws Exception {
-    assertFalse(proxyFactoryRegistry.getProxyFactory(Double.class).isPresent());
     final Object obj = Double.valueOf(42.0);
 
     final Object replacedObj = oos.replaceObject(obj);

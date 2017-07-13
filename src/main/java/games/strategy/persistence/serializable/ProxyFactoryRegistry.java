@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * A service for the management and discovery of Java object serialization framework proxy factories.
@@ -15,10 +14,10 @@ public interface ProxyFactoryRegistry {
    *
    * @param principalType The type of principal to be proxied; must not be {@code null}.
    *
-   * @return The proxy factory associated with the specified principal type or empty if no such principal type is
-   *         registered.
+   * @return The proxy factory associated with the specified principal type or {@link ProxyFactory#IDENTITY} if no such
+   *         principal type is registered.
    */
-  Optional<ProxyFactory> getProxyFactory(Class<?> principalType);
+  ProxyFactory getProxyFactory(Class<?> principalType);
 
   /**
    * Creates a new proxy factory registry for the specified array of proxy factories using the default implementation.
