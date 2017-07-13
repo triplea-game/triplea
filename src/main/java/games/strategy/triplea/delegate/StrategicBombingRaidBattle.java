@@ -434,31 +434,31 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories() {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
   }
 
   private boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(m_data);
+    return Properties.getWW2V2(m_data);
   }
 
   private boolean isLimitSBRDamageToProduction() {
-    return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(m_data);
+    return Properties.getLimitRocketAndSBRDamageToProduction(m_data);
   }
 
   private static boolean isLimitSBRDamagePerTurn(final GameData data) {
-    return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
+    return Properties.getLimitSBRDamagePerTurn(data);
   }
 
   private static boolean isPUCap(final GameData data) {
-    return games.strategy.triplea.Properties.getPUCap(data);
+    return Properties.getPUCap(data);
   }
 
   private boolean isSBRVictoryPoints() {
-    return games.strategy.triplea.Properties.getSBRVictoryPoint(m_data);
+    return Properties.getSBRVictoryPoint(m_data);
   }
 
   private boolean isPacificTheater() {
-    return games.strategy.triplea.Properties.getPacificTheater(m_data);
+    return Properties.getPacificTheater(m_data);
   }
 
   private CasualtyDetails calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
@@ -467,7 +467,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
-        Match.allMatchNotEmpty(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,
@@ -587,10 +587,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
       } else {
         final boolean doNotUseBombingBonus =
-            !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
+            !Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
         final String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against "
             + m_defender.getName() + " in " + m_battleSite.getName();
-        if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(m_data)) {
+        if (!Properties.getLL_DAMAGE_ONLY(m_data)) {
           if (doNotUseBombingBonus) {
             // no low luck, and no bonus, so just roll based on the map's dice sides
             m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, m_attacker, DiceType.BOMBING, annotation);
@@ -695,7 +695,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       int damageLimit = TerritoryAttachment.getProduction(m_battleSite);
       int cost = 0;
-      final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
+      final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(m_data);
       int index = 0;
       final boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
       final List<Die> dice = new ArrayList<>();

@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +15,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 /**
  * Tracks which players have which technology advances.
  */
-public class TechTracker implements java.io.Serializable {
+public class TechTracker implements Serializable {
   private static final long serialVersionUID = 4705039229340373735L;
 
   /** Creates new TechTracker. */

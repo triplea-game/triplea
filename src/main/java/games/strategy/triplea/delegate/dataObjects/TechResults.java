@@ -1,10 +1,11 @@
 package games.strategy.triplea.delegate.dataObjects;
 
+import java.io.Serializable;
 import java.util.List;
 
 import games.strategy.engine.data.PlayerID;
 
-public class TechResults implements java.io.Serializable {
+public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
   private int[] m_rolls;
   private int m_hits;

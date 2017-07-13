@@ -7,15 +7,25 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
@@ -39,7 +49,7 @@ class ProLogWindow extends JDialog {
   }
 
   private void initComponents() {
-    final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     GridBagConstraints gridBagConstraints;
     final JPanel jPanel7 = new JPanel();
     final JButton v_restoreDefaultsButton = new JButton();
@@ -48,18 +58,18 @@ class ProLogWindow extends JDialog {
     final JPanel jPanel13 = new JPanel();
     final JButton v_cancelButton = new JButton();
     final JButton v_okButton = new JButton();
-    v_tabPaneMain = new javax.swing.JTabbedPane();
+    v_tabPaneMain = new JTabbedPane();
     final JPanel jPanel8 = new JPanel();
-    v_logHolderTabbedPane = new javax.swing.JTabbedPane();
+    v_logHolderTabbedPane = new JTabbedPane();
     final JPanel jPanel9 = new JPanel();
     final JScrollPane v_aiOutputLogAreaScrollPane = new JScrollPane();
-    v_aiOutputLogArea = new javax.swing.JTextArea();
-    v_enableAILogging = new javax.swing.JCheckBox();
-    final javax.swing.JLabel jLabel15 = new javax.swing.JLabel();
-    v_logDepth = new javax.swing.JComboBox<>();
-    v_limitLogHistoryToSpinner = new javax.swing.JSpinner();
-    v_limitLogHistoryCB = new javax.swing.JCheckBox();
-    final javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
+    v_aiOutputLogArea = new JTextArea();
+    v_enableAILogging = new JCheckBox();
+    final JLabel jLabel15 = new JLabel();
+    v_logDepth = new JComboBox<>();
+    v_limitLogHistoryToSpinner = new JSpinner();
+    v_limitLogHistoryCB = new JCheckBox();
+    final JLabel jLabel46 = new JLabel();
     final JPanel v_pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
     setMinimumSize(new Dimension(775, 400));
@@ -70,18 +80,18 @@ class ProLogWindow extends JDialog {
       }
 
       @Override
-      public void windowOpened(final java.awt.event.WindowEvent evt) {
+      public void windowOpened(final WindowEvent evt) {
         formWindowOpened();
       }
     });
-    getContentPane().setLayout(new java.awt.GridBagLayout());
+    getContentPane().setLayout(new GridBagLayout());
     jPanel7.setName("jPanel3");
-    jPanel7.setPreferredSize(new java.awt.Dimension(600, 45));
-    jPanel7.setLayout(new java.awt.GridBagLayout());
+    jPanel7.setPreferredSize(new Dimension(600, 45));
+    jPanel7.setLayout(new GridBagLayout());
     v_restoreDefaultsButton.setText("Restore Defaults");
-    v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
+    v_restoreDefaultsButton.setMinimumSize(new Dimension(118, 23));
     v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
-    v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
+    v_restoreDefaultsButton.setPreferredSize(new Dimension(118, 23));
     v_restoreDefaultsButton.addActionListener(evt -> restoreDefaultsButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -90,11 +100,11 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.insets = new Insets(11, 0, 11, 0);
     jPanel7.add(v_restoreDefaultsButton, gridBagConstraints);
     v_settingsDetailsButton.setText("Settings Details");
-    v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
+    v_settingsDetailsButton.setMinimumSize(new Dimension(115, 23));
     v_settingsDetailsButton.setName("v_settingsDetailsButton");
-    v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
+    v_settingsDetailsButton.setPreferredSize(new Dimension(115, 23));
     v_settingsDetailsButton.addActionListener(evt -> settingsDetailsButtonActionPerformed());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.anchor = GridBagConstraints.EAST;
@@ -133,21 +143,21 @@ class ProLogWindow extends JDialog {
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     gridBagConstraints.weightx = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
+    gridBagConstraints.insets = new Insets(0, 7, 0, 7);
     getContentPane().add(jPanel7, gridBagConstraints);
-    v_tabPaneMain.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+    v_tabPaneMain.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     v_tabPaneMain.setName("v_tabPaneMain");
-    v_tabPaneMain.setPreferredSize(new java.awt.Dimension(500, screenSize.height - 200));
+    v_tabPaneMain.setPreferredSize(new Dimension(500, screenSize.height - 200));
     jPanel8.setName("jPanel8");
-    jPanel8.setPreferredSize(new java.awt.Dimension(500, 314));
-    jPanel8.setLayout(new java.awt.GridBagLayout());
-    v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-    v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10));
+    jPanel8.setPreferredSize(new Dimension(500, 314));
+    jPanel8.setLayout(new GridBagLayout());
+    v_logHolderTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    v_logHolderTabbedPane.setFont(new Font("Segoe UI", 0, 10));
     v_logHolderTabbedPane.setName("v_logHolderTabbedPane");
     jPanel9.setName("jPanel9");
-    jPanel9.setLayout(new java.awt.GridLayout(1, 0));
+    jPanel9.setLayout(new GridLayout(1, 0));
     v_aiOutputLogAreaScrollPane.setName("v_aiOutputLogAreaScrollPane");
     v_aiOutputLogArea.setColumns(20);
     v_aiOutputLogArea.setEditable(false);
@@ -183,7 +193,7 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 12, 0, 0);
     jPanel8.add(jLabel15, gridBagConstraints);
-    v_logDepth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
+    v_logDepth.setModel(new DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
     v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
     v_logDepth.setName("v_logDepth");
     gridBagConstraints = new GridBagConstraints();
@@ -191,7 +201,7 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 5, 0, 0);
     jPanel8.add(v_logDepth, gridBagConstraints);
-    v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(5, 1, 100, 1));
+    v_limitLogHistoryToSpinner.setModel(new SpinnerNumberModel(5, 1, 100, 1));
     v_limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
     v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner");
     v_limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
@@ -342,8 +352,8 @@ class ProLogWindow extends JDialog {
     dialog.setBackground(label.getBackground());
     dialog.setLayout(new BorderLayout());
     final JScrollPane pane = new JScrollPane();
-    pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     pane.setViewportView(label);
     dialog.add(pane, BorderLayout.CENTER);
     final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
@@ -378,7 +388,7 @@ class ProLogWindow extends JDialog {
       final JTextArea newTextArea = new JTextArea();
       newTextArea.setColumns(20);
       newTextArea.setRows(5);
-      newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+      newTextArea.setFont(new Font("Segoe UI", 0, 10));
       newTextArea.setEditable(false);
       newScrollPane.getHorizontalScrollBar().setEnabled(true);
       newScrollPane.setViewportView(newTextArea);
@@ -416,11 +426,11 @@ class ProLogWindow extends JDialog {
     }
   }
 
-  private javax.swing.JTextArea v_aiOutputLogArea;
-  private javax.swing.JCheckBox v_enableAILogging;
-  private javax.swing.JCheckBox v_limitLogHistoryCB;
-  private javax.swing.JSpinner v_limitLogHistoryToSpinner;
-  private javax.swing.JComboBox<String> v_logDepth;
-  private javax.swing.JTabbedPane v_logHolderTabbedPane;
-  private javax.swing.JTabbedPane v_tabPaneMain;
+  private JTextArea v_aiOutputLogArea;
+  private JCheckBox v_enableAILogging;
+  private JCheckBox v_limitLogHistoryCB;
+  private JSpinner v_limitLogHistoryToSpinner;
+  private JComboBox<String> v_logDepth;
+  private JTabbedPane v_logHolderTabbedPane;
+  private JTabbedPane v_tabPaneMain;
 }

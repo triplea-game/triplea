@@ -18,6 +18,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 
 @MapSupport
@@ -719,7 +720,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     sb.append(br);
     if (!t.isWater() && m_unitProduction > 0
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
       sb.append(m_unitProduction);
       sb.append(br);

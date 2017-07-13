@@ -26,6 +26,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -334,7 +335,7 @@ public class MovePanel extends AbstractMovePanel {
      * if you do not have selection of zero-movement units enabled,
      * this will restrict selection to units with 1 or more movement
      */
-    if (!games.strategy.triplea.Properties.getSelectableZeroMovementUnits(getData())) {
+    if (!Properties.getSelectableZeroMovementUnits(getData())) {
       movableBuilder.add(Matches.UnitCanMove);
     }
     if (!nonCombat) {
@@ -1264,7 +1265,8 @@ public class MovePanel extends AbstractMovePanel {
             // is the only one for
             // which the route may actually change much)
             if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
-                || Match.allMatchNotEmpty(unitsThatCanMoveOnRoute, Matches.UnitIsAir))) {
+                || (!unitsThatCanMoveOnRoute.isEmpty()
+                    && Match.allMatch(unitsThatCanMoveOnRoute, Matches.UnitIsAir)))) {
               final Collection<Unit> airUnits = Match.getMatches(selectedUnits, Matches.UnitIsAir);
               if (airUnits.size() > 0) {
                 route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
@@ -1315,7 +1317,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data) {
-    return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
+    return Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
   private final List<Unit> userChooseUnits(final Set<Unit> defaultSelections,

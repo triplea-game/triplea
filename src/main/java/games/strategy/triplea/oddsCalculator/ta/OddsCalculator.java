@@ -46,6 +46,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator.DummyGameModifiedChannel.DummyPlayer;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.Match;
@@ -500,213 +501,216 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     @Override
     public void startHistoryEvent(final String event) {}
 
+
     @Override
     public void startHistoryEvent(final String event, final Object renderingData) {}
 
     @Override
     public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
         final String displayName, final boolean loadedFromSavedGame) {}
-  }
 
 
-  static class DummyPlayer extends AbstractAI {
-    private final boolean m_keepAtLeastOneLand;
-    // negative = do not retreat
-    private final int m_retreatAfterRound;
-    // negative = do not retreat
-    private final int m_retreatAfterXUnitsLeft;
-    private final boolean m_retreatWhenOnlyAirLeft;
-    private final DummyDelegateBridge m_bridge;
-    private final boolean m_isAttacker;
-    private final List<Unit> m_orderOfLosses;
+    static class DummyPlayer extends AbstractAI {
+      private final boolean m_keepAtLeastOneLand;
+      // negative = do not retreat
+      private final int m_retreatAfterRound;
+      // negative = do not retreat
+      private final int m_retreatAfterXUnitsLeft;
+      private final boolean m_retreatWhenOnlyAirLeft;
+      private final DummyDelegateBridge m_bridge;
+      private final boolean m_isAttacker;
+      private final List<Unit> m_orderOfLosses;
 
-    public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
-        final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
-        final int retreatAfterRound,
-        final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
-      super(name, type);
-      m_keepAtLeastOneLand = keepAtLeastOneLand;
-      m_retreatAfterRound = retreatAfterRound;
-      m_retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
-      m_retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
-      m_bridge = dummyDelegateBridge;
-      m_isAttacker = attacker;
-      m_orderOfLosses = orderOfLosses;
-    }
-
-    private MustFightBattle getBattle() {
-      return m_bridge.getBattle();
-    }
-
-    private List<Unit> getOurUnits() {
-      final MustFightBattle battle = getBattle();
-      if (battle == null) {
-        return null;
+      public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
+          final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
+          final int retreatAfterRound,
+          final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
+        super(name, type);
+        m_keepAtLeastOneLand = keepAtLeastOneLand;
+        m_retreatAfterRound = retreatAfterRound;
+        m_retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
+        m_retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
+        m_bridge = dummyDelegateBridge;
+        m_isAttacker = attacker;
+        m_orderOfLosses = orderOfLosses;
       }
-      return new ArrayList<>((m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
-    }
 
-    private List<Unit> getEnemyUnits() {
-      final MustFightBattle battle = getBattle();
-      if (battle == null) {
-        return null;
+      private MustFightBattle getBattle() {
+        return m_bridge.getBattle();
       }
-      return new ArrayList<>((m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
-    }
 
-    @Override
-    protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-        final PlayerID player) {}
-
-    @Override
-    protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-        final PlayerID player) {}
-
-    @Override
-    protected void purchase(final boolean purcahseForBid, final int pusToSpend,
-        final IPurchaseDelegate purchaseDelegate,
-        final GameData data, final PlayerID player) {}
-
-    @Override
-    protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
-
-    @Override
-    public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
-        final Territory from) {
-      throw new UnsupportedOperationException();
-    }
-
-    /**
-     * The battle calc doesn't actually care if you have available territories to retreat to or not.
-     * It will always let you retreat to the 'current' territory (the battle territory), even if that is illegal.
-     * This is because the battle calc does not know where the attackers are actually coming from.
-     */
-    @Override
-    public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
-        final Collection<Territory> possibleTerritories, final String message) {
-      // null = do not retreat
-      if (possibleTerritories.isEmpty()) {
-        return null;
-      }
-      if (submerge) {
-        // submerge if all air vs subs
-        final Match<Unit> seaSub = Match.allOf(Matches.UnitIsSea, Matches.UnitIsSub);
-        final Match<Unit> planeNotDestroyer = Match.allOf(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
-        final List<Unit> ourUnits = getOurUnits();
-        final List<Unit> enemyUnits = getEnemyUnits();
-        if (ourUnits == null || enemyUnits == null) {
-          return null;
-        }
-        if (Match.allMatchNotEmpty(enemyUnits, planeNotDestroyer) && Match.allMatchNotEmpty(ourUnits, seaSub)) {
-          return possibleTerritories.iterator().next();
-        }
-        return null;
-      } else {
+      private List<Unit> getOurUnits() {
         final MustFightBattle battle = getBattle();
         if (battle == null) {
           return null;
         }
-        if (m_retreatAfterRound > -1 && battle.getBattleRound() >= m_retreatAfterRound) {
-          return possibleTerritories.iterator().next();
-        }
-        if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1) {
+        return new ArrayList<>((m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
+      }
+
+      private List<Unit> getEnemyUnits() {
+        final MustFightBattle battle = getBattle();
+        if (battle == null) {
           return null;
         }
-        final Collection<Unit> unitsLeft = m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
-        final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
-        if (m_retreatWhenOnlyAirLeft) {
-          // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
-          // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken casualty
-          // last)
-          // then we add the number of air, to the retreat after X left number (which we would set to '1')
-          int retreatNum = airLeft.size();
-          if (m_retreatAfterXUnitsLeft > 0) {
-            retreatNum += m_retreatAfterXUnitsLeft;
+        return new ArrayList<>((m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
+      }
+
+      @Override
+      protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+          final PlayerID player) {}
+
+      @Override
+      protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+          final PlayerID player) {}
+
+      @Override
+      protected void purchase(final boolean purcahseForBid, final int pusToSpend,
+          final IPurchaseDelegate purchaseDelegate,
+          final GameData data, final PlayerID player) {}
+
+      @Override
+      protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
+
+      @Override
+      public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+          final Territory from) {
+        throw new UnsupportedOperationException();
+      }
+
+      /**
+       * The battle calc doesn't actually care if you have available territories to retreat to or not.
+       * It will always let you retreat to the 'current' territory (the battle territory), even if that is illegal.
+       * This is because the battle calc does not know where the attackers are actually coming from.
+       */
+      @Override
+      public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
+          final Collection<Territory> possibleTerritories, final String message) {
+        // null = do not retreat
+        if (possibleTerritories.isEmpty()) {
+          return null;
+        }
+        if (submerge) {
+          // submerge if all air vs subs
+          final Match<Unit> seaSub = Match.allOf(Matches.UnitIsSea, Matches.UnitIsSub);
+          final Match<Unit> planeNotDestroyer = Match.allOf(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+          final List<Unit> ourUnits = getOurUnits();
+          final List<Unit> enemyUnits = getEnemyUnits();
+          if (ourUnits == null || enemyUnits == null) {
+            return null;
           }
-          if (retreatNum >= unitsLeft.size()) {
+          if (!enemyUnits.isEmpty() && Match.allMatch(enemyUnits, planeNotDestroyer) && !ourUnits.isEmpty()
+              && Match.allMatch(ourUnits, seaSub)) {
             return possibleTerritories.iterator().next();
           }
-        }
-        if (m_retreatAfterXUnitsLeft > -1 && m_retreatAfterXUnitsLeft >= unitsLeft.size()) {
-          return possibleTerritories.iterator().next();
-        }
-        return null;
-      }
-    }
-
-    // Added new collection autoKilled to handle killing units prior to casualty selection
-    @Override
-    public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-        final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-        final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-        final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-        final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
-        final boolean allowMultipleHitsPerUnit) {
-      final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
-      final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());
-      if (m_keepAtLeastOneLand) {
-        final List<Unit> notKilled = new ArrayList<>(selectFrom);
-        notKilled.removeAll(rKilled);
-        // no land units left, but we have a non land unit to kill and land unit was killed
-        if (!Match.anyMatch(notKilled, Matches.UnitIsLand) && Match.anyMatch(notKilled, Matches.UnitIsNotLand)
-            && Match.anyMatch(rKilled, Matches.UnitIsLand)) {
-          final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
-          // sort according to cost
-          Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
-          // remove the last killed unit, this should be the strongest
-          rKilled.remove(rKilled.size() - 1);
-          // add the cheapest unit
-          rKilled.add(notKilledAndNotLand.get(0));
-        }
-      }
-      if (m_orderOfLosses != null && !m_orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
-        final List<Unit> orderOfLosses = new ArrayList<>(m_orderOfLosses);
-        orderOfLosses.retainAll(selectFrom);
-        if (!orderOfLosses.isEmpty()) {
-          int killedSize = rKilled.size();
-          rKilled.clear();
-          while (killedSize > 0 && !orderOfLosses.isEmpty()) {
-            rKilled.add(orderOfLosses.get(0));
-            orderOfLosses.remove(0);
-            killedSize--;
+          return null;
+        } else {
+          final MustFightBattle battle = getBattle();
+          if (battle == null) {
+            return null;
           }
-          if (killedSize > 0) {
-            final List<Unit> defaultKilled = new ArrayList<>(defaultCasualties.getKilled());
-            defaultKilled.removeAll(rKilled);
-            while (killedSize > 0) {
-              rKilled.add(defaultKilled.get(0));
-              defaultKilled.remove(0);
+          if (m_retreatAfterRound > -1 && battle.getBattleRound() >= m_retreatAfterRound) {
+            return possibleTerritories.iterator().next();
+          }
+          if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1) {
+            return null;
+          }
+          final Collection<Unit> unitsLeft = m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
+          final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
+          if (m_retreatWhenOnlyAirLeft) {
+            // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
+            // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
+            // casualty
+            // last)
+            // then we add the number of air, to the retreat after X left number (which we would set to '1')
+            int retreatNum = airLeft.size();
+            if (m_retreatAfterXUnitsLeft > 0) {
+              retreatNum += m_retreatAfterXUnitsLeft;
+            }
+            if (retreatNum >= unitsLeft.size()) {
+              return possibleTerritories.iterator().next();
+            }
+          }
+          if (m_retreatAfterXUnitsLeft > -1 && m_retreatAfterXUnitsLeft >= unitsLeft.size()) {
+            return possibleTerritories.iterator().next();
+          }
+          return null;
+        }
+      }
+
+      // Added new collection autoKilled to handle killing units prior to casualty selection
+      @Override
+      public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+          final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+          final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+          final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+          final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
+          final boolean allowMultipleHitsPerUnit) {
+        final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
+        final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());
+        if (m_keepAtLeastOneLand) {
+          final List<Unit> notKilled = new ArrayList<>(selectFrom);
+          notKilled.removeAll(rKilled);
+          // no land units left, but we have a non land unit to kill and land unit was killed
+          if (!Match.anyMatch(notKilled, Matches.UnitIsLand) && Match.anyMatch(notKilled, Matches.UnitIsNotLand)
+              && Match.anyMatch(rKilled, Matches.UnitIsLand)) {
+            final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
+            // sort according to cost
+            Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
+            // remove the last killed unit, this should be the strongest
+            rKilled.remove(rKilled.size() - 1);
+            // add the cheapest unit
+            rKilled.add(notKilledAndNotLand.get(0));
+          }
+        }
+        if (m_orderOfLosses != null && !m_orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
+          final List<Unit> orderOfLosses = new ArrayList<>(m_orderOfLosses);
+          orderOfLosses.retainAll(selectFrom);
+          if (!orderOfLosses.isEmpty()) {
+            int killedSize = rKilled.size();
+            rKilled.clear();
+            while (killedSize > 0 && !orderOfLosses.isEmpty()) {
+              rKilled.add(orderOfLosses.get(0));
+              orderOfLosses.remove(0);
               killedSize--;
+            }
+            if (killedSize > 0) {
+              final List<Unit> defaultKilled = new ArrayList<>(defaultCasualties.getKilled());
+              defaultKilled.removeAll(rKilled);
+              while (killedSize > 0) {
+                rKilled.add(defaultKilled.get(0));
+                defaultKilled.remove(0);
+                killedSize--;
+              }
             }
           }
         }
+        final CasualtyDetails casualtyDetails = new CasualtyDetails(rKilled, rDamaged, false);
+        return casualtyDetails;
       }
-      final CasualtyDetails casualtyDetails = new CasualtyDetails(rKilled, rDamaged, false);
-      return casualtyDetails;
-    }
 
-    @Override
-    public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates,
-        final Territory currentTerritory,
-        final String unitMessage) {
-      throw new UnsupportedOperationException();
-    }
+      @Override
+      public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates,
+          final Territory currentTerritory,
+          final String unitMessage) {
+        throw new UnsupportedOperationException();
+      }
 
-    @Override
-    public boolean shouldBomberBomb(final Territory territory) {
-      throw new UnsupportedOperationException();
-    }
+      @Override
+      public boolean shouldBomberBomb(final Territory territory) {
+        throw new UnsupportedOperationException();
+      }
 
-    @Override
-    public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
-        final Collection<Unit> bombers) {
-      throw new UnsupportedOperationException();
-    }
+      @Override
+      public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+          final Collection<Unit> bombers) {
+        throw new UnsupportedOperationException();
+      }
 
+    }
   }
 }

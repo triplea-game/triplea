@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -37,7 +38,7 @@ public class ChangeTripleATest {
     // System.out.println("bytes:" + sink.toByteArray().length);
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
     final ObjectInputStream input =
-        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(gameData), source);
+        new GameObjectInputStream(new GameObjectStreamFactory(gameData), source);
     final Change newChange = (Change) input.readObject();
     input.close();
     output.close();

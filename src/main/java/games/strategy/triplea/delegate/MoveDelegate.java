@@ -23,6 +23,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -89,7 +90,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
               Match.anyOf(TriggerAttachment.placeMatch()));
       final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.anyOf(
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
-      if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch, m_bridge);
         if (!toFirePossible.isEmpty()) {
@@ -141,7 +142,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
 
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
-      if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data)) {
+      if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
         if (!toFireAfterBonus.isEmpty()) {
@@ -171,7 +172,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       addedHistoryEvent = true;
     }
     Change changeBonus = null;
-    if (games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData())) {
+    if (Properties.getUnitsMayGiveBonusMovement(getData())) {
       changeBonus = giveBonusMovement(m_bridge, m_player);
     }
     if (changeBonus != null && !changeBonus.isEmpty()) {
@@ -399,7 +400,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final PlayerID player) {
     final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
-        games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
+        Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
     final Match<Unit> damagedUnits =
         Match.allOf(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
     final Match<Unit> damagedUnitsOwned = Match.allOf(damagedUnits, Matches.unitIsOwnedBy(player));
@@ -408,7 +409,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     while (iterTerritories.hasNext()) {
       final Territory current = iterTerritories.next();
       final Set<Unit> damaged;
-      if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
+      if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
         if (repairOnlyOwn) {
           // we only repair ours
           damaged = new HashSet<>(current.getUnits().getMatches(damagedUnitsOwned));
@@ -471,7 +472,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
    */
   private static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn,
       final GameData data) {
-    if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
+    if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
     }
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
@@ -524,7 +525,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
     }
     boolean isKamikaze = false;
-    final boolean getKamikazeAir = games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+    final boolean getKamikazeAir = Properties.getKamikaze_Airplanes(data);
     Collection<Unit> kamikazeUnits = new ArrayList<>();
 
     // confirm kamikaze moves, and remove them from unresolved units

@@ -17,9 +17,9 @@ import games.strategy.util.UrlStreams;
 public class PoliticsText {
   // Filename
   private static final String PROPERTY_FILE = "politicstext.properties";
-  private static PoliticsText s_pt = null;
-  private static long s_timestamp = 0;
-  private final Properties m_properties = new Properties();
+  private static PoliticsText pt = null;
+  private static long timestamp = 0;
+  private final Properties properties = new Properties();
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
@@ -36,7 +36,7 @@ public class PoliticsText {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try {
-          m_properties.load(inputStream.get());
+          properties.load(inputStream.get());
         } catch (final IOException e) {
           System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
@@ -46,15 +46,15 @@ public class PoliticsText {
 
   public static PoliticsText getInstance() {
     // cache properties for 10 seconds
-    if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) {
-      s_pt = new PoliticsText();
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+    if (pt == null || Calendar.getInstance().getTimeInMillis() > timestamp + 10000) {
+      pt = new PoliticsText();
+      timestamp = Calendar.getInstance().getTimeInMillis();
     }
-    return s_pt;
+    return pt;
   }
 
   private String getString(final String value) {
-    return m_properties.getProperty(value, "NO: " + value + " set.");
+    return properties.getProperty(value, "NO: " + value + " set.");
   }
 
   private String getMessage(final String politicsKey, final String messageKey) {

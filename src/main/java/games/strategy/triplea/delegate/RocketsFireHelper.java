@@ -37,35 +37,35 @@ import games.strategy.util.Match;
  */
 public class RocketsFireHelper {
   private static boolean isWW2V2(final GameData data) {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   private static boolean isAllRocketsAttack(final GameData data) {
-    return games.strategy.triplea.Properties.getAllRocketsAttack(data);
+    return Properties.getAllRocketsAttack(data);
   }
 
   private static boolean isRocketsCanFlyOverImpassables(final GameData data) {
-    return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
+    return Properties.getRocketsCanFlyOverImpassables(data);
   }
 
   private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   private static boolean isRocketAttacksPerFactoryInfinite(final GameData data) {
-    return games.strategy.triplea.Properties.getRocketAttacksPerFactoryInfinite(data);
+    return Properties.getRocketAttacksPerFactoryInfinite(data);
   }
 
   private static boolean isPUCap(final GameData data) {
-    return games.strategy.triplea.Properties.getPUCap(data);
+    return Properties.getPUCap(data);
   }
 
   private static boolean isLimitRocketDamagePerTurn(final GameData data) {
-    return games.strategy.triplea.Properties.getLimitRocketDamagePerTurn(data);
+    return Properties.getLimitRocketDamagePerTurn(data);
   }
 
   private static boolean isLimitRocketDamageToProduction(final GameData data) {
-    return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(data);
+    return Properties.getLimitRocketAndSBRDamageToProduction(data);
   }
 
   public RocketsFireHelper() {}
@@ -237,9 +237,9 @@ public class RocketsFireHelper {
       targets.add(target);
     }
     final boolean doNotUseBombingBonus =
-        !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
+        !Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
     int cost = 0;
-    if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data)) {
+    if (!Properties.getLL_DAMAGE_ONLY(data)) {
       if (doNotUseBombingBonus || rockets == null) {
         // no low luck, and no bonus, so just roll based on the map's dice sides
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,

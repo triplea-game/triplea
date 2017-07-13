@@ -491,8 +491,9 @@ class ProNonCombatMoveAI {
       final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t);
       final ProBattleResult minResult = patd.getMinBattleResult();
       final int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
+      final List<Unit> maxEnemyUnits = patd.getMaxEnemyUnits();
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && Match.allMatchNotEmpty(patd.getMaxEnemyUnits(), Matches.UnitIsAir);
+          !t.isWater() && !maxEnemyUnits.isEmpty() && Match.allMatch(maxEnemyUnits, Matches.UnitIsAir);
       final boolean isNotFactoryAndShouldHold =
           !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
       final boolean canAlreadyBeHeld =

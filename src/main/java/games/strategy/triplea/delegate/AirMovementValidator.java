@@ -20,6 +20,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -608,7 +609,7 @@ public class AirMovementValidator {
    */
   public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerID player,
       final GameData data) {
-    if (!Match.allMatchNotEmpty(airUnits, Matches.UnitIsAir)) {
+    if (airUnits.isEmpty() || !Match.allMatch(airUnits, Matches.UnitIsAir)) {
       throw new IllegalArgumentException("can only test if air will land");
     }
     if (!territory.isWater() && AbstractMoveDelegate.getBattleTracker(data).wasConquered(territory)) {
@@ -616,7 +617,7 @@ public class AirMovementValidator {
     }
     if (territory.isWater()) {
       // if they cant all land on carriers
-      if (!Match.allMatchNotEmpty(airUnits, Matches.UnitCanLandOnCarrier)) {
+      if (airUnits.isEmpty() || !Match.allMatch(airUnits, Matches.UnitCanLandOnCarrier)) {
         return false;
       }
       // when doing the calculation, make sure to include the units
@@ -723,15 +724,15 @@ public class AirMovementValidator {
   }
 
   private static boolean isKamikazeAircraft(final GameData data) {
-    return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+    return Properties.getKamikaze_Airplanes(data);
   }
 
   private static boolean areNeutralsPassableByAir(final GameData data) {
-    return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
+    return Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data);
   }
 
   private static boolean isNeutralsImpassable(final GameData data) {
-    return games.strategy.triplea.Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralsImpassable(data);
   }
 
   private static int getNeutralCharge(final GameData data, final Route route) {
@@ -739,6 +740,6 @@ public class AirMovementValidator {
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
-    return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(data);
+    return numberOfTerritories * Properties.getNeutralCharge(data);
   }
 }

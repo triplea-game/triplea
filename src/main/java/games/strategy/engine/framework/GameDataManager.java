@@ -221,7 +221,7 @@ public class GameDataManager {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
-    outStream.writeObject(games.strategy.engine.ClientContext.engineVersion());
+    outStream.writeObject(ClientContext.engineVersion());
     data.acquireReadLock();
     try {
       outStream.writeObject(data);

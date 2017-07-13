@@ -694,7 +694,7 @@ public class BattleDisplay extends JPanel {
 
   private static JComponent getPlayerComponent(final PlayerID id) {
     final JLabel player = new JLabel(id.getName());
-    player.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
+    player.setBorder(new EmptyBorder(5, 5, 5, 5));
     player.setFont(player.getFont().deriveFont((float) 14));
     return player;
   }

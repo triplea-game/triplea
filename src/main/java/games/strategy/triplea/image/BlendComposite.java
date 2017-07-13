@@ -1,5 +1,6 @@
 package games.strategy.triplea.image;
 
+import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
@@ -10,7 +11,7 @@ import java.awt.image.WritableRaster;
 /**
  * This class handles the various types of blends for base/relief tiles.
  */
-class BlendComposite implements java.awt.Composite {
+class BlendComposite implements Composite {
   public enum BlendingMode {
     NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
   }
