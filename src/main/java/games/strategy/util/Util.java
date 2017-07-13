@@ -130,6 +130,11 @@ public class Util {
     return builder.toString();
   }
 
+  /**
+   * Creates a hash of the given String based on the SHA-512 algorithm.
+   * @param input The input String to hash.
+   * @return A hashed hexadecimal String of the input.
+   */
   public static String sha512(String input) {
     try {
       return String.format("%064x",

@@ -15,12 +15,7 @@ import games.strategy.util.Util;
 import games.strategy.util.Version;
 
 /**
- * If we require a password, then we challenge the client with a salt value, the salt
- * being different for each login attempt. . The client hashes the password entered by
- * the user with this salt, and sends it back to us. This prevents the password from
- * travelling over the network in plain text, and also prevents someone listening on
- * the connection from getting enough information to log in (since the salt will change
- * on the next login attempt)
+ * If we require a password, only the hash is stored in memory and compared against hashes a client sends.
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";

@@ -165,7 +165,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     if (propertiesReadFromClient.containsKey(SIMPLE_HASHED_PASSWORD_KEY)) {
       if (hashedPassword.isBcrypted()) {
-        return userDao.login(clientName, propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY)) ? null : errorMessage;
+        return userDao.login(clientName, propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY)) ? null
+            : errorMessage;
       } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
         userDao.updateUser(userDao.getUserByName(clientName), propertiesReadFromClient.get(SIMPLE_HASHED_PASSWORD_KEY));
         return null;

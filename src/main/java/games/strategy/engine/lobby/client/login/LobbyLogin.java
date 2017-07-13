@@ -162,7 +162,7 @@ public class LobbyLogin {
               final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
-              // TODO: Don't send the hashed password once the lobby is updated
+              // TODO: Don't send the md5-hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
               props.put(LobbyLoginValidator.SIMPLE_HASHED_PASSWORD_KEY, Util.sha512(createAccount.getPassword()));
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
