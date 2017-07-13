@@ -89,17 +89,6 @@ public final class Match<T> {
 
   /**
    * returns true if all elements in the collection match.
-   * returns false if the collection is empty.
-   * 
-   * @deprecated Check if the collection you provided is empty on your own.
-   */
-  @Deprecated
-  public static <T> boolean allMatchNotEmpty(final Collection<T> collection, final Match<T> match) {
-    return !collection.isEmpty() && allMatch(collection, match);
-  }
-
-  /**
-   * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
     return collection.stream().allMatch(match::match);
