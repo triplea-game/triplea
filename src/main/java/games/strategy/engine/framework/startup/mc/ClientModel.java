@@ -469,35 +469,34 @@ public class ClientModel implements IMessengerErrorListener {
     sb.append(m_channelMessenger);
     return sb.toString();
   }
-}
 
+  static class ClientProps {
+    private int port;
+    private String name;
+    private String host;
 
-class ClientProps {
-  private int port;
-  private String name;
-  private String host;
+    public String getHost() {
+      return host;
+    }
 
-  public String getHost() {
-    return host;
-  }
+    public void setHost(final String host) {
+      this.host = host;
+    }
 
-  public void setHost(final String host) {
-    this.host = host;
-  }
+    public String getName() {
+      return name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setName(final String name) {
+      this.name = name;
+    }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
+    public int getPort() {
+      return port;
+    }
 
-  public int getPort() {
-    return port;
-  }
-
-  public void setPort(final int port) {
-    this.port = port;
+    public void setPort(final int port) {
+      this.port = port;
+    }
   }
 }

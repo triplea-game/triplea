@@ -345,13 +345,13 @@ public class Vault {
       }
     }
   }
+
+  interface IRemoteVault extends IChannelSubscribor {
+    void addLockedValue(VaultID id, byte[] data);
+
+    void unlock(VaultID id, byte[] secretKeyBytes);
+
+    void release(VaultID id);
+  }
 }
 
-
-interface IRemoteVault extends IChannelSubscribor {
-  void addLockedValue(VaultID id, byte[] data);
-
-  void unlock(VaultID id, byte[] secretKeyBytes);
-
-  void release(VaultID id);
-}
