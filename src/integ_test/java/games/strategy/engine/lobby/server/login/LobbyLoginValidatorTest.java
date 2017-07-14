@@ -33,7 +33,7 @@ import games.strategy.util.Util;
 public class LobbyLoginValidatorTest {
 
   @Test
-  public void testCreateNewUser() {
+  public void testLegacyCreateNewUser() {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
@@ -48,6 +48,29 @@ public class LobbyLoginValidatorTest {
     // try to create a duplicate user, should not work
     assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
         properties, name, mac, address));
+  }
+
+  @Test
+  public void testCreateNewUser() {
+    final LobbyLoginValidator validator = new LobbyLoginValidator();
+    final SocketAddress address = new InetSocketAddress(5000);
+    final String name = Util.createUniqueTimeStamp();
+    final String mac = MacFinder.getHashedMacAddress();
+    final String password = Util.sha512("password");
+    final Map<String, String> properties = new HashMap<>();
+    final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
+    final String publicKey = challengeProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY);
+    properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
+    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, password));
+    properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
+    properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+    assertNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,
+        name, mac, address));
+    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, Util.sha512("wrong")));
+    // try to create a duplicate user, should not work
+    assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
+        properties, name, mac, address));
+    assertTrue(BCrypt.checkpw(password, new DbUserController().getPassword(name).value));
   }
 
   @Test
