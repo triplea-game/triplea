@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -121,7 +122,8 @@ public class ClientLoginValidator implements ILoginValidator {
         try {
           final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
           cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-          if (MessageDigest.isEqual(cipher.doFinal(Base64.getDecoder().decode(base64String)), m_password.getBytes())) {
+          if (MessageDigest.isEqual(cipher.doFinal(Base64.getDecoder().decode(base64String)),
+              m_password.getBytes(StandardCharsets.UTF_8))) {
             return null;
           } else {
             ThreadUtil.sleep((int) (4000 * Math.random()));

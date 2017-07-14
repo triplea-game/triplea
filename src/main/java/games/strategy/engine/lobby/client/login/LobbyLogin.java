@@ -3,21 +3,17 @@ package games.strategy.engine.lobby.client.login;
 import java.awt.Window;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientContext;
@@ -113,20 +109,8 @@ public class LobbyLogin {
                   final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                   props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
                 }
-                if (challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY) != null) {
-                  try {
-                    final PublicKey publicKey =
-                        KeyFactory.getInstance(LobbyLoginValidator.RSA).generatePublic(new X509EncodedKeySpec(
-                            Base64.getDecoder().decode(challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY))));
-                    final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA);
-                    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-                    props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, Base64.getEncoder().encodeToString(
-                        cipher.doFinal(Util.sha512(panel.getPassword()).getBytes(StandardCharsets.UTF_8))));
-                  } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException
-                      | BadPaddingException | InvalidKeyException | NoSuchPaddingException e) {
-                    throw new IllegalStateException(e);
-                  }
-                }
+                appendEncryptedPassword(challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY), panel.getPassword(),
+                    pass -> props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, pass));
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
@@ -189,20 +173,8 @@ public class LobbyLogin {
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
               // TODO: Don't send the md5-hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
-              if (challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY) != null) {
-                try {
-                  final PublicKey publicKey =
-                      KeyFactory.getInstance(LobbyLoginValidator.RSA).generatePublic(new X509EncodedKeySpec(
-                          Base64.getDecoder().decode(challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY))));
-                  final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA);
-                  cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-                  props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, Base64.getEncoder().encodeToString(
-                      cipher.doFinal(Util.sha512(createAccount.getPassword()).getBytes(StandardCharsets.UTF_8))));
-                } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException
-                    | BadPaddingException | InvalidKeyException | NoSuchPaddingException e) {
-                  throw new IllegalStateException(e);
-                }
-              }
+              appendEncryptedPassword(challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY),
+                  createAccount.getPassword(), pass -> props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, pass));
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
             }
@@ -220,6 +192,21 @@ public class LobbyLogin {
           "Account creation failed",
           JOptionPane.ERROR_MESSAGE);
       return null;
+    }
+  }
+
+  private void appendEncryptedPassword(final String base64, final String password, final Consumer<String> consumer) {
+    if (base64 != null) {
+      try {
+        final PublicKey publicKey = KeyFactory.getInstance(LobbyLoginValidator.RSA)
+            .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
+        final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA);
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        consumer.accept(
+            Base64.getEncoder().encodeToString(cipher.doFinal(Util.sha512(password).getBytes(StandardCharsets.UTF_8))));
+      } catch (GeneralSecurityException e) {
+        throw new IllegalStateException(e);
+      }
     }
   }
 }

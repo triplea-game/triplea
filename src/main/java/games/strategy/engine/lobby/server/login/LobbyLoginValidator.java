@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javax.crypto.BadPaddingException;
@@ -21,6 +22,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -192,28 +194,17 @@ public class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
-    final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
     if (base64 != null) {
-      try {
-        final Cipher cipher = Cipher.getInstance(RSA);
-        cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-        final String simpleHashedPassword =
-            new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8);
+      return decryptPassword(base64, propertiesSentToClient.get(RSA_PUBLIC_KEY), pass -> {
         if (hashedPassword.isBcrypted()) {
-          return userDao.login(clientName, simpleHashedPassword) ? null : errorMessage;
+          return userDao.login(clientName, pass) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-          userDao.updateUser(userDao.getUserByName(clientName), simpleHashedPassword);
+          userDao.updateUser(userDao.getUserByName(clientName), pass);
           return null;
         } else {
           return errorMessage;
         }
-      } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-        throw new IllegalStateException(e);
-      } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-        return e.getMessage();
-      } finally {
-        rsaKeyMap.remove(publicKey);
-      }
+      });
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
       if (hashedPassword.isBcrypted()) {
@@ -264,21 +255,11 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
     final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
-    final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
     if (base64 != null) {
-      try {
-        final Cipher cipher = Cipher.getInstance(RSA);
-        cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-        new DbUserController().createUser(user,
-            new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
+      return decryptPassword(base64, propertiesSentToClient.get(RSA_PUBLIC_KEY), pass -> {
+        new DbUserController().createUser(user, pass);
         return null;
-      } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-        throw new IllegalStateException(e);
-      } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-        return e.getMessage();
-      } finally {
-        rsaKeyMap.remove(publicKey);
-      }
+      });
     }
 
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
@@ -291,6 +272,22 @@ public class LobbyLoginValidator implements ILoginValidator {
       return null;
     } catch (final Exception e) {
       return e.getMessage();
+    }
+  }
+
+  private static String decryptPassword(final String base64, final String publicKey,
+      final Function<String, String> function) {
+    Preconditions.checkNotNull(base64);
+    try {
+      final Cipher cipher = Cipher.getInstance(RSA);
+      cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
+      return function.apply(new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+      throw new IllegalStateException(e);
+    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+      return e.getMessage();
+    } finally {
+      rsaKeyMap.remove(publicKey);
     }
   }
 }

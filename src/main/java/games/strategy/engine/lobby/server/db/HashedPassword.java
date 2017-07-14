@@ -19,11 +19,15 @@ public class HashedPassword {
    * Returns true if the hashed password looks like it could be a hash.
    */
   public boolean isValidSyntax() {
-    return value != null && (value.startsWith(MD5Crypt.MAGIC) || value.matches("^\\$2a\\$.{56}$"));
+    return isMd5Crypted() || isBcrypted();
   }
 
   public boolean isBcrypted() {
     return value != null && value.matches("^\\$2a\\$.{56}$");
+  }
+
+  private boolean isMd5Crypted() {
+    return value != null && value.startsWith(MD5Crypt.MAGIC);
   }
 }
 

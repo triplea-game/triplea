@@ -1,20 +1,16 @@
 package games.strategy.engine.framework.startup.login;
 
 import java.awt.Component;
-import java.security.InvalidKeyException;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -53,9 +49,8 @@ public class ClientLogin implements IConnectionLogin {
           final Cipher cipher = Cipher.getInstance(ClientLoginValidator.RSA_ECB_OAEPP);
           cipher.init(Cipher.ENCRYPT_MODE, publicKey);
           rVal.put(ENCRYPTED_PASSWORD_PROPERTY,
-              Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes())));
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException
-            | InvalidKeyException | NoSuchPaddingException e) {
+              Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes(StandardCharsets.UTF_8))));
+        } catch (GeneralSecurityException e) {
           throw new IllegalStateException(e);
         }
       }
