@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Implementation of {@link Memento} that represents the originator state as a property bag.
+ * Implementation of {@link Memento} that represents the originator state as a collection of name-value pairs.
  *
  * <p>
  * Instances of this class are immutable.
