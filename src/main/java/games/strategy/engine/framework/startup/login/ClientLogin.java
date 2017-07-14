@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
 import java.awt.Component;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -46,18 +45,19 @@ public class ClientLogin implements IConnectionLogin {
           "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
-      try {
-        final PublicKey publicKey =
-            KeyFactory.getInstance(ClientLoginValidator.RSA).generatePublic(new X509EncodedKeySpec(
-                Base64.getDecoder()
-                    .decode(challengProperties.get(ClientLoginValidator.RANDOM_RSA_PUBLIC_KEY_PROPERTY))));
-        final Cipher cipher = Cipher.getInstance(ClientLoginValidator.RSA);
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        rVal.put(ENCRYPTED_PASSWORD_PROPERTY,
-            new String(cipher.doFinal(password.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8));
-      } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException
-          | InvalidKeyException | NoSuchPaddingException e) {
-        throw new IllegalStateException(e);
+      final String publicKeyString = challengProperties.get(ClientLoginValidator.RANDOM_RSA_PUBLIC_KEY_PROPERTY);
+      if (publicKeyString != null) {
+        try {
+          final PublicKey publicKey = KeyFactory.getInstance(ClientLoginValidator.RSA)
+              .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
+          final Cipher cipher = Cipher.getInstance(ClientLoginValidator.RSA_ECB_OAEPP);
+          cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+          rVal.put(ENCRYPTED_PASSWORD_PROPERTY,
+              Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes())));
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException
+            | InvalidKeyException | NoSuchPaddingException e) {
+          throw new IllegalStateException(e);
+        }
       }
     }
     rVal.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());

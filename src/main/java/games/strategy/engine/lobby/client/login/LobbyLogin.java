@@ -198,10 +198,8 @@ public class LobbyLogin {
                           Base64.getDecoder().decode(challengProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY))));
                   final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA);
                   cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-                  props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY,
-                      new String(
-                          cipher.doFinal(Util.sha512(createAccount.getPassword()).getBytes(StandardCharsets.UTF_8)),
-                          StandardCharsets.UTF_8));
+                  props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, Base64.getEncoder().encodeToString(
+                      cipher.doFinal(Util.sha512(createAccount.getPassword()).getBytes(StandardCharsets.UTF_8))));
                 } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException
                     | BadPaddingException
                     | InvalidKeyException | NoSuchPaddingException e) {

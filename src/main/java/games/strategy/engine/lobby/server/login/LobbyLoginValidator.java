@@ -191,14 +191,14 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (hashedPassword == null) {
       return errorMessage;
     }
-    if (propertiesReadFromClient.containsKey(ENCRYPTED_PASSWORD_KEY)) {
+    final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
+    if (base64 != null) {
       try {
         final Cipher cipher = Cipher.getInstance(RSA);
         final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
         cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-        final String simpleHashedPassword = new String(
-            cipher.doFinal(propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY).getBytes(StandardCharsets.UTF_8)),
-            StandardCharsets.UTF_8);
+        final String simpleHashedPassword =
+            new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8);
         if (hashedPassword.isBcrypted()) {
           return userDao.login(clientName, simpleHashedPassword) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {

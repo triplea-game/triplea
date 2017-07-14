@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -40,6 +39,7 @@ public class ClientLoginValidator implements ILoginValidator {
   private final IServerMessenger m_serverMessenger;
   private String m_password;
   public static final String RSA = "RSA";
+  public static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
@@ -115,15 +115,13 @@ public class ClientLoginValidator implements ILoginValidator {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
-      final String encryptedPassword = propertiesReadFromClient.get(ClientLogin.ENCRYPTED_PASSWORD_PROPERTY);
-      if (encryptedPassword != null) {
+      final String base64String = propertiesReadFromClient.get(ClientLogin.ENCRYPTED_PASSWORD_PROPERTY);
+      if (base64String != null) {
+        final String publicKey = propertiesSentToClient.get(RANDOM_RSA_PUBLIC_KEY_PROPERTY);
         try {
-          final Cipher cipher = Cipher.getInstance(RSA);
-          final String publicKey = propertiesSentToClient.get(RANDOM_RSA_PUBLIC_KEY_PROPERTY);
+          final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
           cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-          if (MessageDigest.isEqual(cipher.doFinal(encryptedPassword.getBytes(StandardCharsets.UTF_8)),
-              m_password.getBytes())) {
-            rsaKeyMap.remove(publicKey);
+          if (MessageDigest.isEqual(cipher.doFinal(Base64.getDecoder().decode(base64String)), m_password.getBytes())) {
             return null;
           } else {
             ThreadUtil.sleep((int) (4000 * Math.random()));
@@ -132,6 +130,8 @@ public class ClientLoginValidator implements ILoginValidator {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
             | BadPaddingException e) {
           throw new IllegalStateException(e);
+        } finally {
+          rsaKeyMap.remove(publicKey);
         }
       }
       final String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
