@@ -192,10 +192,10 @@ public class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
+    final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
     if (base64 != null) {
       try {
         final Cipher cipher = Cipher.getInstance(RSA);
-        final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
         cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
         final String simpleHashedPassword =
             new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8);
@@ -203,14 +203,16 @@ public class LobbyLoginValidator implements ILoginValidator {
           return userDao.login(clientName, simpleHashedPassword) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
           userDao.updateUser(userDao.getUserByName(clientName), simpleHashedPassword);
-          rsaKeyMap.remove(publicKey);
           return null;
         } else {
           return errorMessage;
         }
-      } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
-          | BadPaddingException e) {
+      } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
         throw new IllegalStateException(e);
+      } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        return e.getMessage();
+      } finally {
+        rsaKeyMap.remove(publicKey);
       }
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
@@ -262,17 +264,20 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
     final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
+    final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
     if (base64 != null) {
       try {
         final Cipher cipher = Cipher.getInstance(RSA);
-        final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
         cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
         new DbUserController().createUser(user,
             new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
         return null;
-      } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
-          | BadPaddingException e) {
+      } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+        throw new IllegalStateException(e);
+      } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
         return e.getMessage();
+      } finally {
+        rsaKeyMap.remove(publicKey);
       }
     }
 

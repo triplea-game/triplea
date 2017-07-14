@@ -127,9 +127,10 @@ public class ClientLoginValidator implements ILoginValidator {
             ThreadUtil.sleep((int) (4000 * Math.random()));
             return "Invalid Password";
           }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
-            | BadPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
           throw new IllegalStateException(e);
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+          return e.getMessage();
         } finally {
           rsaKeyMap.remove(publicKey);
         }

@@ -123,8 +123,7 @@ public class LobbyLogin {
                     props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, Base64.getEncoder().encodeToString(
                         cipher.doFinal(Util.sha512(panel.getPassword()).getBytes(StandardCharsets.UTF_8))));
                   } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException
-                      | BadPaddingException
-                      | InvalidKeyException | NoSuchPaddingException e) {
+                      | BadPaddingException | InvalidKeyException | NoSuchPaddingException e) {
                     throw new IllegalStateException(e);
                   }
                 }
@@ -200,8 +199,7 @@ public class LobbyLogin {
                   props.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, Base64.getEncoder().encodeToString(
                       cipher.doFinal(Util.sha512(createAccount.getPassword()).getBytes(StandardCharsets.UTF_8))));
                 } catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException
-                    | BadPaddingException
-                    | InvalidKeyException | NoSuchPaddingException e) {
+                    | BadPaddingException | InvalidKeyException | NoSuchPaddingException e) {
                   throw new IllegalStateException(e);
                 }
               }
