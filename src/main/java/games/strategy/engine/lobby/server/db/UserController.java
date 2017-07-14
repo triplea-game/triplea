@@ -110,6 +110,7 @@ public class UserController implements UserDao {
         ps.setString(4, user.getName());
         ps.execute();
       }
+      con.commit();
     } catch (final SQLException e) {
       s_logger.log(Level.SEVERE,
           "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: <hidden>", e);
@@ -162,6 +163,7 @@ public class UserController implements UserDao {
         ps.setInt(6, user.isAdmin() ? 1 : 0);
         ps.execute();
       }
+      con.commit();
     } catch (final SQLException e) {
       s_logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
           user.getEmail(), password), e);
@@ -216,6 +218,7 @@ public class UserController implements UserDao {
           statement.setString(2, userName);
           statement.execute();
         }
+        connection.commit();
       } catch (SQLException e) {
         s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword);
         throw new IllegalStateException(e);
