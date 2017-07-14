@@ -12,6 +12,8 @@ import java.util.Set;
  * A utility class for mapping Objects to ints. <br>
  * Supports adding and comparing of maps. <br>
  * Uses LinkedHashMap to keep insert order.
+ *
+ * @param <T> The type of the map key.
  */
 public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
