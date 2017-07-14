@@ -56,6 +56,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
   public static final String RSA = "RSA";
+  public static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
 
   public LobbyLoginValidator() {}
@@ -279,7 +280,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       final Function<String, String> function) {
     Preconditions.checkNotNull(base64);
     try {
-      final Cipher cipher = Cipher.getInstance(RSA);
+      final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
       return function.apply(new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
     } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {

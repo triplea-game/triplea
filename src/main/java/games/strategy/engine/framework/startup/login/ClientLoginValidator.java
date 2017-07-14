@@ -1,22 +1,29 @@
 package games.strategy.engine.framework.startup.login;
 
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
@@ -32,16 +39,18 @@ import games.strategy.util.Version;
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";
-  public static final String RANDOM_RSA_PUBLIC_KEY_PROPERTY = "RSA PUBLIC KEY";
   public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
   static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
   static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
   static final String INVALID_MAC = "Invalid mac address";
   private final IServerMessenger m_serverMessenger;
   private String m_password;
-  public static final String RSA = "RSA";
-  public static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
-  private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
+  public static final String CHALLENGE_STRING_PROPERTY = "CHALLENGE STRING";
+  public static final String AES = "AES";
+  public static final String PBKDF2_WITH_HMAC_SHA512 = "PBKDF2WithHmacSHA512";
+  public static final String ENCRYPTED_STRING_PROPERTY = "AES Encrypted String";
+  public static final int ITERATION_COUNT = 10;
+  public static final int KEY_LENGTH = 128;
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     m_serverMessenger = serverMessenger;
@@ -65,16 +74,7 @@ public class ClientLoginValidator implements ILoginValidator {
        */
       final String encryptedPassword = MD5Crypt.crypt(m_password);
       challengeProperties.put(SALT_PROPERTY, MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword));
-      try {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
-        keyGen.initialize(4096);
-        final KeyPair keyPair = keyGen.generateKeyPair();
-        final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        challengeProperties.put(RANDOM_RSA_PUBLIC_KEY_PROPERTY, publicKey);
-        rsaKeyMap.put(publicKey, keyPair.getPrivate());
-      } catch (NoSuchAlgorithmException e) {
-        throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
-      }
+      challengeProperties.put(CHALLENGE_STRING_PROPERTY, new BigInteger(130, new SecureRandom()).toString(32));
       challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
     } else {
       challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
@@ -116,26 +116,18 @@ public class ClientLoginValidator implements ILoginValidator {
       return YOU_HAVE_BEEN_BANNED;
     }
     if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString())) {
-      final String base64String = propertiesReadFromClient.get(ClientLogin.ENCRYPTED_PASSWORD_PROPERTY);
-      if (base64String != null) {
-        final String publicKey = propertiesSentToClient.get(RANDOM_RSA_PUBLIC_KEY_PROPERTY);
-        try {
-          final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
-          cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-          if (MessageDigest.isEqual(cipher.doFinal(Base64.getDecoder().decode(base64String)),
-              m_password.getBytes(StandardCharsets.UTF_8))) {
+      final String base64 = propertiesReadFromClient.get(ENCRYPTED_STRING_PROPERTY);
+      if (base64 != null) {
+        final String origChallengeString = propertiesSentToClient.get(CHALLENGE_STRING_PROPERTY);
+        return decryptRandomString(base64, origChallengeString, string -> {
+          if (Arrays.equals(string,
+              origChallengeString.getBytes(StandardCharsets.UTF_8))) {
             return null;
           } else {
             ThreadUtil.sleep((int) (4000 * Math.random()));
             return "Invalid Password";
           }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-          throw new IllegalStateException(e);
-        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-          return e.getMessage();
-        } finally {
-          rsaKeyMap.remove(publicKey);
-        }
+        });
       }
       final String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
       if (readPassword == null) {
@@ -150,5 +142,27 @@ public class ClientLoginValidator implements ILoginValidator {
       }
     }
     return null;
+  }
+
+  private String decryptRandomString(final String base64, final String original,
+      final Function<byte[], String> function) {
+    Preconditions.checkNotNull(base64);
+    try {
+      final Cipher cipher = Cipher.getInstance(AES);
+      final byte[] salt = new byte[8];
+      System.arraycopy(original.getBytes(StandardCharsets.UTF_8), 0, salt, 0, 8);
+      final SecretKey key = new SecretKeySpec(
+          SecretKeyFactory.getInstance(PBKDF2_WITH_HMAC_SHA512)
+              .generateSecret(new PBEKeySpec(m_password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH)).getEncoded(),
+          AES);
+      cipher.init(Cipher.DECRYPT_MODE, key);
+      return function.apply(cipher.doFinal(Base64.getDecoder().decode(base64)));
+    } catch (BadPaddingException e) {
+      return "Invalid Password";
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException e) {
+      throw new IllegalStateException(e);
+    } catch (InvalidKeyException | IllegalBlockSizeException e) {
+      return e.getMessage();
+    }
   }
 }
