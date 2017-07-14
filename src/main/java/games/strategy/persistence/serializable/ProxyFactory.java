@@ -32,9 +32,7 @@ public interface ProxyFactory {
    *
    * @return A new proxy factory; never {@code null}. The returned factory is immutable.
    */
-  static <T> ProxyFactory newInstance(
-      final Class<T> principalType,
-      final Function<T, ?> newProxyForPrincipal) {
+  static <T> ProxyFactory newInstance(final Class<T> principalType, final Function<T, ?> newProxyForPrincipal) {
     checkNotNull(principalType);
     checkNotNull(newProxyForPrincipal);
 

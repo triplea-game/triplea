@@ -9,7 +9,7 @@ import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.memento.PropertyBagMemento;
 
 /**
- * A serializable proxy for the {@code PropertyBagMemento} class.
+ * A serializable proxy for the {@link PropertyBagMemento} class.
  *
  * <p>
  * Instances of this class are immutable.
@@ -21,22 +21,11 @@ public final class PropertyBagMementoProxy implements Serializable {
   public static final ProxyFactory FACTORY =
       ProxyFactory.newInstance(PropertyBagMemento.class, PropertyBagMementoProxy::new);
 
-  /**
-   * @serial The collection of originator properties; never {@code null}. The key is the property name. The value is the
-   *         property value.
-   */
   private final Map<String, Object> propertiesByName;
-
-  /**
-   * @serial The memento schema identifier; never {@code null}.
-   */
   private final String schemaId;
 
   /**
-   * Initializes a new instance of the {@code PropertyBagMementoProxy} class from the specified
-   * {@code PropertyBagMemento} instance.
-   *
-   * @param memento The {@code PropertyBagMemento} instance; must not be {@code null}.
+   * @param memento The {@link PropertyBagMemento} from which the proxy will be initialized; must not be {@code null}.
    */
   public PropertyBagMementoProxy(final PropertyBagMemento memento) {
     checkNotNull(memento);

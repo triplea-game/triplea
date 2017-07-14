@@ -8,7 +8,7 @@ import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.Version;
 
 /**
- * A serializable proxy for the {@code Version} class.
+ * A serializable proxy for the {@link Version} class.
  *
  * <p>
  * Instances of this class are immutable.
@@ -19,30 +19,13 @@ public final class VersionProxy implements Serializable {
 
   public static final ProxyFactory FACTORY = ProxyFactory.newInstance(Version.class, VersionProxy::new);
 
-  /**
-   * @serial The major (first) component of the version.
-   */
   private final int major;
-
-  /**
-   * @serial The minor (second) component of the version.
-   */
   private final int minor;
-
-  /**
-   * @serial The point (third) component of the version.
-   */
   private final int point;
-
-  /**
-   * @serial The micro (fourth) component of the version.
-   */
   private final int micro;
 
   /**
-   * Initializes a new instance of the {@code VersionProxy} class from the specified {@code Version} instance.
-   *
-   * @param version The {@code Version} instance; must not be {@code null}.
+   * @param version The {@link Version} from which the proxy will be initialized; must not be {@code null}.
    */
   public VersionProxy(final Version version) {
     checkNotNull(version);
