@@ -13,7 +13,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 
 public class PUInfo {
-  private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<>();
+  private final Map<PlayerID, Map<Resource, Integer>> infoMap = new HashMap<>();
 
   protected void saveToFile(final PrintGenerationData printData) {
     final GameData m_data = printData.getData();
@@ -28,7 +28,7 @@ public class PUInfo {
         final int amountOfResource = currentPlayer.getResources().getQuantity(currentResource);
         resourceMap.put(currentResource, amountOfResource);
       }
-      m_infoMap.put(currentPlayer, resourceMap);
+      infoMap.put(currentPlayer, resourceMap);
     }
     FileWriter resourceWriter = null;
     try {
@@ -57,7 +57,7 @@ public class PUInfo {
       while (playerIterator.hasNext()) {
         final PlayerID currentPlayer = playerIterator.next();
         resourceWriter.write(currentPlayer.getName());
-        final Map<Resource, Integer> resourceMap = m_infoMap.get(currentPlayer);
+        final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
         final Iterator<Resource> resIterator = resourceMap.keySet().iterator();
         while (resIterator.hasNext()) {
           final Resource currentResource = resIterator.next();

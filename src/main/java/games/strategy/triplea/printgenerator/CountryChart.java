@@ -20,8 +20,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 class CountryChart {
-  private final Map<Territory, List<Map<UnitType, Integer>>> m_infoMap =
-      new HashMap<>();
+  private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
     final GameData m_data = printData.getData();
@@ -41,7 +40,7 @@ class CountryChart {
         innerMap.put(currentUnit, amountHere);
         unitPairs.add(innerMap);
       }
-      m_infoMap.put(currentTerritory, unitPairs);
+      infoMap.put(currentTerritory, unitPairs);
       availableUnits = m_data.getUnitTypeList().iterator();
     }
     FileWriter countryFileWriter = null;
@@ -72,7 +71,7 @@ class CountryChart {
       while (terrIterator.hasNext()) {
         final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());
-        final List<Map<UnitType, Integer>> currentList = m_infoMap.get(currentTerritory);
+        final List<Map<UnitType, Integer>> currentList = infoMap.get(currentTerritory);
         final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();
         while (mapIterator.hasNext()) {
           final Map<UnitType, Integer> currentMap = mapIterator.next();

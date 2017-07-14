@@ -13,7 +13,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.triplea.attachments.UnitAttachment;
 
 public class InitialSetup {
-  private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<>();
+  private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
   protected InitialSetup() {}
 
@@ -33,9 +33,9 @@ public class InitialSetup {
     while (m_unitTypeIterator.hasNext()) {
       final UnitType currentType = m_unitTypeIterator.next();
       final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
-      m_unitInfoMap.put(currentType, currentTypeUnitAttachment);
+      unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
-    new UnitInformation().saveToFile(m_printData, m_unitInfoMap);
+    new UnitInformation().saveToFile(m_printData, unitInfoMap);
     final Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
     while (m_playerIterator.hasNext()) {
       final PlayerID currentPlayer = m_playerIterator.next();
