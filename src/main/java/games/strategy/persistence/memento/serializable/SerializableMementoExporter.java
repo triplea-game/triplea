@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
 import games.strategy.persistence.serializable.ObjectOutputStream;
-import games.strategy.persistence.serializable.ProxyFactoryRegistry;
+import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.util.memento.Memento;
 
 /**
@@ -19,15 +19,15 @@ import games.strategy.util.memento.Memento;
  * </p>
  */
 public final class SerializableMementoExporter {
-  private final ProxyFactoryRegistry proxyFactoryRegistry;
+  private final ProxyRegistry proxyRegistry;
 
   /**
-   * @param proxyFactoryRegistry The proxy factory registry to use during exports; must not be {@code null}.
+   * @param proxyRegistry The proxy registry to use during exports; must not be {@code null}.
    */
-  public SerializableMementoExporter(final ProxyFactoryRegistry proxyFactoryRegistry) {
-    checkNotNull(proxyFactoryRegistry);
+  public SerializableMementoExporter(final ProxyRegistry proxyRegistry) {
+    checkNotNull(proxyRegistry);
 
-    this.proxyFactoryRegistry = proxyFactoryRegistry;
+    this.proxyRegistry = proxyRegistry;
   }
 
   /**
@@ -51,6 +51,6 @@ public final class SerializableMementoExporter {
   }
 
   private ObjectOutputStream newObjectOutputStream(final OutputStream os) throws IOException {
-    return new ObjectOutputStream(new CloseShieldOutputStream(os), proxyFactoryRegistry);
+    return new ObjectOutputStream(new CloseShieldOutputStream(os), proxyRegistry);
   }
 }

@@ -12,12 +12,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import games.strategy.persistence.serializable.ProxyFactoryRegistry;
+import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.util.memento.Memento;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class SerializableMementoImporterTest {
-  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
+  private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
 
   private final Memento memento = newMemento();
 
@@ -48,6 +48,6 @@ public final class SerializableMementoImporterTest {
   }
 
   private SerializableMementoExporter newMementoExporter() {
-    return new SerializableMementoExporter(proxyFactoryRegistry);
+    return new SerializableMementoExporter(proxyRegistry);
   }
 }
