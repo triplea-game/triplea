@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
 public class PlayerOrder {
-  private final List<PlayerID> m_playerSet = new ArrayList<>();
+  private final List<PlayerID> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
@@ -45,7 +45,7 @@ public class PlayerOrder {
       }
       final PlayerID currentPlayerId = currentStep.getPlayerID();
       if (currentPlayerId != null && !currentPlayerId.isNull()) {
-        m_playerSet.add(currentPlayerId);
+        playerSet.add(currentPlayerId);
       }
     }
     FileWriter turnWriter = null;
@@ -53,7 +53,7 @@ public class PlayerOrder {
     final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
     turnWriter = new FileWriter(outFile, true);
     turnWriter.write("Turn Order\r\n");
-    final Set<PlayerID> noDuplicates = removeDups(m_playerSet);
+    final Set<PlayerID> noDuplicates = removeDups(playerSet);
     final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
     int count = 1;
     while (playerIterator.hasNext()) {

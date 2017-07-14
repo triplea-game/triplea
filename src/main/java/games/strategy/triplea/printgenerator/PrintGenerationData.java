@@ -1,14 +1,12 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.util.Map;
 
 import games.strategy.engine.data.GameData;
 
 public class PrintGenerationData {
-  private File m_outDir;
-  private Map<Integer, Integer> m_SamePUMap;
-  private GameData m_data;
+  private File outDir;
+  private GameData gameData;
 
   /**
    * General Constructor.
@@ -19,7 +17,7 @@ public class PrintGenerationData {
    * @return The outDir.
    */
   protected File getOutDir() {
-    return m_outDir;
+    return outDir;
   }
 
   /**
@@ -27,29 +25,14 @@ public class PrintGenerationData {
    *        the outDir to set.
    */
   protected void setOutDir(final File outDir) {
-    m_outDir = outDir;
-  }
-
-  /**
-   * @return The samePUMap.
-   */
-  protected Map<Integer, Integer> getSamePUMap() {
-    return m_SamePUMap;
-  }
-
-  /**
-   * @param samePuMap
-   *        the samePUMap to set.
-   */
-  protected void setSamePUMap(final Map<Integer, Integer> samePuMap) {
-    m_SamePUMap = samePuMap;
+    this.outDir = outDir;
   }
 
   /**
    * @return The data.
    */
   protected GameData getData() {
-    return m_data;
+    return gameData;
   }
 
   /**
@@ -57,6 +40,6 @@ public class PrintGenerationData {
    *        the data to set.
    */
   protected void setData(final GameData data) {
-    m_data = data;
+    gameData = data;
   }
 }
