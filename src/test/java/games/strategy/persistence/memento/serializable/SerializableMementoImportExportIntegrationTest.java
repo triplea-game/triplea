@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.Test;
 
-import games.strategy.persistence.serializable.ProxyFactoryRegistry;
+import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.util.memento.Memento;
 
 /**
@@ -16,7 +16,7 @@ import games.strategy.util.memento.Memento;
  * {@link SerializableMementoExporter} classes.
  */
 public final class SerializableMementoImportExportIntegrationTest {
-  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
+  private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
 
   @Test
   public void shouldBeAbleToRoundTripMemento() throws Exception {
@@ -34,7 +34,7 @@ public final class SerializableMementoImportExportIntegrationTest {
 
   private byte[] exportMemento(final Memento memento) throws Exception {
     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(proxyFactoryRegistry);
+      final SerializableMementoExporter mementoExporter = new SerializableMementoExporter(proxyRegistry);
       mementoExporter.exportMemento(memento, baos);
       return baos.toByteArray();
     }

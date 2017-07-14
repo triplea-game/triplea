@@ -9,14 +9,8 @@ import java.io.OutputStream;
  * A stream used for serializing objects.
  *
  * <p>
- * Before serializing an object, the stream will query its proxy factory registry for an associated proxy factory. If a
- * proxy factory exists, a serializable proxy will be created from the principal, and the proxy will be written to the
- * stream instead of the principal.
- * </p>
- *
- * <p>
- * To contribute a proxy factory for a specific class, register it with the {@link ProxyFactoryRegistry} passed to the
- * output stream.
+ * Before serializing an object, the stream will query the proxy registry for a proxy associated with the principal. If
+ * a proxy is available, the proxy will be written to the stream instead of the principal.
  * </p>
  *
  * <p>
@@ -24,29 +18,26 @@ import java.io.OutputStream;
  * </p>
  */
 public final class ObjectOutputStream extends java.io.ObjectOutputStream {
-  private final ProxyFactoryRegistry proxyFactoryRegistry;
+  private final ProxyRegistry proxyRegistry;
 
   /**
    * @param out The output stream on which to write; must not be {@code null}.
-   * @param proxyFactoryRegistry The proxy factory registry; must not be {@code null}.
+   * @param proxyRegistry The proxy registry; must not be {@code null}.
    *
    * @throws IOException If an I/O error occurs while writing the stream header.
    */
-  public ObjectOutputStream(final OutputStream out, final ProxyFactoryRegistry proxyFactoryRegistry)
-      throws IOException {
+  public ObjectOutputStream(final OutputStream out, final ProxyRegistry proxyRegistry) throws IOException {
     super(out);
 
-    checkNotNull(proxyFactoryRegistry);
+    checkNotNull(proxyRegistry);
 
-    this.proxyFactoryRegistry = proxyFactoryRegistry;
+    this.proxyRegistry = proxyRegistry;
 
     enableReplaceObject(true);
   }
 
   @Override
   protected Object replaceObject(final Object obj) {
-    return (obj != null)
-        ? proxyFactoryRegistry.getProxyFactory(obj.getClass()).newProxyFor(obj)
-        : null;
+    return (obj != null) ? proxyRegistry.getProxyFor(obj) : null;
   }
 }

@@ -23,7 +23,7 @@ import org.junit.Test;
 public abstract class AbstractProxyTestCase<T> {
   private final Class<T> principalType;
 
-  private final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance(getProxyFactories());
+  private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
 
   /**
    * @param principalType The type of the principal to be proxied; must not be {@code null}.
@@ -75,7 +75,7 @@ public abstract class AbstractProxyTestCase<T> {
   }
 
   private void writeObject(final ByteArrayOutputStream baos, final T obj) throws Exception {
-    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyFactoryRegistry)) {
+    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyRegistry)) {
       oos.writeObject(obj);
     }
   }

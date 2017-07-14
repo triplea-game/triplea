@@ -5,25 +5,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.function.Function;
 
 /**
- * A factory for creating a proxy that will be persisted in place of another object (the principal) within the Java
- * object serialization framework.
- *
- * <p>
- * The TripleA serialization streams use proxy factories to assist with serializing and deserializing objects,
- * especially those that are not naturally serializable (i.e. they do not implement {@code Serializable}). A proxy
- * factory registered for a specific type of principal will cause the output stream to substitute a new serializable
- * proxy whenever an instance of the principal type is encountered. Upon deserialization, the input stream will replace
- * the proxy with an instance of the principal type.
- * </p>
- *
- * <p>
- * To contribute a proxy factory for a specific class, register it with the platform's {@link ProxyFactoryRegistry}.
- * </p>
+ * A factory for creating a serializable proxy from a (possibly) non-serializable principal.
  */
 public interface ProxyFactory {
-  /** A proxy factory that always returns the given principal. */
-  ProxyFactory IDENTITY = newInstance(Object.class, Function.identity());
-
   /**
    * Gets the type of the principal to be proxied.
    *

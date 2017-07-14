@@ -29,17 +29,17 @@ public final class ObjectInputOutputStreamIntegrationTest {
     }
   }
 
-  private void writeObject(final Object obj, final ProxyFactoryRegistry proxyFactoryRegistry) throws Exception {
-    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyFactoryRegistry)) {
+  private void writeObject(final Object obj, final ProxyRegistry proxyRegistry) throws Exception {
+    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyRegistry)) {
       oos.writeObject(obj);
     }
   }
 
   @Test
   public void shouldBeAbleToRoundTripNull() throws Exception {
-    final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
+    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
 
-    writeObject(null, proxyFactoryRegistry);
+    writeObject(null, proxyRegistry);
     final Object deserializedObj = readObject();
 
     assertThat(deserializedObj, is(nullValue()));
@@ -47,10 +47,10 @@ public final class ObjectInputOutputStreamIntegrationTest {
 
   @Test
   public void shouldBeAbleToRoundTripSerializableObjectWithoutProxyFactory() throws Exception {
-    final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
+    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
     final Date obj = new Date();
 
-    writeObject(obj, proxyFactoryRegistry);
+    writeObject(obj, proxyRegistry);
     final Date deserializedObj = (Date) readObject();
 
     assertThat(deserializedObj, is(obj));
@@ -58,11 +58,11 @@ public final class ObjectInputOutputStreamIntegrationTest {
 
   @Test
   public void shouldBeAbleToRoundTripNonSerializableObjectWithProxyFactory() throws Exception {
-    final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance(
+    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(
         FakeNonSerializableClassProxy.FACTORY);
     final FakeNonSerializableClass obj = new FakeNonSerializableClass(2112, "42");
 
-    writeObject(obj, proxyFactoryRegistry);
+    writeObject(obj, proxyRegistry);
     final FakeNonSerializableClass deserializedObj = (FakeNonSerializableClass) readObject();
 
     assertThat(deserializedObj, is(obj));
@@ -70,9 +70,9 @@ public final class ObjectInputOutputStreamIntegrationTest {
 
   @Test
   public void shouldThrowExceptionWhenWritingNonSerializableObjectWithNoRegisteredProxyFactory() throws Exception {
-    final ProxyFactoryRegistry proxyFactoryRegistry = ProxyFactoryRegistry.newInstance();
+    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
 
-    catchException(() -> writeObject(new FakeNonSerializableClass(2112, "42"), proxyFactoryRegistry));
+    catchException(() -> writeObject(new FakeNonSerializableClass(2112, "42"), proxyRegistry));
 
     assertThat(caughtException(), is(instanceOf(NotSerializableException.class)));
   }
