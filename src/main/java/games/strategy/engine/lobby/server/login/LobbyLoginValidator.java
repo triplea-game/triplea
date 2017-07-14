@@ -135,7 +135,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
     if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY)) {
-      return createUser(propertiesReadFromClient, clientName);
+      return createUser(propertiesSentToClient, propertiesReadFromClient, clientName);
     }
     if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
       return anonymousLogin(propertiesReadFromClient, clientName);
@@ -248,7 +248,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
+  private static String createUser(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String userName) {
     final DBUser user = new DBUser(
         new DBUser.UserName(userName),
         new DBUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
@@ -257,13 +258,27 @@ public class LobbyLoginValidator implements ILoginValidator {
       return user.getValidationErrorMessage();
     }
 
+    if (new DbUserController().doesUserExist(user.getName())) {
+      return "That user name has already been taken";
+    }
+    final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
+    if (base64 != null) {
+      try {
+        final Cipher cipher = Cipher.getInstance(RSA);
+        final String publicKey = propertiesSentToClient.get(RSA_PUBLIC_KEY);
+        cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
+        new DbUserController().createUser(user,
+            new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
+        return null;
+      } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
+          | BadPaddingException e) {
+        return e.getMessage();
+      }
+    }
+
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (!password.isValidSyntax()) {
       return "Password is not hashed correctly";
-    }
-
-    if (new DbUserController().doesUserExist(user.getName())) {
-      return "That user name has already been taken";
     }
 
     try {
