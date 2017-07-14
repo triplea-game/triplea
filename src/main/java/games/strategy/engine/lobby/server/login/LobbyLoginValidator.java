@@ -68,16 +68,16 @@ public class LobbyLoginValidator implements ILoginValidator {
     final HashedPassword password = new DbUserController().getPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, password.isBcrypted() ? "" : MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
-      try {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
-        keyGen.initialize(4096);
-        final KeyPair keyPair = keyGen.generateKeyPair();
-        final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        rVal.put(RSA_PUBLIC_KEY, publicKey);
-        rsaKeyMap.put(publicKey, keyPair.getPrivate());
-      } catch (NoSuchAlgorithmException e) {
-        throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
-      }
+    }
+    try {
+      final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
+      keyGen.initialize(4096);
+      final KeyPair keyPair = keyGen.generateKeyPair();
+      final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+      rVal.put(RSA_PUBLIC_KEY, publicKey);
+      rsaKeyMap.put(publicKey, keyPair.getPrivate());
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
     }
     return rVal;
   }
