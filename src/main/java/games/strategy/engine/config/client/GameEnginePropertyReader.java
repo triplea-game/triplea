@@ -84,6 +84,7 @@ public class GameEnginePropertyReader {
   public boolean useJavaFxUi() {
     return propertyFileReader.readProperty(PropertyKeys.JAVAFX_UI).equalsIgnoreCase(String.valueOf(true));
   }
+
   @VisibleForTesting
   interface PropertyKeys {
     String MAP_LISTING_SOURCE_FILE = "map_list_file";
