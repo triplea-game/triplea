@@ -64,8 +64,7 @@ public class LobbyLoginValidatorTest {
     properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, password));
     properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    assertNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,
-        name, mac, address));
+    assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, Util.sha512("wrong")));
     // try to create a duplicate user, should not work
     assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
