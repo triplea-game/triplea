@@ -200,7 +200,7 @@ public class LobbyLogin {
       try {
         final PublicKey publicKey = KeyFactory.getInstance(LobbyLoginValidator.RSA)
             .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
-        final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA);
+        final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA_ECB_OAEPP);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         consumer.accept(
             Base64.getEncoder().encodeToString(cipher.doFinal(Util.sha512(password).getBytes(StandardCharsets.UTF_8))));
