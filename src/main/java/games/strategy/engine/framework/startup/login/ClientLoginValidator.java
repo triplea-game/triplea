@@ -40,17 +40,17 @@ import games.strategy.util.Version;
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";
   public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
-  static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
-  static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
-  static final String INVALID_MAC = "Invalid mac address";
-  private final IServerMessenger m_serverMessenger;
-  private String m_password;
   public static final String CHALLENGE_STRING_PROPERTY = "CHALLENGE STRING";
   public static final String AES = "AES";
   public static final String PBKDF2_WITH_HMAC_SHA512 = "PBKDF2WithHmacSHA512";
   public static final String ENCRYPTED_STRING_PROPERTY = "AES Encrypted String";
   public static final int ITERATION_COUNT = 10;
   public static final int KEY_LENGTH = 128;
+  static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
+  static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
+  static final String INVALID_MAC = "Invalid mac address";
+  private final IServerMessenger m_serverMessenger;
+  private String m_password;
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     m_serverMessenger = serverMessenger;

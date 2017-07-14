@@ -40,12 +40,6 @@ import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 public class LobbyLoginValidator implements ILoginValidator {
-  static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
-  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
-  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
-  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
-  private static final String INVALID_MAC = "Invalid mac address.";
-  private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
@@ -57,9 +51,13 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String SALT_KEY = "SALT";
   public static final String RSA = "RSA";
   public static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
+  static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
+  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
+  private static final String INVALID_MAC = "Invalid mac address.";
+  private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
-
-  public LobbyLoginValidator() {}
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
@@ -89,10 +87,10 @@ public class LobbyLoginValidator implements ILoginValidator {
     final String error =
         verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
-      s_logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
+      logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
     } else {
-      s_logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
+      logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
       AccessLog.successfulLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress());
     }
     return error;
