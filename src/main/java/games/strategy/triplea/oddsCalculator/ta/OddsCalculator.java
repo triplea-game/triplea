@@ -52,66 +52,67 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-public class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
+class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   public static final String OOL_ALL = "*";
   public static final String OOL_ALL_REGEX = "\\*";
   public static final String OOL_SEPARATOR = ";";
   public static final String OOL_SEPARATOR_REGEX = ";";
   public static final String OOL_AMOUNT_DESCRIPTOR = "^";
   public static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
-  private GameData m_data = null;
-  private PlayerID m_attacker = null;
-  private PlayerID m_defender = null;
-  private Territory m_location = null;
-  private Collection<Unit> m_attackingUnits = new ArrayList<>();
-  private Collection<Unit> m_defendingUnits = new ArrayList<>();
-  private Collection<Unit> m_bombardingUnits = new ArrayList<>();
-  private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<>();
-  private boolean m_keepOneAttackingLandUnit = false;
-  private boolean m_amphibious = false;
-  private int m_retreatAfterRound = -1;
-  private int m_retreatAfterXUnitsLeft = -1;
-  private boolean m_retreatWhenOnlyAirLeft = false;
-  private String m_attackerOrderOfLosses = null;
-  private String m_defenderOrderOfLosses = null;
-  private int m_runCount = 0;
-  private volatile boolean m_cancelled = false;
-  private volatile boolean m_isDataSet = false;
-  private volatile boolean m_isCalcSet = false;
-  private volatile boolean m_isRunning = false;
-  private final List<OddsCalculatorListener> m_listeners = new ArrayList<>();
+
+  private GameData gameData = null;
+  private PlayerID attacker = null;
+  private PlayerID defender = null;
+  private Territory location = null;
+  private Collection<Unit> attackingUnits = new ArrayList<>();
+  private Collection<Unit> defendingUnits = new ArrayList<>();
+  private Collection<Unit> bombardingUnits = new ArrayList<>();
+  private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
+  private boolean keepOneAttackingLandUnit = false;
+  private boolean amphibious = false;
+  private int retreatAfterRound = -1;
+  private int retreatAfterXUnitsLeft = -1;
+  private boolean retreatWhenOnlyAirLeft = false;
+  private String attackerOrderOfLosses = null;
+  private String defenderOrderOfLosses = null;
+  private int runCount = 0;
+  private volatile boolean cancelled = false;
+  private volatile boolean isDataSet = false;
+  private volatile boolean isCalcSet = false;
+  private volatile boolean isRunning = false;
+  private final List<OddsCalculatorListener> listeners = new ArrayList<>();
 
   public OddsCalculator(final GameData data) {
     this(data, false);
   }
 
   OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    m_data = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
-      m_isDataSet = true;
+      isDataSet = true;
       notifyListenersGameDataIsSet();
     }
   }
 
   @Override
   public void setGameData(final GameData data) {
-    if (m_isRunning) {
+    if (isRunning) {
       return;
     }
-    m_isDataSet = false;
-    m_isCalcSet = false;
-    m_data = (data == null ? null : GameDataUtils.cloneGameData(data, false));
+    isDataSet = false;
+    isCalcSet = false;
+    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
     // reset old data
-    m_attacker = null;
-    m_defender = null;
-    m_location = null;
-    m_attackingUnits = new ArrayList<>();
-    m_defendingUnits = new ArrayList<>();
-    m_bombardingUnits = new ArrayList<>();
-    m_territoryEffects = new ArrayList<>();
-    m_runCount = 0;
+    attacker = null;
+    defender = null;
+    location = null;
+    attackingUnits = new ArrayList<>();
+    defendingUnits = new ArrayList<>();
+    bombardingUnits = new ArrayList<>();
+    territoryEffects = new ArrayList<>();
+    runCount = 0;
     if (data != null) {
-      m_isDataSet = true;
+      isDataSet = true;
       notifyListenersGameDataIsSet();
     }
   }
@@ -123,27 +124,27 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
-    if (m_isRunning) {
+    if (isRunning) {
       return;
     }
-    m_isCalcSet = false;
-    if (!m_isDataSet) {
+    isCalcSet = false;
+    if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
-    m_attacker =
-        m_data.getPlayerList().getPlayerID((attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()));
-    m_defender =
-        m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
-    m_location = m_data.getMap().getTerritory(location.getName());
-    m_attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, m_data);
-    m_defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, m_data);
-    m_bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
-    m_territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
-    m_data.performChange(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
-    m_data.performChange(ChangeFactory.addUnits(m_location, m_attackingUnits));
-    m_data.performChange(ChangeFactory.addUnits(m_location, m_defendingUnits));
-    m_runCount = runCount;
-    m_isCalcSet = true;
+    this.attacker =
+        gameData.getPlayerList().getPlayerID(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
+    this.defender =
+        gameData.getPlayerList().getPlayerID(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+    this.location = gameData.getMap().getTerritory(location.getName());
+    attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
+    defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
+    bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, gameData);
+    this.territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
+    gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits().getUnits()));
+    gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
+    gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
+    this.runCount = runCount;
+    isCalcSet = true;
   }
 
   @Override
@@ -159,11 +160,11 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
-    return calculate(m_runCount);
+    return calculate(runCount);
   }
 
   private AggregateResults calculate(final int count) {
-    m_isRunning = true;
+    isRunning = true;
     final long start = System.currentTimeMillis();
     final AggregateResults rVal = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
@@ -174,33 +175,33 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     // per-thread, per-calc
     // caching
     final List<Unit> attackerOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(m_attackerOrderOfLosses, m_attackingUnits, m_data);
+        OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(m_defenderOrderOfLosses, m_defendingUnits, m_data);
-    for (int i = 0; i < count && !m_cancelled; i++) {
+        OddsCalculator.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
+    for (int i = 0; i < count && !cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 =
-          new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-              m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft, m_retreatWhenOnlyAirLeft);
+          new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
+              keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
-      final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
+      final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
       battle.setHeadless(true);
       battle.isAmphibious();
-      battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits,
-          (m_amphibious ? m_attackingUnits : new ArrayList<>()), m_defender, m_territoryEffects);
+      battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
+          (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
       // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
-      rVal.addResult(new BattleResults(battle, m_data));
+      rVal.addResult(new BattleResults(battle, gameData));
       // restore the game to its original state
-      m_data.performChange(allChanges.invert());
+      gameData.performChange(allChanges.invert());
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
     // BattleCalculator.DisableCasualtySortingCaching();
     rVal.setTime(System.currentTimeMillis() - start);
-    m_isRunning = false;
-    m_cancelled = false;
+    isRunning = false;
+    cancelled = false;
     return rVal;
   }
 
@@ -211,59 +212,59 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
   @Override
   public boolean getIsReady() {
-    return m_isDataSet && m_isCalcSet;
+    return isDataSet && isCalcSet;
   }
 
   @Override
   public int getRunCount() {
-    return m_runCount;
+    return runCount;
   }
 
   @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
-    m_keepOneAttackingLandUnit = bool;
+    keepOneAttackingLandUnit = bool;
   }
 
   @Override
   public void setAmphibious(final boolean bool) {
-    m_amphibious = bool;
+    amphibious = bool;
   }
 
   @Override
   public void setRetreatAfterRound(final int value) {
-    m_retreatAfterRound = value;
+    retreatAfterRound = value;
   }
 
   @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
-    m_retreatAfterXUnitsLeft = value;
+    retreatAfterXUnitsLeft = value;
   }
 
   @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    m_retreatWhenOnlyAirLeft = value;
+    retreatWhenOnlyAirLeft = value;
   }
 
   @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    m_attackerOrderOfLosses = attackerOrderOfLosses;
+    this.attackerOrderOfLosses = attackerOrderOfLosses;
   }
 
   @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    m_defenderOrderOfLosses = defenderOrderOfLosses;
+    this.defenderOrderOfLosses = defenderOrderOfLosses;
   }
 
   @Override
   public void cancel() {
-    m_cancelled = true;
+    cancelled = true;
   }
 
   @Override
   public void shutdown() {
     cancel();
-    synchronized (m_listeners) {
-      m_listeners.clear();
+    synchronized (listeners) {
+      listeners.clear();
     }
   }
 
@@ -353,55 +354,54 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
   @Override
   public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (m_listeners) {
-      m_listeners.add(listener);
+    synchronized (listeners) {
+      listeners.add(listener);
     }
   }
 
   @Override
   public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (m_listeners) {
-      m_listeners.remove(listener);
+    synchronized (listeners) {
+      listeners.remove(listener);
     }
   }
 
   private void notifyListenersGameDataIsSet() {
-    synchronized (m_listeners) {
-      for (final OddsCalculatorListener listener : m_listeners) {
+    synchronized (listeners) {
+      for (final OddsCalculatorListener listener : listeners) {
         listener.dataReady();
       }
     }
   }
 
-
-  static class DummyDelegateBridge implements IDelegateBridge {
-    private final PlainRandomSource m_randomSource = new PlainRandomSource();
-    private final ITripleADisplay m_display = new HeadlessDisplay();
-    private final ISound m_soundChannel = new HeadlessSoundChannel();
-    private final DummyPlayer m_attackingPlayer;
-    private final DummyPlayer m_defendingPlayer;
-    private final PlayerID m_attacker;
-    private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
-    private final CompositeChange m_allChanges;
-    private final GameData m_data;
-    private MustFightBattle m_battle = null;
+  private static class DummyDelegateBridge implements IDelegateBridge {
+    private final PlainRandomSource randomSource = new PlainRandomSource();
+    private final ITripleADisplay display = new HeadlessDisplay();
+    private final ISound soundChannel = new HeadlessSoundChannel();
+    private final DummyPlayer attackingPlayer;
+    private final DummyPlayer defendingPlayer;
+    private final PlayerID attacker;
+    private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
+    private final CompositeChange allChanges;
+    private final GameData gameData;
+    private MustFightBattle battle = null;
 
     public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges,
         final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
         final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
         final boolean retreatWhenOnlyAirLeft) {
-      m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses,
+      attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses,
           attackerKeepOneLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
-      m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
+      defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
           retreatAfterRound, -1, false);
-      m_data = data;
-      m_attacker = attacker;
-      m_allChanges = allChanges;
+      gameData = data;
+      this.attacker = attacker;
+      this.allChanges = allChanges;
     }
 
     @Override
     public GameData getData() {
-      return m_data;
+      return gameData;
     }
 
     @Override
@@ -419,48 +419,48 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 
     @Override
     public IRemotePlayer getRemotePlayer(final PlayerID id) {
-      if (id.equals(m_attacker)) {
-        return m_attackingPlayer;
+      if (id.equals(attacker)) {
+        return attackingPlayer;
       } else {
-        return m_defendingPlayer;
+        return defendingPlayer;
       }
     }
 
     @Override
     public IRemotePlayer getRemotePlayer() {
       // the current player is attacker
-      return m_attackingPlayer;
+      return attackingPlayer;
     }
 
     @Override
     public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
         final String annotation) {
-      return m_randomSource.getRandom(max, count, annotation);
+      return randomSource.getRandom(max, count, annotation);
     }
 
     @Override
     public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-      return m_randomSource.getRandom(max, annotation);
+      return randomSource.getRandom(max, annotation);
     }
 
     @Override
     public PlayerID getPlayerID() {
-      return m_attacker;
+      return attacker;
     }
 
     @Override
     public IDelegateHistoryWriter getHistoryWriter() {
-      return m_writer;
+      return writer;
     }
 
     @Override
     public IDisplay getDisplayChannelBroadcaster() {
-      return m_display;
+      return display;
     }
 
     @Override
     public ISound getSoundChannelBroadcaster() {
-      return m_soundChannel;
+      return soundChannel;
     }
 
     @Override
@@ -471,19 +471,19 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
       if (!(change instanceof UnitHitsChange)) {
         return;
       }
-      m_allChanges.add(change);
-      m_data.performChange(change);
+      allChanges.add(change);
+      gameData.performChange(change);
     }
 
     @Override
     public void stopGameSequence() {}
 
     public MustFightBattle getBattle() {
-      return m_battle;
+      return battle;
     }
 
     public void setBattle(final MustFightBattle battle) {
-      m_battle = battle;
+      this.battle = battle;
     }
   }
 
@@ -509,34 +509,33 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
         final String displayName, final boolean loadedFromSavedGame) {}
 
-
     static class DummyPlayer extends AbstractAI {
-      private final boolean m_keepAtLeastOneLand;
+      private final boolean keepAtLeastOneLand;
       // negative = do not retreat
-      private final int m_retreatAfterRound;
+      private final int retreatAfterRound;
       // negative = do not retreat
-      private final int m_retreatAfterXUnitsLeft;
-      private final boolean m_retreatWhenOnlyAirLeft;
-      private final DummyDelegateBridge m_bridge;
-      private final boolean m_isAttacker;
-      private final List<Unit> m_orderOfLosses;
+      private final int retreatAfterXUnitsLeft;
+      private final boolean retreatWhenOnlyAirLeft;
+      private final DummyDelegateBridge bridge;
+      private final boolean isAttacker;
+      private final List<Unit> orderOfLosses;
 
       public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
           final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
           final int retreatAfterRound,
           final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
         super(name, type);
-        m_keepAtLeastOneLand = keepAtLeastOneLand;
-        m_retreatAfterRound = retreatAfterRound;
-        m_retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
-        m_retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
-        m_bridge = dummyDelegateBridge;
-        m_isAttacker = attacker;
-        m_orderOfLosses = orderOfLosses;
+        this.keepAtLeastOneLand = keepAtLeastOneLand;
+        this.retreatAfterRound = retreatAfterRound;
+        this.retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
+        this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
+        bridge = dummyDelegateBridge;
+        isAttacker = attacker;
+        this.orderOfLosses = orderOfLosses;
       }
 
       private MustFightBattle getBattle() {
-        return m_bridge.getBattle();
+        return bridge.getBattle();
       }
 
       private List<Unit> getOurUnits() {
@@ -544,7 +543,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
         if (battle == null) {
           return null;
         }
-        return new ArrayList<>((m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
+        return new ArrayList<>((isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
       }
 
       private List<Unit> getEnemyUnits() {
@@ -552,7 +551,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
         if (battle == null) {
           return null;
         }
-        return new ArrayList<>((m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
+        return new ArrayList<>((isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
       }
 
       @Override
@@ -613,29 +612,29 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
           if (battle == null) {
             return null;
           }
-          if (m_retreatAfterRound > -1 && battle.getBattleRound() >= m_retreatAfterRound) {
+          if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
             return possibleTerritories.iterator().next();
           }
-          if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1) {
+          if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
             return null;
           }
-          final Collection<Unit> unitsLeft = m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
+          final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
           final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
-          if (m_retreatWhenOnlyAirLeft) {
+          if (retreatWhenOnlyAirLeft) {
             // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
             // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
             // casualty
             // last)
             // then we add the number of air, to the retreat after X left number (which we would set to '1')
             int retreatNum = airLeft.size();
-            if (m_retreatAfterXUnitsLeft > 0) {
-              retreatNum += m_retreatAfterXUnitsLeft;
+            if (retreatAfterXUnitsLeft > 0) {
+              retreatNum += retreatAfterXUnitsLeft;
             }
             if (retreatNum >= unitsLeft.size()) {
               return possibleTerritories.iterator().next();
             }
           }
-          if (m_retreatAfterXUnitsLeft > -1 && m_retreatAfterXUnitsLeft >= unitsLeft.size()) {
+          if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
             return possibleTerritories.iterator().next();
           }
           return null;
@@ -652,7 +651,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
           final boolean allowMultipleHitsPerUnit) {
         final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
         final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());
-        if (m_keepAtLeastOneLand) {
+        if (keepAtLeastOneLand) {
           final List<Unit> notKilled = new ArrayList<>(selectFrom);
           notKilled.removeAll(rKilled);
           // no land units left, but we have a non land unit to kill and land unit was killed
@@ -667,8 +666,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
             rKilled.add(notKilledAndNotLand.get(0));
           }
         }
-        if (m_orderOfLosses != null && !m_orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
-          final List<Unit> orderOfLosses = new ArrayList<>(m_orderOfLosses);
+        if (orderOfLosses != null && !orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
+          final List<Unit> orderOfLosses = new ArrayList<>(this.orderOfLosses);
           orderOfLosses.retainAll(selectFrom);
           if (!orderOfLosses.isEmpty()) {
             int killedSize = rKilled.size();
