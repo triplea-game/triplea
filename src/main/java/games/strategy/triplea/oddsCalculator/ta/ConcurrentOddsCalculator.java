@@ -34,7 +34,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   private int currentThreads = MAX_THREADS;
   private final ExecutorService executor;
-  private final CopyOnWriteArrayList<OddsCalculator> workers = new CopyOnWriteArrayList<>();
+  private final List<OddsCalculator> workers = new CopyOnWriteArrayList<>();
   // do not let calc be set up til data is set
   private volatile boolean isDataSet = false;
   // do not let calc start until it is set
