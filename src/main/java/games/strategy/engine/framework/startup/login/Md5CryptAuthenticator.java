@@ -9,9 +9,14 @@ import com.google.common.collect.Maps;
 import games.strategy.util.MD5Crypt;
 
 /**
- * Implements version 1 of the peer-to-peer network game authentication protocol.
+ * Implements the MD5-crypt authentication protocol for peer-to-peer network games.
+ *
+ * <p>
+ * This authenticator challenges the client with a salt and expects a response containing the MD5-crypt digest of the
+ * game password and salt.
+ * </p>
  */
-final class V1Authenticator {
+final class Md5CryptAuthenticator {
   /**
    * Indicates the specified challenge can be processed by this authenticator.
    *

@@ -50,17 +50,17 @@ public final class ClientLoginValidatorTests {
       }
 
       @Test
-      public void shouldReturnChallengeProcessableByV1Authenticator() {
+      public void shouldReturnChallengeProcessableByMd5CryptAuthenticator() {
         final Map<String, String> challenge = getChallengeProperties();
 
-        assertThat(V1Authenticator.canProcessChallenge(challenge), is(true));
+        assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(true));
       }
 
       @Test
-      public void shouldReturnChallengeProcessableByV2Authenticator() {
+      public void shouldReturnChallengeProcessableByHmacSha512Authenticator() {
         final Map<String, String> challenge = getChallengeProperties();
 
-        assertThat(V2Authenticator.canProcessChallenge(challenge), is(true));
+        assertThat(HmacSha512Authenticator.canProcessChallenge(challenge), is(true));
       }
     }
 
@@ -71,17 +71,17 @@ public final class ClientLoginValidatorTests {
       }
 
       @Test
-      public void shouldReturnChallengeIgnoredByV1Authenticator() {
+      public void shouldReturnChallengeIgnoredByMd5CryptAuthenticator() {
         final Map<String, String> challenge = getChallengeProperties();
 
-        assertThat(V1Authenticator.canProcessChallenge(challenge), is(false));
+        assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(false));
       }
 
       @Test
-      public void shouldReturnChallengeIgnoredByV2Authenticator() {
+      public void shouldReturnChallengeIgnoredByHmacSha512Authenticator() {
         final Map<String, String> challenge = getChallengeProperties();
 
-        assertThat(V2Authenticator.canProcessChallenge(challenge), is(false));
+        assertThat(HmacSha512Authenticator.canProcessChallenge(challenge), is(false));
       }
     }
   }
@@ -100,9 +100,9 @@ public final class ClientLoginValidatorTests {
     }
 
     @Test
-    public void shouldReturnNoErrorWhenV1AuthenticationSucceeded() throws Exception {
-      final Map<String, String> challenge = V1Authenticator.newChallenge();
-      final Map<String, String> response = V1Authenticator.newResponse(PASSWORD, challenge);
+    public void shouldReturnNoErrorWhenMd5CryptAuthenticationSucceeded() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
@@ -110,9 +110,9 @@ public final class ClientLoginValidatorTests {
     }
 
     @Test
-    public void shouldReturnErrorWhenV1AuthenticationFailed() throws Exception {
-      final Map<String, String> challenge = V1Authenticator.newChallenge();
-      final Map<String, String> response = V1Authenticator.newResponse(OTHER_PASSWORD, challenge);
+    public void shouldReturnErrorWhenMd5CryptAuthenticationFailed() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(OTHER_PASSWORD, challenge);
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
@@ -120,9 +120,9 @@ public final class ClientLoginValidatorTests {
     }
 
     @Test
-    public void shouldReturnNoErrorWhenV2AuthenticationSucceeded() throws Exception {
-      final Map<String, String> challenge = V2Authenticator.newChallenge();
-      final Map<String, String> response = V2Authenticator.newResponse(PASSWORD, challenge);
+    public void shouldReturnNoErrorWhenHmacSha512AuthenticationSucceeded() throws Exception {
+      final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
+      final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
@@ -130,9 +130,9 @@ public final class ClientLoginValidatorTests {
     }
 
     @Test
-    public void shouldReturnErrorWhenV2AuthenticationFailed() throws Exception {
-      final Map<String, String> challenge = V2Authenticator.newChallenge();
-      final Map<String, String> response = V2Authenticator.newResponse(OTHER_PASSWORD, challenge);
+    public void shouldReturnErrorWhenHmacSha512AuthenticationFailed() throws Exception {
+      final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
+      final Map<String, String> response = HmacSha512Authenticator.newResponse(OTHER_PASSWORD, challenge);
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
@@ -140,14 +140,14 @@ public final class ClientLoginValidatorTests {
     }
 
     @Test
-    public void shouldBypassV1AuthenticationWhenV2AuthenticationSucceeded() throws Exception {
+    public void shouldBypassMd5CryptAuthenticationWhenHmacSha512AuthenticationSucceeded() throws Exception {
       final Map<String, String> challenge = ImmutableMap.<String, String>builder()
-          .putAll(V1Authenticator.newChallenge())
-          .putAll(V2Authenticator.newChallenge())
+          .putAll(Md5CryptAuthenticator.newChallenge())
+          .putAll(HmacSha512Authenticator.newChallenge())
           .build();
       final Map<String, String> response = ImmutableMap.<String, String>builder()
-          .putAll(V1Authenticator.newResponse(OTHER_PASSWORD, challenge))
-          .putAll(V2Authenticator.newResponse(PASSWORD, challenge))
+          .putAll(Md5CryptAuthenticator.newResponse(OTHER_PASSWORD, challenge))
+          .putAll(HmacSha512Authenticator.newResponse(PASSWORD, challenge))
           .build();
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);

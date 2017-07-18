@@ -59,8 +59,8 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (password != null) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
-      challenge.putAll(V1Authenticator.newChallenge());
-      challenge.putAll(V2Authenticator.newChallenge());
+      challenge.putAll(Md5CryptAuthenticator.newChallenge());
+      challenge.putAll(HmacSha512Authenticator.newChallenge());
     } else {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
     }
@@ -123,10 +123,10 @@ public final class ClientLoginValidator implements ILoginValidator {
   @VisibleForTesting
   String authenticate(final Map<String, String> challenge, final Map<String, String> response) {
     try {
-      if (V2Authenticator.canProcessResponse(response)) {
-        V2Authenticator.authenticate(password, challenge, response);
+      if (HmacSha512Authenticator.canProcessResponse(response)) {
+        HmacSha512Authenticator.authenticate(password, challenge, response);
       } else {
-        V1Authenticator.authenticate(password, challenge, response);
+        Md5CryptAuthenticator.authenticate(password, challenge, response);
       }
 
       return ErrorMessages.NO_ERROR;

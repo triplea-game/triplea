@@ -18,36 +18,36 @@ public final class ClientLoginTests {
 
   public static final class AddAuthenticationResponsePropertiesTest {
     @Test
-    public void shouldIncludeV1ResponseProperties() {
-      final Map<String, String> challenge = V1Authenticator.newChallenge();
+    public void shouldCreateResponseProcessableByMd5CryptAuthenticatorWhenMd5CryptChallengePresent() {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
       final Map<String, String> response = Maps.newHashMap();
 
       ClientLogin.addAuthenticationResponseProperties(PASSWORD, challenge, response);
 
-      assertThat(V1Authenticator.canProcessResponse(response), is(true));
+      assertThat(Md5CryptAuthenticator.canProcessResponse(response), is(true));
     }
 
     @Test
-    public void shouldCreateResponseProcessableByV2AuthenticatorWhenV2ChallengePresent() throws Exception {
+    public void shouldCreateResponseProcessableByHmacSha512AuthenticatorWhenHmacSha512ChallengePresent() {
       final Map<String, String> challenge = Maps.newHashMap(ImmutableMap.<String, String>builder()
-          .putAll(V1Authenticator.newChallenge())
-          .putAll(V2Authenticator.newChallenge())
+          .putAll(Md5CryptAuthenticator.newChallenge())
+          .putAll(HmacSha512Authenticator.newChallenge())
           .build());
       final Map<String, String> response = Maps.newHashMap();
 
       ClientLogin.addAuthenticationResponseProperties(PASSWORD, challenge, response);
 
-      assertThat(V2Authenticator.canProcessResponse(response), is(true));
+      assertThat(HmacSha512Authenticator.canProcessResponse(response), is(true));
     }
 
     @Test
-    public void shouldCreateResponseIgnoredByV2AuthenticatorWhenV2ChallengeAbsent() {
-      final Map<String, String> challenge = V1Authenticator.newChallenge();
+    public void shouldCreateResponseIgnoredByHmacSha512AuthenticatorWhenHmacSha512ChallengeAbsent() {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
       final Map<String, String> response = Maps.newHashMap();
 
       ClientLogin.addAuthenticationResponseProperties(PASSWORD, challenge, response);
 
-      assertThat(V2Authenticator.canProcessResponse(response), is(false));
+      assertThat(HmacSha512Authenticator.canProcessResponse(response), is(false));
     }
   }
 }

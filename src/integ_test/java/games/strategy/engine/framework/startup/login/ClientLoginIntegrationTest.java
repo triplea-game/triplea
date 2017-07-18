@@ -55,11 +55,11 @@ public final class ClientLoginIntegrationTest {
   }
 
   @Test
-  public void login_ShouldSucceedUsingV1AuthenticatorWhenPasswordMatches() {
+  public void login_ShouldSucceedUsingMd5CryptAuthenticatorWhenPasswordMatches() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin() {
       @Override
       public Map<String, String> getProperties(final Map<String, String> challenge) {
-        return filterV1AuthenticatorResponseProperties(super.getProperties(challenge));
+        return filterMd5CryptAuthenticatorResponseProperties(super.getProperties(challenge));
       }
     };
 
@@ -89,8 +89,8 @@ public final class ClientLoginIntegrationTest {
       return password;
     }
 
-    static Map<String, String> filterV1AuthenticatorResponseProperties(final Map<String, String> response) {
-      response.remove(V2Authenticator.ResponsePropertyNames.DIGEST);
+    static Map<String, String> filterMd5CryptAuthenticatorResponseProperties(final Map<String, String> response) {
+      response.remove(HmacSha512Authenticator.ResponsePropertyNames.DIGEST);
       return response;
     }
   }
@@ -106,11 +106,11 @@ public final class ClientLoginIntegrationTest {
   }
 
   @Test
-  public void login_ShouldFailUsingV1AuthenticatorWhenPasswordDoesNotMatch() {
+  public void login_ShouldFailUsingMd5CryptAuthenticatorWhenPasswordDoesNotMatch() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD) {
       @Override
       public Map<String, String> getProperties(final Map<String, String> challenge) {
-        return filterV1AuthenticatorResponseProperties(super.getProperties(challenge));
+        return filterMd5CryptAuthenticatorResponseProperties(super.getProperties(challenge));
       }
     };
 
@@ -120,7 +120,7 @@ public final class ClientLoginIntegrationTest {
   }
 
   @Test
-  public void login_ShouldSucceedUsingV2AuthenticatorWhenPasswordMatches() {
+  public void login_ShouldSucceedUsingHmacSha512AuthenticatorWhenPasswordMatches() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin();
 
     catchException(() -> newClientMessenger(connectionLogin).shutDown());
@@ -129,7 +129,7 @@ public final class ClientLoginIntegrationTest {
   }
 
   @Test
-  public void login_ShouldFailUsingV2AuthenticatorWhenPasswordDoesNotMatch() {
+  public void login_ShouldFailUsingHmacSha512AuthenticatorWhenPasswordDoesNotMatch() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
 
     catchException(() -> newClientMessenger(connectionLogin).shutDown());
