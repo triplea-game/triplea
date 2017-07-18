@@ -36,7 +36,7 @@ public class ImageScrollerSmallView extends JComponent {
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
     setMaximumSize(prefSize);
-    final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+    final MouseAdapter mouseListener = new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         // try to center around the click
@@ -45,13 +45,13 @@ public class ImageScrollerSmallView extends JComponent {
         model.set(x, y);
       }
     };
-    this.addMouseListener(MOUSE_LISTENER);
-    final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    this.addMouseListener(mouseListener);
+    final MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
       @Override
       public void mouseDragged(final MouseEvent e) {
         final long now = System.currentTimeMillis();
-        final long MIN_UPDATE_DELAY = 30;
-        if (now < lastUpdate + MIN_UPDATE_DELAY) {
+        final long minUpdateDelay = 30;
+        if (now < lastUpdate + minUpdateDelay) {
           return;
         }
         lastUpdate = now;
@@ -68,7 +68,7 @@ public class ImageScrollerSmallView extends JComponent {
         setSelection(x, y);
       }
     };
-    this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    this.addMouseMotionListener(mouseMotionListener);
     model.addObserver((o, arg) -> repaint());
   }
 

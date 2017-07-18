@@ -87,7 +87,7 @@ public class ImageScrollerLargeView extends JComponent {
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
-    final MouseWheelListener MOUSE_WHEEL_LISTENER = e -> {
+    final MouseWheelListener mouseWheelListener = e -> {
       if (!e.isAltDown()) {
         if (edge == NONE) {
           insideCount = 0;
@@ -149,8 +149,8 @@ public class ImageScrollerLargeView extends JComponent {
         setScale(value);
       }
     };
-    addMouseWheelListener(MOUSE_WHEEL_LISTENER);
-    final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+    addMouseWheelListener(mouseWheelListener);
+    final MouseAdapter mouseListener = new MouseAdapter() {
       @Override
       public void mouseEntered(final MouseEvent e) {
         timer.start();
@@ -172,8 +172,8 @@ public class ImageScrollerLargeView extends JComponent {
         requestFocusInWindow();
       }
     };
-    addMouseListener(MOUSE_LISTENER);
-    final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
+    addMouseListener(mouseListener);
+    final MouseAdapter mouseListenerDragScrolling = new MouseAdapter() {
       @Override
       public void mousePressed(final MouseEvent e) {
         // try to center around the click
@@ -181,8 +181,8 @@ public class ImageScrollerLargeView extends JComponent {
         dragScrollingLastY = e.getY();
       }
     };
-    addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
-    final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    addMouseListener(mouseListenerDragScrolling);
+    final MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
         inside = true;
@@ -196,11 +196,11 @@ public class ImageScrollerLargeView extends JComponent {
         }
       }
     };
-    addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    addMouseMotionListener(mouseMotionListener);
     /*
      * this is used to detect drag scrolling
      */
-    final MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
+    final MouseMotionListener mouseDragListener = new MouseMotionAdapter() {
       @Override
       public void mouseDragged(final MouseEvent e) {
         requestFocusInWindow();
@@ -229,14 +229,14 @@ public class ImageScrollerLargeView extends JComponent {
         }
       }
     };
-    addMouseMotionListener(MOUSE_DRAG_LISTENER);
-    final ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
+    addMouseMotionListener(mouseDragListener);
+    final ComponentListener componentListener = new ComponentAdapter() {
       @Override
       public void componentResized(final ComponentEvent e) {
         refreshBoxSize();
       }
     };
-    addComponentListener(COMPONENT_LISTENER);
+    addComponentListener(componentListener);
     timer.start();
     this.model.addObserver((o, arg) -> {
       repaint();
