@@ -150,8 +150,7 @@ final class V2Authenticator {
       throws GeneralSecurityException {
     final Mac mac = Mac.getInstance("HmacSHA512");
     mac.init(newSecretKey(password, salt));
-    mac.update(nonce);
-    return mac.doFinal();
+    return mac.doFinal(nonce);
   }
 
   private static SecretKey newSecretKey(final String password, final byte[] salt) throws GeneralSecurityException {
