@@ -54,6 +54,14 @@ public class DbUserController implements UserDao {
     return Optional.ofNullable(secondaryDao.getPassword(userName))
         .orElseGet(() -> primaryDao.getPassword(userName));
   }
+  
+  public HashedPassword getLegacyPassword(final String userName) {
+    final HashedPassword password = secondaryDao.getPassword(userName);
+    if(password != null && !password.isBcrypted()) {
+      return password;
+    }
+    return primaryDao.getPassword(userName);
+  }
 
   @Override
   public boolean doesUserExist(final String userName) {

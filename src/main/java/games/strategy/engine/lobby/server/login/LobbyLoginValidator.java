@@ -63,9 +63,9 @@ public class LobbyLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
     final Map<String, String> rVal = new HashMap<>();
-    final HashedPassword password = new DbUserController().getPassword(userName);
+    final HashedPassword password = new DbUserController().getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
-      rVal.put(SALT_KEY, password.isBcrypted() ? "" : MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+      rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
     try {
       final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
