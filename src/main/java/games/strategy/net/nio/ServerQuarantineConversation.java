@@ -55,6 +55,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public ACTION message(final Object o) {
     try {
       switch (m_step) {
@@ -82,7 +83,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           m_step = STEP.CHALLENGE;
           return ACTION.NONE;
         case CHALLENGE:
-          @SuppressWarnings("unchecked") final Map<String, String> response = (Map<String, String>) o;
+          final Map<String, String> response = (Map<String, String>) o;
           if (s_logger.isLoggable(Level.FINER)) {
             s_logger.log(Level.FINER, "read challenge response:" + response);
           }
