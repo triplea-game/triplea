@@ -18,9 +18,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 /**
- * Implements version 2 of the peer-to-peer network game authentication protocol.
+ * Implements the HMAC-SHA512 authentication protocol for peer-to-peer network games.
+ *
+ * <p>
+ * This authenticator challenges the client with a nonce and salt and expects a response containing the HMAC-SHA512
+ * digest of the nonce using a key derived from the game password and salt.
+ * </p>
  */
-final class V2Authenticator {
+final class HmacSha512Authenticator {
   /**
    * Indicates the specified challenge can be processed by this authenticator.
    *
@@ -35,8 +40,8 @@ final class V2Authenticator {
 
   @VisibleForTesting
   interface ChallengePropertyNames {
-    String NONCE = "authenticator/v2/nonce";
-    String SALT = "authenticator/v2/salt";
+    String NONCE = "authenticator/hmac-sha512/nonce";
+    String SALT = "authenticator/hmac-sha512/salt";
   }
 
   /**
@@ -93,7 +98,7 @@ final class V2Authenticator {
 
   @VisibleForTesting
   interface ResponsePropertyNames {
-    String DIGEST = "authenticator/v2/digest";
+    String DIGEST = "authenticator/hmac-sha512/digest";
   }
 
   /**

@@ -53,8 +53,8 @@ public class ClientLogin implements IConnectionLogin {
       final Map<String, String> challenge,
       final Map<String, String> response) {
     try {
-      response.putAll(V1Authenticator.newResponse(password, challenge));
-      response.putAll(V2Authenticator.newResponse(password, challenge));
+      response.putAll(Md5CryptAuthenticator.newResponse(password, challenge));
+      response.putAll(HmacSha512Authenticator.newResponse(password, challenge));
     } catch (final AuthenticationException e) {
       throw new RuntimeException(e);
     }
