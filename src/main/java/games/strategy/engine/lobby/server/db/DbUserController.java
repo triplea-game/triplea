@@ -71,7 +71,6 @@ public class DbUserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final String password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    primaryDao.updateUser(user, password);
     secondaryDao.updateUser(user, password);
   }
 
@@ -94,7 +93,6 @@ public class DbUserController implements UserDao {
   @Override
   public void createUser(final DBUser user, final String password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    primaryDao.createUser(user, password);
     secondaryDao.createUser(user, password);
   }
 
@@ -123,12 +121,6 @@ public class DbUserController implements UserDao {
   public boolean login(String userName, String password) {
     if (secondaryDao.login(userName, password)) {
       migrationCounter.secondaryLoginSuccess();
-      return true;
-    }
-
-    if (primaryDao.login(userName, password)) {
-      migrationCounter.primaryLoginSuccess();
-      secondaryDao.createUser(primaryDao.getUserByName(userName), password);
       return true;
     }
 
