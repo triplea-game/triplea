@@ -45,8 +45,8 @@ public class ImageScrollerLargeView extends JComponent {
   protected final ImageScrollModel model;
   protected double scale = 1;
 
-  private int drag_scrolling_lastx;
-  private int drag_scrolling_lasty;
+  private int dragScrollingLastX;
+  private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;
 
   public boolean wasLastActionDraggingAndReset() {
@@ -177,8 +177,8 @@ public class ImageScrollerLargeView extends JComponent {
       @Override
       public void mousePressed(final MouseEvent e) {
         // try to center around the click
-        drag_scrolling_lastx = e.getX();
-        drag_scrolling_lasty = e.getY();
+        dragScrollingLastX = e.getX();
+        dragScrollingLastY = e.getY();
       }
     };
     addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
@@ -215,8 +215,8 @@ public class ImageScrollerLargeView extends JComponent {
             insideCount = 0;
           }
           // compute the amount to move
-          final int dx = (drag_scrolling_lastx - x);
-          final int dy = (drag_scrolling_lasty - y);
+          final int dx = (dragScrollingLastX - x);
+          final int dy = (dragScrollingLastY - y);
           // move left and right and test for wrap
           final int newX = (ImageScrollerLargeView.this.model.getX() + dx);
           // move up and down and test for edges
@@ -224,8 +224,8 @@ public class ImageScrollerLargeView extends JComponent {
           // update the map
           ImageScrollerLargeView.this.model.set(newX, newY);
           // store the location of the mouse for the next move
-          drag_scrolling_lastx = e.getX();
-          drag_scrolling_lasty = e.getY();
+          dragScrollingLastX = e.getX();
+          dragScrollingLastY = e.getY();
         }
       }
     };
