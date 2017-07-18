@@ -9,10 +9,10 @@ import javax.swing.Icon;
  * Make one icon from two.
  */
 public class OverlayIcon implements Icon {
-  private final Icon m_back;
-  private final Icon m_front;
-  private final int m_x_offset;
-  private final int m_y_offset;
+  private final Icon back;
+  private final Icon front;
+  private final int offsetX;
+  private final int offsetY;
 
   /**
    * Create a composite icon by overlaying the front icon over the back icon.
@@ -25,27 +25,27 @@ public class OverlayIcon implements Icon {
    *        , y position of front icon relative to back icon.
    */
   public OverlayIcon(final Icon back, final Icon front, final int x, final int y) {
-    m_back = back;
-    m_front = front;
-    m_x_offset = x;
-    m_y_offset = y;
+    this.back = back;
+    this.front = front;
+    offsetX = x;
+    offsetY = y;
   }
 
   @Override
   public int getIconHeight() {
-    return m_back.getIconHeight() > (m_front.getIconHeight() + m_y_offset) ? m_back.getIconHeight()
-        : (m_front.getIconHeight() + m_y_offset);
+    return back.getIconHeight() > (front.getIconHeight() + offsetY) ? back.getIconHeight()
+        : (front.getIconHeight() + offsetY);
   }
 
   @Override
   public int getIconWidth() {
-    return m_back.getIconWidth() > (m_front.getIconWidth() + m_x_offset) ? m_back.getIconWidth()
-        : (m_front.getIconWidth() + m_x_offset);
+    return back.getIconWidth() > (front.getIconWidth() + offsetX) ? back.getIconWidth()
+        : (front.getIconWidth() + offsetX);
   }
 
   @Override
   public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
-    m_back.paintIcon(c, g, x, y);
-    m_front.paintIcon(c, g, x + m_x_offset, y + m_y_offset);
+    back.paintIcon(c, g, x, y);
+    front.paintIcon(c, g, x + offsetX, y + offsetY);
   }
 }

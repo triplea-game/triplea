@@ -51,10 +51,10 @@ public class ImageScrollerSmallView extends JComponent {
       public void mouseDragged(final MouseEvent e) {
         final long now = System.currentTimeMillis();
         final long MIN_UPDATE_DELAY = 30;
-        if (now < mLastUpdate + MIN_UPDATE_DELAY) {
+        if (now < lastUpdate + MIN_UPDATE_DELAY) {
           return;
         }
-        mLastUpdate = now;
+        lastUpdate = now;
         final Rectangle bounds = (Rectangle) getBounds().clone();
         // if the mouse is a little off the screen, allow it to still scroll
         // the screen
@@ -139,7 +139,7 @@ public class ImageScrollerSmallView extends JComponent {
     model.set(x, y);
   }
 
-  private long mLastUpdate = 0;
+  private long lastUpdate = 0;
 
   public double getRatioY() {
     return image.getHeight(null) / (double) model.getMaxHeight();
