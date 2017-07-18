@@ -225,7 +225,7 @@ public class MD5Crypt {
    * @return A new random salt; never {@code null}.
    */
   public static String newSalt() {
-    final StringBuffer salt = new StringBuffer();
+    final StringBuilder salt = new StringBuilder();
     final Random rnd = new Random();
     // build a random 8 chars salt
     while (salt.length() < 8) {
