@@ -16,15 +16,10 @@ import java.io.OutputStream;
 public final class ObjectOutputStream extends java.io.ObjectOutputStream {
   private final ProxyRegistry proxyRegistry;
 
-  /**
-   * @param out The output stream on which to write; must not be {@code null}.
-   * @param proxyRegistry The proxy registry; must not be {@code null}.
-   *
-   * @throws IOException If an I/O error occurs while writing the stream header.
-   */
   public ObjectOutputStream(final OutputStream out, final ProxyRegistry proxyRegistry) throws IOException {
     super(out);
 
+    checkNotNull(out);
     checkNotNull(proxyRegistry);
 
     this.proxyRegistry = proxyRegistry;
