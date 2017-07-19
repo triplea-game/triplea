@@ -24,9 +24,6 @@ public final class PropertyBagMementoProxy implements Serializable {
   private final Map<String, Object> propertiesByName;
   private final String schemaId;
 
-  /**
-   * @param memento The {@link PropertyBagMemento} from which the proxy will be initialized.
-   */
   public PropertyBagMementoProxy(final PropertyBagMemento memento) {
     checkNotNull(memento);
 

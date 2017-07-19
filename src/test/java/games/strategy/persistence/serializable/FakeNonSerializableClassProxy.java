@@ -17,22 +17,9 @@ public final class FakeNonSerializableClassProxy implements Serializable {
   public static final ProxyFactory FACTORY =
       ProxyFactory.newInstance(FakeNonSerializableClass.class, FakeNonSerializableClassProxy::new);
 
-  /**
-   * @serial The integer field.
-   */
   private final int intField;
-
-  /**
-   * @serial The string field.
-   */
   private final String stringField;
 
-  /**
-   * Initializes a new instance of the {@code FakeNonSerializableClassProxy} class from the specified
-   * {@code FakeNonSerializableClass} instance.
-   *
-   * @param subject The {@code FakeNonSerializableClass} instance.
-   */
   public FakeNonSerializableClassProxy(final FakeNonSerializableClass subject) {
     checkNotNull(subject);
 

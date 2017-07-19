@@ -15,12 +15,6 @@ public final class PropertyBagMementoExporter<T> implements MementoExporter<T> {
 
   private final String schemaId;
 
-  /**
-   * Initializes a new instance of the {@code PropertyBagMementoExporter} class.
-   *
-   * @param schemaId The schema identifier of the memento to export.
-   * @param handler The export handler for the schema.
-   */
   public PropertyBagMementoExporter(final String schemaId, final Handler<T> handler) {
     checkNotNull(schemaId);
     checkNotNull(handler);

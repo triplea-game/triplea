@@ -18,13 +18,6 @@ public final class PropertyBagMemento implements Memento {
 
   private final String schemaId;
 
-  /**
-   * Initializes a new instance of the {@code PropertyBagMemento} class.
-   *
-   * @param schemaId The memento schema identifier.
-   * @param propertiesByName The collection of originator properties. The key is the property name. The value is the
-   *        property value.
-   */
   public PropertyBagMemento(final String schemaId, final Map<String, Object> propertiesByName) {
     checkNotNull(schemaId);
     checkNotNull(propertiesByName);
