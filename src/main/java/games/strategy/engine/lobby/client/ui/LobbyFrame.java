@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.Action;
@@ -155,10 +156,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.zzBanUsername(clickedOn, (Instant) null);
+          controller.banUsername(clickedOn, null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.zzBanMac(clickedOn, (Instant) null);
+          controller.banMac(clickedOn, null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
@@ -189,10 +190,10 @@ public class LobbyFrame extends JFrame {
       }
       final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedBanType.toLowerCase().contains("name")) {
-        controller.zzBanUsername(clickedOn, expire);
+        controller.banUsername(clickedOn, Date.from(expire));
       }
       if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.zzBanMac(clickedOn, expire);
+        controller.banMac(clickedOn, Date.from(expire));
       }
       // Should we keep this auto?
       controller.boot(clickedOn);
@@ -232,10 +233,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.zzMuteUsername(clickedOn, (Instant) null);
+          controller.muteUsername(clickedOn, null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.zzMuteMac(clickedOn, (Instant) null);
+          controller.muteMac(clickedOn, null);
         }
         return;
       }
@@ -264,10 +265,10 @@ public class LobbyFrame extends JFrame {
       }
       final Instant expire = Instant.now().plus(Duration.of(result2, unit));
       if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.zzMuteUsername(clickedOn, expire);
+        controller.muteUsername(clickedOn, Date.from(expire));
       }
       if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.zzMuteMac(clickedOn, expire);
+        controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
     rVal.add(SwingAction.of("Quick Mute", e -> {
@@ -288,8 +289,8 @@ public class LobbyFrame extends JFrame {
           return;
         }
         final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.zzMuteUsername(clickedOn, expire);
-        controller.zzMuteMac(clickedOn, expire);
+        controller.muteUsername(clickedOn, Date.from(expire));
+        controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
     rVal.add(SwingAction.of("Show player information", e -> {

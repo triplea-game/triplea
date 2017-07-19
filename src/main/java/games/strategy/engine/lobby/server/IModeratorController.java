@@ -1,12 +1,13 @@
 package games.strategy.engine.lobby.server;
 
-import java.time.Instant;
 import java.util.Date;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
 public interface IModeratorController extends IRemote {
+  // TODO: The methods accepting a Date parameter can be converted to Instant after the next incompatible release.
+
   /**
    * Boot the given INode from the network.
    *
@@ -16,21 +17,10 @@ public interface IModeratorController extends IRemote {
    */
   void boot(INode node);
 
-  // Remove the z Prefix of all methods in the next incompatible release
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
-   */
-  @Deprecated
-  default void banUsername(INode node, Date banExpires) {
-    zzBanUsername(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
   /**
    * Ban the username of the given INode.
    */
-  void zzBanUsername(INode node, Instant banExpires);
+  void banUsername(INode node, Date banExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -40,46 +30,19 @@ public interface IModeratorController extends IRemote {
   default void banIp(INode node, Date banExpires) {}
 
   /**
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
-   */
-  @Deprecated
-  default void banMac(INode node, Date banExpires) {
-    zzBanMac(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
-   */
-  @Deprecated
-  default void banMac(final INode node, final String hashedMac, final Date banExpires) {
-    zzBanMac(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  /**
    * Ban the mac of the given INode.
    */
-  void zzBanMac(INode node, Instant banExpires);
+  void banMac(INode node, Date banExpires);
 
   /**
    * Ban the mac.
    */
-  void zzBanMac(final INode node, final String hashedMac, final Instant banExpires);
-
-  /**
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
-   */
-  @Deprecated
-  default void muteUsername(INode node, Date muteExpires) {
-    zzMuteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
-  }
+  void banMac(INode node, String hashedMac, Date banExpires);
 
   /**
    * Mute the username of the given INode.
    */
-  void zzMuteUsername(INode node, Instant muteExpires);
+  void muteUsername(INode node, Date muteExpires);
 
   /**
    * @deprecated Kept to maintain backwards compatibility.
@@ -89,18 +52,9 @@ public interface IModeratorController extends IRemote {
   default void muteIp(INode node, Date muteExpires) {}
 
   /**
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
-   */
-  @Deprecated
-  default void muteMac(INode node, Date muteExpires) {
-    zzMuteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
-  }
-
-  /**
    * Mute the mac of the given INode.
    */
-  void zzMuteMac(INode node, Instant muteExpires);
+  void muteMac(INode node, Date muteExpires);
 
   /**
    * Get list of people in the game.

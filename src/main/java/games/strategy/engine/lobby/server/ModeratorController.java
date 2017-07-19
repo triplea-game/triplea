@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server;
 
 import java.time.Instant;
+import java.util.Date;
 
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
@@ -21,7 +22,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanUsername(final INode node, final Instant banExpires) {
+  public void banUsername(final INode node, final Date banExpires) {
+    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
+  }
+
+  private void banUsername(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -57,7 +62,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanMac(final INode node, final Instant banExpires) {
+  public void banMac(final INode node, final Date banExpires) {
+    banMac(node, banExpires != null ? banExpires.toInstant() : null);
+  }
+
+  private void banMac(final INode node, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -74,7 +83,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanMac(final INode node, final String hashedMac, final Instant banExpires) {
+  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
+    banMac(node, hashedMac, banExpires != null ? banExpires.toInstant() : null);
+  }
+
+  private void banMac(final INode node, final String hashedMac, final Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -90,7 +103,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzMuteUsername(final INode node, final Instant muteExpires) {
+  public void muteUsername(final INode node, final Date muteExpires) {
+    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+  }
+
+  private void muteUsername(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -109,7 +126,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzMuteMac(final INode node, final Instant muteExpires) {
+  public void muteMac(final INode node, final Date muteExpires) {
+    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+  }
+
+  private void muteMac(final INode node, final Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
