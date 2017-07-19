@@ -54,10 +54,14 @@ public class DbUserController implements UserDao {
     return Optional.ofNullable(secondaryDao.getPassword(userName))
         .orElseGet(() -> primaryDao.getPassword(userName));
   }
-  
+
+  /**
+   * Similar to getPassword but with the difference that this method always
+   * returns a password which was hashed using the legacy MD5Crypt algorithm.
+   */
   public HashedPassword getLegacyPassword(final String userName) {
     final HashedPassword password = secondaryDao.getPassword(userName);
-    if(password != null && !password.isBcrypted()) {
+    if (password != null && !password.isBcrypted()) {
       return password;
     }
     return primaryDao.getPassword(userName);
@@ -117,7 +121,7 @@ public class DbUserController implements UserDao {
 
     if (primaryDao.login(userName, password)) {
       migrationCounter.primaryLoginSuccess();
-      if(!secondaryDao.doesUserExist(userName)) {
+      if (!secondaryDao.doesUserExist(userName)) {
         secondaryDao.createUser(primaryDao.getUserByName(userName), password);
       }
       return true;
