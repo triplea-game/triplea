@@ -9,8 +9,8 @@ public final class FakeNonSerializableClassProxyAsProxyTest extends AbstractProx
   }
 
   @Override
-  protected FakeNonSerializableClass createPrincipal() {
-    return new FakeNonSerializableClass(2112, "42");
+  protected Collection<FakeNonSerializableClass> createPrincipals() {
+    return Arrays.asList(new FakeNonSerializableClass(2112, "42"));
   }
 
   @Override

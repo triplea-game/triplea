@@ -51,11 +51,11 @@ public abstract class AbstractProxyTestCase<T> {
   }
 
   /**
-   * Creates the principal to be proxied.
+   * Creates a collection of principals whose capability to be persisted via a proxy will be tested.
    *
-   * @return The principal to be proxied.
+   * @return The collection of principals to be tested.
    */
-  protected abstract T createPrincipal();
+  protected abstract Collection<T> createPrincipals();
 
   /**
    * Gets the collection of proxy factories required for the principal to be persisted.
@@ -79,16 +79,17 @@ public abstract class AbstractProxyTestCase<T> {
 
   @Test
   public void shouldBeAbleToRoundTripPrincipal() throws Exception {
-    final T expected = createPrincipal();
-    assertThat(expected, is(not(nullValue())));
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    for (final T expected : createPrincipals()) {
+      assertThat(expected, is(not(nullValue())));
+      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    writeObject(baos, expected);
-    final Object untypedActual = readObject(baos);
+      writeObject(baos, expected);
+      final Object untypedActual = readObject(baos);
 
-    assertThat(untypedActual, is(not(nullValue())));
-    assertThat(untypedActual, is(instanceOf(principalType)));
-    final T actual = principalType.cast(untypedActual);
-    assertPrincipalEquals(expected, actual);
+      assertThat(untypedActual, is(not(nullValue())));
+      assertThat(untypedActual, is(instanceOf(principalType)));
+      final T actual = principalType.cast(untypedActual);
+      assertPrincipalEquals(expected, actual);
+    }
   }
 }
