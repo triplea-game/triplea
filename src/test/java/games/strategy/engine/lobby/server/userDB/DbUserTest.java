@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-public class DBUserTest {
+public class DbUserTest {
 
   private static void verifyValid(final DBUser validDbUser) {
     assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),

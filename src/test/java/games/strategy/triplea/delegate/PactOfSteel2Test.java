@@ -18,7 +18,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
-public class Pact_of_Steel_2_Test {
+public class PactOfSteel2Test {
   private GameData gameData;
 
   @Before

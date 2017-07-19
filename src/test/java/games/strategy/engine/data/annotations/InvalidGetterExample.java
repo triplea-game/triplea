@@ -15,15 +15,15 @@ public class InvalidGetterExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  private String m_attribute;
+  private String attribute;
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public String getAttribute() { // annotation put on a getter instead of a setter, should cause test to fail
-    return m_attribute;
+    return attribute;
   }
 
   public void setAttribute(final String attribute) {
-    m_attribute = attribute;
+    this.attribute = attribute;
   }
 
   public void resetAttribute() {}

@@ -54,7 +54,7 @@ public class PropertyUtilTest {
 
   @Test
   public void testGetFieldWithPrefixedPropertyNames() {
-    assertThat(PropertyUtil.getPropertyFieldObject(BAR, new mUnderBarClass()), is(DEFAULT));
+    assertThat(PropertyUtil.getPropertyFieldObject(BAR, new UnderBarClass()), is(DEFAULT));
   }
 
 
@@ -110,14 +110,14 @@ public class PropertyUtilTest {
     }
   }
 
-  private static class mUnderBarClass {
+  private static class UnderBarClass {
     
     @SuppressWarnings("unused")
-    private String m_bar = PropertyUtilTest.DEFAULT;
+    private String bar = PropertyUtilTest.DEFAULT;
     
     @SuppressWarnings("unused")
     public void setBar(final String newValue) {
-      m_bar = newValue;
+      bar = newValue;
     }
   }
 }
