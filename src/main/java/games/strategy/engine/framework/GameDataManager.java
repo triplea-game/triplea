@@ -273,10 +273,10 @@ public class GameDataManager {
   /**
    * Loads game data from the specified stream, which is expected to be in serializable format.
    *
-   * @param is The stream from which the game data will be loaded; must not be {@code null}. The caller is responsible
-   *        for closing this stream; it will not be closed when this method returns.
+   * @param is The stream from which the game data will be loaded. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
    *
-   * @return The loaded game data; never {@code null}.
+   * @return The loaded game data.
    *
    * @throws IOException If an error occurs while loading the game.
    */
@@ -307,9 +307,9 @@ public class GameDataManager {
   /**
    * Saves the specified game data to the specified stream in serializable format.
    *
-   * @param os The stream to which the game data will be saved; must not be {@code null}. The caller is responsible for
-   *        closing this stream; it will not be closed when this method returns.
-   * @param gameData The game data to save; must not be {@code null}.
+   * @param os The stream to which the game data will be saved. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
+   * @param gameData The game data to save.
    *
    * @throws IOException If an error occurs while saving the game.
    */

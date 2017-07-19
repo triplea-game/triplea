@@ -21,19 +21,19 @@ public interface ProxyRegistry {
   /**
    * Gets a serializable proxy for the specified principal.
    *
-   * @param principal The principal to be proxied; must not be {@code null}.
+   * @param principal The principal to be proxied.
    *
-   * @return A serializable proxy for the specified principal; never {@code null}. If a proxy factory for the
-   *         principal's type has not been registered, the principal itself will be returned.
+   * @return A serializable proxy for the specified principal. If a proxy factory for the principal's type has not been
+   *         registered, the principal itself will be returned.
    */
   Object getProxyFor(Object principal);
 
   /**
    * Creates a new proxy registry for the specified array of proxy factories using the default implementation.
    *
-   * @param proxyFactories The array of proxy factories to associate with the registry; must not be {@code null}.
+   * @param proxyFactories The array of proxy factories to associate with the registry.
    *
-   * @return A new proxy registry; never {@code null}. The returned registry is immutable.
+   * @return A new proxy registry. The returned registry is immutable.
    */
   static ProxyRegistry newInstance(final ProxyFactory... proxyFactories) {
     checkNotNull(proxyFactories);
@@ -44,9 +44,9 @@ public interface ProxyRegistry {
   /**
    * Creates a new proxy registry for the specified collection of proxy factories using the default implementation.
    *
-   * @param proxyFactories The collection of proxy factories to associate with the registry; must not be {@code null}.
+   * @param proxyFactories The collection of proxy factories to associate with the registry.
    *
-   * @return A new proxy registry; never {@code null}. The returned registry is immutable.
+   * @return A new proxy registry. The returned registry is immutable.
    */
   static ProxyRegistry newInstance(final Collection<ProxyFactory> proxyFactories) {
     checkNotNull(proxyFactories);

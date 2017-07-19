@@ -21,10 +21,10 @@ public final class SerializableMementoImporter {
   /**
    * Imports a memento from the specified stream.
    *
-   * @param is The stream from which the memento will be imported; must not be {@code null}. The caller is responsible
-   *        for closing this stream; it will not be closed when this method returns.
+   * @param is The stream from which the memento will be imported. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
    *
-   * @return The imported memento; never {@code null}.
+   * @return The imported memento.
    *
    * @throws SerializableMementoImportException If an error occurs while importing the memento.
    */

@@ -18,8 +18,8 @@ public final class PropertyBagMementoExporter<T> implements MementoExporter<T> {
   /**
    * Initializes a new instance of the {@code PropertyBagMementoExporter} class.
    *
-   * @param schemaId The schema identifier of the memento to export; must not be {@code null}.
-   * @param handler The export handler for the schema; must not be {@code null}.
+   * @param schemaId The schema identifier of the memento to export.
+   * @param handler The export handler for the schema.
    */
   public PropertyBagMementoExporter(final String schemaId, final Handler<T> handler) {
     checkNotNull(schemaId);
@@ -48,9 +48,9 @@ public final class PropertyBagMementoExporter<T> implements MementoExporter<T> {
     /**
      * Exports the properties of the specified originator to the specified collection.
      *
-     * @param originator The memento originator; must not be {@code null}.
-     * @param propertiesByName The collection that receives the originator properties; must not be {@code null}. The key
-     *        is the property name. The value is the property value.
+     * @param originator The memento originator.
+     * @param propertiesByName The collection that receives the originator properties. The key is the property name. The
+     *        value is the property value.
      *
      * @throws MementoExportException If an error occurs while exporting the originator properties.
      */

@@ -21,9 +21,9 @@ public final class PropertyBagMemento implements Memento {
   /**
    * Initializes a new instance of the {@code PropertyBagMemento} class.
    *
-   * @param schemaId The memento schema identifier; must not be {@code null}.
-   * @param propertiesByName The collection of originator properties; must not be {@code null}. The key is the property
-   *        name. The value is the property value.
+   * @param schemaId The memento schema identifier.
+   * @param propertiesByName The collection of originator properties. The key is the property name. The value is the
+   *        property value.
    */
   public PropertyBagMemento(final String schemaId, final Map<String, Object> propertiesByName) {
     checkNotNull(schemaId);
@@ -36,8 +36,7 @@ public final class PropertyBagMemento implements Memento {
   /**
    * Gets the collection of originator properties.
    *
-   * @return The collection of originator properties; never {@code null}. The key is the property name. The value is the
-   *         property value.
+   * @return The collection of originator properties. The key is the property name. The value is the property value.
    */
   public Map<String, Object> getPropertiesByName() {
     return new HashMap<>(propertiesByName);
@@ -46,7 +45,7 @@ public final class PropertyBagMemento implements Memento {
   /**
    * Gets the memento schema identifier.
    *
-   * @return The memento schema identifier; never {@code null}.
+   * @return The memento schema identifier.
    */
   public String getSchemaId() {
     return schemaId;

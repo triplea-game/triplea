@@ -11,7 +11,7 @@ public final class TestGameDataFactory {
   /**
    * Creates a new {@code GameData} instance that is valid in all respects.
    *
-   * @return A new valid {@code GameData} instance; never {@code null}.
+   * @return A new valid {@code GameData} instance.
    */
   public static GameData newValidGameData() {
     final GameData gameData = new GameData();

@@ -24,9 +24,9 @@ public abstract class AbstractProxyRegistryTestCase {
   /**
    * Creates the proxy registry to be tested.
    *
-   * @param proxyFactories The collection of proxy factories to associate with the registry; must not be {@code null}.
+   * @param proxyFactories The collection of proxy factories to associate with the registry.
    *
-   * @return The proxy registry to be tested; never {@code null}.
+   * @return The proxy registry to be tested.
    */
   protected abstract ProxyRegistry createProxyRegistry(Collection<ProxyFactory> proxyFactories);
 

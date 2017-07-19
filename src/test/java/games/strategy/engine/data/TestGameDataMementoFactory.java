@@ -19,10 +19,10 @@ public final class TestGameDataMementoFactory {
   /**
    * Creates a new game data memento that is valid in all respects but includes (or overrides) the specified property.
    *
-   * @param name The property name; must not be {@code null}.
+   * @param name The property name.
    * @param value The property value; may be {@code null}.
    *
-   * @return A new game data memento; never {@code null}.
+   * @return A new game data memento.
    */
   public static Memento newMementoWithProperty(final String name, final Object value) {
     checkNotNull(name);
@@ -48,9 +48,9 @@ public final class TestGameDataMementoFactory {
   /**
    * Creates a new game data memento that is valid in all respects but does not include the specified property.
    *
-   * @param name The property name; must not be {@code null}.
+   * @param name The property name.
    *
-   * @return A new game data memento; never {@code null}.
+   * @return A new game data memento.
    */
   public static Memento newMementoWithoutProperty(final String name) {
     checkNotNull(name);

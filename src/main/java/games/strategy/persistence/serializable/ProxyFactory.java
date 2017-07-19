@@ -11,26 +11,26 @@ public interface ProxyFactory {
   /**
    * Gets the type of the principal to be proxied.
    *
-   * @return The type of the principal to be proxied; never {@code null}.
+   * @return The type of the principal to be proxied.
    */
   Class<?> getPrincipalType();
 
   /**
    * Creates a new serializable proxy for the specified principal.
    *
-   * @param principal The principal to be proxied; must not be {@code null}.
+   * @param principal The principal to be proxied.
    *
-   * @return A new serializable proxy for the specified principal; never {@code null}.
+   * @return A new serializable proxy for the specified principal.
    */
   Object newProxyFor(Object principal);
 
   /**
    * Creates a new proxy factory using the default implementation.
    *
-   * @param principalType The type of the principal to be proxied; must not be {@code null}.
-   * @param newProxyForPrincipal The function used to create a new proxy from a principal; must not be {@code null}.
+   * @param principalType The type of the principal to be proxied.
+   * @param newProxyForPrincipal The function used to create a new proxy from a principal.
    *
-   * @return A new proxy factory; never {@code null}. The returned factory is immutable.
+   * @return A new proxy factory. The returned factory is immutable.
    */
   static <T> ProxyFactory newInstance(final Class<T> principalType, final Function<T, ?> newProxyForPrincipal) {
     checkNotNull(principalType);

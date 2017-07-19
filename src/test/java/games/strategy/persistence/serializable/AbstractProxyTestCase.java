@@ -26,7 +26,7 @@ public abstract class AbstractProxyTestCase<T> {
   private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
 
   /**
-   * @param principalType The type of the principal to be proxied; must not be {@code null}.
+   * @param principalType The type of the principal to be proxied.
    */
   protected AbstractProxyTestCase(final Class<T> principalType) {
     checkNotNull(principalType);
@@ -41,8 +41,8 @@ public abstract class AbstractProxyTestCase<T> {
    * This implementation compares the two objects using the {@code equals} method.
    * </p>
    *
-   * @param expected The expected principal; must not be {@code null}.
-   * @param actual The actual principal; must not be {@code null}.
+   * @param expected The expected principal.
+   * @param actual The actual principal.
    *
    * @throws AssertionError If the two principals are not equal.
    */
@@ -56,14 +56,14 @@ public abstract class AbstractProxyTestCase<T> {
   /**
    * Creates the principal to be proxied.
    *
-   * @return The principal to be proxied; never {@code null}.
+   * @return The principal to be proxied.
    */
   protected abstract T createPrincipal();
 
   /**
    * Gets the collection of proxy factories required for the principal to be persisted.
    *
-   * @return The collection of proxy factories required for the principal to be persisted; never {@code null}.
+   * @return The collection of proxy factories required for the principal to be persisted.
    */
   protected abstract Collection<ProxyFactory> getProxyFactories();
 

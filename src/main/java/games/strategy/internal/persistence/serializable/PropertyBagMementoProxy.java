@@ -25,7 +25,7 @@ public final class PropertyBagMementoProxy implements Serializable {
   private final String schemaId;
 
   /**
-   * @param memento The {@link PropertyBagMemento} from which the proxy will be initialized; must not be {@code null}.
+   * @param memento The {@link PropertyBagMemento} from which the proxy will be initialized.
    */
   public PropertyBagMementoProxy(final PropertyBagMemento memento) {
     checkNotNull(memento);

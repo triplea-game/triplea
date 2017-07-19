@@ -9,9 +9,9 @@ public interface MementoImporter<T> {
   /**
    * Imports the specified memento and returns the originator.
    *
-   * @param memento The memento to be imported; must not be {@code null}.
+   * @param memento The memento to be imported.
    *
-   * @return The memento originator; never {@code null}.
+   * @return The memento originator.
    *
    * @throws MementoImportException If an error occurs while importing the memento.
    */
