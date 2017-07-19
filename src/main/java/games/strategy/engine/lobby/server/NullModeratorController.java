@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server;
 
-import java.time.Instant;
+import java.util.Date;
 
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -15,12 +15,12 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanMac(final INode node, final String hashedMac, final Instant banExpires) {
+  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
     // nothing
   }
 
   @Override
-  public void zzBanMac(final INode node, final Instant banExpires) {
+  public void banMac(final INode node, final Date banExpires) {
     // nothing
   }
 
@@ -68,17 +68,17 @@ public class NullModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void zzBanUsername(final INode node, final Instant banExpires) {
+  public void banUsername(final INode node, final Date banExpires) {
     // nothing
   }
 
   @Override
-  public void zzMuteUsername(final INode node, final Instant muteExpires) {
+  public void muteUsername(final INode node, final Date muteExpires) {
     // nothing
   }
 
   @Override
-  public void zzMuteMac(final INode node, final Instant muteExpires) {
+  public void muteMac(final INode node, final Date muteExpires) {
     // nothing
   }
 
