@@ -12,10 +12,6 @@ import java.io.OutputStream;
  * Before serializing an object, the stream will query the proxy registry for a proxy associated with the principal. If
  * a proxy is available, the proxy will be written to the stream instead of the principal.
  * </p>
- *
- * <p>
- * Instances of this class are not thread safe.
- * </p>
  */
 public final class ObjectOutputStream extends java.io.ObjectOutputStream {
   private final ProxyRegistry proxyRegistry;

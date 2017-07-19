@@ -13,10 +13,6 @@ import games.strategy.util.memento.Memento;
 
 /**
  * A memento exporter for the Java object serialization format.
- *
- * <p>
- * Instances of this class are not thread safe.
- * </p>
  */
 public final class SerializableMementoExporter {
   private final ProxyRegistry proxyRegistry;

@@ -2,10 +2,6 @@ package games.strategy.util.memento;
 
 /**
  * A checked exception that indicates an error occurred while importing a memento to its originator.
- *
- * <p>
- * Instances of this class are thread safe.
- * </p>
  */
 public final class MementoImportException extends Exception {
   private static final long serialVersionUID = -3885032648502798651L;
