@@ -369,10 +369,10 @@ public class GameDataTestUtil {
   }
   
   /**
-   * Helper method to check if a String is null and otherwise print the String
-   * which doesn't make any sense because the String will then always be null.
+   * Helper method to check if a String is not null.
+   * In this scenario used to verify an error message exists.
    */
   public static void assertError(final String string) {
-    Assert.assertNotNull(string, string);
+    Assert.assertNotNull(string);
   }
 }
