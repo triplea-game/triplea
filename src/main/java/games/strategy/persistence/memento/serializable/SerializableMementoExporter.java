@@ -17,9 +17,6 @@ import games.strategy.util.memento.Memento;
 public final class SerializableMementoExporter {
   private final ProxyRegistry proxyRegistry;
 
-  /**
-   * @param proxyRegistry The proxy registry to use during exports.
-   */
   public SerializableMementoExporter(final ProxyRegistry proxyRegistry) {
     checkNotNull(proxyRegistry);
 

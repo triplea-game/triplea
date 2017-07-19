@@ -25,9 +25,6 @@ public abstract class AbstractProxyTestCase<T> {
 
   private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
 
-  /**
-   * @param principalType The type of the principal to be proxied.
-   */
   protected AbstractProxyTestCase(final Class<T> principalType) {
     checkNotNull(principalType);
 

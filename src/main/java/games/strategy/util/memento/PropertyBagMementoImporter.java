@@ -14,12 +14,6 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
 
   private final String schemaId;
 
-  /**
-   * Initializes a new instance of the {@code PropertyBagMementoImporter} class.
-   *
-   * @param schemaId The schema identifier of the memento to import.
-   * @param handler The import handler for the schema.
-   */
   public PropertyBagMementoImporter(final String schemaId, final Handler<T> handler) {
     checkNotNull(schemaId);
     checkNotNull(handler);
