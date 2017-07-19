@@ -74,6 +74,8 @@ public class StratBombTest {
         case "factory_major":
           factory = (TripleAUnit) target;
           break;
+        default:
+          break;
       }
     }
     targets.put(airfield, new HashSet<>(Collections.singleton(tacBomber1)));

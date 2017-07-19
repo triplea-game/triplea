@@ -367,6 +367,7 @@ public class GameDataTestUtil {
   public static void assertValid(final String string) {
     Assert.assertNull(string, string);
   }
+  
   /**
    * Helper method to check if a String is null and otherwise print the String
    * which doesn't make any sense because the String will then always be null.
