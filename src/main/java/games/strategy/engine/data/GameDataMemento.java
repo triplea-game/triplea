@@ -48,7 +48,7 @@ public final class GameDataMemento {
   /**
    * Creates a new game data memento exporter using the default export options.
    *
-   * @return A new game data memento exporter; never {@code null}.
+   * @return A new game data memento exporter.
    */
   public static MementoExporter<GameData> newExporter() {
     return newExporter(DEFAULT_EXPORT_OPTIONS_BY_NAME);
@@ -57,10 +57,9 @@ public final class GameDataMemento {
   /**
    * Creates a new game data memento exporter using the specified export options.
    *
-   * @param optionsByName The memento export options; must not be {@code null}. The key is the option name. The value is
-   *        the option value.
+   * @param optionsByName The memento export options. The key is the option name. The value is the option value.
    *
-   * @return A new game data memento exporter; never {@code null}.
+   * @return A new game data memento exporter.
    */
   public static MementoExporter<GameData> newExporter(final Map<ExportOptionName, Object> optionsByName) {
     checkNotNull(optionsByName);
@@ -98,7 +97,7 @@ public final class GameDataMemento {
   /**
    * Creates a new game data memento importer.
    *
-   * @return A new game data memento importer; never {@code null}.
+   * @return A new game data memento importer.
    */
   public static MementoImporter<GameData> newImporter() {
     return new PropertyBagMementoImporter<>(SCHEMA_ID, new ImportHandler());

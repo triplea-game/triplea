@@ -25,7 +25,7 @@ public final class VersionProxy implements Serializable {
   private final int micro;
 
   /**
-   * @param version The {@link Version} from which the proxy will be initialized; must not be {@code null}.
+   * @param version The {@link Version} from which the proxy will be initialized.
    */
   public VersionProxy(final Version version) {
     checkNotNull(version);

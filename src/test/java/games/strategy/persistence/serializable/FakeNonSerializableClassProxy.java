@@ -31,7 +31,7 @@ public final class FakeNonSerializableClassProxy implements Serializable {
    * Initializes a new instance of the {@code FakeNonSerializableClassProxy} class from the specified
    * {@code FakeNonSerializableClass} instance.
    *
-   * @param subject The {@code FakeNonSerializableClass} instance; must not be {@code null}.
+   * @param subject The {@code FakeNonSerializableClass} instance.
    */
   public FakeNonSerializableClassProxy(final FakeNonSerializableClass subject) {
     checkNotNull(subject);

@@ -17,8 +17,8 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
   /**
    * Initializes a new instance of the {@code PropertyBagMementoImporter} class.
    *
-   * @param schemaId The schema identifier of the memento to import; must not be {@code null}.
-   * @param handler The import handler for the schema; must not be {@code null}.
+   * @param schemaId The schema identifier of the memento to import.
+   * @param handler The import handler for the schema.
    */
   public PropertyBagMementoImporter(final String schemaId, final Handler<T> handler) {
     checkNotNull(schemaId);
@@ -42,9 +42,9 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
   /**
    * Imports the specified memento and returns the originator.
    *
-   * @param memento The memento to be imported; must not be {@code null}.
+   * @param memento The memento to be imported.
    *
-   * @return The memento originator; never {@code null}.
+   * @return The memento originator.
    *
    * @throws MementoImportException If an error occurs while importing the memento.
    */
@@ -77,10 +77,10 @@ public final class PropertyBagMementoImporter<T> implements MementoImporter<T> {
     /**
      * Imports the specified originator properties and creates a new originator instance.
      *
-     * @param propertiesByName The collection of originator properties; must not be {@code null}. The key
-     *        is the property name. The value is the property value.
+     * @param propertiesByName The collection of originator properties. The key is the property name. The value is the
+     *        property value.
      *
-     * @return A new originator instance created from the properties; never {@code null}.
+     * @return A new originator instance created from the properties.
      *
      * @throws MementoImportException If an error occurs while importing the originator properties.
      */

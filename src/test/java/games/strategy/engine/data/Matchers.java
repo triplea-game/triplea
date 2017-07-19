@@ -18,9 +18,9 @@ public final class Matchers {
    * Creates a matcher that matches when the examined {@link GameData} is logically equal to the specified
    * {@link GameData}.
    *
-   * @param expected The expected {@link GameData} value; must not be {@code null}.
+   * @param expected The expected {@link GameData} value.
    *
-   * @return A new matcher; never {@code null}.
+   * @return A new matcher.
    */
   public static Matcher<GameData> equalToGameData(final GameData expected) {
     checkNotNull(expected);

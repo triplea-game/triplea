@@ -9,9 +9,9 @@ public interface MementoExporter<T> {
   /**
    * Exports a memento from the specified originator.
    *
-   * @param originator The memento originator; must not be {@code null}.
+   * @param originator The memento originator.
    *
-   * @return The exported memento; never {@code null}.
+   * @return The exported memento.
    *
    * @throws MementoExportException If an error occurs while exporting the memento.
    */

@@ -18,7 +18,7 @@ public final class SerializableMementoExporter {
   private final ProxyRegistry proxyRegistry;
 
   /**
-   * @param proxyRegistry The proxy registry to use during exports; must not be {@code null}.
+   * @param proxyRegistry The proxy registry to use during exports.
    */
   public SerializableMementoExporter(final ProxyRegistry proxyRegistry) {
     checkNotNull(proxyRegistry);
@@ -29,9 +29,9 @@ public final class SerializableMementoExporter {
   /**
    * Exports the specified memento to the specified stream.
    *
-   * @param memento The memento to be exported; must not be {@code null}.
-   * @param os The stream to which the memento will be exported; must not be {@code null}. The caller is responsible for
-   *        closing this stream; it will not be closed when this method returns.
+   * @param memento The memento to be exported.
+   * @param os The stream to which the memento will be exported. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
    *
    * @throws SerializableMementoExportException If an error occurs while exporting the memento.
    */
