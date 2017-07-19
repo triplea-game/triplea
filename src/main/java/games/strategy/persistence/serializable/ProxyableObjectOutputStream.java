@@ -3,20 +3,21 @@ package games.strategy.persistence.serializable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 /**
- * A stream used for serializing objects.
+ * A stream used for serializing objects that may be proxyable.
  *
  * <p>
  * Before serializing an object, the stream will query the proxy registry for a proxy associated with the principal. If
  * a proxy is available, the proxy will be written to the stream instead of the principal.
  * </p>
  */
-public final class ObjectOutputStream extends java.io.ObjectOutputStream {
+public final class ProxyableObjectOutputStream extends ObjectOutputStream {
   private final ProxyRegistry proxyRegistry;
 
-  public ObjectOutputStream(final OutputStream out, final ProxyRegistry proxyRegistry) throws IOException {
+  public ProxyableObjectOutputStream(final OutputStream out, final ProxyRegistry proxyRegistry) throws IOException {
     super(out);
 
     checkNotNull(out);

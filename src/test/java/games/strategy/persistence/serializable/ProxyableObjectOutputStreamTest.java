@@ -14,13 +14,13 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public final class ObjectOutputStreamTest {
+public final class ProxyableObjectOutputStreamTest {
   @Test
   public void replaceObject_ShouldDelegateToProxyRegistryWhenObjectIsNotNull() throws Exception {
     final Object obj = Integer.valueOf(42);
     final Object expectedReplacedObj = "42";
     final ProxyRegistry proxyRegistry = givenProxyRegistryFor(obj, expectedReplacedObj);
-    try (final ObjectOutputStream oos = newObjectOutputStream(proxyRegistry)) {
+    try (final ProxyableObjectOutputStream oos = newProxyableObjectOutputStream(proxyRegistry)) {
       final Object actualReplacedObj = oos.replaceObject(obj);
 
       verify(proxyRegistry).getProxyFor(obj);
@@ -34,13 +34,14 @@ public final class ObjectOutputStreamTest {
     return proxyRegistry;
   }
 
-  private static ObjectOutputStream newObjectOutputStream(final ProxyRegistry proxyRegistry) throws Exception {
-    return new ObjectOutputStream(new ByteArrayOutputStream(), proxyRegistry);
+  private static ProxyableObjectOutputStream newProxyableObjectOutputStream(final ProxyRegistry proxyRegistry)
+      throws Exception {
+    return new ProxyableObjectOutputStream(new ByteArrayOutputStream(), proxyRegistry);
   }
 
   @Test
   public void replaceObject_ShouldReturnNullWhenObjectIsNull() throws Exception {
-    try (final ObjectOutputStream oos = newObjectOutputStream(ProxyRegistry.newInstance())) {
+    try (final ProxyableObjectOutputStream oos = newProxyableObjectOutputStream(ProxyRegistry.newInstance())) {
       final Object replacedObj = oos.replaceObject(null);
 
       assertThat(replacedObj, is(nullValue()));

@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
 
 import org.junit.Test;
@@ -72,7 +73,7 @@ public abstract class AbstractProxyTestCase<T> {
   }
 
   private void writeObject(final ByteArrayOutputStream baos, final T obj) throws Exception {
-    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyRegistry)) {
+    try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(baos, proxyRegistry)) {
       oos.writeObject(obj);
     }
   }

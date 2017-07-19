@@ -3,12 +3,13 @@ package games.strategy.persistence.memento.serializable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
-import games.strategy.persistence.serializable.ObjectOutputStream;
 import games.strategy.persistence.serializable.ProxyRegistry;
+import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.util.memento.Memento;
 
 /**
@@ -44,6 +45,6 @@ public final class SerializableMementoExporter {
   }
 
   private ObjectOutputStream newObjectOutputStream(final OutputStream os) throws IOException {
-    return new ObjectOutputStream(new CloseShieldOutputStream(os), proxyRegistry);
+    return new ProxyableObjectOutputStream(new CloseShieldOutputStream(os), proxyRegistry);
   }
 }

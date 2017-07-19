@@ -12,14 +12,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import org.junit.Test;
 
 /**
- * A fixture for testing the integration between the {@link ObjectInputStream} and {@link ObjectOutputStream} classes.
+ * A fixture for testing the integration between the {@link ObjectInputStream} and {@link ProxyableObjectOutputStream}
+ * classes.
  */
-public final class ObjectInputOutputStreamIntegrationTest {
+public final class ProxyableObjectInputOutputStreamIntegrationTest {
   private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
   private Object readObject() throws Exception {
@@ -30,7 +32,7 @@ public final class ObjectInputOutputStreamIntegrationTest {
   }
 
   private void writeObject(final Object obj, final ProxyRegistry proxyRegistry) throws Exception {
-    try (final ObjectOutputStream oos = new ObjectOutputStream(baos, proxyRegistry)) {
+    try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(baos, proxyRegistry)) {
       oos.writeObject(obj);
     }
   }
@@ -58,8 +60,7 @@ public final class ObjectInputOutputStreamIntegrationTest {
 
   @Test
   public void shouldBeAbleToRoundTripNonSerializableObjectWithProxyFactory() throws Exception {
-    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(
-        FakeNonSerializableClassProxy.FACTORY);
+    final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(FakeNonSerializableClassProxy.FACTORY);
     final FakeNonSerializableClass obj = new FakeNonSerializableClass(2112, "42");
 
     writeObject(obj, proxyRegistry);
