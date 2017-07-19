@@ -15,10 +15,10 @@ public final class PropertyBagMementoProxyAsProxyTest extends AbstractProxyTestC
   }
 
   @Override
-  protected PropertyBagMemento createPrincipal() {
-    return new PropertyBagMemento("schema-id", ImmutableMap.<String, Object>of(
+  protected Collection<PropertyBagMemento> createPrincipals() {
+    return Arrays.asList(new PropertyBagMemento("schema-id", ImmutableMap.<String, Object>of(
         "property1", 42L,
-        "property2", "2112"));
+        "property2", "2112")));
   }
 
   @Override

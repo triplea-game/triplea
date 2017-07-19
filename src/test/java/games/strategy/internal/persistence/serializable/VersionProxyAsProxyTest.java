@@ -13,8 +13,8 @@ public final class VersionProxyAsProxyTest extends AbstractProxyTestCase<Version
   }
 
   @Override
-  protected Version createPrincipal() {
-    return new Version(1, 2, 3, 4);
+  protected Collection<Version> createPrincipals() {
+    return Arrays.asList(new Version(1, 2, 3, 4));
   }
 
   @Override
