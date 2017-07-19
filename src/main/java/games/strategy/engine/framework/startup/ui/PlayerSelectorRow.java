@@ -90,7 +90,7 @@ class PlayerSelectorRow {
       alliances.addActionListener(e -> {
         final String currentType = playerTypes.getSelectedItem().toString();
         playerRows.stream()
-            .filter(row -> row.alliances.getText().equals(alliancesLabelText))
+            .filter(row -> row.alliances != null && row.alliances.getText().equals(alliancesLabelText))
             .forEach(row -> row.setPlayerType(currentType));
       });
     }
