@@ -18,7 +18,7 @@ import com.google.common.collect.Multimap;
 /**
  * Abstract common implementation of a DefaultHandler.
  */
-public abstract class TripleaHandler extends DefaultHandler {
+public abstract class TripleASaxHandler extends DefaultHandler {
 
   public static final String XML_NODE_NAME_ALLIANCE = "alliance";
   public static final String XML_NODE_NAME_ATTACHMENT = "attachment";
@@ -149,7 +149,7 @@ public abstract class TripleaHandler extends DefaultHandler {
     requiredParents.put(XML_NODE_NAME_STEP_PROPERTY, XML_NODE_NAME_STEP);
   }
 
-  public TripleaHandler(GameData gameData) {
+  public TripleASaxHandler(GameData gameData) {
     this.gameData = gameData;
   }
 
