@@ -117,7 +117,9 @@ public class DbUserController implements UserDao {
 
     if (primaryDao.login(userName, password)) {
       migrationCounter.primaryLoginSuccess();
-      secondaryDao.createUser(primaryDao.getUserByName(userName), password);
+      if(!secondaryDao.doesUserExist(userName)) {
+        secondaryDao.createUser(primaryDao.getUserByName(userName), password);
+      }
       return true;
     }
 
