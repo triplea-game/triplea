@@ -113,11 +113,11 @@ public class PropertyUtilTest {
   private static class UnderBarClass {
     
     @SuppressWarnings("unused")
-    private String bar = PropertyUtilTest.DEFAULT;
+    private String m_bar = PropertyUtilTest.DEFAULT;
     
     @SuppressWarnings("unused")
     public void setBar(final String newValue) {
-      bar = newValue;
+      m_bar = newValue;
     }
   }
 }

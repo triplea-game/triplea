@@ -32,7 +32,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class WW2V342Test {
+public class WW2V3Year42Test {
   private GameData gameData;
 
   @Before

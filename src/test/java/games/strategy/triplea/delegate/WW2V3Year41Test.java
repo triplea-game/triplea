@@ -95,7 +95,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-public class WW2V341Test {
+public class WW2V3Year41Test {
   private GameData gameData;
   private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
