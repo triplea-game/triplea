@@ -7,9 +7,6 @@ import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
-import games.strategy.internal.persistence.serializable.VersionProxy;
-import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.triplea.settings.ai.AiSettings;
 import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
 import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
@@ -59,15 +56,8 @@ public final class ClientContext {
   private final BattleCalcSettings battleCalcSettings = new BattleCalcSettings();
   private final BattleOptionsSettings battleOptionsSettings = new BattleOptionsSettings();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
-  private final ProxyRegistry serializableProxyRegistry = newSerializableProxyRegistry();
 
   private ClientContext() {}
-
-  private static ProxyRegistry newSerializableProxyRegistry() {
-    return ProxyRegistry.newInstance(
-        PropertyBagMementoProxy.FACTORY,
-        VersionProxy.FACTORY);
-  }
 
   public static GameEnginePropertyReader gameEnginePropertyReader() {
     return instance.gameEnginePropertyReader;
@@ -103,10 +93,6 @@ public final class ClientContext {
 
   public static Version engineVersion() {
     return instance.gameEnginePropertyReader.getEngineVersion();
-  }
-
-  public static ProxyRegistry serializableProxyRegistry() {
-    return instance.serializableProxyRegistry;
   }
 
   public static List<DownloadFileDescription> getMapDownloadList() {

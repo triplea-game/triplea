@@ -332,7 +332,7 @@ public class GameDataManager {
   private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
     try (final GZIPOutputStream gzipos = new GZIPOutputStream(os)) {
       final SerializableMementoExporter mementoExporter =
-          new SerializableMementoExporter(ClientContext.serializableProxyRegistry());
+          new SerializableMementoExporter(ProxyRegistries.GAME_DATA_MEMENTO);
       mementoExporter.exportMemento(memento, gzipos);
     } catch (final SerializableMementoExportException e) {
       throw new IOException(e);
