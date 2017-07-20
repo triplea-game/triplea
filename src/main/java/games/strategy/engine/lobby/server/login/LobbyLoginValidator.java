@@ -178,9 +178,6 @@ public class LobbyLoginValidator implements ILoginValidator {
       });
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-      if (hashedPassword.isBcrypted()) {
-        return "You need to login with a newer version of TripleA";
-      }
       return errorMessage;
     } else {
       return null;
