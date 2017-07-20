@@ -6,14 +6,12 @@ import java.io.Serializable;
 
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.Version;
+import net.jcip.annotations.Immutable;
 
 /**
  * A serializable proxy for the {@link Version} class.
- *
- * <p>
- * Instances of this class are immutable.
- * </p>
  */
+@Immutable
 public final class VersionProxy implements Serializable {
   private static final long serialVersionUID = 6092507250760560736L;
 

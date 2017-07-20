@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import net.jcip.annotations.Immutable;
+
 /**
  * A fake non-serializable class used for testing the object serialization streams.
  *
@@ -11,11 +13,8 @@ import javax.annotation.Nullable;
  * This class is non-serializable because a) it does not implement {@code Serializable}, b) it is immutable, and c) it
  * does not define a default constructor.
  * </p>
- *
- * <p>
- * Instances of this class are immutable.
- * </p>
  */
+@Immutable
 public final class FakeNonSerializableClass {
   private final int intField;
   private final @Nullable String stringField;

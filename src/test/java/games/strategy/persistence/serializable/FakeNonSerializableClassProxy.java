@@ -4,13 +4,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 
+import net.jcip.annotations.Immutable;
+
 /**
  * A serializable proxy for the {@code FakeNonSerializableClass} class.
- *
- * <p>
- * Instances of this class are immutable.
- * </p>
  */
+@Immutable
 public final class FakeNonSerializableClassProxy implements Serializable {
   private static final long serialVersionUID = 996961268400195642L;
 

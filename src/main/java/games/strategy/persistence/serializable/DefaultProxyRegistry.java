@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class DefaultProxyRegistry implements ProxyRegistry {
   private static final ProxyFactory IDENTITY_PROXY_FACTORY =
       ProxyFactory.newInstance(Object.class, Function.identity());
