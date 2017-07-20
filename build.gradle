@@ -81,6 +81,7 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'postgresql:postgresql:9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile 'com.google.guava:guava:19.0'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
     compile 'com.sun.mail:mailapi:1.5.5'
