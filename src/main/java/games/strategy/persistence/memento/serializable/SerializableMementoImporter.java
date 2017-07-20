@@ -28,7 +28,6 @@ public final class SerializableMementoImporter {
    *
    * @throws SerializableMementoImportException If an error occurs while importing the memento.
    */
-  @SuppressWarnings("static-method")
   public Memento importMemento(final InputStream is) throws SerializableMementoImportException {
     checkNotNull(is);
 
