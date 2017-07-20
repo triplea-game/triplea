@@ -140,7 +140,7 @@ public class Util {
   public static String sha512(String input) {
     try {
       return BaseEncoding.base16()
-          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)));
+          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))).toLowerCase();
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException(SHA_512 + " is not supported!", e);
     }

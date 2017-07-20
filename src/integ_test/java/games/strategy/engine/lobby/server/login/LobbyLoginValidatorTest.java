@@ -33,8 +33,7 @@ public class LobbyLoginValidatorTest {
     final Map<String, String> properties = new HashMap<>();
     properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123", "foo"));
-    properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
-    properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+    fillDummyData(properties);
     assertNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties,
         name, mac, address));
     // try to create a duplicate user, should not work
@@ -48,21 +47,25 @@ public class LobbyLoginValidatorTest {
     final SocketAddress address = new InetSocketAddress(5000);
     final String name = Util.createUniqueTimeStamp();
     final String mac = MacFinder.getHashedMacAddress();
-    final String password = Util.sha512("password");
+    final String password = "password";
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    final String publicKey = challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY);
     properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator.encryptPassword(publicKey, password));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
+        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    fillDummyData(properties);
+    assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
+    challengeProperties.putAll(validator.getChallengeProperties(name, address));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
+        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), Util.sha512("wrong")));
+    // try to create a duplicate user, should not work
+    assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
+    assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
+  }
+
+  private void fillDummyData(final Map<String, String> properties) {
     properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
-        RsaAuthenticator.encryptPassword(publicKey, Util.sha512("wrong")));
-    // try to create a duplicate user, should not work
-    assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
-        properties, name, mac, address));
-    assertTrue(BCrypt.checkpw(password, new DbUserController().getPassword(name).value));
   }
 
   @Test
@@ -151,22 +154,21 @@ public class LobbyLoginValidatorTest {
     final String mac = MacFinder.getHashedMacAddress();
     final String email = "none@none.none";
     final String password = "foo";
-    final String hashedPassword = Util.sha512(password);
     new DbUserController().createUser(
         new DBUser(
             new DBUser.UserName(name),
             new DBUser.UserEmail(email)),
-        hashedPassword);
+        Util.sha512(password));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
-        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), hashedPassword));
+        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
 
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a bad password
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
-        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), Util.sha512("wrong")));
+        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), "wrong"));
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a non existent user
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties,
@@ -192,7 +194,7 @@ public class LobbyLoginValidatorTest {
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
-        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), Util.sha512(password)));
+        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
     assertEquals(challengeProperties.get(LobbyLoginValidator.SALT_KEY),
         MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));

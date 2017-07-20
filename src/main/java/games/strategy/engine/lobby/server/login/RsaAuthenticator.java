@@ -115,10 +115,10 @@ public class RsaAuthenticator {
 
 
   @VisibleForTesting
-  static String encryptPassword(final String base64, final String password) {
+  static String encryptPassword(final String publicKeyString, final String password) {
     try {
       final PublicKey publicKey =
-          KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
+          KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.ENCRYPT_MODE, publicKey);
       return Base64.getEncoder().encodeToString(cipher.doFinal(Util.sha512(password).getBytes(StandardCharsets.UTF_8)));
