@@ -32,14 +32,24 @@ public class RsaAuthenticator {
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
   static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
 
+  /**
+   * Returns true if the specified map contains the required values.
+   */
   static boolean canProcessResponse(final Map<String, String> response) {
     return response.get(ENCRYPTED_PASSWORD_KEY) != null;
   }
-
+  
+  /**
+   * Returns true if the specified map contains the required values.
+   */
   public static boolean canProcessChallenge(final Map<String, String> challenge) {
     return challenge.get(RSA_PUBLIC_KEY) != null;
   }
-
+  
+  /**
+   * Adds public key of a generated key-pair to the challenge map
+   * and stores the private key in a map.
+   */
   static void appendPublicKey(final Map<String, String> challenge) {
     challenge.put(RSA_PUBLIC_KEY, generateKeypair());
   }
@@ -73,7 +83,10 @@ public class RsaAuthenticator {
     }
   }
 
-  public static String authenticate(final Map<String, String> challenge, final Map<String, String> response,
+  /**
+   * Attempts to decrypt the given password using the challenge and response parameters.
+   */
+  public static String decryptPassword(final Map<String, String> challenge, final Map<String, String> response,
       final Function<String, String> successFullDecryptionAction) {
     return decryptPassword(response.get(RSA_PUBLIC_KEY), challenge.get(RSA_PUBLIC_KEY), successFullDecryptionAction);
   }
@@ -92,6 +105,10 @@ public class RsaAuthenticator {
     }
   }
 
+  /**
+   * This method adds the encrypted password (using the specified public key and password)
+   * to the specified response map.
+   */
   public static void appendEncryptedPassword(
       final Map<String, String> response,
       final Map<String, String> challenge,
