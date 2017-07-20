@@ -6,13 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.jcip.annotations.Immutable;
+
 /**
  * Implementation of {@link Memento} that represents the originator state as a collection of name-value pairs.
- *
- * <p>
- * Instances of this class are immutable.
- * </p>
  */
+@Immutable
 public final class PropertyBagMemento implements Memento {
   private final Map<String, Object> propertiesByName;
 

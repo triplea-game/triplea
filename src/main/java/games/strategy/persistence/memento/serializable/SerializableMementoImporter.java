@@ -9,14 +9,12 @@ import java.io.ObjectInputStream;
 import org.apache.commons.io.input.CloseShieldInputStream;
 
 import games.strategy.util.memento.Memento;
+import net.jcip.annotations.Immutable;
 
 /**
  * A memento importer for the Java object serialization format.
- *
- * <p>
- * Instances of this class are immutable.
- * </p>
  */
+@Immutable
 public final class SerializableMementoImporter {
   /**
    * Imports a memento from the specified stream.
