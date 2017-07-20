@@ -2,9 +2,9 @@ package games.strategy.internal.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.Serializable;
 import java.util.Map;
 
+import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.memento.PropertyBagMemento;
 import net.jcip.annotations.Immutable;
@@ -13,7 +13,7 @@ import net.jcip.annotations.Immutable;
  * A serializable proxy for the {@link PropertyBagMemento} class.
  */
 @Immutable
-public final class PropertyBagMementoProxy implements Serializable {
+public final class PropertyBagMementoProxy implements Proxy {
   private static final long serialVersionUID = 7813364982800353383L;
 
   public static final ProxyFactory FACTORY =
@@ -29,7 +29,8 @@ public final class PropertyBagMementoProxy implements Serializable {
     schemaId = memento.getSchemaId();
   }
 
-  private Object readResolve() {
+  @Override
+  public Object readResolve() {
     return new PropertyBagMemento(schemaId, propertiesByName);
   }
 }

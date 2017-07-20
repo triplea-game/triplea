@@ -2,8 +2,7 @@ package games.strategy.internal.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.Serializable;
-
+import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.Version;
 import net.jcip.annotations.Immutable;
@@ -12,7 +11,7 @@ import net.jcip.annotations.Immutable;
  * A serializable proxy for the {@link Version} class.
  */
 @Immutable
-public final class VersionProxy implements Serializable {
+public final class VersionProxy implements Proxy {
   private static final long serialVersionUID = 6092507250760560736L;
 
   public static final ProxyFactory FACTORY = ProxyFactory.newInstance(Version.class, VersionProxy::new);
@@ -31,7 +30,8 @@ public final class VersionProxy implements Serializable {
     micro = version.getMicro();
   }
 
-  private Object readResolve() {
+  @Override
+  public Object readResolve() {
     return new Version(major, minor, point, micro);
   }
 }
