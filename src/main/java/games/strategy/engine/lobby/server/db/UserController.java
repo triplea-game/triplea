@@ -219,11 +219,11 @@ public class UserController implements UserDao {
     }
   }
 
-  private String mask(final HashedPassword hashedPassword) {
+  private static String mask(final HashedPassword hashedPassword) {
     return mask(hashedPassword.value);
   }
 
-  private String mask(final String hashedPassword) {
+  private static String mask(final String hashedPassword) {
     return hashedPassword.replaceAll(".", "*");
   }
 }
