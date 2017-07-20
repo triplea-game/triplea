@@ -389,7 +389,7 @@ public class LobbyMenu extends JMenuBar {
     if (rVal == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-    //TODO: Replace MD5Crypt.crypt with a decryption algorithm
+    //TODO: Replace MD5Crypt.crypt with an encryption algorithm
     final String error = manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword()));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);

@@ -36,7 +36,7 @@ public class UserManager implements IUserManager {
     }
     final HashedPassword password = new HashedPassword(hashedPassword);
     if (!password.isValidSyntax()) {
-      //TODO: decrypt hashedPassword and pass it to updateUser
+      //TODO: encrypt hashedPassword and pass it to updateUser
       //new DbUserController().updateUser(user, decryptedPassword);
       //return null;
       return "Password is not hashed correctly";
