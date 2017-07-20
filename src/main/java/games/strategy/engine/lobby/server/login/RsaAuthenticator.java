@@ -34,7 +34,7 @@ import games.strategy.util.Util;
  * for passwords.
  */
 public class RsaAuthenticator {
-  private static final Map<String, PrivateKey> rsaKeyMap = new TimeoutKeyMap();
+  private static final TimeoutKeyMap rsaKeyMap = new TimeoutKeyMap();
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
@@ -118,7 +118,8 @@ public class RsaAuthenticator {
   static String encryptPassword(final String publicKeyString, final String password) {
     try {
       final PublicKey publicKey =
-          KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
+          KeyFactory.getInstance(RSA)
+              .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.ENCRYPT_MODE, publicKey);
       return Base64.getEncoder().encodeToString(cipher.doFinal(Util.sha512(password).getBytes(StandardCharsets.UTF_8)));
@@ -137,18 +138,28 @@ public class RsaAuthenticator {
       final String password) {
     response.put(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
   }
+  
+  @VisibleForTesting
+  static void setTimeout(final long amount, final TimeUnit timeUnit) {
+    rsaKeyMap.setTimeout(amount, timeUnit);
+  }
 
   private static class TimeoutKeyMap extends HashMap<String, PrivateKey> {
     private static final long serialVersionUID = 3788873489149542052L;
-    private static final long TIMEOUT_MINUTES = 10L;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<String, ScheduledFuture<?>> scheduledTaks = new HashMap<>();
+    private long amount;
+    private TimeUnit timeUnit;
+
+    private TimeoutKeyMap() {
+      setTimeout(10, TimeUnit.MINUTES);
+    }
 
     @Override
     public PrivateKey put(final String string, final PrivateKey key) {
       scheduledTaks.put(string, scheduler.schedule(() -> {
         super.remove(string);
-      }, TIMEOUT_MINUTES, TimeUnit.MINUTES));
+      }, amount, timeUnit));
       return super.put(string, key);
     }
 
@@ -162,6 +173,11 @@ public class RsaAuthenticator {
         scheduledTaks.remove(object);
       }
       return super.remove(object);
+    }
+
+    private void setTimeout(final long amount, final TimeUnit timeUnit) {
+      this.amount = amount;
+      this.timeUnit = timeUnit;
     }
   }
 }

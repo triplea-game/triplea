@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -20,6 +21,7 @@ import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
 public class LobbyLoginValidatorTest {
@@ -199,5 +201,58 @@ public class LobbyLoginValidatorTest {
         MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
+    properties.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
+    assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
+    assertEquals(new HashedPassword(hashedPassword), new DbUserController().getLegacyPassword(name));
+  }
+
+  @Test
+  public void testTimeout() {
+    final LobbyLoginValidator validator = new LobbyLoginValidator();
+    final SocketAddress address = new InetSocketAddress(5000);
+    final String name = Util.createUniqueTimeStamp();
+    final String mac = MacFinder.getHashedMacAddress();
+    final String email = "none@none.none";
+    final String password = "foo";
+    new DbUserController().createUser(
+        new DBUser(
+            new DBUser.UserName(name),
+            new DBUser.UserEmail(email)),
+        Util.sha512(password));
+    final Map<String, String> properties = new HashMap<>();
+    RsaAuthenticator.setTimeout(1, TimeUnit.SECONDS);
+    final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
+        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+    //Wait 1 second for timeout
+    ThreadUtil.sleep(1000);
+    final String errorMessage =
+        new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address);
+    assertNotNull(errorMessage);
+    assertTrue(errorMessage.toLowerCase().contains("timeout"));
+  }
+
+  @Test
+  public void testChallengeExpires() {
+    final LobbyLoginValidator validator = new LobbyLoginValidator();
+    final SocketAddress address = new InetSocketAddress(5000);
+    final String name = Util.createUniqueTimeStamp();
+    final String mac = MacFinder.getHashedMacAddress();
+    final String email = "none@none.none";
+    final String password = "foo";
+    new DbUserController().createUser(
+        new DBUser(
+            new DBUser.UserName(name),
+            new DBUser.UserEmail(email)),
+        Util.sha512(password));
+    final Map<String, String> properties = new HashMap<>();
+    final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
+        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+
+    assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
+    assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
   }
 }
