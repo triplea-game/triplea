@@ -29,10 +29,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.persistence.memento.serializable.SerializableMementoExportException;
-import games.strategy.persistence.memento.serializable.SerializableMementoExporter;
-import games.strategy.persistence.memento.serializable.SerializableMementoImportException;
-import games.strategy.persistence.memento.serializable.SerializableMementoImporter;
+import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
@@ -287,10 +284,10 @@ public class GameDataManager {
   }
 
   private static Memento loadMemento(final InputStream is) throws IOException {
-    try (final GZIPInputStream gzipis = new GZIPInputStream(is)) {
-      final SerializableMementoImporter mementoImporter = new SerializableMementoImporter();
-      return mementoImporter.importMemento(gzipis);
-    } catch (final SerializableMementoImportException e) {
+    try (final GZIPInputStream gzipis = new GZIPInputStream(is);
+        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+      return (Memento) ois.readObject();
+    } catch (final ClassNotFoundException e) {
       throw new IOException(e);
     }
   }
@@ -330,12 +327,9 @@ public class GameDataManager {
   }
 
   private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
-    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os)) {
-      final SerializableMementoExporter mementoExporter =
-          new SerializableMementoExporter(ProxyRegistries.GAME_DATA_MEMENTO);
-      mementoExporter.exportMemento(memento, gzipos);
-    } catch (final SerializableMementoExportException e) {
-      throw new IOException(e);
+    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
+        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, ProxyRegistries.GAME_DATA_MEMENTO)) {
+      oos.writeObject(memento);
     }
   }
 }
