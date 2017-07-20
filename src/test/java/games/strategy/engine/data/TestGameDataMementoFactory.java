@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -20,11 +22,11 @@ public final class TestGameDataMementoFactory {
    * Creates a new game data memento that is valid in all respects but includes (or overrides) the specified property.
    *
    * @param name The property name.
-   * @param value The property value; may be {@code null}.
+   * @param value The property value.
    *
    * @return A new game data memento.
    */
-  public static Memento newMementoWithProperty(final String name, final Object value) {
+  public static Memento newMementoWithProperty(final String name, final @Nullable Object value) {
     checkNotNull(name);
 
     final Map<String, Object> propertiesByName = newValidMementoPropertiesByName();

@@ -2,6 +2,8 @@ package games.strategy.persistence.serializable;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 /**
  * A fake non-serializable class used for testing the object serialization streams.
  *
@@ -16,16 +18,9 @@ import java.util.Objects;
  */
 public final class FakeNonSerializableClass {
   private final int intField;
+  private final @Nullable String stringField;
 
-  private final String stringField;
-
-  /**
-   * Initializes a new instance of the {@code FakeNonSerializableClass} class.
-   *
-   * @param intField The integer field.
-   * @param stringField The string field; may be {@code null}.
-   */
-  public FakeNonSerializableClass(final int intField, final String stringField) {
+  public FakeNonSerializableClass(final int intField, final @Nullable String stringField) {
     this.intField = intField;
     this.stringField = stringField;
   }
