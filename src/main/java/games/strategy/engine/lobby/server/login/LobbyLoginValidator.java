@@ -2,27 +2,13 @@ package games.strategy.engine.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.sql.Timestamp;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -45,19 +31,14 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
-  public static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
-  public static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
-  public static final String RSA = "RSA";
-  public static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
   private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
   private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
   private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
   private static final String INVALID_MAC = "Invalid mac address.";
   private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
-  private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
@@ -67,16 +48,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
-    try {
-      final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
-      keyGen.initialize(4096);
-      final KeyPair keyPair = keyGen.generateKeyPair();
-      final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-      rVal.put(RSA_PUBLIC_KEY, publicKey);
-      rsaKeyMap.put(publicKey, keyPair.getPrivate());
-    } catch (NoSuchAlgorithmException e) {
-      throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
-    }
+    RsaAuthenticator.appendPublicKey(rVal);
     return rVal;
   }
 
@@ -192,9 +164,9 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (hashedPassword == null) {
       return errorMessage;
     }
-    final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
-    if (base64 != null) {
-      return decryptPassword(base64, propertiesSentToClient.get(RSA_PUBLIC_KEY), pass -> {
+    if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
+
+      return RsaAuthenticator.authenticate(propertiesSentToClient, propertiesReadFromClient, pass -> {
         if (hashedPassword.isBcrypted()) {
           return userDao.login(clientName, pass) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
@@ -253,14 +225,12 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (new DbUserController().doesUserExist(user.getName())) {
       return "That user name has already been taken";
     }
-    final String base64 = propertiesReadFromClient.get(ENCRYPTED_PASSWORD_KEY);
-    if (base64 != null) {
-      return decryptPassword(base64, propertiesSentToClient.get(RSA_PUBLIC_KEY), pass -> {
+    if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
+      return RsaAuthenticator.authenticate(propertiesSentToClient, propertiesReadFromClient, pass -> {
         new DbUserController().createUser(user, pass);
         return null;
       });
     }
-
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (!password.isValidSyntax()) {
       return "Password is not hashed correctly";
@@ -271,22 +241,6 @@ public class LobbyLoginValidator implements ILoginValidator {
       return null;
     } catch (final Exception e) {
       return e.getMessage();
-    }
-  }
-
-  private static String decryptPassword(final String base64, final String publicKey,
-      final Function<String, String> function) {
-    Preconditions.checkNotNull(base64);
-    try {
-      final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
-      cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-      return function.apply(new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-      throw new IllegalStateException(e);
-    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-      return e.getMessage();
-    } finally {
-      rsaKeyMap.remove(publicKey);
     }
   }
 }

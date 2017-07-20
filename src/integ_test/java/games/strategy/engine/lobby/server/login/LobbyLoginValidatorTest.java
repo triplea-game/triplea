@@ -7,16 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.crypto.Cipher;
 
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -59,13 +51,14 @@ public class LobbyLoginValidatorTest {
     final String password = Util.sha512("password");
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    final String publicKey = challengeProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY);
+    final String publicKey = challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY);
     properties.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, password));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator.encryptPassword(publicKey, password));
     properties.put(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
-    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY, encryptPassword(publicKey, Util.sha512("wrong")));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
+        RsaAuthenticator.encryptPassword(publicKey, Util.sha512("wrong")));
     // try to create a duplicate user, should not work
     assertNotNull(new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address),
         properties, name, mac, address));
@@ -166,14 +159,14 @@ public class LobbyLoginValidatorTest {
         hashedPassword);
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY,
-        encryptPassword(challengeProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY), hashedPassword));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
+        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), hashedPassword));
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
 
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a bad password
-    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY,
-        encryptPassword(challengeProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY), Util.sha512("wrong")));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
+        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), Util.sha512("wrong")));
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a non existent user
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties,
@@ -198,23 +191,11 @@ public class LobbyLoginValidatorTest {
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    properties.put(LobbyLoginValidator.ENCRYPTED_PASSWORD_KEY,
-        encryptPassword(challengeProperties.get(LobbyLoginValidator.RSA_PUBLIC_KEY), Util.sha512(password)));
+    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
+        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), Util.sha512(password)));
     assertEquals(challengeProperties.get(LobbyLoginValidator.SALT_KEY),
         MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
-  }
-
-  private String encryptPassword(final String base64, final String password) {
-    try {
-      final PublicKey publicKey = KeyFactory.getInstance(LobbyLoginValidator.RSA)
-          .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
-      final Cipher cipher = Cipher.getInstance(LobbyLoginValidator.RSA_ECB_OAEPP);
-      cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-      return Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes(StandardCharsets.UTF_8)));
-    } catch (GeneralSecurityException e) {
-      throw new IllegalStateException(e);
-    }
   }
 }
