@@ -2,9 +2,6 @@ package games.strategy.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 import org.junit.Test;
 
 public class UtilTest {
@@ -27,10 +24,6 @@ public class UtilTest {
         "6bed2b94f7204211ba1ce66869096a59898688088d482e12c95a9778d2adf2ab"
             + "aee05890f97f73e4274742c69adf51406c0535452c9ec2e2adbf98048526b30c",
         Util.sha512("WWII"));
-    for (int i = 0; i < 500; i++) {
-      final String input = new BigInteger(130, new SecureRandom()).toString(32);
-      assertEquals(Util.sha512(input), Util.sha512(input));
-    }
   }
 
 }
