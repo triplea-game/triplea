@@ -25,5 +25,4 @@ public class UtilTest {
             + "aee05890f97f73e4274742c69adf51406c0535452c9ec2e2adbf98048526b30c",
         Util.sha512("WWII"));
   }
-
 }
