@@ -29,6 +29,10 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.util.Util;
 
+/**
+ * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption
+ * for passwords.
+ */
 public class RsaAuthenticator {
   private static final Map<String, PrivateKey> rsaKeyMap = new TimeoutKeyMap();
   private static final String RSA = "RSA";
@@ -136,6 +140,7 @@ public class RsaAuthenticator {
 
   private static class TimeoutKeyMap extends HashMap<String, PrivateKey> {
     private static final long serialVersionUID = 3788873489149542052L;
+    private static final long TIMEOUT_MINUTES = 10L;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<String, ScheduledFuture<?>> scheduledTaks = new HashMap<>();
 
@@ -143,7 +148,7 @@ public class RsaAuthenticator {
     public PrivateKey put(final String string, final PrivateKey key) {
       scheduledTaks.put(string, scheduler.schedule(() -> {
         super.remove(string);
-      }, 10, TimeUnit.MINUTES));
+      }, TIMEOUT_MINUTES, TimeUnit.MINUTES));
       return super.put(string, key);
     }
 
