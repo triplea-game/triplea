@@ -203,7 +203,7 @@ public class LobbyLoginValidatorTest {
     assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
     properties.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
-    assertEquals(new HashedPassword(hashedPassword), new DbUserController().getLegacyPassword(name));
+    assertEquals(hashedPassword, new DbUserController().getLegacyPassword(name).value);
   }
 
   @Test
