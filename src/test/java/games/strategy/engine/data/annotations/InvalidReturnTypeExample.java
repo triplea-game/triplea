@@ -16,7 +16,7 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
   }
 
   @SuppressWarnings("unused")
-  private String m_attribute;
+  private String attribute;
 
   public int getAttribute() { // is not returning our variable, so should cause test to fail
     return 1;
@@ -24,7 +24,7 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttribute(final String attribute) {
-    m_attribute = attribute;
+    this.attribute = attribute;
   }
 
   public void resetAttribute() {}

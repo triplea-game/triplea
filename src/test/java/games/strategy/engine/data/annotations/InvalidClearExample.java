@@ -17,7 +17,7 @@ public class InvalidClearExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  private final IntegerMap<UnitType> givesMovement = new IntegerMap<>();
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
@@ -25,11 +25,11 @@ public class InvalidClearExample extends DefaultAttachment {
   public void resetGivesMovement() {}
 
   public void clearMovement() { // badly named, should cause test to fail
-    m_givesMovement.clear();
+    givesMovement.clear();
   }
 
   public IntegerMap<UnitType> getGivesMovement() {
-    return m_givesMovement;
+    return givesMovement;
   }
 
   @Override

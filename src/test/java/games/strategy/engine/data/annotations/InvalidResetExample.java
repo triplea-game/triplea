@@ -17,21 +17,21 @@ public class InvalidResetExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
 
   public void resetGiveMovement() { // badly named, should cause test to fail
-    m_givesMovement = new IntegerMap<>();
+    givesMovement = new IntegerMap<>();
   }
 
   public void clearGivesMovement() {
-    m_givesMovement.clear();
+    givesMovement.clear();
   }
 
   public IntegerMap<UnitType> getGivesMovement() {
-    return m_givesMovement;
+    return givesMovement;
   }
 
   @Override

@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 
+/**
+ * Enum providing all the constants to be used by other tests.
+ */
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
   IRON_BLITZ("iron_blitz_test.xml"),

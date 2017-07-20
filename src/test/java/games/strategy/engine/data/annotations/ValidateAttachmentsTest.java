@@ -292,7 +292,7 @@ public class ValidateAttachmentsTest {
       // validate that there is a field and a getter
       Field field = null;
       try {
-        field = PropertyUtil.getFieldIncludingFromSuperClasses(clazz, "m_" + propertyName, false);
+        field = PropertyUtil.getFieldIncludingFromSuperClasses(clazz, propertyName, false);
         // adders must have a field of type IntegerMap, or be a collection of sorts
         if (annotation.adds()) {
           if (!(Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())

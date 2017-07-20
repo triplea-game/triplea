@@ -8,6 +8,9 @@ import com.google.common.io.Files;
 
 import games.strategy.ui.SwingAction;
 
+/**
+ * A Utility class for test classes.
+ */
 public class TestUtil {
 
   /** Create and returns a simple delete on exit temp file with contents equal to the String parameter. */

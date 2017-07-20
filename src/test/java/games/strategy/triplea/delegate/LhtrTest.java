@@ -32,7 +32,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class LHTRTest {
+public class LhtrTest {
   private GameData gameData;
 
   @Before
