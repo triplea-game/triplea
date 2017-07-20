@@ -13,6 +13,10 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import javax.crypto.BadPaddingException;
@@ -26,7 +30,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.util.Util;
 
 public class RsaAuthenticator {
-  private static final Map<String, PrivateKey> rsaKeyMap = new HashMap<>();
+  private static final Map<String, PrivateKey> rsaKeyMap = new TimeoutKeyMap();
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
@@ -38,42 +42,55 @@ public class RsaAuthenticator {
   static boolean canProcessResponse(final Map<String, String> response) {
     return response.get(ENCRYPTED_PASSWORD_KEY) != null;
   }
-  
+
   /**
    * Returns true if the specified map contains the required values.
    */
   public static boolean canProcessChallenge(final Map<String, String> challenge) {
     return challenge.get(RSA_PUBLIC_KEY) != null;
   }
-  
+
   /**
    * Adds public key of a generated key-pair to the challenge map
    * and stores the private key in a map.
    */
   static void appendPublicKey(final Map<String, String> challenge) {
-    challenge.put(RSA_PUBLIC_KEY, generateKeypair());
+    challenge.put(RSA_PUBLIC_KEY, storeKeypair());
   }
 
-  private static String generateKeypair() {
+  private static String storeKeypair() {
+    KeyPair keyPair;
+    String publicKey;
+    do {
+      keyPair = generateKeypair();
+      publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+    } while (rsaKeyMap.containsKey(publicKey));
+    rsaKeyMap.put(publicKey, keyPair.getPrivate());
+    return publicKey;
+  }
+
+  private static KeyPair generateKeypair() {
     try {
       final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
       keyGen.initialize(4096);
-      final KeyPair keyPair = keyGen.generateKeyPair();
-      final String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-      rsaKeyMap.put(publicKey, keyPair.getPrivate());
-      return publicKey;
+      return keyGen.generateKeyPair();
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException(RSA + " is an invalid algorithm!", e);
     }
   }
 
-  private static String decryptPassword(final String base64, final String publicKey,
+  private static String decryptPassword(final String encryptedPassword, final String publicKey,
       final Function<String, String> function) {
-    Preconditions.checkNotNull(base64);
+    Preconditions.checkNotNull(encryptedPassword);
+    final PrivateKey privateKey = rsaKeyMap.get(publicKey);
+    if (privateKey == null) {
+      return "Login timeout, try again!";
+    }
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
-      cipher.init(Cipher.DECRYPT_MODE, rsaKeyMap.get(publicKey));
-      return function.apply(new String(cipher.doFinal(Base64.getDecoder().decode(base64)), StandardCharsets.UTF_8));
+      cipher.init(Cipher.DECRYPT_MODE, privateKey);
+      return function
+          .apply(new String(cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)), StandardCharsets.UTF_8));
     } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
       throw new IllegalStateException(e);
     } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
@@ -88,7 +105,8 @@ public class RsaAuthenticator {
    */
   public static String decryptPassword(final Map<String, String> challenge, final Map<String, String> response,
       final Function<String, String> successFullDecryptionAction) {
-    return decryptPassword(response.get(RSA_PUBLIC_KEY), challenge.get(RSA_PUBLIC_KEY), successFullDecryptionAction);
+    return decryptPassword(response.get(ENCRYPTED_PASSWORD_KEY), challenge.get(RSA_PUBLIC_KEY),
+        successFullDecryptionAction);
   }
 
 
@@ -114,5 +132,31 @@ public class RsaAuthenticator {
       final Map<String, String> challenge,
       final String password) {
     response.put(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
+  }
+
+  private static class TimeoutKeyMap extends HashMap<String, PrivateKey> {
+    private static final long serialVersionUID = 3788873489149542052L;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final Map<String, ScheduledFuture<?>> scheduledTaks = new HashMap<>();
+
+    @Override
+    public PrivateKey put(final String string, final PrivateKey key) {
+      scheduledTaks.put(string, scheduler.schedule(() -> {
+        super.remove(string);
+      }, 10, TimeUnit.MINUTES));
+      return super.put(string, key);
+    }
+
+    @Override
+    public PrivateKey remove(final Object object) {
+      if (object instanceof String) {
+        final ScheduledFuture<?> future = scheduledTaks.get((String) object);
+        if (future != null) {
+          future.cancel(false);
+        }
+        scheduledTaks.remove(object);
+      }
+      return super.remove(object);
+    }
   }
 }

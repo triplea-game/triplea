@@ -132,7 +132,7 @@ public class DbUserController implements UserDao {
   }
 
   @Override
-  public boolean login(String userName, String password) {
+  public boolean login(final String userName, final String password) {
     if (secondaryDao.login(userName, password)) {
       migrationCounter.secondaryLoginSuccess();
       return true;

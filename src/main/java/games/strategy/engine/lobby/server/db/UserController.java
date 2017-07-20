@@ -113,7 +113,7 @@ public class UserController implements UserDao {
     createUserWithExactString(user, BCrypt.hashpw(password, BCrypt.gensalt()));
   }
 
-  private void createUserWithExactString(DBUser user, final String hashedPassword) {
+  private void createUserWithExactString(final DBUser user, final String hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get()) {
@@ -168,7 +168,7 @@ public class UserController implements UserDao {
   }
 
   @Override
-  public boolean login(String userName, String password) {
+  public boolean login(final String userName, final String password) {
     HashedPassword hashedPassword = getPassword(userName);
     if (hashedPassword == null) {
       return false;
@@ -219,7 +219,7 @@ public class UserController implements UserDao {
     }
   }
 
-  private String mask(HashedPassword hashedPassword) {
+  private String mask(final HashedPassword hashedPassword) {
     return mask(hashedPassword.value);
   }
 
