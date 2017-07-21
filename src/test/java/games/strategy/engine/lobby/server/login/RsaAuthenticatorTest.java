@@ -41,7 +41,7 @@ public class RsaAuthenticatorTest {
     RsaAuthenticator.invalidateAll();
     final Map<String, String> response = new HashMap<>();
     RsaAuthenticator.appendEncryptedPassword(response, challenge, "something");
-    final String errorMessage = RsaAuthenticator.decryptPassword(challenge, response, pass -> {
+    final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
       fail("The password should never be successfully encrypted");
       return null;
     });
@@ -57,7 +57,7 @@ public class RsaAuthenticatorTest {
     final String password = "something";
     RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
 
-    assertNull(RsaAuthenticator.decryptPassword(challenge, response, pass -> {
+    assertNull(RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
       assertEquals(Util.sha512(password), pass);
       return null;
     }));

@@ -89,13 +89,10 @@ public class RsaAuthenticator {
     }
   }
 
-  private static String decryptPassword(final String encryptedPassword, final String publicKey,
+  private static String decryptPassword(final String encryptedPassword, final PrivateKey privateKey,
       final Function<String, String> function) {
     Preconditions.checkNotNull(encryptedPassword);
-    final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
-    if (privateKey == null) {
-      return "Login timeout, try again!";
-    }
+    Preconditions.checkNotNull(privateKey);
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -105,18 +102,22 @@ public class RsaAuthenticator {
       throw new IllegalStateException(e);
     } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
       return e.getMessage();
-    } finally {
-      rsaKeyMap.invalidate(publicKey);
     }
   }
 
   /**
    * Attempts to decrypt the given password using the challenge and response parameters.
    */
-  public static String decryptPassword(final Map<String, String> challenge, final Map<String, String> response,
+  public static String decryptPasswordForAction(final Map<String, String> challenge, final Map<String, String> response,
       final Function<String, String> successFullDecryptionAction) {
-    return decryptPassword(response.get(ENCRYPTED_PASSWORD_KEY), challenge.get(RSA_PUBLIC_KEY),
-        successFullDecryptionAction);
+    final String publicKey = challenge.get(RSA_PUBLIC_KEY);
+    final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
+    if (privateKey == null) {
+      return "Login timeout, try again!";
+    } else {
+      rsaKeyMap.invalidate(publicKey);
+    }
+    return decryptPassword(response.get(ENCRYPTED_PASSWORD_KEY), privateKey, successFullDecryptionAction);
   }
 
 

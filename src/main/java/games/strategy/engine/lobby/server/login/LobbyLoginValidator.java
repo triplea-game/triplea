@@ -168,7 +168,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
 
-      return RsaAuthenticator.decryptPassword(propertiesSentToClient, propertiesReadFromClient, pass -> {
+      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
         if (hashedPassword.isBcrypted()) {
           return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
@@ -226,7 +226,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      return RsaAuthenticator.decryptPassword(propertiesSentToClient, propertiesReadFromClient, pass -> {
+      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
         new DbUserController().createUser(user, new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
         return null;
       });
