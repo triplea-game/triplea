@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -81,12 +82,8 @@ public class LobbyLoginValidatorTest {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
     new BadWordController().addBadWord("bitCh");
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
-        generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo")))
-            .apply(challenge -> {
-              final Map<String, String> response = new HashMap<>();
-              response.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-              return response;
-            }));
+        generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
+            Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
 
   @Test
