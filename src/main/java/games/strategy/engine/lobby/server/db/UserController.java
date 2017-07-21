@@ -72,14 +72,6 @@ public class UserController implements UserDao {
     }
   }
 
-  private static String mask(final HashedPassword hashedPassword) {
-    return mask(hashedPassword.value);
-  }
-
-  private static String mask(final String hashedPassword) {
-    return hashedPassword.replaceAll(".", "*");
-  }
-
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
@@ -96,7 +88,7 @@ public class UserController implements UserDao {
       con.commit();
     } catch (final SQLException e) {
       logger.log(Level.SEVERE,
-          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + mask(hashedPassword), e);
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(), e);
       throw new IllegalStateException(e);
     }
   }
@@ -120,7 +112,7 @@ public class UserController implements UserDao {
       con.commit();
     } catch (final SQLException e) {
       logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
-          user.getEmail(), mask(hashedPassword)), e);
+          user.getEmail(), hashedPassword.mask()), e);
       throw new RuntimeException(e);
     }
   }
@@ -159,7 +151,7 @@ public class UserController implements UserDao {
         return true;
       }
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + mask(hashedPassword),
+      logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
           sqle);
       throw new IllegalStateException(sqle.getMessage());
     }

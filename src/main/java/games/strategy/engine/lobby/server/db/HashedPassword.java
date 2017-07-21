@@ -5,8 +5,9 @@ import com.google.common.base.Strings;
 import games.strategy.util.MD5Crypt;
 
 /**
- * A Wrapper class for password hashes in the form of the legacy MD5 with salt system,
- * and the new BCrypt system.
+ * A Wrapper class for salted password hashes.
+ * If the given String is not matching the format
+ * of MD5Crypt or BCrypt hashes isValidSyntax returns false.
  */
 public class HashedPassword {
   public final String value;
@@ -28,6 +29,13 @@ public class HashedPassword {
 
   private boolean isMd5Crypted() {
     return value != null && value.startsWith(MD5Crypt.MAGIC);
+  }
+
+  /**
+   * Returns the value of this HashedPassword object with all characters replaces with asterisks.
+   */
+  public String mask() {
+    return value.replaceAll(".", "*");
   }
 }
 

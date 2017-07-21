@@ -90,13 +90,13 @@ public class RsaAuthenticator {
   }
 
   private static String decryptPassword(final String encryptedPassword, final PrivateKey privateKey,
-      final Function<String, String> function) {
+      final Function<String, String> successfullDecryptionAction) {
     Preconditions.checkNotNull(encryptedPassword);
     Preconditions.checkNotNull(privateKey);
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.DECRYPT_MODE, privateKey);
-      return function
+      return successfullDecryptionAction
           .apply(new String(cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)), StandardCharsets.UTF_8));
     } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
       throw new IllegalStateException(e);
