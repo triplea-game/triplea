@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -168,9 +170,10 @@ public class LobbyLoginValidator implements ILoginValidator {
 
       return RsaAuthenticator.decryptPassword(propertiesSentToClient, propertiesReadFromClient, pass -> {
         if (hashedPassword.isBcrypted()) {
-          return userDao.login(clientName, pass) ? null : errorMessage;
+          return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-          userDao.updateUser(userDao.getUserByName(clientName), pass);
+          userDao.updateUser(userDao.getUserByName(clientName),
+              new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
           return null;
         } else {
           return errorMessage;
@@ -224,7 +227,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
       return RsaAuthenticator.decryptPassword(propertiesSentToClient, propertiesReadFromClient, pass -> {
-        new DbUserController().createUser(user, pass);
+        new DbUserController().createUser(user, new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
         return null;
       });
     }

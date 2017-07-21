@@ -75,14 +75,9 @@ public class DbUserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    Preconditions.checkArgument(password.isValidSyntax());
-    primaryDao.updateUser(user, password);
-    secondaryDao.updateUser(user, password);
-  }
-
-  @Override
-  public void updateUser(final DBUser user, final String password) {
-    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+    if (password.isValidSyntax()) {
+      primaryDao.updateUser(user, password);
+    }
     secondaryDao.updateUser(user, password);
   }
 
@@ -93,18 +88,9 @@ public class DbUserController implements UserDao {
   @Override
   public void createUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    Preconditions.checkArgument(password.isValidSyntax());
-    primaryDao.createUser(user, password);
-    secondaryDao.createUser(user, password);
-  }
-
-  /**
-   * Create a user in the database.
-   * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
-   */
-  @Override
-  public void createUser(final DBUser user, final String password) {
-    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+    if (password.isValidSyntax()) {
+      primaryDao.createUser(user, password);
+    }
     secondaryDao.createUser(user, password);
   }
 
@@ -124,17 +110,6 @@ public class DbUserController implements UserDao {
       if (!secondaryDao.doesUserExist(userName)) {
         secondaryDao.createUser(primaryDao.getUserByName(userName), password);
       }
-      return true;
-    }
-
-    migrationCounter.loginFailure();
-    return false;
-  }
-
-  @Override
-  public boolean login(final String userName, final String password) {
-    if (secondaryDao.login(userName, password)) {
-      migrationCounter.secondaryLoginSuccess();
       return true;
     }
 

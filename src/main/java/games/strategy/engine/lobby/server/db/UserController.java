@@ -72,23 +72,22 @@ public class UserController implements UserDao {
     }
   }
 
+  private static String mask(final HashedPassword hashedPassword) {
+    return mask(hashedPassword.value);
+  }
+
+  private static String mask(final String hashedPassword) {
+    return hashedPassword.replaceAll(".", "*");
+  }
+
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
-    updateUserWithExactString(user, hashedPassword.value);
-  }
-
-  @Override
-  public void updateUser(final DBUser user, final String password) {
-    updateUserWithExactString(user, BCrypt.hashpw(password, BCrypt.gensalt()));
-  }
-
-  private void updateUserWithExactString(final DBUser user, final String hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get()) {
       try (final PreparedStatement ps =
           con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
-        ps.setString(1, hashedPassword);
+        ps.setString(1, hashedPassword.value);
         ps.setString(2, user.getEmail());
         ps.setInt(3, user.isAdmin() ? 1 : 0);
         ps.setString(4, user.getName());
@@ -105,22 +104,13 @@ public class UserController implements UserDao {
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(hashedPassword.isValidSyntax());
-    createUserWithExactString(user, hashedPassword.value);
-  }
-
-  @Override
-  public void createUser(final DBUser user, final String password) {
-    createUserWithExactString(user, BCrypt.hashpw(password, BCrypt.gensalt()));
-  }
-
-  private void createUserWithExactString(final DBUser user, final String hashedPassword) {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get()) {
       try (final PreparedStatement ps = con.prepareStatement(
           "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
         ps.setString(1, user.getName());
-        ps.setString(2, hashedPassword);
+        ps.setString(2, hashedPassword.value);
         ps.setString(3, user.getEmail());
         ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
         ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
@@ -137,60 +127,42 @@ public class UserController implements UserDao {
 
   @Override
   public boolean login(final String userName, final HashedPassword hashedPassword) {
-    Preconditions.checkState(hashedPassword.isValidSyntax());
-
-    final Connection con = connectionSupplier.get();
-    try {
-      PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");
-      ps.setString(1, userName);
-      ps.setString(2, hashedPassword.value);
-      final ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        return false;
+    try (final Connection con = connectionSupplier.get()) {
+      if (hashedPassword.isValidSyntax()) {
+        try (final PreparedStatement ps =
+            con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
+          ps.setString(1, userName);
+          ps.setString(2, hashedPassword.value);
+          try (final ResultSet rs = ps.executeQuery()) {
+            if (!rs.next()) {
+              return false;
+            }
+          }
+        }
+      } else {
+        HashedPassword actualPassword = getPassword(userName);
+        if (actualPassword == null) {
+          return false;
+        }
+        Preconditions.checkState(actualPassword.isBcrypted());
+        if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+          return false;
+        }
       }
-      ps.close();
-      rs.close();
       // update last login time
-      ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?");
-      ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-      ps.setString(2, userName);
-      ps.execute();
-      ps.close();
-      con.commit();
-      return true;
+      try (
+          final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+        ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        ps.setString(2, userName);
+        ps.execute();
+        con.commit();
+        return true;
+      }
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + mask(hashedPassword),
           sqle);
       throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
     }
-  }
-
-  @Override
-  public boolean login(final String userName, final String password) {
-    HashedPassword hashedPassword = getPassword(userName);
-    if (hashedPassword == null) {
-      return false;
-    }
-    Preconditions.checkState(hashedPassword.isBcrypted());
-    final boolean correctCredentials = BCrypt.checkpw(password, hashedPassword.value);
-    if (correctCredentials) {
-      try (final Connection connection = connectionSupplier.get()) {
-        try (final PreparedStatement statement =
-            connection.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
-          statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-          statement.setString(2, userName);
-          statement.execute();
-        }
-        connection.commit();
-      } catch (SQLException e) {
-        logger.log(Level.SEVERE,
-            "Error validating password name:" + userName + " : " + " pwd:" + mask(hashedPassword));
-        throw new IllegalStateException(e);
-      }
-    }
-    return correctCredentials;
   }
 
   @Override
@@ -217,13 +189,5 @@ public class UserController implements UserDao {
     } finally {
       DbUtil.closeConnection(con);
     }
-  }
-
-  private static String mask(final HashedPassword hashedPassword) {
-    return mask(hashedPassword.value);
-  }
-
-  private static String mask(final String hashedPassword) {
-    return hashedPassword.replaceAll(".", "*");
   }
 }

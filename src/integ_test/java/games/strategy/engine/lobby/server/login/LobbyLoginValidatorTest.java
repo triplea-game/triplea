@@ -158,7 +158,7 @@ public class LobbyLoginValidatorTest {
         new DBUser(
             new DBUser.UserName(name),
             new DBUser.UserEmail(email)),
-        Util.sha512(password));
+        new HashedPassword(Util.sha512(password)));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
@@ -216,7 +216,7 @@ public class LobbyLoginValidatorTest {
         new DBUser(
             new DBUser.UserName(name),
             new DBUser.UserEmail(email)),
-        Util.sha512(password));
+        new HashedPassword(Util.sha512(password)));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
@@ -241,7 +241,7 @@ public class LobbyLoginValidatorTest {
         new DBUser(
             new DBUser.UserName(name),
             new DBUser.UserEmail(email)),
-        Util.sha512(password));
+        new HashedPassword(Util.sha512(password)));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
