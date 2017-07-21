@@ -61,5 +61,11 @@ public class RsaAuthenticatorTest {
       assertEquals(Util.sha512(password), pass);
       return null;
     }));
+    final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
+      fail("The password should never be successfully encrypted");
+      return null;
+    });
+    assertNotNull(errorMessage);
+    assertTrue(errorMessage.toLowerCase().contains("timeout"));
   }
 }

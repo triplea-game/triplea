@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
 
 /**
@@ -138,6 +139,7 @@ public class Util {
    * @return A hashed hexadecimal String of the input.
    */
   public static String sha512(String input) {
+    Preconditions.checkNotNull(input);
     try {
       return BaseEncoding.base16()
           .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))).toLowerCase();
