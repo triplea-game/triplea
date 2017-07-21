@@ -75,7 +75,7 @@ public class DbUserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    if (password.isValidSyntax()) {
+    if (!password.isBcrypted()) {
       primaryDao.updateUser(user, password);
     }
     secondaryDao.updateUser(user, password);
@@ -88,7 +88,8 @@ public class DbUserController implements UserDao {
   @Override
   public void createUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    if (password.isValidSyntax()) {
+    Preconditions.checkArgument(password.isValidSyntax());
+    if (!password.isBcrypted()) {
       primaryDao.createUser(user, password);
     }
     secondaryDao.createUser(user, password);
