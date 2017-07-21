@@ -12,15 +12,17 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import games.strategy.util.Util;
+
 public class RsaAuthenticatorTest {
 
   @Test
   public void testCanProcess() {
     final Map<String, String> map = new HashMap<>();
-    map.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "");
+    map.put(RsaAuthenticator.RSA_PUBLIC_KEY, "");
     assertTrue(RsaAuthenticator.canProcessChallenge(map));
     map.clear();
-    map.put(RsaAuthenticator.RSA_PUBLIC_KEY, "");
+    map.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "");
     assertTrue(RsaAuthenticator.canProcessResponse(map));
     map.clear();
 
@@ -56,7 +58,7 @@ public class RsaAuthenticatorTest {
     RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
 
     assertNull(RsaAuthenticator.decryptPassword(challenge, response, pass -> {
-      assertEquals(password, pass);
+      assertEquals(Util.sha512(password), pass);
       return null;
     }));
   }
