@@ -14,8 +14,6 @@ import java.util.function.Function;
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.DbUserController;
@@ -83,8 +81,12 @@ public class LobbyLoginValidatorTest {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
     new BadWordController().addBadWord("bitCh");
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
-        generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> ImmutableMap
-            .<String, String>builder().put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()).build()));
+        generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo")))
+            .apply(challenge -> {
+              final Map<String, String> response = new HashMap<>();
+              response.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+              return response;
+            }));
   }
 
   @Test
@@ -183,7 +185,7 @@ public class LobbyLoginValidatorTest {
   private static ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge(Util.createUniqueTimeStamp(), password);
   }
-  
+
   private static ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
     final LobbyLoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
