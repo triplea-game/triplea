@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -21,7 +20,6 @@ import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
 public class LobbyLoginValidatorTest {
@@ -220,13 +218,11 @@ public class LobbyLoginValidatorTest {
             new DBUser.UserEmail(email)),
         Util.sha512(password));
     final Map<String, String> properties = new HashMap<>();
-    RsaAuthenticator.setTimeout(1, TimeUnit.SECONDS);
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
     properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
         RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    //Wait 1 second for timeout
-    ThreadUtil.sleep(1000);
+    RsaAuthenticator.invalidateAll();
     final String errorMessage =
         new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address);
     assertNotNull(errorMessage);

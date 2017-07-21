@@ -11,11 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -26,6 +22,8 @@ import javax.crypto.NoSuchPaddingException;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import games.strategy.util.Util;
 
@@ -34,11 +32,15 @@ import games.strategy.util.Util;
  * for passwords.
  */
 public class RsaAuthenticator {
-  private static final TimeoutKeyMap rsaKeyMap = new TimeoutKeyMap();
+  private static final Cache<String, PrivateKey> rsaKeyMap = buildCache();
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
   static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
+
+  private static Cache<String, PrivateKey> buildCache() {
+    return CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
+  }
 
   /**
    * Returns true if the specified map contains the required values.
@@ -68,7 +70,7 @@ public class RsaAuthenticator {
     do {
       keyPair = generateKeypair();
       publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-    } while (rsaKeyMap.containsKey(publicKey));
+    } while (rsaKeyMap.getIfPresent(publicKey) != null);
     rsaKeyMap.put(publicKey, keyPair.getPrivate());
     return publicKey;
   }
@@ -86,7 +88,7 @@ public class RsaAuthenticator {
   private static String decryptPassword(final String encryptedPassword, final String publicKey,
       final Function<String, String> function) {
     Preconditions.checkNotNull(encryptedPassword);
-    final PrivateKey privateKey = rsaKeyMap.get(publicKey);
+    final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
     if (privateKey == null) {
       return "Login timeout, try again!";
     }
@@ -100,7 +102,7 @@ public class RsaAuthenticator {
     } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
       return e.getMessage();
     } finally {
-      rsaKeyMap.remove(publicKey);
+      rsaKeyMap.invalidate(publicKey);
     }
   }
 
@@ -138,46 +140,9 @@ public class RsaAuthenticator {
       final String password) {
     response.put(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
   }
-  
+
   @VisibleForTesting
-  static void setTimeout(final long amount, final TimeUnit timeUnit) {
-    rsaKeyMap.setTimeout(amount, timeUnit);
-  }
-
-  private static class TimeoutKeyMap extends HashMap<String, PrivateKey> {
-    private static final long serialVersionUID = 3788873489149542052L;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final Map<String, ScheduledFuture<?>> scheduledTaks = new HashMap<>();
-    private long amount;
-    private TimeUnit timeUnit;
-
-    private TimeoutKeyMap() {
-      setTimeout(10, TimeUnit.MINUTES);
-    }
-
-    @Override
-    public PrivateKey put(final String string, final PrivateKey key) {
-      scheduledTaks.put(string, scheduler.schedule(() -> {
-        super.remove(string);
-      }, amount, timeUnit));
-      return super.put(string, key);
-    }
-
-    @Override
-    public PrivateKey remove(final Object object) {
-      if (object instanceof String) {
-        final ScheduledFuture<?> future = scheduledTaks.get((String) object);
-        if (future != null) {
-          future.cancel(false);
-        }
-        scheduledTaks.remove(object);
-      }
-      return super.remove(object);
-    }
-
-    private void setTimeout(final long amount, final TimeUnit timeUnit) {
-      this.amount = amount;
-      this.timeUnit = timeUnit;
-    }
+  static void invalidateAll() {
+    rsaKeyMap.invalidateAll();
   }
 }
