@@ -72,7 +72,6 @@ public class LobbyLoginValidatorTest {
 
   @Test
   public void testAnonymousLogin() {
-
     final Map<String, String> properties = new HashMap<>();
     assertNull(generateChallenge(null, challengeProperties -> {
       properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -109,8 +108,6 @@ public class LobbyLoginValidatorTest {
               MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
           persistentChallenge.putAll(challengeProperties);
         });
-
-
     assertNull(challengeFunction.apply(properties));
     // with a bad password
     properties.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("wrong"));
@@ -131,7 +128,6 @@ public class LobbyLoginValidatorTest {
               RsaAuthenticator.appendEncryptedPassword(properties, challengeProperties, password);
               persistentChallenge.putAll(challengeProperties);
             });
-
     assertNull(challengeFunction.apply(properties));
     final Map<String, String> badPassMap = new HashMap<>(persistentChallenge);
     // with a bad password
@@ -157,7 +153,6 @@ public class LobbyLoginValidatorTest {
               assertEquals(challengeProperties.get(LobbyLoginValidator.SALT_KEY),
                   MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
             });
-
     assertNull(challengeFunction.apply(properties));
     assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
     properties.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
@@ -167,7 +162,6 @@ public class LobbyLoginValidatorTest {
 
   @Test
   public void testTimeout() {
-
     final String password = "foo";
     final Map<String, String> properties = new HashMap<>();
     final Function<Map<String, String>, String> challengeFunction =
@@ -198,6 +192,10 @@ public class LobbyLoginValidatorTest {
     return generateChallenge(Util.createUniqueTimeStamp(), password, action);
   }
 
+  private static void createUser(final String name, final String email, final HashedPassword password) {
+    new DbUserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
+  }
+
   private static Function<Map<String, String>, String> generateChallenge(final String name,
       final HashedPassword password,
       Consumer<Map<String, String>> action) {
@@ -206,19 +204,14 @@ public class LobbyLoginValidatorTest {
     final String mac = MacFinder.getHashedMacAddress();
     final String email = "none@none.none";
     if (password != null) {
-      new DbUserController().createUser(
-          new DBUser(
-              new DBUser.UserName(name),
-              new DBUser.UserEmail(email)),
-          password);
+      createUser(name, email, password);
     }
-    final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    action.accept(challengeProperties);
-    return map -> {
-      map.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, "none@none.none");
-      map.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-      map.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-      return new LobbyLoginValidator().verifyConnection(challengeProperties, map, name, mac, address);
+    final Map<String, String> challenge = validator.getChallengeProperties(name, address);
+    action.accept(challenge);
+    return response -> {
+      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
+      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      return new LobbyLoginValidator().verifyConnection(challenge, response, name, mac, address);
     };
   }
 }
