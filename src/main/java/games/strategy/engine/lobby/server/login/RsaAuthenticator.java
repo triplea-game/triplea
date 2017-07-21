@@ -35,7 +35,11 @@ public class RsaAuthenticator {
   private static final Cache<String, PrivateKey> rsaKeyMap = buildCache();
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
+
+  @VisibleForTesting
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
+
+  @VisibleForTesting
   static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
 
   private static Cache<String, PrivateKey> buildCache() {

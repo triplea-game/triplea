@@ -159,14 +159,11 @@ public class LobbyLoginValidatorTest {
         new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
-        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    RsaAuthenticator.appendEncryptedPassword(properties, challengeProperties, password);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a bad password
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, RsaAuthenticator
-        .encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), "wrong"));
+    RsaAuthenticator.appendEncryptedPassword(properties, challengeProperties, "wrong");
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
     // with a non existent user
     assertNotNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties,
@@ -216,8 +213,7 @@ public class LobbyLoginValidatorTest {
         new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
-        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    RsaAuthenticator.appendEncryptedPassword(properties, challengeProperties, password);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     RsaAuthenticator.invalidateAll();
     final String errorMessage =
@@ -241,8 +237,7 @@ public class LobbyLoginValidatorTest {
         new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     final Map<String, String> properties = new HashMap<>();
     final Map<String, String> challengeProperties = validator.getChallengeProperties(name, address);
-    properties.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY,
-        RsaAuthenticator.encryptPassword(challengeProperties.get(RsaAuthenticator.RSA_PUBLIC_KEY), password));
+    RsaAuthenticator.appendEncryptedPassword(properties, challengeProperties, password);
     properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
 
     assertNull(new LobbyLoginValidator().verifyConnection(challengeProperties, properties, name, mac, address));
