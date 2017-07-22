@@ -803,7 +803,7 @@ public class MapPanel extends ImageScrollerLargeView {
     tileManager.clearTerritoryOverlay(territory, gameData, uiContext.getMapData());
   }
 
-  public IUIContext getUIContext() {
+  public IUIContext getUiContext() {
     return uiContext;
   }
 
@@ -857,7 +857,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final GameData data = mapPanel.getData();
         data.acquireReadLock();
         try {
-          tile.getImage(data, mapPanel.getUIContext().getMapData());
+          tile.getImage(data, mapPanel.getUiContext().getMapData());
         } finally {
           data.releaseReadLock();
         }

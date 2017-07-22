@@ -38,7 +38,7 @@ public class PlacePanel extends AbstractMovePanel {
   public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoablePlacementsPanel(data, this);
-    unitsToPlace = new SimpleUnitPanel(map.getUIContext());
+    unitsToPlace = new SimpleUnitPanel(map.getUiContext());
     leftToPlaceLabel.setText("Units left to place:");
   }
 
@@ -69,7 +69,7 @@ public class PlacePanel extends AbstractMovePanel {
     return Properties.getProduceNewFightersOnOldCarriers(getData());
   }
 
-  private boolean isLHTR_Carrier_Production_Rules() {
+  private boolean isLhtrCarrierProductionRules() {
     return Properties.getLHTRCarrierProductionRules(getData());
   }
 
@@ -85,7 +85,7 @@ public class PlacePanel extends AbstractMovePanel {
         return;
       }
       final UnitChooser chooser =
-          new UnitChooser(units, Collections.emptyMap(), getData(), false, getMap().getUIContext());
+          new UnitChooser(units, Collections.emptyMap(), getData(), false, getMap().getUiContext());
       final String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] >= 0) {
         chooser.setMaxAndShowMaxButton(maxUnits[0]);
@@ -133,7 +133,7 @@ public class PlacePanel extends AbstractMovePanel {
       Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
       if (territory.isWater()) {
         if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
-            || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
+            || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
           final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);

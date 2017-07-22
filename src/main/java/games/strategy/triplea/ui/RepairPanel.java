@@ -36,7 +36,7 @@ public class RepairPanel extends ActionPanel {
   /** Creates new RepairPanel. */
   public RepairPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    unitsPanel = new SimpleUnitPanel(map.getUIContext());
+    unitsPanel = new SimpleUnitPanel(map.getUiContext());
     buyButton = new JButton(BUY);
     buyButton.addActionListener(purchaseAction);
   }
@@ -87,7 +87,7 @@ public class RepairPanel extends ActionPanel {
       final PlayerID player = getCurrentPlayer();
       final GameData data = getData();
       repair = ProductionRepairPanel.getProduction(player, allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
-          data, bid, repair, getMap().getUIContext());
+          data, bid, repair, getMap().getUiContext());
       unitsPanel.setUnitsFromRepairRuleMap(repair, player, data);
       final int totalValues = getTotalValues(repair);
       if (totalValues == 0) {

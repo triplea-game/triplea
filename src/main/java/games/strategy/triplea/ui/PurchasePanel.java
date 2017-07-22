@@ -46,8 +46,8 @@ public class PurchasePanel extends ActionPanel {
   /** Creates new PurchasePanel. */
   public PurchasePanel(final GameData data, final MapPanel map) {
     super(data, map);
-    purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUIContext());
-    purhcasedUnits = new SimpleUnitPanel(map.getUIContext());
+    purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUiContext());
+    purhcasedUnits = new SimpleUnitPanel(map.getUiContext());
     buyButton = new JButton(BUY);
     buyButton.addActionListener(purchaseAction);
     purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
@@ -117,10 +117,10 @@ public class PurchasePanel extends ActionPanel {
       final GameData data = getData();
       if (isTabbedProduction()) {
         purchase = TabbedProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid,
-            purchase, getMap().getUIContext());
+            purchase, getMap().getUiContext());
       } else {
         purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid, purchase,
-            getMap().getUIContext());
+            getMap().getUiContext());
       }
       purhcasedUnits.setUnitsFromProductionRuleMap(purchase, player, data);
       if (purchase.totalValues() == 0) {

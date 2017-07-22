@@ -58,7 +58,7 @@ public class TabbedProductionPanel extends ProductionPanel {
         new Insets(8, 8, 8, 0), 0, 0));
     final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
-    calculateXY(properties, largestList(ruleLists));
+    calculateRowsAndColumns(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
       if (ruleList.getSecond().size() > 0) {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
@@ -73,7 +73,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     this.validate();
   }
 
-  private void calculateXY(final ProductionTabsProperties properties, final int largestList) {
+  private void calculateRowsAndColumns(final ProductionTabsProperties properties, final int largestList) {
     if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
       final int m_maxColumns;

@@ -51,7 +51,7 @@ class GameMenu {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
-    iuiContext = frame.getUIContext();
+    iuiContext = frame.getUiContext();
 
     menuBar.add(createGameMenu());
   }

@@ -181,7 +181,7 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     public void setStatCollums() {
-      stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+      stats = new IStat[] {new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat()};
       if (Match.anyMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
@@ -190,7 +190,7 @@ public class StatPanel extends AbstractStatPanel {
       // only add the vps in pacific
       if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
-        stats.add(new VPStat());
+        stats.add(new VpStat());
         StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
       }
     }
@@ -463,8 +463,8 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class PUStat extends ResourceStat {
-    public PUStat() {
+  class PuStat extends ResourceStat {
+    public PuStat() {
       super(getResourcePUs(gameData));
     }
   }
@@ -486,7 +486,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class TUVStat extends AbstractStat {
+  class TuvStat extends AbstractStat {
     @Override
     public String getName() {
       return "TUV";
@@ -530,7 +530,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class VPStat extends AbstractStat {
+  class VpStat extends AbstractStat {
     @Override
     public String getName() {
       return "VPs";

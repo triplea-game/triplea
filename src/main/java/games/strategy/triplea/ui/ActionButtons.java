@@ -83,7 +83,7 @@ public class ActionButtons extends JPanel {
     // between objects
     // and if there is a memory leak
     // this will minimize the damage
-    map.getUIContext().addActive(() -> {
+    map.getUiContext().addActive(() -> {
       removeAll();
       actionPanel = null;
       battlePanel.removeAll();

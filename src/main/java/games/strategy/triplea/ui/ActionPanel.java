@@ -69,7 +69,7 @@ public abstract class ActionPanel extends JPanel {
         throw new IllegalStateException("Latch not null");
       }
       latch = new CountDownLatch(1);
-      map.getUIContext().addShutdownLatch(latch);
+      map.getUiContext().addShutdownLatch(latch);
     }
     try {
       latch.await();
@@ -98,7 +98,7 @@ public abstract class ActionPanel extends JPanel {
       if (latch == null) {
         return;
       }
-      map.getUIContext().removeShutdownLatch(latch);
+      map.getUiContext().removeShutdownLatch(latch);
       latch.countDown();
       latch = null;
     }

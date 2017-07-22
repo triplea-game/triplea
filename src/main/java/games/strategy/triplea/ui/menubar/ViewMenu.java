@@ -67,7 +67,7 @@ class ViewMenu {
 
   ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
-    this.uiContext = frame.getUIContext();
+    this.uiContext = frame.getUiContext();
     gameData = frame.getGame().getData();
 
 

@@ -29,13 +29,13 @@ public class OddsCalculatorDialog extends JDialog {
 
   public static void show(final TripleAFrame taFrame, final Territory t) {
     final OddsCalculatorDialog dialog =
-        new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUIContext(), taFrame, t);
+        new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUiContext(), taFrame, t);
     dialog.pack();
     dialog.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(final WindowEvent e) {
-        if (taFrame != null && taFrame.getUIContext() != null && !taFrame.getUIContext().isShutDown()) {
-          taFrame.getUIContext().removeShutdownWindow(dialog);
+        if (taFrame != null && taFrame.getUiContext() != null && !taFrame.getUiContext().isShutDown()) {
+          taFrame.getUiContext().removeShutdownWindow(dialog);
         }
       }
     });
@@ -59,7 +59,7 @@ public class OddsCalculatorDialog extends JDialog {
       dialog.setSize(lastShape);
     }
     dialog.setVisible(true);
-    taFrame.getUIContext().addShutdownWindow(dialog);
+    taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
   OddsCalculatorDialog(final GameData data, final IUIContext context, final JFrame parent, final Territory location) {

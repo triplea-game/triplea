@@ -154,7 +154,7 @@ class EditPanel extends ActionPanel {
         if (mustChoose) {
           final String chooserText = "Remove units from " + selectedTerritory + ":";
           final UnitChooser chooser = new UnitChooser(allUnits, selectedUnits, mustMoveWithDetails.getMustMoveWith(),
-              true, false, getData(), /* allowTwoHit= */false, getMap().getUIContext());
+              true, false, getData(), /* allowTwoHit= */false, getMap().getUiContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
@@ -192,7 +192,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -242,7 +242,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to get technology");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -296,7 +296,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to remove technology");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -380,7 +380,7 @@ class EditPanel extends ActionPanel {
           currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage",
-            getData(), getMap().getUIContext(), -1, true, true, null);
+            getData(), getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -429,7 +429,7 @@ class EditPanel extends ActionPanel {
                   ((TripleAUnit) u).getUnitDamage()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",
-            getData(), getMap().getUIContext(), -1, true, true, null);
+            getData(), getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -475,7 +475,7 @@ class EditPanel extends ActionPanel {
             + "unintended consequences!</em></html>");
         panel.add(helpText, BorderLayout.NORTH);
         final PoliticalStateOverview pui =
-            new PoliticalStateOverview(getData(), EditPanel.this.frame.getUIContext(), true);
+            new PoliticalStateOverview(getData(), EditPanel.this.frame.getUiContext(), true);
         panel.add(pui, BorderLayout.CENTER);
         final JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -708,7 +708,7 @@ class EditPanel extends ActionPanel {
           }
           final String text = "Remove from " + t.getName();
           final UnitChooser chooser = new UnitChooser(unitsToMove, selectedUnits, null, false, false, getData(),
-              false, getMap().getUIContext());
+              false, getMap().getUiContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
@@ -777,7 +777,7 @@ class EditPanel extends ActionPanel {
         // PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
         final PlayerID defaultPlayer = ta.getOriginalOwner();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
+            new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -792,14 +792,14 @@ class EditPanel extends ActionPanel {
       } else if (currentAction == addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
+            new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUiContext(), allowNeutral);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player != null) {
           // open production panel for adding new units
           final IntegerMap<ProductionRule> production =
-              EditProductionPanel.getProduction(player, frame, getData(), getMap().getUIContext());
+              EditProductionPanel.getProduction(player, frame, getData(), getMap().getUiContext());
           final Collection<Unit> units = new ArrayList<>();
           for (final ProductionRule productionRule : production.keySet()) {
             final int quantity = production.getInt(productionRule);

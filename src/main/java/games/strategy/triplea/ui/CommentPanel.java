@@ -95,7 +95,7 @@ public class CommentPanel extends JPanel {
     // create icon map
     iconMap = new HashMap<>();
     for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
-      iconMap.put(playerId, new ImageIcon(frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
+      iconMap.put(playerId, new ImageIcon(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId)));
     }
   }
 

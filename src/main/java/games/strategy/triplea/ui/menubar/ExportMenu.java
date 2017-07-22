@@ -62,7 +62,7 @@ class ExportMenu {
   ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     gameData = frame.getGame().getData();
-    iuiContext = frame.getUIContext();
+    iuiContext = frame.getUiContext();
 
     final JMenu menuGame = new JMenu("Export");
     menuGame.setMnemonic(KeyEvent.VK_E);

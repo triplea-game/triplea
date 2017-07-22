@@ -123,15 +123,15 @@ public class BattleDisplay extends JPanel {
     gameData = data;
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
     defenderModel = new BattleModel(defendingUnits, false, battleType, gameData, location, territoryEffects,
-        isAmphibious, Collections.emptySet(), this.mapPanel.getUIContext());
+        isAmphibious, Collections.emptySet(), this.mapPanel.getUiContext());
     attackerModel = new BattleModel(attackingUnits, true, battleType, gameData, location, territoryEffects,
-        isAmphibious, amphibiousLandAttackers, this.mapPanel.getUIContext());
+        isAmphibious, amphibiousLandAttackers, this.mapPanel.getUiContext());
     defenderModel.setEnemyBattleModel(attackerModel);
     attackerModel.setEnemyBattleModel(defenderModel);
     defenderModel.refresh();
     attackerModel.refresh();
-    uiContext = mapPanel.getUIContext();
-    casualties = new CasualtyNotificationPanel(data, this.mapPanel.getUIContext());
+    uiContext = mapPanel.getUiContext();
+    casualties = new CasualtyNotificationPanel(data, this.mapPanel.getUiContext());
     if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
       final Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
       attackerUnitsKilled.addAll(attackingWaitingToDie);
@@ -150,7 +150,7 @@ public class BattleDisplay extends JPanel {
   void cleanUp() {
     actionButton.setAction(nullAction);
     steps.deactivate();
-    mapPanel.getUIContext().removeActive(steps);
+    mapPanel.getUiContext().removeActive(steps);
     steps = null;
   }
 
@@ -297,7 +297,7 @@ public class BattleDisplay extends JPanel {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
     SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
-    mapPanel.getUIContext().addShutdownLatch(continueLatch);
+    mapPanel.getUiContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
     if (!getConfirmDefensiveRolls()) {
@@ -320,7 +320,7 @@ public class BattleDisplay extends JPanel {
     } catch (final InterruptedException ie) {
       Thread.currentThread().interrupt();
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
   }
@@ -377,13 +377,13 @@ public class BattleDisplay extends JPanel {
     });
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
-    mapPanel.getUIContext().addShutdownLatch(latch);
+    mapPanel.getUiContext().addShutdownLatch(latch);
     try {
       latch.await();
     } catch (final InterruptedException e1) {
       Thread.currentThread().interrupt();
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(latch);
+      mapPanel.getUiContext().removeShutdownLatch(latch);
     }
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
     return retreatTo[0];
@@ -435,13 +435,13 @@ public class BattleDisplay extends JPanel {
     });
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
-    mapPanel.getUIContext().addShutdownLatch(latch);
+    mapPanel.getUiContext().addShutdownLatch(latch);
     try {
       latch.await();
     } catch (final InterruptedException e1) {
       e1.printStackTrace();
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(latch);
+      mapPanel.getUiContext().removeShutdownLatch(latch);
     }
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
     return retreatTo[0];
@@ -519,7 +519,7 @@ public class BattleDisplay extends JPanel {
           final String messageText = message + " " + btnText + ".";
           if (chooser == null || chooserScrollPane == null) {
             chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, gameData, allowMultipleHitsPerUnit,
-                mapPanel.getUIContext());
+                mapPanel.getUiContext());
             chooser.setTitle(messageText);
             if (isEditMode) {
               chooser.setMax(selectFrom.size());
@@ -564,13 +564,13 @@ public class BattleDisplay extends JPanel {
         }
       });
     });
-    mapPanel.getUIContext().addShutdownLatch(continueLatch);
+    mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
       ClientLogger.logQuietly(ex);
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     return casualtyDetails.get();
   }
@@ -598,9 +598,9 @@ public class BattleDisplay extends JPanel {
     messagePanel.setLayout(new BorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     steps = new BattleStepsPanel();
-    mapPanel.getUIContext().addActive(steps);
+    mapPanel.getUiContext().addActive(steps);
     steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-    dicePanel = new DicePanel(mapPanel.getUIContext(), gameData);
+    dicePanel = new DicePanel(mapPanel.getUiContext(), gameData);
     actionPanel = new JPanel();
     actionPanel.setLayout(actionLayout);
     actionPanel.add(dicePanel, DICE_KEY);

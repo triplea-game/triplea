@@ -260,7 +260,7 @@ public class MovePanel extends AbstractMovePanel {
     // Choosing what transports to unload
     final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections,
         mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
-        getGameData(), /* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
+        getGameData(), /* allowTwoHit */false, getMap().getUiContext(), transportsToUnloadMatch);
     chooser.setTitle("What transports do you want to unload");
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to unload",
@@ -693,7 +693,7 @@ public class MovePanel extends AbstractMovePanel {
     });
     final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections,
         endMustMoveWith.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
-        getGameData(), /* allowTwoHit */false, getMap().getUIContext(), transportsToLoadMatch);
+        getGameData(), /* allowTwoHit */false, getMap().getUiContext(), transportsToLoadMatch);
     chooser.setTitle("What transports do you want to load");
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load",
@@ -774,11 +774,11 @@ public class MovePanel extends AbstractMovePanel {
             // use matcher to prevent units of different owners being chosen
             chooser = new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null,
                 /* categorizeMovement */false, /* categorizeTransportCost */false, getData(), /* allowTwoHit */false,
-                getMap().getUIContext(), ownerMatch);
+                getMap().getUiContext(), ownerMatch);
           } else {
             chooser =
                 new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null, /* categorizeMovement */false,
-                    /* categorizeTransportCost */false, getData(), /* allowTwoHit */false, getMap().getUIContext());
+                    /* categorizeTransportCost */false, getData(), /* allowTwoHit */false, getMap().getUiContext());
           }
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -897,7 +897,7 @@ public class MovePanel extends AbstractMovePanel {
       // Allow player to select which to load.
       final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, s_dependentUnits,
           /* categorizeMovement */true, /* categorizeTransportCost */false, getGameData(), /* allowTwoHit */false,
-          getMap().getUIContext(), transportsToLoadMatch);
+          getMap().getUiContext(), transportsToLoadMatch);
       chooser.setTitle("Select air transports to load");
       final int option =
           JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load",
@@ -1197,7 +1197,7 @@ public class MovePanel extends AbstractMovePanel {
       sortUnitsToMove(candidateUnits, route);
       final UnitChooser chooser =
           new UnitChooser(candidateUnits, defaultSelections, mustMoveWithDetails.getMustMoveWith(), true, false,
-              getGameData(), false, getMap().getUIContext(), matchCriteria);
+              getGameData(), false, getMap().getUiContext(), matchCriteria);
       final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
       final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -1326,7 +1326,7 @@ public class MovePanel extends AbstractMovePanel {
     // Allow player to select which to load.
     final UnitChooser chooser = new UnitChooser(unitsToLoad, defaultSelections, s_dependentUnits,
         /* categorizeMovement */false, /* categorizeTransportCost */true, getGameData(), /* allowTwoHit */false,
-        getMap().getUIContext(), unitsToLoadMatch);
+        getMap().getUiContext(), unitsToLoadMatch);
     chooser.setTitle(title);
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What units do you want to " + action,
