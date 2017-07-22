@@ -247,7 +247,7 @@ public class BattlePanel extends ActionPanel {
       }
       if (!getMap().getUIContext().getShowMapOnly()) {
         battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
-            killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleId, BattlePanel.this.getMap(),
+            killedUnits, attackingWaitingToDie, defendingWaitingToDie, BattlePanel.this.getMap(),
             isAmphibious, battleType, amphibiousLandAttackers);
         battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
         battleFrame.getContentPane().removeAll();
@@ -344,10 +344,10 @@ public class BattlePanel extends ActionPanel {
   }
 
   public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> addedUnits) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
-        battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
+        battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits);
       }
     });
   }

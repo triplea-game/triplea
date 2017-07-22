@@ -29,6 +29,7 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -60,7 +61,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -88,7 +88,6 @@ public class BattleDisplay extends JPanel {
   private static final String DICE_KEY = "D";
   private static final String CASUALTIES_KEY = "C";
   private static final String MESSAGE_KEY = "M";
-  private final GUID battleId;
   private final PlayerID defender;
   private final PlayerID attacker;
   private final Territory location;
@@ -114,10 +113,9 @@ public class BattleDisplay extends JPanel {
 
   BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
-      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final GUID battleId,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
-    this.battleId = battleId;
     this.defender = defender;
     this.attacker = attacker;
     location = territory;
@@ -165,10 +163,6 @@ public class BattleDisplay extends JPanel {
 
   public Territory getBattleLocation() {
     return location;
-  }
-
-  public GUID getBattleID() {
-    return battleId;
   }
 
   public void bombingResults(final List<Die> dice, final int cost) {
@@ -277,7 +271,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> addedUnits) {
     if (player.equals(defender)) {
       if (removedUnits != null) {
         defenderModel.removeCasualties(removedUnits);

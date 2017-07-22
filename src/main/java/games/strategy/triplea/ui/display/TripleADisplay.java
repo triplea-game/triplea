@@ -63,7 +63,7 @@ public class TripleADisplay implements ITripleADisplay {
   @Override
   public void changedUnitsNotification(final GUID battleId, final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
-    ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits, dependents);
+    ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits);
   }
 
   @Override
