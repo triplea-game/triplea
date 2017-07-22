@@ -9,10 +9,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
 
 public class PlayerOrderComparator implements Comparator<PlayerID> {
-  private final GameData m_data;
+  private final GameData gameData;
 
   public PlayerOrderComparator(final GameData data) {
-    m_data = data;
+    gameData = data;
   }
 
   /**
@@ -24,22 +24,22 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
       return 0;
     }
     final GameSequence sequence;
-    m_data.acquireReadLock();
+    gameData.acquireReadLock();
     try {
-      sequence = m_data.getSequence();
+      sequence = gameData.getSequence();
     } finally {
-      m_data.releaseReadLock();
+      gameData.releaseReadLock();
     }
     for (final GameStep s : sequence) {
       if (s.getPlayerID() == null) {
         continue;
       }
       final IDelegate delegate;
-      m_data.acquireReadLock();
+      gameData.acquireReadLock();
       try {
         delegate = s.getDelegate();
       } finally {
-        m_data.releaseReadLock();
+        gameData.releaseReadLock();
       }
       if (delegate != null && delegate.getClass() != null) {
         final String delegateClassName = delegate.getClass().getName();

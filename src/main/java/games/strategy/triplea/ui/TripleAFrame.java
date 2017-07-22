@@ -154,7 +154,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -772,7 +772,7 @@ public class TripleAFrame extends MainGameFrame {
    */
   @Override
   public void notifyError(final String message) {
-    final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
+    final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool == null) {
       return;
     }
@@ -805,7 +805,7 @@ public class TripleAFrame extends MainGameFrame {
         && !getUIContext().getShowEndOfTurnReport()) {
       return;
     }
-    final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
+    final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool != null) {
       messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this,
           displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));

@@ -30,7 +30,7 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 import games.strategy.util.Match;
 
 /**
@@ -287,7 +287,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         stopGame = true;
       } else {
         // now tell the HOST, and see if they want to continue the game.
-        String displayMessage = LocalizeHTML.localizeImgLinksInHTML(status);
+        String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status);
         if (displayMessage.endsWith("</body>")) {
           displayMessage = displayMessage.substring(0, displayMessage.length() - "</body>".length())
               + "</br><p>Do you want to continue?</p></body>";

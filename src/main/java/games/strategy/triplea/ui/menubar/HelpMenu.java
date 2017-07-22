@@ -38,7 +38,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 
 public class HelpMenu {
 
@@ -225,7 +225,7 @@ public class HelpMenu {
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
-      final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
+      final String notes = LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim());
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);

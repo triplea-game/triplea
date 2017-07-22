@@ -24,7 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 
 public class NewGameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
@@ -137,7 +137,7 @@ public class NewGameChooser extends JDialog {
       if (notesProperty != null && notesProperty.trim().length() != 0) {
         // UIContext resource loader should be null (or potentially is still the last game we played's loader),
         // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
-        notes.append(LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim(), null, mapNameDir));
+        notes.append(LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim(), null, mapNameDir));
       }
       notesPanel.setText(notes.toString());
     } else {
