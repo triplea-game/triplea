@@ -58,7 +58,7 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
     if (node instanceof Renderable) {
       final Object details = ((Renderable) node).getRenderingData();
       if (details instanceof DiceRoll) {
-        final DicePanel dicePanel = new DicePanel(mapPanel.getUIContext(), data);
+        final DicePanel dicePanel = new DicePanel(mapPanel.getUiContext(), data);
         dicePanel.setDiceRoll((DiceRoll) details);
         add(dicePanel, mainConstraints);
       } else if (details instanceof MoveDescription) {
@@ -98,7 +98,7 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
     final Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
-    final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUIContext());
+    final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
     unitsPanel.setUnitsFromCategories(unitsCategories, data);
     add(unitsPanel, mainConstraints);
   }

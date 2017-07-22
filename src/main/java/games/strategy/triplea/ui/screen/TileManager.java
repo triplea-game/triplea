@@ -51,7 +51,7 @@ import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryNameDrawable;
-import games.strategy.triplea.ui.screen.drawable.VCDrawable;
+import games.strategy.triplea.ui.screen.drawable.VcDrawable;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
@@ -313,7 +313,7 @@ public class TileManager {
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {
-      drawing.add(new VCDrawable(territory));
+      drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
     final Iterator<Tile> tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();

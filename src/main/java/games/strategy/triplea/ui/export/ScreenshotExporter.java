@@ -79,7 +79,7 @@ public final class ScreenshotExporter {
         round = ((Round) curNode).getRoundNo();
       }
     }
-    final IUIContext iuiContext = frame.getUIContext();
+    final IUIContext iuiContext = frame.getUiContext();
     final double scale = iuiContext.getScale();
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();

@@ -139,7 +139,7 @@ public class HelpMenu {
         for (final UnitType ut : entry.getValue()) {
           i++;
           hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-              .append(">").append("<td>").append(getUnitImageURL(ut, player, iuiContext)).append("</td>").append("<td>")
+              .append(">").append("<td>").append(getUnitImageUrl(ut, player, iuiContext)).append("</td>").append("<td>")
               .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
               .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
@@ -154,7 +154,7 @@ public class HelpMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageURL(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
+  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
     final UnitImageFactory unitImageFactory = iuiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";

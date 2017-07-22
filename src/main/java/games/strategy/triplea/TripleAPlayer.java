@@ -349,7 +349,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (airCantLand.isEmpty()) {
       return true;
     } else {
-      return ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase);
+      return ui.getOkToLetAirDie(getPlayerID(), airCantLand, movePhase);
     }
   }
 
@@ -366,7 +366,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (unitsCantFight.isEmpty()) {
       return false;
     } else {
-      return !ui.getOKToLetUnitsDie(unitsCantFight, true);
+      return !ui.getOkToLetUnitsDie(unitsCantFight, true);
     }
   }
 
@@ -647,19 +647,19 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
     final String question = "Your units will be fired on in: "
         + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override
   public boolean confirmMoveKamikaze() {
     final String question = "Not all air units in destination territory can land, do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override
   public boolean confirmMoveHariKari() {
     final String question = "All units in destination territory will automatically die, do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override

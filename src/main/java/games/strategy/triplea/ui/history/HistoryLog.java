@@ -120,7 +120,7 @@ public class HistoryLog extends JFrame {
     }
   }
 
-  private static PlayerID getPlayerID(final HistoryNode printNode) {
+  private static PlayerID getPlayerId(final HistoryNode printNode) {
     DefaultMutableTreeNode curNode = printNode;
     final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
     PlayerID curPlayer = null;
@@ -390,7 +390,7 @@ public class HistoryLog extends JFrame {
 
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
     Collection<Territory> territories;
-    final PlayerID player = getPlayerID(printNode);
+    final PlayerID player = getPlayerId(printNode);
     data.acquireReadLock();
     try {
       territories = data.getMap().getTerritories();

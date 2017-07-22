@@ -218,13 +218,13 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    final WindowListener WINDOW_LISTENER = new WindowAdapter() {
+    final WindowListener windowListener = new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
         leaveGame();
       }
     };
-    this.addWindowListener(WINDOW_LISTENER);
+    this.addWindowListener(windowListener);
     uiContext = new UIContext();
     uiContext.setDefaultMapDir(game.getData());
     uiContext.getMapData().verify(data);
@@ -286,8 +286,8 @@ public class TripleAFrame extends MainGameFrame {
     smallView = new MapPanelSmallView(small, model);
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     mapPanel.addMapSelectionListener(mapSelectionListener);
-    final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = (units, territory, me) -> unitsBeingMousedOver = units;
-    mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+    final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> unitsBeingMousedOver = units;
+    mapPanel.addMouseOverUnitListener(mouseOverUnitListener);
     // link the small and large images
     mapPanel.initSmallMap();
     mapAndChatPanel = new JPanel();
@@ -586,7 +586,7 @@ public class TripleAFrame extends MainGameFrame {
   public void shutdown() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
-        JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
+        JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -598,7 +598,7 @@ public class TripleAFrame extends MainGameFrame {
   public void leaveGame() {
     final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
-        JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
+        JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -777,7 +777,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage,
-        "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
+        "Error", JOptionPane.ERROR_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
   }
 
   /**
@@ -789,30 +789,30 @@ public class TripleAFrame extends MainGameFrame {
     }
     if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
         && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
-        && !getUIContext().getShowTriggerChanceFailure()) {
+        && !getUiContext().getShowTriggerChanceFailure()) {
       return;
     }
     if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
         && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
-        && !getUIContext().getShowTriggerChanceSuccessful()) {
+        && !getUiContext().getShowTriggerChanceSuccessful()) {
       return;
     }
-    if (title.equals(AbstractTriggerAttachment.NOTIFICATION) && !getUIContext().getShowTriggeredNotifications()) {
+    if (title.equals(AbstractTriggerAttachment.NOTIFICATION) && !getUiContext().getShowTriggeredNotifications()) {
       return;
     }
     if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
         && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
-        && !getUIContext().getShowEndOfTurnReport()) {
+        && !getUiContext().getShowEndOfTurnReport()) {
       return;
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool != null) {
       messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this,
-          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler()));
+          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
     }
   }
 
-  public boolean getOKToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
+  public boolean getOkToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
       final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty() || messageAndDialogThreadPool == null) {
       return true;
@@ -843,11 +843,11 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.centerOn(airCantLand.iterator().next());
     final int choice =
         EventThreadJOptionPane.showOptionDialog(this, sb.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
+            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUiContext().getCountDownLatchHandler());
     return choice == 1;
   }
 
-  public boolean getOKToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
+  public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
     if (unitsCantFight == null || unitsCantFight.isEmpty() || messageAndDialogThreadPool == null) {
       return true;
     }
@@ -860,7 +860,7 @@ public class TripleAFrame extends MainGameFrame {
     this.mapPanel.centerOn(unitsCantFight.iterator().next());
     final int choice =
         EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Units cannot fight", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
+            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUiContext().getCountDownLatchHandler());
     return choice == 1;
   }
 
@@ -872,17 +872,17 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion,
         "Accept " + (politics ? "Political " : "") + "Proposal from " + playerSendingProposal.getName() + "?",
-        JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
+        JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
     return choice == JOptionPane.YES_OPTION;
   }
 
-  public boolean getOK(final String message) {
+  public boolean getOk(final String message) {
     if (messageAndDialogThreadPool == null) {
       return true;
     }
     messageAndDialogThreadPool.waitForAll();
     final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION,
-        getUIContext().getCountDownLatchHandler());
+        getUiContext().getCountDownLatchHandler());
     return choice == JOptionPane.OK_OPTION;
   }
 
@@ -897,7 +897,7 @@ public class TripleAFrame extends MainGameFrame {
         displayRef.set(display);
       });
       EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUIContext().getCountDownLatchHandler());
+          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUiContext().getCountDownLatchHandler());
     });
   }
 
@@ -916,7 +916,7 @@ public class TripleAFrame extends MainGameFrame {
     int choice = -1;
     while (choice < 0 || choice > 1) {
       choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext().getCountDownLatchHandler());
+          JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUiContext().getCountDownLatchHandler());
     }
     return choice == JOptionPane.OK_OPTION;
   }
@@ -946,7 +946,7 @@ public class TripleAFrame extends MainGameFrame {
     final JList<?> list = comps.getSecond();
     final String[] options = {"OK"};
     final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_OPTION,
-        JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext().getCountDownLatchHandler());
+        JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
     if (selection == 0) {
       selected.set((Unit) list.getSelectedValue());
     }
@@ -960,10 +960,10 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final DiceChooser chooser =
-        Util.runInSwingEventThread(() -> new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
+        Util.runInSwingEventThread(() -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
     do {
       EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
-          getUIContext().getCountDownLatchHandler());
+          getUiContext().getCountDownLatchHandler());
     } while (chooser.getDice() == null);
     return chooser.getDice();
   }
@@ -998,7 +998,7 @@ public class TripleAFrame extends MainGameFrame {
     final String[] options = {"OK"};
     final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
     EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-        null, options, null, getUIContext().getCountDownLatchHandler());
+        null, options, null, getUiContext().getCountDownLatchHandler());
     final Territory selected = (Territory) list.getSelectedValue();
     return selected;
   }
@@ -1130,13 +1130,13 @@ public class TripleAFrame extends MainGameFrame {
 
       }
     });
-    mapPanel.getUIContext().addShutdownLatch(continueLatch);
+    mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
       // ignore interrupted exception
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     return selection;
   }
@@ -1222,13 +1222,13 @@ public class TripleAFrame extends MainGameFrame {
         });
       }
     });
-    mapPanel.getUIContext().addShutdownLatch(continueLatch);
+    mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
       // ignore interrupted exception
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     return selection;
   }
@@ -1301,13 +1301,13 @@ public class TripleAFrame extends MainGameFrame {
         });
       }
     });
-    mapPanel.getUIContext().addShutdownLatch(continueLatch);
+    mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     } finally {
-      mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     return selection;
   }
@@ -2032,7 +2032,7 @@ public class TripleAFrame extends MainGameFrame {
     });
     final int option = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(),
         "Move air units to carrier", JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
-        new String[] {"OK", "Cancel"}, "OK", getUIContext().getCountDownLatchHandler());
+        new String[] {"OK", "Cancel"}, "OK", getUiContext().getCountDownLatchHandler());
     if (option == JOptionPane.OK_OPTION) {
       return chooserRef.get().getSelected();
     }
@@ -2055,7 +2055,7 @@ public class TripleAFrame extends MainGameFrame {
     return showMapOnlyAction;
   }
 
-  public IUIContext getUIContext() {
+  public IUIContext getUiContext() {
     return uiContext;
   }
 

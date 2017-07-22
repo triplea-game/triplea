@@ -51,13 +51,13 @@ public class PoliticalStateOverview extends JPanel {
     this.uic = uiContext;
     this.data = data;
     this.editable = editable;
-    drawPoliticsUI();
+    drawPoliticsUi();
   }
 
   /**
    * does the actual adding of elements to this panel.
    */
-  private void drawPoliticsUI() {
+  private void drawPoliticsUi() {
     this.setLayout(new GridBagLayout());
     // draw horizontal labels
     int currentCell = 1;
@@ -209,7 +209,7 @@ public class PoliticalStateOverview extends JPanel {
    */
   public void redrawPolitics() {
     this.removeAll();
-    this.drawPoliticsUI();
+    this.drawPoliticsUi();
     this.revalidate();
   }
 

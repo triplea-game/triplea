@@ -9,10 +9,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-public class VCDrawable implements IDrawable {
+public class VcDrawable implements IDrawable {
   private final Territory location;
 
-  public VCDrawable(final Territory location) {
+  public VcDrawable(final Territory location) {
     this.location = location;
   }
 
@@ -20,8 +20,8 @@ public class VCDrawable implements IDrawable {
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
 
-    final Point point = mapData.getVCPlacementPoint(location);
-    drawImage(graphics, mapData.getVCImage(), point, bounds);
+    final Point point = mapData.getVcPlacementPoint(location);
+    drawImage(graphics, mapData.getVcImage(), point, bounds);
   }
 
   @Override
