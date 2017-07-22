@@ -9,13 +9,13 @@ import java.util.concurrent.CountDownLatch;
  * Is Thread Safe.
  */
 public class CountDownLatchHandler {
-  private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<>();
-  private volatile boolean m_isShutDown = false;
-  private final boolean m_releaseLatchOnInterrupt;
+  private final List<CountDownLatch> latchesToCloseOnShutdown = new ArrayList<>();
+  private volatile boolean isShutDown = false;
+  private final boolean releaseLatchOnInterrupt;
 
   public CountDownLatchHandler(final boolean releaseLatchOnInterrupt) {
     super();
-    m_releaseLatchOnInterrupt = releaseLatchOnInterrupt;
+    this.releaseLatchOnInterrupt = releaseLatchOnInterrupt;
   }
 
   /**
@@ -25,8 +25,8 @@ public class CountDownLatchHandler {
    * Otherwise does nothing.
    */
   public void interruptAll() {
-    if (m_releaseLatchOnInterrupt) {
-      for (final CountDownLatch latch : m_latchesToCloseOnShutdown) {
+    if (releaseLatchOnInterrupt) {
+      for (final CountDownLatch latch : latchesToCloseOnShutdown) {
         removeShutdownLatch(latch);
       }
     }
@@ -39,13 +39,13 @@ public class CountDownLatchHandler {
    * Otherwise does nothing.
    */
   public void interruptLatch(final CountDownLatch latch) {
-    if (m_releaseLatchOnInterrupt) {
+    if (releaseLatchOnInterrupt) {
       removeShutdownLatch(latch);
     }
   }
 
   public boolean isShutDown() {
-    return m_isShutDown;
+    return isShutDown;
   }
 
   /**
@@ -53,15 +53,15 @@ public class CountDownLatchHandler {
    */
   public void shutDown() {
     synchronized (this) {
-      if (m_isShutDown) {
+      if (isShutDown) {
         return;
       }
-      m_isShutDown = true;
+      isShutDown = true;
     }
-    for (final CountDownLatch latch : m_latchesToCloseOnShutdown) {
+    for (final CountDownLatch latch : latchesToCloseOnShutdown) {
       releaseLatch(latch);
     }
-    m_latchesToCloseOnShutdown.clear();
+    latchesToCloseOnShutdown.clear();
   }
 
   /**
@@ -82,11 +82,11 @@ public class CountDownLatchHandler {
    */
   public void addShutdownLatch(final CountDownLatch latch) {
     synchronized (this) {
-      if (m_isShutDown) {
+      if (isShutDown) {
         releaseLatch(latch);
         return;
       }
-      m_latchesToCloseOnShutdown.add(latch);
+      latchesToCloseOnShutdown.add(latch);
     }
   }
 
@@ -105,7 +105,7 @@ public class CountDownLatchHandler {
       if (!doNotRelease) {
         releaseLatch(latch);
       }
-      m_latchesToCloseOnShutdown.remove(latch);
+      latchesToCloseOnShutdown.remove(latch);
     }
   }
 }

@@ -13,74 +13,74 @@ import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.util.Util;
 
 public class UnitCategory implements Comparable<Object> {
-  private final UnitType m_type;
+  private final UnitType type;
   // Collection of UnitOwners, the type of our dependents, not the dependents
-  private Collection<UnitOwner> m_dependents;
+  private Collection<UnitOwner> dependents;
   // movement of the units
-  private final int m_movement;
+  private final int movement;
   // movement of the units
-  private final int m_transportCost;
+  private final int transportCost;
   // movement of the units
   // private final Territory m_originatingTerr;
-  private final PlayerID m_owner;
+  private final PlayerID owner;
   // the units in the category, may be duplicates.
-  private final List<Unit> m_units = new ArrayList<>();
-  private int m_damaged = 0;
-  private int m_bombingDamage = 0;
-  private boolean m_disabled = false;
+  private final List<Unit> units = new ArrayList<>();
+  private int damaged = 0;
+  private int bombingDamage = 0;
+  private boolean disabled = false;
 
   public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
     this(unit, dependents, movement, 0, 0, false, transportCost);
   }
 
   public UnitCategory(final UnitType type, final PlayerID owner) {
-    m_type = type;
-    m_dependents = Collections.emptyList();
-    m_movement = -1;
-    m_transportCost = -1;
-    m_owner = owner;
+    this.type = type;
+    dependents = Collections.emptyList();
+    movement = -1;
+    transportCost = -1;
+    this.owner = owner;
   }
 
   UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged,
       final int bombingDamage, final boolean disabled, final int transportCost) {
-    m_type = unit.getType();
-    m_movement = movement;
-    m_transportCost = transportCost;
-    m_owner = unit.getOwner();
-    m_damaged = damaged;
-    m_bombingDamage = bombingDamage;
-    m_disabled = disabled;
-    m_units.add(unit);
+    type = unit.getType();
+    this.movement = movement;
+    this.transportCost = transportCost;
+    owner = unit.getOwner();
+    this.damaged = damaged;
+    this.bombingDamage = bombingDamage;
+    this.disabled = disabled;
+    units.add(unit);
     createDependents(dependents);
   }
 
   public int getDamaged() {
-    return m_damaged;
+    return damaged;
   }
 
   public int getBombingDamage() {
-    return m_bombingDamage;
+    return bombingDamage;
   }
 
   public boolean hasDamageOrBombingUnitDamage() {
-    return m_damaged > 0 || m_bombingDamage > 0;
+    return damaged > 0 || bombingDamage > 0;
   }
 
   public boolean getDisabled() {
-    return m_disabled;
+    return disabled;
   }
 
   public int getHitPoints() {
-    return UnitAttachment.get(m_type).getHitPoints();
+    return UnitAttachment.get(type).getHitPoints();
   }
 
   private void createDependents(final Collection<Unit> dependents) {
-    m_dependents = new ArrayList<>();
+    this.dependents = new ArrayList<>();
     if (dependents == null) {
       return;
     }
     for (final Unit current : dependents) {
-      m_dependents.add(new UnitOwner(current));
+      this.dependents.add(new UnitOwner(current));
     }
   }
 
@@ -94,30 +94,30 @@ public class UnitCategory implements Comparable<Object> {
     }
     final UnitCategory other = (UnitCategory) o;
     // equality of categories does not compare the number
-    // of units in the category, so don't compare on m_units
+    // of units in the category, so don't compare on units
     final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
     // return equalsIgnoreDamaged && other.m_damaged == this.m_damaged;
-    return equalsIgnoreDamaged && other.m_damaged == this.m_damaged && other.m_bombingDamage == this.m_bombingDamage
-        && other.m_disabled == this.m_disabled;
+    return equalsIgnoreDamaged && other.damaged == this.damaged && other.bombingDamage == this.bombingDamage
+        && other.disabled == this.disabled;
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
-    final boolean equalsIgnoreDamaged = other.m_type.equals(this.m_type) && other.m_movement == this.m_movement
-        && other.m_owner.equals(this.m_owner) && Util.equals(this.m_dependents, other.m_dependents);
+    final boolean equalsIgnoreDamaged = other.type.equals(this.type) && other.movement == this.movement
+        && other.owner.equals(this.owner) && Util.equals(this.dependents, other.dependents);
     return equalsIgnoreDamaged;
   }
 
   @Override
   public int hashCode() {
-    return m_type.hashCode() | m_owner.hashCode();
+    return type.hashCode() | owner.hashCode();
   }
 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:")
-        .append(m_damaged).append(" bombingUnitDamage:").append(m_bombingDamage).append(" disabled:").append(m_disabled)
-        .append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
+    sb.append("Entry type:").append(type.getName()).append(" owner:").append(owner.getName()).append(" damaged:")
+        .append(damaged).append(" bombingUnitDamage:").append(bombingDamage).append(" disabled:").append(disabled)
+        .append(" dependents:").append(dependents).append(" movement:").append(movement);
     return sb.toString();
   }
 
@@ -125,35 +125,35 @@ public class UnitCategory implements Comparable<Object> {
    * Collection of UnitOwners, the type of our dependents, not the dependents.
    */
   public Collection<UnitOwner> getDependents() {
-    return m_dependents;
+    return dependents;
   }
 
   public List<Unit> getUnits() {
-    return m_units;
+    return units;
   }
 
   public int getMovement() {
-    return m_movement;
+    return movement;
   }
 
   public int getTransportCost() {
-    return m_transportCost;
+    return transportCost;
   }
 
   public PlayerID getOwner() {
-    return m_owner;
+    return owner;
   }
 
   public void addUnit(final Unit unit) {
-    m_units.add(unit);
+    units.add(unit);
   }
 
   void removeUnit(final Unit unit) {
-    m_units.remove(unit);
+    units.remove(unit);
   }
 
   public UnitType getType() {
-    return m_type;
+    return type;
   }
 
   @Override
@@ -162,27 +162,27 @@ public class UnitCategory implements Comparable<Object> {
       return -1;
     }
     final UnitCategory other = (UnitCategory) o;
-    if (!other.m_owner.equals(this.m_owner)) {
-      return this.m_owner.getName().compareTo(other.m_owner.getName());
+    if (!other.owner.equals(this.owner)) {
+      return this.owner.getName().compareTo(other.owner.getName());
     }
     final int typeCompare = new UnitTypeComparator().compare(this.getType(), other.getType());
     if (typeCompare != 0) {
       return typeCompare;
     }
-    if (m_movement != other.m_movement) {
-      return m_movement - other.m_movement;
+    if (movement != other.movement) {
+      return movement - other.movement;
     }
-    if (!Util.equals(this.m_dependents, other.m_dependents)) {
-      return m_dependents.toString().compareTo(other.m_dependents.toString());
+    if (!Util.equals(this.dependents, other.dependents)) {
+      return dependents.toString().compareTo(other.dependents.toString());
     }
-    if (this.m_damaged != other.m_damaged) {
-      return this.m_damaged - other.m_damaged;
+    if (this.damaged != other.damaged) {
+      return this.damaged - other.damaged;
     }
-    if (this.m_bombingDamage != other.m_bombingDamage) {
-      return this.m_bombingDamage - other.m_bombingDamage;
+    if (this.bombingDamage != other.bombingDamage) {
+      return this.bombingDamage - other.bombingDamage;
     }
-    if (this.m_disabled != other.m_disabled) {
-      if (m_disabled) {
+    if (this.disabled != other.disabled) {
+      if (disabled) {
         return 1;
       }
       return -1;
