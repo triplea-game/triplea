@@ -93,6 +93,30 @@ public class GameEnginePropertyReaderTest {
         .thenReturn(TestData.fakeProps);
   }
 
+  @Test
+  public void useNewSaveGameFormat_ShouldReturnTrueWhenPropertyValueIsCaseSensitiveTrue() {
+    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
+        .thenReturn("true");
+
+    assertThat(testObj.useNewSaveGameFormat(), is(true));
+  }
+
+  @Test
+  public void useNewSaveGameFormat_ShouldReturnTrueWhenPropertyValueIsCaseInsensitiveTrue() {
+    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
+        .thenReturn("True");
+
+    assertThat(testObj.useNewSaveGameFormat(), is(true));
+  }
+
+  @Test
+  public void useNewSaveGameFormat_ShouldReturnFalseWhenPropertyValueIsAbsent() {
+    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
+        .thenReturn("");
+
+    assertThat(testObj.useNewSaveGameFormat(), is(false));
+  }
+
   private interface TestData {
     String fakeVersionString = "12.12.12.12";
     Version fakeVersion = new Version(fakeVersionString);
