@@ -16,7 +16,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TooltipProperties;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 
 /**
  * A prototype for units.
@@ -83,7 +83,7 @@ public class UnitType extends NamedAttachable {
       return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
           (playerId == null ? PlayerID.NULL_PLAYERID : playerId), true, false);
     } else {
-      return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
+      return LocalizeHtml.localizeImgLinksInHtml(customTip.trim());
     }
   }
 

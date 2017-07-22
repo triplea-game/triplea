@@ -50,7 +50,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.IllegalCharacterRemover;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 
 class ExportMenu {
 
@@ -409,7 +409,7 @@ class ExportMenu {
       try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(
             HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
-                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
       }
