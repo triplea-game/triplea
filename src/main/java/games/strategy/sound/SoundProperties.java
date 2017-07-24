@@ -19,7 +19,6 @@ class SoundProperties {
   static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
   static final String DEFAULT_ERA_FOLDER = "ww2";
   static final String GENERIC_FOLDER = "generic";
-  static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   private static SoundProperties s_op = null;
   private static Instant timestamp = Instant.EPOCH;
   private final Properties m_properties = new Properties();
