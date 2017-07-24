@@ -40,21 +40,16 @@ import games.strategy.util.memento.MementoImportException;
 import games.strategy.util.memento.MementoImporter;
 
 /**
- * <p>
- * Title: TripleA
- * </p>
- * <p>
- * Description: Responsible for loading saved games, new games from xml, and saving games.
- * </p>
+ * Responsible for loading saved games, new games from xml, and saving games.
  */
-public class GameDataManager {
+public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
   private static final String DELEGATE_LIST_END = "<EndDelegateList>";
 
-  public GameDataManager() {}
+  private GameDataManager() {}
 
-  public GameData loadGame(final File savedGameFile) throws IOException {
+  public static GameData loadGame(final File savedGameFile) throws IOException {
     try (
         FileInputStream fileInputStream = new FileInputStream(savedGameFile);
         InputStream input = new BufferedInputStream(fileInputStream)) {
@@ -68,7 +63,7 @@ public class GameDataManager {
     }
   }
 
-  public GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
+  public static GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
@@ -175,8 +170,11 @@ public class GameDataManager {
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
+   *
+   * @param originalEngineVersion The engine version used to save the specified game data.
+   * @param data The game data to be updated.
    */
-  private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
+  private static void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
     // whenever this gets out of date, just comment out (but keep as an example, by commenting out)
     /*
      * example1:
@@ -225,11 +223,12 @@ public class GameDataManager {
     }
   }
 
-  public void saveGame(final OutputStream sink, final GameData data) throws IOException {
+  public static void saveGame(final OutputStream sink, final GameData data) throws IOException {
     saveGame(sink, data, true);
   }
 
-  void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo) throws IOException {
+  static void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo)
+      throws IOException {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
