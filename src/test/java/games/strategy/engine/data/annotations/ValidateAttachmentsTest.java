@@ -169,7 +169,7 @@ public class ValidateAttachmentsTest {
   }
 
   // file to find classes or directory
-  static FileFilter s_classOrDirectory = file -> file.isDirectory() || file.getName().endsWith(".class");
+  static FileFilter classOrDirectory = file -> file.isDirectory() || file.getName().endsWith(".class");
 
   /**
    * Recursive method to find all classes that implement IAttachment and validate that they use the @GameProperty
@@ -181,7 +181,7 @@ public class ValidateAttachmentsTest {
   private static String findAttachmentsAndValidate(final File file) {
     final StringBuilder sb = new StringBuilder("");
     if (file.isDirectory()) {
-      final File[] childFiles = file.listFiles(s_classOrDirectory);
+      final File[] childFiles = file.listFiles(classOrDirectory);
       for (final File childFile : childFiles) {
         sb.append(findAttachmentsAndValidate(childFile));
       }

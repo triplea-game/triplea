@@ -20,7 +20,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
 public class MessengerTest {
-  private static int SERVER_PORT = -1;
+  private int serverPort = -1;
   private IServerMessenger serverMessenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
@@ -30,14 +30,14 @@ public class MessengerTest {
 
   @Before
   public void setUp() throws IOException {
-    SERVER_PORT = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverPort = TestUtil.getUniquePort();
+    serverMessenger = new ServerMessenger("Server", serverPort);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
     final String mac = MacFinder.getHashedMacAddress();
-    client1Messenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     client1Messenger.addMessageListener(client1MessageListener);
-    client2Messenger = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
+    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);
     client2Messenger.addMessageListener(client2MessageListener);
     assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());
@@ -275,7 +275,7 @@ public class MessengerTest {
     for (int i = 0; i < count; i++) {
       final String name = "newClient" + i;
       final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger("localhost", SERVER_PORT, name, mac);
+      final ClientMessenger messenger = new ClientMessenger("localhost", serverPort, name, mac);
       final MessageListener listener = new MessageListener();
       messenger.addMessageListener(listener);
       clients.add(messenger);

@@ -27,7 +27,7 @@ import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
 public class ChatTest {
-  private static int SERVER_PORT = -1;
+  private int serverPort = -1;
   private IServerMessenger serverMessenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
@@ -47,12 +47,12 @@ public class ChatTest {
 
   @Before
   public void setUp() throws IOException {
-    SERVER_PORT = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverPort = TestUtil.getUniquePort();
+    serverMessenger = new ServerMessenger("Server", serverPort);
     serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
-    client1Messenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-    client2Messenger = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
+    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
+    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);
     serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
     serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
     serverChannelMessenger = new ChannelMessenger(serverUnifiedMessenger);
