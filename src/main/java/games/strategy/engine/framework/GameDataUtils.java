@@ -20,13 +20,12 @@ public class GameDataUtils {
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
-      final GameDataManager manager = new GameDataManager();
       ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-      manager.saveGame(sink, data, copyDelegates);
+      GameDataManager.saveGame(sink, data, copyDelegates);
       sink.close();
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       sink = null;
-      return manager.loadGame(source, null);
+      return GameDataManager.loadGame(source, null);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return null;

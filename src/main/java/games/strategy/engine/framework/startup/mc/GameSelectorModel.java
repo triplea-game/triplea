@@ -103,7 +103,6 @@ public class GameSelectorModel extends Observable {
       }
       return;
     }
-    final GameDataManager manager = new GameDataManager();
     GameData newData;
     final AtomicReference<String> gameName = new AtomicReference<>();
     try {
@@ -114,7 +113,7 @@ public class GameSelectorModel extends Observable {
         }
       } else {
         // try to load it as a saved game whatever the extension
-        newData = manager.loadGame(file);
+        newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
         m_fileName = file.getName();
@@ -137,10 +136,9 @@ public class GameSelectorModel extends Observable {
   }
 
   public GameData getGameData(final InputStream input) {
-    final GameDataManager manager = new GameDataManager();
     GameData newData;
     try {
-      newData = manager.loadGame(input, null);
+      newData = GameDataManager.loadGame(input, null);
       if (newData != null) {
         return newData;
       }

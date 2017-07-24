@@ -324,7 +324,7 @@ public class ServerLauncher extends AbstractLauncher {
 
   private static byte[] gameDataToBytes(final GameData data) throws IOException {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-    new GameDataManager().saveGame(sink, data);
+    GameDataManager.saveGame(sink, data);
     sink.flush();
     sink.close();
     return sink.toByteArray();

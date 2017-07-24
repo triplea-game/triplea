@@ -24,10 +24,9 @@ public class GameDataManagerTest {
   @Test
   public void testLoadStoreKeepsGameUuid() throws IOException {
     final GameData data = new GameData();
-    final GameDataManager m = new GameDataManager();
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    m.saveGame(sink, data);
-    final GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
+    GameDataManager.saveGame(sink, data);
+    final GameData loaded = GameDataManager.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
   }
 
