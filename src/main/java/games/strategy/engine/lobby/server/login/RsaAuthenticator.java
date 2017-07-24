@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -64,22 +65,22 @@ public class RsaAuthenticator {
    * Adds public key of a generated key-pair to the challenge map
    * and stores the private key in a map.
    */
-  static void appendPublicKey(final Map<String, String> challenge) {
-    challenge.put(RSA_PUBLIC_KEY, storeKeypair());
+  static Map<String, String> generatePublicKey() {
+    return Collections.singletonMap(RSA_PUBLIC_KEY, storeKeyPair());
   }
 
-  private static String storeKeypair() {
+  private static String storeKeyPair() {
     KeyPair keyPair;
     String publicKey;
     do {
-      keyPair = generateKeypair();
+      keyPair = generateKeyPair();
       publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
     } while (rsaKeyMap.getIfPresent(publicKey) != null);
     rsaKeyMap.put(publicKey, keyPair.getPrivate());
     return publicKey;
   }
 
-  private static KeyPair generateKeypair() {
+  private static KeyPair generateKeyPair() {
     try {
       final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA);
       keyGen.initialize(4096);
@@ -139,11 +140,10 @@ public class RsaAuthenticator {
    * This method adds the encrypted password (using the specified public key and password)
    * to the specified response map.
    */
-  public static void appendEncryptedPassword(
-      final Map<String, String> response,
+  public static Map<String, String> getEncryptedPassword(
       final Map<String, String> challenge,
       final String password) {
-    response.put(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
+    return Collections.singletonMap(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
   }
 
   @VisibleForTesting

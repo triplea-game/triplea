@@ -100,7 +100,7 @@ public class LobbyLogin {
                 final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                 props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
                 if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
-                  RsaAuthenticator.appendEncryptedPassword(props, challengProperties, panel.getPassword());
+                  props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
                 }
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
@@ -165,7 +165,7 @@ public class LobbyLogin {
               // TODO: Don't send the md5-hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
               if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
-                RsaAuthenticator.appendEncryptedPassword(props, challengProperties, createAccount.getPassword());
+                props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, createAccount.getPassword()));
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;

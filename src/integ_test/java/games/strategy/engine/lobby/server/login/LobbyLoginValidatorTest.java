@@ -44,13 +44,13 @@ public class LobbyLoginValidatorTest {
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
     assertNull(generateChallenge(name, null).apply(challenge -> {
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       return response;
     }));
 
     // try to create a duplicate user, should not work
     assertNotNull(generateChallenge(name, null).apply(challenge -> {
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, "wrong");
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"));
       return response;
     }));
     assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
@@ -115,13 +115,13 @@ public class LobbyLoginValidatorTest {
         generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     assertNull(challengeFunction.apply(challenge -> {
       persistentChallenge.putAll(challenge);
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       return response;
     }));
     // with a bad password
     assertNotNull(challengeFunction.apply(challenge -> {
       final Map<String, String> badPassMap = new HashMap<>(response);
-      RsaAuthenticator.appendEncryptedPassword(badPassMap, persistentChallenge, "wrong");
+      badPassMap.putAll(RsaAuthenticator.getEncryptedPassword(persistentChallenge, "wrong"));
       return badPassMap;
     }));
     // with a non existent user
@@ -137,7 +137,7 @@ public class LobbyLoginValidatorTest {
     final ChallengeResultFunction challengeFunction = generateChallenge(name, new HashedPassword(hashedPassword));
     assertNull(challengeFunction.apply(challenge -> {
       response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
       return response;
     }));
@@ -154,7 +154,7 @@ public class LobbyLoginValidatorTest {
         generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     final String errorMessage = challengeFunction.apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       RsaAuthenticator.invalidateAll();
       return response;
     });
@@ -169,7 +169,7 @@ public class LobbyLoginValidatorTest {
     final ChallengeResultFunction challengeFunction =
         generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
     assertNull(challengeFunction.apply(challenge -> {
-      RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       return response;
     }));
     assertNotNull(challengeFunction.apply(challenge -> response));

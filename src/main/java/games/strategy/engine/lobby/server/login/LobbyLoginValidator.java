@@ -50,7 +50,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
-    RsaAuthenticator.appendPublicKey(rVal);
+    rVal.putAll(RsaAuthenticator.generatePublicKey());
     return rVal;
   }
 

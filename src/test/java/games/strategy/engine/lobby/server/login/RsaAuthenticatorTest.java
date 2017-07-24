@@ -37,10 +37,10 @@ public class RsaAuthenticatorTest {
   @Test
   public void testExpire() {
     final Map<String, String> challenge = new HashMap<>();
-    RsaAuthenticator.appendPublicKey(challenge);
+    challenge.putAll(RsaAuthenticator.generatePublicKey());
     RsaAuthenticator.invalidateAll();
     final Map<String, String> response = new HashMap<>();
-    RsaAuthenticator.appendEncryptedPassword(response, challenge, "something");
+    response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "something"));
     final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
       fail("The password should never be successfully encrypted");
       return null;
@@ -52,10 +52,10 @@ public class RsaAuthenticatorTest {
   @Test
   public void testKeyStorage() {
     final Map<String, String> challenge = new HashMap<>();
-    RsaAuthenticator.appendPublicKey(challenge);
+    challenge.putAll(RsaAuthenticator.generatePublicKey());
     final Map<String, String> response = new HashMap<>();
     final String password = "something";
-    RsaAuthenticator.appendEncryptedPassword(response, challenge, password);
+    response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
 
     assertNull(RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
       assertEquals(Util.sha512(password), pass);
