@@ -32,7 +32,7 @@ import games.strategy.test.TestUtil;
  * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
 public class VaultTest {
-  private static int SERVER_PORT = -1;
+  private int serverPort = -1;
   private IServerMessenger serverMessenger;
   private IMessenger clientMessenger;
   private Vault clientVault;
@@ -40,11 +40,11 @@ public class VaultTest {
 
   @Before
   public void setUp() throws IOException {
-    SERVER_PORT = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverPort = TestUtil.getUniquePort();
+    serverMessenger = new ServerMessenger("Server", serverPort);
     serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
-    clientMessenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
     final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
     serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));
