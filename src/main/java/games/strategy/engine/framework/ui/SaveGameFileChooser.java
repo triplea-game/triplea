@@ -65,11 +65,11 @@ public class SaveGameFileChooser extends JFileChooser {
     super();
     setFileFilter(createGameDataFileFilter());
     ensureMapsFolderExists();
-    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
+    setCurrentDirectory(new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()));
   }
 
   public static void ensureMapsFolderExists() {
-    ensureDirectoryExists(new File(ClientContext.folderSettings().getSaveGamePath()));
+    ensureDirectoryExists(new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()));
   }
 
   private static void ensureDirectoryExists(final File f) {

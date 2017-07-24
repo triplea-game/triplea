@@ -348,7 +348,7 @@ public class ServerGame extends AbstractGame {
 
   private void autoSave(final String fileName) {
     SaveGameFileChooser.ensureMapsFolderExists();
-    final File autoSaveDir = new File(ClientContext.folderSettings().getSaveGamePath()
+    final File autoSaveDir = new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()
         + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();

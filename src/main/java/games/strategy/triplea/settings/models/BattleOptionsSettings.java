@@ -1,11 +1,10 @@
-package games.strategy.triplea.settings.battle.options;
+package games.strategy.triplea.settings.models;
 
-import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.triplea.ui.BattleDisplay;
 
-public class BattleOptionsSettings implements HasDefaults {
+public class BattleOptionsSettings {
 
   private static final boolean DEFAULT_CONFIRM_ENEMY_CASUALTIES = false;
   private static final boolean DEFAULT_CONFIRM_DEFENSIVE_ROLLS = false;
@@ -36,11 +35,5 @@ public class BattleOptionsSettings implements HasDefaults {
   public void setFocusOnOwnCasualties(final boolean value) {
     BattleDisplay.setFocusOnOwnCasualtiesNotification(value);
     SystemPreferences.put(SystemPreferenceKey.FOCUS_ON_OWN_CASUALTIES, value);
-  }
-
-
-  @Override
-  public void setToDefault() {
-    setConfirmEnemyCasualties(DEFAULT_CONFIRM_ENEMY_CASUALTIES);
   }
 }

@@ -1,19 +1,13 @@
-package games.strategy.triplea.settings.ai;
+package games.strategy.triplea.settings.models;
 
-import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
-public class AiSettings implements HasDefaults {
+public class AiSettings {
 
 
   static final int DEFAULT_AI_PAUSE_DURACTION = 400;
   private static final boolean DEFAULT_SHOW_BATTLE_BETWEEN_AI = true;
-
-  @Override
-  public void setToDefault() {
-    setAiPauseDuration(String.valueOf(DEFAULT_AI_PAUSE_DURACTION));
-  }
 
   public int getAiPauseDuration() {
     return SystemPreferences.get(SystemPreferenceKey.AI_PAUSE_DURACTION, DEFAULT_AI_PAUSE_DURACTION);

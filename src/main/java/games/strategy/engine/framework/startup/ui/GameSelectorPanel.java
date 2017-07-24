@@ -351,7 +351,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       SaveGameFileChooser.ensureMapsFolderExists();
-      fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
+      fileDialog.setDirectory(new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

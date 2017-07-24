@@ -1,4 +1,4 @@
-package games.strategy.triplea.settings;
+package games.strategy.triplea.settings.validation;
 
 public class IntegerValueRange {
 

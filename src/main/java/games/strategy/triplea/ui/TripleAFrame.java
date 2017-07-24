@@ -141,7 +141,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.models.ScrollSettings;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -212,7 +212,7 @@ public class TripleAFrame extends MainGameFrame {
   /** Creates new TripleAFrame. */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
-    scrollSettings = ClientContext.scrollSettings();
+    scrollSettings = ClientContext.clientSettings().getScrollSettings();
     this.game = game;
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);

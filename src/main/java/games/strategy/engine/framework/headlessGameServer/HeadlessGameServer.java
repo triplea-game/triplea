@@ -202,7 +202,8 @@ public class HeadlessGameServer {
           SaveGameFileChooser.ensureMapsFolderExists();
           try {
             iGame.saveGame(new File(
-                ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName()));
+                ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+                SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
           }
@@ -242,7 +243,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // (48 hours max)
-    Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
+    final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {

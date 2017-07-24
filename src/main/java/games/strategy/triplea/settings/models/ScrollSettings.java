@@ -1,27 +1,16 @@
-package games.strategy.triplea.settings.scrolling;
+package games.strategy.triplea.settings.models;
 
-import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
-public class ScrollSettings implements HasDefaults {
+public class ScrollSettings {
 
-  static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
-  static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
+  public static final int DEFAULT_MAP_EDGE_SCROLL_SPEED = 30;
+  public static final int DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE = 30;
 
-  static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
-  static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
-  static final int DEFAULT_WHEEL_SCROLL_AMOUNT = 60;
-
-  @Override
-  public void setToDefault() {
-    setMapEdgeScrollSpeed(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_SPEED));
-    setMapEdgeScrollZoneSize(String.valueOf(DEFAULT_MAP_EDGE_SCROLL_ZONE_SIZE));
-
-    setArrowKeyScrollSpeed(String.valueOf(DEFAULT_ARROW_KEY_SCROLL_SPEED));
-    setFasterArrowKeyScrollMultiplier(String.valueOf(DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER));
-    setWheelScrollAmount(String.valueOf(DEFAULT_WHEEL_SCROLL_AMOUNT));
-  }
+  public static final int DEFAULT_ARROW_KEY_SCROLL_SPEED = 70;
+  public static final int DEFAULT_FASTER_ARROW_KEY_SCROLL_MULTIPLIER = 3;
+  public static final int DEFAULT_WHEEL_SCROLL_AMOUNT = 60;
 
   private static int getProp(final SystemPreferenceKey key, final int defaultValue) {
     return SystemPreferences.get(key, defaultValue);

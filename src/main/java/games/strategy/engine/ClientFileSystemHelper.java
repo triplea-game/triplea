@@ -156,7 +156,7 @@ public final class ClientFileSystemHelper {
    *     retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final String path = ClientContext.folderSettings().getDownloadedMapPath();
+    final String path = ClientContext.clientSettings().getFolderSettings().getDownloadedMapPath();
 
 
     final File mapsFolder = new File(path);

@@ -134,7 +134,7 @@ public class ServerLauncher extends AbstractLauncher {
       m_gameData.doPreGameStartDataModifications(m_playerListing);
       s_logger.fine("Starting server");
       m_abortLaunch = testShouldWeAbort();
-      byte[] gameDataAsBytes;
+      final byte[] gameDataAsBytes;
       try {
         gameDataAsBytes = gameDataToBytes(m_gameData);
       } catch (final IOException e) {
@@ -253,8 +253,9 @@ public class ServerLauncher extends AbstractLauncher {
                 // then crashing out, then launching, etc.
                 m_serverModel.setAllPlayersToNullNodes();
               }
-              final File f1 =
-                  new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+              final File f1 = new File(
+                  ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+                  SaveGameFileChooser.getAutoSaveFileName());
               if (f1.exists()) {
                 m_gameSelectorModel.load(f1, null);
               } else {
@@ -374,8 +375,8 @@ public class ServerLauncher extends AbstractLauncher {
     SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = m_headless
-        ? new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
-        : new File(ClientContext.folderSettings().getSaveGamePath(), getConnectionLostFileName());
+        ? new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
+        : new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {

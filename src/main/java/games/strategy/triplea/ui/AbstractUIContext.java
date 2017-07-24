@@ -56,7 +56,7 @@ public abstract class AbstractUIContext implements IUIContext {
   }
 
   public static int getAiPauseDuration() {
-    return ClientContext.aiSettings().getAiPauseDuration();
+    return ClientContext.clientSettings().getAiSettings().getAiPauseDuration();
   }
 
   @Override
@@ -408,12 +408,12 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowBattlesBetweenAIs() {
-    return ClientContext.aiSettings().showBattlesBetweenAi();
+    return ClientContext.clientSettings().getAiSettings().showBattlesBetweenAi();
   }
 
   @Override
   public void setShowBattlesBetweenAIs(final boolean showBattlesBetweenAi) {
-    ClientContext.aiSettings().setShowBattlesBetweenAi(showBattlesBetweenAi);
+    ClientContext.clientSettings().getAiSettings().setShowBattlesBetweenAi(showBattlesBetweenAi);
   }
 
   @Override

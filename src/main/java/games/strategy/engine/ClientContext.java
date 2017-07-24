@@ -7,6 +7,9 @@ import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.map.download.MapDownloadController;
+import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
+import games.strategy.internal.persistence.serializable.VersionProxy;
+import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.triplea.settings.ai.AiSettings;
 import games.strategy.triplea.settings.battle.calc.BattleCalcSettings;
 import games.strategy.triplea.settings.battle.options.BattleOptionsSettings;
@@ -50,12 +53,8 @@ public final class ClientContext {
 
   private final GameEnginePropertyReader gameEnginePropertyReader = new GameEnginePropertyReader();
   private final MapDownloadController mapDownloadController = new MapDownloadController();
-  private final ScrollSettings scrollSettings = new ScrollSettings();
-  private final FolderSettings folderSettings = new FolderSettings();
-  private final AiSettings aiSettings = new AiSettings();
-  private final BattleCalcSettings battleCalcSettings = new BattleCalcSettings();
-  private final BattleOptionsSettings battleOptionsSettings = new BattleOptionsSettings();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
+  private final ClientSettings clientSettings = new ClientSettings();
 
   private ClientContext() {}
 
@@ -71,24 +70,8 @@ public final class ClientContext {
     return instance.mapDownloadController;
   }
 
-  public static ScrollSettings scrollSettings() {
-    return instance.scrollSettings;
-  }
-
-  public static FolderSettings folderSettings() {
-    return instance.folderSettings;
-  }
-
-  public static AiSettings aiSettings() {
-    return instance.aiSettings;
-  }
-
-  public static BattleCalcSettings battleCalcSettings() {
-    return instance.battleCalcSettings;
-  }
-
-  public static BattleOptionsSettings battleOptionsSettings() {
-    return instance.battleOptionsSettings;
+  public static ClientSettings clientSettings() {
+    return instance.clientSettings;
   }
 
   public static Version engineVersion() {

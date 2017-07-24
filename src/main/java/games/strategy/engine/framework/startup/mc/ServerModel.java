@@ -391,19 +391,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       final File save;
       if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+        save = new File(
+            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+            SaveGameFileChooser.getAutoSaveFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
+        save = new File(
+            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+            SaveGameFileChooser.getAutoSaveOddFileName());
       } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
-        save =
-            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
+        save = new File(
+            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+            SaveGameFileChooser.getAutoSaveEvenFileName());
       } else {
         return;
       }
-      if (save == null || !save.exists()) {
+      if (!save.exists()) {
         return;
       }
-      System.out.println("Changing to autosave of type: " + typeOfAutosave.toString());
       headless.loadGameSave(save);
     }
 
@@ -415,7 +419,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (headless == null || bytes == null) {
         return;
       }
-      System.out.println("Changing to user savegame: " + fileName);
       try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
           InputStream oinput = new BufferedInputStream(input)) {
         headless.loadGameSave(oinput, fileName);

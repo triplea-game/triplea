@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.models.ScrollSettings;
 
 /**
  * A large image that can be scrolled according to a ImageScrollModel.
@@ -82,7 +82,7 @@ public class ImageScrollerLargeView extends JComponent {
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
-    scrollSettings = ClientContext.scrollSettings();
+    scrollSettings = ClientContext.clientSettings().getScrollSettings();
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());

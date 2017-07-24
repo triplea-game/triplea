@@ -1,17 +1,11 @@
-package games.strategy.triplea.settings.battle.calc;
+package games.strategy.triplea.settings.models;
 
-import games.strategy.triplea.settings.HasDefaults;
 import games.strategy.triplea.settings.SystemPreferenceKey;
 import games.strategy.triplea.settings.SystemPreferences;
 
-public class BattleCalcSettings implements HasDefaults {
+public class BattleCalcSettings {
   static final int DEFAULT_SIMULATION_COUNT_DICE = 2000;
   static final int DEFAULT_SIMULATION_COUNT_LOW_LUCK = 500;
-
-  @Override
-  public void setToDefault() {
-    setSimulationCountDice(String.valueOf(DEFAULT_SIMULATION_COUNT_DICE));
-  }
 
   public int getSimulationCountDice() {
     return SystemPreferences.get(SystemPreferenceKey.BATTLE_CALC_SIMULATION_COUNT_DICE, DEFAULT_SIMULATION_COUNT_DICE);
