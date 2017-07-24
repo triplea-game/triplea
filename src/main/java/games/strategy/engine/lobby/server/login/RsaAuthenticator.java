@@ -138,14 +138,22 @@ public class RsaAuthenticator {
 
   /**
    * Returns UTF-8 encoded bytes of a "salted" SHA-512 hash of the given input string.
+   * See {@link #hashPasswordWithSalt(String)} for more information.
+   */
+  private static byte[] getHashedBytes(final String input) {
+    return hashPasswordWithSalt(input).getBytes(StandardCharsets.UTF_8);
+  }
+  
+  /**
    * The server doesn't need to know the actual password, so this hash essentially replaces
    * the real password. In case any other server authentication system SHA-512 hashes
    * passwords before sending them, we are applying a 'TripleA' prefix to the given String
    * before hashing. This way the hash cannot be used on other websites even if the password
    * and the authentication system is the same.
    */
-  private static byte[] getHashedBytes(final String input) {
-    return Util.sha512(PSEUDO_SALT + input).getBytes(StandardCharsets.UTF_8);
+  @VisibleForTesting
+  static String hashPasswordWithSalt(final String password) {
+    return Util.sha512(PSEUDO_SALT + password);
   }
 
   /**

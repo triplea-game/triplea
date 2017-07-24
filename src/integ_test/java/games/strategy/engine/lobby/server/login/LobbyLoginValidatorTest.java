@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
+import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -53,7 +54,7 @@ public class LobbyLoginValidatorTest {
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
+    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
   }
 
   @Test
@@ -112,7 +113,7 @@ public class LobbyLoginValidatorTest {
     final Map<String, String> response = new HashMap<>();
     final Map<String, String> persistentChallenge = new HashMap<>();
     final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
+        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
     assertNull(challengeFunction.apply(challenge -> {
       persistentChallenge.putAll(challenge);
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
@@ -141,7 +142,7 @@ public class LobbyLoginValidatorTest {
       assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(Util.sha512(password), new DbUserController().getPassword(name).value));
+    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
     response.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
     assertNull(challengeFunction.apply(challenge -> response));
     assertEquals(hashedPassword, new DbUserController().getLegacyPassword(name).value);
@@ -151,7 +152,7 @@ public class LobbyLoginValidatorTest {
   public void testTimeout() {
     final String password = "foo";
     final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
+        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
     final String errorMessage = challengeFunction.apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
@@ -167,7 +168,7 @@ public class LobbyLoginValidatorTest {
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
     final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(Util.sha512(password), BCrypt.gensalt())));
+        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
     assertNull(challengeFunction.apply(challenge -> {
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       return response;
@@ -200,9 +201,7 @@ public class LobbyLoginValidatorTest {
     };
   }
 
-  private interface ChallengeResponseFunction extends Function<Map<String, String>, Map<String, String>> {
-  }
-
-  private interface ChallengeResultFunction extends Function<ChallengeResponseFunction, String> {
+  private interface ChallengeResultFunction
+      extends Function<Function<Map<String, String>, Map<String, String>>, String> {
   }
 }

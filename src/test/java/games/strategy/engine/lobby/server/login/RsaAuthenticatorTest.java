@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
+import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -11,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import games.strategy.util.Util;
 
 public class RsaAuthenticatorTest {
 
@@ -58,7 +57,7 @@ public class RsaAuthenticatorTest {
     response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
 
     assertNull(RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
-      assertEquals(Util.sha512(password), pass);
+      assertEquals(hashPasswordWithSalt(password), pass);
       return null;
     }));
     final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
