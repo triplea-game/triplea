@@ -15,7 +15,19 @@ import games.strategy.engine.ClientContext;
  * A collection of utilities for working with game data files.
  */
 public final class GameDataFileUtils {
+  private static final IOCase DEFAULT_IO_CASE = IOCase.SYSTEM;
+
+  private static final SaveGameFormat DEFAULT_SAVE_GAME_FORMAT =
+      ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
+          ? SaveGameFormat.NEW
+          : SaveGameFormat.CURRENT;
+
   private GameDataFileUtils() {}
+
+  @VisibleForTesting
+  enum SaveGameFormat {
+    CURRENT, NEW;
+  }
 
   /**
    * Appends the game data file extension to the specified file name.
@@ -27,7 +39,12 @@ public final class GameDataFileUtils {
   public static String addExtension(final String fileName) {
     checkNotNull(fileName);
 
-    return fileName + getExtension();
+    return addExtension(fileName, DEFAULT_SAVE_GAME_FORMAT);
+  }
+
+  @VisibleForTesting
+  static String addExtension(final String fileName, final SaveGameFormat saveGameFormat) {
+    return fileName + getExtension(saveGameFormat);
   }
 
   /**
@@ -41,22 +58,25 @@ public final class GameDataFileUtils {
   public static String addExtensionIfAbsent(final String fileName) {
     checkNotNull(fileName);
 
-    return addExtensionIfAbsent(fileName, IOCase.SYSTEM);
+    return addExtensionIfAbsent(fileName, DEFAULT_SAVE_GAME_FORMAT, DEFAULT_IO_CASE);
   }
 
   @VisibleForTesting
-  static String addExtensionIfAbsent(final String fileName, final IOCase ioCase) {
-    return ioCase.checkEndsWith(fileName, getExtension()) ? fileName : addExtension(fileName);
+  static String addExtensionIfAbsent(final String fileName, final SaveGameFormat saveGameFormat, final IOCase ioCase) {
+    return ioCase.checkEndsWith(fileName, getExtension(saveGameFormat))
+        ? fileName
+        : addExtension(fileName, saveGameFormat);
   }
 
-  private static Collection<String> getCandidateExtensions() {
-    return ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
-        ? getNewCandidateExtensions()
-        : getCurrentCandidateExtensions();
-  }
-
-  private static Collection<String> getNewCandidateExtensions() {
-    return Arrays.asList(getExtension());
+  private static Collection<String> getCandidateExtensions(final SaveGameFormat saveGameFormat) {
+    switch (saveGameFormat) {
+      case CURRENT:
+        return getCurrentCandidateExtensions();
+      case NEW:
+        return getNewCandidateExtensions();
+      default:
+        throw new AssertionError(String.format("unknown save game format (%s)", saveGameFormat));
+    }
   }
 
   private static Collection<String> getCurrentCandidateExtensions() {
@@ -66,7 +86,11 @@ public final class GameDataFileUtils {
     // files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
-    return Arrays.asList(getExtension(), legacyExtension, macOsAlternativeExtension);
+    return Arrays.asList(getExtension(SaveGameFormat.CURRENT), legacyExtension, macOsAlternativeExtension);
+  }
+
+  private static Collection<String> getNewCandidateExtensions() {
+    return Arrays.asList(getExtension(SaveGameFormat.NEW));
   }
 
   /**
@@ -75,17 +99,26 @@ public final class GameDataFileUtils {
    * @return The game data file extension including the leading period.
    */
   public static String getExtension() {
-    return ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
-        ? getNewExtension()
-        : getCurrentExtension();
+    return getExtension(DEFAULT_SAVE_GAME_FORMAT);
   }
 
-  private static String getNewExtension() {
-    return ".tsvgx";
+  private static String getExtension(final SaveGameFormat saveGameFormat) {
+    switch (saveGameFormat) {
+      case CURRENT:
+        return getCurrentExtension();
+      case NEW:
+        return getNewExtension();
+      default:
+        throw new AssertionError(String.format("unknown save game format (%s)", saveGameFormat));
+    }
   }
 
   private static String getCurrentExtension() {
     return ".tsvg";
+  }
+
+  private static String getNewExtension() {
+    return ".tsvgx";
   }
 
   /**
@@ -98,11 +131,12 @@ public final class GameDataFileUtils {
   public static boolean isCandidateFileName(final String fileName) {
     checkNotNull(fileName);
 
-    return isCandidateFileName(fileName, IOCase.SYSTEM);
+    return isCandidateFileName(fileName, DEFAULT_SAVE_GAME_FORMAT, DEFAULT_IO_CASE);
   }
 
   @VisibleForTesting
-  static boolean isCandidateFileName(final String fileName, final IOCase ioCase) {
-    return getCandidateExtensions().stream().anyMatch(extension -> ioCase.checkEndsWith(fileName, extension));
+  static boolean isCandidateFileName(final String fileName, final SaveGameFormat saveGameFormat, final IOCase ioCase) {
+    return getCandidateExtensions(saveGameFormat).stream()
+        .anyMatch(extension -> ioCase.checkEndsWith(fileName, extension));
   }
 }
