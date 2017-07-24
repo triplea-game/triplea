@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,20 +18,12 @@ public class RsaAuthenticatorTest {
 
   @Test
   public void testCanProcess() {
-    final Map<String, String> map = new HashMap<>();
-    map.put(RsaAuthenticator.RSA_PUBLIC_KEY, "");
-    assertTrue(RsaAuthenticator.canProcessChallenge(map));
-    map.clear();
-    map.put(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "");
-    assertTrue(RsaAuthenticator.canProcessResponse(map));
-    map.clear();
+    assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(RsaAuthenticator.RSA_PUBLIC_KEY, "")));
+    assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "")));
 
     // Adding a completely unrelated key shouldn't change the outcome
-    map.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, "");
-    assertFalse(RsaAuthenticator.canProcessResponse(map));
-    map.clear();
-    map.put(LobbyLoginValidator.SALT_KEY, "");
-    assertFalse(RsaAuthenticator.canProcessChallenge(map));
+    assertFalse(RsaAuthenticator.canProcessResponse(singletonMap(LobbyLoginValidator.HASHED_PASSWORD_KEY, "")));
+    assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginValidator.SALT_KEY, "")));
   }
 
   @Test
@@ -49,7 +42,7 @@ public class RsaAuthenticatorTest {
   }
 
   @Test
-  public void testKeyStorage() {
+  public void testKeyExpirationAfterAuthentication() {
     final Map<String, String> challenge = new HashMap<>();
     challenge.putAll(RsaAuthenticator.generatePublicKey());
     final Map<String, String> response = new HashMap<>();

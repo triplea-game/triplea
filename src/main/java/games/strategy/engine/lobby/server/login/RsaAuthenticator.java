@@ -109,9 +109,14 @@ public class RsaAuthenticator {
 
   /**
    * Attempts to decrypt the given password using the challenge and response parameters.
+   * 
+   * @param challenge The original challenge map containing the required Base64 encoded public key.
+   * @param response The response map containing the encrypte password.
+   * @param successfullDecryptionAction A {@link Function} which is executed if the password is successfully
+   *        encrypted. This methods returns the result of the given Function.
    */
   public static String decryptPasswordForAction(final Map<String, String> challenge, final Map<String, String> response,
-      final Function<String, String> successFullDecryptionAction) {
+      final Function<String, String> successfullDecryptionAction) {
     final String publicKey = challenge.get(RSA_PUBLIC_KEY);
     final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
     if (privateKey == null) {
@@ -119,7 +124,7 @@ public class RsaAuthenticator {
     } else {
       rsaKeyMap.invalidate(publicKey);
     }
-    return decryptPassword(response.get(ENCRYPTED_PASSWORD_KEY), privateKey, successFullDecryptionAction);
+    return decryptPassword(response.get(ENCRYPTED_PASSWORD_KEY), privateKey, successfullDecryptionAction);
   }
 
 
@@ -143,7 +148,7 @@ public class RsaAuthenticator {
   private static byte[] getHashedBytes(final String input) {
     return hashPasswordWithSalt(input).getBytes(StandardCharsets.UTF_8);
   }
-  
+
   /**
    * The server doesn't need to know the actual password, so this hash essentially replaces
    * the real password. In case any other server authentication system SHA-512 hashes
