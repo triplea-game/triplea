@@ -177,12 +177,12 @@ public class LhtrTest {
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
-    final int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     // targets dice is 4, so damage is 1 + 4 = 5
     // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid - 5, PUsAfterRaid);
+    assertEquals(pusBeforeRaid - 5, pusAfterRaid);
   }
 
   @Test
@@ -218,12 +218,12 @@ public class LhtrTest {
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
             TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
     bridge.setRemote(player);
-    final int PUsBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int PUsAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     // targets dice is 4, so damage is 1 + 4 = 5
     // bomber 2 hits at 2, so damage is 3, for a total of 8
     // Changed to match StrategicBombingRaidBattle changes
-    assertEquals(PUsBeforeRaid - 8, PUsAfterRaid);
+    assertEquals(pusBeforeRaid - 8, pusAfterRaid);
   }
 }

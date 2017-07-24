@@ -1351,8 +1351,8 @@ public class RevisedTest {
     final TechResults roll3 = techDelegate.rollTech(1, jet, 0, null);
     // Check to make sure it succeeded
     assertEquals(1, roll3.getHits());
-    final int VariablePUs = germans.getResources().getQuantity("PUs");
-    assertEquals(finalPUs - 6, VariablePUs);
+    final int variablePus = germans.getResources().getQuantity("PUs");
+    assertEquals(finalPUs - 6, variablePus);
   }
 
   @Test

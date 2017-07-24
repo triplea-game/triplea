@@ -32,60 +32,60 @@ public class PactOfSteel2Test {
 
   @Test
   public void testDirectOwnershipTerritories() {
-    final Territory Norway = gameData.getMap().getTerritory("Norway");
-    final Territory Eastern_Europe = gameData.getMap().getTerritory("Eastern Europe");
-    final Territory East_Balkans = gameData.getMap().getTerritory("East Balkans");
-    final Territory Ukraine_S_S_R_ = gameData.getMap().getTerritory("Ukraine S.S.R.");
-    final Territory Belorussia = gameData.getMap().getTerritory("Belorussia");
+    final Territory norway = gameData.getMap().getTerritory("Norway");
+    final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory eastBalkans = gameData.getMap().getTerritory("East Balkans");
+    final Territory ukraineSsr = gameData.getMap().getTerritory("Ukraine S.S.R.");
+    final Territory belorussia = gameData.getMap().getTerritory("Belorussia");
     final PlayerID british = GameDataTestUtil.british(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // this National Objective russia has to own at least 3 of the 5 territories by itself
-    final RulesAttachment russian_easternEurope =
+    final RulesAttachment russianEasternEurope =
         RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
     final Collection<Territory> terrs = new ArrayList<>();
-    terrs.add(Norway);
-    terrs.add(Eastern_Europe);
-    terrs.add(East_Balkans);
-    terrs.add(Ukraine_S_S_R_);
-    terrs.add(Belorussia);
+    terrs.add(norway);
+    terrs.add(easternEurope);
+    terrs.add(eastBalkans);
+    terrs.add(ukraineSsr);
+    terrs.add(belorussia);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 5);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 0);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-    assertFalse(russian_easternEurope.isSatisfied(null, bridge));
-    Norway.setOwner(british);
-    Eastern_Europe.setOwner(russians);
-    East_Balkans.setOwner(russians);
-    Ukraine_S_S_R_.setOwner(germans);
-    Belorussia.setOwner(germans);
+    assertFalse(russianEasternEurope.isSatisfied(null, bridge));
+    norway.setOwner(british);
+    easternEurope.setOwner(russians);
+    eastBalkans.setOwner(russians);
+    ukraineSsr.setOwner(germans);
+    belorussia.setOwner(germans);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 1);
-    assertFalse(russian_easternEurope.isSatisfied(null, bridge));
-    Ukraine_S_S_R_.setOwner(british);
-    Belorussia.setOwner(british);
+    assertFalse(russianEasternEurope.isSatisfied(null, bridge));
+    ukraineSsr.setOwner(british);
+    belorussia.setOwner(british);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 3);
-    assertFalse(russian_easternEurope.isSatisfied(null, bridge));
-    Norway.setOwner(russians);
-    Ukraine_S_S_R_.setOwner(germans);
-    Belorussia.setOwner(germans);
+    assertFalse(russianEasternEurope.isSatisfied(null, bridge));
+    norway.setOwner(russians);
+    ukraineSsr.setOwner(germans);
+    belorussia.setOwner(germans);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 3);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-    assertTrue(russian_easternEurope.isSatisfied(null, bridge));
-    Ukraine_S_S_R_.setOwner(russians);
+    assertTrue(russianEasternEurope.isSatisfied(null, bridge));
+    ukraineSsr.setOwner(russians);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 1);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 4);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-    assertTrue(russian_easternEurope.isSatisfied(null, bridge));
-    Belorussia.setOwner(russians);
+    assertTrue(russianEasternEurope.isSatisfied(null, bridge));
+    belorussia.setOwner(russians);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 5);
     assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-    assertTrue(russian_easternEurope.isSatisfied(null, bridge));
+    assertTrue(russianEasternEurope.isSatisfied(null, bridge));
   }
 
   // TODO: Consider adding the following tests:

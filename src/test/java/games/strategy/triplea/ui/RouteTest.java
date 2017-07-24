@@ -65,10 +65,10 @@ public class RouteTest {
 
   @Test
   public void testPointSplitting() {
-    final double[] xCoords = new double[] {0, 100, 0};
-    final double[] yCoords = new double[] {0, 0, 100};
-    assertArrayEquals(xCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
-    assertArrayEquals(yCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
+    final double[] expectedXCoords = new double[] {0, 100, 0};
+    final double[] expectedYCoords = new double[] {0, 0, 100};
+    assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
+    assertArrayEquals(expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
   }
 
 
