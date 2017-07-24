@@ -41,14 +41,14 @@ public class PlaceDelegateTest extends DelegateTest {
     delegate.start();
   }
 
-  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
-    final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
+  private static Collection<Unit> getUnits(final IntegerMap<UnitType> unitCountsByType, final PlayerID from) {
+    final Iterator<UnitType> iter = unitCountsByType.keySet().iterator();
+    final Collection<Unit> units = new ArrayList<>(unitCountsByType.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
-      rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
+      units.addAll(from.getUnits().getUnits(type, unitCountsByType.getInt(type)));
     }
-    return rVal;
+    return units;
   }
 
   @Test

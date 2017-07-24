@@ -132,7 +132,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge m_bridge = getDelegateBridge(british);
+    final ITestDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -142,15 +142,15 @@ public class WW2V3Year41Test {
     final Collection<Unit> defendingAa =
         territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
     // don't allow rolling, 6 of each is deterministic
-    m_bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
+    bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
         DiceRoll.rollAA(
             Match.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
-            defendingAa, m_bridge, territory("Germany", gameData), true);
+            defendingAa, bridge, territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
@@ -161,7 +161,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge m_bridge = getDelegateBridge(british);
+    final ITestDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -173,17 +173,17 @@ public class WW2V3Year41Test {
     // 1 roll, a hit
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
-    m_bridge.setRandomSource(randomSource);
+    bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll.rollAA(
             Match.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
-            defendingAa, m_bridge, territory("Germany", gameData), true);
+            defendingAa, bridge, territory("Germany", gameData), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
     assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 2);
@@ -194,7 +194,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge m_bridge = getDelegateBridge(british);
+    final ITestDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -207,18 +207,18 @@ public class WW2V3Year41Test {
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource =
         new ScriptedRandomSource(new int[] {5, 0, 0, 0, ScriptedRandomSource.ERROR});
-    m_bridge.setRandomSource(randomSource);
+    bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll.rollAA(
             Match.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
-            defendingAa, m_bridge, territory("Germany", gameData), true);
+            defendingAa, bridge, territory("Germany", gameData), true);
     assertEquals(roll.getHits(), 2);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, m_bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
@@ -1638,14 +1638,14 @@ public class WW2V3Year41Test {
   /*
    * Add Utilities here
    */
-  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
-    final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
+  private static Collection<Unit> getUnits(final IntegerMap<UnitType> unitCountsByType, final PlayerID from) {
+    final Iterator<UnitType> iter = unitCountsByType.keySet().iterator();
+    final Collection<Unit> units = new ArrayList<>(unitCountsByType.totalValues());
     while (iter.hasNext()) {
       final UnitType type = iter.next();
-      rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
+      units.addAll(from.getUnits().getUnits(type, unitCountsByType.getInt(type)));
     }
-    return rVal;
+    return units;
   }
 
   /*

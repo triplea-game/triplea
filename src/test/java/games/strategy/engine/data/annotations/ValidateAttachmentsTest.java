@@ -181,9 +181,9 @@ public class ValidateAttachmentsTest {
   private static String findAttachmentsAndValidate(final File file) {
     final StringBuilder sb = new StringBuilder("");
     if (file.isDirectory()) {
-      final File[] files = file.listFiles(s_classOrDirectory);
-      for (final File aFile : files) {
-        sb.append(findAttachmentsAndValidate(aFile));
+      final File[] childFiles = file.listFiles(s_classOrDirectory);
+      for (final File childFile : childFiles) {
+        sb.append(findAttachmentsAndValidate(childFile));
       }
     } else {
       final String fileName = file.getAbsolutePath();

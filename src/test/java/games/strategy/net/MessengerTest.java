@@ -205,11 +205,11 @@ public class MessengerTest {
       }
       ThreadUtil.sleep(10);
     }
-    final AtomicInteger m_serverCount = new AtomicInteger(3);
+    final AtomicInteger serverCount = new AtomicInteger(3);
     serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
-        m_serverCount.decrementAndGet();
+        serverCount.decrementAndGet();
       }
 
       @Override
@@ -225,7 +225,7 @@ public class MessengerTest {
       }
       ThreadUtil.sleep(10);
     }
-    assertEquals(2, m_serverCount.get());
+    assertEquals(2, serverCount.get());
   }
 
   @Test
