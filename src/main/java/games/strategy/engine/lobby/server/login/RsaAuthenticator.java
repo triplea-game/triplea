@@ -36,6 +36,7 @@ public class RsaAuthenticator {
   private static final Cache<String, PrivateKey> rsaKeyMap = buildCache();
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
+  private static final String PSEUDO_SALT = "TripleA";
 
   @VisibleForTesting
   static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
@@ -125,15 +126,26 @@ public class RsaAuthenticator {
   @VisibleForTesting
   static String encryptPassword(final String publicKeyString, final String password) {
     try {
-      final PublicKey publicKey =
-          KeyFactory.getInstance(RSA)
-              .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
+      final PublicKey publicKey = KeyFactory.getInstance(RSA)
+          .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-      return Base64.getEncoder().encodeToString(cipher.doFinal(Util.sha512(password).getBytes(StandardCharsets.UTF_8)));
+      return Base64.getEncoder().encodeToString(cipher.doFinal(getHashedBytes(password)));
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  /**
+   * Returns UTF-8 encoded bytes of a "salted" SHA-512 hash of the given input string.
+   * The server doesn't need to know the actual password, so this hash essentially replaces
+   * the real password. In case any other server authentication system SHA-512 hashes
+   * passwords before sending them, we are applying a 'TripleA' prefix to the given String
+   * before hashing. This way the hash cannot be used on other websites even if the password
+   * and the authentication system is the same.
+   */
+  private static byte[] getHashedBytes(final String input) {
+    return Util.sha512(PSEUDO_SALT + input).getBytes(StandardCharsets.UTF_8);
   }
 
   /**
