@@ -1,9 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 
@@ -14,6 +16,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitHolder;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
@@ -21,6 +24,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.util.IntegerMap;
 import junit.framework.AssertionFailedError;
 
 /**
@@ -29,6 +33,7 @@ import junit.framework.AssertionFailedError;
 public class GameDataTestUtil {
   /**
    * Get the german PlayerID for the given GameData object.
+   *
    * @return A german PlayerID.
    */
   public static PlayerID germans(final GameData data) {
@@ -37,6 +42,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the italian PlayerID for the given GameData object.
+   *
    * @return A italian PlayerID.
    */
   public static PlayerID italians(final GameData data) {
@@ -45,6 +51,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the russian PlayerID for the given GameData object.
+   *
    * @return A russian PlayerID.
    */
   public static PlayerID russians(final GameData data) {
@@ -53,6 +60,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the american PlayerID for the given GameData object.
+   *
    * @return A american PlayerID.
    */
   public static PlayerID americans(final GameData data) {
@@ -61,6 +69,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the british PlayerID for the given GameData object.
+   *
    * @return A british PlayerID.
    */
   public static PlayerID british(final GameData data) {
@@ -69,6 +78,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the japanese PlayerID for the given GameData object.
+   *
    * @return A japanese PlayerID.
    */
   public static PlayerID japanese(final GameData data) {
@@ -77,6 +87,7 @@ public class GameDataTestUtil {
 
   /**
    * Get the chinese PlayerID for the given GameData object.
+   *
    * @return A chinese PlayerID.
    */
   public static PlayerID chinese(final GameData data) {
@@ -85,6 +96,7 @@ public class GameDataTestUtil {
 
   /**
    * Returns a territory object for the given name in the specified GameData object.
+   *
    * @return A Territory matching the given name if present, otherwise throwing an Exception.
    */
   public static Territory territory(final String name, final GameData data) {
@@ -278,7 +290,7 @@ public class GameDataTestUtil {
   public static BidPlaceDelegate bidPlaceDelegate(final GameData data) {
     return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
   }
-  
+
   /**
    * Returns a TestDelegateBridge for the given GameData + PlayerID objects.
    */
@@ -367,12 +379,31 @@ public class GameDataTestUtil {
   public static void assertValid(final String string) {
     Assert.assertNull(string, string);
   }
-  
+
   /**
    * Helper method to check if a String is not null.
    * In this scenario used to verify an error message exists.
    */
   public static void assertError(final String string) {
     Assert.assertNotNull(string);
+  }
+
+  /**
+   * Gets a collection of units from the specified unit holder (e.g. territory, player, etc.) consisting of up to the
+   * specified maximum count of each specified unit type.
+   *
+   * @param maxUnitCountsByType The maximum count of each type of unit to include in the returned collection. The key is
+   *        the unit type. The value is the maximum unit count.
+   * @param from The territory from which the units are to be collected.
+   *
+   * @return A collection of units from the specified unit holder.
+   */
+  public static Collection<Unit> getUnits(final IntegerMap<UnitType> maxUnitCountsByType, final UnitHolder from) {
+    checkNotNull(maxUnitCountsByType);
+    checkNotNull(from);
+
+    return maxUnitCountsByType.entrySet().stream()
+        .flatMap(entry -> from.getUnits().getUnits(entry.getKey(), entry.getValue()).stream())
+        .collect(Collectors.toList());
   }
 }
