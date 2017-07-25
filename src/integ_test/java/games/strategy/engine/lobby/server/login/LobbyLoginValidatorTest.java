@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,13 +121,13 @@ public class LobbyLoginValidatorTest {
       return response;
     }));
     // with a bad password
-    assertNotNull(challengeFunction.apply(challenge -> {
+    assertError(challengeFunction.apply(challenge -> {
       final Map<String, String> badPassMap = new HashMap<>(response);
       badPassMap.putAll(RsaAuthenticator.getEncryptedPassword(persistentChallenge, "wrong"));
       return badPassMap;
-    }));
+    }), "password");
     // with a non existent user
-    assertNotNull(generateChallenge(null).apply(challenge -> response));
+    assertError(generateChallenge(null).apply(challenge -> response), "user");
   }
 
   @Test
@@ -153,14 +154,12 @@ public class LobbyLoginValidatorTest {
     final String password = "foo";
     final ChallengeResultFunction challengeFunction =
         generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
-    final String errorMessage = challengeFunction.apply(challenge -> {
+    assertError(challengeFunction.apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       RsaAuthenticator.invalidateAll();
       return response;
-    });
-    assertNotNull(errorMessage);
-    assertTrue(errorMessage.toLowerCase().contains("timeout"));
+    }), "timeout");
   }
 
   @Test
@@ -173,7 +172,7 @@ public class LobbyLoginValidatorTest {
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
       return response;
     }));
-    assertNotNull(challengeFunction.apply(challenge -> response));
+    assertError(challengeFunction.apply(challenge -> response), "timeout");
   }
 
   private static void createUser(final String name, final String email, final HashedPassword password) {
@@ -199,6 +198,17 @@ public class LobbyLoginValidatorTest {
       response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
       return new LobbyLoginValidator().verifyConnection(challenge, response, name, mac, address);
     };
+  }
+
+  private void assertError(final String errorMessage, final String... strings) {
+    assertNotNull(errorMessage);
+    final String simpleError = errorMessage.trim().toLowerCase();
+    try {
+      assertTrue(Arrays.stream(strings).map(s -> s.toLowerCase()).allMatch(simpleError::contains));
+    } catch (AssertionError e) {
+      throw new AssertionError(String.format("Error message '%s' did not contain all of those keywords: %s",
+          errorMessage, Arrays.toString(strings)), e);
+    }
   }
 
   private interface ChallengeResultFunction
