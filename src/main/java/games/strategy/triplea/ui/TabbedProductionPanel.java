@@ -174,7 +174,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = SwingComponents.gridPanel(rows, columns);
+    final JPanel panel = SwingComponents.newJPanelWithGridLayout(rows, columns);
     final JPanel[][] panelHolder = new JPanel[rows][columns];
     for (int m = 0; m < rows; m++) {
       for (int n = 0; n < columns; n++) {

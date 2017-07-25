@@ -1,50 +1,151 @@
 package games.strategy.triplea.settings;
 
 import java.io.File;
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.UIManager;
 
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 
 /**
  * A collection-like class containing model objects for the game settings that can be adjusted by players.
  */
 public enum ClientSettings {
-  MAP_EDGE_SCROLL_ZONE_SIZE(30),
+  AI_PAUSE_DURATION( // TODO: consider updating this to: "instant" "very fast" "fast" "medium" "slow" "very slow"
+      "AI Pause Duration",
+      400,
+      SettingType.AI,
+      SelectionComponent.intValueRange(0, 3000),
+      "Time between AI moves"),
+  ARROW_KEY_SCROLL_SPEED(
+      "Arrow Key Scroll Speed",
+      70,
+      SettingType.MAP_SCROLLING,
+      SelectionComponent.intValueRange(0, 500),
+      "How fast the map is scrolled when using the arrow keys"),
+  BATTLE_CALC_SIMULATION_COUNT_DICE(
+      "Simulation Count (Dice)",
+      2000,
+      SettingType.BATTLE_SIMULATOR,
+      SelectionComponent.intValueRange(10, 100000),
+      "Default battle simulation count in dice games"),
+  BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK(
+      "Simulation Count (LL)",
+      5000,
+      SettingType.BATTLE_SIMULATOR,
+      SelectionComponent.intValueRange(10, 100000),
+      "Default battle simulation count in low luck games"),
+  CONFIRM_DEFENSIVE_ROLLS(
+      "Confirm defensive rolls",
+      false,
+      SettingType.COMBAT,
+      "Whether battle should proceed until you confirm the dice you roll while on defense"),
+  CONFIRM_ENEMY_CASUALTIES(
+      "Confirm enemy casualties",
+      false,
+      SettingType.COMBAT,
+      "Whether battles should proceed only once every player has confirmed the casualties selected"),
   FASTER_ARROW_KEY_SCROLL_MULTIPLIER(2),
-  WHEEL_SCROLL_AMOUNT(60),
-  MAP_EDGE_SCROLL_SPEED(30),
-  ARROW_KEY_SCROLL_SPEED(70),
-  USER_MAPS_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps").getAbsolutePath()),
-  SAVE_GAMES_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames").getAbsolutePath()),
-  AI_PAUSE_DURATION(400),
-  BATTLE_CALC_SIMULATION_COUNT_DICE(2000),
-  BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK(5000),
-  CONFIRM_ENEMY_CASUALTIES(false),
-  CONFIRM_DEFENSIVE_ROLLS(false),
-  FOCUS_ON_OWN_CASUALTIES(true),
-  SHOW_BATTLES_BETWEEN_AI(true),
+  FOCUS_ON_OWN_CASUALTIES(
+      "Focus on own casualties",
+      true,
+      SettingType.COMBAT,
+      "..."),
+  LOOK_AND_FEEL_PREF(ClientSettings::getDefaultLookAndFeel), // TODO: create a collection backed input component that is a drop down box, add this to the game category
+  MAP_EDGE_SCROLL_SPEED(
+      "Map Scroll Speed",
+      30,
+      SettingType.MAP_SCROLLING,
+      SelectionComponent.intValueRange(0, 300),
+      ""),
+  MAP_EDGE_SCROLL_ZONE_SIZE(
+      "Scroll Zone Size",
+          30,
+      SettingType.MAP_SCROLLING,
+      SelectionComponent.intValueRange(0, 300),
+      ""),
   MAP_FOLDER_OVERRIDE,
-  LOOK_AND_FEEL_PREF(ClientSettings::getDefaultLookAndFeel),
-  TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-  TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP,
-  TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY(true),
+  SAVE_GAMES_FOLDER_PATH(
+      "Saved Games Folder",
+      new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"),
+      SettingType.GAME,
+      ""),
+  SHOW_BATTLES_WHEN_OBSERVING(
+      "Show battles as observer",
+      true,
+      SettingType.GAME,
+      ""),
+  TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY(
+      "Show First Time Prompts",
+      true,
+      SettingType.GAME,
+      ""),
   TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE,
   TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES,
+  TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP,
+  TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
   TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
-  CASUALTY_SELECTION_SLOW;
+  USER_MAPS_FOLDER_PATH(
+      "Maps Folder",
+      new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"),
+      SettingType.GAME,
+      ""),
+  WHEEL_SCROLL_AMOUNT(
+      "Mouse Wheel Scroll Speed",
+      60,
+      SettingType.MAP_SCROLLING,
+      SelectionComponent.intValueRange(10, 300),
+      "");
 
+  static {
+    dataValidation();
+  }
+
+  private static void dataValidation() {
+    // make sure each non-hidden setting has a title and input component
+    Arrays.stream(ClientSettings.values())
+        .filter(value -> value.type != SettingType.HIDDEN)
+        .forEach(nonHidden -> {
+          Preconditions.checkNotNull(Strings.emptyToNull(nonHidden.title));
+          Preconditions.checkNotNull(nonHidden.userInputComponent.getJComponent());
+
+          Preconditions.checkState(nonHidden.title.length() < 25,
+              String.format("title: %s, is too long (%s), it will get cut off",
+                  nonHidden.title, nonHidden.title.length()));
+
+//          Preconditions.checkNotNull(Strings.emptyToNull(nonHidden.description),
+//              nonHidden + " is missing a description");
+        });
+
+    // make sure each setting category has at least one setting
+    Arrays.stream(SettingType.values())
+        .forEach(settingType -> Preconditions.checkState(
+            Arrays.stream(ClientSettings.values())
+                .filter(setting -> setting.type == settingType)
+                .count() > 0,
+            "setting type is empty: " + settingType));
+
+    // Show First Time User Mes;
+
+  }
+
+  final SettingType type;
+  final String title;
+  final String description;
+  final SelectionComponent userInputComponent;
   private final String defaultValue;
+
+
+  public void restoreToDefaultValue() {
+    save(defaultValue);
+  }
 
   private static String getDefaultLookAndFeel() {
 //    final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
@@ -70,29 +171,65 @@ public enum ClientSettings {
     return UIManager.getSystemLookAndFeelClassName();
   }
 
+  public static void showSettingsWindow() {
+    SettingsWindow.show();
+  }
+
+
+  ClientSettings(
+      final String title,
+      final String defaultValue,
+      final SettingType type,
+      final SelectionComponent userInputComponent,
+      final String description) {
+    this.title = title;
+    this.defaultValue = defaultValue;
+    this.type = type;
+    this.description = description;
+    this.userInputComponent = userInputComponent;
+
+    if(this.userInputComponent != null) {
+      this.userInputComponent.setValue(value());
+    }
+  }
+
+  ClientSettings(
+      final String title,
+      final int defaultValue,
+      final SettingType type,
+      final SelectionComponent userInputComponent,
+      final String description) {
+    this(title, String.valueOf(defaultValue), type, userInputComponent, description);
+  }
+
+  ClientSettings(final String title, final boolean value, final SettingType type, final String description) {
+    this(title, String.valueOf(value), type, SelectionComponent.booleanValue(value), description);
+  }
+
+  ClientSettings(final String title, final File defaultValue, final SettingType type, final String description) {
+    this(title, defaultValue.getAbsolutePath(), type, SelectionComponent.folderPath(), description);
+  }
 
   ClientSettings() {
-    defaultValue = "";
+    this("", "", SettingType.HIDDEN, null, "");
   }
 
   ClientSettings(final Supplier<String> valueSupplier) {
-    defaultValue = valueSupplier.get();
-  }
-
-  ClientSettings(final boolean value) {
-    defaultValue = String.valueOf(value);
+    this("", valueSupplier.get(), SettingType.HIDDEN, null, "");
   }
 
   ClientSettings(final int value) {
-    defaultValue = String.valueOf(value);
-  }
-  ClientSettings(final String value) {
-    defaultValue = value;
+    this("", String.valueOf(value), SettingType.HIDDEN, null, "");
   }
 
   public String value() {
-    return Preferences.userNodeForPackage(ClientSettings.class).get(name(), defaultValue);
+    return value(name(), defaultValue);
   }
+
+  private static String value(final String propertyName, final String defaultValue) {
+    return Preferences.userNodeForPackage(ClientSettings.class).get(propertyName, defaultValue);
+  }
+
 
   public void save(final String newValue) {
     Preferences.userNodeForPackage(ClientSettings.class).put(name(), newValue);
@@ -122,8 +259,4 @@ public enum ClientSettings {
     }
   }
 
-  public static void showSettingsWindow() {
-
-
-  }
 }

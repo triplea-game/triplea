@@ -29,7 +29,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.sound.SoundOptions;
-import games.strategy.triplea.settings.SettingsWindow;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import tools.map.making.MapCreator;
@@ -86,7 +86,7 @@ class EnginePreferences extends JDialog {
     // add buttons here:
     SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
     buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(SwingComponents.newJButton("Engine Settings", e -> SettingsWindow.showWindow()));
+    buttonsPanel.add(SwingComponents.newJButton("Engine Settings", e -> ClientSettings.showSettingsWindow()));
     buttonsPanel.add(new JLabel(" "));
     SoundOptions.addToPanel(buttonsPanel);
     buttonsPanel.add(new JLabel(" "));

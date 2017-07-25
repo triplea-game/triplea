@@ -126,7 +126,7 @@ public class BattlePanel extends ActionPanel {
         removeAll();
         actionLabel.setText(id.getName() + " battle");
         setLayout(new BorderLayout());
-        final JPanel panel = SwingComponents.gridPanel(0, 1);
+        final JPanel panel = SwingComponents.newJPanelWithGridLayout(0, 1);
         panel.add(actionLabel);
         for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
@@ -264,7 +264,7 @@ public class BattlePanel extends ActionPanel {
             break;
           }
         }
-        if (ClientSettings.SHOW_BATTLES_BETWEEN_AI.booleanValue() || foundHumanInBattle) {
+        if (ClientSettings.SHOW_BATTLES_WHEN_OBSERVING.booleanValue() || foundHumanInBattle) {
           battleFrame.setVisible(true);
           battleFrame.validate();
           battleFrame.invalidate();

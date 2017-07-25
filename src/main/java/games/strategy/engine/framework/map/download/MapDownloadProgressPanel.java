@@ -28,8 +28,8 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
    * Maintain grids that are placed east and west.
    * This gives us a minimal and uniform width for each column.
    */
-  private final JPanel labelGrid = SwingComponents.gridPanel(0, 1);
-  private final JPanel progressGrid = SwingComponents.gridPanel(0, 1);
+  private final JPanel labelGrid = SwingComponents.newJPanelWithGridLayout(0, 1);
+  private final JPanel progressGrid = SwingComponents.newJPanelWithGridLayout(0, 1);
 
   private final List<DownloadFileDescription> downloadList = new ArrayList<>();
   private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();

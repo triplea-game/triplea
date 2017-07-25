@@ -105,7 +105,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static final class SingletonManager {
     private enum State {
-      UNINITIALIZED, INITIALIZING, INITIALIZED;
+      UNINITIALIZED, INITIALIZING, INITIALIZED
     }
 
     private State state;
@@ -358,7 +358,7 @@ public class DownloadMapsWindow extends JFrame {
       DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
-      final JPanel southPanel = SwingComponents.gridPanel(2, 1);
+      final JPanel southPanel = SwingComponents.newJPanelWithGridLayout(2, 1);
       southPanel.add(mapSizeLabel);
       southPanel.add(createButtonsPanel(action, gamesList, maps, model));
       main.add(southPanel, BorderLayout.SOUTH);
@@ -469,7 +469,7 @@ public class DownloadMapsWindow extends JFrame {
   private JPanel createButtonsPanel(final MapAction action, final JList<String> gamesList,
       final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
-    final JPanel buttonsPanel = SwingComponents.gridPanel(1, 5);
+    final JPanel buttonsPanel = SwingComponents.newJPanelWithGridLayout(1, 5);
 
     buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
 

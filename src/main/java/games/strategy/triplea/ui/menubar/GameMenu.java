@@ -31,7 +31,7 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
-import games.strategy.triplea.settings.SettingsWindow;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -61,7 +61,7 @@ class GameMenu {
     addEditMode(menuGame);
 
     menuGame.addSeparator();
-    menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
+    menuGame.add(SwingAction.of("Engine Settings", e -> ClientSettings.showSettingsWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame);
     menuGame.addSeparator();

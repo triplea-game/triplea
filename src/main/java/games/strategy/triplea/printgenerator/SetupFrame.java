@@ -70,7 +70,7 @@ public class SetupFrame extends JPanel {
             JOptionPane.ERROR_MESSAGE);
       }
     });
-    final JPanel m_infoPanel = SwingComponents.gridPanel(3, 1);
+    final JPanel m_infoPanel = SwingComponents.newJPanelWithGridLayout(3, 1);
     final JPanel m_textButtonRadioPanel = new JPanel(new BorderLayout());
     m_infoPanel.add(m_info1);
     m_infoPanel.add(m_info2);
@@ -78,7 +78,7 @@ public class SetupFrame extends JPanel {
     super.add(m_infoPanel, BorderLayout.NORTH);
     m_textButtonRadioPanel.add(outField, BorderLayout.WEST);
     m_textButtonRadioPanel.add(m_outDirButton, BorderLayout.EAST);
-    final JPanel panel = SwingComponents.gridPanel(1, 2);
+    final JPanel panel = SwingComponents.newJPanelWithGridLayout(1, 2);
     panel.add(originalState);
     panel.add(m_currentState);
     m_textButtonRadioPanel.add(panel, BorderLayout.SOUTH);

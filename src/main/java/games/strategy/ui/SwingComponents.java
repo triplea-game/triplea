@@ -1,14 +1,16 @@
 package games.strategy.ui;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -43,11 +45,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
@@ -75,7 +76,13 @@ public class SwingComponents {
   }
 
   public static JTabbedPane newJTabbedPane() {
-    return new JTabbedPaneWithFixedWidthTabs();
+    return newJTabbedPane(900, 600);
+  }
+
+  public static JTabbedPane newJTabbedPane(final int width, final int height) {
+    final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
+    tabbedPane.setPreferredSize(new Dimension(width, height));
+    return tabbedPane;
   }
 
   public static JPanel newJPanelWithVerticalBoxLayout() {
@@ -113,25 +120,26 @@ public class SwingComponents {
     return group;
   }
 
-  public static class ModalJDialog extends JDialog {
-    private static final long serialVersionUID = -3953716954531215173L;
+  /**
+   * Adds a focus listener to a given component and executes a given action when focus is lost.
+   */
+  public static void addFocusLostListener(final JComponent component, final Runnable focusLostListener) {
+    component.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(final FocusEvent e) {
 
-    protected ModalJDialog() {
-      super((Frame) null, true);
-      setLocationByPlatform(true);
-    }
+      }
+
+      @Override
+      public void focusLost(final FocusEvent e) {
+        focusLostListener.run();
+      }
+    });
   }
 
-  public static void showWindow(final Window window) {
-    window.pack();
-    window.setLocationByPlatform(true);
-    window.setVisible(true);
-  }
-
-  public static JPanel newJPanelWithGridLayout(final int rows, final int columns) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(rows, columns));
-    return panel;
+  public static void addTextFieldFocusLostListener(final JTextField component, final Runnable focusLostListener) {
+    addFocusLostListener(component, focusLostListener);
+    component.addActionListener(e -> focusLostListener.run());
   }
 
   public enum KeyboardCode {
@@ -164,9 +172,9 @@ public class SwingComponents {
     return panel;
   }
 
-  public static JPanel gridPanel(final int rows, final int cols) {
+  public static JPanel newJPanelWithGridLayout(final int rows, final int columns) {
     final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(rows, cols));
+    panel.setLayout(new GridLayout(rows, columns));
     return panel;
   }
 
@@ -304,8 +312,7 @@ public class SwingComponents {
         JOptionPane.INFORMATION_MESSAGE));
   }
 
-
-  public static JDialog newJDialogModal(final JFrame parent, final String title, final JPanel contents) {
+  public static JDialog newJDialogModal(final JFrame parent, final String title, final JComponent contents) {
     final JDialog dialog = new JDialog(parent, title, true);
     dialog.getContentPane().add(contents);
     final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
@@ -324,34 +331,18 @@ public class SwingComponents {
     return menu;
   }
 
-  /**
-   * Creates a new component that emulates a multiline label.
-   *
-   * <p>
-   * The multiline label will properly wrap text that has embedded newlines ({@code \n}).
-   * </p>
-   *
-   * @param text The text to be displayed; may be {@code null}.
-   * @param rows The number of rows; must be greater than or equal to zero.
-   * @param cols The number of columns; must be greater than or equal to zero.
-   *
-   * @return The new multiline label; never {@code null}.
-   *
-   * @throws IllegalArgumentException If {@code rows} or {@code cols} is negative.
-   */
-  public static JTextArea newMultilineLabel(final String text, final int rows, final int cols) {
-    checkArgument(rows >= 0, "rows must not be negative");
-    checkArgument(cols >= 0, "cols must not be negative");
 
-    final JTextArea textArea = new JTextArea(text, rows, cols);
-    textArea.setCursor(null);
-    textArea.setEditable(false);
-    textArea.setFocusable(false);
-    textArea.setFont(UIManager.getFont("Label.font"));
-    textArea.setLineWrap(true);
-    textArea.setOpaque(false);
-    textArea.setWrapStyleWord(true);
-    return textArea;
+  public static Optional<File> showJFileChooserForFolders( ) {
+    final JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    final int result = fileChooser.showOpenDialog(null);
+
+    if (result == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    } else {
+      return Optional.empty();
+    }
   }
 
   /**
