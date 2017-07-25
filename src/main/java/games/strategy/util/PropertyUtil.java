@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -42,7 +44,7 @@ public class PropertyUtil {
     }
   }
 
-  public static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
+  private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
     if (!justFromSuper) {
       try {
@@ -76,14 +78,27 @@ public class PropertyUtil {
   }
 
   private static Field getPropertyField(final String propertyName, final Object subject) {
+    return getPropertyField(propertyName, subject.getClass());
+  }
+
+  /**
+   * Gets the backing field for the property with the specified name in the specified type.
+   *
+   * @param propertyName The property name.
+   * @param type The type that hosts the property.
+   *
+   * @return The backing field for the specified property.
+   *
+   * @throws IllegalStateException If no backing field for the specified property exists.
+   */
+  public static Field getPropertyField(final String propertyName, final Class<?> type) {
+    checkNotNull(propertyName);
+    checkNotNull(type);
+
     try {
-      return getFieldIncludingFromSuperClasses(subject.getClass(), "m_" + propertyName, false);
-    } catch (final Exception e) {
-      try {
-        return getFieldIncludingFromSuperClasses(subject.getClass(), propertyName, false);
-      } catch (final Exception exception) {
-        throw exception;
-      }
+      return getFieldIncludingFromSuperClasses(type, "m_" + propertyName, false);
+    } catch (final IllegalStateException ignored) {
+      return getFieldIncludingFromSuperClasses(type, propertyName, false);
     }
   }
 
