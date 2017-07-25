@@ -167,7 +167,6 @@ public class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-
       return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
         if (hashedPassword.isBcrypted()) {
           return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;

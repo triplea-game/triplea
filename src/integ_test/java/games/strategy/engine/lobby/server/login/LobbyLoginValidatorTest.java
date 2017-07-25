@@ -110,22 +110,18 @@ public class LobbyLoginValidatorTest {
 
   @Test
   public void testLogin() {
+    final String user = Util.createUniqueTimeStamp();
     final String password = "foo";
     final Map<String, String> response = new HashMap<>();
-    final Map<String, String> persistentChallenge = new HashMap<>();
-    final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
-    assertNull(challengeFunction.apply(challenge -> {
-      persistentChallenge.putAll(challenge);
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
-      return response;
-    }));
+    assertNull(
+        generateChallenge(user, new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())))
+            .apply(challenge -> {
+              response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
+              return response;
+            }));
     // with a bad password
-    assertError(challengeFunction.apply(challenge -> {
-      final Map<String, String> badPassMap = new HashMap<>(response);
-      badPassMap.putAll(RsaAuthenticator.getEncryptedPassword(persistentChallenge, "wrong"));
-      return badPassMap;
-    }), "password");
+    assertError(generateChallenge(user, null)
+        .apply(challenge -> RsaAuthenticator.getEncryptedPassword(challenge, "wrong")), "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
   }
