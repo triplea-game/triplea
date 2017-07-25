@@ -272,7 +272,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   @Override
-  public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
+  public void changeToLatestAutosave(final SaveGameFileChooser.AutoSaveType typeOfAutosave) {
     bareBonesSendMessageToServer("changeToLatestAutosave", typeOfAutosave);
   }
 

@@ -34,7 +34,7 @@ public interface IServerStartupRemote extends IRemote {
 
   void changeServerGameTo(final String gameName);
 
-  void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave);
+  void changeToLatestAutosave(final SaveGameFileChooser.AutoSaveType typeOfAutosave);
 
   void changeToGameSave(final byte[] bytes, final String fileName);
 

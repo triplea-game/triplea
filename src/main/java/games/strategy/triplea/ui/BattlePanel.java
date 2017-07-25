@@ -43,6 +43,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
@@ -263,7 +264,7 @@ public class BattlePanel extends ActionPanel {
             break;
           }
         }
-        if (getMap().getUiContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
+        if (ClientSettings.SHOW_BATTLES_BETWEEN_AI.booleanValue() || foundHumanInBattle) {
           battleFrame.setVisible(true);
           battleFrame.validate();
           battleFrame.invalidate();

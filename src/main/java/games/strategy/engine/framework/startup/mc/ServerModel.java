@@ -26,7 +26,6 @@ import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -59,6 +58,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
@@ -384,31 +384,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     @Override
-    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null) {
+    public void changeToLatestAutosave(final SaveGameFileChooser.AutoSaveType autoSaveType) {
+      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AutoSaveType.AUTOSAVE2) {
         return;
       }
-      final File save;
-      if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
-        save = new File(
-            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
-            SaveGameFileChooser.getAutoSaveFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
-        save = new File(
-            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
-            SaveGameFileChooser.getAutoSaveOddFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
-        save = new File(
-            ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
-            SaveGameFileChooser.getAutoSaveEvenFileName());
-      } else {
-        return;
-      }
+      final File save = new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
       if (!save.exists()) {
         return;
       }
-      headless.loadGameSave(save);
+      HeadlessGameServer.getInstance().loadGameSave(save);
     }
 
     @Override

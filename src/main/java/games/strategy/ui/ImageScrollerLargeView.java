@@ -20,8 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import games.strategy.engine.ClientContext;
-import games.strategy.triplea.settings.models.ScrollSettings;
+import games.strategy.triplea.settings.ClientSettings;
 
 /**
  * A large image that can be scrolled according to a ImageScrollModel.
@@ -39,8 +38,6 @@ public class ImageScrollerLargeView extends JComponent {
   static final int RIGHT = 2;
   static final int TOP = 4;
   static final int BOTTOM = 8;
-
-  private final ScrollSettings scrollSettings;
 
   protected final ImageScrollModel model;
   protected double scale = 1;
@@ -82,7 +79,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
-    scrollSettings = ClientContext.clientSettings().getScrollSettings();
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
@@ -96,9 +92,9 @@ public class ImageScrollerLargeView extends JComponent {
         int dx = 0;
         int dy = 0;
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+          dx = e.getWheelRotation() * ClientSettings.WHEEL_SCROLL_AMOUNT.intValue();
         } else {
-          dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+          dy = e.getWheelRotation() * ClientSettings.WHEEL_SCROLL_AMOUNT.intValue();
         }
         // move left and right and test for wrap
         int newX = (this.model.getX() + dx);
@@ -286,15 +282,15 @@ public class ImageScrollerLargeView extends JComponent {
   private void scroll() {
     int dy = 0;
     if ((edge & TOP) != 0) {
-      dy = -scrollSettings.getMapEdgeScrollSpeed();
+      dy = -ClientSettings.MAP_EDGE_SCROLL_SPEED.intValue();
     } else if ((edge & BOTTOM) != 0) {
-      dy = scrollSettings.getMapEdgeScrollSpeed();
+      dy = ClientSettings.MAP_EDGE_SCROLL_SPEED.intValue();
     }
     int dx = 0;
     if ((edge & LEFT) != 0) {
-      dx = -scrollSettings.getMapEdgeScrollSpeed();
+      dx = -ClientSettings.MAP_EDGE_SCROLL_SPEED.intValue();
     } else if ((edge & RIGHT) != 0) {
-      dx = scrollSettings.getMapEdgeScrollSpeed();
+      dx = ClientSettings.MAP_EDGE_SCROLL_SPEED.intValue();
     }
 
     dx = (int) (dx / scale);
@@ -310,14 +306,14 @@ public class ImageScrollerLargeView extends JComponent {
 
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
-    if (x < scrollSettings.getMapEdgeScrollZoneSize()) {
+    if (x < ClientSettings.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += LEFT;
-    } else if (width - x < scrollSettings.getMapEdgeScrollZoneSize()) {
+    } else if (width - x < ClientSettings.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += RIGHT;
     }
-    if (y < scrollSettings.getMapEdgeScrollZoneSize()) {
+    if (y < ClientSettings.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += TOP;
-    } else if (height - y < scrollSettings.getMapEdgeScrollZoneSize()) {
+    } else if (height - y < ClientSettings.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += BOTTOM;
     }
     return newEdge;

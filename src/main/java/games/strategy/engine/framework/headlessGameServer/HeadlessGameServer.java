@@ -33,6 +33,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.TimeManager;
@@ -199,10 +200,9 @@ public class HeadlessGameServer {
       if (iGame != null) {
         (new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
-          SaveGameFileChooser.ensureMapsFolderExists();
           try {
             iGame.saveGame(new File(
-                ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+                ClientSettings.SAVE_GAMES_FOLDER_PATH.value(),
                 SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);

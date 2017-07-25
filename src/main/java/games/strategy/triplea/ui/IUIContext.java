@@ -21,6 +21,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
+// TODO: move as much as possible from this class to ClientSettings framework!
 public interface IUIContext {
   Cursor getCursor();
 
@@ -121,10 +122,6 @@ public interface IUIContext {
   boolean getShowTriggerChanceFailure();
 
   void setShowTriggerChanceFailure(boolean value);
-
-  boolean getShowBattlesBetweenAIs();
-
-  void setShowBattlesBetweenAIs(boolean showBattlesBetweenAis);
 
   LocalPlayers getLocalPlayers();
 

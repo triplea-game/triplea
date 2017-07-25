@@ -50,7 +50,7 @@ import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.settings.SystemPreferenceKey;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.triplea.settings.SystemPreferences;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
@@ -346,7 +346,9 @@ public class GameRunner {
     if (wait == getServerStartGameSyncWaitTime()) {
       return;
     }
-    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
+
+    ClientSettings.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME.save(wait);
+    ClientSettings.flush();
   }
 
   public static int getServerObserverJoinWaitTime() {
@@ -363,7 +365,8 @@ public class GameRunner {
     if (wait == getServerObserverJoinWaitTime()) {
       return;
     }
-    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
+    ClientSettings.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME.save(wait);
+    ClientSettings.flush();
   }
 
   private static void checkForUpdates() {
@@ -404,14 +407,13 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final boolean firstTimeThisVersion =
-          SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion = ClientSettings.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY.booleanValue();
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final LocalDateTime localDateTime = LocalDateTime.now();
       final int year = localDateTime.get(ChronoField.YEAR);
       final int day = localDateTime.get(ChronoField.DAY_OF_YEAR);
       // format year:day
-      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
+      final String lastCheckTime = ClientSettings.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE.value();
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
@@ -419,7 +421,8 @@ public class GameRunner {
         }
       }
 
-      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
+      ClientSettings.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE.save(year + ":" + day);
+      ClientSettings.flush();
 
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
@@ -433,7 +436,7 @@ public class GameRunner {
         return true;
       }
     } catch (final Exception e) {
-      System.out.println("Error while checking for engine updates: " + e.getMessage());
+      ClientLogger.logError("Error while checking for engine updates", e);
     }
     return false;
   }

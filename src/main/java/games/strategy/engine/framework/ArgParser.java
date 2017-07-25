@@ -2,8 +2,7 @@ package games.strategy.engine.framework;
 
 import java.util.Arrays;
 
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.settings.ClientSettings;
 
 public class ArgParser {
   /**
@@ -18,7 +17,7 @@ public class ArgParser {
     }
 
     for (final String arg : args) {
-      String key;
+      final String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
         key = arg.substring(0, indexOf);
@@ -30,14 +29,15 @@ public class ArgParser {
         return false;
       }
     }
+    ClientSettings.flush();
     return true;
   }
 
-  private static boolean setSystemProperty(String key, String value, String[] availableProperties) {
+  private static boolean setSystemProperty(final String key, final String value, final String[] availableProperties) {
     for (final String property : availableProperties) {
       if (key.equals(property)) {
         if (property.equals(GameRunner.MAP_FOLDER)) {
-          SystemPreferences.put(SystemPreferenceKey.MAP_FOLDER_OVERRIDE, value);
+          ClientSettings.MAP_FOLDER_OVERRIDE.save(value);
         } else {
           System.getProperties().setProperty(property, value);
         }

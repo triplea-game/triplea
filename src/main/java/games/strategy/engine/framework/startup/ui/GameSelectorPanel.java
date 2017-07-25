@@ -38,6 +38,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.ui.SwingComponents;
 
 public class GameSelectorPanel extends JPanel implements Observer {
@@ -230,13 +231,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
           final JPopupMenu menu = new JPopupMenu();
           menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+              SaveGameFileChooser.AutoSaveType.AUTOSAVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
+              SaveGameFileChooser.AutoSaveType.AUTOSAVE2));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+              SaveGameFileChooser.AutoSaveType.AUTOSAVE_ODD));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+              SaveGameFileChooser.AutoSaveType.AUTOSAVE_EVEN));
           menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
           final Point point = loadSavedGame.getLocation();
           menu.show(GameSelectorPanel.this, point.x + loadSavedGame.getWidth(), point.y);
@@ -350,8 +351,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
-      SaveGameFileChooser.ensureMapsFolderExists();
-      fileDialog.setDirectory(new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()).getPath());
+      fileDialog.setDirectory(new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

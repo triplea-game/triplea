@@ -448,7 +448,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeToAutosaveClientAction(final Component parent,
-      final SaveGameFileChooser.AUTOSAVE_TYPE autosaveType) {
+      final SaveGameFileChooser.AutoSaveType autosaveType) {
     return new ChangeToAutosaveClientAction(parent, getMessenger(), autosaveType);
   }
 

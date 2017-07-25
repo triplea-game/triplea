@@ -20,6 +20,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -262,10 +263,6 @@ public class ProUtils {
    * Pause the game to allow the human player to see what is going on.
    */
   public static void pause() {
-    try {
-      ThreadUtil.sleep(AbstractUIContext.getAiPauseDuration());
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    ThreadUtil.sleep(ClientSettings.AI_PAUSE_DURATION.intValue());
   }
 }

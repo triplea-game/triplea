@@ -6,8 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -28,16 +27,11 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.settings.SettingsWindow;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
 import tools.map.making.MapCreator;
 import tools.map.xml.creator.MapXmlCreator;
 
@@ -48,7 +42,6 @@ class EnginePreferences extends JDialog {
   private static final long serialVersionUID = 5071190543005064757L;
   private final Frame m_parentFrame;
   private JButton m_okButton;
-  private JButton m_lookAndFeel;
   private JButton m_setupProxies;
   private JButton m_hostWaitTime;
   private JButton m_setMaxMemory;
@@ -75,7 +68,6 @@ class EnginePreferences extends JDialog {
 
   private void createComponents() {
     m_okButton = new JButton("OK");
-    m_lookAndFeel = new JButton("Set Look And Feel");
     m_setupProxies = new JButton("Setup Network and Proxy Settings");
     m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
     m_setMaxMemory = new JButton("Set Max Memory Usage");
@@ -97,8 +89,6 @@ class EnginePreferences extends JDialog {
     buttonsPanel.add(SwingComponents.newJButton("Engine Settings", e -> SettingsWindow.showWindow()));
     buttonsPanel.add(new JLabel(" "));
     SoundOptions.addToPanel(buttonsPanel);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_lookAndFeel);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_setupProxies);
     buttonsPanel.add(new JLabel(" "));
@@ -124,27 +114,6 @@ class EnginePreferences extends JDialog {
 
   private void setupListeners() {
     m_okButton.addActionListener(SwingAction.of("OK", e -> setVisible(false)));
-    final String lookAndFeelTitle = "Set Look And Feel";
-    m_lookAndFeel.addActionListener(SwingAction.of(lookAndFeelTitle, e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
-      final JList<String> list = lookAndFeel.getFirst();
-      final String currentKey = lookAndFeel.getThird();
-      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(m_parentFrame, list, lookAndFeelTitle,
-          JOptionPane.INFORMATION_MESSAGE) == JOptionPane.OK_OPTION) {
-        final String selectedValue = list.getSelectedValue();
-        if (selectedValue == null) {
-          return;
-        }
-        if (selectedValue.equals(currentKey)) {
-          return;
-        }
-        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(m_parentFrame,
-            "The look and feel has been applied. Please restart TripleA for it to take full effect",
-            new CountDownLatchHandler(true));
-      }
-    }));
     m_setupProxies.addActionListener(SwingAction.of("Setup Network and Proxy Settings", e -> {
       // TODO: this action listener should probably come from the HttpProxy class
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);

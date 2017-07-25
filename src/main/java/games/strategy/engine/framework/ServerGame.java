@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -51,6 +50,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.settings.ClientSettings;
 
 /**
  * Represents a running game.
@@ -347,8 +347,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave(final String fileName) {
-    SaveGameFileChooser.ensureMapsFolderExists();
-    final File autoSaveDir = new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath()
+    final File autoSaveDir = new File(
+        ClientSettings.SAVE_GAMES_FOLDER_PATH.value()
         + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();

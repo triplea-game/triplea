@@ -46,6 +46,7 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
@@ -254,7 +255,7 @@ public class ServerLauncher extends AbstractLauncher {
                 m_serverModel.setAllPlayersToNullNodes();
               }
               final File f1 = new File(
-                  ClientContext.clientSettings().getFolderSettings().getSaveGamePath(),
+                  ClientSettings.SAVE_GAMES_FOLDER_PATH.value(),
                   SaveGameFileChooser.getAutoSaveFileName());
               if (f1.exists()) {
                 m_gameSelectorModel.load(f1, null);
@@ -372,11 +373,10 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private void saveAndEndGame(final INode node) {
-    SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = m_headless
-        ? new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
-        : new File(ClientContext.clientSettings().getFolderSettings().getSaveGamePath(), getConnectionLostFileName());
+        ? new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getAutoSaveFileName())
+        : new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {

@@ -15,6 +15,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.client.GameEnginePropertyReader;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.util.Version;
 
 /**
@@ -156,7 +157,7 @@ public final class ClientFileSystemHelper {
    *     retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final String path = ClientContext.clientSettings().getFolderSettings().getDownloadedMapPath();
+    final String path = ClientSettings.USER_MAPS_FOLDER_PATH.value();
 
 
     final File mapsFolder = new File(path);

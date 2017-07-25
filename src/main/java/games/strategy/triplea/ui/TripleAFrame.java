@@ -77,7 +77,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -141,7 +140,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.settings.models.ScrollSettings;
+import games.strategy.triplea.settings.ClientSettings;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -206,13 +205,11 @@ public class TripleAFrame extends MainGameFrame {
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool;
   private final TripleAMenuBar menu;
-  private final ScrollSettings scrollSettings;
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
-    scrollSettings = ClientContext.clientSettings().getScrollSettings();
     this.game = game;
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
@@ -1580,15 +1577,9 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private int computeScrollSpeed() {
-    int multiplier = 1;
-
-    if (isCtrlPressed) {
-      multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
-    }
-
-
-    final int starterDiffPixel = scrollSettings.getArrowKeyScrollSpeed();
-    return (starterDiffPixel * multiplier);
+    return isCtrlPressed
+        ? ClientSettings.ARROW_KEY_SCROLL_SPEED.intValue() * ClientSettings.FASTER_ARROW_KEY_SCROLL_MULTIPLIER.intValue()
+        : ClientSettings.ARROW_KEY_SCROLL_SPEED.intValue();
   }
 
   private void showEditMode() {

@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
@@ -53,10 +52,6 @@ public abstract class AbstractUIContext implements IUIContext {
 
   public static ResourceLoader getResourceLoader() {
     return resourceLoader;
-  }
-
-  public static int getAiPauseDuration() {
-    return ClientContext.clientSettings().getAiSettings().getAiPauseDuration();
   }
 
   @Override
@@ -404,16 +399,6 @@ public abstract class AbstractUIContext implements IUIContext {
     } catch (final BackingStoreException ex) {
       ClientLogger.logQuietly(ex);
     }
-  }
-
-  @Override
-  public boolean getShowBattlesBetweenAIs() {
-    return ClientContext.clientSettings().getAiSettings().showBattlesBetweenAi();
-  }
-
-  @Override
-  public void setShowBattlesBetweenAIs(final boolean showBattlesBetweenAi) {
-    ClientContext.clientSettings().getAiSettings().setShowBattlesBetweenAi(showBattlesBetweenAi);
   }
 
   @Override
