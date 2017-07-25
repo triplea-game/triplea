@@ -89,17 +89,20 @@ public class LobbyLogin {
               if (panel.isAnonymous()) {
                 props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
               } else {
+                final boolean isUpdatedLobby = RsaAuthenticator.canProcessChallenge(challengProperties);
                 String salt = challengProperties.get(LobbyLoginValidator.SALT_KEY);
                 if (salt == null) {
-                  // the server does not have a salt value
-                  // so there is no user with our name,
-                  // continue as before
-                  internalError.set("No account with that name exists");
+                  if (!isUpdatedLobby) {
+                    // the server does not have a salt value
+                    // so there is no user with our name,
+                    // continue as before
+                    internalError.set("No account with that name exists");
+                  }
                   salt = "none";
                 }
                 final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                 props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-                if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
+                if (isUpdatedLobby) {
                   props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
                 }
               }

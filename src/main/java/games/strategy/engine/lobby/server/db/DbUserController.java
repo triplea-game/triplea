@@ -104,6 +104,9 @@ public class DbUserController implements UserDao {
     if (secondaryDao.login(userName, password)) {
       migrationCounter.secondaryLoginSuccess();
       return true;
+    } else if(!password.isValidSyntax()) {
+      migrationCounter.loginFailure();
+      return false;
     }
 
     if (primaryDao.login(userName, password)) {

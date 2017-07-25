@@ -225,13 +225,20 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (new DbUserController().doesUserExist(user.getName())) {
       return "That user name has already been taken";
     }
+    final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
       return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
-        new DbUserController().createUser(user, new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
+        final UserDao userDao = new DbUserController();
+        final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt()));
+        if (password.isValidSyntax()) {
+          userDao.createUser(user, password);
+          userDao.updateUser(user, newPass);
+        } else {
+          userDao.createUser(user, newPass);
+        }
         return null;
       });
     }
-    final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (!password.isValidSyntax()) {
       return "Password is not hashed correctly";
     }
