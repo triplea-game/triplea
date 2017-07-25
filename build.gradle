@@ -126,6 +126,10 @@ task integTest(type: Test) {
         reports.junitXml.destination = file("${reports.junitXml.destination}/$name")
     }
 
+    testLogging {
+        exceptionFormat = 'full'
+    }
+
     mustRunAfter tasks.test
 }
 
