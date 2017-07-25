@@ -382,7 +382,7 @@ public class ValidateAttachmentsTest {
           if (!getterValue.equals(fieldValue)) {
             sb.append("Class ").append(clazz.getCanonicalName()).append(", ").append(getterName)
                 .append(" returns type ").append(getterValue.getClass().getName()).append(" but field is of type ")
-                .append(fieldValue.getClass().getName());
+                .append(fieldValue.getClass().getName()).append("\n");
           }
         } catch (final NoSuchMethodException e) {
           sb.append("Warning, Class ").append(clazz.getCanonicalName()).append(" testing '").append(propertyName)
