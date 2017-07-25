@@ -501,7 +501,8 @@ public class WW2V3Year41Test {
     placeDelegate.setDelegateBridgeAndPlayer(getDelegateBridge(germans(gameData)));
     placeDelegate.start();
     addTo(germans(gameData), aaGun(gameData).create(1, germans(gameData)), gameData);
-    errorResults = placeDelegate.placeUnits(getUnits(map, germans), germany, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    errorResults = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), germany,
+        IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(errorResults);
     assertEquals(germany.getUnits().getUnitCount(), preCount + 3);
   }
@@ -617,7 +618,7 @@ public class WW2V3Year41Test {
     map.add(factoryType, 1);
     addTo(british(gameData), factory(gameData).create(1, british(gameData)), gameData);
     // Place the factory
-    final String response = placeDelegate.placeUnits(getUnits(map, british), egypt);
+    final String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, british), egypt);
     assertValid(response);
     // placeUnits performPlace
     // get production and unit production values
@@ -666,7 +667,8 @@ public class WW2V3Year41Test {
     // Get the number of units before placing
     int preCount = kiangsu.getUnits().getUnitCount();
     // Place the infantry
-    String response = placeDelegate.placeUnits(getUnits(map, chinese), kiangsu, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, chinese), kiangsu,
+        IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
     assertEquals(preCount + 1, kiangsu.getUnits().getUnitCount());
     /*
@@ -679,7 +681,8 @@ public class WW2V3Year41Test {
     // Get the number of units before placing
     preCount = yunnan.getUnits().getUnitCount();
     // Place the infantry
-    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, chinese), yunnan,
+        IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
     final int midCount = yunnan.getUnits().getUnitCount();
     // Make sure they were all placed
@@ -690,7 +693,8 @@ public class WW2V3Year41Test {
     map = new IntegerMap<>();
     map.add(infantryType, 1);
     addTo(chinese(gameData), infantry(gameData).create(1, chinese(gameData)), gameData);
-    response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, chinese), yunnan,
+        IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertError(response);
     // Make sure none were placed
     final int postCount = yunnan.getUnits().getUnitCount();
@@ -719,7 +723,7 @@ public class WW2V3Year41Test {
     map.add(transportType, 1);
     addTo(germans(gameData), transport(gameData).create(1, germans(gameData)), gameData);
     // Place it
-    final String response = placeDelegate.placeUnits(getUnits(map, germans), sz5);
+    final String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), sz5);
     assertValid(response);
   }
 
@@ -1635,22 +1639,6 @@ public class WW2V3Year41Test {
     move(armour, new Route(libya, morrocco));
   }
 
-  /*
-   * Add Utilities here
-   */
-  private static Collection<Unit> getUnits(final IntegerMap<UnitType> unitCountsByType, final PlayerID from) {
-    final Iterator<UnitType> iter = unitCountsByType.keySet().iterator();
-    final Collection<Unit> units = new ArrayList<>(unitCountsByType.totalValues());
-    while (iter.hasNext()) {
-      final UnitType type = iter.next();
-      units.addAll(from.getUnits().getUnits(type, unitCountsByType.getInt(type)));
-    }
-    return units;
-  }
-
-  /*
-   * Add assertions here
-   */
   public void assertValid(final String string) {
     assertNull(string, string);
   }
