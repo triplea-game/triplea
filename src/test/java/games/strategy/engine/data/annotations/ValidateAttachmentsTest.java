@@ -2,6 +2,7 @@ package games.strategy.engine.data.annotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -12,7 +13,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -140,8 +140,7 @@ public class ValidateAttachmentsTest {
       sb.append(validateAttachment(clazz));
     }
     if (sb.length() > 0) {
-      System.out.println(sb.toString());
-      // fail(sb.toString());
+      fail("One or more attachments are invalid:\n" + sb.toString());
     }
   }
 
@@ -153,9 +152,8 @@ public class ValidateAttachmentsTest {
   public void testAllAttachments() throws Exception {
     final File root = getRootClassesFolder();
     final String errors = findAttachmentsAndValidate(root, root);
-    if (errors.length() > 0) {
-      System.out.println(errors);
-      // fail("\n" + errors);
+    if (!errors.isEmpty()) {
+      fail("One or more attachments are invalid:\n" + errors);
     }
   }
 
