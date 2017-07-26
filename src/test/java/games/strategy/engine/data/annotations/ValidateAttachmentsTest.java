@@ -2,16 +2,16 @@ package games.strategy.engine.data.annotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.ResourceCollection;
@@ -147,26 +146,26 @@ public class ValidateAttachmentsTest {
   }
 
   /**
-   * Scans the compiled /classes folder and finds all classes that implement IAttachment to verify that
+   * Scans the compiled classes folder and finds all classes that implement IAttachment to verify that
    * all @GameProperty have valid setters and getters.
    */
   @Test
-  public void testAllAttachments() {
-    // find the classes folder
-    final URL url = getClass().getResource("/");
-    File file = null;
-    try {
-      file = new File(url.toURI());
-      file = new File(file.getParent(), "classes");
-    } catch (final URISyntaxException e) {
-      fail(e.getMessage());
-      ClientLogger.logQuietly(e);
-    }
-    final String errors = findAttachmentsAndValidate(file);
+  public void testAllAttachments() throws Exception {
+    final File root = getRootClassesFolder();
+    final String errors = findAttachmentsAndValidate(root, root);
     if (errors.length() > 0) {
       System.out.println(errors);
       // fail("\n" + errors);
     }
+  }
+
+  private File getRootClassesFolder() throws Exception {
+    final File root = new File(getClass().getResource("/").toURI());
+    // HACK: accommodate Gradle folder structure; we only care about production classes in this case
+    if ("test".equals(root.getName())) {
+      return new File(root.getParentFile(), "main");
+    }
+    return root;
   }
 
   // file to find classes or directory
@@ -176,21 +175,19 @@ public class ValidateAttachmentsTest {
    * Recursive method to find all classes that implement IAttachment and validate that they use the @GameProperty
    * annotation correctly.
    *
+   * @param root The root of the classes directory being searched.
    * @param file
    *        the file or directory
    */
-  private static String findAttachmentsAndValidate(final File file) {
+  private static String findAttachmentsAndValidate(final File root, final File file) {
     final StringBuilder sb = new StringBuilder("");
     if (file.isDirectory()) {
       final File[] childFiles = file.listFiles(classOrDirectory);
       for (final File childFile : childFiles) {
-        sb.append(findAttachmentsAndValidate(childFile));
+        sb.append(findAttachmentsAndValidate(root, childFile));
       }
     } else {
-      final String fileName = file.getAbsolutePath();
-      final String classesRoot = File.separatorChar + "classes" + File.separatorChar;
-      final int index = fileName.indexOf(classesRoot) + classesRoot.length();
-      String className = fileName.substring(index);
+      String className = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
       className = className.replace(File.separator, ".");
       if (!className.endsWith(".class")) {
         return "";
@@ -199,24 +196,28 @@ public class ValidateAttachmentsTest {
       if (isSkipClass(className)) {
         return "";
       }
-      final Class<?> clazz;
       try {
-        clazz = Class.forName(className);
+        final Class<?> clazz = Class.forName(className);
         if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) {
           @SuppressWarnings("unchecked")
           final Class<? extends IAttachment> attachmentClass = (Class<? extends IAttachment>) clazz;
-          // sb.append("Testing class: " + attachmentClass.getCanonicalName());
           sb.append(validateAttachment(attachmentClass));
         }
       } catch (final ClassNotFoundException e) {
-        sb.append("Warning: Class ").append(className).append(" not found. Error Message: ").append(e.getMessage())
-            .append("\n");
+        sb.append(String.format("Warning: Class %s not found. Error:\n%s", className, formatStackTrace(e)));
       } catch (final Throwable e) {
-        sb.append("Warning: Class ").append(className).append(" could not be loaded. Error Message: ")
-            .append(e.getMessage()).append("\n");
+        sb.append(String.format("Warning: Class %s could not be loaded. Error:\n%s", className, formatStackTrace(e)));
       }
     }
     return sb.toString();
+  }
+
+  private static String formatStackTrace(final Throwable t) {
+    final StringWriter stringWriter = new StringWriter();
+    try (final PrintWriter printWriter = new PrintWriter(stringWriter)) {
+      t.printStackTrace(printWriter);
+    }
+    return stringWriter.toString();
   }
 
   /**
@@ -228,7 +229,8 @@ public class ValidateAttachmentsTest {
    */
   public static final List<String> SKIPCLASSES = Arrays.asList("ReliefImageBreaker", "TileImageBreaker",
       "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample", "InvalidClearExample",
-      "InvalidFieldTypeExample", "ChatPlayerPanel", "GUID", "Node");
+      "InvalidFieldTypeExample", "InvalidResetExample", "ChatPlayerPanel", "GUID", "Node", "DownloadMapsWindow",
+      "MacQuitMenuWrapper", "AutoPlacementFinder", "TileImageReconstructor");
 
   /**
    * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the
@@ -256,22 +258,22 @@ public class ValidateAttachmentsTest {
       final boolean gamePropertyAnnotation = setter.isAnnotationPresent(GameProperty.class);
       if (internalDoNotExportAnnotation && gamePropertyAnnotation) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
-            .append(": cannot have both InternalDoNotExport and GameProperty annotations");
+            .append(": cannot have both InternalDoNotExport and GameProperty annotations\n");
         continue;
       } else if (startsWithSet && !(internalDoNotExportAnnotation || gamePropertyAnnotation)) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
-            .append(": begins with 'set' so must have either InternalDoNotExport or GameProperty annotation");
+            .append(": begins with 'set' so must have either InternalDoNotExport or GameProperty annotation\n");
         continue;
       } else if (!startsWithSet && gamePropertyAnnotation) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
-            .append(": does not begin with 'set' but has GameProperty annotation");
+            .append(": does not begin with 'set' but has GameProperty annotation\n");
         continue;
       } else if (!startsWithSet || internalDoNotExportAnnotation) {
         // no error, we are supposed to ignore things that are labeled as ignore, or do not start with 'set'
         continue;
       } else if (!startsWithSet && !gamePropertyAnnotation) {
         sb.append("WARNING: Class ").append(clazz.getCanonicalName()).append(" setter ").append(setter.getName())
-            .append(": I must have missed a possibility");
+            .append(": I must have missed a possibility\n");
         continue;
       }
       final Method getter;
