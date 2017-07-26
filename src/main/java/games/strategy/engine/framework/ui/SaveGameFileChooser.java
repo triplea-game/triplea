@@ -10,7 +10,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 
 public class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
@@ -79,8 +79,8 @@ public class SaveGameFileChooser extends JFileChooser {
   private SaveGameFileChooser() {
     super();
     setFileFilter(createGameDataFileFilter());
-    ensureDirectoryExists(new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value()));
-    setCurrentDirectory(new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value()));
+    ensureDirectoryExists(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
+    setCurrentDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
   }
 
   private static void ensureDirectoryExists(final File f) {

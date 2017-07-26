@@ -9,13 +9,18 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
+import tools.map.making.MapCreator;
+import tools.map.xml.creator.MapXmlCreator;
 
 public class MetaSetupPanel extends SetupPanel {
 
@@ -95,6 +100,24 @@ public class MetaSetupPanel extends SetupPanel {
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
+
+    if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
+      final JButton mapCreator =
+          SwingComponents.newJButton("Run the Map Creator", e -> ProcessRunnerUtil.runClass(MapCreator.class));
+      add(mapCreator, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(10, 0, 0, 0), 0, 0));
+
+      final JButton m_mapXmlCreator = SwingComponents
+          .newJButton("[Beta] Run the Map Creator", e -> ProcessRunnerUtil.runClass(MapXmlCreator.class));
+      add(m_mapXmlCreator, new GridBagConstraints(0,  11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(10, 0, 0, 0), 0, 0));
+
+
+      final JButton console = SwingComponents.newJButton("Show Console", e -> ErrorConsole.getConsole().setVisible(true));
+      add(console, new GridBagConstraints(0, 12, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(10, 0, 0, 0), 0, 0));
+
+    }
   }
 
   private void setupListeners() {
@@ -103,7 +126,7 @@ public class MetaSetupPanel extends SetupPanel {
     hostGame.addActionListener(e -> model.showServer(MetaSetupPanel.this));
     connectToHostedGame.addActionListener(e -> model.showClient(MetaSetupPanel.this));
     connectToLobby.addActionListener(e -> connectToLobby());
-    enginePreferences.addActionListener(e -> enginePreferences());
+    enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
   }
@@ -115,13 +138,6 @@ public class MetaSetupPanel extends SetupPanel {
   private static void helpPage() {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
-
-
-
-  private void enginePreferences() {
-    EnginePreferences.showEnginePreferences(this);
-  }
-
 
   private void connectToLobby() {
     final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this));

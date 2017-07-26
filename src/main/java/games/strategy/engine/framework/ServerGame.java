@@ -50,7 +50,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * Represents a running game.
@@ -188,7 +188,7 @@ public class ServerGame extends AbstractGame {
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {
-        if (!waitOnObserver.await(GameRunner.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
+        if (!waitOnObserver.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {
@@ -348,7 +348,7 @@ public class ServerGame extends AbstractGame {
 
   private void autoSave(final String fileName) {
     final File autoSaveDir = new File(
-        ClientSettings.SAVE_GAMES_FOLDER_PATH.value()
+        ClientSetting.SAVE_GAMES_FOLDER_PATH.value()
         + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();

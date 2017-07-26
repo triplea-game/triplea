@@ -140,7 +140,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -1578,8 +1578,8 @@ public class TripleAFrame extends MainGameFrame {
 
   private int computeScrollSpeed() {
     return isCtrlPressed
-        ? ClientSettings.ARROW_KEY_SCROLL_SPEED.intValue() * ClientSettings.FASTER_ARROW_KEY_SCROLL_MULTIPLIER.intValue()
-        : ClientSettings.ARROW_KEY_SCROLL_SPEED.intValue();
+        ? ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue() * ClientSetting.FASTER_ARROW_KEY_SCROLL_MULTIPLIER.intValue()
+        : ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue();
   }
 
   private void showEditMode() {

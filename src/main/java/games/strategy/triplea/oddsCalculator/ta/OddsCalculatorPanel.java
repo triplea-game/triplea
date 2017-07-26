@@ -68,7 +68,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -702,8 +702,8 @@ class OddsCalculatorPanel extends JPanel {
     numRuns.setMax(20000);
 
     final int simulationCount = Properties.getLow_Luck(data)
-        ? ClientSettings.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
-        : ClientSettings.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
+        ? ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
+        : ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
     numRuns.setValue(simulationCount);
     retreatAfterXRounds.setColumns(4);
     retreatAfterXRounds.setMin(-1);

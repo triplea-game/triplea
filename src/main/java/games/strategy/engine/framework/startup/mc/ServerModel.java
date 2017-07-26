@@ -58,7 +58,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
@@ -388,7 +388,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AutoSaveType.AUTOSAVE2) {
         return;
       }
-      final File save = new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
+      final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
       if (!save.exists()) {
         return;
       }

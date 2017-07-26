@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
@@ -38,8 +37,7 @@ import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.settings.ClientSettings;
-import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 
 public class LookAndFeel {
@@ -70,7 +68,7 @@ public class LookAndFeel {
   public static void setupLookAndFeel() {
     SwingAction.invokeAndWait(() -> {
       try {
-        UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_PREF.value());
+        UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
         // FYI if you are getting a null pointer exception in Substance, like this:
         // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
         // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
@@ -89,20 +87,4 @@ public class LookAndFeel {
     });
   }
 
-
-
-  public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
-    try {
-      UIManager.setLookAndFeel(lookAndFeelClassName);
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-        | UnsupportedLookAndFeelException e) {
-      ClientLogger.logError("Unable to load look and feel: " + lookAndFeelClassName
-          + ", retaining the old look and feel. Please do not select this look and feel, it does not work."
-          + " Please do report this to the developers so the look and feel can be addressed. When doing so, please"
-          + " include this list of installed look and feel debug data: "
-          + Arrays.asList(UIManager.getInstalledLookAndFeels()) , e);
-      return;
-    }
-    ClientSettings.LOOK_AND_FEEL_PREF.save(lookAndFeelClassName);
-  }
 }

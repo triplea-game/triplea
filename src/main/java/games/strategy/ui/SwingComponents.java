@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -16,10 +17,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +28,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -55,13 +55,19 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
+/**
+ * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI code out of
+ * the rest of the code base. This also gives us a cleaner interface between UI and the rest of the code.
+ */
 public class SwingComponents {
   private static final String PERIOD = ".";
+  private static final Collection<String> visiblePrompts = new HashSet<>();
 
   public static JFrame newJFrame(final String title, final JComponent contents) {
     final JFrame frame = new JFrame(title);
@@ -99,19 +105,6 @@ public class SwingComponents {
     return newJPanelWithBoxLayout(BoxLayout.X_AXIS);
   }
 
-  /**
-   * Returns a row that has some padding at the top of it, and bottom.
-   */
-  public static JPanel createRowWithTopAndBottomPadding(final JPanel contentRow, final int topPadding,
-      final int bottomPadding) {
-    final JPanel rowContents = new JPanel();
-    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
-    rowContents.add(Box.createVerticalStrut(topPadding));
-    rowContents.add(contentRow);
-    rowContents.add(Box.createVerticalStrut(bottomPadding));
-    return rowContents;
-  }
-
   public static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
     final ButtonGroup group = new ButtonGroup();
     for (final JRadioButton radioButton : Arrays.asList(radioButtons)) {
@@ -120,10 +113,16 @@ public class SwingComponents {
     return group;
   }
 
+
   /**
    * Adds a focus listener to a given component and executes a given action when focus is lost.
    */
-  public static void addFocusLostListener(final JComponent component, final Runnable focusLostListener) {
+  public static void addTextFieldFocusLostListener(final JTextField component, final Runnable focusLostListener) {
+    addFocusLostListener(component, focusLostListener);
+    component.addActionListener(e -> focusLostListener.run());
+  }
+
+  private static void addFocusLostListener(final JComponent component, final Runnable focusLostListener) {
     component.addFocusListener(new FocusListener() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -135,11 +134,6 @@ public class SwingComponents {
         focusLostListener.run();
       }
     });
-  }
-
-  public static void addTextFieldFocusLostListener(final JTextField component, final Runnable focusLostListener) {
-    addFocusLostListener(component, focusLostListener);
-    component.addActionListener(e -> focusLostListener.run());
   }
 
   public enum KeyboardCode {
@@ -155,11 +149,8 @@ public class SwingComponents {
     int getSwingKeyEventCode() {
       return keyEventCode;
     }
-
   }
 
-
-  private static final Set<String> visiblePrompts = new HashSet<>();
 
   /**
    * Creates a JPanel with BorderLayout and adds a west component and an east component.
@@ -332,7 +323,7 @@ public class SwingComponents {
   }
 
 
-  public static Optional<File> showJFileChooserForFolders( ) {
+  public static Optional<File> showJFileChooserForFolders() {
     final JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -461,5 +452,38 @@ public class SwingComponents {
     worker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(progressDialog));
     worker.execute();
     return promise;
+  }
+
+  public static class GridBagHelper {
+    private final JComponent parent;
+    private final int columns;
+    private final GridBagConstraints constraints;
+
+    private int elementCount = 0;
+
+    public GridBagHelper(final JComponent parent, final int columns) {
+      this.parent = parent;
+      this.columns = columns;
+      constraints = new GridBagConstraints();
+    }
+
+    public void addComponents(final JComponent ... children) {
+      Preconditions.checkArgument(children.length > 0);
+      for(final JComponent child : children) {
+
+        final int x = elementCount % columns;
+        final int y = elementCount / columns;
+
+        constraints.gridx = x;
+        constraints.gridy = y;
+
+        constraints.ipadx = 3;
+        constraints.ipady = 3;
+
+        constraints.anchor = GridBagConstraints.WEST;
+        parent.add(child, constraints);
+        elementCount++;
+      }
+    }
   }
 }

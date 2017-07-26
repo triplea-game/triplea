@@ -38,7 +38,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
 
 public class GameSelectorPanel extends JPanel implements Observer {
@@ -351,7 +351,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setDirectory(new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value()).getPath());
+      fileDialog.setDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

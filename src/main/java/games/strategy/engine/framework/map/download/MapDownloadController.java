@@ -17,8 +17,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.settings.ClientSettings;
-import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
@@ -38,7 +37,7 @@ public class MapDownloadController {
       final int year = locaDateTime.get(ChronoField.YEAR);
       final int month = locaDateTime.get(ChronoField.MONTH_OF_YEAR);
       // format year:month
-      final String lastCheckTime = ClientSettings.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.value();
+      final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.value();
       if (!Strings.nullToEmpty(lastCheckTime).trim().isEmpty()) {
         final String[] yearMonth = lastCheckTime.split(":");
         if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
@@ -46,8 +45,8 @@ public class MapDownloadController {
         }
       }
 
-      ClientSettings.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.save(year + ":" + month);
-      ClientSettings.flush();
+      ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.save(year + ":" + month);
+      ClientSetting.flush();
 
       final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
@@ -153,13 +152,13 @@ public class MapDownloadController {
     return new TutorialMapPreferences() {
       @Override
       public void preventPromptToDownload() {
-        ClientSettings.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.save(false);
-        ClientSettings.flush();
+        ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.save(false);
+        ClientSetting.flush();
       }
 
       @Override
       public boolean canPromptToDownload() {
-        return ClientSettings.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.booleanValue();
+        return ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.booleanValue();
       }
     };
   }

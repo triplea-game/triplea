@@ -3,12 +3,12 @@ package games.strategy.triplea.settings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
+import java.awt.Frame;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -16,13 +16,11 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.border.Border;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -31,10 +29,10 @@ import games.strategy.ui.SwingComponents;
 
 
 /**
- * UI window with controls to update game settings and preferences, {@see ClientSettings}.
+ * UI window with controls to update game settings and preferences, {@see ClientSetting}.
  * Settings are grouped by type, the window consists of a TabbedPane and in it we load
  * one tab per non-hidden {@code SettingType}.
- * All data needed to render the settings UI is pulled from the {@code ClientSettings} enum.
+ * All data needed to render the settings UI is pulled from the {@code ClientSetting} enum.
  */
 class SettingsWindow {
   SettingsWindow() {
@@ -45,8 +43,8 @@ class SettingsWindow {
   }
 
   static void show() {
-    final JDialog dialog = new JDialog((JFrame) null, "Settings");
-    dialog.setContentPane(createContents(() -> dialog.dispose()));
+    final JDialog dialog = new JDialog((Frame) null, "Settings");
+    dialog.setContentPane(createContents(dialog::dispose));
     dialog.setMinimumSize(new Dimension(300,250));
     dialog.pack();
     dialog.setVisible(true);
@@ -55,68 +53,24 @@ class SettingsWindow {
   private static JComponent createContents(final Runnable closerListener) {
     final JTabbedPane tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
 
-    final List<SelectionComponent> selectionComponents = new ArrayList<>();
-    Arrays.stream(SettingType.values())
-        .filter(settingType -> settingType != SettingType.HIDDEN)
-        .forEach(nonHiddenType -> {
-          final List<ClientSettings> settings = Arrays.stream(ClientSettings.values())
-              .filter(setting -> setting.type == nonHiddenType)
-              .sorted(Comparator.comparing(a -> a.title))
-              .collect(Collectors.toList());
-
-          selectionComponents.addAll(
-              settings.stream()
-                  .map(setting -> setting.userInputComponent)
-                  .collect(Collectors.toList()));
-
-          tabbedPane.add(nonHiddenType.tabTitle, createSettingsTab(settings, closerListener));
-        });
+    Arrays.stream(SettingType.values()).forEach(settingType ->
+        tabbedPane.add(settingType.tabTitle, createSettingsTab(settingType, closerListener)));
     return tabbedPane;
   }
 
-  // TODO: move this off to SwingComponents
-  private static class GridBagHelper {
-    private final JComponent parent;
-    private final int columns;
-    private final GridBagConstraints constraints;
+  private static JComponent createSettingsTab(final SettingType settingType, final Runnable closeListener) {
+    final List<ClientSettingUiBinding> settings = Arrays.stream(ClientSettingUiBinding.values())
+        .filter(setting -> setting.type == settingType)
+        .collect(Collectors.toList());
 
-    private int elementCount = 0;
-
-    public GridBagHelper(final JComponent parent, final int columns) {
-      this.parent = parent;
-      this.columns = columns;
-      constraints = new GridBagConstraints();
-    }
-
-    public void addComponents(final JComponent ... children) {
-      Preconditions.checkArgument(children.length > 0);
-      for(final JComponent child : children) {
-
-        final int x = elementCount % columns;
-        final int y = elementCount / columns;
-
-        constraints.gridx = x;
-        constraints.gridy = y;
-
-        constraints.ipadx = 3;
-        constraints.ipady = 3;
-
-        constraints.anchor = GridBagConstraints.WEST;
-        parent.add(child, constraints);
-        elementCount++;
-      }
-    }
-  }
-
-  private static JComponent createSettingsTab(final List<ClientSettings> settings, final Runnable closeListener) {
     settings.forEach(setting -> {
       Preconditions.checkNotNull(Strings.emptyToNull(setting.title));
-      Preconditions.checkNotNull(setting.userInputComponent.getJComponent());
+      Preconditions.checkNotNull(setting.selectionComponent.getJComponent());
     });
 
     final JPanel contents = new JPanel(new GridBagLayout());
 
-    final GridBagHelper grid = new GridBagHelper(contents,3);
+    final SwingComponents.GridBagHelper grid = new SwingComponents.GridBagHelper(contents,3);
 
     settings.forEach(setting -> {
 
@@ -125,10 +79,8 @@ class SettingsWindow {
       label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
       label.setMaximumSize(new Dimension(200, 50));
       panel.add(label);
-      //      panel.add(Box.createHorizontalStrut(5));
 
-      final JComponent component = setting.userInputComponent.getJComponent();
-//      component.setMaximumSize(new Dimension(200, 50));
+      final JComponent component = setting.selectionComponent.getJComponent();
 
       final JTextArea description = new JTextArea(setting.description, 2, 50);
       description.setMaximumSize(new Dimension(200, 50));
@@ -159,24 +111,27 @@ class SettingsWindow {
     bottomPanel.add(Box.createHorizontalGlue());
 
     final JButton saveButton = SwingComponents.newJButton("Save", e -> {
-
       final StringBuilder successMsg = new StringBuilder();
       final StringBuilder failMsg = new StringBuilder();
 
+      // save all the values, save stuff that is valid and that was updated
       settings.forEach(setting -> {
-        if (setting.userInputComponent.isValid() && !setting.userInputComponent.readValue().equals(setting.value())) {
-          successMsg.append(String.format("%s was updated to: %s\n",
-              setting.title, setting.userInputComponent.readValue()));
-          setting.save(setting.userInputComponent.readValue());
-        } else if (!setting.userInputComponent.isValid()) {
-          failMsg.append(String.format("Could not set %s to %s, %s\n",
-              setting.title, setting.userInputComponent.readValue(),
-              setting.userInputComponent.validValueDescription()));
-          setting.userInputComponent.setValue(setting.value());
+        if (setting.isValid()) {
+          // read and save all settings
+          setting.readValues().forEach((settingKey,settingValue) -> {
+            settingKey.save(settingValue);
+            successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
+            ClientSetting.flush();
+          });
+        } else if (!setting.isValid()) {
+          final Map<ClientSetting, String> values = setting.readValues();
+          values.forEach((entry, value) -> {
+            failMsg.append(String.format("Could not set %s to %s, %s\n",
+                setting.title, value, setting.validValueDescription()));
+          });
         }
-        setting.userInputComponent.clearError();
-        ClientSettings.flush();
       });
+      ClientSetting.flush();
 
       final String success = successMsg.toString();
       final String fail = failMsg.toString();
@@ -194,19 +149,23 @@ class SettingsWindow {
     });
 
     buttonPanel.add(saveButton);
+
     buttonPanel.add(Box.createHorizontalStrut(20));
+
+    buttonPanel.add(SwingComponents.newJButton("Close", event -> {
+      closeListener.run();
+    }));
+
+    buttonPanel.add(Box.createHorizontalStrut(20));
+
     final JButton cancelButton = SwingComponents.newJButton("Cancel", e -> closeListener.run());
     buttonPanel.add(cancelButton);
 
     buttonPanel.add(Box.createHorizontalStrut(30));
     final JButton restoreDefaultsButton =
         SwingComponents.newJButton("Restore Defaults", e -> {
-          settings.forEach(ClientSettings::restoreToDefaultValue);
-          ClientSettings.flush();
-          settings.forEach(setting -> {
-            setting.userInputComponent.setValue(setting.value());
-            setting.userInputComponent.clearError();
-          });
+          settings.forEach(ClientSettingUiBinding::resetToDefault);
+          ClientSetting.flush();
           JOptionPane.showMessageDialog(null,
               "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
         });
@@ -224,16 +183,4 @@ class SettingsWindow {
     floatTop.add(Box.createVerticalGlue());
     return floatTop;
   }
-
-  private static JPanel floatCenterLeft(final JComponent component) {
-    final JPanel floatLeft = SwingComponents.newJPanelWithHorizontalBoxLayout();
-    floatLeft.add(component);
-    floatLeft.add(Box.createHorizontalGlue());
-    final JPanel floatTop = SwingComponents.newJPanelWithVerticalBoxLayout();
-    floatTop.add(Box.createVerticalGlue());
-    floatTop.add(floatLeft);
-    floatTop.add(Box.createVerticalGlue());
-    return floatTop;
-  }
-
 }

@@ -33,7 +33,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.TimeManager;
@@ -202,7 +202,7 @@ public class HeadlessGameServer {
           System.out.println("Remote Stop Game Initiated.");
           try {
             iGame.saveGame(new File(
-                ClientSettings.SAVE_GAMES_FOLDER_PATH.value(),
+                ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
                 SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
@@ -744,36 +744,10 @@ public class HeadlessGameServer {
           + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
       printUsage = true;
     }
-    // no passwords allowed for bots
-    // take any actions or commit to preferences
-    final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
-    final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
-    if (clientWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(clientWait);
-        GameRunner.setServerStartGameSyncWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
-    if (observerWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(observerWait);
-        GameRunner.setServerObserverJoinWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
 
     if (printUsage) {
       usage();
       System.exit(-1);
     }
-
-
   }
 }

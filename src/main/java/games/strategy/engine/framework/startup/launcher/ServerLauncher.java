@@ -46,7 +46,7 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
@@ -181,7 +181,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (m_abortLaunch) {
         m_serverReady.countDownAll();
       }
-      if (!m_serverReady.await(GameRunner.getServerStartGameSyncWaitTime(), TimeUnit.SECONDS)) {
+      if (!m_serverReady.await(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
         System.out.println("Waiting for clients to be ready timed out!");
         m_abortLaunch = true;
       }
@@ -224,8 +224,7 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               // we are already aborting the launch
               if (!m_abortLaunch) {
-                if (!m_errorLatch.await(GameRunner.getServerObserverJoinWaitTime()
-                    + GameRunner.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS)) {
+                if (!m_errorLatch.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
                   System.err.println("Waiting on error latch timed out!");
                 }
               }
@@ -249,13 +248,11 @@ public class ServerLauncher extends AbstractLauncher {
           if (m_headless) {
             try {
               System.out.println("Game ended, going back to waiting.");
-              if (m_serverModel != null) {
-                // if we do not do this, we can get into an infinite loop of launching a game,
-                // then crashing out, then launching, etc.
-                m_serverModel.setAllPlayersToNullNodes();
-              }
+              // if we do not do this, we can get into an infinite loop of launching a game,
+              // then crashing out, then launching, etc.
+              m_serverModel.setAllPlayersToNullNodes();
               final File f1 = new File(
-                  ClientSettings.SAVE_GAMES_FOLDER_PATH.value(),
+                  ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
                   SaveGameFileChooser.getAutoSaveFileName());
               if (f1.exists()) {
                 m_gameSelectorModel.load(f1, null);
@@ -375,8 +372,8 @@ public class ServerLauncher extends AbstractLauncher {
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = m_headless
-        ? new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getAutoSaveFileName())
-        : new File(ClientSettings.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
+        ? new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getAutoSaveFileName())
+        : new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {

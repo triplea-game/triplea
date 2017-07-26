@@ -10,7 +10,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
 import games.strategy.persistence.serializable.ProxyRegistry;
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
 /**

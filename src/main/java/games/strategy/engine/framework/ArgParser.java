@@ -2,7 +2,7 @@ package games.strategy.engine.framework;
 
 import java.util.Arrays;
 
-import games.strategy.triplea.settings.ClientSettings;
+import games.strategy.triplea.settings.ClientSetting;
 
 public class ArgParser {
   /**
@@ -29,7 +29,7 @@ public class ArgParser {
         return false;
       }
     }
-    ClientSettings.flush();
+    ClientSetting.flush();
     return true;
   }
 
@@ -37,7 +37,7 @@ public class ArgParser {
     for (final String property : availableProperties) {
       if (key.equals(property)) {
         if (property.equals(GameRunner.MAP_FOLDER)) {
-          ClientSettings.MAP_FOLDER_OVERRIDE.save(value);
+          ClientSetting.MAP_FOLDER_OVERRIDE.save(value);
         } else {
           System.getProperties().setProperty(property, value);
         }
