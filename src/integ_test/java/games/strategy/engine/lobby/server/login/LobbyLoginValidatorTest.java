@@ -121,7 +121,7 @@ public class LobbyLoginValidatorTest {
             }));
     // with a bad password
     assertError(generateChallenge(user, null)
-        .apply(challenge -> RsaAuthenticator.getEncryptedPassword(challenge, "wrong")), "password");
+        .apply(challenge -> new HashMap<>(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"))), "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
   }
