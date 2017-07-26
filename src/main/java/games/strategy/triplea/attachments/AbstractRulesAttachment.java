@@ -216,7 +216,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_gameProperty = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setRounds(final String rounds) throws GameParseException {
     if (rounds == null) {
       m_turns = null;

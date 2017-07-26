@@ -289,12 +289,18 @@ public class ValidateAttachmentsTest {
       if (setter.getAnnotation(Deprecated.class) != null) {
         continue;
       }
+
+      // skip the remaining field-related checks if the property is virtual
+      if (annotation != null && annotation.virtual()) {
+        continue;
+      }
+
       // validate that there is a field and a getter
       Field field = null;
       try {
         field = PropertyUtil.getPropertyField(propertyName, clazz);
         // adders must have a field of type IntegerMap, or be a collection of sorts
-        if (annotation.adds()) {
+        if (annotation != null && annotation.adds()) {
           if (!(Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())
               || IntegerMap.class.isAssignableFrom(field.getType()))) {
             sb.append("Class ").append(clazz.getCanonicalName()).append(" has a setter ").append(setter.getName())
@@ -335,7 +341,7 @@ public class ValidateAttachmentsTest {
             .append(" doesn't have a valid getter method for property: ").append(propertyName).append("\n");
         continue;
       }
-      if (annotation.adds()) {
+      if (annotation != null && annotation.adds()) {
         // check that there is a clear method
         final String clearName = "clear" + capitalizeFirstLetter(propertyName);
         final Method clearMethod;

@@ -517,7 +517,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_destroyedWhenCapturedBy = value;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = true, virtual = true)
   public void setDestroyedWhenCapturedFrom(String value) throws GameParseException {
     if (!(value.startsWith("BY:") || value.startsWith("FROM:"))) {
       value = "FROM:" + value;
@@ -698,12 +698,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   // DO NOT REMOVE, this is an important convenience method for xmls
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsFactory(final String s) {
     setIsFactory(getBool(s));
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsFactory(final Boolean s) {
     setCanBeDamaged(s);
     setIsInfrastructure(s);
@@ -799,7 +799,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions
   // we might as well just use m_unitPlacementRestrictions
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(value.split(":"));
     final Collection<Territory> restrictedTerritories = new HashSet<>(getData().getMap().getTerritories());
@@ -1208,10 +1208,8 @@ public class UnitAttachment extends DefaultAttachment {
     m_transportCapacity = -1;
   }
 
-  /**
-   * DO NOT REMOVE.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  // DO NOT REMOVE.
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsTwoHit(final String s) {
     m_hitPoints = getBool(s) ? 2 : 1;
   }
@@ -2045,13 +2043,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsAA(final String s) throws GameParseException {
     setIsAA(getBool(s));
   }
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsAA(final Boolean s) throws GameParseException {
     setIsAAforCombatOnly(s);
     setIsAAforBombingThisUnitOnly(s);
@@ -2416,12 +2414,12 @@ public class UnitAttachment extends DefaultAttachment {
     m_willNotFireIfPresent = new HashSet<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsAAmovement(final String s) throws GameParseException {
     setIsAAmovement(getBool(s));
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsAAmovement(final Boolean s) throws GameParseException {
     setCanNotMoveDuringCombatMove(s);
     if (s) {

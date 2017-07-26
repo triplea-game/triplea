@@ -343,7 +343,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * Sets only m_production.
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setProductionOnly(final String value) {
     m_production = getInt(value);
   }
