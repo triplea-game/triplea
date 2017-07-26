@@ -15,7 +15,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -23,21 +22,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.triplea.attachments.CanalAttachment;
-import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.attachments.RelationshipTypeAttachment;
-import games.strategy.triplea.attachments.RulesAttachment;
-import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.TerritoryEffectAttachment;
-import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
 
@@ -115,21 +101,23 @@ public class ValidateAttachmentsTest {
   }
 
   private static List<Class<? extends IAttachment>> getKnownAttachmentClasses() {
-    final List<Class<? extends IAttachment>> result = new ArrayList<>();
-    result.add(DefaultAttachment.class);
-    result.add(CanalAttachment.class);
-    result.add(PlayerAttachment.class);
-    result.add(PoliticalActionAttachment.class);
-    result.add(RelationshipTypeAttachment.class);
-    result.add(RulesAttachment.class);
-    result.add(TechAttachment.class);
-    result.add(TerritoryAttachment.class);
-    result.add(TerritoryEffectAttachment.class);
-    result.add(TriggerAttachment.class);
-    result.add(UnitAttachment.class);
-    result.add(UnitSupportAttachment.class);
-    result.add(TechAbilityAttachment.class);
-    return result;
+    return Arrays.asList(
+        games.strategy.engine.data.DefaultAttachment.class,
+        games.strategy.engine.data.annotations.ExampleAttachment.class,
+        games.strategy.engine.xml.TestAttachment.class,
+        games.strategy.triplea.attachments.CanalAttachment.class,
+        games.strategy.triplea.attachments.PlayerAttachment.class,
+        games.strategy.triplea.attachments.PoliticalActionAttachment.class,
+        games.strategy.triplea.attachments.RelationshipTypeAttachment.class,
+        games.strategy.triplea.attachments.RulesAttachment.class,
+        games.strategy.triplea.attachments.TechAbilityAttachment.class,
+        games.strategy.triplea.attachments.TechAttachment.class,
+        games.strategy.triplea.attachments.TerritoryAttachment.class,
+        games.strategy.triplea.attachments.TerritoryEffectAttachment.class,
+        games.strategy.triplea.attachments.TriggerAttachment.class,
+        games.strategy.triplea.attachments.UnitAttachment.class,
+        games.strategy.triplea.attachments.UnitSupportAttachment.class,
+        games.strategy.triplea.attachments.UserActionAttachment.class);
   }
 
   /**
