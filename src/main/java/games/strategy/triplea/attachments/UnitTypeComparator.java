@@ -42,8 +42,8 @@ public class UnitTypeComparator implements Comparator<UnitType> {
     if (ua2.getIsSea() && !ua1.getIsSea()) {
       return -1;
     }
-    if (ua1.getRawAttack() != ua2.getRawAttack()) {
-      return ua1.getRawAttack() - ua2.getRawAttack();
+    if (ua1.getAttack() != ua2.getAttack()) {
+      return ua1.getAttack() - ua2.getAttack();
     }
     return u1.getName().compareTo(u2.getName());
   }

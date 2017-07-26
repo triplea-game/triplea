@@ -295,6 +295,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_airDefense = value;
   }
 
+  public int getAirDefense() {
+    return m_airDefense;
+  }
+
   public int getAirDefense(final PlayerID player) {
     return (Math.min(getData().getDiceSides(), Math.max(0,
         m_airDefense + TechAbilityAttachment.getAirDefenseBonus((UnitType) this.getAttachedTo(), player, getData()))));
@@ -312,6 +316,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirAttack(final Integer value) {
     m_airAttack = value;
+  }
+
+  public int getAirAttack() {
+    return m_airAttack;
   }
 
   public int getAirAttack(final PlayerID player) {
@@ -539,6 +547,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_canBlitz = s;
   }
 
+  public boolean getCanBlitz() {
+    return m_canBlitz;
+  }
+
   public boolean getCanBlitz(final PlayerID player) {
     if (m_canBlitz) {
       return true;
@@ -631,6 +643,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanBombard(final Boolean s) {
     m_canBombard = s;
+  }
+
+  public boolean getCanBombard() {
+    return m_canBombard;
   }
 
   public boolean getCanBombard(final PlayerID player) {
@@ -885,6 +901,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanInvadeOnlyFrom(final String[] value) {
     m_canInvadeOnlyFrom = value;
+  }
+
+  public String[] getCanInvadeOnlyFrom() {
+    return m_canInvadeOnlyFrom;
   }
 
   public boolean canInvadeFrom(final String transport) {
@@ -1367,7 +1387,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_bombard = s;
   }
 
-  public int getBombard(final PlayerID player) {
+  public int getBombard() {
     return m_bombard > 0 ? m_bombard : m_attack;
   }
 
@@ -1383,6 +1403,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMovement(final Integer s) {
     m_movement = s;
+  }
+
+  public int getMovement() {
+    return m_movement;
   }
 
   public int getMovement(final PlayerID player) {
@@ -1404,14 +1428,14 @@ public class UnitAttachment extends DefaultAttachment {
     m_attack = s;
   }
 
+  public int getAttack() {
+    return m_attack;
+  }
+
   public int getAttack(final PlayerID player) {
     final int attackValue =
         m_attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
-  }
-
-  int getRawAttack() {
-    return m_attack;
   }
 
   public void resetAttack() {
@@ -1426,6 +1450,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttackRolls(final Integer s) {
     m_attackRolls = s;
+  }
+
+  public int getAttackRolls() {
+    return m_attackRolls;
   }
 
   public int getAttackRolls(final PlayerID player) {
@@ -1447,6 +1475,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_defense = s;
   }
 
+  public int getDefense() {
+    return m_defense;
+  }
+
   public int getDefense(final PlayerID player) {
     int defenseValue =
         m_defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
@@ -1455,10 +1487,6 @@ public class UnitAttachment extends DefaultAttachment {
       defenseValue += bonus;
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
-  }
-
-  int getRawDefense() {
-    return m_defense;
   }
 
   public void resetDefense() {
@@ -1473,6 +1501,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setDefenseRolls(final Integer s) {
     m_defenseRolls = s;
+  }
+
+  public int getDefenseRolls() {
+    return m_defenseRolls;
   }
 
   public int getDefenseRolls(final PlayerID player) {
@@ -1977,6 +2009,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_bombingTargets = value;
   }
 
+  public HashSet<UnitType> getBombingTargets() {
+    return m_bombingTargets;
+  }
+
   public HashSet<UnitType> getBombingTargets(final GameData data) {
     if (m_bombingTargets != null) {
       return m_bombingTargets;
@@ -2035,6 +2071,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_attackAA = s;
   }
 
+  public int getAttackAA() {
+    return m_attackAA;
+  }
+
   public int getAttackAA(final PlayerID player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
     // does not divide
@@ -2055,6 +2095,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setOffensiveAttackAA(final Integer s) {
     m_offensiveAttackAA = s;
+  }
+
+  public int getOffensiveAttackAA() {
+    return m_offensiveAttackAA;
   }
 
   public int getOffensiveAttackAA(final PlayerID player) {
@@ -2311,6 +2355,10 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTargetsAA(final HashSet<UnitType> value) {
     m_targetsAA = value;
+  }
+
+  public HashSet<UnitType> getTargetsAA() {
+    return m_targetsAA;
   }
 
   public HashSet<UnitType> getTargetsAA(final GameData data) {
@@ -3052,8 +3100,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsDestroyer()) {
       stats.append("is Anti-Stealth, ");
     }
-    if (getCanBombard(player) && getBombard(player) > 0) {
-      stats.append(getBombard(player)).append(" Bombard, ");
+    if (getCanBombard(player) && getBombard() > 0) {
+      stats.append(getBombard()).append(" Bombard, ");
     }
     if (getBlockade() > 0) {
       stats.append(getBlockade()).append(" Blockade Loss, ");
