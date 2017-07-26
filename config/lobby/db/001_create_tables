@@ -1,4 +1,3 @@
-
 create table bad_words (
     word character varying(40) not null
 );
@@ -59,7 +58,7 @@ alter table muted_usernames owner to postgres;
 
 create table ta_users (
     username character varying(40) not null,
-    password character varying(40) not null,
+    password character varying(60) not null,
     email character varying(40) not null,
     joined timestamp without time zone not null,
     lastlogin timestamp without time zone not null,
@@ -93,5 +92,3 @@ alter table only muted_usernames
 
 alter table only ta_users
     add constraint ta_users_pkey primary key (username);
-
-

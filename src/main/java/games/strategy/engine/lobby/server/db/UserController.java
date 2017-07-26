@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -16,7 +18,7 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 // TODO: Lobby DB Migration - merge with DbUserController once completed
 public class UserController implements UserDao {
 
-  private static final Logger s_logger = Logger.getLogger(DbUserController.class.getName());
+  private static final Logger logger = Logger.getLogger(DbUserController.class.getName());
 
   private final Supplier<Connection> connectionSupplier;
 
@@ -43,7 +45,7 @@ public class UserController implements UserDao {
       ps.close();
       return returnValue == null ? null : new HashedPassword(returnValue);
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -63,7 +65,7 @@ public class UserController implements UserDao {
       ps.close();
       return found;
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -74,85 +76,84 @@ public class UserController implements UserDao {
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    final Connection con = connectionSupplier.get();
-    try {
-      final PreparedStatement ps =
-          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
-      ps.setString(1, hashedPassword.value);
-      ps.setString(2, user.getEmail());
-      ps.setInt(3, user.isAdmin() ? 1 : 0);
-      ps.setString(4, user.getName());
-      ps.execute();
-      ps.close();
+    try (final Connection con = connectionSupplier.get()) {
+      try (final PreparedStatement ps =
+          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
+        ps.setString(1, hashedPassword.value);
+        ps.setString(2, user.getEmail());
+        ps.setInt(3, user.isAdmin() ? 1 : 0);
+        ps.setString(4, user.getName());
+        ps.execute();
+      }
       con.commit();
-    } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE,
-          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.value,
-          sqle);
-      throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
+    } catch (final SQLException e) {
+      logger.log(Level.SEVERE,
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(), e);
+      throw new IllegalStateException(e);
     }
   }
 
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
-    Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
     Preconditions.checkState(hashedPassword.isValidSyntax());
+    Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
-    final Connection con = connectionSupplier.get();
-    try {
-      final PreparedStatement ps = con.prepareStatement(
-          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
-      ps.setString(1, user.getName());
-      ps.setString(2, hashedPassword.value);
-      ps.setString(3, user.getEmail());
-      ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-      ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-      ps.setInt(6, user.isAdmin() ? 1 : 0);
-      ps.execute();
-      ps.close();
+    try (final Connection con = connectionSupplier.get()) {
+      try (final PreparedStatement ps = con.prepareStatement(
+          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
+        ps.setString(1, user.getName());
+        ps.setString(2, hashedPassword.value);
+        ps.setString(3, user.getEmail());
+        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+        ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+        ps.setInt(6, user.isAdmin() ? 1 : 0);
+        ps.execute();
+      }
       con.commit();
-    } catch (final SQLException sqle) {
-      s_logger.log(
-          Level.SEVERE,
-          String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
-              user.getName(), user.getEmail(), hashedPassword.value.replaceAll(".", "*")),
-          sqle);
-      throw new RuntimeException(sqle);
-    } finally {
-      DbUtil.closeConnection(con);
+    } catch (final SQLException e) {
+      logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
+          user.getEmail(), hashedPassword.mask()), e);
+      throw new RuntimeException(e);
     }
   }
 
   @Override
   public boolean login(final String userName, final HashedPassword hashedPassword) {
-    Preconditions.checkState(hashedPassword.isValidSyntax());
-
-    final Connection con = connectionSupplier.get();
-    try {
-      PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");
-      ps.setString(1, userName);
-      ps.setString(2, hashedPassword.value);
-      final ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        return false;
+    try (final Connection con = connectionSupplier.get()) {
+      if (hashedPassword.isValidSyntax()) {
+        try (final PreparedStatement ps =
+            con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
+          ps.setString(1, userName);
+          ps.setString(2, hashedPassword.value);
+          try (final ResultSet rs = ps.executeQuery()) {
+            if (!rs.next()) {
+              return false;
+            }
+          }
+        }
+      } else {
+        HashedPassword actualPassword = getPassword(userName);
+        if (actualPassword == null) {
+          return false;
+        }
+        Preconditions.checkState(actualPassword.isBcrypted());
+        if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+          return false;
+        }
       }
-      ps.close();
-      rs.close();
       // update last login time
-      ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?");
-      ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-      ps.setString(2, userName);
-      ps.execute();
-      ps.close();
-      con.commit();
-      return true;
+      try (
+          final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+        ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        ps.setString(2, userName);
+        ps.execute();
+        con.commit();
+        return true;
+      }
     } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword, sqle);
+      logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
+          sqle);
       throw new IllegalStateException(sqle.getMessage());
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 
@@ -175,7 +176,7 @@ public class UserController implements UserDao {
       ps.close();
       return user;
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);

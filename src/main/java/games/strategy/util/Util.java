@@ -3,6 +3,9 @@ package games.strategy.util;
 import static games.strategy.util.PredicateUtils.not;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,10 +13,16 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+import com.google.common.io.BaseEncoding;
+
 /**
  * Some utility methods for dealing with collections.
  */
 public class Util {
+
+  private static final String SHA_512 = "SHA-512";
+
   /**
    * return a such that a exists in c1 and a exists in c2.
    * always returns a new collection.
@@ -121,5 +130,21 @@ public class Util {
       }
     }
     return builder.toString();
+  }
+
+  /**
+   * Creates a hash of the given String based on the SHA-512 algorithm.
+   * 
+   * @param input The input String to hash.
+   * @return A hashed hexadecimal String of the input.
+   */
+  public static String sha512(String input) {
+    Preconditions.checkNotNull(input);
+    try {
+      return BaseEncoding.base16()
+          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))).toLowerCase();
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException(SHA_512 + " is not supported!", e);
+    }
   }
 }

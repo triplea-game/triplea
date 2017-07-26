@@ -12,9 +12,9 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
  */
 /*
  * TODO: datasource migration note, from derby (java DB) to MySQL
- *  This class is currently set up to write and read from multiple data sources.
- *  This is a migration tool, to go from one data source to another. When we switch over completely
- *  we can simplify and write/read to the primary datasource directly.
+ * This class is currently set up to write and read from multiple data sources.
+ * This is a migration tool, to go from one data source to another. When we switch over completely
+ * we can simplify and write/read to the primary datasource directly.
  * TODO: rename to: UserController
  */
 public class DbUserController implements UserDao {
@@ -35,7 +35,8 @@ public class DbUserController implements UserDao {
    * Everything else is stored as secondary, we will parallel write to secondary (ignoring errors),
    * but will only read from the primary.
    */
-  @VisibleForTesting DbUserController(
+  @VisibleForTesting
+  DbUserController(
       final UserDao primaryDao,
       final UserDao secondaryDao,
       final MigrationCounter migrationCounter) {
@@ -54,6 +55,18 @@ public class DbUserController implements UserDao {
         .orElseGet(() -> primaryDao.getPassword(userName));
   }
 
+  /**
+   * Similar to getPassword but with the difference that this method always
+   * returns a password which was hashed using the legacy MD5Crypt algorithm.
+   */
+  public HashedPassword getLegacyPassword(final String userName) {
+    final HashedPassword password = secondaryDao.getPassword(userName);
+    if (password != null && !password.isBcrypted()) {
+      return password;
+    }
+    return primaryDao.getPassword(userName);
+  }
+
   @Override
   public boolean doesUserExist(final String userName) {
     return secondaryDao.doesUserExist(userName) || primaryDao.doesUserExist(userName);
@@ -62,8 +75,9 @@ public class DbUserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    Preconditions.checkArgument(password.isValidSyntax());
-    primaryDao.updateUser(user, password);
+    if (!password.isBcrypted()) {
+      primaryDao.updateUser(user, password);
+    }
     secondaryDao.updateUser(user, password);
   }
 
@@ -75,7 +89,9 @@ public class DbUserController implements UserDao {
   public void createUser(final DBUser user, final HashedPassword password) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
     Preconditions.checkArgument(password.isValidSyntax());
-    primaryDao.createUser(user, password);
+    if (!password.isBcrypted()) {
+      primaryDao.createUser(user, password);
+    }
     secondaryDao.createUser(user, password);
   }
 
@@ -88,11 +104,16 @@ public class DbUserController implements UserDao {
     if (secondaryDao.login(userName, password)) {
       migrationCounter.secondaryLoginSuccess();
       return true;
+    } else if (!password.isValidSyntax()) {
+      migrationCounter.loginFailure();
+      return false;
     }
 
     if (primaryDao.login(userName, password)) {
       migrationCounter.primaryLoginSuccess();
-      secondaryDao.createUser(primaryDao.getUserByName(userName), password);
+      if (!secondaryDao.doesUserExist(userName)) {
+        secondaryDao.createUser(primaryDao.getUserByName(userName), password);
+      }
       return true;
     }
 

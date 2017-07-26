@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -26,12 +28,6 @@ import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 public class LobbyLoginValidator implements ILoginValidator {
-  static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
-  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
-  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
-  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
-  private static final String INVALID_MAC = "Invalid mac address.";
-  private static final Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
@@ -39,17 +35,22 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
-
-  public LobbyLoginValidator() {}
+  static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
+  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
+  private static final String INVALID_MAC = "Invalid mac address.";
+  private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
     final Map<String, String> rVal = new HashMap<>();
-    final HashedPassword password = new DbUserController().getPassword(userName);
+    final HashedPassword password = new DbUserController().getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
+    rVal.putAll(RsaAuthenticator.generatePublicKey());
     return rVal;
   }
 
@@ -57,18 +58,20 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
+    final String error =
+        verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
-      s_logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
+      logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
     } else {
-      s_logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
+      logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
       AccessLog.successfulLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress());
     }
     return error;
   }
 
-  private static String verifyConnectionInternal(final Map<String, String> propertiesReadFromClient,
+  private static String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient,
       final String clientName, final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
@@ -107,12 +110,12 @@ public class LobbyLoginValidator implements ILoginValidator {
       return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
     if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY)) {
-      return createUser(propertiesReadFromClient, clientName);
+      return createUser(propertiesSentToClient, propertiesReadFromClient, clientName);
     }
     if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
       return anonymousLogin(propertiesReadFromClient, clientName);
     } else {
-      return validatePassword(propertiesReadFromClient, clientName);
+      return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
     }
   }
 
@@ -155,10 +158,29 @@ public class LobbyLoginValidator implements ILoginValidator {
     return new BadWordController().list();
   }
 
-  private static String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
+  private static String validatePassword(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String clientName) {
+    final String errorMessage = "Incorrect username or password";
     final UserDao userDao = new DbUserController();
+    final HashedPassword hashedPassword = userDao.getPassword(clientName);
+    if (hashedPassword == null) {
+      return errorMessage;
+    }
+    if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
+      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
+        if (hashedPassword.isBcrypted()) {
+          return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;
+        } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+          userDao.updateUser(userDao.getUserByName(clientName),
+              new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
+          return null;
+        } else {
+          return errorMessage;
+        }
+      });
+    }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
-      return "Incorrect username or password";
+      return errorMessage;
     } else {
       return null;
     }
@@ -189,7 +211,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private static String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
+  private static String createUser(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String userName) {
     final DBUser user = new DBUser(
         new DBUser.UserName(userName),
         new DBUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
@@ -198,13 +221,25 @@ public class LobbyLoginValidator implements ILoginValidator {
       return user.getValidationErrorMessage();
     }
 
-    final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
-    if (!password.isValidSyntax()) {
-      return "Password is not hashed correctly";
-    }
-
     if (new DbUserController().doesUserExist(user.getName())) {
       return "That user name has already been taken";
+    }
+    final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
+    if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
+      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
+        final UserDao userDao = new DbUserController();
+        final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt()));
+        if (password.isValidSyntax()) {
+          userDao.createUser(user, password);
+          userDao.updateUser(user, newPass);
+        } else {
+          userDao.createUser(user, newPass);
+        }
+        return null;
+      });
+    }
+    if (!password.isValidSyntax()) {
+      return "Password is not hashed correctly";
     }
 
     try {
