@@ -106,10 +106,6 @@ dependencies {
 
 test {
     exclude '**/*Tests.class'
-
-    testLogging {
-        exceptionFormat = 'full'
-    }
 }
 
 task integTest(type: Test) {
@@ -124,10 +120,6 @@ task integTest(type: Test) {
     reports {
         reports.html.destination = file("${reports.html.destination}/$name")
         reports.junitXml.destination = file("${reports.junitXml.destination}/$name")
-    }
-
-    testLogging {
-        exceptionFormat = 'full'
     }
 
     mustRunAfter tasks.test
@@ -264,6 +256,12 @@ gradle.taskGraph.whenReady { graph ->
             it.project.install4j.installDir = file(project.install4jHomeDir)
         }
     })
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }
 
 check {
