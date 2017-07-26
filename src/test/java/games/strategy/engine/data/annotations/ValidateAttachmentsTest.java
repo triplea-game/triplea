@@ -24,6 +24,7 @@ import org.junit.Test;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -301,8 +302,10 @@ public class ValidateAttachmentsTest {
         field = PropertyUtil.getPropertyField(propertyName, clazz);
         // adders must have a field of type IntegerMap, or be a collection of sorts
         if (annotation != null && annotation.adds()) {
-          if (!(Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())
-              || IntegerMap.class.isAssignableFrom(field.getType()))) {
+          if (!Collection.class.isAssignableFrom(field.getType())
+              && !ResourceCollection.class.isAssignableFrom(field.getType())
+              && !Map.class.isAssignableFrom(field.getType())
+              && !IntegerMap.class.isAssignableFrom(field.getType())) {
             sb.append("Class ").append(clazz.getCanonicalName()).append(" has a setter ").append(setter.getName())
                 .append(" which adds but the field ").append(field.getName())
                 .append(" is not a Collection or Map or IntegerMap\n");
