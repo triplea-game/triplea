@@ -55,7 +55,7 @@ enum SettingsWindow {
     if (dialog == null) {
       dialog = new JDialog((Frame) null, "Settings");
       dialog.setContentPane(createContents(this::close));
-      dialog.setMinimumSize(new Dimension(300, 250));
+      dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
@@ -113,7 +113,7 @@ enum SettingsWindow {
 
     final JPanel outerPanel = new JPanel();
     outerPanel.setLayout(new BorderLayout());
-    outerPanel.add(SwingComponents.newJScrollPane(floatTopLeft(contents)), BorderLayout.CENTER);
+    outerPanel.add(SwingComponents.newJScrollPane(contents), BorderLayout.CENTER);
 
     final JPanel bottomPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
     outerPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -190,13 +190,4 @@ enum SettingsWindow {
     return outerPanel;
   }
 
-  private static JPanel floatTopLeft(final JComponent component) {
-    final JPanel floatLeft = SwingComponents.newJPanelWithHorizontalBoxLayout();
-    floatLeft.add(component);
-    floatLeft.add(Box.createHorizontalGlue());
-    final JPanel floatTop = SwingComponents.newJPanelWithVerticalBoxLayout();
-    floatTop.add(floatLeft);
-    floatTop.add(Box.createVerticalGlue());
-    return floatTop;
-  }
 }
