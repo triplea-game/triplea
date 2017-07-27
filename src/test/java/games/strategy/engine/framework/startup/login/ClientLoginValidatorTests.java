@@ -27,7 +27,6 @@ public final class ClientLoginValidatorTests {
 
   @RunWith(Enclosed.class)
   public static final class GetChallengePropertiesTests {
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
     public abstract static class AbstractTestCase {
       @InjectMocks
       ClientLoginValidator clientLoginValidator;
@@ -43,6 +42,7 @@ public final class ClientLoginValidatorTests {
       }
     }
 
+    @RunWith(MockitoJUnitRunner.StrictStubs.class)
     public static final class WhenPasswordSetTest extends AbstractTestCase {
       @Before
       public void givenPasswordSet() {
@@ -64,6 +64,7 @@ public final class ClientLoginValidatorTests {
       }
     }
 
+    @RunWith(MockitoJUnitRunner.StrictStubs.class)
     public static final class WhenPasswordNotSetTest extends AbstractTestCase {
       @Before
       public void givenPasswordNotSet() {
