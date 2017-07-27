@@ -130,7 +130,7 @@ class EngineVersionProperties {
     intro.setBorder(BorderFactory.createEmptyBorder());
     final HyperlinkListener hyperlinkListener = e -> {
       if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-        OpenFileUtility.openURL(e.getDescription());
+        OpenFileUtility.openUrl(e.getDescription());
       }
     };
     intro.addHyperlinkListener(hyperlinkListener);
