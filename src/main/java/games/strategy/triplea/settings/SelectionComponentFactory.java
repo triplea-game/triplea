@@ -267,16 +267,29 @@ class SelectionComponentFactory {
   }
 
   /**
-   * Folder selection prompt, returns nothing when user cancels or closes window.
+   * File selection prompt.
+   */
+  static SelectionComponent filePath(final ClientSetting clientSetting) {
+    return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
+  }
+
+  /**
+   * Folder selection prompt.
    */
   static SelectionComponent folderPath(final ClientSetting clientSetting) {
+    return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
+  }
+
+  private static SelectionComponent selectFile(
+      final ClientSetting clientSetting,
+      final SwingComponents.FolderSelectionMode folderSelectionMode) {
     final int expectedLength = 20;
     final JTextField field = new JTextField(clientSetting.value(), expectedLength);
     field.setEditable(false);
 
     final JButton button = SwingComponents.newJButton(
         "Select",
-        action -> SwingComponents.showJFileChooserForFolders()
+        action -> SwingComponents.showJFileChooser(folderSelectionMode)
             .ifPresent(file -> field.setText(file.getAbsolutePath())));
 
     return new AlwaysValidInputSelectionComponent(clientSetting) {
@@ -341,6 +354,7 @@ class SelectionComponentFactory {
       }
     };
   }
+
 
   private abstract static class AlwaysValidInputSelectionComponent extends SelectionComponent {
     private static final long serialVersionUID = 6848335387637901069L;

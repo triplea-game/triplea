@@ -74,11 +74,6 @@ enum ClientSettingUiBinding {
       SettingType.MAP_SCROLLING,
       SelectionComponentFactory.intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300),
       "How close to the edge of the map the mouse needs to be for the map to start scrolling"),
-  SAVE_GAMES_FOLDER_PATH_BINDING(
-      "Saved Games Folder",
-      SettingType.FOLDER_LOCATIONS,
-      ClientSetting.SAVE_GAMES_FOLDER_PATH,
-      "The folder where saved game files will be stored by default"),
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(
       "Start game timeout",
       SettingType.NETWORK_TIMEOUTS,
@@ -100,6 +95,12 @@ enum ClientSettingUiBinding {
       ClientSetting.SHOW_BETA_FEATURES,
       "Toggles whether to show 'beta' features. These are game features that are still "
           + "under development and potentially may not be working yet."),
+  MAP_LIST_OVERRIDE_BINDING(
+      "Map List Override",
+      SettingType.TESTING,
+      SelectionComponentFactory.filePath(ClientSetting.MAP_LIST_OVERRIDE),
+      "Overrides the map listing file specified in 'game_engine.properties'. You can for example download a copy of the"
+          + "listing file, update it, and put the path to that file here."),
   TEST_LOBBY_HOST_BINDING(
       "Lobby Host Override",
       SettingType.TESTING,
@@ -115,6 +116,11 @@ enum ClientSettingUiBinding {
       SettingType.GAME,
       ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY,
       "Setting to true will trigger for any first time prompts to be shown"),
+  SAVE_GAMES_FOLDER_PATH_BINDING(
+      "Saved Games Folder",
+      SettingType.FOLDER_LOCATIONS,
+      SelectionComponentFactory.folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH),
+      "The folder where saved game files will be stored by default"),
   USER_MAPS_FOLDER_PATH_BINDING(
       "Maps Folder",
       SettingType.FOLDER_LOCATIONS,

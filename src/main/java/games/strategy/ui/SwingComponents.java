@@ -323,10 +323,30 @@ public class SwingComponents {
     return menu;
   }
 
+  public enum FolderSelectionMode {
+    FILES, DIRECTORIES
+  }
+
+  public static Optional<File> showJFileChooserForFiles() {
+    return showJFileChooser(FolderSelectionMode.FILES);
+  }
 
   public static Optional<File> showJFileChooserForFolders() {
+    return showJFileChooser(FolderSelectionMode.DIRECTORIES);
+  }
+
+  /**
+   * Shows a dialog the user can use to select a folder or file.
+   * @param folderSelectionMode Flag controlling whether files or folders are available for selection.
+   * @return Empty if the user selects nothing, otherwise the users selection.
+   */
+  public static Optional<File> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
     final JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    if (folderSelectionMode == FolderSelectionMode.DIRECTORIES) {
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    } else {
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }
 
     final int result = fileChooser.showOpenDialog(null);
 
