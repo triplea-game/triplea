@@ -60,9 +60,8 @@ enum SettingsWindow {
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
     } else {
+      // window is already visible, bring it to the front
       dialog.toFront();
-      Preconditions.checkState(dialog.isVisible());
-      dialog.setVisible(true);
     }
   }
 
