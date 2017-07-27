@@ -248,7 +248,7 @@ class SelectionComponentFactory {
     buttonPanel.add(yesButton);
     buttonPanel.add(noButton);
 
-    return new AlwaysValidInputSelectionComponent(clientSetting) {
+    return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = 6104513062312556269L;
 
       @Override
@@ -262,6 +262,14 @@ class SelectionComponentFactory {
         final Map<ClientSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
+      }
+
+      @Override
+      void resetToDefault() {
+        clientSetting.restoreToDefaultValue();
+        ClientSetting.flush();
+        yesButton.setSelected(clientSetting.booleanValue());
+        noButton.setSelected(!clientSetting.booleanValue());
       }
     };
   }
@@ -292,7 +300,7 @@ class SelectionComponentFactory {
         action -> SwingComponents.showJFileChooser(folderSelectionMode)
             .ifPresent(file -> field.setText(file.getAbsolutePath())));
 
-    return new AlwaysValidInputSelectionComponent(clientSetting) {
+    return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -1775099967925891332L;
 
       @Override
@@ -311,6 +319,13 @@ class SelectionComponentFactory {
         settingMap.put(clientSetting, value);
         return settingMap;
       }
+
+      @Override
+      void resetToDefault() {
+        clientSetting.restoreToDefaultValue();
+        ClientSetting.flush();
+        field.setText(clientSetting.value());
+      }
     };
   }
 
@@ -318,7 +333,7 @@ class SelectionComponentFactory {
   static SelectionComponent selectionBox(final ClientSetting clientSetting, final List<String> availableOptions) {
     final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
 
-    return new AlwaysValidInputSelectionComponent(clientSetting) {
+    return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -8969206423938554118L;
 
       @Override
@@ -333,12 +348,19 @@ class SelectionComponentFactory {
         settingMap.put(clientSetting, value);
         return settingMap;
       }
+
+      @Override
+      void resetToDefault() {
+        clientSetting.restoreToDefaultValue();
+        ClientSetting.flush();
+        comboBox.setSelectedItem(clientSetting.value());
+      }
     };
   }
 
   static SelectionComponent textField(final ClientSetting clientSetting) {
     final JTextField textField = new JTextField(clientSetting.value(), 20);
-    return new AlwaysValidInputSelectionComponent(clientSetting) {
+    return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = 7549165488576728952L;
 
       @Override
@@ -352,18 +374,19 @@ class SelectionComponentFactory {
         map.put(clientSetting, textField.getText());
         return map;
       }
+
+      @Override
+      void resetToDefault() {
+        clientSetting.restoreToDefaultValue();
+        clientSetting.flush();
+        textField.setText(clientSetting.value());
+      }
     };
   }
 
 
   private abstract static class AlwaysValidInputSelectionComponent extends SelectionComponent {
     private static final long serialVersionUID = 6848335387637901069L;
-
-    private final ClientSetting clientSetting;
-
-    AlwaysValidInputSelectionComponent(final ClientSetting clientSetting) {
-      this.clientSetting = clientSetting;
-    }
 
     @Override
     void indicateError() {
@@ -383,11 +406,6 @@ class SelectionComponentFactory {
     @Override
     String validValueDescription() {
       return "";
-    }
-
-    @Override
-    void resetToDefault() {
-      clientSetting.restoreToDefaultValue();
     }
   }
 
