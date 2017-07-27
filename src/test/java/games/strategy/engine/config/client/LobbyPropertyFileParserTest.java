@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client.remote;
+package games.strategy.engine.config.client;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,15 +7,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
 public class LobbyPropertyFileParserTest {
-
-  private LobbyPropertyFileParser testObj;
 
   private static TestProps[] testDataSet() {
     final TestProps testProps1 = new TestProps();
@@ -45,10 +42,6 @@ public class LobbyPropertyFileParserTest {
     };
   }
 
-  @Before
-  public void setup() {
-    testObj = new LobbyPropertyFileParser();
-  }
 
   /**
    * Just one set of values in a config file with no verson. The props we return should be a pretty
@@ -64,7 +57,7 @@ public class LobbyPropertyFileParserTest {
 
     final File testFile = createTempFile(testProps);
 
-    final LobbyServerProperties result = testObj.parse(testFile, new Version(TestData.clientCurrentVersion));
+    final LobbyServerProperties result = LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
     assertThat(result.host, is(TestData.host));
     assertThat(result.port, is(Integer.valueOf(TestData.port)));
     assertThat(result.serverMessage, is(TestData.message));
@@ -90,7 +83,7 @@ public class LobbyPropertyFileParserTest {
   public void checkVersionSelection() throws Exception {
     final File testFile = createTempFile(testDataSet());
 
-    final LobbyServerProperties result = testObj.parse(testFile, new Version(TestData.clientCurrentVersion));
+    final LobbyServerProperties result = LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.host, is(TestData.hostOther));
     assertThat(result.port, is(Integer.valueOf(TestData.portOther)));

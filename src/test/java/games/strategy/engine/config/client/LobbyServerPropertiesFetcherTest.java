@@ -1,7 +1,8 @@
-package games.strategy.engine.config.client.remote;
+package games.strategy.engine.config.client;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -25,7 +27,7 @@ public class LobbyServerPropertiesFetcherTest {
   @Mock
   private LobbyPropertyFileParser mockLobbyPropertyFileParser;
   @Mock
-  private FileDownloader mockFileDownloader;
+  private LobbyLocationFileDownloader mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 

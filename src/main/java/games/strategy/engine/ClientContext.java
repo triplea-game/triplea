@@ -7,9 +7,7 @@ import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
-import games.strategy.internal.persistence.serializable.VersionProxy;
-import games.strategy.persistence.serializable.ProxyRegistry;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
@@ -70,7 +68,10 @@ public final class ClientContext {
   }
 
   public static List<DownloadFileDescription> getMapDownloadList() {
-    final String mapDownloadListUrl = instance.gameEnginePropertyReader.getMapListingSource();
+    final String mapDownloadListUrl =
+        (ClientSetting.MAP_LIST_OVERRIDE.isSet()) ? ClientSetting.MAP_LIST_OVERRIDE.value()
+            : UrlConstants.MAP_DOWNLOAD_LIST.toString();
+
     return new DownloadRunnable(mapDownloadListUrl).getDownloads();
   }
 }

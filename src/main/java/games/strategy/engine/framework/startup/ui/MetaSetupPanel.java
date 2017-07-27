@@ -10,11 +10,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import games.strategy.debug.ErrorConsole;
+import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -139,13 +141,17 @@ public class MetaSetupPanel extends SetupPanel {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
 
+
   private void connectToLobby() {
-    final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this));
+    final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
+    final LobbyLogin login = new LobbyLogin(
+        JOptionPane.getFrameForComponent(this),
+        lobbyServerProperties );
     final LobbyClient client = login.login();
     if (client == null) {
       return;
     }
-    final LobbyFrame lobbyFrame = new LobbyFrame(client);
+    final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
     GameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
   }

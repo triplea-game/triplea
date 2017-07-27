@@ -67,7 +67,7 @@ public class LobbyFrame extends JFrame {
   private final LobbyClient m_client;
   private final ChatMessagePanel m_chatMessagePanel;
 
-  public LobbyFrame(final LobbyClient client) {
+  public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
@@ -76,7 +76,7 @@ public class LobbyFrame extends JFrame {
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
         m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
-    showServerMessage(ClientContext.gameEnginePropertyReader().fetchLobbyServerProperties());
+    showServerMessage(lobbyServerProperties);
     m_chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);

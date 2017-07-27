@@ -8,11 +8,10 @@ import org.junit.Test;
 public class GameEnginePropertyReaderIntegrationTest {
   @Test
   public void remoteLobbyUrlReaderWorks() {
-    final GameEnginePropertyReader testObj = new GameEnginePropertyReader();
+
+    final LobbyServerPropertiesFetcher testObj = new LobbyServerPropertiesFetcher();
 
     assertThat("verify fetch to get current lobby properties",
         testObj.fetchLobbyServerProperties(), notNullValue());
-    assertThat(testObj.getEngineVersion(), notNullValue());
-    assertThat(testObj.getMapListingSource(), notNullValue());
   }
 }

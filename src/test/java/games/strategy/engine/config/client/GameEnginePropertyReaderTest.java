@@ -32,13 +32,4 @@ public class GameEnginePropertyReaderTest {
 
     assertThat(testObj.getEngineVersion(), is(new Version(1, 0, 1, 3)));
   }
-
-  @Test
-  public void mapListingSource() {
-    final String value = "something_test";
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.MAP_LISTING_SOURCE_FILE))
-        .thenReturn(value);
-
-    assertThat(testObj.getMapListingSource(), is(value));
-  }
 }

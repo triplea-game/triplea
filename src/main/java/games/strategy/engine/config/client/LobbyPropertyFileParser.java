@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client.remote;
+package games.strategy.engine.config.client;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -18,12 +18,10 @@ import games.strategy.util.Version;
  * Parses a downloaded lobby properties file (yaml format expected).
  * Lobby properties include IP address and port of the lobby.
  */
-class LobbyPropertyFileParser {
+public class LobbyPropertyFileParser {
 
-  LobbyPropertyFileParser() {
-  }
 
-  public LobbyServerProperties parse(final File file, final Version currentVersion) throws IOException {
+  public static LobbyServerProperties parse(final File file, final Version currentVersion) throws IOException {
     final List<Map<String, Object>> lobbyProperties = loadYaml(file);
     final Map<String, Object> configForThisVersion = matchCurrentVersion(lobbyProperties, currentVersion);
     return new LobbyServerProperties(configForThisVersion);

@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client.remote;
+package games.strategy.engine.config.client;
 
 import games.strategy.engine.framework.map.download.DownloadUtils;
 
@@ -6,9 +6,9 @@ import games.strategy.engine.framework.map.download.DownloadUtils;
  * Humble object pattern. Wraps file downloading.
  */
 @FunctionalInterface
-public interface FileDownloader {
+public interface LobbyLocationFileDownloader {
 
   DownloadUtils.FileDownloadResult download(final String url);
 
-  FileDownloader defaultDownloader = DownloadUtils::downloadToFile;
+  LobbyLocationFileDownloader defaultDownloader = DownloadUtils::downloadToFile;
 }
