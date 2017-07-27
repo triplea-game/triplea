@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.oddscalculator.ta;
 
 import java.util.Collection;
 

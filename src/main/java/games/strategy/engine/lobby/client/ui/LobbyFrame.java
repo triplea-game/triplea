@@ -29,7 +29,6 @@ import javax.swing.SpinnerNumberModel;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;

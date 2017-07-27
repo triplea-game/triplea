@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;

@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;

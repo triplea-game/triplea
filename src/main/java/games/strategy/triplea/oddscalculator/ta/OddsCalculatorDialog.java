@@ -1,24 +1,19 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.oddscalculator.ta;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
 public class OddsCalculatorDialog extends JDialog {

@@ -1,25 +1,19 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -28,7 +22,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
+import games.strategy.triplea.oddscalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.OverlayIcon;

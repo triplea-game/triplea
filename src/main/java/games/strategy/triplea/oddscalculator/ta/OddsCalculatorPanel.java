@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.oddscalculator.ta;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,7 +49,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;

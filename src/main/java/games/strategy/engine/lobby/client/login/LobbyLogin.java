@@ -8,9 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;

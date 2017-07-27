@@ -8,7 +8,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddscalculator.ta.AggregateResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 

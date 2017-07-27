@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
+
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -22,7 +23,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -43,7 +43,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.AbstractUIContext;
@@ -53,9 +52,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
 
 class ViewMenu {
   private JCheckBoxMenuItem showMapDetails;

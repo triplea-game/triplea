@@ -30,7 +30,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
+import games.strategy.triplea.oddscalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;

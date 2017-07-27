@@ -5,8 +5,6 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;

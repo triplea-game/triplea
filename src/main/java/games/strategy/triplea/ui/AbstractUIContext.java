@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
@@ -13,10 +12,6 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;

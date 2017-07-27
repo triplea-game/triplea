@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -21,7 +20,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
