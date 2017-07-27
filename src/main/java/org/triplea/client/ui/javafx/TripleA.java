@@ -41,15 +41,11 @@ public class TripleA extends Application {
   private MainMenuPane mainMenu;
 
   @Override
-  public void init() {
-    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
-  }
-
-  @Override
   public void start(final Stage stage) throws Exception {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
     loader.setController(this);
     final Scene scene = new Scene(loader.load(), 960, 540);// TODO make those values configurable
+    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
     stage.setMinHeight(scene.getHeight());
