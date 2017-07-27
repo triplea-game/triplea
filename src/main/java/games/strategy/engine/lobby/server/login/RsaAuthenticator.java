@@ -178,6 +178,7 @@ public class RsaAuthenticator {
    * This method exists only to help support test.
    * @deprecated Avoid calling this method, instead we should rework how this class is structured
    */
+  @Deprecated
   @VisibleForTesting
   static void invalidateAll() {
     rsaKeyMap.invalidateAll();
@@ -187,6 +188,7 @@ public class RsaAuthenticator {
    * This method exists only to help support test.
    * @deprecated Avoid calling this method, instead we should rework how this class is structured
    */
+  @Deprecated
   @VisibleForTesting
   static void putKey(final String publicKey, final PrivateKey privateKey) {
     rsaKeyMap.put(publicKey, privateKey);
