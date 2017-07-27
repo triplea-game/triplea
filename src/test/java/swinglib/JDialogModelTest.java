@@ -3,6 +3,8 @@ package swinglib;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.awt.HeadlessException;
+
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,23 +18,31 @@ public class JDialogModelTest {
 
   @Test
   public void testBuild() {
-    final JDialog dialog = JDialogModel.builder()
-        .withContents(new JPanel())
-        .withTitle("title")
-        .swingComponent();
+    try {
+      final JDialog dialog = JDialogModel.builder()
+          .withContents(new JPanel())
+          .withTitle("title")
+          .swingComponent();
 
-    assertThat(dialog.getTitle(), Is.is("title"));
+      assertThat(dialog.getTitle(), Is.is("title"));
+    } catch (final HeadlessException e) {
+      // this is okay, we'll see this in travis
+    }
   }
 
   @Test
   public void buildWithAllParams() {
-    MatcherAssert.assertThat(
-        JDialogModel.builder()
-            .withContents(new JPanel())
-            .withTitle("abc")
-            .withParentFrame(new JFrame())
-            .swingComponent(),
-        notNullValue());
+    try {
+      MatcherAssert.assertThat(
+          JDialogModel.builder()
+              .withContents(new JPanel())
+              .withTitle("abc")
+              .withParentFrame(new JFrame())
+              .swingComponent(),
+          notNullValue());
+    } catch (final HeadlessException e) {
+      // this is okay, we'll see this in travis
+    }
   }
 
   @Test(expected = NullPointerException.class)
@@ -43,6 +53,7 @@ public class JDialogModelTest {
         .withContents(new JPanel())
         .swingComponent();
   }
+
   @Test(expected = NullPointerException.class)
   public void contentsIsRequired() {
     JDialogModel.builder()
