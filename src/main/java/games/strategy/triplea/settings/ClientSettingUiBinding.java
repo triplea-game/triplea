@@ -7,6 +7,20 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 
+/**
+ * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part of that the
+ * corresponding UI component, a {@code SelectionComponent} is specified. This then automatically adds the setting
+ * to the settings window.
+ *
+ * <p>
+ * UI component construction is delegated to {@code SelectionComponentFactory}.
+ * </p>
+ *
+ * <p>
+ * There is a 1:n between {@code ClientSettingUiBinding} and {@code ClientSetting}, though
+ * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
+ * </p>
+ */
 enum ClientSettingUiBinding {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
