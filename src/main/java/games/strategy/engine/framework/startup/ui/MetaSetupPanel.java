@@ -115,7 +115,8 @@ public class MetaSetupPanel extends SetupPanel {
           new Insets(10, 0, 0, 0), 0, 0));
 
 
-      final JButton console = SwingComponents.newJButton("Show Console", e -> ErrorConsole.getConsole().setVisible(true));
+      final JButton console = SwingComponents.newJButton("Show Console",
+          e -> ErrorConsole.getConsole().setVisible(true));
       add(console, new GridBagConstraints(0, 12, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
 
