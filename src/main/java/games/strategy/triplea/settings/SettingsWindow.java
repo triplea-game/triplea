@@ -38,9 +38,6 @@ enum SettingsWindow {
 
   private JDialog dialog;
 
-  SettingsWindow() {
-  }
-
   public synchronized void close() {
     if (dialog != null) {
       dialog.dispose();
