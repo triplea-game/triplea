@@ -96,10 +96,20 @@ enum ClientSettingUiBinding {
       "Whether to show a battle if you are only observing."),
   SHOW_BETA_FEATURES_BINDING(
       "Show Beta Features",
-      SettingType.GAME,
+      SettingType.TESTING,
       ClientSetting.SHOW_BETA_FEATURES,
       "Toggles whether to show 'beta' features. These are game features that are still "
           + "under development and potentially may not be working yet."),
+  TEST_LOBBY_HOST_BINDING(
+      "Lobby Host Override",
+      SettingType.TESTING,
+      SelectionComponentFactory.textField(ClientSetting.TEST_LOBBY_HOST),
+      "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby."),
+  TEST_LOBBY_PORT_BINDING(
+      "Lobby Port Override",
+      SettingType.TESTING,
+      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999),
+      "Specifies the port for connecting to a test lobby."),
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       "Show First Time Prompts",
       SettingType.GAME,
@@ -133,8 +143,7 @@ enum ClientSettingUiBinding {
       final String title,
       final SettingType type,
       final SelectionComponent selectionComponent,
-      final String description
-  ) {
+      final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
     this.selectionComponent = Preconditions.checkNotNull(selectionComponent);

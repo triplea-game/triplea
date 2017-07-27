@@ -15,7 +15,8 @@ enum SettingType {
   NETWORK_PROXY("Network Proxy"),
   NETWORK_TIMEOUTS("Network Timeouts"),
   LOOK_AND_FEEL("UI Theme"),
-  FOLDER_LOCATIONS("Folders");
+  FOLDER_LOCATIONS("Folders"),
+  TESTING("Testing");
 
   final String tabTitle;
 

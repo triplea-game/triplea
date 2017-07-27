@@ -323,6 +323,25 @@ class SelectionComponentFactory {
     };
   }
 
+  static SelectionComponent textField(final ClientSetting clientSetting) {
+    final JTextField textField = new JTextField(clientSetting.value(), 20);
+    return new AlwaysValidInputSelectionComponent(clientSetting) {
+      private static final long serialVersionUID = 7549165488576728952L;
+
+      @Override
+      JComponent getJComponent() {
+        return textField;
+      }
+
+      @Override
+      Map<ClientSetting, String> readValues() {
+        final Map<ClientSetting,String> map = new HashMap<>();
+        map.put(clientSetting, textField.getText());
+        return map;
+      }
+    };
+  }
+
   private abstract static class AlwaysValidInputSelectionComponent extends SelectionComponent {
     private static final long serialVersionUID = 6848335387637901069L;
 
