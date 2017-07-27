@@ -1,6 +1,8 @@
 package games.strategy.engine.config.client;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.function.BiFunction;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -60,7 +62,8 @@ public class LobbyServerPropertiesFetcher {
     final Version currentVersion = ClientContext.engineVersion();
 
     try {
-      final LobbyServerProperties downloadedProps =  downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion);
+      final LobbyServerProperties downloadedProps =  downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
+          LobbyPropertyFileParser::parse);
       ClientSetting.LOBBY_LAST_USED_HOST.save(downloadedProps.host);
       ClientSetting.LOBBY_LAST_USED_PORT.save(downloadedProps.port);
       return downloadedProps;
@@ -99,14 +102,17 @@ public class LobbyServerPropertiesFetcher {
    */
   public LobbyServerProperties downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
-      final Version currentVersion) throws IOException {
+      final Version currentVersion,
+      final BiFunction<File, Version, LobbyServerProperties> propertyParser)
+      throws IOException {
     final DownloadUtils.FileDownloadResult fileDownloadResult = fileDownloader.download(lobbyPropFileUrl);
 
     if (!fileDownloadResult.wasSuccess) {
       throw new IOException("Failed to download: " + lobbyPropFileUrl);
     }
+
     final LobbyServerProperties properties =
-        lobbyPropertyFileParser.parse(fileDownloadResult.downloadedFile, currentVersion);
+        propertyParser.apply(fileDownloadResult.downloadedFile, currentVersion);
 
     // delete file after it has been used. If there there was an IOException, the 'deleteOnExit' should
     // kick in and delete the file. (hence there is no try/catch/finally block here)

@@ -48,7 +48,8 @@ public class LobbyServerPropertiesFetcherTest {
   public void downloadAndParseRemoteFile() throws Exception {
     givenHappyCase();
 
-    final LobbyServerProperties result = testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion);
+    final LobbyServerProperties result = testObj.downloadAndParseRemoteFile(TestData.url,
+        fakeVersion, (a, b) -> TestData.lobbyServerProperties);
 
     assertThat(result, sameInstance(TestData.lobbyServerProperties));
   }
@@ -57,8 +58,6 @@ public class LobbyServerPropertiesFetcherTest {
     final File temp = File.createTempFile("temp", "tmp");
     temp.deleteOnExit();
     when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.success(temp));
-
-    when(mockLobbyPropertyFileParser.parse(temp, fakeVersion)).thenReturn(TestData.lobbyServerProperties);
   }
 
   @Test(expected = IOException.class)
@@ -67,7 +66,7 @@ public class LobbyServerPropertiesFetcherTest {
     temp.deleteOnExit();
     when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
 
-    testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion);
+    testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion, (a, b) -> TestData.lobbyServerProperties);
   }
 
 

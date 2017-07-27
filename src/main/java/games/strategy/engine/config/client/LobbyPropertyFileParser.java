@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.yaml.snakeyaml.Yaml;
 
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
 /**
@@ -21,8 +22,14 @@ import games.strategy.util.Version;
 public class LobbyPropertyFileParser {
 
 
-  public static LobbyServerProperties parse(final File file, final Version currentVersion) throws IOException {
-    final List<Map<String, Object>> lobbyProperties = loadYaml(file);
+  public static LobbyServerProperties parse(final File file, final Version currentVersion) {
+    final List<Map<String, Object>> lobbyProperties;
+    try {
+      lobbyProperties = loadYaml(file);
+    } catch (final IOException e) {
+      throw new RuntimeException("Failed loading file: " + file.getAbsolutePath() + ", please try again, if the "
+          + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES);
+    }
     final Map<String, Object> configForThisVersion = matchCurrentVersion(lobbyProperties, currentVersion);
     return new LobbyServerProperties(configForThisVersion);
   }
