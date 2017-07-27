@@ -59,6 +59,7 @@ enum SettingsWindow {
       dialog.pack();
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
+      SwingComponents.addEscapeKeyListener(dialog, this::close);
     } else {
       // window is already visible, bring it to the front
       dialog.toFront();

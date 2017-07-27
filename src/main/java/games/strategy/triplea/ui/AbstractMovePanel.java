@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,7 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
@@ -27,10 +25,10 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import games.strategy.ui.SwingComponents;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
-  private static final String MOVE_PANEL_CANCEL = "movePanel.cancel";
   private static final Logger logger = Logger.getLogger(MovePanel.class.getName());
   private static final int entryPadding = 15;
   private final TripleAFrame frame;
@@ -52,24 +50,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private final Action doneMoveAction = new WeakAction("Done", doneMove);
 
-  private final Action cancelMove = new AbstractAction("Cancel") {
-    private static final long serialVersionUID = -257745862234175428L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      cancelMoveAction();
-      if (frame != null) {
-        frame.clearStatusMessage();
-      }
-      this.setEnabled(false);
-      cancelMoveAction.setEnabled(false);
-    }
-  };
+  private boolean cancelMoveEnabled = false;
 
   protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    cancelMoveAction.setEnabled(false);
+    cancelMoveEnabled = false;
     undoableMoves = Collections.emptyList();
   }
 
@@ -83,7 +69,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
    */
   protected abstract void cancelMoveAction();
 
-  private final AbstractAction cancelMoveAction = new WeakAction("Cancel", cancelMove);
 
   protected AbstractUndoableMovesPanel undoableMovesPanel;
   private IPlayerBridge bridge;
@@ -118,7 +103,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected final void enableCancelButton() {
-    cancelMoveAction.setEnabled(true);
+    cancelMoveEnabled = true;
   }
 
   protected final GameData getGameData() {
@@ -136,7 +121,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   public final void cancelMove() {
-    cancelMoveAction.actionPerformed(null);
+    if (cancelMoveEnabled) {
+      cancelMoveAction();
+      if (frame != null) {
+        frame.clearStatusMessage();
+      }
+      this.setEnabled(false);
+      cancelMoveEnabled = false;
+    }
   }
 
   public final String undoMove(final int moveIndex) {
@@ -145,7 +137,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
-    cancelMoveAction.actionPerformed(null);
+    cancelMove();
     // undo the move
     final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
@@ -228,11 +220,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = false;
       cleanUpSpecific();
       bridge = null;
-      cancelMoveAction.setEnabled(false);
-      final JComponent rootPane = getRootPane();
-      if (rootPane != null) {
-        rootPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null);
-      }
+      cancelMoveEnabled = false;
       removeAll();
       refresh.run();
     });
@@ -246,7 +234,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   @Override
   public final void setActive(final boolean active) {
     super.setActive(active);
-    SwingUtilities.invokeLater(() -> cancelMoveAction.actionPerformed(null));
+    SwingUtilities.invokeLater(() -> cancelMove());
   }
 
   protected final void display(final PlayerID id, final String actionLabel) {
@@ -256,7 +244,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(cancelMoveAction)));
+        add(leftBox(new JButton(SwingComponents.newAbstractAction(() -> cancelMove()))));
       }
       add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();
@@ -289,10 +277,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       }
       listening = true;
       if (getRootPane() != null) {
-        final String key = MOVE_PANEL_CANCEL;
-        getRootPane().getActionMap().put(key, cancelMoveAction);
-        getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
+        SwingComponents.addEscapeKeyListener(this, this::cancelMove);
       }
     });
   }

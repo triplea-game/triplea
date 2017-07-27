@@ -10,9 +10,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -28,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -48,6 +51,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -69,6 +73,91 @@ import games.strategy.triplea.UrlConstants;
 public class SwingComponents {
   private static final String PERIOD = ".";
   private static final Collection<String> visiblePrompts = new HashSet<>();
+
+  /**
+   * Convenience method to create {@code AbstractAction} instances using lambdas.
+   * Example usage:
+   * <code><pre>
+   *   AbstractAction action = SwingComponents.newAbstractionAction(() -> {
+   *    if (value) {
+   *      doSomething();
+   *    }
+   *   });
+   * </pre></code>
+   */
+  public static AbstractAction newAbstractAction(final Runnable action) {
+    return new AbstractAction() {
+      private static final long serialVersionUID = -280371946771796597L;
+
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        action.run();
+      }
+    };
+  }
+
+  public enum KeyDownMask {
+    META_DOWN(InputEvent.META_DOWN_MASK),
+    CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
+
+    private final int code;
+
+    KeyDownMask(final int code) {
+      this.code = code;
+    }
+  }
+
+  public static void addEscapeKeyListener(
+      final RootPaneContainer dialog,
+      final Runnable keyDownAction) {
+    if(dialog.getRootPane() != null) {
+      addKeyListener(dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+    }
+  }
+  public static void addEscapeKeyListener(
+      final JComponent component,
+      final Runnable keyDownAction) {
+
+    // TODO: null checks are bit questionable, have them here because they were here before...
+    if (component.getRootPane() != null) {
+      addKeyListener(component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+    }
+  }
+
+  public static void addKeyListener(
+      final JComponent component,
+      final char key,
+      final KeyDownMask keyDownMask,
+      final Runnable keyDownAction) {
+    addKeyListener(component, KeyStroke.getKeyStroke(key, keyDownMask.code), keyDownAction);
+  }
+
+
+
+  private static void addKeyListener(
+      final JComponent component,
+      final KeyStroke keyStroke,
+      final Runnable keyDownAction) {
+
+    // We are using the object address here of our action.
+    // It is okay since we only need it to be the same value when we store it in the
+    // input and action maps below. Having the address be logged could be useful
+    // for debugging, otherwise no particular reason to use this exact value.
+    final String actionKey = keyDownAction.toString();
+
+    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(keyStroke, actionKey);
+
+    component.getActionMap().put(actionKey, new AbstractAction() {
+      private static final long serialVersionUID = -280371946771796597L;
+
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        keyDownAction.run();
+      }
+    });
+  }
+
 
   public static JFrame newJFrame(final String title, final JComponent contents) {
     final JFrame frame = new JFrame(title);
