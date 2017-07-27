@@ -55,22 +55,38 @@ public class GameEnginePropertyReader {
    *         Otherwise backup values from client config.
    */
   public LobbyServerProperties fetchLobbyServerProperties() {
+    // props from override
+    if (ClientSetting.TEST_LOBBY_HOST.isSet()) {
+      return new LobbyServerProperties(
+          ClientSetting.TEST_LOBBY_HOST.value(),
+          ClientSetting.TEST_LOBBY_PORT.intValue());
+    }
+
+    // normal case, download props file that will tell us where the lobby is
     final String lobbyPropsUrl =
         propertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_PROP_FILE_URL);
-
     final Version currentVersion = new Version(propertyFileReader.readProperty(PropertyKeys.ENGINE_VERSION));
 
     try {
       return lobbyServerPropertiesFetcher.downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion);
     } catch (final IOException e) {
-      ClientLogger.logError(
-          String.format("Failed to download lobby server props file from %s; will attempt to use a local backup.",
-              lobbyPropsUrl),
-          e);
-      final String backupAddress =
-          propertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_BACKUP_HOST_ADDRESS);
 
-      return backupPropertyFetcher.parseBackupValuesFromEngineConfig(backupAddress);
+      if (!ClientSetting.LOBBY_LAST_USED_HOST.isSet()) {
+        ClientLogger.logError(
+            String.format("Failed to download lobby server property file from %s; "
+                    + "Please verify your internet connection and try again.",
+                lobbyPropsUrl),
+            e);
+        throw new RuntimeException(e);
+      }
+      ClientLogger.logQuietly("Encountered an error while downloading lobby property file: " + lobbyPropsUrl
+          + ", will attempt to connect to the lobby at its last known address. If this problem keeps happening, "
+          + "you may be seeing network troubles, or the lobby may not be available.", e);
+
+      // graceful recovery case, use the last lobby address we knew about
+      return new LobbyServerProperties(
+          ClientSetting.LOBBY_LAST_USED_HOST.value(),
+          ClientSetting.LOBBY_LAST_USED_PORT.intValue());
     }
   }
 
@@ -94,7 +110,6 @@ public class GameEnginePropertyReader {
     String MAP_LISTING_SOURCE_FILE = "map_list_file";
     String ENGINE_VERSION = "engine_version";
     String LOBBY_PROP_FILE_URL = "lobby_properties_file_url";
-    String LOBBY_BACKUP_HOST_ADDRESS = "lobby_backup_url";
     String JAVAFX_UI = "javafx_ui";
   }
 }
