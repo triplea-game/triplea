@@ -57,14 +57,15 @@ public class LobbyPropertyFileParserTest {
 
     final File testFile = createTempFile(testProps);
 
-    final LobbyServerProperties result = LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+    final LobbyServerProperties result =
+        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
     assertThat(result.host, is(TestData.host));
     assertThat(result.port, is(Integer.valueOf(TestData.port)));
     assertThat(result.serverMessage, is(TestData.message));
     assertThat(result.serverErrorMessage, is(TestData.errorMessage));
   }
 
-  private File createTempFile(final TestProps... testProps) throws Exception {
+  private static File createTempFile(final TestProps... testProps) throws Exception {
     final File f = File.createTempFile("testing", ".tmp");
     for (final TestProps testProp : Arrays.asList(testProps)) {
       try (FileWriter writer = new FileWriter(f)) {
@@ -83,7 +84,8 @@ public class LobbyPropertyFileParserTest {
   public void checkVersionSelection() throws Exception {
     final File testFile = createTempFile(testDataSet());
 
-    final LobbyServerProperties result = LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+    final LobbyServerProperties result =
+        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.host, is(TestData.hostOther));
     assertThat(result.port, is(Integer.valueOf(TestData.portOther)));
