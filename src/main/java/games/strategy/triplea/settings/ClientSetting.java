@@ -74,19 +74,19 @@ public enum ClientSetting {
 
 
   ClientSetting() {
-    this.defaultValue = "";
-  }
-
-  ClientSetting(final File file) {
-    this.defaultValue = file.getAbsolutePath();
-  }
-
-  ClientSetting(final int defaultValue) {
-    this(String.valueOf(defaultValue));
+    this("");
   }
 
   ClientSetting(final String defaultValue) {
     this.defaultValue = defaultValue;
+  }
+
+  ClientSetting(final File file) {
+    this(file.getAbsolutePath());
+  }
+
+  ClientSetting(final int defaultValue) {
+    this(String.valueOf(defaultValue));
   }
 
   ClientSetting(final boolean defaultValue) {
