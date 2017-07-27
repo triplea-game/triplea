@@ -296,7 +296,7 @@ public class SwingComponents {
 
   public static void newOpenUrlConfirmationDialog(final String url) {
     final String msg = "Okay to open URL in a web browser?\n" + url;
-    SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openURL(url));
+    SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openUrl(url));
   }
 
   public static void showDialog(final String title, final String message) {

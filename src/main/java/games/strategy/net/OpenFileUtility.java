@@ -63,7 +63,7 @@ public class OpenFileUtility {
    *
    * @param url A URL of a web page (ex: "http://www.google.com/")
    */
-  public static void openURL(final String url) {
+  public static void openUrl(final String url) {
     openUrl(url, () -> logDesktopApiMessage(url));
   }
 
