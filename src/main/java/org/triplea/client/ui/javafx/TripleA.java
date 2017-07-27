@@ -14,6 +14,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -38,6 +39,11 @@ public class TripleA extends Application {
   private StackPane rootPane;
 
   private MainMenuPane mainMenu;
+
+  @Override
+  public void init() {
+    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
+  }
 
   @Override
   public void start(final Stage stage) throws Exception {
