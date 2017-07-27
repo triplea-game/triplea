@@ -26,7 +26,8 @@ import com.google.common.base.Strings;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.GridBagHelper;
-import swinglib.JButtonModal;
+import swinglib.JButtonModel;
+import swinglib.JPanelModel;
 
 
 /**
@@ -80,7 +81,9 @@ enum SettingsWindow {
       Preconditions.checkNotNull(setting.selectionComponent.getJComponent());
     });
 
-    final JPanel contents = new JPanel(new GridBagLayout());
+    final JPanel contents = JPanelModel.builder()
+        .withGridBagLayout()
+        .swingComponent();
 
     final GridBagHelper grid = new GridBagHelper(contents,3);
 
@@ -121,7 +124,7 @@ enum SettingsWindow {
     bottomPanel.add(buttonPanel);
     bottomPanel.add(Box.createHorizontalGlue());
 
-    final JButton saveButton = JButtonModal.builder()
+    final JButton saveButton = JButtonModel.builder()
         .withTitle("Save")
         .withActionListener(() -> {
           final StringBuilder successMsg = new StringBuilder();
@@ -167,14 +170,14 @@ enum SettingsWindow {
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    buttonPanel.add(JButtonModal.builder()
+    buttonPanel.add(JButtonModel.builder()
         .withTitle("Close")
         .withActionListener(closeListener)
         .swingComponent());
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    final JButton restoreDefaultsButton = JButtonModal.builder()
+    final JButton restoreDefaultsButton = JButtonModel.builder()
         .withTitle("Restore Defaults")
         .withActionListener(() -> {
           settings.forEach(ClientSettingUiBinding::resetToDefault);

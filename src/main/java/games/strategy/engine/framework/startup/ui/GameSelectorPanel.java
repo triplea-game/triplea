@@ -39,8 +39,7 @@ import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingComponents;
-import swinglib.JButtonModal;
+import swinglib.JButtonModel;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -177,7 +176,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    final JButton downloadMapButton = JButtonModal.builder()
+    final JButton downloadMapButton = JButtonModel.builder()
         .withTitle("Download Maps")
         .withToolTip("Click this button to install additional maps")
         .withActionListener(DownloadMapsWindow::showDownloadMapsWindow)

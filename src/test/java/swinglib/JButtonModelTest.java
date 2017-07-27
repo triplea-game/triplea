@@ -12,13 +12,13 @@ import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
-public class JButtonModalTest {
+public class JButtonModelTest {
 
   @Test
   public void testBuild() {
     // button action will be to add one to our integer, we'll fire the button action and verify we get the +1
     final AtomicInteger integer = new AtomicInteger(0);
-    final JButton button = JButtonModal.builder()
+    final JButton button = JButtonModel.builder()
         .withTitle("title")
         .withActionListener(integer::incrementAndGet)
         .withToolTip("toolTip")
@@ -35,7 +35,7 @@ public class JButtonModalTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void titleIsRequired() {
-    JButtonModal.builder()
+    JButtonModel.builder()
         .withTitle("")
         .withActionListener(() -> {
         })
@@ -44,7 +44,7 @@ public class JButtonModalTest {
 
   @Test(expected = NullPointerException.class)
   public void actionIsRequired() {
-    JButtonModal.builder()
+    JButtonModel.builder()
         .withTitle("title")
         .withActionListener(null)
         .swingComponent();
@@ -52,7 +52,7 @@ public class JButtonModalTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void toolTipCannotBeEmpty() {
-    JButtonModal.builder()
+    JButtonModel.builder()
         .withTitle("title")
         .withToolTip("")
         .withActionListener(() -> {

@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
-import swinglib.JButtonModal;
+import swinglib.JButtonModel;
 
 /**
  * Logic for building UI components that "bind" to ClientSettings.
@@ -300,7 +300,7 @@ class SelectionComponentFactory {
     final JTextField field = new JTextField(clientSetting.value(), expectedLength);
     field.setEditable(false);
 
-    final JButton button = JButtonModal.builder()
+    final JButton button = JButtonModel.builder()
         .withTitle("Select")
         .withActionListener(
             () -> SwingComponents.showJFileChooser(folderSelectionMode)

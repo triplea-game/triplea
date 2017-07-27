@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +39,7 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.OptionalUtils;
-import swinglib.JButtonModal;
+import swinglib.JButtonModel;
 
 /** Window that allows for map downloads and removal. */
 public class DownloadMapsWindow extends JFrame {
@@ -479,13 +478,13 @@ public class DownloadMapsWindow extends JFrame {
 
     buttonsPanel.add(Box.createGlue());
 
-    buttonsPanel.add(JButtonModal.builder()
+    buttonsPanel.add(JButtonModel.builder()
         .withTitle("Help")
         .withToolTip("Click this button to learn more about the map download feature in TripleA")
         .withActionListener(() -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()))
         .swingComponent());
 
-    buttonsPanel.add(JButtonModal.builder()
+    buttonsPanel.add(JButtonModel.builder()
         .withTitle("Give Map Feedback")
         .withToolTip("Click this button to submit map comments and bug reports back to the map makers")
         .withActionListener(() -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps))
@@ -493,7 +492,7 @@ public class DownloadMapsWindow extends JFrame {
 
     buttonsPanel.add(Box.createGlue());
 
-    buttonsPanel.add(JButtonModal.builder()
+    buttonsPanel.add(JButtonModel.builder()
         .withTitle("Close")
         .withToolTip("Click this button to close the map download window and cancel any in-progress downloads.")
         .withActionListener(() -> {
@@ -515,13 +514,13 @@ public class DownloadMapsWindow extends JFrame {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      actionButton = JButtonModal.builder()
+      actionButton = JButtonModel.builder()
           .withTitle("Remove")
           .withToolTip("Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG)
           .withActionListener(removeAction(gamesList, maps, listModel))
           .swingComponent();
     } else {
-      actionButton = JButtonModal.builder()
+      actionButton = JButtonModel.builder()
           .withTitle((action == MapAction.INSTALL) ? "Install" : "Update")
           .withToolTip("Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG)
           .withActionListener(installAction(gamesList, maps, listModel))

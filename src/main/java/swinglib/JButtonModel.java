@@ -7,13 +7,13 @@ import javax.swing.JButton;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-public class JButtonModal {
+public class JButtonModel {
 
   private final String title;
   private final String toolTip;
   private final Runnable actionListener;
 
-  public JButtonModal(final String title, final String toolTip, final Runnable actionListener) {
+  public JButtonModel(final String title, final String toolTip, final Runnable actionListener) {
     this.title = Preconditions.checkNotNull(title);
     this.toolTip = toolTip;
     this.actionListener = Preconditions.checkNotNull(actionListener);
@@ -59,7 +59,7 @@ public class JButtonModal {
     }
 
     public JButton swingComponent() {
-      return new JButtonModal(
+      return new JButtonModel(
           title,
           toolTip,
           actionListener)
