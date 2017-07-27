@@ -207,7 +207,7 @@ public class CommentPanel extends JPanel {
         final Document doc = text.getDocument();
         // save history entry
         final IEditDelegate delegate = frame.getEditDelegate();
-        String error;
+        final String error;
         if (delegate == null) {
           error = "You can only add comments during your turn";
         } else {
