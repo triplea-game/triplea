@@ -46,7 +46,9 @@ enum ClientSettingUiBinding {
   LOOK_AND_FEEL_PREF_BINDING(
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
-      SelectionComponentFactory.selectionBox(ClientSetting.LOOK_AND_FEEL_PREF, LookAndFeel.getLookAndFeelAvailableList()),
+      SelectionComponentFactory.selectionBox(
+          ClientSetting.LOOK_AND_FEEL_PREF,
+          LookAndFeel.getLookAndFeelAvailableList()),
       "Adjust the UI theme for the game, requires a restart to take effect"),
   MAP_EDGE_SCROLL_SPEED_BINDING(
       "Map Scroll Speed",

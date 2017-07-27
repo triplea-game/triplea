@@ -10,14 +10,9 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
 /**
- * A collection-like class containing model objects for the game settings that can be adjusted by players.
- * These settings are stored in system user preferences, on Windows that would be the Windows registry.
- * These settings are persistent with the OS, they not only survive game restarts, but also game re-installs.
- *
- * <p>
- * We define here only default values. See {@code ClientSettingUiBinding} for an enum where we bind these
- * values to UI controls that allow users to update these values.
- * </p>
+ * List of settings that can be adjusted and stored with a Client's OS. On windows this would be the registry,
+ * these values survive game re-installs. These values can be made available for edit by adding a corresponding
+ * UI binding in {@code ClientSettingUiBinding}. Not all system settings will have UI bindings.
  *
  * <p>
  * Note: After saving values, `ClientSetting.flush()` needs to be called to persist those values.
@@ -34,7 +29,6 @@ import games.strategy.engine.ClientFileSystemHelper;
  * // saving value
  * ClientSetting.AI_PAUSE_DURATION.save(500);
  * ClientSetting.flush();
- *
  * </pre></code>
  */
 public enum ClientSetting {
@@ -95,7 +89,8 @@ public enum ClientSetting {
   }
 
   /**
-   * Persists user preferences s
+   * Persists user preferences. Note: 'value()' read calls will not pick up any new
+   * values saved values until after 'flush' has been called.
    */
   public static void flush() {
     try {
@@ -105,16 +100,8 @@ public enum ClientSetting {
     }
   }
 
-  public void restoreToDefaultValue() {
-    save(defaultValue);
-  }
-
   public void save(final String newValue) {
     Preferences.userNodeForPackage(ClientSetting.class).put(name(), newValue);
-  }
-
-  public String value() {
-    return Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue);
   }
 
   public void save(final int newValue) {
@@ -123,6 +110,14 @@ public enum ClientSetting {
 
   public void save(final boolean newValue) {
     Preferences.userNodeForPackage(ClientSetting.class).putBoolean(name(), newValue);
+  }
+
+  public void restoreToDefaultValue() {
+    save(defaultValue);
+  }
+
+  public String value() {
+    return Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue);
   }
 
   public int intValue() {
