@@ -165,18 +165,12 @@ enum SettingsWindow {
 
     buttonPanel.add(saveButton);
 
-    buttonPanel.add(Box.createHorizontalStrut(20));
+    buttonPanel.add(Box.createHorizontalStrut(40));
 
-    buttonPanel.add(SwingComponents.newJButton("Close", event -> {
-      closeListener.run();
-    }));
+    buttonPanel.add(SwingComponents.newJButton("Close", event -> closeListener.run()));
 
-    buttonPanel.add(Box.createHorizontalStrut(20));
+    buttonPanel.add(Box.createHorizontalStrut(40));
 
-    final JButton cancelButton = SwingComponents.newJButton("Cancel", e -> closeListener.run());
-    buttonPanel.add(cancelButton);
-
-    buttonPanel.add(Box.createHorizontalStrut(30));
     final JButton restoreDefaultsButton =
         SwingComponents.newJButton("Restore Defaults", e -> {
           settings.forEach(ClientSettingUiBinding::resetToDefault);
