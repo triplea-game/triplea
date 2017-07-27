@@ -103,7 +103,6 @@ public class RsaAuthenticator {
     final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
     rsaKeyMap.invalidate(publicKey);
     return Optional.ofNullable(privateKey);
-
   }
 
   /**
