@@ -98,8 +98,8 @@ enum SettingsWindow {
 
       final JComponent component = setting.selectionComponent.getJComponent();
 
-      final JTextArea description = new JTextArea(setting.description, 2, 50);
-      description.setMaximumSize(new Dimension(200, 50));
+      final JTextArea description = new JTextArea(setting.description, 2, 40);
+      description.setMaximumSize(new Dimension(120, 50));
       description.setEditable(false);
       description.setWrapStyleWord(true);
       description.setLineWrap(true);
