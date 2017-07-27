@@ -50,7 +50,6 @@ public final class ClientContext {
   private final GameEnginePropertyReader gameEnginePropertyReader = new GameEnginePropertyReader();
   private final MapDownloadController mapDownloadController = new MapDownloadController();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
-  private final ClientSettings clientSettings = new ClientSettings();
 
   private ClientContext() {}
 
@@ -64,10 +63,6 @@ public final class ClientContext {
 
   public static MapDownloadController mapDownloadController() {
     return instance.mapDownloadController;
-  }
-
-  public static ClientSettings clientSettings() {
-    return instance.clientSettings;
   }
 
   public static Version engineVersion() {
