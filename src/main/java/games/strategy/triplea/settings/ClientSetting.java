@@ -6,6 +6,8 @@ import java.util.prefs.Preferences;
 
 import javax.swing.UIManager;
 
+import com.google.common.base.Strings;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 
@@ -89,6 +91,13 @@ public enum ClientSetting {
 
   public static void showSettingsWindow() {
     SettingsWindow.INSTANCE.open();
+  }
+
+  /**
+   * Returns true if a value has been set for the current property.
+   */
+  public boolean isSet() {
+    return !Strings.nullToEmpty(value()).trim().isEmpty();
   }
 
   /**

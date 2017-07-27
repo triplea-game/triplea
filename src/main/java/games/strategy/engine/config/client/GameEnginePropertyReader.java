@@ -9,6 +9,7 @@ import games.strategy.engine.config.PropertyFileReader;
 import games.strategy.engine.config.client.backup.BackupPropertyFetcher;
 import games.strategy.engine.config.client.remote.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
 /**
@@ -78,6 +79,9 @@ public class GameEnginePropertyReader {
   }
 
   public String getMapListingSource() {
+    if (ClientSetting.MAP_LIST_OVERRIDE.isSet()) {
+      return ClientSetting.MAP_LIST_OVERRIDE.value();
+    }
     return propertyFileReader.readProperty(PropertyKeys.MAP_LISTING_SOURCE_FILE);
   }
 
