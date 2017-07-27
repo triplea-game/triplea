@@ -4,7 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JComponent;
+import javax.swing.SpringLayout;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 /**
@@ -20,7 +22,7 @@ import com.google.common.base.Preconditions;
  * }
  * </pre></code>
  */
-public static class GridBagHelper {
+public final class GridBagHelper {
   private final JComponent parent;
   private final int columns;
   private final GridBagConstraints constraints;
@@ -42,19 +44,24 @@ public static class GridBagHelper {
   public void addComponents(final JComponent ... children) {
     Preconditions.checkArgument(children.length > 0);
     for (final JComponent child : children) {
-
-      final int x = elementCount % columns;
-      final int y = elementCount / columns;
-
-      constraints.gridx = x;
-      constraints.gridy = y;
-
-      constraints.ipadx = 3;
-      constraints.ipady = 3;
-
-      constraints.anchor = GridBagConstraints.WEST;
-      parent.add(child, constraints);
+      parent.add(child, nextConstraint());
       elementCount++;
     }
+  }
+
+  @VisibleForTesting
+  GridBagConstraints nextConstraint() {
+    final int x = elementCount % columns;
+    final int y = elementCount / columns;
+
+    constraints.gridx = x;
+    constraints.gridy = y;
+
+    constraints.anchor = GridBagConstraints.WEST;
+
+    constraints.ipadx = 3;
+    constraints.ipady = 3;
+    return constraints;
+
   }
 }
