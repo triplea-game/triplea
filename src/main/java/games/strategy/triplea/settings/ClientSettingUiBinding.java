@@ -52,11 +52,12 @@ enum ClientSettingUiBinding {
       SettingType.COMBAT,
       ClientSetting.CONFIRM_ENEMY_CASUALTIES,
       "Whether battles should proceed only once every player has confirmed the casualties selected"),
-  FOCUS_ON_OWN_CASUALTIES_BINDING(
-      "Focus on own casualties",
+  SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(
+      "Space bar confirms Casualties",
       SettingType.COMBAT,
-      ClientSetting.FOCUS_ON_OWN_CASUALTIES,
-      "..."),
+      ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES,
+      "When set to true casualty confirmation can be accepted by pressing space bar.\n"
+      + "When set to false, the confirm casualty button has to always be clicked."),
   LOOK_AND_FEEL_PREF_BINDING(
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
