@@ -267,7 +267,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-    OpenFileUtility.openURL(url);
+    OpenFileUtility.openUrl(url);
   }
 
   @Override

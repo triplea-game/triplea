@@ -159,7 +159,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
-    OpenFileUtility.openURL(tripleAForumURL + "/topic/" + m_topicId);
+    OpenFileUtility.openUrl(tripleAForumURL + "/topic/" + m_topicId);
   }
 
 

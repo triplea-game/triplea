@@ -200,6 +200,6 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = WAR_CLUB_FORUM_URL + "/viewtopic.php?topic_id=" + m_topicId;
-    OpenFileUtility.openURL(url);
+    OpenFileUtility.openUrl(url);
   }
 }
