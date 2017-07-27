@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 
 /**
  * A SelectionComponent represents a UI component that a user can use to update the value of a ClientSetting.
- * Instances of this class are created in: @{code SelectionComponentFactory}
+ * Instances of this class are created in: {@code SelectionComponentFactory}
  */
 abstract class SelectionComponent implements Serializable {
   private static final long serialVersionUID = -2224094425526210088L;
