@@ -26,7 +26,7 @@ import games.strategy.engine.ClientFileSystemHelper;
  * </p><code><pre>
  *
  * // loading a value
- * String value = ClientSetting.AI_PAUSE_DURATION.read();
+ * String value = ClientSetting.AI_PAUSE_DURATION.value();
  *
  * // saving value
  * ClientSetting.AI_PAUSE_DURATION.save(500);
@@ -119,11 +119,11 @@ public enum ClientSetting {
   }
 
   public void save(final int newValue) {
-    Preferences.userNodeForPackage(ClientSetting.class).putInt(name(), newValue);
+    save(String.valueOf(newValue));
   }
 
   public void save(final boolean newValue) {
-    Preferences.userNodeForPackage(ClientSetting.class).putBoolean(name(), newValue);
+    save(String.valueOf(newValue));
   }
 
   public void restoreToDefaultValue() {
@@ -135,10 +135,10 @@ public enum ClientSetting {
   }
 
   public int intValue() {
-    return Integer.valueOf(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
+    return Integer.valueOf(value());
   }
 
   public boolean booleanValue() {
-    return Boolean.valueOf(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
+    return Boolean.valueOf(value());
   }
 }

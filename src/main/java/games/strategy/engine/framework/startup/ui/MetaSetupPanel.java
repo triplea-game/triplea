@@ -109,9 +109,9 @@ public class MetaSetupPanel extends SetupPanel {
       add(mapCreator, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
 
-      final JButton m_mapXmlCreator = SwingComponents
+      final JButton mapXmlCreator = SwingComponents
           .newJButton("[Beta] Run the Map Creator", e -> ProcessRunnerUtil.runClass(MapXmlCreator.class));
-      add(m_mapXmlCreator, new GridBagConstraints(0,  11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+      add(mapXmlCreator, new GridBagConstraints(0,  11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
 
 
