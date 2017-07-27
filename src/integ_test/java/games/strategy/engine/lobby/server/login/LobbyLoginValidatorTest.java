@@ -22,6 +22,7 @@ import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.DbUserController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
@@ -145,32 +146,6 @@ public class LobbyLoginValidatorTest {
     assertEquals(hashedPassword, new DbUserController().getLegacyPassword(name).value);
   }
 
-  @Test
-  public void testTimeout() {
-    final String password = "foo";
-    final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
-    assertError(challengeFunction.apply(challenge -> {
-      final Map<String, String> response = new HashMap<>();
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
-      RsaAuthenticator.invalidateAll();
-      return response;
-    }), "timeout");
-  }
-
-  @Test
-  public void testChallengeExpires() {
-    final String password = "password";
-    final Map<String, String> response = new HashMap<>();
-    final ChallengeResultFunction challengeFunction =
-        generateChallenge(new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())));
-    assertNull(challengeFunction.apply(challenge -> {
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
-      return response;
-    }));
-    assertError(challengeFunction.apply(challenge -> response), "timeout");
-  }
-
   private static void createUser(final String name, final String email, final HashedPassword password) {
     new DbUserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
   }
@@ -180,7 +155,7 @@ public class LobbyLoginValidatorTest {
   }
 
   private static ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
-    final LobbyLoginValidator validator = new LobbyLoginValidator();
+    final ILoginValidator validator = new LobbyLoginValidator();
     final SocketAddress address = new InetSocketAddress(5000);
     final String mac = MacFinder.getHashedMacAddress();
     final String email = "none@none.none";
@@ -196,12 +171,12 @@ public class LobbyLoginValidatorTest {
     };
   }
 
-  private void assertError(final String errorMessage, final String... strings) {
+  private static void assertError(final String errorMessage, final String... strings) {
     assertNotNull(errorMessage);
     final String simpleError = errorMessage.trim().toLowerCase();
     try {
-      assertTrue(Arrays.stream(strings).map(s -> s.toLowerCase()).allMatch(simpleError::contains));
-    } catch (AssertionError e) {
+      assertTrue(Arrays.stream(strings).map(String::toLowerCase).allMatch(simpleError::contains));
+    } catch (final AssertionError e) {
       throw new AssertionError(String.format("Error message '%s' did not contain all of those keywords: %s",
           errorMessage, Arrays.toString(strings)), e);
     }
